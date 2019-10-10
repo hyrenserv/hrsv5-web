@@ -25,12 +25,9 @@
           <el-input v-model="form.name" autocomplete="off" placeholder="数据源名称"></el-input>
         </el-form-item>
         <el-form-item label=" 所属部门" :label-width="formLabelWidth">
-          <el-select v-model="value" filterable placeholder="请选择">
+          <el-select filterable placeholder="请选择">
     <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
+      >
     </el-option>
   </el-select>
         </el-form-item>
@@ -54,8 +51,7 @@ export default {
         { a: "cs", b: 1 },
         { a: "zcs", b: 2 },
         { a: "水质品质", b: 2 },
-        { a: "测试", b: 3 },
-        { a: "sss", b: 9 }
+        { a: "测试", b: 3 }
       ],
       dialogFormVisibleAdd: false,
       form: {

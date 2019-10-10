@@ -68,7 +68,7 @@ export default {
             that.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.login(this.ruleForm).then((res) => {
-                        that.$router.push('home');
+                        that.$router.push('index1001');
                     })
                 } else {
                     return false;

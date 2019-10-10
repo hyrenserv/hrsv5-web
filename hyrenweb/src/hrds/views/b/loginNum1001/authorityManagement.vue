@@ -11,7 +11,6 @@
         :header-cell-style="{background:'#ede7f3',color:'black'}"
         size="mini"
         stripe
-        row-key
         
       >
         <el-table-column prop="date" label="序号" width="64" align="center"></el-table-column>
