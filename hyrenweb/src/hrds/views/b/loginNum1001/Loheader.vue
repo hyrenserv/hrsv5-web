@@ -3,7 +3,8 @@
     <el-row>
       <i class="block_icon fa text-warning fa-globe blue"></i>
       <span>数据来源表</span>
-      <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true" size="small">
+      <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;get
+departmentInfo()" size="small">
         <i class="block_icon fa fa-cubes"></i>添加数据源
       </el-button>
       <el-button type="primary" class="els" @click="dialogFormVisibleImport = true" size="small">
@@ -40,7 +41,7 @@
           >
             <i class="fa fa-question-circle question3" aria-hidden="true"></i>
           </el-tooltip>
-          <el-input placeholder v-model="form" style="width:284px">
+          <el-input placeholder="点击上传按钮选择文件" disabled="disabled"   style="width:284px">
             <template slot="append">
               <el-upload
                 class="upload-demo"
@@ -80,12 +81,12 @@
           ></el-input>
         </el-form-item>
         <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="depIds" filterable placeholder="请选择" multiple style="width:284px">
+          <el-select v-model="form.depIds" filterable placeholder="请选择" multiple style="width:284px">
             <el-option
               v-for="item in options"
-              :key="item.value"
+              :key="item.dep_name"
               :label="item.label"
-              :value="item.value"
+              :value="item.dep_name"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -109,20 +110,13 @@
 
 <script>
 import * as Add from "@/hrds/api/b/loginNum1001/loginNum1001";
+import * as departmentInfo from "@/hrds/api/b/loginNum1001/loginNum1001";
 export default {
   data() {
     return {
       options: [
-        {
-          value: "选项1",
-          label: "第一部门"
-        },
-        {
-          value: "选项2",
-          label: "第二部门"
-        }
+        
       ],
-      depIds: "",
       dialogFormVisibleImport: false,
       dialogFormVisibleAdd: false,
       // 添加数据与导入源字段
@@ -130,9 +124,11 @@ export default {
         // datasource_number: "",
         // datasource_name: "",
         // source_remark: "",
-        // agentPort:"",
-        // agentIp:"",
-        // userCollectId:""
+        //  depIds: "",
+        agentPort:"",
+        agentIp:"",
+        userCollectId:"",
+       
       },
       rules: {
         datasource_number: [
@@ -149,10 +145,10 @@ export default {
             trigger: "blur"
           }
         ],
-        source_remark: [
+        depIds: [
           {
             required: true,
-            message: "数据源详情描述是必填项",
+            message: "部门信息是必填项",
             trigger: "blur"
           }
         ]
@@ -161,6 +157,14 @@ export default {
     };
   },
   methods: {
+    // 点击添加按钮获取部门信息
+    departmentInfo(){
+      departmentInfo.getDepartmentInfo().then(res=>{
+        console.log(res.data);
+        this.options= res.data.departmentInfo
+      })
+    },
+    // 添加一条数据
     add(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -183,7 +187,9 @@ export default {
           return false;
         }
       });
-    }
+    },
+    // 导入一个数据
+
   }
 };
 </script>
