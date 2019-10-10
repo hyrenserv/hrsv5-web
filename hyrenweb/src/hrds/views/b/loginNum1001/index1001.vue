@@ -3,7 +3,7 @@
     <el-container>
       <el-header  height= "50px">Header</el-header>
       <el-container>
-        <el-aside width="30px">Aside</el-aside>
+        <el-aside width="50px">Aside</el-aside>
         <el-main>
           <lo-header></lo-header>
           <data-sheetmain></data-sheetmain>
