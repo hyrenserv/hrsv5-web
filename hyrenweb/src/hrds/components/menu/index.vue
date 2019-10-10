@@ -2,17 +2,15 @@
 <div class="home">
     <el-container>
         <el-header>
-            
+
             <el-row type="flex" :gutter="20">
                 <el-col :span="2">
                     <span><i class="el-icon-menu"></i>菜单列表</span>
-                </el-col> 
-                <!-- <el-col :span="3">
-                <div class="grid-content bg-purple"><span class="link ">
-                        <router-link ><i class="el-icon-s-custom">修改密码(未做)</i></router-link>
-                    </span></div>
-            </el-col> -->
-                <el-col :span="3" :offset="18">
+                </el-col>
+                <el-col :span="2" :offset="19">
+                    <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
+                </el-col>
+                <el-col :span="3">
                     <el-link :underline="false" @click="goback"><i class="el-icon-s-custom">退出登录</i></el-link>
                 </el-col>
             </el-row>
@@ -20,19 +18,13 @@
         <el-container>
             <el-aside width="170px">
                 <!-- 导航 -->
-                <el-menu router default-active="/home">
-                    <el-menu-item index="/syspara">
-                        <i class="el-icon-setting"></i>
-                        <span slot="title">系统参数</span>
-                    </el-menu-item>
-                    <el-menu-item index="/agentdeploy">
-                        <i class="el-icon-document"></i>
-                        <span slot="title">Agent部署</span>
-                    </el-menu-item>
-                    <el-menu-item index="/collectmonitor">
-                        <i class="el-icon-document"></i>
-                        <span slot="title">采集监控首页</span>
-                    </el-menu-item>
+                <el-menu router :default-active="menus[0].path">
+                    <div v-for="item in menus" :key="item.name">
+                        <el-menu-item :index="item.path">
+                            <i :class="item.icon"></i>
+                            <span>{{item.title}}</span>
+                        </el-menu-item>
+                    </div>
                 </el-menu>
             </el-aside>
             <el-container>
@@ -51,10 +43,11 @@
 import {
     mapActions
 } from 'vuex'
+import menu from './menu'
 export default {
     data() {
         return {
-
+            menus: menu
         }
     },
     mounted() {
@@ -63,13 +56,12 @@ export default {
     },
     methods: {
         ...mapActions(['resetToken']),
-        goback(){
+        goback() {
             this.resetToken();
             this.$router.push('/');
         }
     }
 }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -81,13 +73,15 @@ export default {
     text-align: center;
     line-height: 50px;
     color: #fff;
-    
+
 }
-.el-menu{
+
+.el-menu {
     height: 100%;
     /* background-color: #3F51B5; */
 }
-.home .el-header i{
+
+.home .el-header i {
     color: white;
 }
 </style>

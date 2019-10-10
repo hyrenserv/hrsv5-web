@@ -6,6 +6,11 @@ export default new Router({
     mode: 'history',
     routes: [
         {
+            path: '*',
+            name: 'login',
+            component: () => import('@/hrds/views/login/index')
+        },
+        {
             path: '/',
             name: 'login',
             component: () => import('@/hrds/views/login/index')
