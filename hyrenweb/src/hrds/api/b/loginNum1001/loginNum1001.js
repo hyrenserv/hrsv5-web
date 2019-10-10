@@ -12,11 +12,23 @@ export function addDataResource(data) {
 }
 
 /**
- * 导入源数据信息
+ * 导入数据源数据信息
  */
-export function importDataResource() {
+export function importDataResource(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/url/datasource/uploadFile',
-        method: 'post'
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/uploadFile',
+        method: 'post',
+        params: data
+    })
+}
+
+
+/**
+ * 点击添加按钮获取部门信息
+ */
+export function getDepartmentInfo() {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource?sourceId=123',
+        method: 'get',
     })
 }
