@@ -32,3 +32,26 @@ export function getDepartmentInfo() {
         method: 'get',
     })
 }
+
+
+
+/**
+ * 点击导入按钮获取数据采集用户
+ */
+export function getDataUserInfo() {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataCollectUser',
+        method: 'post',
+    })
+}
+
+/**
+ * 点击上传按钮上传数据
+ */
+export function tapUploadData(data) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/uploadFile',
+        method: 'post',
+        params: data
+    })
+}
