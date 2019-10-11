@@ -1,49 +1,71 @@
 <template>
   <div class="dataSheetmain">
-    <div class="dataSheetmainDiv" v-for="index in lists" :key="index">
+    <div class="dataSheetmainDiv" v-for="(itme,index) in lists" :key="index">
       <i class="block_icon fa fa-sitemap fa-3x tree"></i>
-      <p>{{index.a}}</p>
-      <p class="postionP">Agent个数为 {{index.b}}</p>
-      <span>{{index.b}}</span>
+      <p>{{itme.a}}</p>
+      <p class="postionP">Agent个数为 {{itme.b}}</p>
+      <span>{{itme.b}}</span>
       <div class="boxshletr">
           <i class="fa fa-download  fa-lg"></i>
      <el-button
         type="text"
         class="editBtn"
-        @click="dialogFormVisibleAdd = true"
+        @click="dialogFormVisibleAdd = true;departmentInfo()"
        >
-      <i class="fa fa-pencil  fa-lg"></i></el-button>
+      <i class="fa fa-pencil  fa-lg" ></i></el-button>
       </div>
     </div>
-    <!-- 弹出编辑的表单 -->
-   <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
-      <el-form :model="form">
-        <el-form-item label=" 数据源编号" :label-width="formLabelWidth">
-          <el-input v-model="form.region" autocomplete="off" placeholder="数据源编号"></el-input>
+    
+    <!-- 实现点击编辑按钮进行数据更改-->
+    <!-- 编辑的弹出表单 -->
+    <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
+      <el-form :model="formUpdate" ref="formUpdate" :rules="rules">
+        <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number">
+          <el-input
+            v-model="formUpdate.datasource_number"
+            autocomplete="off"
+            placeholder="数据源编号"
+            style="width:284px"
+          ></el-input>
         </el-form-item>
-        <el-form-item label=" 数据源名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" placeholder="数据源名称"></el-input>
+        <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
+          <el-input
+            v-model="formUpdate.datasource_name"
+            autocomplete="off"
+            placeholder="数据源名称"
+            style="width:284px"
+          ></el-input>
         </el-form-item>
-        <el-form-item label=" 所属部门" :label-width="formLabelWidth">
-          <el-select filterable placeholder="请选择">
-    <el-option
-      >
-    </el-option>
-  </el-select>
+        <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
+          <el-select v-model="formUpdate.depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
+            <el-option
+              v-for="(item,index) in options"
+              :key="index"
+              :label="item.dep_name"
+              :value="item.dep_id"
+            ></el-option>
+          </el-select>
         </el-form-item>
-       <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth">
-          <el-input type="textarea" v-model="form.desc" autocomplete="off"  placeholder="数据源详细描述"></el-input>
+        <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="source_remark">
+          <el-input
+            type="textarea"
+            v-model="formUpdate.source_remark"
+            autocomplete="off"
+            placeholder="数据源详细描述"
+            style="width:284px"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false" size="mini" type="danger">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleAdd = false" size="mini">确 定</el-button>
+        <el-button type="primary" @click="update('formAdd')" size="mini">保存</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import * as functionAll  from "@/hrds/api/b/loginNum1001/loginNum1001";
 export default {
   data() {
     return {
@@ -53,19 +75,55 @@ export default {
         { a: "水质品质", b: 2 },
         { a: "测试", b: 3 }
       ],
+      options:[],
       dialogFormVisibleAdd: false,
-      form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: ""
+      formUpdate: {
+        // datasource_number: "",
+        // datasource_name: "",
+        // source_remark: "",
+        //  depIds: "",
+      },
+       rules: {
+        datasource_number: [
+          {
+            required: true,
+            message: "数据源编号是以字母开头的不超过四位数的字母数字组合",
+            trigger: "blur"
+          }
+        ],
+        datasource_name: [
+          {
+            required: true,
+            message: "数据源名称是必填项",
+            trigger: "blur"
+          }
+        ],
+        depIds: [
+          {
+            required: true,
+            message: "部门信息是必填项",
+            trigger: "change"
+          }
+        ]
       },
       formLabelWidth: "150px"
     };
+  },
+  methods:{
+    // 点击添加按钮获取部门信息
+    departmentInfo(){
+      functionAll.getDepartmentInfo().then((res)=>{
+        if(res.code==200){
+          this.options= res.data.departmentInfo
+        }
+      })
+    },
+  update(){
+    console.log(this.formUpdate)
+    functionAll.upDateDataResource().then((res)=>{
+
+    })
+  }
   }
 };
 </script>
