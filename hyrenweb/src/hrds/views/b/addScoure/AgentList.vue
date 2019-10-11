@@ -34,7 +34,7 @@
               <i class="fa text-warning fa-database blue"></i>
               <span>数据源Agent</span>
           <!-- 添加数据表单弹出框  -->
-              <el-button type="success"  class="addAgent" size="small" @click="dialogFormVisible = true"  >新增数据库Agent</el-button>
+              <el-button type="success"  class="addAgent" size="small" @click="dialogFormVisible = true;DataCathInfo()"  >新增数据库Agent</el-button>
             </el-row>
         <!-- 表格内容 -->
             <el-table
@@ -49,8 +49,12 @@
               <el-table-column prop="address" label="Agent 连接端口" width="265" align="center"></el-table-column>
               <el-table-column prop="date" label="数据采集用户" width="219" align="center"></el-table-column>
               <el-table-column label="操作" align="center">
-                <el-button size="mini" type="primary" @click="dialogFormVisibleview = true"  >查看</el-button>
-                <el-button size="mini" type="danger" >删除</el-button>
+                 <template slot-scope="scope">
+                     
+                      <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row)"  >查看</el-button> 
+                      <el-button size="mini" type="danger" >删除</el-button>
+                </template>
+                
               </el-table-column>
             </el-table>
             <div class="lines"></div>
@@ -83,12 +87,12 @@
           ></el-input>
         </el-form-item>
         <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type">
-          <el-select v-model="formAdd.agent_type" filterable placeholder="请选择" multiple style="width:284px">
+          <el-select v-model="formAdd.agent_type" filterable placeholder="请选择"  style="width:284px">
             <el-option
-              v-for="item in options"
-              :key="item.dep_id"
-              :label="item.dep_name"
-              :value="item.dep_id"
+             v-for="(item,index) in options"
+              :key="index"
+              :label="item.user_name"
+              :value="item.user_id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -100,10 +104,10 @@
     </el-dialog>
   <!-- 点击查看按钮查看信息弹出框 -->
   <el-dialog title="查看数据库 Agent" :visible.sync="dialogFormVisibleview" width="40%">
-      <el-form :model="formAdd" ref="formAdd" :rules="rules">
+      <el-form :model="form" ref="form" :rules="rules">
         <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
           <el-input
-            v-model="formAdd.agent_name"
+            v-model="form.agent_name"
             autocomplete="off"
             :disabled="true"
             style="width:284px"
@@ -111,7 +115,7 @@
         </el-form-item>
         <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
           <el-input
-            v-model="formAdd.agent_ip"
+            v-model="form.agent_ip"
             autocomplete="off"
             style="width:284px"
             :disabled="true"
@@ -119,19 +123,19 @@
         </el-form-item>
         <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
           <el-input
-            v-model="formAdd.agent_port"
+            v-model="form.agent_port"
             autocomplete="off"
             :disabled="true"
             style="width:284px"
           ></el-input>
         </el-form-item>
         <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="formAdd.agent_type" disabled  filterable placeholder="请选择" multiple style="width:284px">
+          <el-select v-model="form.agent_type" disabled  filterable placeholder="请选择" multiple style="width:284px">
             <el-option
-              v-for="item in options"
-              :key="item.dep_id"
-              :label="item.dep_name"
-              :value="item.dep_id"
+              v-for="(item,index) in options"
+              :key="index"
+              :label="item.user_name"
+              :value="item.user_id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -151,11 +155,13 @@
 
 
 <script>
+import * as functionAll  from "@/hrds/api/b/addScoure/AgentList";
 export default {
   data() {
     return {
         dialogFormVisible: false,
         dialogFormVisibleview:false,
+        options:[],
       tableData: [
         {
           date: "2016-05-02",
@@ -194,6 +200,12 @@ export default {
         // agent_port: "",
         // agent_type: "",
       }, 
+      form:{
+        agent_name: "",
+        agent_ip: "",
+        agent_port: "",
+        agent_type: "",
+      },
       rules: {
         agent_name: [
           {
@@ -220,12 +232,28 @@ export default {
           {
             required: true,
             message: "不能为空",
-            trigger: "change"
+            trigger: "blur"
           }
         ]
       },
        formLabelWidth: "150px"
     };
+  },
+  methods:{
+     // 点击查看获取数据采集信息
+    DataCathInfo(){
+     functionAll.getDataUserInfo().then((res)=>{
+       if(res.code==200){
+         this.options= res.data
+       }
+     })
+    },
+      // 编辑获取当前数据赋给表单
+    handleEdit(index, row) {
+      this.form.agent_name =row.address;
+      this.form.agent_port= row.name;
+      console.log(row)
+    },
   }
 };
 </script>

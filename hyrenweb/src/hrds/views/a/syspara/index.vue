@@ -196,7 +196,6 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 调用添加方法
-                    console.log(this.form)
                     sysPara.addSysPara(this.form).then((response) => {
                         if (response && response.success) {
                             this.$message({
