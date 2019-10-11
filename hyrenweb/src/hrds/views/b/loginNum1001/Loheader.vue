@@ -156,7 +156,7 @@ export default {
           {
             required: true,
             message: "部门信息是必填项",
-            trigger: "change"
+            trigger: "blur"
           }
         ]
       },
@@ -169,7 +169,6 @@ export default {
       functionAll.getDepartmentInfo().then((res)=>{
         if(res.code==200){
           this.options= res.data.departmentInfo;
-          console.log(res.data)
         }
       })
     },
