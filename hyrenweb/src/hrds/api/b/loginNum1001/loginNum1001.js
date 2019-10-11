@@ -1,5 +1,18 @@
 import request from '@/utils/request'
 
+
+/**
+ * 获取首页的数据
+ */
+export function getIndexDataAll() {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSourceInfo',
+        method: 'post'
+    })
+}
+
+
+
 /**
  * 添加数据源数据信息
  */
@@ -22,6 +35,17 @@ export function importDataResource(data) {
     })
 }
 
+
+/**
+ * 编辑更新数据源信息
+ */
+export function upDateDataResource(data) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/updateDataSource',
+        method: 'post',
+        params: data
+    })
+}
 
 /**
  * 点击添加按钮获取部门信息

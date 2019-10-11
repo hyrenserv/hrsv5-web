@@ -49,23 +49,98 @@
               <el-table-column prop="address" label="Agent 连接端口" width="265" align="center"></el-table-column>
               <el-table-column prop="date" label="数据采集用户" width="219" align="center"></el-table-column>
               <el-table-column label="操作" align="center">
-                <el-button size="mini" type="primary" >查看</el-button>
+                <el-button size="mini" type="primary" @click="dialogFormVisibleview = true"  >查看</el-button>
                 <el-button size="mini" type="danger" >删除</el-button>
               </el-table-column>
             </el-table>
             <div class="lines"></div>
           </div>
-        <!-- 点击新建按钮弹出框 -->
- <el-dialog title="添加数据库 Agent" :visible.sync="dialogFormVisible">
-  <el-form>
-    
-        
-    
-  </el-form-item>
-  
-
-  </el-form>
-</el-dialog>
+ <!-- 点击新建按钮弹出框 -->
+ <el-dialog title="添加数据库 Agent" :visible.sync="dialogFormVisible" width="40%">
+      <el-form :model="formAdd" ref="formAdd" :rules="rules">
+        <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
+          <el-input
+            v-model="formAdd.agent_name"
+            autocomplete="off"
+            placeholder="Agent名称"
+            style="width:284px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
+          <el-input
+            v-model="formAdd.agent_ip"
+            autocomplete="off"
+            placeholder="例如 127.9.08.7"
+            style="width:284px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
+          <el-input
+            v-model="formAdd.agent_port"
+            autocomplete="off"
+            placeholder="端口范围1204-65535"
+            style="width:284px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type">
+          <el-select v-model="formAdd.agent_type" filterable placeholder="请选择" multiple style="width:284px">
+            <el-option
+              v-for="item in options"
+              :key="item.dep_id"
+              :label="item.dep_name"
+              :value="item.dep_id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false" size="mini" type="danger">取 消</el-button>
+        <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
+      </div>
+    </el-dialog>
+  <!-- 点击查看按钮查看信息弹出框 -->
+  <el-dialog title="查看数据库 Agent" :visible.sync="dialogFormVisibleview" width="40%">
+      <el-form :model="formAdd" ref="formAdd" :rules="rules">
+        <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
+          <el-input
+            v-model="formAdd.agent_name"
+            autocomplete="off"
+            :disabled="true"
+            style="width:284px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
+          <el-input
+            v-model="formAdd.agent_ip"
+            autocomplete="off"
+            style="width:284px"
+            :disabled="true"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
+          <el-input
+            v-model="formAdd.agent_port"
+            autocomplete="off"
+            :disabled="true"
+            style="width:284px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
+          <el-select v-model="formAdd.agent_type" disabled  filterable placeholder="请选择" multiple style="width:284px">
+            <el-option
+              v-for="item in options"
+              :key="item.dep_id"
+              :label="item.dep_name"
+              :value="item.dep_id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleview = false" size="mini" type="danger">取 消</el-button>
+        <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
+      </div>
+    </el-dialog>
         </el-main>
         
       </el-container>
@@ -79,7 +154,8 @@
 export default {
   data() {
     return {
-        dialogFormVisible : false,
+        dialogFormVisible: false,
+        dialogFormVisibleview:false,
       tableData: [
         {
           date: "2016-05-02",
@@ -111,7 +187,44 @@ export default {
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄"
         }
-      ]
+      ],
+      formAdd:{
+        // agent_name: "",
+        // agent_ip: "",
+        // agent_port: "",
+        // agent_type: "",
+      }, 
+      rules: {
+        agent_name: [
+          {
+            required: true,
+            message: "不能为空",
+            trigger: "blur"
+          }
+        ],
+        agent_ip: [
+          {
+            required: true,
+            message: "不能为空",
+            trigger: "blur"
+          }
+        ],
+       agent_port: [
+          {
+            required: true,
+            message: "不能为空",
+            trigger: "blur"
+          }
+        ],
+       agent_type: [
+          {
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
+        ]
+      },
+       formLabelWidth: "150px"
     };
   }
 };

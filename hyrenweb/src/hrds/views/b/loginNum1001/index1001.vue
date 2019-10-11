@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import * as functionAll  from "@/hrds/api/b/loginNum1001/loginNum1001";
 import Loheader from "./Loheader";
 import dataSheetmain from "./dataSheetmain";
 import dataManage from "./dataManage";
@@ -28,6 +29,14 @@ export default {
     "data-sheetmain": dataSheetmain,
     "data-manage": dataManage,
     "authority-management": authorityManagement
+  },
+  methods:{
+  
+  },
+  created(){
+    functionAll.getIndexDataAll().then((res)=>{
+      console.log(res.data)
+    });
   }
 };
 </script>

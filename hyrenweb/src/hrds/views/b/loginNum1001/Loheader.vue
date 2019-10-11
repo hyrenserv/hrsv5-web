@@ -3,7 +3,7 @@
     <el-row>
       <i class="block_icon fa text-warning fa-globe blue"></i>
       <span>数据来源表</span>
-      <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;get
+      <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;
 departmentInfo()" size="small">
         <i class="block_icon fa fa-cubes"></i>添加数据源
       </el-button>
@@ -88,10 +88,10 @@ departmentInfo()" size="small">
           ></el-input>
         </el-form-item>
         <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="formAdd.depIds" filterable placeholder="请选择" multiple style="width:284px">
+          <el-select v-model="formAdd.depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
             <el-option
-              v-for="item in options"
-              :key="item.dep_id"
+              v-for="(item,index) in options"
+              :key="index"
               :label="item.dep_name"
               :value="item.dep_id"
             ></el-option>
@@ -156,7 +156,7 @@ export default {
           {
             required: true,
             message: "部门信息是必填项",
-            trigger: "blur"
+            trigger: "change"
           }
         ]
       },
@@ -166,46 +166,48 @@ export default {
   methods: {
     // 点击添加按钮获取部门信息
     departmentInfo(){
-      functionAll.getDepartmentInfo().then(res=>{
-        this.options= res.data.departmentInfo
-
+      functionAll.getDepartmentInfo().then((res)=>{
+        if(res.code==200){
+          this.options= res.data.departmentInfo;
+          console.log(res.data)
+        }
       })
     },
     // 添加一条数据
     add(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          // 调用添加方法
-          functionAll.addDataResource(this.formAdd).then(response => {
-      
-            if (response && response.success) {
-              this.$message({
-                type: "success",
-                message: "添加成功!"
-              });
-              // 隐藏对话框
-              this.dialogFormVisible = false;
-              // 数据清空
-              this.form = {};
-            } else {
-              this.$message.error("添加失败！");
-            }
-          });
-        } else {
+         if (valid) {
+                    // 调用添加方法
+                    functionAll.addDataResource(this.formAdd).then((response) => {
+                        if (response && response.success) {
+                            this.$message({
+                                type: "success",
+                                message: "添加成功!"
+                            });
+                            // 隐藏对话框
+                            this.dialogFormVisible = false;
+                            // 表单清空
+                            this.formAdd = {};
+                        } else {
+                            this.$message.error("添加失败！");
+                        }
+                    });
+                } else {
           return false;
         }
       });
     },
     // 点击导入获取数据采集信息
     DataCathInfo(){
-     functionAll.getDataUserInfo().then(res=>{
-     this.options= res.data
+     functionAll.getDataUserInfo().then((res)=>{
+       if(res.code==200){
+         this.options= res.data
+       }
      })
     },
     // 点击上传数据
-   
     upload(){
-      functionAll.tapUploadData().then(res=>{
+      functionAll.tapUploadData().then((res)=>{
         console.log("1")
       })
     }
