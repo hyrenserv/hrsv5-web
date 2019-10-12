@@ -52,7 +52,7 @@ export function upDateDataResource(data) {
  */
 export function getDepartmentInfo(sourceId) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource?sourceId=123',
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource',
         method: 'post',
         params:sourceId
     })
@@ -86,7 +86,7 @@ export function tapUploadData(data) {
  */
 export function upDatechargeDate(data,sourceId) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/updateAuditSourceRelationDep?sourceId',
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/updateAuditSourceRelationDep',
         method: 'post',
         params: data,sourceId
     })
