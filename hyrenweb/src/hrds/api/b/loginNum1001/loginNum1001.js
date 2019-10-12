@@ -48,13 +48,13 @@ export function upDateDataResource(data) {
 }
 
 /**
- * 点击添加按钮获取部门信息
+ * 点击编辑按钮获取部门信息
  */
-export function getDepartmentInfo(sourceId) {
+export function getDepartmentInfo(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource',
         method: 'post',
-        params:sourceId
+        params:data
     })
 }
 
@@ -84,10 +84,21 @@ export function tapUploadData(data) {
 /**
  * 数据权限管理，更新数据源关系部门信息
  */
-export function upDatechargeDate(data,sourceId) {
+export function upDatechargeDate(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/datasource/updateAuditSourceRelationDep',
         method: 'post',
-        params: data,sourceId
+        params: data
+    })
+}
+
+/**
+ * 数据权限管理，更新数据源关系部门信息
+ */
+export function getDataDepInfo(sourceId) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource',
+        method: 'post',
+        data:sourceId
     })
 }
