@@ -3,15 +3,15 @@
     <el-row>
         <i class="block_icon fa text-warning fa-book blue"></i><span>数据管理列表</span>
         <div class="lines"></div>
-       <el-table  stripe size="mini" :data="tableData" border  :header-cell-style="{background:'#ede7f3',color:'black'}" >
-      <el-table-column prop="date" label="序号" width="64" align="center"></el-table-column>
-      <el-table-column prop="name" label="文件名"  width="119" align="center"></el-table-column>
-      <el-table-column prop="address" label="文件后缀名" width="182"  align="center" > </el-table-column>
-      <el-table-column prop="date" label="文件类型" width="150" align="center"></el-table-column>
-      <el-table-column prop="date" label="提交人" width="120" align="center" ></el-table-column>
-      <el-table-column prop="date" label="提交时间" width="151" align="center" ></el-table-column>
-      <el-table-column prop="date" label="申请类型" width="152" align="center"></el-table-column>
-      <el-table-column prop="date" label="操作"  align="center"></el-table-column>
+       <el-table  stripe size="mini" :data="data" border  :header-cell-style="{background:'#ede7f3',color:'black'}" >
+      <el-table-column type="index"  label="序号" width="64" align="center"></el-table-column>
+      <el-table-column prop="original_name" label="文件名"  width="119" align="center"></el-table-column>
+      <el-table-column prop="file_suffix" label="文件后缀名" width="182"  align="center" > </el-table-column>
+      <el-table-column prop="fileType_zh" label="文件类型" width="150" align="center"></el-table-column>
+      <el-table-column prop="user_name" label="提交人" width="120" align="center" ></el-table-column>
+      <el-table-column prop="applyDataTime" label="提交时间" width="151" align="center" ></el-table-column>
+      <el-table-column prop="applyType_zh" label="申请类型" width="152" align="center"></el-table-column>
+      <el-table-column prop="agent_id" label="操作"  align="center"><el-button>编辑</el-button></el-table-column>
     </el-table>
     </el-row>
     <el-row></el-row>
@@ -20,27 +20,7 @@
 
 <script>
 export default {
- data(){
-     return{
-          tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }]
-     }
- }
+  props:["data"]
 }
 </script>
 

@@ -50,10 +50,11 @@ export function upDateDataResource(data) {
 /**
  * 点击添加按钮获取部门信息
  */
-export function getDepartmentInfo() {
+export function getDepartmentInfo(sourceId) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource?sourceId=123',
-        method: 'get',
+        method: 'post',
+        params:sourceId
     })
 }
 
@@ -77,5 +78,16 @@ export function tapUploadData(data) {
         url: '/hrds_B/B/action/hrds/b/biz/datasource/uploadFile',
         method: 'post',
         params: data
+    })
+}
+
+/**
+ * 数据权限管理，更新数据源关系部门信息
+ */
+export function upDatechargeDate(data,sourceId) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/updateAuditSourceRelationDep?sourceId',
+        method: 'post',
+        params: data,sourceId
     })
 }

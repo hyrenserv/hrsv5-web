@@ -88,7 +88,7 @@ departmentInfo()" size="small">
           ></el-input>
         </el-form-item>
         <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="formAdd.depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
+          <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
             <el-option
               v-for="(item,index) in options"
               :key="index"
@@ -108,7 +108,7 @@ departmentInfo()" size="small">
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisibleAdd = false" size="mini" type="danger">取 消</el-button>
+        <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
         <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
       </div>
     </el-dialog>
@@ -125,14 +125,14 @@ export default {
       options: [
         
       ],
+      depIds:[],
       dialogFormVisibleImport: false,
       dialogFormVisibleAdd: false,
       // 添加数据与导入源字段
       formAdd: {
-        // datasource_number: "",
-        // datasource_name: "",
-        // source_remark: "",
-        //  depIds: "",
+        datasource_number: "",
+        datasource_name: "",
+        source_remark: "",
       },
       formImport:{
       
@@ -152,13 +152,7 @@ export default {
             trigger: "blur"
           }
         ],
-        depIds: [
-          {
-            required: true,
-            message: "部门信息是必填项",
-            trigger: "blur"
-          }
-        ]
+      
       },
       formLabelWidth: "150px"
     };
@@ -177,14 +171,16 @@ export default {
       this.$refs[formName].validate(valid => {
          if (valid) {
                     // 调用添加方法
+                    this.formAdd['depIds'] =this.depIds.join(',');
                     functionAll.addDataResource(this.formAdd).then((response) => {
                         if (response && response.success) {
                             this.$message({
                                 type: "success",
                                 message: "添加成功!"
-                            });
+                            }); 
+                           this.$emit("addEvent")
                             // 隐藏对话框
-                            this.dialogFormVisible = false;
+                            this.dialogFormVisibleAdd = false;
                             // 表单清空
                             this.formAdd = {};
                         } else {
@@ -209,6 +205,13 @@ export default {
       functionAll.tapUploadData().then((res)=>{
         console.log("1")
       })
+    },
+    // 点击取消按钮
+    cancleAdd(){
+        // 表单清空
+        this.formAdd = {};
+         // 隐藏对话框
+        this.dialogFormVisibleAdd = false;
     }
   }
 };

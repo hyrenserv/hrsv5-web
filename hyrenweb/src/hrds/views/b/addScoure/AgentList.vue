@@ -17,10 +17,42 @@
           <!-- 列表内容 -->
           <div class="listContent">
             <div class="listPic">
-              <img src="@/assets/images/a1.png" alt="数据图片" />
+              <img src="@/assets/images/datasource.png" alt="数据图片" />
             </div>
             <h3>数据库 Agent</h3>
             <p>数据库 Agent 是用于采集结构化数据（RDBMS Etc）的Agent，只需要一个Agent就可以采集同一数据源中的不同源数据</p>
+          </div>
+
+           <div class="listContent">
+            <div class="listPic">
+              <img src="@/assets/images/a1.png" alt="数据图片" />
+            </div>
+            <h3>数据库文件 Agent</h3>
+            <p>数据文件 Agent 是用于对各种关系型存储的数据文件进行数据采集的组件，例如从RDBMS数据库中卸载的CSV或各种自定义格式的数据文件，以EXCEL存储的行列关系的数据文件</p>
+          </div>
+
+           <div class="listContent">
+            <div class="listPic">
+              <img src="@/assets/images/object.png" alt="数据图片" />
+            </div>
+            <h3>半结构化 Agent</h3>
+            <p>半结构化 Agent 是用于采集各种半结构化数据的组件，例如XML、JSON等储存在文件系统之上的数据文件。</p>
+          </div>
+
+           <div class="listContent">
+            <div class="listPic">
+              <img src="@/assets/images/filesource.png" alt="数据图片" />
+            </div>
+            <h3>非结构化 Agent</h3>
+            <p>非结构化 Agent 是用于采集各种半结构化或非结构化数据的组件，例如Word、PDF、图片文件等存储在文件系统之上的数据文件。</p>
+          </div>
+
+           <div class="listContent">
+            <div class="listPic">
+              <img src="@/assets/images/ftp.png" alt="数据图片" />
+            </div>
+            <h3>FTP Agent</h3>
+            <p>FTP Agent 是用于将系统之上的数据文件使用SFTP的方式将数据拉取到指定的系统盘之上的组件，多用于数据分发等。</p>
           </div>
           
           <!-- 数据类型标题 -->
@@ -37,6 +69,7 @@
               <el-button type="success"  class="addAgent" size="small" @click="dialogFormVisible = true;DataCathInfo()"  >新增数据库Agent</el-button>
             </el-row>
         <!-- 表格内容 -->
+        <transition name="fade">
             <el-table
               stripe
               size="mini"
@@ -51,15 +84,16 @@
               <el-table-column label="操作" align="center">
                  <template slot-scope="scope">
                      
-                      <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row)"  >查看</el-button> 
-                      <el-button size="mini" type="danger" >删除</el-button>
+                      <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row)"  >编辑</el-button> 
+                      <el-button size="mini" type="danger" @click="dialogFormVisibleDelte = true" >删除</el-button>
                 </template>
                 
               </el-table-column>
             </el-table>
+        </transition>
             <div class="lines"></div>
           </div>
- <!-- 点击新建按钮弹出框 -->
+ <!-- 点击新增数据库按钮弹出框 -->
  <el-dialog title="添加数据库 Agent" :visible.sync="dialogFormVisible" width="40%">
       <el-form :model="formAdd" ref="formAdd" :rules="rules">
         <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
@@ -145,6 +179,18 @@
         <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
       </div>
     </el-dialog>
+<!-- 点击删除弹出框 -->
+<el-dialog
+  title="温馨提示"
+  :visible.sync="dialogFormVisibleDelte"
+  width="40%"
+  >
+  <span>确定要删除吗？</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button type="danger" @click="dialogFormVisibleDelte = false" size="mini">取 消</el-button>
+    <el-button type="primary" @click="delteThisData" size="mini">确 定</el-button>
+  </span>
+</el-dialog>
         </el-main>
         
       </el-container>
@@ -161,6 +207,7 @@ export default {
     return {
         dialogFormVisible: false,
         dialogFormVisibleview:false,
+        dialogFormVisibleDelte:false,
         options:[],
       tableData: [
         {
@@ -195,10 +242,10 @@ export default {
         }
       ],
       formAdd:{
-        // agent_name: "",
-        // agent_ip: "",
-        // agent_port: "",
-        // agent_type: "",
+        agent_name: "",
+        agent_ip: "",
+        agent_port: "",
+        agent_type: "",
       }, 
       form:{
         agent_name: "",
@@ -252,8 +299,36 @@ export default {
     handleEdit(index, row) {
       this.form.agent_name =row.address;
       this.form.agent_port= row.name;
-      console.log(row)
     },
+    // 新增数据库Agent
+     add(formName) {
+      this.$refs[formName].validate(valid => {
+         if (valid) {
+                    // 调用添加方法
+                    functionAll.addDataAgent(this.formAdd).then((response) => {
+                        if (response && response.success) {
+                            this.$message({
+                                type: "success",
+                                message: "添加成功!"
+                            });
+                            // 隐藏对话框
+                            this.dialogFormVisible = false;
+                            // 表单清空
+                            this.formAdd = {};
+                        } else {
+                            this.$message.error("添加失败！");
+                        }
+                    });
+                } else {
+          return false;
+        }
+      });
+    },
+    // 删除数据
+    delteThisData(){
+      console.log('1')
+    }
+    
   }
 };
 </script>
@@ -332,6 +407,10 @@ export default {
   padding: 1px 5px;
   margin-bottom: 22px;
 }
+.listPic:hover{
+  cursor: pointer;
+  background: #e6e6e6;
+}
 .listPic img {
   width: 100%;
   height: 100%;
@@ -345,7 +424,7 @@ export default {
 }
 .listContent p {
   font-size: 13px;
-  line-height: 18px;
+  line-height: 17px;
 }
 /* 数据类型标题 */
 h4 {

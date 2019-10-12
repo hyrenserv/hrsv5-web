@@ -10,3 +10,24 @@ export function getDataUserInfo() {
         method: 'post',
     })
 }
+
+/**
+ * 点击新增数据库按钮增加信息
+ */
+export function addDataAgent(data,user_id,source_id) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/saveAgent',
+        method: 'post',
+        params:data,user_id,source_id
+    })
+}
+
+/**
+ * 点击删除按钮删除信息
+ */
+export function deleteDataAgent() {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/deleteAgent',
+        method: 'post',
+    })
+}
