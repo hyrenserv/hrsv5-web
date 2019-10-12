@@ -14,34 +14,46 @@
       <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
       <el-table-column prop="datasource_name" label="数据源名称" width="592" align="center"></el-table-column>
       <el-table-column prop="dep_name" label="所属部门" width="380" align="center"></el-table-column>
-      <!-- 点击操作弹出框 -->
+     
 
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <b @click="dialogVisible = true;handleEdit(scope.$index, scope.row);departmentInfo()">编辑</b>
+          <b @click="dialogFormVisibleAdd = true;handleEdit(scope.$index, scope.row);departmentInfo()">编辑</b>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
-      <el-dialog title="更改部门" :visible.sync="dialogVisible" width="53%" class="elDialog">
-        数据源
-        <el-input v-model="input" placeholder="请确认项目" style="width:200px" disabled class="elInput"></el-input>所属部门
-        <el-select v-model="value1" placeholder="请选择部门（可多选）" multiple  style="width:200px">
-          <el-option
-            v-for="(item,index) in options"
-            :key="index"
-            :label="item.dep_name"
-            :value="item.dep_id"
-          ></el-option>
-        </el-select>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false" size="mini" type="danger">取 消</el-button>
-          <el-button type="primary" size="mini">保 存</el-button>
-        </span>
-      </el-dialog>
+ <!-- 点击操作弹出框 -->
+      <el-dialog title="更改部门" :visible.sync="dialogFormVisibleAdd" width="40%">
+      <el-form :model="formAdd" ref="formAdd" :rules="rules">
+        <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
+          <el-input
+            v-model="formAdd.datasource_name"
+            autocomplete="off"
+            placeholder="数据源名称"
+            style="width:284px"
+            :disabled="true"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
+          <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
+            <el-option
+              v-for="(item,index) in options"
+              :key="index"
+              :label="item.dep_name"
+              :value="item.dep_id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button  size="mini" type="danger">取 消</el-button>
+        <el-button type="primary" size="mini">保存</el-button>
+      </div>
+    </el-dialog>
     </el-row>
 <!-- 分页内容 -->
-    <el-row class="pagination">
+    <!-- <el-row class="pagination">
       <el-pagination
         prev-text="上一页"
         next-text="下一页"
@@ -52,7 +64,7 @@
         layout=" prev, pager, next"
         :total="totalItems"
       ></el-pagination>
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 
@@ -64,6 +76,9 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      dialogFormVisibleAdd: false,
+      formAdd:{},
+       formLabelWidth: "150px",
       input: "",
       tableDataBegin: [
         {
@@ -110,7 +125,8 @@ export default {
       filterTableDataEnd: [],
       flag: false,
       options: [],
-      value1: []
+      value1: [],
+      source_id:''
     };
   },
  
@@ -129,11 +145,29 @@ export default {
     // 编辑获取当前数据
     handleEdit(index, row) {
       this.input = row.datasource_name;
-      
+      let strings = row.dep_name;
+      let arr=strings.split(",")
+      this.value1=arr;
+      this.source_id=row.source_id
+      console.log(row)
+    },
+    // 数据权限管理，更新数据源关系部门信息
+    saveChangeAgent(){
+    
+       let a=this.dep_id;
+       let b = this.source_id;
+         console.log(a);
+           console.log(b);
+     functionAll.upDatechargeDate(this.source_id,a).then((res)=>{
+       if(res.code==200){
+         console.log("haha")
+       }
+     })
     },
     // 点击添加按钮获取部门信息
     departmentInfo() {
-      functionAll.getDepartmentInfo().then(res => {
+      console.log(this.source_id)
+      functionAll.getDepartmentInfo(this.source_id).then((res) => {
         if (res.code == 200) {
           this.options = res.data.departmentInfo;
         }

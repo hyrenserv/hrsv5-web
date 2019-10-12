@@ -49,6 +49,7 @@ export default {
     functionAll.getIndexDataAll().then(res => {
       if (res.code == 200) {
         this.dataIndexAll = res.data;
+        console.log(res.data.dataSourceRelationDep)
       }
     });
   }
