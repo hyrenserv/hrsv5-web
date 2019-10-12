@@ -126,7 +126,7 @@ export default {
       flag: false,
       options: [],
       value1: [],
-      source_id:''
+      sourceId:''
     };
   },
  
@@ -148,8 +148,7 @@ export default {
       let strings = row.dep_name;
       let arr=strings.split(",")
       this.value1=arr;
-      this.source_id=row.source_id
-      console.log(row)
+      this.sourceId=row.source_id
     },
     // 数据权限管理，更新数据源关系部门信息
     saveChangeAgent(){
@@ -166,8 +165,8 @@ export default {
     },
     // 点击添加按钮获取部门信息
     departmentInfo() {
-      console.log(this.source_id)
-      functionAll.getDepartmentInfo(this.source_id).then((res) => {
+        const querystring = require('querystring');
+      functionAll.getDataDepInfo(querystring.stringify({ sourceId: this.sourceId })).then((res) => {
         if (res.code == 200) {
           this.options = res.data.departmentInfo;
         }
