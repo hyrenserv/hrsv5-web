@@ -1,14 +1,14 @@
 <template>
   <div class="index1001">
     <el-container>
-      <el-header  height= "50px">Header</el-header>
+      <el-header height="50px">Header</el-header>
       <el-container>
         <el-aside width="50px">Aside</el-aside>
         <el-main>
-          <lo-header></lo-header>
-          <data-sheetmain></data-sheetmain>
-          <data-manage></data-manage>
-          <authority-management></authority-management>
+          <lo-header @addEvent="addSucess"></lo-header>
+          <data-sheetmain :data="dataIndexAll.dataSourceAndAgentCount"></data-sheetmain>
+          <data-manage :data="dataIndexAll.dataAudit"></data-manage>
+          <authority-management :data="dataIndexAll.dataSourceRelationDep"></authority-management>
         </el-main>
       </el-container>
     </el-container>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import * as functionAll  from "@/hrds/api/b/loginNum1001/loginNum1001";
+import * as functionAll from "@/hrds/api/b/loginNum1001/loginNum1001";
 import Loheader from "./Loheader";
 import dataSheetmain from "./dataSheetmain";
 import dataManage from "./dataManage";
@@ -30,28 +30,40 @@ export default {
     "data-manage": dataManage,
     "authority-management": authorityManagement
   },
-  methods:{
-  
+  data() {
+    return {
+      dataIndexAll: {}
+    };
   },
-  created(){
-    functionAll.getIndexDataAll().then((res)=>{
-      console.log(res.data)
+  methods: {
+    addSucess() {
+      functionAll.getIndexDataAll().then(res => {
+        if (res.code == 200) {
+          this.dataIndexAll = res.data;
+        }
+      });
+    }
+  },
+  // 获取首页数据
+  created() {
+    functionAll.getIndexDataAll().then(res => {
+      if (res.code == 200) {
+        this.dataIndexAll = res.data;
+      }
     });
   }
 };
 </script>
 
 <style scoped>
-.index1001  .el-header{
+.index1001 .el-header {
   background: #7cb1de;
- 
 }
-.index1001 .el-aside{
-    background: #7cb1de;
+.index1001 .el-aside {
+  background: #7cb1de;
 }
 .index1001 .el-main {
- padding-left:74px;
- padding-right:74px;
-
+  padding-left: 74px;
+  padding-right: 74px;
 }
 </style>

@@ -5,15 +5,15 @@
     <div class="lines"></div>
     <!-- 表格 -->
     <el-table
-      :data="tableDataEnd"
+      :data="data"
       border
       :header-cell-style="{background:'#ede7f3',color:'black'}"
       size="mini"
       stripe
     >
-      <el-table-column prop="date" label="序号" width="64" align="center"></el-table-column>
-      <el-table-column prop="name" label="数据源名称" width="592" align="center"></el-table-column>
-      <el-table-column prop="address" label="所属部门" width="380" align="center"></el-table-column>
+      <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+      <el-table-column prop="datasource_name" label="数据源名称" width="592" align="center"></el-table-column>
+      <el-table-column prop="dep_name" label="所属部门" width="380" align="center"></el-table-column>
       <!-- 点击操作弹出框 -->
 
       <el-table-column label="操作" align="center">
@@ -60,6 +60,7 @@
 import * as functionAll from "@/hrds/api/b/loginNum1001/loginNum1001";
 
 export default {
+  props:["data"],
   data() {
     return {
       dialogVisible: false,
@@ -115,19 +116,20 @@ export default {
  
   created() {
      // 获取数组长度赋值
-    this.totalItems = this.tableDataBegin.length;
+    this.totalItems = this.data.length;
     if (this.totalItems > this.pageSize) {
       for (let index = 0; index < this.pageSize; index++) {
-        this.tableDataEnd.push(this.tableDataBegin[index]);
+        this.tableDataEnd.push(this.data[index]);
       }
     } else {
-      this.tableDataEnd = this.tableDataBegin;
+      this.tableDataEnd = this.data;
     }
   },
   methods: {
     // 编辑获取当前数据
     handleEdit(index, row) {
-      this.input = row.name;
+      this.input = row.datasource_name;
+      
     },
     // 点击添加按钮获取部门信息
     departmentInfo() {

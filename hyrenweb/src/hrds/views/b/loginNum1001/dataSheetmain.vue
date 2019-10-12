@@ -1,16 +1,18 @@
 <template>
   <div class="dataSheetmain">
-    <div class="dataSheetmainDiv" v-for="(itme,index) in lists" :key="index">
-      <i class="block_icon fa fa-sitemap fa-3x tree"></i>
-      <p>{{itme.a}}</p>
-      <p class="postionP">Agent个数为 {{itme.b}}</p>
-      <span>{{itme.b}}</span>
+    <div class="dataSheetmainDiv" v-for="(itme,index) in data" :key="index">
+      <div  @click="gotoScoureDetail">
+      <i class="block_icon fa fa-sitemap fa-3x tree" ></i>
+      <p>{{itme.datasource_name}}</p>
+      <p class="postionP">Agent个数为 {{itme.sumagent}}</p>
+      <span>{{itme.sumagent}}</span>
+      </div>
       <div class="boxshletr">
           <i class="fa fa-download  fa-lg"></i>
      <el-button
         type="text"
         class="editBtn"
-        @click="dialogFormVisibleAdd = true;departmentInfo()"
+        @click="dialogFormVisibleAdd = true;clickEditButton()"
        >
       <i class="fa fa-pencil  fa-lg" ></i></el-button>
       </div>
@@ -67,14 +69,9 @@
 <script>
 import * as functionAll  from "@/hrds/api/b/loginNum1001/loginNum1001";
 export default {
+  props:["data"],
   data() {
     return {
-      lists: [
-        { a: "cs", b: 1 },
-        { a: "zcs", b: 2 },
-        { a: "水质品质", b: 2 },
-        { a: "测试", b: 3 }
-      ],
       options:[],
       dialogFormVisibleAdd: false,
       formUpdate: {
@@ -114,15 +111,32 @@ export default {
     departmentInfo(){
       functionAll.getDepartmentInfo().then((res)=>{
         if(res.code==200){
-          this.options= res.data.departmentInfo
+          this.options= res.data.departmentInfo;
         }
       })
     },
   update(){
     console.log(this.formUpdate)
-    functionAll.upDateDataResource().then((res)=>{
+    functionAll.upDateDataResource(this.formUpdate).then((res)=>{
+     if(res.code==200){
 
+     }
     })
+  },
+  // 点击编辑小图标获取数据源信息
+  clickEditButton(){
+     functionAll.getDepartmentInfo().then((res)=>{
+        if(res.code==200){
+          this.options= res.data.departmentInfo;
+          // this.lists =res.data.dataResource;
+        }
+      })
+  },
+  // 点击数据来源表的内容跳转页面
+  gotoScoureDetail(){
+   this.$router.push('addScoure')
+  console.log('1')
+   //调用方法，传参scoureid
   }
   }
 };
@@ -133,8 +147,9 @@ export default {
 .dataSheetmain {
   padding-left: 44px;
   border: 1px solid #dddddd;
-  height: 124px;
+  min-height: 124px;
   padding-top: 30px;
+  display: flex;
 }
 .dataSheetmainDiv:hover .boxshletr {
   display: block;
@@ -149,7 +164,7 @@ export default {
   height: 80px;
   background: #337ab7;
   border-radius: 10px;
-  margin-right: 90px;
+  margin-right: 50px;
   text-align: center;
   float: left;
   position: relative;
