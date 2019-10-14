@@ -114,3 +114,14 @@ export function getDataDepInfo(data) {
         data: sourceId
     })
 }
+
+/**
+   *点击删除按钮删除数据源
+   */
+  export function deleteDataAgent(data) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/deleteDataSource',
+        method: 'post',
+        data:data
+    })
+}

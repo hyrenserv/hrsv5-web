@@ -15,7 +15,7 @@
         @click="dialogFormVisibleAdd = true;clickEditButton(index)"
        >
       <i class="fa fa-pencil  fa-lg" ></i></el-button>
-      <i class="fa fa-times  fa-lg"  v-if="showHidden"></i>
+      <i class="fa fa-times  fa-lg"  v-if="showHidden" @click="dialogFormVisibleDelte = true;getIndex(index)"></i>
 
       </div>
     </div>
@@ -65,6 +65,20 @@
         <el-button type="primary" @click="update('formUpdate')" size="mini">保存</el-button>
       </div>
     </el-dialog>
+<!-- 点击删除弹出框 -->
+<!-- 点击删除弹出框 -->
+<el-dialog
+  title="温馨提示"
+  :visible.sync="dialogFormVisibleDelte"
+  width="40%"
+  >
+  <span>确定要删除吗？</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button type="danger" @click="dialogFormVisibleDelte = false" size="mini">取 消</el-button>
+    <el-button type="primary" @click="delteThisData" size="mini">确 定</el-button>
+  </span>
+</el-dialog>
+
   </div>
 </template>
 
@@ -79,6 +93,7 @@ export default {
       click:'',
       sourceId:'',
       datasourceName:'',
+       dialogFormVisibleDelte:false,
       dialogFormVisibleAdd: false,
        depIds: [],
       formUpdate: {
@@ -151,20 +166,45 @@ gotoScoureDetail:function(index){
       const querystring = require('querystring');
       functionAll.getAgentData(querystring.stringify({ sourceId: this.data[index].source_id,datasourceName: this.data[index].datasource_name })).then((res)=>{
 	   if(res.code==200){
-		   console.log(res.data)
-		  // 传参
+      // 传参
+      let agentData = res.data
 		   this.$router.push({
 			   name:'addScoure',
-			   params:this.res.data
+			   params: {agentDataAll:agentData}
 		   }) //进行页面的跳转
 	   }
    }) 
 },
-// 鼠标划入时
+// 鼠标划入时判断显示数值是否为0；
 enter(index){
   console.log(index)
-  // let sumagentNum = 
-  this.showHidden =true
+  let sumagentNum = this.data[index].sumagent
+  if(sumagentNum===0){
+     this.showHidden =true;
+  }else{
+    this.showHidden =false;
+  }
+ 
+},
+// 点击删除按钮获取对应的index下标
+getIndex(index){
+ this.sourceId =this.data[index].source_id;
+},
+// 点击删除删除数据源
+delteThisData(){
+   const querystring = require('querystring');
+  functionAll.deleteDataAgent(querystring.stringify({ sourceId: this.sourceId })).then((res)=>{
+       if(res.code==200){
+        this.$message({
+             type: "success",
+             message: "删除成功!"
+         });
+          this.$emit("addEvent");
+           this.dialogFormVisibleDelte = false;
+     }else{
+       this.$message.error("删除失败！");
+          }
+  })
 }
   }
 };

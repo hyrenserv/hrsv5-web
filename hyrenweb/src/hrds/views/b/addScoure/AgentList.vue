@@ -206,38 +206,7 @@ export default {
         dialogFormVisibleview:false,
         dialogFormVisibleDelte:false,
         options:[],
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-         {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-         {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      tableData: [],
       formAdd:{
         agent_name: "",
         agent_ip: "",
@@ -282,6 +251,9 @@ export default {
       },
        formLabelWidth: "150px"
     };
+  },
+  created(){
+    console.log(this.$route.params.agentDataAll)
   },
   methods:{
      // 点击查看获取数据采集信息
