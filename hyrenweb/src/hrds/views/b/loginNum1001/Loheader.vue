@@ -210,6 +210,7 @@ export default {
     cancleAdd(){
         // 表单清空
         this.formAdd = {};
+        this.depIds =[];
          // 隐藏对话框
         this.dialogFormVisibleAdd = false;
     }
