@@ -25,7 +25,7 @@
     <el-row>
  <!-- 点击操作弹出框 -->
       <el-dialog title="更改部门" :visible.sync="dialogFormVisibleAdd" width="40%">
-      <el-form :model="formAdd" ref="formAdd" :rules="rules">
+      <el-form :model="formAdd" ref="formAdd" >
         <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
           <el-input
             v-model="formAdd.datasource_name"
@@ -47,8 +47,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button  size="mini" type="danger">取 消</el-button>
-        <el-button type="primary" size="mini">保存</el-button>
+        <el-button  size="mini" type="danger"  @click="cancleAdd">取 消</el-button>
+        <el-button type="primary" @click="saveChangeAgent" size="mini">保存</el-button>
       </div>
     </el-dialog>
     </el-row>
@@ -126,7 +126,8 @@ export default {
       flag: false,
       options: [],
       value1: [],
-      sourceId:''
+      sourceId:'',
+      depIds:[]
     };
   },
  
@@ -144,24 +145,37 @@ export default {
   methods: {
     // 编辑获取当前数据
     handleEdit(index, row) {
-      this.input = row.datasource_name;
-      let strings = row.dep_name;
-      let arr=strings.split(",")
-      this.value1=arr;
-      this.sourceId=row.source_id
+       this.formAdd.datasource_name = row.datasource_name;
+      // this.input = row.datasource_name;
+      // let strings = row.dep_name;
+      // let arr=strings.split(",")
+      // this.value1=arr;
+      this.sourceId=row.source_id;
     },
     // 数据权限管理，更新数据源关系部门信息
     saveChangeAgent(){
-    
-       let a=this.dep_id;
-       let b = this.source_id;
-         console.log(a);
-           console.log(b);
-     functionAll.upDatechargeDate(this.source_id,a).then((res)=>{
+     this.formAdd['depIds'] =this.depIds.join(',');
+     this.formAdd['sourceId'] =this.sourceId;
+     console.log(this.sourceId)
+
+      //转换格式,再传值
+	  
+     functionAll.upDatechargeDate(this.formAdd).then((res)=>{
        if(res.code==200){
-         console.log("haha")
-       }
+         this.$message({
+             type: "success",
+             message: "更改成功!"
+         });
+		 this.$emit("addEvent");
+		 // 隐藏对话框
+		 this.dialogFormVisibleAdd = false;
+		 // 表单清空
+		 this.formAdd = {};
+       }else {
+         this.$message.error("更改失败！");
+          }
      })
+
     },
     // 点击添加按钮获取部门信息
     departmentInfo() {
@@ -169,9 +183,17 @@ export default {
       functionAll.getDataDepInfo(querystring.stringify({ sourceId: this.sourceId })).then((res) => {
         if (res.code == 200) {
           this.options = res.data.departmentInfo;
+          
         }
       });
     },
+    // 点击取消按钮
+	cancleAdd(){
+	    // 表单清空
+	    this.formAdd = {};
+	     // 隐藏对话框
+	    this.dialogFormVisibleAdd = false;
+	},
     // 实现分页功能
     handleSizeChange(val) {
       this.pageSize = val;

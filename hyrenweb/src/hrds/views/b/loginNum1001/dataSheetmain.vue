@@ -134,6 +134,9 @@ export default {
   },
   // 点击数据来源表的内容跳转页面
   gotoScoureDetail(){
+  console.log(this.source_id);
+   console.log(this.datasourceName)
+
    this.$router.push('addScoure')
   console.log('1')
    //调用方法，传参scoureid
@@ -149,7 +152,7 @@ export default {
   border: 1px solid #dddddd;
   min-height: 124px;
   padding-top: 30px;
-  display: flex;
+  overflow: hidden;
 }
 .dataSheetmainDiv:hover .boxshletr {
   display: block;
@@ -159,12 +162,13 @@ export default {
   cursor: pointer;
 }
 .dataSheetmainDiv {
+  margin-bottom:50px;   
   padding-top: 10px;
   width: 100px;
   height: 80px;
   background: #337ab7;
   border-radius: 10px;
-  margin-right: 50px;
+  margin-right: 82px;
   text-align: center;
   float: left;
   position: relative;
