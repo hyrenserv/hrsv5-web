@@ -6,7 +6,7 @@
         <el-aside width="50px">Aside</el-aside>
         <el-main>
           <lo-header @addEvent="addSucess"></lo-header>
-          <data-sheetmain  @addEvent="addSucess" :data="dataIndexAll.dataSourceAndAgentCount"></data-sheetmain>
+          <data-sheetmain @addEvent="addSucess" :data="dataIndexAll.dataSourceAndAgentCount"></data-sheetmain>
           <data-manage :data="dataIndexAll.dataAudit"></data-manage>
           <authority-management @addEvent="addSucess" :data="dataIndexAll.dataSourceRelationDep"></authority-management>
         </el-main>
@@ -49,7 +49,6 @@ export default {
     functionAll.getIndexDataAll().then(res => {
       if (res.code == 200) {
         this.dataIndexAll = res.data;
-        console.log(res.data.dataSourceAndAgentCount)
       }
     });
   }

@@ -1,4 +1,4 @@
-<template>
+            <template>
   <div class="index1001">
     <el-container>
       <el-header height="50px">Header</el-header>
@@ -9,9 +9,11 @@
           <el-row>
             <i class="fa text-warning fa-desktop blue"></i>
             <span>数据源Agent列表</span>
-            <router-link to="/index1001"><el-button type="primary" size="small" class="goIndex">
-              <i class="fa fa-home fa-lg"></i>返回首页
-            </el-button></router-link>
+            <router-link to="/index1001">
+              <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+              </el-button>
+            </router-link>
           </el-row>
           <div class="lines"></div>
           <!-- 列表内容 -->
@@ -23,7 +25,7 @@
             <p>数据库 Agent 是用于采集结构化数据（RDBMS Etc）的Agent，只需要一个Agent就可以采集同一数据源中的不同源数据</p>
           </div>
 
-           <div class="listContent">
+          <div class="listContent">
             <div class="listPic">
               <img src="@/assets/images/a1.png" alt="数据图片" />
             </div>
@@ -31,7 +33,7 @@
             <p>数据文件 Agent 是用于对各种关系型存储的数据文件进行数据采集的组件，例如从RDBMS数据库中卸载的CSV或各种自定义格式的数据文件，以EXCEL存储的行列关系的数据文件</p>
           </div>
 
-           <div class="listContent">
+          <div class="listContent">
             <div class="listPic">
               <img src="@/assets/images/object.png" alt="数据图片" />
             </div>
@@ -39,7 +41,7 @@
             <p>半结构化 Agent 是用于采集各种半结构化数据的组件，例如XML、JSON等储存在文件系统之上的数据文件。</p>
           </div>
 
-           <div class="listContent">
+          <div class="listContent">
             <div class="listPic">
               <img src="@/assets/images/filesource.png" alt="数据图片" />
             </div>
@@ -47,177 +49,186 @@
             <p>非结构化 Agent 是用于采集各种半结构化或非结构化数据的组件，例如Word、PDF、图片文件等存储在文件系统之上的数据文件。</p>
           </div>
 
-           <div class="listContent">
+          <div class="listContent">
             <div class="listPic">
               <img src="@/assets/images/ftp.png" alt="数据图片" />
             </div>
             <h3>FTP Agent</h3>
             <p>FTP Agent 是用于将系统之上的数据文件使用SFTP的方式将数据拉取到指定的系统盘之上的组件，多用于数据分发等。</p>
           </div>
-          
+
           <!-- 数据类型标题 -->
           <h4>
             当前所属数据源为：
-            <strong>传的东西</strong>
+            <strong>{{this.getAgentData.datasourceName}}</strong>
           </h4>
           <!-- 数据表格标题 -->
           <div class="tableList">
             <el-row>
               <i class="fa text-warning fa-database blue"></i>
               <span>数据源Agent</span>
-          <!-- 添加数据表单弹出框  -->
-              <el-button type="success"  class="addAgent" size="small" @click="dialogFormVisible = true;DataCathInfo()"  >新增数据库Agent</el-button>
+              <!-- 添加数据表单弹出框  -->
+              <el-button
+                type="success"
+                class="addAgent"
+                size="small"
+                @click="dialogFormVisible = true;DataCathInfo()"
+              >新增数据库Agent</el-button>
             </el-row>
-        <!-- 表格内容 -->
-        <transition name="fade">
-            <el-table
-              stripe
-              size="mini"
-              :data="tableData"
-              border
-              :header-cell-style="{background:'#ede7f3',color:'black'}"
-            >
-              <el-table-column prop="date" label="Agent名称" width="191" align="center"></el-table-column>
-              <el-table-column prop="name" label="Agent所在服务器IP" width="319" align="center"></el-table-column>
-              <el-table-column prop="address" label="Agent 连接端口" width="265" align="center"></el-table-column>
-              <el-table-column prop="date" label="数据采集用户" width="219" align="center"></el-table-column>
-              <el-table-column label="操作" align="center">
-                 <template slot-scope="scope">
-                     
-                      <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row)"  >编辑</el-button> 
-                      <el-button size="mini" type="danger" @click="dialogFormVisibleDelte = true" >删除</el-button>
-                </template>
-                
-              </el-table-column>
-            </el-table>
-        </transition>
+            <!-- 表格内容 -->
+            <transition name="fade">
+              <el-table
+                stripe
+                size="mini"
+                :data="this.$route.params.agentDataAll.sjkAgent"
+                border
+                :header-cell-style="{background:'#ede7f3',color:'black'}"
+              >
+                <el-table-column prop="agent_name" label="Agent名称" width="191" align="center"></el-table-column>
+                <el-table-column prop="agent_ip" label="Agent所在服务器IP" width="319" align="center"></el-table-column>
+                <el-table-column prop="agent_port" label="Agent 连接端口" width="265" align="center"></el-table-column>
+                <el-table-column prop="user_id" label="数据采集用户" width="219" align="center"></el-table-column>
+                <el-table-column label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      type="primary"
+                      @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row)"
+                    >编辑</el-button>
+                    <el-button size="mini" type="danger" @click="dialogFormVisibleDelte = true">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </transition>
             <div class="lines"></div>
           </div>
- <!-- 点击新增数据库按钮弹出框 -->
- <el-dialog title="添加数据库 Agent" :visible.sync="dialogFormVisible" width="40%">
-      <el-form :model="formAdd" ref="formAdd" :rules="rules">
-        <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
-          <el-input
-            v-model="formAdd.agent_name"
-            autocomplete="off"
-            placeholder="Agent名称"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
-          <el-input
-            v-model="formAdd.agent_ip"
-            autocomplete="off"
-            placeholder="例如 127.9.08.7"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
-          <el-input
-            v-model="formAdd.agent_port"
-            autocomplete="off"
-            placeholder="端口范围1204-65535"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type">
-          <el-select v-model="formAdd.agent_type" filterable placeholder="请选择"  style="width:284px">
-            <el-option
-             v-for="(item,index) in options"
-              :key="index"
-              :label="item.user_name"
-              :value="item.user_id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
-        <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
-      </div>
-    </el-dialog>
-  <!-- 点击编辑按钮编辑信息弹出框 -->
-  <el-dialog title="编辑数据库 Agent" :visible.sync="dialogFormVisibleview" width="40%">
-      <el-form :model="form" ref="form" :rules="rules">
-        <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
-          <el-input
-            v-model="form.agent_name"
-            autocomplete="off"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
-          <el-input
-            v-model="form.agent_ip"
-            autocomplete="off"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
-          <el-input
-            v-model="form.agent_port"
-            autocomplete="off"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="form.agent_type"   filterable placeholder="请选择" multiple style="width:284px">
-            <el-option
-              v-for="(item,index) in options"
-              :key="index"
-              :label="item.user_name"
-              :value="item.user_id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisibleview = false" size="mini" type="danger">取 消</el-button>
-        <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
-      </div>
-    </el-dialog>
-<!-- 点击删除弹出框 -->
-<el-dialog
-  title="温馨提示"
-  :visible.sync="dialogFormVisibleDelte"
-  width="40%"
-  >
-  <span>确定要删除吗？</span>
-  <span slot="footer" class="dialog-footer">
-    <el-button type="danger" @click="dialogFormVisibleDelte = false" size="mini">取 消</el-button>
-    <el-button type="primary" @click="delteThisData" size="mini">确 定</el-button>
-  </span>
-</el-dialog>
+          <!-- 点击新增数据库按钮弹出框 -->
+          <el-dialog title="添加数据库 Agent" :visible.sync="dialogFormVisible" width="40%">
+            <el-form :model="formAdd" ref="formAdd" :rules="rules">
+              <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name">
+                <el-input
+                  v-model="formAdd.agent_name"
+                  autocomplete="off"
+                  placeholder="Agent名称"
+                  style="width:284px"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
+                <el-input
+                  v-model="formAdd.agent_ip"
+                  autocomplete="off"
+                  placeholder="例如 127.9.08.7"
+                  style="width:284px"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
+                <el-input
+                  v-model="formAdd.agent_port"
+                  autocomplete="off"
+                  placeholder="端口范围1204-65535"
+                  style="width:284px"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type">
+                <el-select
+                  v-model="formAdd.agent_type"
+                  filterable
+                  placeholder="请选择"
+                  style="width:284px"
+                >
+                  <el-option
+                    v-for="(item,index) in options"
+                    :key="index"
+                    :label="item.user_name"
+                    :value="item.user_id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+              <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
+            </div>
+          </el-dialog>
+          <!-- 点击编辑按钮编辑信息弹出框 -->
+          <el-dialog title="编辑数据库 Agent" :visible.sync="dialogFormVisibleview" width="40%">
+            <el-form :model="form" ref="form" :rules="rules">
+              <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name">
+                <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
+              </el-form-item>
+              <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
+                <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
+              </el-form-item>
+              <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
+                <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
+              </el-form-item>
+              <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
+                <el-select
+                  v-model="form.agent_type"
+                  filterable
+                  placeholder="请选择"
+                  multiple
+                  style="width:284px"
+                >
+                  <el-option
+                    v-for="(item,index) in options"
+                    :key="index"
+                    :label="item.user_name"
+                    :value="item.user_id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisibleview = false" size="mini" type="danger">取 消</el-button>
+              <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
+            </div>
+          </el-dialog>
+          <!-- 点击删除弹出框 -->
+          <el-dialog title="温馨提示" :visible.sync="dialogFormVisibleDelte" width="40%">
+            <span>确定要删除吗？</span>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="danger" @click="dialogFormVisibleDelte = false" size="mini">取 消</el-button>
+              <el-button type="primary" @click="delteThisData" size="mini">确 定</el-button>
+            </span>
+          </el-dialog>
         </el-main>
-        
       </el-container>
     </el-container>
-
   </div>
 </template>
 
 
-<script>
-import * as functionAll  from "@/hrds/api/b/addScoure/AgentList";
+            <script>
+import * as functionAll from "@/hrds/api/b/addScoure/AgentList";
 export default {
   data() {
     return {
-        dialogFormVisible: false,
-        dialogFormVisibleview:false,
-        dialogFormVisibleDelte:false,
-        options:[],
+      dialogFormVisible: false,
+      dialogFormVisibleview: false,
+      dialogFormVisibleDelte: false,
+      options: [],
       tableData: [],
-      formAdd:{
+      getAgentData: {},
+      staticData: [
+        {
+          pic: "@/assets/images/ftp.png",
+          describe: "FTP Agent",
+          info:
+            "FTP Agent 是用于将系统之上的数据文件使用SFTP的方式将数据拉取到指定的系统盘之上的组件，多用于数据分发等。"
+        }
+      ],
+      formAdd: {
         agent_name: "",
         agent_ip: "",
         agent_port: "",
-        agent_type: "",
-      }, 
-      form:{
+        agent_type: ""
+      },
+      form: {
         agent_name: "",
         agent_ip: "",
         agent_port: "",
-        agent_type: "",
+        agent_type: ""
       },
       rules: {
         agent_name: [
@@ -234,14 +245,14 @@ export default {
             trigger: "blur"
           }
         ],
-       agent_port: [
+        agent_port: [
           {
             required: true,
             message: "不能为空",
             trigger: "blur"
           }
         ],
-       agent_type: [
+        agent_type: [
           {
             required: true,
             message: "不能为空",
@@ -249,95 +260,108 @@ export default {
           }
         ]
       },
-       formLabelWidth: "150px"
+      formLabelWidth: "150px"
     };
   },
-  created(){
-    console.log(this.$route.params.agentDataAll)
+  created() {
+    this.getAgentData = this.$route.params.agentDataAll;
   },
-  methods:{
-     // 点击查看获取数据采集信息
-    DataCathInfo(){
-     functionAll.getDataUserInfo().then((res)=>{
-       if(res.code==200){
-         this.options= res.data
-       }
-     })
+  methods: {
+    // 点击查看获取数据采集信息
+    DataCathInfo() {
+      functionAll.getDataUserInfo().then(res => {
+        if (res.code == 200) {
+          this.options = res.data;
+        }
+      });
     },
-      // 编辑获取当前数据赋给表单
+    // 编辑获取当前数据赋给表单
     handleEdit(index, row) {
-      this.form.agent_name =row.address;
-      this.form.agent_port= row.name;
+      this.form.agent_name = row.address;
+      this.form.agent_port = row.name;
     },
     // 新增数据库Agent
-     add(formName) {
+    add(formName) {
       this.$refs[formName].validate(valid => {
-         if (valid) {
-                    // 调用添加方法
-                    functionAll.addDataAgent(this.formAdd).then((response) => {
-                        if (response && response.success) {
-                            this.$message({
-                                type: "success",
-                                message: "添加成功!"
-                            });
-                            // 隐藏对话框
-                            this.dialogFormVisible = false;
-                            // 表单清空
-                            this.formAdd = {};
-                        } else {
-                            this.$message.error("添加失败！");
-                        }
-                    });
-                } else {
+        if (valid) {
+          // 调用添加方法
+          functionAll.addDataAgent(this.formAdd).then(response => {
+            if (response && response.success) {
+              this.$message({
+                type: "success",
+                message: "添加成功!"
+              });
+              // 隐藏对话框
+              this.dialogFormVisible = false;
+              // 表单清空
+              this.formAdd = {};
+            } else {
+              this.$message.error("添加失败！");
+            }
+          });
+        } else {
           return false;
         }
       });
     },
-    	// 点击取消按钮
-	cancleAdd(){
-	    // 表单清空
-	    this.formAdd = {};
-	     // 隐藏对话框
-	    this.dialogFormVisible = false;
-  },
-  // 点击编辑的保存按钮更新数据
-	AgentEdit(){
-		functionAll.UpdateDataAgent(this.form,this.source_id,this.user_id,this.agentId).then((response)=>{
-			if (response && response.success) {
-			    this.$message({
-			        type: "success",
-			        message: "更新成功!"
-			    });
-			    // 隐藏对话框
-			    this.dialogFormVisibleview = false;
-			    // 表单清空
-			    this.form = {};
-				// 重新渲染页面
-				this.tableData=res.data;
-			} else {
-			    this.$message.error("更新失败！");
-			}
-		})
-	},
-   // 删除数据
-    delteThisData(){
-      console.log(this.agentId)
-	  console.log(this.agentType)
-	   const querystring = require('querystring');
-	   console.log(querystring.stringify({ agentId: this.agentId ,agentType:this.agentType }))
-	   functionAll.deleteDataAgent(querystring.stringify({ agentId: this.agentId ,agentType:this.agentType })).then((res)=>{
-		   if(res.code==200){
-			   this.tableData=res.data;
-		   }
-	   })
+    // 点击取消按钮
+    cancleAdd() {
+      // 表单清空
+      this.formAdd = {};
+      // 隐藏对话框
+      this.dialogFormVisible = false;
+    },
+    // 点击编辑的保存按钮更新数据
+    AgentEdit() {
+      functionAll
+        .UpdateDataAgent(this.form, this.source_id, this.user_id, this.agentId)
+        .then(response => {
+          if (response && response.success) {
+            this.$message({
+              type: "success",
+              message: "更新成功!"
+            });
+            // 隐藏对话框
+            this.dialogFormVisibleview = false;
+            // 表单清空
+            this.form = {};
+            // 重新渲染页面
+            this.tableData = res.data;
+          } else {
+            this.$message.error("更新失败！");
+          }
+        });
+    },
+    // 删除数据
+    delteThisData() {
+      console.log(this.agentId);
+      console.log(this.agentType);
+      const querystring = require("querystring");
+      console.log(
+        querystring.stringify({
+          agentId: this.agentId,
+          agentType: this.agentType
+        })
+      );
+      functionAll
+        .deleteDataAgent(
+          querystring.stringify({
+            agentId: this.agentId,
+            agentType: this.agentType
+          })
+        )
+        .then(res => {
+          if (res.code == 200) {
+            this.tableData = res.data;
+          }
+        });
     }
-    
   }
 };
 </script>
 
-<style scoped>
-.index1001{
+            <style scoped>
+.index1001 {
   width: 100%;
 }
 .index1001 .el-header {
@@ -410,7 +434,7 @@ export default {
   padding: 1px 5px;
   margin-bottom: 22px;
 }
-.listPic:hover{
+.listPic:hover {
   cursor: pointer;
   background: #e6e6e6;
 }
