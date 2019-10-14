@@ -23,6 +23,17 @@ export function addDataAgent(data,user_id,source_id) {
 }
 
 /**
+ * 点击编辑数据库更新信息
+ */
+export function UpdateDataAgent(data,user_id,source_id,agentId) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/saveAgent',
+        method: 'post',
+        params:data,user_id,source_id,agentId
+    })
+}
+
+/**
  * 点击删除按钮删除信息
  */
 export function deleteDataAgent() {

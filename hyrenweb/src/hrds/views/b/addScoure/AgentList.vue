@@ -132,18 +132,17 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false" size="mini" type="danger">取 消</el-button>
+        <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
         <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
       </div>
     </el-dialog>
-  <!-- 点击查看按钮查看信息弹出框 -->
-  <el-dialog title="查看数据库 Agent" :visible.sync="dialogFormVisibleview" width="40%">
+  <!-- 点击编辑按钮编辑信息弹出框 -->
+  <el-dialog title="编辑数据库 Agent" :visible.sync="dialogFormVisibleview" width="40%">
       <el-form :model="form" ref="form" :rules="rules">
         <el-form-item label=" Agent名称"  :label-width="formLabelWidth" prop="agent_name">
           <el-input
             v-model="form.agent_name"
             autocomplete="off"
-            :disabled="true"
             style="width:284px"
           ></el-input>
         </el-form-item>
@@ -152,19 +151,17 @@
             v-model="form.agent_ip"
             autocomplete="off"
             style="width:284px"
-            :disabled="true"
           ></el-input>
         </el-form-item>
         <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
           <el-input
             v-model="form.agent_port"
             autocomplete="off"
-            :disabled="true"
             style="width:284px"
           ></el-input>
         </el-form-item>
         <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="form.agent_type" disabled  filterable placeholder="请选择" multiple style="width:284px">
+          <el-select v-model="form.agent_type"   filterable placeholder="请选择" multiple style="width:284px">
             <el-option
               v-for="(item,index) in options"
               :key="index"
@@ -176,7 +173,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleview = false" size="mini" type="danger">取 消</el-button>
-        <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
+        <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
       </div>
     </el-dialog>
 <!-- 点击删除弹出框 -->
@@ -324,9 +321,43 @@ export default {
         }
       });
     },
-    // 删除数据
+    	// 点击取消按钮
+	cancleAdd(){
+	    // 表单清空
+	    this.formAdd = {};
+	     // 隐藏对话框
+	    this.dialogFormVisible = false;
+  },
+  // 点击编辑的保存按钮更新数据
+	AgentEdit(){
+		functionAll.UpdateDataAgent(this.form,this.source_id,this.user_id,this.agentId).then((response)=>{
+			if (response && response.success) {
+			    this.$message({
+			        type: "success",
+			        message: "更新成功!"
+			    });
+			    // 隐藏对话框
+			    this.dialogFormVisibleview = false;
+			    // 表单清空
+			    this.form = {};
+				// 重新渲染页面
+				this.tableData=res.data;
+			} else {
+			    this.$message.error("更新失败！");
+			}
+		})
+	},
+   // 删除数据
     delteThisData(){
-      console.log('1')
+      console.log(this.agentId)
+	  console.log(this.agentType)
+	   const querystring = require('querystring');
+	   console.log(querystring.stringify({ agentId: this.agentId ,agentType:this.agentType }))
+	   functionAll.deleteDataAgent(querystring.stringify({ agentId: this.agentId ,agentType:this.agentType })).then((res)=>{
+		   if(res.code==200){
+			   this.tableData=res.data;
+		   }
+	   })
     }
     
   }

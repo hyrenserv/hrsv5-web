@@ -80,43 +80,7 @@ export default {
       formAdd:{},
        formLabelWidth: "150px",
       input: "",
-      tableDataBegin: [
-        {
-          date: "2016",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016",
-          name: "王小虎h",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016",
-          name: "王小虎2",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016",
-          name: "王小虎2",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016",
-          name: "王小虎2",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016",
-          name: "王小虎2",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016",
-          name: "王小虎2",
-          address: "上海市普陀区金沙江路 1519 弄"
-        }
-      ],
+      tableDataBegin: [],
       tableDataName: "",
       tableDataEnd: [],
       currentPage: 1,
@@ -142,24 +106,17 @@ export default {
       this.tableDataEnd = this.data;
     }
   },
+
   methods: {
     // 编辑获取当前数据
     handleEdit(index, row) {
        this.formAdd.datasource_name = row.datasource_name;
-      // this.input = row.datasource_name;
-      // let strings = row.dep_name;
-      // let arr=strings.split(",")
-      // this.value1=arr;
-      this.sourceId=row.source_id;
+       this.sourceId=row.source_id;
     },
     // 数据权限管理，更新数据源关系部门信息
     saveChangeAgent(){
      this.formAdd['depIds'] =this.depIds.join(',');
      this.formAdd['sourceId'] =this.sourceId;
-     console.log(this.sourceId)
-
-      //转换格式,再传值
-	  
      functionAll.upDatechargeDate(this.formAdd).then((res)=>{
        if(res.code==200){
          this.$message({

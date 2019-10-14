@@ -39,7 +39,7 @@ export function importDataResource(data) {
 /**
  * 编辑更新数据源信息
  */
-export function upDateDataResource(data) {
+export function updateDataResource(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/datasource/updateDataSource',
         method: 'post',

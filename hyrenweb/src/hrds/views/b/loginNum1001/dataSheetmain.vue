@@ -12,9 +12,10 @@
      <el-button
         type="text"
         class="editBtn"
-        @click="dialogFormVisibleAdd = true;clickEditButton()"
+        @click="dialogFormVisibleAdd = true;clickEditButton(index)"
        >
       <i class="fa fa-pencil  fa-lg" ></i></el-button>
+      <!-- <i class="fa fa-times  fa-lg" ></i> -->
       </div>
     </div>
     
@@ -22,24 +23,24 @@
     <!-- 编辑的弹出表单 -->
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
       <el-form :model="formUpdate" ref="formUpdate" :rules="rules">
-        <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number">
+        <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasourceName">
           <el-input
-            v-model="formUpdate.datasource_number"
-            autocomplete="off"
-            placeholder="数据源编号"
-            style="width:284px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
-          <el-input
-            v-model="formUpdate.datasource_name"
+            v-model="formUpdate.datasourceName "
             autocomplete="off"
             placeholder="数据源名称"
             style="width:284px"
           ></el-input>
         </el-form-item>
+        <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasourceNumber">
+          <el-input
+            v-model="formUpdate.datasourceNumber"
+            autocomplete="off"
+            placeholder="数据源编号"
+            style="width:284px"
+          ></el-input>
+        </el-form-item>
         <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="formUpdate.depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
+          <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
             <el-option
               v-for="(item,index) in options"
               :key="index"
@@ -48,10 +49,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="source_remark">
+        <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="sourceRemark">
           <el-input
             type="textarea"
-            v-model="formUpdate.source_remark"
+            v-model="formUpdate.sourceRemark"
             autocomplete="off"
             placeholder="数据源详细描述"
             style="width:284px"
@@ -60,7 +61,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false" size="mini" type="danger">取 消</el-button>
-        <el-button type="primary" @click="update('formAdd')" size="mini">保存</el-button>
+        <el-button type="primary" @click="update('formUpdate')" size="mini">保存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -77,82 +78,74 @@ export default {
       sourceId:'',
       datasourceName:'',
       dialogFormVisibleAdd: false,
+       depIds: [],
       formUpdate: {
-        // datasource_number: "",
-        // datasource_name: "",
-        // source_remark: "",
-        //  depIds: "",
+        // datasourceNumber: "",
+        // datasourceName: "",
+        // sourceRemark: "",  
       },
        rules: {
-        datasource_number: [
+        datasourceNumber: [
           {
             required: true,
             message: "数据源编号是以字母开头的不超过四位数的字母数字组合",
             trigger: "blur"
           }
         ],
-        datasource_name: [
+        datasourceName: [
           {
             required: true,
             message: "数据源名称是必填项",
             trigger: "blur"
           }
         ],
-        depIds: [
-          {
-            required: true,
-            message: "部门信息是必填项",
-            trigger: "change"
-          }
-        ]
       },
       formLabelWidth: "150px"
     };
   },
   methods:{
-    // 点击添加按钮获取部门信息
-    departmentInfo(){
-      functionAll.getDepartmentInfo().then((res)=>{
-        if(res.code==200){
-          this.options= res.data.departmentInfo;
-        }
-      })
-    },
-  update(){
-    console.log(this.formUpdate)
-    functionAll.upDateDataResource(this.formUpdate).then((res)=>{
-     if(res.code==200){
-
-     }
-    })
-  },
-  // 点击编辑小图标获取数据源信息
-  clickEditButton(){
-     functionAll.getDepartmentInfo().then((res)=>{
-        if(res.code==200){
-          this.options= res.data.departmentInfo;
-          // this.lists =res.data.dataResource;
-        }
-      })
-  },
-  // 点击数据来源表的内容跳转页面
-
+  
+ 
+// 点击编辑小图标获取部门信息
 clickEditButton:function(index){
-                       this.click =index
-            console.log(  this.click)
-            
-					    console.log(this.datas[ this.click].a)
-					functionAll.getDataDepInfo(this.source_id).then((res)=>{
-					alert("11")
-					     this.options= res.data.departmentInfo;
-					     // this.lists =res.data.dataResource;
-					  
+  this.sourceId = this.data[index].source_id
+  console.log(this.sourceId)
+  const querystring = require('querystring');
+					functionAll.getDataDepInfo(querystring.stringify({ sourceId: this.data[index].source_id })).then((res)=>{
+             if(res.code==200){
+          this.options= res.data.departmentInfo;
+          // this.formUpdate.datasourceName =  res.data.dataSource[0].datasource_name;
+          // this.formUpdate. datasourceNumber =  res.data.dataSource[0]. datasource_number;
+          // this.formUpdate. sourceRemark =  res.data.dataSource[0]. source_remark;
+        }
 					 })
 					  
                   },
 
+  // 点击保存按钮更新当前的所有信息
+  update(){
+     this.formUpdate['depIds'] =this.depIds.join(',');
+     this.formUpdate['sourceId'] =this.sourceId;
+    functionAll.updateDataResource(this.formUpdate).then((res)=>{
+     if(res.code==200){
+        this.$message({
+             type: "success",
+             message: "编辑成功!"
+         });
+          this.$emit("addEvent");
+           this.dialogFormVisibleAdd = false;
+           this.formUpdate={};
+           this.depIds=[];
+     }else{
+       this.$message.error("编辑失败！");
+          }
+     
+
+    })
+  },
+ 
+ // 点击数据来源表的内容跳转页面
 gotoScoureDetail:function(index){
-    console.log(this.data[index].datasource_name)
       const querystring = require('querystring');
       functionAll.getAgentData(querystring.stringify({ sourceId: this.data[index].source_id,datasourceName:this.data[index].datasource_name })).then((res)=>{
 	   if(res.code==200){
@@ -165,14 +158,6 @@ gotoScoureDetail:function(index){
 	   }
    }) 
 },
-  // gotoScoureDetail(){
-  // console.log(this.source_id);
-  //  console.log(this.datasourceName)
-
-  //  this.$router.push('addScoure')
-  // console.log('1')
-  //  //调用方法，传参scoureid
-  // }
   }
 };
 </script>
@@ -250,6 +235,7 @@ gotoScoureDetail:function(index){
 }
 .fa-pencil{
     margin-top:6px;
+    margin-right: 6px;
 }
 /* 小图标样式 */
 .tree {
