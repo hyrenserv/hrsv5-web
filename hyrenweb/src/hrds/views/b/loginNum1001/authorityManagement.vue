@@ -14,45 +14,52 @@
       <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
       <el-table-column prop="datasource_name" label="数据源名称" width="592" align="center"></el-table-column>
       <el-table-column prop="dep_name" label="所属部门" width="380" align="center"></el-table-column>
-     
 
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <b @click="dialogFormVisibleAdd = true;handleEdit(scope.$index, scope.row);departmentInfo()">编辑</b>
+          <b
+            @click="dialogFormVisibleAdd = true;handleEdit(scope.$index, scope.row);departmentInfo()"
+          >编辑</b>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
- <!-- 点击操作弹出框 -->
+      <!-- 点击操作弹出框 -->
       <el-dialog title="更改部门" :visible.sync="dialogFormVisibleAdd" width="40%">
-      <el-form :model="formAdd" ref="formAdd" >
-        <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
-          <el-input
-            v-model="formAdd.datasource_name"
-            autocomplete="off"
-            placeholder="数据源名称"
-            style="width:284px"
-            :disabled="true"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
-          <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
-            <el-option
-              v-for="(item,index) in options"
-              :key="index"
-              :label="item.dep_name"
-              :value="item.dep_id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button  size="mini" type="danger"  @click="cancleAdd">取 消</el-button>
-        <el-button type="primary" @click="saveChangeAgent" size="mini">保存</el-button>
-      </div>
-    </el-dialog>
+        <el-form :model="formAdd" ref="formAdd">
+          <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
+            <el-input
+              v-model="formAdd.datasource_name"
+              autocomplete="off"
+              placeholder="数据源名称"
+              style="width:284px"
+              :disabled="true"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
+            <el-select
+              v-model="depIds"
+              filterable
+              placeholder="请选择（可多选）"
+              multiple
+              style="width:284px"
+            >
+              <el-option
+                v-for="(item,index) in options"
+                :key="index"
+                :label="item.dep_name"
+                :value="item.dep_id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" type="danger" @click="cancleAdd">取 消</el-button>
+          <el-button type="primary" @click="saveChangeAgent" size="mini">保存</el-button>
+        </div>
+      </el-dialog>
     </el-row>
-<!-- 分页内容 -->
+    <!-- 分页内容 -->
     <!-- <el-row class="pagination">
       <el-pagination
         prev-text="上一页"
@@ -64,7 +71,7 @@
         layout=" prev, pager, next"
         :total="totalItems"
       ></el-pagination>
-    </el-row> -->
+    </el-row>-->
   </div>
 </template>
 
@@ -72,13 +79,13 @@
 import * as functionAll from "@/hrds/api/b/loginNum1001/loginNum1001";
 
 export default {
-  props:["data"],
+  props: ["data"],
   data() {
     return {
       dialogVisible: false,
       dialogFormVisibleAdd: false,
-      formAdd:{},
-       formLabelWidth: "150px",
+      formAdd: {},
+      formLabelWidth: "150px",
       input: "",
       tableDataBegin: [],
       tableDataName: "",
@@ -90,13 +97,13 @@ export default {
       flag: false,
       options: [],
       value1: [],
-      sourceId:'',
-      depIds:[]
+      sourceId: "",
+      depIds: []
     };
   },
- 
+
   created() {
-     // 获取数组长度赋值
+    // 获取数组长度赋值
     this.totalItems = this.data.length;
     if (this.totalItems > this.pageSize) {
       for (let index = 0; index < this.pageSize; index++) {
@@ -110,47 +117,47 @@ export default {
   methods: {
     // 编辑获取当前数据
     handleEdit(index, row) {
-       this.formAdd.datasource_name = row.datasource_name;
-       this.sourceId=row.source_id;
+      this.formAdd.datasource_name = row.datasource_name;
+      this.sourceId = row.source_id;
     },
     // 数据权限管理，更新数据源关系部门信息
-    saveChangeAgent(){
-     this.formAdd['depIds'] =this.depIds.join(',');
-     this.formAdd['sourceId'] =this.sourceId;
-     functionAll.upDatechargeDate(this.formAdd).then((res)=>{
-       if(res.code==200){
-         this.$message({
-             type: "success",
-             message: "更改成功!"
-         });
-		 this.$emit("addEvent");
-		 // 隐藏对话框
-		 this.dialogFormVisibleAdd = false;
-		 // 表单清空
-		 this.formAdd = {};
-       }else {
-         this.$message.error("更改失败！");
-          }
-     })
-
-    },
-    // 点击添加按钮获取部门信息
-    departmentInfo() {
-        const querystring = require('querystring');
-      functionAll.getDataDepInfo(querystring.stringify({ sourceId: this.sourceId })).then((res) => {
+    saveChangeAgent() {
+      this.formAdd["depIds"] = this.depIds.join(",");
+      this.formAdd["sourceId"] = this.sourceId;
+      functionAll.upDatechargeDate(this.formAdd).then(res => {
         if (res.code == 200) {
-          this.options = res.data.departmentInfo;
-          
+          this.$message({
+            type: "success",
+            message: "更改成功!"
+          });
+          this.$emit("addEvent");
+          // 隐藏对话框
+          this.dialogFormVisibleAdd = false;
+          // 表单清空
+          this.formAdd = {};
+        } else {
+          this.$message.error("更改失败！");
         }
       });
     },
+    // 点击添加按钮获取部门信息
+    departmentInfo() {
+      const querystring = require("querystring");
+      functionAll
+        .getDataDepInfo(querystring.stringify({ sourceId: this.sourceId }))
+        .then(res => {
+          if (res.code == 200) {
+            this.options = res.data.departmentInfo;
+          }
+        });
+    },
     // 点击取消按钮
-	cancleAdd(){
-	    // 表单清空
-	    this.formAdd = {};
-	     // 隐藏对话框
-	    this.dialogFormVisibleAdd = false;
-	},
+    cancleAdd() {
+      // 表单清空
+      this.formAdd = {};
+      // 隐藏对话框
+      this.dialogFormVisibleAdd = false;
+    },
     // 实现分页功能
     handleSizeChange(val) {
       this.pageSize = val;
