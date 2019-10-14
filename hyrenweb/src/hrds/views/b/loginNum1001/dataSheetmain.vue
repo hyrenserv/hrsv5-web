@@ -1,7 +1,7 @@
 <template>
   <div class="dataSheetmain">
     <div class="dataSheetmainDiv" v-for="(itme,index) in data" :key="index">
-      <div  @click="gotoScoureDetail(index)">
+      <div  @click="gotoScoureDetail(index)" @mouseenter="enter(index)" >
       <i class="block_icon fa fa-sitemap fa-3x tree" ></i>
       <p>{{itme.datasource_name}}</p>
       <p class="postionP">Agent个数为 {{itme.sumagent}}</p>
@@ -15,7 +15,8 @@
         @click="dialogFormVisibleAdd = true;clickEditButton(index)"
        >
       <i class="fa fa-pencil  fa-lg" ></i></el-button>
-      <!-- <i class="fa fa-times  fa-lg" ></i> -->
+      <i class="fa fa-times  fa-lg"  v-if="showHidden"></i>
+
       </div>
     </div>
     
@@ -73,6 +74,7 @@ export default {
   props:["data"],
   data() {
     return {
+      showHidden:'false',
       options:[],
       click:'',
       sourceId:'',
@@ -147,7 +149,7 @@ clickEditButton:function(index){
  // 点击数据来源表的内容跳转页面
 gotoScoureDetail:function(index){
       const querystring = require('querystring');
-      functionAll.getAgentData(querystring.stringify({ sourceId: this.data[index].source_id,datasourceName:this.data[index].datasource_name })).then((res)=>{
+      functionAll.getAgentData(querystring.stringify({ sourceId: this.data[index].source_id,datasourceName: this.data[index].datasource_name })).then((res)=>{
 	   if(res.code==200){
 		   console.log(res.data)
 		  // 传参
@@ -158,6 +160,12 @@ gotoScoureDetail:function(index){
 	   }
    }) 
 },
+// 鼠标划入时
+enter(index){
+  console.log(index)
+  // let sumagentNum = 
+  this.showHidden =true
+}
   }
 };
 </script>
