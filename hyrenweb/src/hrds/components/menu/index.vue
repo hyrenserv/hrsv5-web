@@ -2,9 +2,8 @@
 <div class="home">
     <el-container>
         <el-header>
-
-            <el-row type="flex" :gutter="20">
-                <el-col :span="2">
+            <el-row type="flex" :gutter="29">
+                <el-col :span="3">
                     <span><i class="el-icon-menu"></i>菜单列表</span>
                 </el-col>
                 <el-col :span="2" :offset="19">
@@ -16,14 +15,29 @@
             </el-row>
         </el-header>
         <el-container>
-            <el-aside width="170px">
+            <el-aside width="15%">
                 <!-- 导航 -->
                 <el-menu router :default-active="menus[0].path">
-                    <div v-for="item in menus" :key="item.name">
-                        <el-menu-item :index="item.path">
-                            <i :class="item.icon"></i>
-                            <span>{{item.title}}</span>
-                        </el-menu-item>
+                    <div v-for="items in menus" :key="items.name">
+                        <template  v-if="items.children">
+                            <!--二级菜单循环-->
+                            <el-submenu :index="items.children[0].path">
+                                <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
+                                <div v-for="item in items.children" :key="item.name">
+                                    <el-menu-item :index="item.path">
+                                        <i :class="item.icon"></i>
+                                        <span>{{item.title}}</span>
+                                    </el-menu-item>
+                                </div>
+                            </el-submenu>
+                        </template>
+                        <template  v-else>
+                        <!--一级菜单循环-->
+                            <el-menu-item :index="items.path">
+                                <i :class="items.icon"></i>
+                                <span>{{items.title}}</span>
+                            </el-menu-item>
+                        </template>
                     </div>
                 </el-menu>
             </el-aside>
@@ -31,10 +45,10 @@
                 <el-main>
                     <router-view></router-view>
                 </el-main>
-                <!-- <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer> -->
+                <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
             </el-container>
         </el-container>
-        <el-header><span>版权所有：海云数服 Version 5.0</span></el-header>
+        <!-- <el-header><span>版权所有：海云数服 Version 5.0</span></el-header> -->
     </el-container>
 </div>
 </template>
@@ -73,7 +87,10 @@ export default {
     text-align: center;
     line-height: 50px;
     color: #fff;
+}
 
+.el-aside {
+    height: 100%
 }
 
 .el-menu {
@@ -83,5 +100,15 @@ export default {
 
 .home .el-header i {
     color: white;
+}
+
+.el-footer {
+    width: 100%;
+    height: 45px !important;
+    /* footer的高度一定要是固定值*/
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    font-size: 12px;
 }
 </style>
