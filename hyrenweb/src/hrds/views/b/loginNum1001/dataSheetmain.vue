@@ -1,7 +1,7 @@
 <template>
   <div class="dataSheetmain">
     <div class="dataSheetmainDiv" v-for="(itme,index) in data" :key="index">
-      <div  @click="gotoScoureDetail">
+      <div  @click="gotoScoureDetail(index)">
       <i class="block_icon fa fa-sitemap fa-3x tree" ></i>
       <p>{{itme.datasource_name}}</p>
       <p class="postionP">Agent个数为 {{itme.sumagent}}</p>
@@ -73,6 +73,9 @@ export default {
   data() {
     return {
       options:[],
+      click:'',
+      sourceId:'',
+      datasourceName:'',
       dialogFormVisibleAdd: false,
       formUpdate: {
         // datasource_number: "",
@@ -133,14 +136,43 @@ export default {
       })
   },
   // 点击数据来源表的内容跳转页面
-  gotoScoureDetail(){
-  console.log(this.source_id);
-   console.log(this.datasourceName)
 
-   this.$router.push('addScoure')
-  console.log('1')
-   //调用方法，传参scoureid
-  }
+clickEditButton:function(index){
+                       this.click =index
+            console.log(  this.click)
+            
+					    console.log(this.datas[ this.click].a)
+					functionAll.getDataDepInfo(this.source_id).then((res)=>{
+					alert("11")
+					     this.options= res.data.departmentInfo;
+					     // this.lists =res.data.dataResource;
+					  
+					 })
+					  
+                  },
+
+gotoScoureDetail:function(index){
+    console.log(this.data[index].datasource_name)
+      const querystring = require('querystring');
+      functionAll.getAgentData(querystring.stringify({ sourceId: this.data[index].source_id,datasourceName:this.data[index].datasource_name })).then((res)=>{
+	   if(res.code==200){
+		   console.log(res.data)
+		  // 传参
+		   this.$router.push({
+			   name:'addScoure',
+			   params:this.res.data
+		   }) //进行页面的跳转
+	   }
+   }) 
+},
+  // gotoScoureDetail(){
+  // console.log(this.source_id);
+  //  console.log(this.datasourceName)
+
+  //  this.$router.push('addScoure')
+  // console.log('1')
+  //  //调用方法，传参scoureid
+  // }
   }
 };
 </script>
