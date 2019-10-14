@@ -96,21 +96,21 @@ export function upDatechargeDate(data) {
 /**
  * 数据权限管理，更新数据源关系部门信息
  */
-export function getDataDepInfo(sourceId) {
+export function getDataDepInfo(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource',
         method: 'post',
-        data:sourceId
+        data:data
     })
 }
 
  /**
    * 查询数据源对应agent所有信息，数据源页面到agent页面
    */
-  export function getAgentData(data) {
+  export function getAgentData(sourceId) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDatasourceAndAgentInfo',
+        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/searchDatasourceAndAgentInfo',
         method: 'post',
-        params: data
+        data: sourceId
     })
 }
