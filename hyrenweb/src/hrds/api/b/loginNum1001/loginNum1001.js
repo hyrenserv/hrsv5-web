@@ -103,3 +103,14 @@ export function getDataDepInfo(sourceId) {
         data:sourceId
     })
 }
+
+ /**
+   * 查询数据源对应agent所有信息，数据源页面到agent页面
+   */
+  export function getAgentData(data) {
+    return request({
+        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDatasourceAndAgentInfo',
+        method: 'post',
+        params: data
+    })
+}
