@@ -183,6 +183,7 @@ export default {
                             this.dialogFormVisibleAdd = false;
                             // 表单清空
                             this.formAdd = {};
+                            this.depIds = [];
                         } else {
                             this.$message.error("添加失败！");
                         }
