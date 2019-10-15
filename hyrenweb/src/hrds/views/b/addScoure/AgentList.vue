@@ -80,7 +80,7 @@
               <el-table
                 stripe
                 size="mini"
-                :data="this.$route.params.agentDataAll.sjkAgent"
+                :data="tableData"
                 border
                 :header-cell-style="{background:'#ede7f3',color:'black'}"
               >
@@ -93,9 +93,13 @@
                     <el-button
                       size="mini"
                       type="primary"
-                      @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row)"
+                      @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()"
                     >编辑</el-button>
-                    <el-button size="mini" type="danger" @click="dialogFormVisibleDelte = true">删除</el-button>
+                    <el-button
+                      size="mini"
+                      type="danger"
+                      @click="dialogFormVisibleDelte = true;handleEdit(scope.$index, scope.row)"
+                    >删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -131,7 +135,7 @@
               </el-form-item>
               <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type">
                 <el-select
-                  v-model="formAdd.agent_type"
+                  v-model="formAdd.user_id"
                   filterable
                   placeholder="请选择"
                   style="width:284px"
@@ -163,13 +167,7 @@
                 <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
               </el-form-item>
               <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
-                <el-select
-                  v-model="form.agent_type"
-                  filterable
-                  placeholder="请选择"
-                  multiple
-                  style="width:284px"
-                >
+                <el-select v-model="form.user_id" filterable placeholder="请选择" style="width:284px">
                   <el-option
                     v-for="(item,index) in options"
                     :key="index"
@@ -180,7 +178,7 @@
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisibleview = false" size="mini" type="danger">取 消</el-button>
+              <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
               <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
             </div>
           </el-dialog>
@@ -210,6 +208,10 @@ export default {
       options: [],
       tableData: [],
       getAgentData: {},
+      source_id: "",
+      agentId: "",
+      agent_type: "",
+      agentType: "",
       staticData: [
         {
           pic: "@/assets/images/ftp.png",
@@ -222,13 +224,13 @@ export default {
         agent_name: "",
         agent_ip: "",
         agent_port: "",
-        agent_type: ""
+        user_id: ""
       },
       form: {
         agent_name: "",
         agent_ip: "",
         agent_port: "",
-        agent_type: ""
+        user_id: ""
       },
       rules: {
         agent_name: [
@@ -251,13 +253,6 @@ export default {
             message: "不能为空",
             trigger: "blur"
           }
-        ],
-        agent_type: [
-          {
-            required: true,
-            message: "不能为空",
-            trigger: "blur"
-          }
         ]
       },
       formLabelWidth: "150px"
@@ -265,10 +260,13 @@ export default {
   },
   created() {
     this.getAgentData = this.$route.params.agentDataAll;
+    this.source_id = this.getAgentData.sourceId;
+    this.tableData = this.$route.params.agentDataAll.sjkAgent;
+    this.agent_type = this.tableData[0].agent_type;
   },
   methods: {
     // 点击查看获取数据采集信息
-    DataCathInfo() {
+    DataCathInfo(index) {
       functionAll.getDataUserInfo().then(res => {
         if (res.code == 200) {
           this.options = res.data;
@@ -279,18 +277,24 @@ export default {
     handleEdit(index, row) {
       this.form.agent_name = row.address;
       this.form.agent_port = row.name;
+      this.agentId = row.agent_id;
+      this.agentType = row.agent_type;
+      this.agent_type = row.agent_type;
     },
     // 新增数据库Agent
     add(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 调用添加方法
+          this.formAdd["source_id"] = this.getAgentData.sourceId;
+          this.formAdd["agent_type"] = this.agent_type;
           functionAll.addDataAgent(this.formAdd).then(response => {
             if (response && response.success) {
               this.$message({
                 type: "success",
                 message: "添加成功!"
               });
+              this.tableData = response.data;
               // 隐藏对话框
               this.dialogFormVisible = false;
               // 表单清空
@@ -310,39 +314,33 @@ export default {
       this.formAdd = {};
       // 隐藏对话框
       this.dialogFormVisible = false;
+      this.dialogFormVisibleview = false;
     },
     // 点击编辑的保存按钮更新数据
     AgentEdit() {
-      functionAll
-        .UpdateDataAgent(this.form, this.source_id, this.user_id, this.agentId)
-        .then(response => {
-          if (response && response.success) {
-            this.$message({
-              type: "success",
-              message: "更新成功!"
-            });
-            // 隐藏对话框
-            this.dialogFormVisibleview = false;
-            // 表单清空
-            this.form = {};
-            // 重新渲染页面
-            this.tableData = res.data;
-          } else {
-            this.$message.error("更新失败！");
-          }
-        });
+      this.form["source_id"] = this.getAgentData.sourceId;
+      this.form["agentId"] = this.agentId;
+      this.form["agent_type"] = this.agent_type;
+      functionAll.updateDataAgent(this.form).then(response => {
+        if (response && response.success) {
+          this.$message({
+            type: "success",
+            message: "更新成功!"
+          });
+          // 隐藏对话框
+          this.dialogFormVisibleview = false;
+          // 表单清空
+          this.form = {};
+          // 重新渲染页面
+          this.tableData = response.data;
+        } else {
+          this.$message.error("更新失败！");
+        }
+      });
     },
     // 删除数据
     delteThisData() {
-      console.log(this.agentId);
-      console.log(this.agentType);
       const querystring = require("querystring");
-      console.log(
-        querystring.stringify({
-          agentId: this.agentId,
-          agentType: this.agentType
-        })
-      );
       functionAll
         .deleteDataAgent(
           querystring.stringify({
@@ -352,6 +350,11 @@ export default {
         )
         .then(res => {
           if (res.code == 200) {
+            // 隐藏对话框
+            this.dialogFormVisibleDelte = false;
+            // 表单清空
+            this.form = {};
+            // 重新渲染页面
             this.tableData = res.data;
           }
         });
@@ -360,7 +363,7 @@ export default {
 };
 </script>
 
-            <style scoped>
+ <style scoped>
 .index1001 {
   width: 100%;
 }
