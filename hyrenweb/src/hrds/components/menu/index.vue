@@ -21,7 +21,7 @@
                     <div v-for="items in menus" :key="items.name">
                         <template  v-if="items.children">
                             <!--二级菜单循环-->
-                            <el-submenu :index="items.children[0].path">
+                            <el-submenu>
                                 <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
                                 <div v-for="item in items.children" :key="item.name">
                                     <el-menu-item :index="item.path">

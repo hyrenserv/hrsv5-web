@@ -8,6 +8,7 @@ const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   // timeout: 5000 // request timeout
+  method : 'POST'
 })
 
 // request interceptor
@@ -22,7 +23,6 @@ service.interceptors.request.use(
       //config.headers.Authorization = getToken();
       config.headers['Hyren_userCookie'] = getToken();
     }
-    
     return config;
 },    
 error => {        

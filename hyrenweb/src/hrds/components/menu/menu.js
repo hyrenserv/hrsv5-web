@@ -7,13 +7,19 @@ const Menu = [
     { icon: 'el-icon-setting', title: '系统参数', path: '/syspara' },
     { icon: 'el-icon-document', title: 'Agent部署', path: '/agentdeploy' },
     { icon: 'el-icon-document', title: '采集监控首页', path: '/collectmonitor' },
+    { icon: 'el-icon-document', title: '1001登录首页', path: '/index1001' },
+    { icon: 'el-icon-document', title: '数据源跳转页面', path: '/addScoure' },
+
+
+
+    
     {
         //如果有二级菜单只需要添加 children即可,数据结构和一级菜单保持一致
         icon: 'el-icon-menu', title: '二级路由菜单例子', children: [
             { icon: 'el-icon-setting', title: '系统参数', path: '/syspara' },
             { icon: 'el-icon-document', title: 'Agent部署', path: '/agentdeploy' },
             { icon: 'el-icon-document', title: '采集监控首页', path: '/collectmonitor' }]
-    }
+    },
 ]
 
 export default Menu;

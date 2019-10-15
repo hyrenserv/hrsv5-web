@@ -1,4 +1,4 @@
-import { login, logout } from '@/hrds/api/login/login'
+import { login, logout } from '@/hrds/login/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -15,9 +15,9 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { user_id, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then((response) => {
+      login({ user_id: user_id.trim(), password: password }).then((response) => {
         const { data } = response
         commit('SET_TOKEN', data)
         setToken(data)
