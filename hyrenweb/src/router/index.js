@@ -25,7 +25,7 @@ export default new Router({
         {
             path: '/',
             name: 'login',
-            component: () => import('@/hrds/login/login.vue')
+            component: () => import('@/hrds/login/login')
         },
         //菜单路由地址配置
         {
