@@ -14,31 +14,32 @@ export function getDataUserInfo() {
 /**
  * 点击新增数据库按钮增加信息
  */
-export function addDataAgent(data,user_id,source_id) {
+export function addDataAgent(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/agentinfo/saveAgent',
         method: 'post',
-        params:data,user_id,source_id
+        params:data
     })
 }
 
 /**
  * 点击编辑数据库更新信息
  */
-export function UpdateDataAgent(data,user_id,source_id,agentId) {
+export function updateDataAgent(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/agentinfo/saveAgent',
         method: 'post',
-        params:data,user_id,source_id,agentId
+        params:data
     })
 }
 
 /**
  * 点击删除按钮删除信息
  */
-export function deleteDataAgent() {
+export function deleteDataAgent(data) {
     return request({
         url: '/hrds_B/B/action/hrds/b/biz/agentinfo/deleteAgent',
         method: 'post',
+        data:data
     })
 }

@@ -1,4 +1,4 @@
-<template>
+            <template>
   <div class="dataSheetmain">
     <div class="dataSheetmainDiv" v-for="(itme,index) in data" :key="index">
       <div @click="gotoScoureDetail(index)" @mouseenter="enter(index)">
@@ -87,7 +87,7 @@
   </div>
 </template>
 
-<script>
+                <script>
 import * as functionAll from "@/hrds/api/b/loginNum1001/loginNum1001";
 export default {
   props: ["data"],
@@ -129,7 +129,6 @@ export default {
     // 点击编辑小图标获取部门信息
     clickEditButton: function(index) {
       this.sourceId = this.data[index].source_id;
-      console.log(this.sourceId);
       const querystring = require("querystring");
       functionAll
         .getDataDepInfo(
@@ -181,7 +180,10 @@ export default {
             let agentData = res.data;
             this.$router.push({
               name: "addScoure",
-              params: { agentDataAll: agentData }
+              params: {
+                agentDataAll: agentData,
+                ueserId: this.data[index].source_id
+              }
             }); //进行页面的跳转
           }
         });
@@ -221,7 +223,7 @@ export default {
 };
 </script>
 
-<style scoped>
+                <style scoped>
 /* 组件样式设置 */
 .dataSheetmain {
   padding-left: 44px;

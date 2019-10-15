@@ -104,7 +104,7 @@ export default {
 
   created() {
     // 获取数组长度赋值
-    this.totalItems = this.data.length;
+    // this.totalItems = this.data.length;
     if (this.totalItems > this.pageSize) {
       for (let index = 0; index < this.pageSize; index++) {
         this.tableDataEnd.push(this.data[index]);
