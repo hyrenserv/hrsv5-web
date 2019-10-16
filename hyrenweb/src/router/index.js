@@ -17,15 +17,15 @@ Vue.use(Router)
 export default new Router({
     mode: 'history',
     routes: [
-        // {
-        //     path: '*',
-        //     name: 'login',
-        //     component: () => import('@/hrds/views/login/index')
-        // },
+        {
+            path: '*',
+            name: 'login',
+            component: () => import('@/hrds/login/login')
+        },
         {
             path: '/',
             name: 'login',
-            component: () => import('@/hrds/login/login')
+            component: () => import('@/hrds/login/login.vue')
         },
         //菜单路由地址配置
         {
@@ -36,30 +36,30 @@ export default new Router({
                 {
                     path: '/syspara',
                     name: 'syspara',
-                    component: () => import('@/hrds/a/syspara/index')
+                    component: () => import('@/hrds/a/syspara/index.vue')
                 },
                 {
                     path: '/agentdeploy',
                     name: 'agentdeploy',
-                    component: () => import('@/hrds/b/agentdeploy/agentdeploylist')
+                    component: () => import('@/hrds/b/agentdeploy/agentdeploylist.vue')
                 },
                 {
                     path: '/collectmonitor',
                     name: 'collectmonitor',
                     title: '采集监控首页',
-                    component: () => import('@/hrds/b/collectmonitor/collectmonitor')
+                    component: () => import('@/hrds/b/collectmonitor/collectmonitor.vue')
                 },
                 {
                     path: '/index1001',
                     name: ' index1001',
                     title: '1001登录首页',
-                    component: () => import('@/hrds/b/datasource/index1001')
+                    component: () => import('@/hrds/b/datasource/index1001.vue')
                 },
                 {
                     path: '/addScoure',
                     name: 'addScoure',
                     title: '数据源跳转页面',
-                    component: () => import('@/hrds/b/datasource/datasource')
+                    component: () => import('@/hrds/b/datasource/datasource.vue')
                 }
             ]
         }
