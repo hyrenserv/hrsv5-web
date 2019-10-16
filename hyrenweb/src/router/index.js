@@ -20,7 +20,7 @@ export default new Router({
         {
             path: '*',
             name: 'login',
-            component: () => import('@/hrds/login/login')
+            component: () => import('@/hrds/login/login.vue')
         },
         {
             path: '/',
