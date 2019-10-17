@@ -52,21 +52,6 @@ export default new Router({
             component: () => import("@/view/Steps/simplesteps.vue")
           },
           {
-            name: '基础对话框',
-            path: '/basedialog',
-            component: () => import("@/view/Dialog/basedialog.vue")
-          },
-          {
-            name: '嵌入表单对话框',
-            path: '/formdialog',
-            component: () => import("@/view/Dialog/formdialog.vue")
-          },
-          {
-            name: '嵌套对话框',
-            path: '/nestingdialog',
-            component: () => import("@/view/Dialog/nestingdialog.vue")
-          },
-          {
             name: '文字提示信息',
             path: '/tooltip',
             component: () => import("@/view/Tooltip/tooltip.vue")
@@ -92,14 +77,9 @@ export default new Router({
             component: () => import("@/view/Divider/verticaldivider.vue")
           },
           {
-            name: '无限滚动加载',
+            name: '无限加载',
             path: '/infiniteScroll',
             component: () => import("@/view/InfiniteScroll/infiniteScroll.vue")
-          },
-          {
-            name: '图片占位',
-            path: '/image',
-            component: () => import("@/view/Image/image.vue")
           },
       ]
     }

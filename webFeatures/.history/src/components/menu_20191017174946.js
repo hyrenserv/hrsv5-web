@@ -56,9 +56,6 @@ const Menu = [
             },
             { icon: 'el-icon-setting', title: 'Dialog 对话框', path: '',children:[
                 { icon: 'el-icon-setting', title: '基础对话框', path: '/basedialog' },
-                { icon: 'el-icon-setting', title: '嵌入表单对话框', path: '/formdialog' },
-                { icon: 'el-icon-setting', title: '嵌套对话框', path: '/nestingdialog' },
-
             ] },
             { icon: 'el-icon-setting', title: 'Tooltip 文字提示', path: '',children:[
                     { icon: 'el-icon-setting', title: '文字提示信息', path: '/tooltip' }

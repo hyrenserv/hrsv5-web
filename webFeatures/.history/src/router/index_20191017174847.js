@@ -57,16 +57,6 @@ export default new Router({
             component: () => import("@/view/Dialog/basedialog.vue")
           },
           {
-            name: '嵌入表单对话框',
-            path: '/formdialog',
-            component: () => import("@/view/Dialog/formdialog.vue")
-          },
-          {
-            name: '嵌套对话框',
-            path: '/nestingdialog',
-            component: () => import("@/view/Dialog/nestingdialog.vue")
-          },
-          {
             name: '文字提示信息',
             path: '/tooltip',
             component: () => import("@/view/Tooltip/tooltip.vue")
