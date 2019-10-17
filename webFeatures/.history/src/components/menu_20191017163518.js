@@ -54,12 +54,7 @@ const Menu = [
                     { icon: 'el-icon-setting', title: '简单步骤条', path: '/simplesteps' }
                 ]
             },
-            { icon: 'el-icon-setting', title: 'Dialog 对话框', path: '',children:[
-                { icon: 'el-icon-setting', title: '基础对话框', path: '/basedialog' },
-                { icon: 'el-icon-setting', title: '嵌入表单对话框', path: '/formdialog' },
-                { icon: 'el-icon-setting', title: '嵌套对话框', path: '/nestingdialog' },
-
-            ] },
+            { icon: 'el-icon-setting', title: 'Dialog 对话框', path: '' },
             { icon: 'el-icon-setting', title: 'Tooltip 文字提示', path: '',children:[
                     { icon: 'el-icon-setting', title: '文字提示信息', path: '/tooltip' }
                 ]
@@ -72,18 +67,11 @@ const Menu = [
                 ]
             },
             { icon: 'el-icon-setting', title: 'Divider 分割线', path: '',children:[
-                    { icon: 'el-icon-setting', title: '基础分割线', path: '/divider' },
-                    { icon: 'el-icon-setting', title: '垂直分割线', path: '/verticaldivider'}
-
+                    { icon: 'el-icon-setting', title: '基础分割线', path: '/divider' }
                 ]
             },
-            { icon: 'el-icon-setting', title: 'Image 图片', path: '',children:[
-                { icon: 'el-icon-setting', title: '图片占位', path: '/image' }
-                ]
-            },
-            { icon: 'el-icon-setting', title: 'InfiniteScroll 无限滚动', path: '',children:[
-                    { icon: 'el-icon-setting', title: '无限滚动加载', path: '/infiniteScroll' }    
-            ]},
+            { icon: 'el-icon-setting', title: 'Image 图片', path: '' },
+            { icon: 'el-icon-setting', title: 'InfiniteScroll 无限滚动', path: '' },
         ]
     }
 ]
