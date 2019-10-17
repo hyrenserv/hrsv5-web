@@ -4,14 +4,13 @@
  * 
  */
 const Menu = [
-
+    
     {
-        //如果有二级菜单只需要添加 children即可,数据结构和一级菜单保持一致
         icon: 'el-icon-menu', title: '功能选项', path: '/features', children: [
             {
                 icon: 'el-icon-setting', title: 'Layout 布局', path: '', children: [
-                    { icon: 'el-icon-setting', title: '基础布局', path: '/Layout1' },
-                    { icon: 'el-icon-setting', title: '分栏间隔', path: '/Layout2' },
+                    { icon: 'el-icon-setting', title: '基础布局', path: '/zebrapattern' },
+                    { icon: 'el-icon-setting', title: '分栏间隔', path: '/zebrapattern2' },
                     { icon: 'el-icon-setting', title: '混合布局', path: '/Layout3' },
                     { icon: 'el-icon-setting', title: '混合布局', path: '/Layout4' },
                     { icon: 'el-icon-setting', title: '分栏偏移', path: '/Layout5' }

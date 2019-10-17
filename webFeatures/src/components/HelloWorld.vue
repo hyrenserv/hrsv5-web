@@ -1,7 +1,9 @@
 <template>
 <div class="hello">
-    <el-container fixd>
-        <el-aside width="300px">
+    
+
+    <el-container style="height: 680px; border: 1px solid #eee">
+        <el-aside width="300px" style="background-color: rgb(238, 241, 246)">
             <el-menu router :default-active="menus[0].path">
                 <div v-for="items in menus" :key="items.title">
                     <template v-if="items.children">
@@ -13,6 +15,7 @@
                             </template>
                             <div v-for="item in items.children" :key="item.title">
                                 <template v-if="item.children">
+                                    <!--三级菜单循环-->
                                     <el-submenu :index="item.children[0].path">
                                         <template slot="title">
                                             <i class="el-icon-message"></i>
@@ -45,9 +48,12 @@
                 </div>
             </el-menu>
         </el-aside>
-        <el-main>
-            <router-view></router-view>
-        </el-main>
+
+        <el-container>
+            <el-main>
+               <router-view />
+            </el-main>
+        </el-container>
     </el-container>
 </div>
 </template>
@@ -56,14 +62,18 @@
 import menu from "./menu";
 export default {
     data() {
+        const item = {
+            date: '2016-05-02',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1518 弄'
+          };
         return {
-            menus: menu
+            menus: menu,
+            tableData: Array(20).fill(item)
         };
     },
     methods: {
-        handleNodeClick(data) {
-            console.log(data);
-        }
+
     }
 };
 </script>
@@ -99,4 +109,15 @@ export default {
     left: 0px;
     font-size: 12px;
 }
+</style>
+<style>
+  .el-header {
+    background-color: #B3C0D1;
+    color: #333;
+    line-height: 60px;
+  }
+  
+  .el-aside {
+    color: #333;
+  }
 </style>
