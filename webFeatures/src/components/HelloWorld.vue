@@ -1,28 +1,25 @@
 <template>
 <div class="hello">
-    
-
-    <el-container style="height: 680px; border: 1px solid #eee">
-        <el-aside width="300px" style="background-color: rgb(238, 241, 246)">
-            <el-menu router :default-active="menus[0].path">
+    <el-container style="height: auto;max-height:680px; border: 1px solid #eee">
+        <el-aside width="300px" style="background-color: #fff">
+            <el-menu router default-active="items.children[0].path">
                 <div v-for="items in menus" :key="items.title">
                     <template v-if="items.children">
                         <!--二级菜单循环-->
-                        <el-submenu :index="items.children[0].path">
+                        <el-submenu index="">
                             <template slot="title">
-                                <i class="el-icon-message"></i>
+                                <i class="el-icon-setting"></i>
                                 {{items.title}}
                             </template>
                             <div v-for="item in items.children" :key="item.title">
                                 <template v-if="item.children">
                                     <!--三级菜单循环-->
-                                    <el-submenu :index="item.children[0].path">
+                                    <el-submenu index="">
                                         <template slot="title">
-                                            <i class="el-icon-message"></i>
                                             {{item.title}}
                                         </template>
                                         <div v-for="data in item.children" :key="data.title">
-                                            <el-menu-item :index="data.path">
+                                            <el-menu-item @click="handleOpen(data.title)" :index="data.path">
                                                 <i :class="data.icon"></i>
                                                 <span>{{data.title}}</span>
                                             </el-menu-item>
@@ -30,7 +27,7 @@
                                     </el-submenu>
                                 </template>
                                 <template v-else>
-                                    <el-menu-item :index="item.path">
+                                    <el-menu-item @click="handleOpen(item.title)" :index="item.path">
                                         <i :class="item.icon"></i>
                                         <span>{{item.title}}</span>
                                     </el-menu-item>
@@ -40,7 +37,7 @@
                     </template>
                     <template v-else>
                         <!--一级菜单循环-->
-                        <el-menu-item :index="items.path">
+                        <el-menu-item @click="handleOpen(items.title)" :index="items.path">
                             <i :class="items.icon"></i>
                             <span>{{items.title}}</span>
                         </el-menu-item>
@@ -50,8 +47,12 @@
         </el-aside>
 
         <el-container>
-            <el-main>
-               <router-view />
+            <el-main  v-if="titleMsg">
+                <el-row>
+                    <span>{{titleMsg}}</span>
+                    <el-divider></el-divider>
+                </el-row>
+                <router-view />
             </el-main>
         </el-container>
     </el-container>
@@ -62,62 +63,15 @@
 import menu from "./menu";
 export default {
     data() {
-        const item = {
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          };
         return {
             menus: menu,
-            tableData: Array(20).fill(item)
-        };
+            titleMsg: ''
+        }
     },
     methods: {
-
+        handleOpen(msg) {
+            this.titleMsg = msg;
+        }
     }
 };
 </script>
-
-<style scoped>
-.el-header,
-.el-footer {
-    background-color: #3f51b5;
-    text-align: center;
-    line-height: 50px;
-    color: #fff;
-}
-
-.el-aside {
-    height: 100%;
-}
-
-.el-menu {
-    height: 100%;
-    /* background-color: #3F51B5; */
-}
-
-.hello .el-header i {
-    color: white;
-}
-
-.el-footer {
-    width: 100%;
-    height: 45px !important;
-    /* footer的高度一定要是固定值*/
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    font-size: 12px;
-}
-</style>
-<style>
-  .el-header {
-    background-color: #B3C0D1;
-    color: #333;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    color: #333;
-  }
-</style>

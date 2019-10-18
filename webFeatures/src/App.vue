@@ -19,4 +19,8 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+code{
+    background-color:lightslategrey;
+    font-size: 20px;
+}
 </style>
