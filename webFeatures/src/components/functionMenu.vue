@@ -6,7 +6,7 @@
                 <div v-for="items in menus" :key="items.title">
                     <template v-if="items.children">
                         <!--二级菜单循环-->
-                        <el-submenu index="">
+                        <el-submenu :index="items.path">
                             <template slot="title">
                                 <i class="el-icon-setting"></i>
                                 {{items.title}}
@@ -14,7 +14,7 @@
                             <div v-for="item in items.children" :key="item.title">
                                 <template v-if="item.children">
                                     <!--三级菜单循环-->
-                                    <el-submenu index="">
+                                    <el-submenu :index="item.path">
                                         <template slot="title">
                                             {{item.title}}
                                         </template>
