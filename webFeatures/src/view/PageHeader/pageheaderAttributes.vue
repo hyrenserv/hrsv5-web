@@ -1,0 +1,102 @@
+<template>
+    <div>
+        <el-collapse>
+            <el-collapse-item title="属性" name="1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>参数</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>可选值</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>title</td>
+                            <td>标题</td>
+                            <td>string</td>
+                            <td>—</td>
+                            <td>返回</td>
+                        </tr>
+                        <tr>
+                            <td>content</td>
+                            <td>内容</td>
+                            <td>string</td>
+                            <td>—</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </el-collapse-item>
+        </el-collapse>
+
+        <el-collapse>
+            <el-collapse-item title="事件" name="1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名称</th>
+                            <th>说明</th>
+                            <th>回调参数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>back</td>
+                            <td>点击左侧区域触发</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </el-collapse-item>
+        </el-collapse>
+
+        <el-collapse>
+            <el-collapse-item title="Slots" name="1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>title</td>
+                            <td>标题内容</td>
+                        </tr>
+                        <tr>
+                            <td>content</td>
+                            <td>内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </el-collapse-item>
+        </el-collapse>
+    </div>
+</template>
+
+<style scoped>
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    font-size: 14px;
+    margin-bottom: 45px;
+    line-height: 1.5em;
+}
+
+th {
+    white-space: nowrap;
+    color: #909399;
+    font-weight: 400;
+}
+
+td {
+    border-bottom: 1px solid #dcdfe6;
+    padding: 15px;
+    max-width: 250px;
+}
+</style>

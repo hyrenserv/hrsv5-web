@@ -16,6 +16,7 @@ export default new Router({
           path: '/zebrapattern',
           component: () => import("@/view/Table/zebrapattern.vue")
         },
+        // 21--31路由设置开始
         {
           name: '基础选项卡',
           path: '/Tab',
@@ -27,10 +28,20 @@ export default new Router({
           component: () => import("@/view/Tabs/tabPosition.vue")
         },
         {
+            name: '选项卡属性方法说明',
+            path: '/tabsAttributes',
+            component: () => import("@/view/Tabs/tabsAttributes.vue")
+          },
+        {
           name: '基础页头',
           path: '/pageHeader',
           component: () => import("@/view/PageHeader/pageHeader.vue")
         },
+        {
+            name: '页头属性方法说明',
+            path: '/pageheaderAttributes',
+            component: () => import("@/view/PageHeader/pageheaderAttributes.vue")
+          },
         {
           name: '基础下拉菜单',
           path: '/dropdown',
@@ -42,6 +53,11 @@ export default new Router({
           component: () => import("@/view/Dropdown/buttondropdown.vue")
         },
         {
+            name: '下拉菜单属性方法说明',
+            path: '/dropdownAttributes',
+            component: () => import("@/view/Dropdown/dropdownAttributes.vue")
+          },
+        {
           name: '基础步骤条',
           path: '/steps',
           component: () => import("@/view/Steps/steps.vue")
@@ -51,6 +67,11 @@ export default new Router({
           path: '/simplesteps',
           component: () => import("@/view/Steps/simplesteps.vue")
         },
+        {
+            name: '步骤条属性方法说明',
+            path: '/stepsAttributes',
+            component: () => import("@/view/Steps/stepsAttributes.vue")
+          },
         {
           name: '基础对话框',
           path: '/basedialog',
@@ -67,20 +88,40 @@ export default new Router({
           component: () => import("@/view/Dialog/nestingdialog.vue")
         },
         {
+            name: '对话框属性方法说明',
+            path: '/dialogAttributes',
+            component: () => import("@/view/Dialog/dialogAttributes.vue")
+          },
+        {
           name: '文字提示信息',
           path: '/tooltip',
           component: () => import("@/view/Tooltip/tooltip.vue")
         },
+        {
+            name: '提示属性方法说明',
+            path: '/tooltipAttributes',
+            component: () => import("@/view/Tooltip/tooltipAttributes.vue")
+          },
         {
           name: '基本弹出框',
           path: '/popover',
           component: () => import("@/view/Popover/popover.vue")
         },
         {
+            name: '弹出框属性方法说明',
+            path: '/popoverAttributes',
+            component: () => import("@/view/Popover/popoverAttributes.vue")
+          },
+        {
           name: '手风琴',
           path: '/collapse',
           component: () => import("@/view/Collapse/collapse.vue")
         },
+        {
+            name: 'collapse属性方法说明',
+            path: '/collapseAttributes',
+            component: () => import("@/view/Collapse/collapseAttributes.vue")
+          },
         {
           name: '基础分割线',
           path: '/divider',
@@ -92,15 +133,33 @@ export default new Router({
           component: () => import("@/view/Divider/verticaldivider.vue")
         },
         {
+            name: '分割线属性方法说明',
+            path: '/dividerAttributes',
+            component: () => import("@/view/Divider/dividerAttributes.vue")
+          },
+        {
           name: '无限滚动加载',
           path: '/infiniteScroll',
           component: () => import("@/view/InfiniteScroll/infiniteScroll.vue")
         },
         {
+            name: '滚动属性方法说明',
+            path: '/infiniteScrollAttributes',
+            component: () => import("@/view/InfiniteScroll/infiniteScrollAttributes.vue")
+          },
+        {
           name: '图片占位',
           path: '/image',
           component: () => import("@/view/Image/image.vue")
         },
+        {
+            name: '图片属性方法说明',
+            path: '/imageAttributes',
+            component: () => import("@/view/Image/imageAttributes.vue")
+          },
+           // 21--31路由设置完
+
+
         /**Table路由地址信息*/
         {
           name: 'zebrapattern',

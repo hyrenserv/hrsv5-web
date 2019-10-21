@@ -53,28 +53,35 @@ const Menu = [
     { icon: 'el-icon-setting22', title: 'Notification 通知--18', path: '/18' },
     { icon: 'el-icon-setting22', title: 'Tree 树形控件--19', path: '/19' },
     { icon: 'el-icon-setting22', title: 'NavMenu 导航菜单--20', path: '/20' },
-
+       // 21--31路由设置开始
     {
         icon: 'el-icon-setting22', title: 'Tabs 标签页', path: '/21', children: [
             { icon: 'el-icon-setting22', title: '基础选项卡', path: '/Tab' },
             { icon: 'el-icon-setting22', title: '位置变换选项卡', path: '/tabPosition' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/tabsAttributes' },
+
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'PageHeader 页头', path: '/22', children: [
-            { icon: 'el-icon-setting22', title: '基础页头', path: '/pageHeader' }
+            { icon: 'el-icon-setting22', title: '基础页头', path: '/pageHeader' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/pageheaderAttributes' }
+
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Dropdown 下拉菜单', path: '/23', children: [
             { icon: 'el-icon-setting22', title: '基础下拉菜单', path: '/dropdown' },
-            { icon: 'el-icon-setting22', title: '按钮下拉菜单', path: '/buttondropdown' }
+            { icon: 'el-icon-setting22', title: '按钮下拉菜单', path: '/buttondropdown' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/dropdownAttributes' }
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Steps 步骤条', path: '/24', children: [
             { icon: 'el-icon-setting22', title: '基础步骤条', path: '/steps' },
-            { icon: 'el-icon-setting22', title: '简单步骤条', path: '/simplesteps' }
+            { icon: 'el-icon-setting22', title: '简单步骤条', path: '/simplesteps' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/stepsAttributes' }
+
         ]
     },
     {
@@ -82,41 +89,49 @@ const Menu = [
             { icon: 'el-icon-setting22', title: '基础对话框', path: '/basedialog' },
             { icon: 'el-icon-setting22', title: '嵌入表单对话框', path: '/formdialog' },
             { icon: 'el-icon-setting22', title: '嵌套对话框', path: '/nestingdialog' },
-
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/dialogAttributes' },
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Tooltip 文字提示', path: '/26', children: [
-            { icon: 'el-icon-setting22', title: '文字提示信息', path: '/tooltip' }
+            { icon: 'el-icon-setting22', title: '文字提示信息', path: '/tooltip' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/tooltipAttributes' }
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Popover 弹出框', path: '/27', children: [
-            { icon: 'el-icon-setting22', title: '基本弹出框', path: '/popover' }
+            { icon: 'el-icon-setting22', title: '基本弹出框', path: '/popover' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/popoverAttributes'}
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Collapse 折叠面板', path: '/28', children: [
-            { icon: 'el-icon-setting22', title: '手风琴', path: '/collapse' }
+            { icon: 'el-icon-setting22', title: '手风琴', path: '/collapse' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/collapseAttributes' }
+
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Divider 分割线', path: '/29', children: [
             { icon: 'el-icon-setting22', title: '基础分割线', path: '/divider' },
-            { icon: 'el-icon-setting22', title: '垂直分割线', path: '/verticaldivider' }
-
+            { icon: 'el-icon-setting22', title: '垂直分割线', path: '/verticaldivider' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/dividerAttributes' },
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Image 图片', path: '/30', children: [
-            { icon: 'el-icon-setting22', title: '图片占位', path: '/image' }
+            { icon: 'el-icon-setting22', title: '图片占位', path: '/image' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/imageAttributes' },
+
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'InfiniteScroll 无限滚动', path: '/31', children: [
-            { icon: 'el-icon-setting22', title: '无限滚动加载', path: '/infiniteScroll' }
+            { icon: 'el-icon-setting22', title: '无限滚动加载', path: '/infiniteScroll' },
+            { icon: 'el-icon-setting22', title: '属性方法说明', path: '/infiniteScrollAttributes' }
+
         ]
-    }
+    } // 21--31路由设置完
 ]
 
 export default Menu;
