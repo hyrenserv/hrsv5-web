@@ -1,6 +1,7 @@
 <template>
 <div class="hello">
-    <el-container style="max-height:680px;min-height:680px; border: 1px solid #eee">
+    <el-header style="height: 60px; background-color: #545c64; line-height:60px;font-size:22px;color:white;">vcol</el-header>
+    <el-container style="max-height:680px;min-height:680px;">
         <el-aside width="300px" style="background-color: #fff">
             <el-menu router default-active="items.children[0].path" :unique-opened="true" background-color="#545c64" text-color="#fff">
                 <div v-for="items in menus" :key="items.title">
