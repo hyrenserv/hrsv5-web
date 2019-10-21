@@ -2,7 +2,7 @@
 <div class="hello">
     <el-container style="max-height:680px;min-height:680px; border: 1px solid #eee">
         <el-aside width="300px" style="background-color: #fff">
-            <el-menu router default-active="items.children[0].path" unique-opened="true" background-color="#545c64" text-color="#fff">
+            <el-menu router default-active="items.children[0].path" :unique-opened="true" background-color="#545c64" text-color="#fff">
                 <div v-for="items in menus" :key="items.title">
                     <template v-if="items.children">
                         <!--二级菜单循环-->
