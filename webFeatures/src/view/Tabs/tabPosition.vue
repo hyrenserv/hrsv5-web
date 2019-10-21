@@ -40,6 +40,15 @@ export default {
                             </el-tabs>
                         </div>       
                     </template>
+                    <script>
+                        export default {
+                            data() {
+                                return {
+                                    tabPosition: 'top'
+                                };
+                            }
+                        };
+                    <\/script>
                 `,
             tabPosition: 'top'
         };
