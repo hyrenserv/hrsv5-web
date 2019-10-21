@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ul class="infinite-list"  v-infinite-scroll="load" infinite-scroll-delay="3600" style="overflow:auto">
+        <ul class="infinite-list"  v-infinite-scroll="load"  style="overflow:auto; height:200px">
             <li v-for="(i,item) in count" class="infinite-list-item" :key="item">{{ i }}</li>
         </ul>
         <p style="margin-top:20px">在要实现滚动加载的列表上设置<code>v-infinite-scroll</code>属性，并且自定义方法,来实现滚动到底部时自动执行加载</p>
@@ -19,7 +19,7 @@
             return {
                 textarea2: `
                     <template>
-                        <ul class="infinite-list" v-infinite-scroll="load" infinite-scroll-delay="3600" style="overflow:auto">
+                        <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height:200px">
                             <li v-for="i in count" class="infinite-list-item">{{ i }}</li>
                         </ul>
                     </template>
@@ -39,7 +39,7 @@
                         }
                     <\/script>
                 `,
-            count: 0
+            count:0
         }
     },
     methods: {

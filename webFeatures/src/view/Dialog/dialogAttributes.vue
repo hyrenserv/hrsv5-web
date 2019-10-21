@@ -194,26 +194,3 @@
         </el-collapse>
     </div>
 </template>
-
-<style scoped>
-table {
-    border-collapse: collapse;
-    width: 100%;
-    background-color: #fff;
-    font-size: 14px;
-    margin-bottom: 45px;
-    line-height: 1.5em;
-}
-
-th {
-    white-space: nowrap;
-    color: #909399;
-    font-weight: 400;
-}
-
-td {
-    border-bottom: 1px solid #dcdfe6;
-    padding: 15px;
-    max-width: 250px;
-}
-</style>
