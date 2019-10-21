@@ -1,0 +1,331 @@
+<template>
+  <div>
+    <el-collapse accordion>
+      <el-collapse-item title="属性" name="1">
+        <table>
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>说明</th>
+              <th>类型</th>
+              <th>可选值</th>
+              <th>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>value / v-model</td>
+              <td>绑定值</td>
+              <td>date(DatePicker) / array(DateRangePicker)</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>readonly</td>
+              <td>完全只读</td>
+              <td>boolean</td>
+              <td>—</td>
+              <td>false</td>
+            </tr>
+            <tr>
+              <td>disabled</td>
+              <td>禁用</td>
+              <td>boolean</td>
+              <td>—</td>
+              <td>false</td>
+            </tr>
+            <tr>
+              <td>editable</td>
+              <td>文本框可输入</td>
+              <td>boolean</td>
+              <td>—</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>clearable</td>
+              <td>是否显示清除按钮</td>
+              <td>boolean</td>
+              <td>—</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>size</td>
+              <td>输入框尺寸</td>
+              <td>string</td>
+              <td>large, small, mini</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>placeholder</td>
+              <td>非范围选择时的占位内容</td>
+              <td>string</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>start-placeholder</td>
+              <td>范围选择时开始日期的占位内容</td>
+              <td>string</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>end-placeholder</td>
+              <td>范围选择时结束日期的占位内容</td>
+              <td>string</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>显示类型</td>
+              <td>string</td>
+              <td>year/month/date/dates/ week/datetime/datetimerange/ daterange/monthrange</td>
+              <td>date</td>
+            </tr>
+            <tr>
+              <td>format</td>
+              <td>显示在输入框中的格式</td>
+              <td>string</td>
+              <td>
+                见
+                <a href="#/zh-CN/component/date-picker#ri-qi-ge-shi">日期格式</a>
+              </td>
+              <td>yyyy-MM-dd</td>
+            </tr>
+            <tr>
+              <td>align</td>
+              <td>对齐方式</td>
+              <td>string</td>
+              <td>left, center, right</td>
+              <td>left</td>
+            </tr>
+            <tr>
+              <td>popper-class</td>
+              <td>DatePicker 下拉框的类名</td>
+              <td>string</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>picker-options</td>
+              <td>当前时间日期选择器特有的选项参考下表</td>
+              <td>object</td>
+              <td>—</td>
+              <td>{}</td>
+            </tr>
+            <tr>
+              <td>range-separator</td>
+              <td>选择范围时的分隔符</td>
+              <td>string</td>
+              <td>—</td>
+              <td>'-'</td>
+            </tr>
+            <tr>
+              <td>default-value</td>
+              <td>可选，选择器打开时默认显示的时间</td>
+              <td>Date</td>
+              <td>
+                可被
+                <code>new Date()</code>解析
+              </td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>default-time</td>
+              <td>范围选择时选中日期所使用的当日内具体时刻</td>
+              <td>string[]</td>
+              <td>
+                数组，长度为 2，每项值为字符串，形如
+                <code>12:00:00</code>，第一项指定开始日期的时刻，第二项指定结束日期的时刻，不指定会使用时刻
+                <code>00:00:00</code>
+              </td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>value-format</td>
+              <td>可选，绑定值的格式。不指定则绑定值为 Date 对象</td>
+              <td>string</td>
+              <td>
+                见
+                <a href="#/zh-CN/component/date-picker#ri-qi-ge-shi">日期格式</a>
+              </td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>原生属性</td>
+              <td>string</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>unlink-panels</td>
+              <td>在范围选择器里取消两个日期面板之间的联动</td>
+              <td>boolean</td>
+              <td>—</td>
+              <td>false</td>
+            </tr>
+            <tr>
+              <td>prefix-icon</td>
+              <td>自定义头部图标的类名</td>
+              <td>string</td>
+              <td>—</td>
+              <td>el-icon-date</td>
+            </tr>
+            <tr>
+              <td>clear-icon</td>
+              <td>自定义清空图标的类名</td>
+              <td>string</td>
+              <td>—</td>
+              <td>el-icon-circle-close</td>
+            </tr>
+            <tr>
+              <td>validate-event</td>
+              <td>输入时是否触发表单的校验</td>
+              <td>boolean</td>
+              <td>-</td>
+              <td>true</td>
+            </tr>
+          </tbody>
+        </table>
+      </el-collapse-item>
+      <el-collapse-item title="Picker Options" name="2">
+        <table>
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>说明</th>
+              <th>类型</th>
+              <th>可选值</th>
+              <th>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>shortcuts</td>
+              <td>设置快捷选项，需要传入 { text, onClick } 对象用法参考 demo 或下表</td>
+              <td>Object[]</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>disabledDate</td>
+              <td>设置禁用状态，参数为当前日期，要求返回 Boolean</td>
+              <td>Function</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>cellClassName</td>
+              <td>设置日期的 className</td>
+              <td>Function(Date)</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>firstDayOfWeek</td>
+              <td>周起始日</td>
+              <td>Number</td>
+              <td>1 到 7</td>
+              <td>7</td>
+            </tr>
+            <tr>
+              <td>onPick</td>
+              <td>
+                选中日期后会执行的回调，只有当
+                <code>daterange</code> 或
+                <code>datetimerange</code> 才生效
+              </td>
+              <td>Function({ maxDate, minDate })</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </el-collapse-item>
+      <el-collapse-item title="Shortcuts" name="3">
+        <table>
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>说明</th>
+              <th>类型</th>
+              <th>可选值</th>
+              <th>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>text</td>
+              <td>标题文本</td>
+              <td>string</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>onClick</td>
+              <td>选中后的回调函数，参数是 vm，可通过触发 'pick' 事件设置选择器的值。例如 vm.$emit('pick', new Date())</td>
+              <td>function</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </el-collapse-item>
+      <el-collapse-item title="事件" name="4">
+        <table>
+          <thead>
+            <tr>
+              <th>事件名称</th>
+              <th>说明</th>
+              <th>回调参数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>change</td>
+              <td>用户确认选定的值时触发</td>
+              <td>
+                组件绑定值。格式与绑定值一致，可受
+                <code>value-format</code> 控制
+              </td>
+            </tr>
+            <tr>
+              <td>blur</td>
+              <td>当 input 失去焦点时触发</td>
+              <td>组件实例</td>
+            </tr>
+            <tr>
+              <td>focus</td>
+              <td>当 input 获得焦点时触发</td>
+              <td>组件实例</td>
+            </tr>
+          </tbody>
+        </table>
+      </el-collapse-item>
+      <el-collapse-item title="方法" name="5">
+        <table>
+          <thead>
+            <tr>
+              <th>方法名</th>
+              <th>说明</th>
+              <th>参数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>focus</td>
+              <td>使 input 获取焦点</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
