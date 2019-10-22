@@ -1,0 +1,12 @@
+/* 按钮设置样式的class名称,需要给button设置class="elButton"实现更改样式*/
+.elButton{
+
+}
+/* 表格表头样式设置的class名称,不需要添加属性即可更改，如有特别请自行设置class名谢谢 */
+.el-table th{
+  
+}
+/* 斑马纹样式设置的class名称，只需要在table里面写stripe即可实现样式的更改 */
+.el-table--striped .el-table__body tr.el-table__row--striped td{
+  
+}
