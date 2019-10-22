@@ -249,11 +249,6 @@ export default new Router({
           component: () => import("@/view/Steps/simplesteps.vue")
         },
         {
-          name: '基础对话框',
-          path: '/basedialog',
-          component: () => import("@/view/Dialog/basedialog.vue")
-        },
-        {
           name: '嵌入表单对话框',
           path: '/formdialog',
           component: () => import("@/view/Dialog/formdialog.vue")
@@ -556,11 +551,6 @@ export default new Router({
             path: '/stepsAttributes',
             component: () => import("@/view/Steps/stepsAttributes.vue")
           },
-        {
-          name: '基础对话框',
-          path: '/basedialog',
-          component: () => import("@/view/Dialog/basedialog.vue")
-        },
         {
           name: '嵌入表单对话框',
           path: '/formdialog',
