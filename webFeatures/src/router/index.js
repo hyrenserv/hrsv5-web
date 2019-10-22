@@ -43,7 +43,7 @@ export default new Router({
             component: () => import("@/view/Layout/Layout6.vue")
           },
           {
-            name: '方法说明',
+            name: 'Layout方法说明',
             path: '/Layout/Explain',
             component: () => import("@/view/Layout/Explain.vue")
           },
@@ -53,7 +53,7 @@ export default new Router({
             component: () => import("@/view/Container/Container1.vue")
           },
           {
-            name: '方法说明',
+            name: 'Container方法说明',
             path: '/Container/Explain',
             component: () => import("@/view/Container/Explain.vue")
           },
@@ -63,7 +63,7 @@ export default new Router({
             component: () => import("@/view/Button/Button1.vue")
           },
           {
-            name: '方法说明',
+            name: 'Button方法说明',
             path: '/Button/Explain',
             component: () => import("@/view/Button/Explain.vue")
           },
@@ -78,7 +78,7 @@ export default new Router({
             component: () => import("@/view/Radio/Radio2.vue")
           },
           {
-            name: '方法说明',
+            name: 'Radio方法说明',
             path: '/Radio/Explain',
             component: () => import("@/view/Radio/Explain.vue")
           },
@@ -93,7 +93,7 @@ export default new Router({
             component: () => import("@/view/Checkbox/Checkbox2.vue")
           },
           {
-            name: '方法说明',
+            name: 'Checkbox方法说明',
             path: '/Checkbox/Explain',
             component: () => import("@/view/Checkbox/Explain.vue")
           },
@@ -133,7 +133,7 @@ export default new Router({
             component: () => import("@/view/Select/Select5.vue")
           },
           {
-            name: '方法说明',
+            name: 'Select方法说明',
             path: '/Select/Explain',
             component: () => import("@/view/Select/Explain.vue")
           },
@@ -143,22 +143,32 @@ export default new Router({
             component: () => import("@/view/Switch/Switch1.vue")
           },
           {
-            name: '方法说明',
+            name: 'Switch方法说明',
             path: '/Switch/Explain',
             component: () => import("@/view/Switch/Explain.vue")
           },
           {
-            name: '日期和时间点',
+            name: '日期',
             path: '/DatePicker1',
             component: () => import("@/view/DatePicker/DatePicker1.vue")
           },
           {
-            name: '默认的起始与结束时刻',
+            name: '时间',
             path: '/DatePicker2',
             component: () => import("@/view/DatePicker/DatePicker2.vue")
           },
           {
-            name: '方法说明',
+            name: '日期和时间点',
+            path: '/DatePicker3',
+            component: () => import("@/view/DatePicker/DatePicker3.vue")
+          },
+          {
+            name: '默认的起始与结束时刻',
+            path: '/DatePicker4',
+            component: () => import("@/view/DatePicker/DatePicker4.vue")
+          },
+          {
+            name: 'DatePicker方法说明',
             path: '/DatePicker/Explain',
             component: () => import("@/view/DatePicker/Explain.vue")
           },
@@ -178,7 +188,7 @@ export default new Router({
             component: () => import("@/view/Upload/Upload3.vue")
           },
           {
-            name: '方法说明',
+            name: 'Upload方法说明',
             path: '/Upload/Explain',
             component: () => import("@/view/Upload/Explain.vue")
           },
@@ -193,7 +203,7 @@ export default new Router({
             component: () => import("@/view/Form/Form2.vue")
           },
           {
-            name: '方法说明',
+            name: 'Form方法说明',
             path: '/Form/Explain',
             component: () => import("@/view/Form/Explain.vue")
           },
@@ -633,10 +643,10 @@ export default new Router({
           }
       ]
     },
-    {
+   /*  {
       name: 'demo',
       path: '/demo',
       component: () => import("@/view/demo.vue")
-    }
+    } */
   ]
 })
