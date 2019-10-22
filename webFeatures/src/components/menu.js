@@ -194,7 +194,6 @@ const Menu = [
     },
     {
         icon: 'el-icon-setting22', title: 'Dialog 对话框', path: '/25', children: [
-            { icon: 'el-icon-setting22', title: '基础对话框', path: '/basedialog' },
             { icon: 'el-icon-setting22', title: '嵌入表单对话框', path: '/formdialog' },
             { icon: 'el-icon-setting22', title: '嵌套对话框', path: '/nestingdialog' },
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/dialogAttributes' },
