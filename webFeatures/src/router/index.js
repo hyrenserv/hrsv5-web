@@ -497,137 +497,137 @@ export default new Router({
         },
         /**  菜单路由地址信息 结束 */
         {
-          name: '基础选项卡',
+          name: 'Tab',
           path: '/Tab',
           component: () => import("@/view/Tabs/tab.vue")
         },
         {
-          name: '位置变换选项卡',
+          name: 'tabPosition',
           path: '/tabPosition',
           component: () => import("@/view/Tabs/tabPosition.vue")
         },
         {
-            name: '选项卡属性方法说明',
+            name: 'tabsAttributes',
             path: '/tabsAttributes',
             component: () => import("@/view/Tabs/tabsAttributes.vue")
           },
         {
-          name: '基础页头',
+          name: 'pageHeader',
           path: '/pageHeader',
           component: () => import("@/view/PageHeader/pageHeader.vue")
         },
         {
-            name: '页头属性方法说明',
+            name: 'pageheaderAttributes',
             path: '/pageheaderAttributes',
             component: () => import("@/view/PageHeader/pageheaderAttributes.vue")
           },
         {
-          name: '基础下拉菜单',
+          name: 'dropdown',
           path: '/dropdown',
           component: () => import("@/view/Dropdown/dropdown.vue")
         },
         {
-          name: '按钮下拉菜单',
+          name: 'buttondropdown',
           path: '/buttondropdown',
           component: () => import("@/view/Dropdown/buttondropdown.vue")
         },
         {
-            name: '下拉菜单属性方法说明',
+            name: 'dropdownAttributes',
             path: '/dropdownAttributes',
             component: () => import("@/view/Dropdown/dropdownAttributes.vue")
           },
         {
-          name: '基础步骤条',
+          name: 'steps',
           path: '/steps',
           component: () => import("@/view/Steps/steps.vue")
         },
         {
-          name: '简单步骤条',
+          name: 'simplesteps',
           path: '/simplesteps',
           component: () => import("@/view/Steps/simplesteps.vue")
         },
         {
-            name: '步骤条属性方法说明',
+            name: 'stepsAttributes',
             path: '/stepsAttributes',
             component: () => import("@/view/Steps/stepsAttributes.vue")
           },
         {
-          name: '嵌入表单对话框',
+          name: 'formdialog',
           path: '/formdialog',
           component: () => import("@/view/Dialog/formdialog.vue")
         },
         {
-          name: '嵌套对话框',
+          name: 'nestingdialog',
           path: '/nestingdialog',
           component: () => import("@/view/Dialog/nestingdialog.vue")
         },
         {
-            name: '对话框属性方法说明',
+            name: 'dialogAttributes',
             path: '/dialogAttributes',
             component: () => import("@/view/Dialog/dialogAttributes.vue")
           },
         {
-          name: '文字提示信息',
+          name: 'tooltip',
           path: '/tooltip',
           component: () => import("@/view/Tooltip/tooltip.vue")
         },
         {
-            name: '提示属性方法说明',
+            name: 'tooltipAttributes',
             path: '/tooltipAttributes',
             component: () => import("@/view/Tooltip/tooltipAttributes.vue")
           },
         {
-          name: '基本弹出框',
+          name: 'popover',
           path: '/popover',
           component: () => import("@/view/Popover/popover.vue")
         },
         {
-            name: '弹出框属性方法说明',
+            name: 'popoverAttributes',
             path: '/popoverAttributes',
             component: () => import("@/view/Popover/popoverAttributes.vue")
           },
         {
-          name: '手风琴',
+          name: 'collapse',
           path: '/collapse',
           component: () => import("@/view/Collapse/collapse.vue")
         },
         {
-            name: 'collapse属性方法说明',
+            name: 'collapseAttributes',
             path: '/collapseAttributes',
             component: () => import("@/view/Collapse/collapseAttributes.vue")
           },
         {
-          name: '基础分割线',
+          name: 'divider',
           path: '/divider',
           component: () => import("@/view/Divider/divider.vue")
         },
         {
-          name: '垂直分割线',
+          name: 'verticaldivider',
           path: '/verticaldivider',
           component: () => import("@/view/Divider/verticaldivider.vue")
         },
         {
-            name: '分割线属性方法说明',
+            name: 'dividerAttributes',
             path: '/dividerAttributes',
             component: () => import("@/view/Divider/dividerAttributes.vue")
           },
         {
-          name: '无限滚动加载',
+          name: 'infiniteScroll',
           path: '/infiniteScroll',
           component: () => import("@/view/InfiniteScroll/infiniteScroll.vue")
         },
         {
-            name: '滚动属性方法说明',
+            name: 'infiniteScrollAttributes',
             path: '/infiniteScrollAttributes',
             component: () => import("@/view/InfiniteScroll/infiniteScrollAttributes.vue")
           },
         {
-          name: '图片占位',
+          name: 'image',
           path: '/image',
           component: () => import("@/view/Image/image.vue")
         },
         {
-            name: '图片属性方法说明',
+            name: 'imageAttributes',
             path: '/imageAttributes',
             component: () => import("@/view/Image/imageAttributes.vue")
           }
