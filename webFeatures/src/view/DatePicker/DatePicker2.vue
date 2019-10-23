@@ -1,6 +1,15 @@
 <template>
   <div>
-     <el-time-picker placeholder="选择时间" v-model="value2"></el-time-picker>
+    <el-time-picker
+    v-model="value1"
+    :picker-options="{
+      selectableRange: '18:30:00 - 20:30:00'
+    }"
+    placeholder="任意时间点">
+  </el-time-picker>
+    <p>
+     使用el-time-picker标签，通过<code>selectableRange</code>限制可选时间范围
+    </p>
     <el-collapse>
       <el-collapse-item title="显示代码" name="1">
         <el-input
@@ -19,22 +28,23 @@
 export default {
   data() {
     return {
-      value2: "",
+      value1:new Date(2016, 9, 10, 18, 40),
       textarea2: `
                 <template>
-                   <el-date-picker
-                      v-model="value2"
-                      type="date"
-                      align="right"
-                      placeholder="选择日期" 
-                    ></el-date-picker>
+                    <el-time-picker
+                      v-model="value"
+                      :picker-options="{
+                        selectableRange: '18:30:00 - 20:30:00'
+                      }"
+                      placeholder="任意时间点">
+                    </el-time-picker>
                 </template>
 
                 <script>
                     export default {
                     data() {
                         return {
-                            value2: '',
+                            value: new Date(2016, 9, 10, 18, 40),
                         };
                     }
                     };

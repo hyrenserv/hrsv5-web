@@ -6,6 +6,8 @@
         align="right"
         placeholder="选择日期" 
       ></el-date-picker>
+      <p>修改el-date-picker的<code>type</code>属性可以直接修改要显示的内容，type可选择year,month,date,datetime;
+      通过设置<code> type</code>属性为 datetime，即可在同一个选择器里同时进行日期和时间的选择</p>
     <el-collapse>
       <el-collapse-item title="显示代码" name="1">
         <el-input
@@ -28,7 +30,7 @@ export default {
       textarea2: `
                 <template>
                    <el-date-picker
-                      v-model="value2"
+                      v-model="value"
                       type="date"
                       align="right"
                       placeholder="选择日期" 
@@ -39,7 +41,7 @@ export default {
                     export default {
                     data() {
                         return {
-                            value2: '',
+                            value: '',
                         };
                     }
                     };

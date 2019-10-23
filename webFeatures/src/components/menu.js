@@ -46,10 +46,10 @@ const Menu = [
     {
         icon: 'el-icon-setting22', title: 'Select 选择器', path: '/6', children: [
             { icon: 'el-icon-setting2', title: 'Select基础用法', path: '/Select1' },
-            { icon: 'el-icon-setting2', title: 'Select有禁用选项', path: '/Select2' },
-            { icon: 'el-icon-setting2', title: 'Select可清空单选', path: '/Select3' },
+           /*  { icon: 'el-icon-setting2', title: 'Select有禁用选项', path: '/Select2' },
+            { icon: 'el-icon-setting2', title: 'Select可清空单选', path: '/Select3' }, */
             { icon: 'el-icon-setting2', title: 'Select自定义模板', path: '/Select4' },
-            { icon: 'el-icon-setting2', title: 'Select可搜索', path: '/Select5' },
+           /*  { icon: 'el-icon-setting2', title: 'Select可搜索', path: '/Select5' }, */
             { icon: 'el-icon-setting2', title: '方法说明', path: '/Select/Explain' }
         ]
     },
@@ -63,7 +63,7 @@ const Menu = [
         icon: 'el-icon-setting22', title: 'DatePicker 日期选择器', path: '/8', children: [
             { icon: 'el-icon-setting2', title: '日期', path: '/DatePicker1' },
             { icon: 'el-icon-setting2', title: '时间', path: '/DatePicker2' },
-            { icon: 'el-icon-setting2', title: '日期和时间点', path: '/DatePicker3' },
+            // { icon: 'el-icon-setting2', title: '日期和时间点', path: '/DatePicker3' },
             { icon: 'el-icon-setting2', title: '默认的起始与结束时刻', path: '/DatePicker4' },
             { icon: 'el-icon-setting2', title: '方法说明', path: '/DatePicker/Explain' }
         ]
