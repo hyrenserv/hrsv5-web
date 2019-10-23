@@ -112,7 +112,7 @@ export default new Router({
             path: '/Select1',
             component: () => import("@/view/Select/Select1.vue")
           },
-          {
+        /*   {
             name: 'Select有禁用选项',
             path: '/Select2',
             component: () => import("@/view/Select/Select2.vue")
@@ -121,17 +121,17 @@ export default new Router({
             name: 'Select可清空单选',
             path: '/Select3',
             component: () => import("@/view/Select/Select3.vue")
-          },
+          }, */
           {
             name: 'Select自定义模板',
             path: '/Select4',
             component: () => import("@/view/Select/Select4.vue")
           },
-          {
+       /*    {
             name: 'Select可搜索',
             path: '/Select5',
             component: () => import("@/view/Select/Select5.vue")
-          },
+          }, */
           {
             name: 'Select方法说明',
             path: '/Select/Explain',
@@ -157,11 +157,11 @@ export default new Router({
             path: '/DatePicker2',
             component: () => import("@/view/DatePicker/DatePicker2.vue")
           },
-          {
+         /*  {
             name: '日期和时间点',
             path: '/DatePicker3',
             component: () => import("@/view/DatePicker/DatePicker3.vue")
-          },
+          }, */
           {
             name: '默认的起始与结束时刻',
             path: '/DatePicker4',
