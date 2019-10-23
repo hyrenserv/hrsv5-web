@@ -58,6 +58,8 @@ export default {
             this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
                     confirmButtonText: "确定",
                     cancelButtonText: "取消",
+                    cancelButtonClass:"btn-cancel",
+                    confirmButtonClass:"btn-confirm",
                     type: "warning",
                     // center: true//是否居中布局
                 })
