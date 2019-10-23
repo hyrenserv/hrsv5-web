@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-radio v-model="radio" label="1">备选项</el-radio>
+    <el-radio id="manuallyChange" v-model="radio" label="1">备选项</el-radio>
     <el-radio v-model="radio" label="2">备选项</el-radio>
     <p>
       要使用 Radio 组件，只需要设置
