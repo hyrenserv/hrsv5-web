@@ -85,16 +85,16 @@ const Menu = [
     },
     {
         title: 'Table 表格', path: '/11', children: [
-            { title: '带斑马纹表格', path: '/zebrapattern' },
-            { title: '带边框表格', path: '/frame' },
+           /*  { title: '带斑马纹表格', path: '/zebrapattern' },
+            { title: '带边框表格', path: '/frame' }, */
             // { title: '带状态表格', path: '/statuTable' },
-            { title: '固定表头', path: '/fixedHead' },
+           /*  { title: '固定表头', path: '/fixedHead' },
             { title: '固定列', path: '/fixedColumn' },
-            { title: '固定列和表头', path: '/fixedHeadColumn' },
+            { title: '固定列和表头', path: '/fixedHeadColumn' }, */
             // { title: '流体高度', path: '/' },
-            { title: '多选表格', path: '/multipleSelection' },
-            { title: '排序表格', path: '/sortTable' },
-            { title: '筛选表格', path: '/filterTable' },
+           /*  { title: '多选表格', path: '/multipleSelection' },
+            { title: '排序表格', path: '/sortTable' }, */
+            { title: '默认表格', path: '/filterTable' },
             { title: '自定义列模板', path: '/customizeTable' },
             // { title: '展开行', path: '/' },
             { title: '自定义表头', path: '/customizeTableHead' },
@@ -107,7 +107,7 @@ const Menu = [
     //         {title: 'Pagination 分页--13', path: '/13'},
     //     ]
     // },
-    {
+    /* {
         title: 'Pagination 分页', path: '/13', children: [
             { title: '普通分页', path: '/generalPage' },
             { title: '调整条数分页', path: '/adjustPage' },
@@ -115,7 +115,7 @@ const Menu = [
             { title: '完整分页功能', path: '/fullFunction' },
             { title: '分页属性', path: '/pageAttributes' }
         ]
-    },
+    }, */
     {
         title: 'Badge 标记', path: '/14', children: [
             { title: '普通标记显示', path: '/generalMark' },
