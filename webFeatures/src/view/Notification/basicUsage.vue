@@ -1,6 +1,6 @@
 <template>
 <div>
-    <el-button plain @click="open1">可自动关闭</el-button>
+    <!-- <el-button plain @click="open1">可自动关闭</el-button> -->
     <el-button plain @click="open2">不会自动关闭</el-button>
     <p>
         Notification 组件提供通知功能，Element 注册了
