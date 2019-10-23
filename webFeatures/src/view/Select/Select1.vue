@@ -1,11 +1,19 @@
 <template>
   <div>
-    <el-select v-model="value" placeholder="请选择">
+    <el-select v-model="value" placeholder="请选择" multiple>
       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
     </el-select>
     <p>
-      <code>v-model</code>的值为当前被选中的
-      <code>el-option</code>的 value 属性值
+      <code>v-model</code>的值为当前被选中的,
+      在el-select上加<code> clearable</code>属性，为单选清空；加<code> clearable</code>为多选清空;
+      <code>el-option</code>的 value 属性值,
+       在
+      <code>el-option</code>中，设定
+      <code>disabled</code>值为 true<code>:disabled="item.disabled"</code>，即可禁用该选项
+    </p>
+    <p>
+      为<code>el-select</code>添加<code>filterable</code>属性即可启用搜索功能。默认情况下，Select 会找出所有<code>label</code>属性包含输入值的选项。如果希望使用其他的搜索逻辑，可以通过传入一个<code>filter-method</code>来实现。
+      <code>filter-method</code>为一个<code>Function</code>，它会在输入值发生变化时调用，参数为当前输入值。
     </p>
     <el-collapse>
       <el-collapse-item title="显示代码" name="1">

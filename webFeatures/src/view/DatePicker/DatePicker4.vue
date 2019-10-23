@@ -44,7 +44,7 @@ export default {
                      <div class="block">
                         <span class="demonstration">起始日期时刻为 12:00:00，结束日期时刻为 08:00:00</span>
                         <el-date-picker
-                          v-model="value2"
+                          v-model="value"
                           type="datetimerange"
                           align="right"
                           start-placeholder="开始日期"
@@ -59,7 +59,7 @@ export default {
                     export default {
                     data() {
                         return {
-                            value2: '',
+                            value: '',
                         };
                     }
                     };
