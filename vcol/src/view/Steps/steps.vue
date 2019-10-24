@@ -5,9 +5,15 @@
             <el-step title="进行中" description="这是一段很长很长很长的描述性文字"></el-step>
             <el-step title="步骤 3"></el-step>
         </el-steps>
+        <el-steps :active="active" finish-status="success" simple style="margin-top: 20px">
+            <el-step title="步骤 1"></el-step>
+            <el-step title="步骤 2"></el-step>
+            <el-step title="步骤 3"></el-step>
+        </el-steps>
         <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
         <p style="margin-top:20px">通过设置<code>title</code>属性，来显示步骤进行状态</p>
         <p style="margin-top:20px">通过设置<code>description</code>属性，来显示步骤描述信息</p>
+        <p style="margin-top:20px">通过设置添加<code>simple</code>属性，来显示简单风格步骤条</p>
         <el-collapse>
             <el-collapse-item title="显示代码" name="1">
                 <el-input type="textarea" :autosize="{ minRows: 25, maxRows: 4}" readonly placeholder="请输入内容" v-model="textarea2">
@@ -29,6 +35,10 @@
                                 <el-step title="进行中" description="这是一段很长很长很长的描述性文字"></el-step>
                                 <el-step title="步骤 3"></el-step>
                             </el-steps>
+                            <el-steps :active="active" finish-status="success" simple style="margin-top: 20px">
+                                <el-step title="步骤 1"></el-step>
+                                <el-step title="步骤 2"></el-step>
+                                <el-step title="步骤 3"></el-step>
                             <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
                         </div>       
                     </template>
