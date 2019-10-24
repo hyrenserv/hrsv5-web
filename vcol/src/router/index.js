@@ -630,13 +630,13 @@ export default new Router({
             name: 'imageAttributes',
             path: '/imageAttributes',
             component: () => import("@/view/Image/imageAttributes.vue")
+          },
+          {
+            name: 'demo',
+            path: '/demo',
+            component: () => import("@/view/demo.vue")
           }
       ]
-    },
-    {
-      name: 'demo',
-      path: '/demo',
-      component: () => import("@/view/demo.vue")
     }
   ]
 })

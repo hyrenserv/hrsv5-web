@@ -1,22 +1,7 @@
-import * as validate from '@/utils/validate'
+import * as validate from '@/utils/validator'
+import regular from '@/utils/regular'
 export default {
   install(Vue) {
-
-    /**
-     * @method 
-     * @param {Object} rule 当前对象
-     * @param {String} value 检测的值
-     * @param {Function} callback 回调函数
-     */
-    const userName = (rule, value, callback) => {
-      if (value != 'hi') {
-        callback(new Error(rule.ruleData.message ? rule.ruleData.message : "只能输入hi"))
-      }
-      else {
-        callback()
-      }
-    }
-
 
     /**
      * @param {Object} rule 当前对象
@@ -24,9 +9,23 @@ export default {
      * @param {Function} callback 回调函数
      */
     const customize = (rule, value, callback) => {
-      console.log(rule)
       if (!validate.customStr(rule.ruleData.ruleStr, value)) {
         callback(new Error(rule.ruleData.message ? rule.ruleData.message : '输入项不符合自定义规则'))
+      }
+      else {
+        callback()
+      }
+    }
+
+     /**
+     * @param {Object} rule 当前对象
+     * @param {String} value 检测的值
+     * @param {Function} callback 回调函数
+     */
+    const checkValid = (rule, value, callback) => {
+      console.log(rule)
+      if (!validate.checkValid(rule.regexType, value)) {
+        callback(new Error(regular[rule.regexType]['error']))
       }
       else {
         callback()
@@ -48,43 +47,30 @@ export default {
     Vue.prototype.filter_rules = function (item) {
 
       let rules = [];
-
-
-
-      if (item.dataType) {
-        switch (item.dataType) {
-          case 'user_name':
-            rules.push({ required: true, validator: userName, ruleData: item });
-            break;
-          default:
-            rules.push({});
-            break;
-        }
-      }
-      else {
-        if (item.required) {
+      item.forEach(element => {
+        if (element.required) {
           rules.push({ required: true, message: '该输入项为必填项', trigger: 'blur' });
         }
 
-        if (item.maxLength) {
-          rules.push({ min: 1, max: item.maxLength, message: '最多输入' + item.maxLength + '个字符!', trigger: 'blur' })
+        if (element.maxLength) {
+          rules.push({ min: 1, max: element.maxLength, message: '最多输入' + element.maxLength + '个字符', trigger: 'blur' })
         }
 
-        if (item.min && item.max) {
-          rules.push({ min: item.min, max: item.max, message: '字符长度在' + item.min + '至' + item.max + '之间!', trigger: 'blur' })
+        if (element.min && element.max) {
+          rules.push({ min: element.min, max: element.max, message: '字符长度在' + element.min + '至' + element.max + '之间', trigger: 'blur' })
         }
 
         /**检测是否有自定义规则.如果有,则使用自定义的规则来进行检查输入项 */
-        if (item.ruleStr) {
-          rules.push({ required: true, validator: customize, ruleData: item, trigger: 'blur' });
+        if (element.ruleStr) {
+          rules.push({ required: true, validator: customize, ruleData: element, trigger: 'blur' });
         }
-      }
+
+        /**检测传递的类型进行校验 */
+        if (element.dataType) {
+          rules.push({ required: true, validator: checkValid, regexType: element.dataType, trigger: 'blur' });
+        }
+      });
       return rules;
-    };
+    }
   }
 }
-// exports.install = function (Vue, options) {
-
-
-
-// }
