@@ -6,10 +6,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/css/vcol.css';
 import '@/css/common.css';
-
+import filterRules from '@/utils/filter_Rules';
 import App from './App.vue';
-
 Vue.use(ElementUI);
+Vue.use(filterRules);
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
