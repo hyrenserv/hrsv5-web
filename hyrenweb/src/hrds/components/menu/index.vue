@@ -88,7 +88,9 @@ export default {
     line-height: 50px;
     color: #fff;
 }
-
+.el-main{
+    padding: 10px
+}
 .el-aside {
     height: 100%
 }
