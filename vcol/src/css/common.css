@@ -23,9 +23,14 @@
  .el-table--enable-row-transition .el-table__body td{
     /* background-color: cyan; */
 }
-/* 表格鼠标划入时的颜色，不需要添加属性即可更改 */
+/* 其他表格鼠标划入时的颜色，不需要添加属性即可更改 */
 .el-table--enable-row-hover .el-table__body tr:hover>td{
     /* background-color:cyan !important; */
+}
+
+/* 默认表格鼠标划入时的颜色，不需要添加属性即可更改 */
+.el-table__body tr.hover-row.current-row>td,.el-table__body tr.hover-row.el-table__row--striped.current-row>td,.el-table__body tr.hover-row.el-table__row--striped>td,.el-table__body tr.hover-row>td{
+    
 }
 
 /* ------------------------------------- radio ------------------------------------------------------- */
