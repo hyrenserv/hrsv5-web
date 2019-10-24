@@ -1,0 +1,54 @@
+p, pre {
+    text-align: left;
+    text-indent: 2rem;
+    word-break: break-word;
+}
+
+/* ul {
+    list-style: none;
+    text-align: left;
+    text-indent: 2rem;
+} */
+
+table {
+    width: 100%;
+    background-color: #fff;
+    font-size: 14px;
+    margin-bottom: 45px;
+    line-height: 1.5em;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+tr {
+    border-bottom: 1px solid #ccc;
+}
+
+td {
+    border-bottom: 1px solid #dcdfe6;
+    padding: 15px;
+    max-width: 250px;
+}
+
+tr>th {
+    background: #eae5e5;
+    height: 40px;
+    line-height: 40px;
+}
+
+.el-form-item {
+    text-align: left;
+}
+
+.line {
+    text-align: center;
+}
+
+code{
+    background-color:lightslategrey;
+    font-size: 20px;
+}
