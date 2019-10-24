@@ -23,7 +23,7 @@
       ></el-table-column>
       <el-table-column prop="name"  label="姓名" width="180"></el-table-column>
       <el-table-column prop="address" label="地址" :formatter="formatter" show-overflow-tooltip></el-table-column>
-      <el-table-column
+     <!--  <el-table-column
         prop="tag"
         label="标签"
         width="100"
@@ -37,7 +37,7 @@
             disable-transitions
           >{{scope.row.tag}}</el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
         <el-table-column
       align="right">
       <template slot="header" slot-scope="scope">
@@ -133,8 +133,8 @@ export default {
                           <el-button @click="clearFilter">清除所有过滤器</el-button>
                           <el-table
                             ref="filterTable"
-                            :data="tableData"
-                            stripe
+                            :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                             stripe
                             :default-sort="{prop: 'date', order: 'descending'}"
                             style="width: 100%"
                           >
@@ -150,23 +150,27 @@ export default {
                             ></el-table-column>
                             <el-table-column prop="name"  label="姓名" width="180"></el-table-column>
                             <el-table-column prop="address" label="地址" :formatter="formatter" show-overflow-tooltip></el-table-column>
-                            <el-table-column prop="address" label="地址" width="300" ></el-table-column>
-                            <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
-                            <el-table-column
-                              prop="tag"
-                              label="标签"
-                              width="100"
-                              :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
-                              :filter-method="filterTag"
-                              filter-placement="bottom-end"
-                            >
-                              <template slot-scope="scope">
-                                <el-tag
-                                  :type="scope.row.tag === '家' ? 'primary' : 'success'"
-                                  disable-transitions
-                                >{{scope.row.tag}}</el-tag>
-                              </template>
-                            </el-table-column>
+                               <el-table-column
+                                  align="right">
+                                  <template slot="header" slot-scope="scope">
+                                    <el-input
+                                      v-model="search"
+                                      size="mini"
+                                      placeholder="输入关键字搜索"/>
+                                  </template>
+                                  <template slot-scope="scope">
+                                    <el-button
+                                      size="mini"
+                                      @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+                                    <el-button
+                                      size="mini"
+                                      type="danger"
+                                      @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                  </template>
+                                </el-table-column>
+                                </el-table>
+                                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="2" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                                </el-pagination>
                           </el-table>
                     </div>
                     <script>
@@ -174,6 +178,7 @@ export default {
                       data() {
                         return {
                             currentPage: 1,
+                             search : '',
                           tableData: [
                             {
                               date: "2016-05-02",

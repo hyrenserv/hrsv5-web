@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-radio id="manuallyChange" v-model="radio" label="1">备选项</el-radio>
-    <el-radio v-model="radio" label="2">备选项</el-radio>
+    <el-radio v-model="radio" label="2" >备选项</el-radio>
     <p>
       要使用 Radio 组件，只需要设置
       <code>v-model</code>绑定变量，选中意味着变量的值为相应 Radio
@@ -11,6 +11,7 @@
       <code>Number</code>或
       <code>Boolean</code>。
     </p>
+    <p><strong>禁用状态：</strong>在el-radio加disabled属性</p>
     <el-collapse>
       <el-collapse-item title="显示代码" name="1">
         <el-input

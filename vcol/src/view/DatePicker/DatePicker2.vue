@@ -7,7 +7,7 @@
     }"
     placeholder="任意时间点">
   </el-time-picker>
-    <p>
+    <p><strong>仅显示时分秒：</strong>
      使用el-time-picker标签，通过<code>selectableRange</code>限制可选时间范围
     </p>
     <el-collapse>
