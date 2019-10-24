@@ -39,17 +39,18 @@ const Menu = [
     },
     {
         title: 'Tree 树形控件', path: '/19', children: [
-            { title: '基础用法', path: '/basicTree' },
-            { title: '选择用法', path: '/selectedTree' },
+            // { title: '基础用法', path: '/basicTree' },
             { title: '节点过滤', path: '/nodeFiltering' },
+            { title: '选择用法', path: '/selectedTree' },
+        
             { title: 'Tree属性', path: '/treeAttribute' }
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'DatePicker 日期选择器', path: '/8', children: [
-            { icon: 'el-icon-setting2', title: '时间区间', path: '/DatePicker4' },
             { icon: 'el-icon-setting2', title: '日期', path: '/DatePicker1' },
             { icon: 'el-icon-setting2', title: '时间', path: '/DatePicker2' },
+            { icon: 'el-icon-setting2', title: '时间区间', path: '/DatePicker4' },
             // { icon: 'el-icon-setting2', title: '日期和时间点', path: '/DatePicker3' },
             { icon: 'el-icon-setting2', title: '方法说明', path: '/DatePicker/Explain' }
         ]
@@ -70,7 +71,7 @@ const Menu = [
     {
         icon: 'el-icon-setting22', title: 'Tabs 标签页', path: '/21', children: [
             { icon: 'el-icon-setting22', title: '基础选项卡', path: '/Tab' },
-            { icon: 'el-icon-setting22', title: '位置变换选项卡', path: '/tabPosition' },
+            // { icon: 'el-icon-setting22', title: '位置变换选项卡', path: '/tabPosition' },
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/tabsAttributes' },
 
         ]
@@ -107,9 +108,9 @@ const Menu = [
     },
     {
         icon: 'el-icon-setting22', title: 'Checkbox 多选框', path: '/5', children: [
-            { icon: 'el-icon-setting2', title: 'Checkbox基础用法', path: '/Checkbox1' },
-            { icon: 'el-icon-setting2', title: 'Checkbox多选框组', path: '/Checkbox2' },
-            { icon: 'el-icon-setting2', title: 'indeterminate 状态', path: '/Checkbox3' },
+          /*   { icon: 'el-icon-setting2', title: 'Checkbox基础用法', path: '/Checkbox1' },
+            { icon: 'el-icon-setting2', title: 'Checkbox多选框组', path: '/Checkbox2' }, */
+            { icon: 'el-icon-setting2', title: '默认用法', path: '/Checkbox3' },
             { icon: 'el-icon-setting2', title: '按钮样式的多选组合。', path: '/Checkbox4' },
             { icon: 'el-icon-setting2', title: '方法说明', path: '/Checkbox/Explain' }
         ]

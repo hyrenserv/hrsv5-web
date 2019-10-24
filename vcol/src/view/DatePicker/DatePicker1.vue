@@ -6,8 +6,10 @@
         align="right"
         placeholder="选择日期" 
       ></el-date-picker>
-      <p>修改el-date-picker的<code>type</code>属性可以直接修改要显示的内容，type可选择year,month,date,datetime;
-      通过设置<code> type</code>属性为 datetime，即可在同一个选择器里同时进行日期和时间的选择</p>
+      <p><strong>仅设置到年：</strong>修改el-date-picker的<code>type="year"</code></p>
+      <p><strong>仅设置到月：</strong>修改el-date-picker的<code>type=",month"</code></p>
+      <p><strong>仅设置到日：</strong>修改el-date-picker的<code>type="date"</code></p>
+      <p><strong>仅设置到时分秒：</strong>修改el-date-picker的<code>type="datetime"</code></p>
     <el-collapse>
       <el-collapse-item title="显示代码" name="1">
         <el-input

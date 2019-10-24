@@ -82,7 +82,7 @@ export default new Router({
             path: '/Radio/Explain',
             component: () => import("@/view/Radio/Explain.vue")
           },
-          {
+          /* {
             name: 'Checkbox基础用法',
             path: '/Checkbox1',
             component: () => import("@/view/Checkbox/Checkbox1.vue")
@@ -91,14 +91,14 @@ export default new Router({
             name: 'Checkbox多选框组',
             path: '/Checkbox2',
             component: () => import("@/view/Checkbox/Checkbox2.vue")
-          },
+          }, */
           {
             name: 'Checkbox方法说明',
             path: '/Checkbox/Explain',
             component: () => import("@/view/Checkbox/Explain.vue")
           },
           {
-            name: 'indeterminate 状态',
+            name: '默认用法',
             path: '/Checkbox3',
             component: () => import("@/view/Checkbox/Checkbox3.vue")
           },
