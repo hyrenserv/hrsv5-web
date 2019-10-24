@@ -194,15 +194,15 @@ const Menu = [
     },
     {
         icon: 'el-icon-setting22', title: 'Dropdown 下拉菜单', path: '/23', children: [
-            { icon: 'el-icon-setting22', title: '基础下拉菜单', path: '/dropdown' },
-            { icon: 'el-icon-setting22', title: '按钮下拉菜单', path: '/buttondropdown' },
+            { icon: 'el-icon-setting22', title: '下拉菜单', path: '/dropdown' },
+            // { icon: 'el-icon-setting22', title: '按钮下拉菜单', path: '/buttondropdown' },
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/dropdownAttributes' }
         ]
     },
     {
         icon: 'el-icon-setting22', title: 'Steps 步骤条', path: '/24', children: [
-            { icon: 'el-icon-setting22', title: '基础步骤条', path: '/steps' },
-            { icon: 'el-icon-setting22', title: '简单步骤条', path: '/simplesteps' },
+            { icon: 'el-icon-setting22', title: '步骤条', path: '/steps' },
+            // { icon: 'el-icon-setting22', title: '简单步骤条', path: '/simplesteps' },
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/stepsAttributes' }
 
         ]
@@ -229,8 +229,8 @@ const Menu = [
     },
     {
         icon: 'el-icon-setting22', title: 'Divider 分割线', path: '/29', children: [
-            { icon: 'el-icon-setting22', title: '基础分割线', path: '/divider' },
-            { icon: 'el-icon-setting22', title: '垂直分割线', path: '/verticaldivider' },
+            { icon: 'el-icon-setting22', title: '分割线', path: '/divider' },
+            // { icon: 'el-icon-setting22', title: '垂直分割线', path: '/verticaldivider' },
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/dividerAttributes' },
         ]
     },
