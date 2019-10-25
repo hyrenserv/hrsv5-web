@@ -106,8 +106,8 @@
 }
 
 /*input表单验证提示信息样式边框，不需要添加属性，可以直接更改*/
-.el-form-item.is-error .el-input__inner{
-/* border-color: #f56c6c; */
+.el-form-item.is-error .el-input__inner,.el-form-item.is-error .el-textarea__inner{
+/* border-color: blue; */
 }
 
 /* ------------------------------------- checkbox ------------------------------------------------------- */
