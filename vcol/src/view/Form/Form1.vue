@@ -107,7 +107,7 @@ export default {
             { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
           ],
           type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+            {  required: true, message: '请至少选择一个活动性质', trigger: 'change' }
           ],
           resource: [
             { required: true, message: '请选择活动资源', trigger: 'change' }

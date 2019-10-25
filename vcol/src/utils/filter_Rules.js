@@ -17,13 +17,12 @@ export default {
       }
     }
 
-     /**
-     * @param {Object} rule 当前对象
-     * @param {String} value 检测的值
-     * @param {Function} callback 回调函数
-     */
+    /**
+    * @param {Object} rule 当前对象
+    * @param {String} value 检测的值
+    * @param {Function} callback 回调函数
+    */
     const checkValid = (rule, value, callback) => {
-      console.log(rule)
       if (!validate.checkValid(rule.regexType, value)) {
         callback(new Error(regular[rule.regexType]['error']))
       }
@@ -48,14 +47,15 @@ export default {
 
       let rules = [];
       item.forEach(element => {
+        /**检测是否需要验证 */
         if (element.required) {
           rules.push({ required: true, message: '该输入项为必填项', trigger: 'blur' });
         }
-
+        /**检测是否需要验证最大字符数 */
         if (element.maxLength) {
           rules.push({ min: 1, max: element.maxLength, message: '最多输入' + element.maxLength + '个字符', trigger: 'blur' })
         }
-
+        /**检测是否需要验证字符区间 */
         if (element.min && element.max) {
           rules.push({ min: element.min, max: element.max, message: '字符长度在' + element.min + '至' + element.max + '之间', trigger: 'blur' })
         }

@@ -11,7 +11,7 @@
                 <el-input v-model="ruleForm.maxName"></el-input>
             </el-col>
         </el-form-item>
-        <el-form-item label="用户名称默认不为空" prop="user_name" :rules="rule.default">
+        <el-form-item label="默认不为空" prop="user_name" :rules="rule.default">
             <el-col :span="6">
                 <el-input v-model="ruleForm.user_name"></el-input>
             </el-col>
@@ -48,7 +48,7 @@
         <el-form-item label="即时配送" prop="delivery">
             <el-switch v-model="ruleForm.delivery"></el-switch>
         </el-form-item>
-        <el-form-item label="活动性质" prop="nature" :rules="[{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]">
+        <el-form-item label="活动性质" prop="nature" :rules="rule.checked">
             <el-checkbox-group v-model="ruleForm.nature">
                 <el-checkbox label="美食/餐厅线上活动" name="nature"></el-checkbox>
                 <el-checkbox label="地推活动" name="nature"></el-checkbox>
@@ -56,20 +56,44 @@
                 <el-checkbox label="单纯品牌曝光" name="nature"></el-checkbox>
             </el-checkbox-group>
         </el-form-item>
-        <!-- <el-form-item label="特殊资源" prop="resource">
+        <el-form-item label="特殊资源" prop="resource" :rules="rule.checked">
             <el-radio-group v-model="ruleForm.resource">
                 <el-radio label="线上品牌商赞助"></el-radio>
                 <el-radio label="线下场地免费"></el-radio>
             </el-radio-group>
         </el-form-item>
-        <el-form-item label="活动形式" prop="desc">
+        <el-form-item label="活动形式" prop="desc" :rules="rule.default">
             <el-input type="textarea" v-model="ruleForm.desc"></el-input>
-      </el-form-item>-->
+        </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
     </el-form>
+    <el-divider></el-divider>
+    <p>
+        <strong>
+            引入文件:
+            <code>import * as validator from "@/utils/validator"</code>
+        </strong>
+    </p>
+    <p>
+        <strong>
+                <dl>
+                    <dt>使用方式</dt>
+                    <dd>默认不为空使用方式: <code>validator.default.default</code></dd>
+                    <dd>请至少选择一项使用方式 : <code>validator.default.selected</code></dd>
+                    <dd>请至少选择一项使用方式 : <code>validator.default.checked</code></dd>
+                    <dd>验证规则使用方式 : <code>filter_rules([{required: true,dataType: 'email'}])</code>
+                        <dl>
+                            <dd>required : 是否开启验证(true/false)</dd>
+                            <dd>dataType : 验证的方式类型(请查阅 <code>/utils/regular.js</code>)</dd>
+                            <dd>如果需要添加新的规则验证只需要在 <code>/utils/regular.js</code>中添加一条数据即可</dd>
+                        </dl>
+                    </dd>
+                </dl>
+        </strong>
+    </p>
 </div>
 </template>
 
@@ -78,9 +102,10 @@ import * as validator from "@/utils/validator";
 export default {
     data() {
         return {
-            ruleForm: {},
-            rule: validator.default,
-            nature : []
+            ruleForm: {
+                nature: []
+            },
+            rule: validator.default
         };
     },
     methods: {

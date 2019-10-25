@@ -1,3 +1,8 @@
+/**
+ * @param {String} key 表示为对应的验证规则类型名称
+ * @param {String} regex 表示为对应的验证规则
+ * @param {String} error 表示为验证不通过时的错误提示
+ */
 const regular = {
     number: { regex: /^[0-9]*$/, error: '只能填写数字' },
     chinese: { regex: /^[\u4e00-\u9fa5]{0,}$/, error: '只能填写中文' },
