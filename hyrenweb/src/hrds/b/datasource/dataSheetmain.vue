@@ -41,7 +41,6 @@
         </div>
     </el-dialog>
     <!-- 点击删除弹出框 -->
-    <!-- 点击删除弹出框 -->
     <el-dialog title="温馨提示" :visible.sync="dialogFormVisibleDelte" width="40%">
         <span>确定要删除吗？</span>
         <span slot="footer" class="dialog-footer">
@@ -129,27 +128,16 @@ export default {
 
         // 点击数据来源表的内容跳转页面
         gotoScoureDetail: function (index) {
-            const querystring = require("querystring");
-            functionAll
-                .getAgentData(
-                    querystring.stringify({
-                        sourceId: this.data[index].source_id,
-                        datasourceName: this.data[index].datasource_name
-                    })
-                )
-                .then(res => {
-                    if (res.code == 200) {
-                        // 传参
-                        let agentData = res.data;
-                        this.$router.push({
-                            name: "addScoure",
-                            params: {
-                                agentDataAll: agentData,
-                                ueserId: this.data[index].source_id
-                            }
-                        }); //进行页面的跳转
-                    }
-                });
+            //进行页面的跳转
+            let indexScoured = this.data[index].source_id;
+            let indexdatasourcename = this.data[index].datasource_name;
+            this.$router.push({
+                name: "addScoure",
+                params: {
+                    scouresId: indexScoured,
+                    dataName: indexdatasourcename
+                }
+            });
         },
         // 鼠标划入时判断显示数值是否为0；
         enter(index) {
