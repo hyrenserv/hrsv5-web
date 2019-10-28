@@ -6,8 +6,8 @@
     <!-- 表格 -->
     <el-table :data="data" border :header-cell-style="{background:'#ede7f3',color:'black'}" size="mini" stripe>
         <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
-        <el-table-column prop="datasource_name" label="数据源名称" width="592" align="center"></el-table-column>
-        <el-table-column prop="dep_name" label="所属部门" width="380" align="center"></el-table-column>
+        <el-table-column prop="datasource_name" label="数据源名称" width="572" align="center"></el-table-column>
+        <el-table-column prop="dep_name" label="所属部门"  align="center"></el-table-column>
 
         <el-table-column label="操作" align="center">
             <template slot-scope="scope">

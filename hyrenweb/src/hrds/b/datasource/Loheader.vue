@@ -3,26 +3,26 @@
     <el-row>
         <i class="block_icon fa text-warning fa-globe blue"></i>
         <span>数据来源表</span>
-        <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;
-departmentInfo()" size="small">
+        <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;departmentInfo()" size="small">
             <i class="block_icon fa fa-cubes"></i>添加数据源
         </el-button>
         <el-button type="primary" class="els" @click="dialogFormVisibleImport = true;DataCathInfo()" size="small">
             <i class="fa fa-cloud-upload"></i>导入数据源
         </el-button>
     </el-row>
+
     <!-- 实现点击导入按钮进行页面数据导入-->
     <!-- 弹出表单 -->
     <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">
         <el-form :model="formImport">
             <el-form-item label="Agent IP地址 :" :label-width="formLabelWidth">
-                <el-input v-model="formImport.agentIp" autocomplete="off" style="width:284px" placeholder=" Ip"></el-input>
+                <el-input v-model="formImport.agent_ip" autocomplete="off" style="width:284px" placeholder=" Ip"></el-input>
                 <el-tooltip class="item" effect="dark" content="要上传的数据源下Agent的IP地址" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
             </el-form-item>
             <el-form-item label="Agent 端口 :" :label-width="formLabelWidth">
-                <el-input v-model="formImport.agentPort" autocomplete="off" style="width:284px" placeholder="Port"></el-input>
+                <el-input v-model="formImport.agent_port" autocomplete="off" style="width:284px" placeholder="Port"></el-input>
                 <el-tooltip class="item" effect="dark" content="要上传的数据源下Agent的端口" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
@@ -32,17 +32,13 @@ departmentInfo()" size="small">
                     <el-option v-for="item in options" :key="item.dep_id" :label="item.user_name" :value="item.user_id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="上传要导入的数据源 :" :label-width="formLabelWidth">
-                <el-tooltip class="item" effect="dark" content="在本系统中要下载的数据源，后缀名为hrds的加密文件" placement="right">
-                    <i class="fa fa-question-circle question3" aria-hidden="true"></i>
+            <el-form-item label="上传要导入的数据源 :" :label-width="formLabelWidth">  
+                <el-upload class="upload-demo" action="http://localhost:8080/Upload" multiple :limit="3"  :auto-upload="false"  :on-change="handleChange">
+                    <el-button size="small" type="primary">选择上传文件</el-button>
+                </el-upload>
+                <el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">
+                    <i class="fa fa-question-circle " aria-hidden="true"></i>
                 </el-tooltip>
-                <el-input placeholder="点击上传按钮选择文件" disabled="disabled" style="width:284px">
-                    <template slot="append">
-                        <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" multiple :limit="3">
-                            <el-button size="small" type="primary" fill="blue">点击上传</el-button>
-                        </el-upload>
-                    </template>
-                </el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -50,6 +46,7 @@ departmentInfo()" size="small">
             <el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>
         </div>
     </el-dialog>
+
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
     <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
@@ -93,7 +90,12 @@ export default {
                 datasource_name: "",
                 source_remark: ""
             },
-            formImport: {},
+            formImport: {
+                agent_ip:"",
+                agent_port:""
+            },
+            importFileUrl:"",
+            filesr:"",
             rules: {
                 datasource_number: [{
                     required: true,
@@ -155,10 +157,19 @@ export default {
         },
         // 点击上传数据
         upload() {
-            functionAll.tapUploadData().then(res => {
-                console.log("1");
+             let fileListss=[];
+             let len = fileListss.push(this.filesr);
+            // 要把userid可能提出去，然后在帮到下面
+            this.formImport["user_id"] = this.depIds.join(",");
+            this.formImport["file"] = fileListss.join(",");
+            functionAll.tapUploadData(this.formImport).then(res => {
+             
             });
         },
+         handleChange(file, fileList) {
+            this.filesr =file;
+           
+      },
         // 点击取消按钮
         cancleAdd() {
             // 表单清空
@@ -199,11 +210,7 @@ export default {
 
 .fa-question-circle {
     margin-left: 40px;
-}
-
-.question3 {
-    margin-left: 0;
-    margin-right: 30px;
+    margin-right: 25px;
 }
 
 /* button样式设置 */
@@ -216,5 +223,14 @@ export default {
 .el1 {
     margin-left: 10px;
     background: #337ab7;
+}
+.item{
+    float: right;
+}
+.upload-demo{
+    float: left;
+}
+.fa-question-circle{
+    margin-top: 12px;
 }
 </style>

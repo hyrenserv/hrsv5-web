@@ -108,7 +108,7 @@ export default {
     width: 100%;
     height: 45px !important;
     /* footer的高度一定要是固定值*/
-    position: absolute;
+    position: relative;
     bottom: 0px;
     left: 0px;
     font-size: 12px;

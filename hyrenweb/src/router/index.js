@@ -52,13 +52,13 @@ export default new Router({
                 {
                     path: '/index1001',
                     name: ' index1001',
-                    title: '1001登录首页',
+                    title: '数据源管理',
                     component: () => import('@/hrds/b/datasource/index1001.vue')
                 },
                 {
                     path: '/addScoure',
                     name: 'addScoure',
-                    title: '数据源跳转页面',
+                    title: 'agent管理',
                     component: () => import('@/hrds/b/datasource/datasource.vue')
                 }
             ]

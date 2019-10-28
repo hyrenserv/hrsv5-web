@@ -1,9 +1,9 @@
 <template>
 <div class="index1001">
-    <lo-header @addEvent="addSucess"></lo-header>
-    <data-sheetmain @addEvent="addSucess" :data="dataIndexAll.dataSourceAndAgentCount"></data-sheetmain>
-    <data-manage :data="dataIndexAll.dataAudit"></data-manage>
-    <authority-management @addEvent="addSucess" :data="dataIndexAll.dataSourceRelationDep"></authority-management>
+        <lo-header @addEvent="addSucess"></lo-header>
+        <data-sheetmain @addEvent="addSucess" :data="dataIndexAll.dataSourceAndAgentCount"></data-sheetmain>
+        <data-manage :data="dataIndexAll.dataAudit"></data-manage>
+        <authority-management @addEvent="addSucess" :data="dataIndexAll.dataSourceRelationDep"></authority-management>
 </div>
 </template>
 
@@ -29,6 +29,9 @@ export default {
     },
     methods: {
         addSucess() {
+            this.getIndexData();
+        },
+        getIndexData() {
             functionAll.getIndexDataAll().then(res => {
                 if (res.code == 200) {
                     this.dataIndexAll = res.data;
@@ -38,26 +41,14 @@ export default {
     },
     // 获取首页数据
     created() {
-        functionAll.getIndexDataAll().then(res => {
-            if (res.code == 200) {
-                this.dataIndexAll = res.data;
-            }
-        });
+        this.getIndexData();
     }
 };
 </script>
 
 <style scoped>
-.index1001 .el-header {
-    background: #7cb1de;
-}
-
-.index1001 .el-aside {
-    background: #7cb1de;
-}
-
-.index1001 .el-main {
-    padding-left: 74px;
-    padding-right: 74px;
+.index1001{
+    padding-left: 53px;
+    padding-right: 53px;
 }
 </style>
