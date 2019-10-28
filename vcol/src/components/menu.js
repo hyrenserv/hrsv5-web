@@ -7,8 +7,9 @@ const Menu = [
     {
         icon: 'el-icon-setting22', title: 'Form 表单', path: '/10', children: [
             { icon: 'el-icon-setting2', title: '表单验证', path: '/Form1' },
+            { title: '表单测试', path: '/formDemo' },
             { icon: 'el-icon-setting2', title: '自定义校验规则', path: '/Form2' },
-            { icon: 'el-icon-setting2', title: '方法说明', path: '/Form/Explain' }
+            { icon: 'el-icon-setting2', title: '方法说明', path: '/Explain' },
         ]
     },
     {
@@ -42,7 +43,7 @@ const Menu = [
             // { title: '基础用法', path: '/basicTree' },
             { title: '节点过滤', path: '/nodeFiltering' },
             { title: '选择用法', path: '/selectedTree' },
-        
+
             { title: 'Tree属性', path: '/treeAttribute' }
         ]
     },
@@ -108,8 +109,8 @@ const Menu = [
     },
     {
         icon: 'el-icon-setting22', title: 'Checkbox 多选框', path: '/5', children: [
-          /*   { icon: 'el-icon-setting2', title: 'Checkbox基础用法', path: '/Checkbox1' },
-            { icon: 'el-icon-setting2', title: 'Checkbox多选框组', path: '/Checkbox2' }, */
+            /*   { icon: 'el-icon-setting2', title: 'Checkbox基础用法', path: '/Checkbox1' },
+              { icon: 'el-icon-setting2', title: 'Checkbox多选框组', path: '/Checkbox2' }, */
             { icon: 'el-icon-setting2', title: '默认用法', path: '/Checkbox3' },
             { icon: 'el-icon-setting2', title: '按钮样式的多选组合。', path: '/Checkbox4' },
             { icon: 'el-icon-setting2', title: '方法说明', path: '/Checkbox/Explain' }
@@ -131,7 +132,7 @@ const Menu = [
             { icon: 'el-icon-setting2', title: '方法说明', path: '/Switch/Explain' }
         ]
     },
-    
+
     {
         icon: 'el-icon-setting22', title: 'Upload 上传', path: '/9', children: [
             { icon: 'el-icon-setting2', title: 'Upload点击上传', path: '/Upload1' },
@@ -140,8 +141,8 @@ const Menu = [
             { icon: 'el-icon-setting2', title: '方法说明', path: '/Upload/Explain' }
         ]
     },
-    
-    
+
+
     // {
     //     title: 'Tag 标签', path: '/12',children : [
     //         {title: 'Pagination 分页--13', path: '/13'},
@@ -176,7 +177,7 @@ const Menu = [
     //         { title: '加载属性', path: '/loadingAttribute' },
     //     ]
     // },
-    
+
     {
         title: 'Notification 通知', path: '/18', children: [
             { title: '基本用法', path: '/basicUsage' },
@@ -184,7 +185,7 @@ const Menu = [
             { title: '参数属性', path: '/notificationAttributes' },
         ]
     },
-    
+
     {
         icon: 'el-icon-setting22', title: 'PageHeader 页头', path: '/22', children: [
             { icon: 'el-icon-setting22', title: '基础页头', path: '/pageHeader' },
@@ -207,7 +208,7 @@ const Menu = [
 
         ]
     },
-    
+
     {
         icon: 'el-icon-setting22', title: 'Tooltip 文字提示', path: '/26', children: [
             { icon: 'el-icon-setting22', title: '文字提示信息', path: '/tooltip' },
@@ -247,8 +248,7 @@ const Menu = [
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/infiniteScrollAttributes' }
 
         ]
-    },
-    { title: '表单测试',icon: 'el-icon-setting', path: '/demo' }
+    }
 ]
 
 export default Menu;
