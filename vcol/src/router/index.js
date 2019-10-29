@@ -7,6 +7,11 @@ export default new Router({
   mode: 'history',
   routes: [
     {
+      path: '*',
+      name: 'functionMenu',
+      component: () => import('@/components/functionMenu.vue'),
+  },
+    {
       path: '/',
       name: 'functionMenu',
       component: () => import('@/components/functionMenu.vue'),
