@@ -66,9 +66,9 @@ export default {
             const that = this;
             that.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // this.login(this.ruleForm).then((res) => {
+                    this.login(this.ruleForm).then((res) => {
                         that.$router.push('home');
-                    // })
+                    })
                 } else {
                     return false;
                 }

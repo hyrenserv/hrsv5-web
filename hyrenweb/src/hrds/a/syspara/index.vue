@@ -50,14 +50,14 @@
 
     <!-- 添加一条数据 start-->
     <el-dialog title="添加一条数据" :visible.sync="dialogFormVisible">
-        <el-form :model="form" ref="form" :rules="rules">
-            <el-form-item label="para_name" prop="para_name" :label-width="formLabelWidth">
+        <el-form :model="form" ref="form">
+            <el-form-item label="para_name" prop="para_name" :rules="rule.default" :label-width="formLabelWidth">
                 <el-input v-model="form.para_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="para_value" prop="para_value" :label-width="formLabelWidth">
+            <el-form-item label="para_value" prop="para_value" :rules="rule.default" :label-width="formLabelWidth">
                 <el-input v-model="form.para_value" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="para_type" prop="para_type" :label-width="formLabelWidth">
+            <el-form-item label="para_type" prop="para_type" :rules="rule.default" :label-width="formLabelWidth">
                 <el-input v-model="form.para_type" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="remark" prop="remark" :label-width="formLabelWidth">
@@ -74,8 +74,12 @@
 </template>
 
 <script>
-import * as sysPara from "@/hrds/a/syspara/syspara"
-
+import * as sysPara from "@/hrds/a/syspara/syspara";
+import validator from "@/utils/js/validator";
+import * as message from '@/utils/js/message'
+import {
+    request
+} from 'https';
 export default {
     name: "Syspara",
     data() {
@@ -83,6 +87,7 @@ export default {
             tableData: [],
             dialogFormVisible: false,
             search: "",
+            rule: validator,
             form: {
                 // para_name: "",
                 // para_value: "",
@@ -90,28 +95,28 @@ export default {
                 // remark: ""
             },
             formLabelWidth: "120px",
-            rules: {
-                para_name: [{
-                    required: true,
-                    message: "para_name 是必填项",
-                    trigger: "blur"
-                }],
-                para_value: [{
-                    required: true,
-                    message: "para_value 是必填项",
-                    trigger: "blur"
-                }],
-                para_type: [{
-                    required: true,
-                    message: "para_type 是必填项",
-                    trigger: "blur"
-                }],
-                remark: [{
-                    required: true,
-                    message: "remark 是必填项",
-                    trigger: "blur"
-                }]
-            },
+            // rules: {
+            //     para_name: [{
+            //         required: true,
+            //         message: "para_name 是必填项",
+            //         trigger: "blur"
+            //     }],
+            //     para_value: [{
+            //         required: true,
+            //         message: "para_value 是必填项",
+            //         trigger: "blur"
+            //     }],
+            //     para_type: [{
+            //         required: true,
+            //         message: "para_type 是必填项",
+            //         trigger: "blur"
+            //     }],
+            //     remark: [{
+            //         required: true,
+            //         message: "remark 是必填项",
+            //         trigger: "blur"
+            //     }]
+            // },
             showEdit: [], //显示编辑框
             showBtn: []
         };
@@ -121,7 +126,7 @@ export default {
     },
     methods: {
         getSysPara() {
-            sysPara.getSysPara().then((response) => {
+            sysPara.getSysPara().then(response => {
                 this.tableData = response.data;
             });
         },
@@ -137,55 +142,42 @@ export default {
         },
         //点击更新
         handleUpdate(index, row) {
-            sysPara.editorSysPara(row).then((response) => {
+            sysPara.editorSysPara(row).then(response => {
+
+                message.updateSuccess(response)
                 // 重新渲染列表
-                // this.tableData = response.data;
-                if (response && response.success) {
-                    this.$message({
-                        type: "success",
-                        message: "更新成功!"
-                    });
-                }
                 this.getSysPara();
+                //取消输入框的显示
                 this.$set(this.showEdit, index, false);
                 this.$set(this.showBtn, index, false);
-            })
+            });
         },
         // 删除
         handleDelete(index, row) {
             this.$confirm("确定要删除该条数据?", "提示", {
-                    // confirmButtonText: "确定",
-                    // cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
-                    // 入参
-                    let params = {};
-                    params["para_id"] = row.para_id;
-                    params["para_name"] = row.para_name;
+                type: "warning"
+            }).then(() => {
+                // 入参
+                let params = {};
+                params["para_id"] = row.para_id;
+                params["para_name"] = row.para_name;
 
-                    // 调用删除方法
-                    sysPara.deleteSysPara(params).then((response) => {
+                // 调用删除方法
+                sysPara.deleteSysPara(params).then(response => {
 
-                        // 重新渲染列表
-                        this.getSysPara();
-                        // this.tableData = response.data;
-                    });
-                })
-            // .catch(() => {
-            //     this.$message({
-            //         type: "info",
-            //         message: "已取消删除"
-            //     });
-            // });
+                    message.deleteSuccess(response)
+                    // 重新渲染列表
+                    this.getSysPara();
+                });
+            });
+
         },
         // 新增一条数据
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 调用添加方法
-                    sysPara.addSysPara(this.form).then((response) => {
-
+                    sysPara.addSysPara(this.form).then(response => {
                         // 隐藏对话框
                         this.dialogFormVisible = false;
                         // 数据清空
@@ -206,9 +198,3 @@ export default {
     }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-
-<style scoped>
-
-</style>
