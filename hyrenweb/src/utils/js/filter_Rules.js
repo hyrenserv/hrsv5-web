@@ -1,5 +1,5 @@
-import * as validate from '@/utils/validator'
-import regular from '@/utils/regular'
+import * as validate from '@/utils/js/validator'
+import regular from '@/utils/js/regular'
 export default {
   install(Vue) {
 

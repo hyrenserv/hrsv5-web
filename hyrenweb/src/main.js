@@ -10,6 +10,9 @@ import App from './App.vue';
 import '@/assets/font-awesome-4.7.0/css/font-awesome.min.css'
 Vue.use(ElementUI);
 
+/**验证引入 */
+import filterRule from '@/utils/js/filter_Rules'
+Vue.use(filterRule)
 //导入charts并使用
 import VCharts from 'v-charts'
 Vue.use(VCharts);

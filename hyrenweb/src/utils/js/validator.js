@@ -1,4 +1,4 @@
-import regular from '@/utils/regular'
+import regular from '@/utils/js/regular'
 /**
  * 
  * @param {String} customRule 自定义检测规则
