@@ -66,7 +66,8 @@ export default new Router({
                     name: 'addTask',
                     title: '新增任务',
                     component: () => import('@/hrds/b/addTask/addTask.vue')
-                }
+                },
+
             ]
         },
        

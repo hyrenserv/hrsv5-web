@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-steps :active="active" finish-status="success" align-center style="margin: 15px 0;">
+     <el-steps :active="active" finish-status="success" align-center style="margin: 15px 0;">
       <el-step title="步骤 1" description="配置源DB属性"></el-step>
       <el-step title="步骤 2" description="定义表抽取属性"></el-step>
       <el-step title="步骤 3" description="定义清洗规则"></el-step>
@@ -8,41 +8,48 @@
       <el-step title="步骤 5" description="定义存储目的地"></el-step>
       <el-step title="步骤 6" description="定义启动方式"></el-step>
     </el-steps>
-    <div>
-      <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane label="数据采集" name="first">
-            <dataAcquisition></dataAcquisition>
-        </el-tab-pane>
-        <el-tab-pane label="贴源登记" name="second">
-            <sourceRegistration></sourceRegistration>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-    <el-button style="margin-top: 12px;margin-top: 12px;float: right;margin: 15px;" @click="next">下一步</el-button>
+    <keep-alive>
+      <steps0 v-if="active===0"></steps0>
+      <steps1 v-if="active===1"></steps1>
+      <steps2 v-if="active===2"></steps2>
+      <steps3 v-if="active===3"></steps3>
+      <steps4 v-if="active===4"></steps4>
+      <steps5 v-if="active===5"></steps5>
+    </keep-alive>
+    <el-button style="margin-top: 12px;margin-top: 12px;float: right;margin: 15px;" @click="next()">{{title}}</el-button>
   </div>
 </template>
 <script>
-import dataAcquisition from './dataAcquisition'
-import sourceRegistration from './sourceRegistration'
+import steps0 from './steps0'
+import steps1 from './steps1'
+import steps2 from './steps2'
+import steps3 from './steps3'
+import steps4 from './steps4'
+import steps5 from './steps5'
 export default {
     components:{
-     'dataAcquisition':dataAcquisition,
-     'sourceRegistration':sourceRegistration
+     'steps0':steps0,
+     'steps1':steps1,
+     'steps2':steps2,
+     'steps3':steps3,
+     'steps4':steps4,
+     'steps5':steps5,
     },
   data() {
     return {
       active: 0,
-      activeName: "first"
+      title:"下一步"
     };
   },
 
   methods: {
-    next() {
-      if (this.active++ > 4) this.active = 0;
-    },
-    handleClick(tab, event) {
-      console.log(tab, event);
-    }
+     next() {
+        if (this.active++ > 4){
+          this.active ==4;
+          this.title='完成'
+        } 
+      },
+   
   }
 };
 </script>
