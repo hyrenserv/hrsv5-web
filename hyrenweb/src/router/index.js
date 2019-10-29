@@ -70,6 +70,6 @@ export default new Router({
 
             ]
         },
-       
+
     ]
 })
