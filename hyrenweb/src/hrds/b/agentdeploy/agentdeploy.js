@@ -8,7 +8,6 @@ import request from '@/utils/request'
 export function getCollectData() {
     return request({
         url: '/B/agentdepoly/getDataSourceInfo',
-        method: 'post'
     })
 }
 
@@ -18,7 +17,6 @@ export function getCollectData() {
 export function getAgentTypeData() {
     return request({
         url: '/B/agentdepoly/getAgentType',
-        method: 'post'
     })
 }
 
@@ -30,7 +28,6 @@ export function getAgentTypeData() {
 export function deployAgentList(data) {
     return request({
         url: '/B/agentdepoly/getAgentInfo',
-        method: 'post',
         params: data
     })
 }

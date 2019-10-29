@@ -12,7 +12,7 @@
             <el-col :span="10" :offset="2">
                 <el-badge :value="sourcenum" class="item">
                     <el-button type="success" size="medium">
-                        <router-link to="/agentdeploy"><i class="el-icon-setting"></i>设置采集任务</router-link>
+                        <router-link to="/addTask"><i class="el-icon-setting"></i>设置采集任务</router-link>
                     </el-button>
                 </el-badge>
             </el-col>

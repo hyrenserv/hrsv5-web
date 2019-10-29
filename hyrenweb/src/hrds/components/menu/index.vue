@@ -81,16 +81,32 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped>
-.el-header{
+.el-header,
+.el-footer {
     background-color: #3F51B5;
     text-align: center;
     line-height: 50px;
     color: #fff;
 }
+.el-main{
+    padding: 10px
+}
+.el-aside {
+    height: 100%
+}
+
 
 .home .el-header i {
     color: white;
 }
 
-
+.el-footer {
+    width: 100%;
+    height: 45px !important;
+    /* footer的高度一定要是固定值*/
+    position: relative;
+    bottom: 0px;
+    left: 0px;
+    font-size: 12px;
+}
 </style>
