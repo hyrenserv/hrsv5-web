@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function getCollectData() {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentdepoly/getDataSourceInfo',
+        url: '/B/agentdepoly/getDataSourceInfo',
         method: 'post'
     })
 }
@@ -17,7 +17,7 @@ export function getCollectData() {
  */
 export function getAgentTypeData() {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentdepoly/getAgentType',
+        url: '/B/agentdepoly/getAgentType',
         method: 'post'
     })
 }
@@ -29,7 +29,7 @@ export function getAgentTypeData() {
  */
 export function deployAgentList(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentdepoly/getAgentInfo',
+        url: '/B/agentdepoly/getAgentInfo',
         method: 'post',
         params: data
     })
@@ -41,8 +41,7 @@ export function deployAgentList(data) {
 export function handleEdit(data) {
 
     return request({
-        url : '/hrds_B/B/action/hrds/b/biz/agentdepoly/getAgentDownInfo',
-        method : 'post',
+        url : '/B/agentdepoly/getAgentDownInfo',
         params : data
     })
 }

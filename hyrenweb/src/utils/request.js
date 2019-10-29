@@ -8,26 +8,26 @@ const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   // timeout: 5000 // request timeout
-  method : 'POST'
+  method: 'POST'
 })
 
 // request interceptor
 // 请求拦截器
 service.interceptors.request.use(
-  config => {        
+  config => {
     // 每次发送请求之前判断vuex中是否存在token        
     // 如果存在，则统一在http请求的header都加上token，这样后台根据token判断你的登录情况
     // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断 
     const token = store.state.user.token;
-    if(token) {
+    if (token) {
       //config.headers.Authorization = getToken();
       config.headers['Hyren_userCookie'] = getToken();
     }
     return config;
-},    
-error => {        
-    return Promise.error(error);    
-})
+  },
+  error => {
+    return Promise.error(error);
+  })
 
 // response interceptor
 service.interceptors.response.use(
@@ -42,13 +42,11 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(response)
     const res = response.data
     // console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
-
-      // TODO: 这里的代码需要重构 start
-
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
@@ -82,7 +80,7 @@ service.interceptors.response.use(
       // return Promise.reject(new Error(res.message || 'Error'))
       // TODO: 这里的代码需要重构 end
     } else {
-
+      
       return res
     }
   },

@@ -1,32 +1,28 @@
 import request from '@/utils/request'
-
+// /hrds_B/B/action/hrds/b/biz
 export function getSysPara() {
   return request({
-    url: '/hrds_A/A/action/hrds/a/biz/syspara/getSysPara',
-    method: 'post'
+    url: '/A/syspara/getSysPara',
   })
 }
 
 export function deleteSysPara(data) {
   return request({
-    url: '/hrds_A/A/action/hrds/a/biz/syspara/deleteSysPara',
-    method: 'post',
+    url: '/A/syspara/deleteSysPara',
     params: data
   })
 }
 
 export function addSysPara(data) {
   return request({
-    url: '/hrds_A/A/action/hrds/a/biz/syspara/addSysPara',
-    method: 'post',
+    url: '/A/syspara/addSysPara',
     params: data
   })
 }
 
 export function editorSysPara(data) {
   return request({
-    url: '/hrds_A/A/action/hrds/a/biz/syspara/editorSysPara',
-    method: 'post',
+    url: '/A/syspara/updateSysPara',
     params: data
   })
 }

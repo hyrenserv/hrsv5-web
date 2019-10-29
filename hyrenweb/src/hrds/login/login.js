@@ -8,8 +8,7 @@ import request from '@/utils/request'
  */
 export function login(data) {
   return request({
-    url: '/hrds_A/A/action/hrds/a/biz/login/login',
-    method: 'post',
+    url: '/A/login/login',
     params : data
   })
 }

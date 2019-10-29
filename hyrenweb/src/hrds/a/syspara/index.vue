@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import * as sysPara from "@/hrds/a/syspara/syspara";
+import * as sysPara from "@/hrds/a/syspara/syspara"
 
 export default {
     name: "Syspara",
@@ -116,52 +116,46 @@ export default {
             showBtn: []
         };
     },
-    created() {
-        sysPara.getSysPara().then((response) => {
-            this.tableData = response.data;
-        });
+    mounted() {
+        this.getSysPara();
     },
     methods: {
+        getSysPara() {
+            sysPara.getSysPara().then((response) => {
+                this.tableData = response.data;
+            });
+        },
         handleEdit(index) {
-
             //点击编辑
             this.$set(this.showEdit, index, true);
             this.$set(this.showBtn, index, true);
         },
         handleCancel(index) {
-
             //取消编辑
             this.$set(this.showEdit, index, false);
             this.$set(this.showBtn, index, false);
         },
         //点击更新
         handleUpdate(index, row) {
-            sysPara.editorSysPara(row).then(response => {
-                    if (response && response.success) {
-                        this.$message({
-                            type: "success",
-                            message: "更新成功!"
-                        });
-                        // 重新渲染列表
-                        this.tableData = response.data;
-                        this.$set(this.showEdit, index, false);
-                        this.$set(this.showBtn, index, false);
-                    } else {
-                        this.$message.error("更新失败！");
-                    }
-                })
-                .catch(() => {
+            sysPara.editorSysPara(row).then((response) => {
+                // 重新渲染列表
+                // this.tableData = response.data;
+                if (response && response.success) {
                     this.$message({
-                        type: "error",
-                        message: "更新失败"
+                        type: "success",
+                        message: "更新成功!"
                     });
-                });
+                }
+                this.getSysPara();
+                this.$set(this.showEdit, index, false);
+                this.$set(this.showBtn, index, false);
+            })
         },
         // 删除
         handleDelete(index, row) {
             this.$confirm("确定要删除该条数据?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
+                    // confirmButtonText: "确定",
+                    // cancelButtonText: "取消",
                     type: "warning"
                 })
                 .then(() => {
@@ -172,24 +166,18 @@ export default {
 
                     // 调用删除方法
                     sysPara.deleteSysPara(params).then((response) => {
-                        if (response && response.success) {
-                            this.$message({
-                                type: "success",
-                                message: "删除成功!"
-                            });
-                            // 重新渲染列表
-                            this.tableData = response.data;
-                        } else {
-                            this.$message.error("删除失败！");
-                        }
+
+                        // 重新渲染列表
+                        this.getSysPara();
+                        // this.tableData = response.data;
                     });
                 })
-                .catch(() => {
-                    this.$message({
-                        type: "info",
-                        message: "已取消删除"
-                    });
-                });
+            // .catch(() => {
+            //     this.$message({
+            //         type: "info",
+            //         message: "已取消删除"
+            //     });
+            // });
         },
         // 新增一条数据
         submitForm(formName) {
@@ -197,21 +185,13 @@ export default {
                 if (valid) {
                     // 调用添加方法
                     sysPara.addSysPara(this.form).then((response) => {
-                        if (response && response.success) {
-                            this.$message({
-                                type: "success",
-                                message: "添加成功!"
-                            });
 
-                            // 隐藏对话框
-                            this.dialogFormVisible = false;
-                            // 数据清空
-                            this.form = {};
-                            // 重新渲染列表
-                            this.tableData = response.data;
-                        } else {
-                            this.$message.error("添加失败！");
-                        }
+                        // 隐藏对话框
+                        this.dialogFormVisible = false;
+                        // 数据清空
+                        this.form = {};
+                        // 重新渲染列表
+                        this.getSysPara();
                     });
                 } else {
                     // console.log('error submit!!');
