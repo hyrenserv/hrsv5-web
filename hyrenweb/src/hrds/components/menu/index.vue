@@ -45,10 +45,10 @@
                 <el-main>
                     <router-view></router-view>
                 </el-main>
-                <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
+                <!-- <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer> -->
             </el-container>
         </el-container>
-        <!-- <el-header><span>版权所有：海云数服 Version 5.0</span></el-header> -->
+        <el-header><span>版权所有：海云数服 Version 5.0</span></el-header>
     </el-container>
 </div>
 </template>
@@ -81,36 +81,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped>
-.el-header,
-.el-footer {
+.el-header{
     background-color: #3F51B5;
     text-align: center;
     line-height: 50px;
     color: #fff;
-}
-.el-main{
-    padding: 10px
-}
-.el-aside {
-    height: 100%
-}
-
-.el-menu {
-    height: 100%;
-    /* background-color: #3F51B5; */
 }
 
 .home .el-header i {
     color: white;
 }
 
-.el-footer {
-    width: 100%;
-    height: 45px !important;
-    /* footer的高度一定要是固定值*/
-    position: relative;
-    bottom: 0px;
-    left: 0px;
-    font-size: 12px;
-}
+
 </style>

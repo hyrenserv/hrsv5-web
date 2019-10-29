@@ -63,11 +63,10 @@ export default {
     methods: {
         ...mapActions(['login']),
         submitForm(formName) {
-            const that = this;
-            that.$refs[formName].validate((valid) => {
+            this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.login(this.ruleForm).then((res) => {
-                        that.$router.push('home');
+                        this.$router.push('home');
                     })
                 } else {
                     return false;

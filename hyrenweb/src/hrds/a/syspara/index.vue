@@ -77,9 +77,7 @@
 import * as sysPara from "@/hrds/a/syspara/syspara";
 import validator from "@/utils/js/validator";
 import * as message from '@/utils/js/message'
-import {
-    request
-} from 'https';
+
 export default {
     name: "Syspara",
     data() {
@@ -88,35 +86,8 @@ export default {
             dialogFormVisible: false,
             search: "",
             rule: validator,
-            form: {
-                // para_name: "",
-                // para_value: "",
-                // para_type: "",
-                // remark: ""
-            },
+            form: {},
             formLabelWidth: "120px",
-            // rules: {
-            //     para_name: [{
-            //         required: true,
-            //         message: "para_name 是必填项",
-            //         trigger: "blur"
-            //     }],
-            //     para_value: [{
-            //         required: true,
-            //         message: "para_value 是必填项",
-            //         trigger: "blur"
-            //     }],
-            //     para_type: [{
-            //         required: true,
-            //         message: "para_type 是必填项",
-            //         trigger: "blur"
-            //     }],
-            //     remark: [{
-            //         required: true,
-            //         message: "remark 是必填项",
-            //         trigger: "blur"
-            //     }]
-            // },
             showEdit: [], //显示编辑框
             showBtn: []
         };
