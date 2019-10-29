@@ -60,8 +60,15 @@ export default new Router({
                     name: 'addScoure',
                     title: 'agent管理',
                     component: () => import('@/hrds/b/datasource/datasource.vue')
+                },
+                {
+                    path: '/addTask',
+                    name: 'addTask',
+                    title: '新增任务',
+                    component: () => import('@/hrds/b/addTask/addTask.vue')
                 }
             ]
-        }
+        },
+       
     ]
 })
