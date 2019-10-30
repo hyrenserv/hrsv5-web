@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getDataUserInfo() {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataCollectUser',
+        url: '/B/datasource/searchDataCollectUser',
         method: 'post',
     })
 }
@@ -16,7 +16,7 @@ export function getDataUserInfo() {
  */
 export function addDataAgent(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/saveAgent',
+        url: '/B/agentinfo/saveAgent',
         method: 'post',
         params:data
     })
@@ -27,29 +27,29 @@ export function addDataAgent(data) {
  */
 export function updateDataAgent(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/saveAgent',
+        url: '/B/agentinfo/saveAgent',
         method: 'post',
         params:data
     })
 }
 
 /**
- * 点击删除按钮删除信息
+ * 删除agent信息
  */
 export function deleteDataAgent(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/deleteAgent',
+        url: '/B/agentinfo/deleteAgent',
         method: 'post',
         data:data
     })
 }
 
 /**
- * 获取首页的数据
+ * 获取数据源首页的数据
  */
 export function getIndexDataAll() {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSourceInfo',
+        url: '/B/datasource/searchDataSourceInfo',
         method: 'post'
     })
 }
@@ -61,7 +61,7 @@ export function getIndexDataAll() {
  */
 export function addDataResource(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/saveDataSource',
+        url: '/B/datasource/saveDataSource',
         method: 'post',
         params: data
     })
@@ -72,7 +72,7 @@ export function addDataResource(data) {
  */
 export function importDataResource(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/uploadFile',
+        url: '/B/datasource/uploadFile',
         method: 'post',
         params: data
     })
@@ -84,7 +84,7 @@ export function importDataResource(data) {
  */
 export function updateDataResource(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/updateDataSource',
+        url: '/B/datasource/updateDataSource',
         method: 'post',
         params: data
     })
@@ -95,7 +95,7 @@ export function updateDataResource(data) {
  */
 export function getDepartmentInfo(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource',
+        url: '/B/datasource/searchDataSource',
         method: 'post',
         params:data
     })
@@ -107,7 +107,19 @@ export function getDepartmentInfo(data) {
  */
 export function tapUploadData(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/uploadFile',
+        url: '/B/datasource/uploadFile',
+        method: 'post',
+        params: data
+    })
+}
+
+
+/**
+ * 点击下载按钮下载数据
+ */
+export function tapDownloadData(data) {
+    return request({
+        url: '/B/datasource/downloadFile',
         method: 'post',
         params: data
     })
@@ -118,10 +130,9 @@ export function tapUploadData(data) {
  */
 export function upDatechargeDate(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/updateAuditSourceRelationDep',
+        url: '/B/datasource/updateAuditSourceRelationDep',
         method: 'post',
         params: data
-		// params:{data,depIdsString}
     })
 }
 
@@ -130,7 +141,7 @@ export function upDatechargeDate(data) {
  */
 export function getDataDepInfo(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/searchDataSource',
+        url: '/B/datasource/searchDataSource',
         method: 'post',
         data:data
     })
@@ -139,21 +150,32 @@ export function getDataDepInfo(data) {
  /**
    * 查询数据源对应agent所有信息，数据源页面到agent页面
    */
-  export function getAgentData(sourceId) {
+  export function getAgentData(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/agentinfo/searchDatasourceAndAgentInfo',
+        url: '/B/agentinfo/searchDatasourceAndAgentInfo',
         method: 'post',
-        data: sourceId
+        params: data
     })
 }
 
 /**
-   *点击删除按钮删除数据源
+   *删除数据源来源表
    */
   export function deleteDataSource(data) {
     return request({
-        url: '/hrds_B/B/action/hrds/b/biz/datasource/deleteDataSource',
+        url: '/B/datasource/deleteDataSource',
         method: 'post',
-        data:data
+        params:data
+    })
+}
+
+/**
+   *分页查询
+   */
+  export function searchDataSource(data) {
+    return request({
+        url: '/B/datasource/searchSourceRelationDepForPage',
+        method: 'post',
+        params:data
     })
 }
