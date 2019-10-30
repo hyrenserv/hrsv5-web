@@ -6,10 +6,10 @@
 const Menu = [
     {
         icon: 'el-icon-setting22', title: 'Form 表单', path: '/10', children: [
-            { icon: 'el-icon-setting2', title: '表单验证', path: '/Form1' },
-            { icon: 'el-icon-setting2', title: '表单测试', path: '/formDemo' },
-            { icon: 'el-icon-setting2', title: '自定义校验规则', path: '/Form2' },
-            { icon: 'el-icon-setting2', title: '方法说明', path: '/Explain' },
+            // { icon: 'el-icon-setting2', title: '表单验证', path: '/Form1' },
+            { icon: 'el-icon-setting2', title: '默认表的验证', path: '/formDemo' },
+            // { icon: 'el-icon-setting2', title: '自定义校验规则', path: '/Form2' },
+            // { icon: 'el-icon-setting2', title: '方法说明', path: '/Explain' },
         ]
     },
     {
@@ -41,7 +41,7 @@ const Menu = [
     {
         title: 'Tree 树形控件', path: '/19', children: [
             // { title: '基础用法', path: '/basicTree' },
-            { icon: 'el-icon-setting2',title: '节点过滤', path: '/nodeFiltering' },
+            { icon: 'el-icon-setting2',title: '默认树使用方式', path: '/nodeFiltering' },
             { icon: 'el-icon-setting2',title: '选择用法', path: '/selectedTree' },
 
             { icon: 'el-icon-setting2',title: 'Tree属性', path: '/treeAttribute' }
@@ -49,9 +49,9 @@ const Menu = [
     },
     {
         icon: 'el-icon-setting22', title: 'DatePicker 日期选择器', path: '/8', children: [
+            { icon: 'el-icon-setting2', title: '时间区间', path: '/DatePicker4' },
             { icon: 'el-icon-setting2', title: '日期', path: '/DatePicker1' },
             { icon: 'el-icon-setting2', title: '时间', path: '/DatePicker2' },
-            { icon: 'el-icon-setting2', title: '时间区间', path: '/DatePicker4' },
             // { icon: 'el-icon-setting2', title: '日期和时间点', path: '/DatePicker3' },
             { icon: 'el-icon-setting2', title: '方法说明', path: '/DatePicker/Explain' }
         ]
