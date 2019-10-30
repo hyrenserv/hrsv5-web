@@ -67,7 +67,12 @@ export default new Router({
                     title: '新增任务',
                     component: () => import('@/hrds/b/addTask/addTask.vue')
                 },
-
+                {
+                    path: '/agentList',
+                    name: 'agentList',
+                    title: 'agent列表',
+                    component: () => import('@/hrds/b/agentList/agentList.vue')
+                },
             ]
         },
 
