@@ -152,7 +152,7 @@ export default {
             getAgentData: {},
             source_id: "",
             sourceId: "",
-            datasourceName: "",
+            datasource_name: "",
             agentId: "",
             agent_type: "",
             agentType: "",
@@ -198,11 +198,10 @@ export default {
             this.sourceId = this.$route.params.scouresId;
             this.datasourceName = this.$route.params.dataName;
             // 发送请求获取数据
-            const querystring = require("querystring");
-            functionAll.getAgentData(querystring.stringify({
-                sourceId: this.sourceId,
-                datasourceName: this.datasourceName
-            })).then(res => {
+            functionAll.getAgentData({
+                source_id: this.sourceId,
+                datasource_name: this.datasourceName
+            }).then(res => {
                 if (res.code == 200) {
                     // 传参
                     // this.tableData = res.data.sjkAgent;

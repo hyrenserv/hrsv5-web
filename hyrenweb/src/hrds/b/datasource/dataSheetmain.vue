@@ -8,7 +8,7 @@
             <span>{{itme.sumagent}}</span>
         </div>
         <div class="boxshletr">
-            <i class="fa fa-download fa-lg"></i>
+            <i class="fa fa-download fa-lg" @click="downloadData(index)"></i>
             <el-button type="text" class="editBtn" @click="dialogFormVisibleAdd = true;clickEditButton(index)">
                 <i class="fa fa-pencil fa-lg"></i>
             </el-button>
@@ -21,10 +21,10 @@
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formUpdate" ref="formUpdate" :rules="rules">
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasourceName">
-                <el-input v-model="formUpdate.datasourceName " autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
+                <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasourceNumber">
-                <el-input v-model="formUpdate.datasourceNumber" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
+                <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
@@ -32,7 +32,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="sourceRemark">
-                <el-input type="textarea" v-model="formUpdate.sourceRemark" autocomplete="off" placeholder="数据源详细描述" style="width:284px"></el-input>
+                <el-input type="textarea" v-model="formUpdate.source_remark" autocomplete="off" placeholder="数据源详细描述" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -57,30 +57,20 @@ export default {
     props: ["data"],
     data() {
         return {
+            filename :"",
             showHidden: "false",
             options: [],
             click: "",
             sourceId: "",
+            source_id:"",
             datasourceName: "",
             dialogFormVisibleDelte: false,
             dialogFormVisibleAdd: false,
             depIds: [],
             formUpdate: {
-                // datasourceNumber: "",
-                // datasourceName: "",
-                // sourceRemark: "",
-            },
-            rules: {
-                datasourceNumber: [{
-                    required: true,
-                    message: "数据源编号是以字母开头的不超过四位数的字母数字组合",
-                    trigger: "blur"
-                }],
-                datasourceName: [{
-                    required: true,
-                    message: "数据源名称是必填项",
-                    trigger: "blur"
-                }]
+                datasource_name: "",
+                datasource_number: "",
+                source_remark: "",
             },
             formLabelWidth: "150px"
         };
@@ -108,8 +98,8 @@ export default {
 
         // 点击保存按钮更新当前的所有信息
         update() {
-            this.formUpdate["depIds"] = this.depIds.join(",");
-            this.formUpdate["sourceId"] = this.sourceId;
+            this.formUpdate["dep_id"] = this.depIds.join(",");
+            this.formUpdate["source_id"] = this.sourceId;
             functionAll.updateDataResource(this.formUpdate).then(res => {
                 if (res.code == 200) {
                     this.$message({
@@ -154,11 +144,7 @@ export default {
         },
         // 点击删除删除数据源
         delteThisData() {
-            const querystring = require("querystring");
-            functionAll
-                .deleteDataAgent(querystring.stringify({
-                    sourceId: this.sourceId
-                }))
+            functionAll.deleteDataSource({source_id: this.sourceId})
                 .then(res => {
                     if (res.code == 200) {
                         this.$message({
@@ -171,7 +157,34 @@ export default {
                         this.$message.error("删除失败！");
                     }
                 });
-        }
+        },
+         // 点击下载图标数据
+        downloadData(index){
+            this.sourceId = this.data[index].source_id;
+            functionAll.tapDownloadData({source_id: this.sourceId}).then(res=>{
+                this.filename =this.data[index].source_id;
+                const blob = new Blob([JSON.stringify(res),{type: 'application/json'}]);
+               
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, this.filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    aTag.download = this.filename;
+                    aTag.href = URL.createObjectURL(blob);
+                if (aTag.all) {
+                     aTag.click();
+                 } else {
+                    //  兼容firefox
+                    var evt = document.createEvent("MouseEvents");
+                    evt.initEvent("click", true, true);
+                    aTag.dispatchEvent(evt);
+              }
+                    URL.revokeObjectURL(aTag.href);
+            }
+            })
+        },
     }
 };
 </script>

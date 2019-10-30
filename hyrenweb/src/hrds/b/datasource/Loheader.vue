@@ -28,12 +28,12 @@
                 </el-tooltip>
             </el-form-item>
             <el-form-item label="数据采集用户：" :label-width="formLabelWidth">
-                <el-select v-model="formImport.userCollectId" placeholder="请选择" style="width:284px">
+                <el-select v-model="formImport.user_id" placeholder="请选择" style="width:284px">
                     <el-option v-for="item in options" :key="item.dep_id" :label="item.user_name" :value="item.user_id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="上传要导入的数据源 :" :label-width="formLabelWidth">  
-                <el-upload class="upload-demo" action="http://localhost:8080/Upload" multiple :limit="3"  :auto-upload="false"  :on-change="handleChange">
+                <el-upload class="upload-demo" action="http://localhost:8080/Upload" multiple :limit="1"  :auto-upload="false"  :on-change="handleChange">
                     <el-button size="small" type="primary">选择上传文件</el-button>
                 </el-upload>
                 <el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">
@@ -42,20 +42,20 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisibleImport = false" size="mini" type="danger">取 消</el-button>
+            <el-button @click="cancleImport" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>
         </div>
     </el-dialog>
-
+   
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
     <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formAdd" ref="formAdd" :rules="rules">
-            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number">
-                <el-input v-model="formAdd.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
-            </el-form-item>
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
                 <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number">
+                <el-input v-model="formAdd.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
@@ -92,7 +92,8 @@ export default {
             },
             formImport: {
                 agent_ip:"",
-                agent_port:""
+                agent_port:"",
+                user_id:""
             },
             importFileUrl:"",
             filesr:"",
@@ -125,7 +126,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 调用添加方法
-                    this.formAdd["depIds"] = this.depIds.join(",");
+                    this.formAdd["dep_id"] = this.depIds.join(",");
                     functionAll.addDataResource(this.formAdd).then(response => {
                         if (response && response.success) {
                             this.$message({
@@ -147,7 +148,7 @@ export default {
                 }
             });
         },
-        // 点击导入获取数据采集信息
+        // 点击导入按钮获取数据采集信息
         DataCathInfo() {
             functionAll.getDataUserInfo().then(res => {
                 if (res.code == 200) {
@@ -155,22 +156,24 @@ export default {
                 }
             });
         },
+        // 获取上传的文件详情
+         handleChange(file, fileList) {
+            this.filesr =file;
+        },
         // 点击上传数据
         upload() {
-             let fileListss=[];
-             let len = fileListss.push(this.filesr);
             // 要把userid可能提出去，然后在帮到下面
-            this.formImport["user_id"] = this.depIds.join(",");
-            this.formImport["file"] = fileListss.join(",");
+            this.formImport["file"] = this.filesr;
             functionAll.tapUploadData(this.formImport).then(res => {
              
             });
         },
-         handleChange(file, fileList) {
-            this.filesr =file;
-           
-      },
-        // 点击取消按钮
+        // 点击导入弹出框的取消按钮
+        cancleImport(){
+            this.formImport={};
+            this.dialogFormVisibleImport = false;
+        },
+        // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
             this.formAdd = {};
@@ -217,12 +220,11 @@ export default {
 .els {
     float: right;
     margin-top: 18px;
-    background: #337ab7;
+
 }
 
 .el1 {
     margin-left: 10px;
-    background: #337ab7;
 }
 .item{
     float: right;
