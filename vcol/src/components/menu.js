@@ -13,7 +13,7 @@ const Menu = [
         ]
     },
     {
-        icon: 'el-icon-setting2',title: 'Table 表格', path: '/11', children: [
+        icon: 'el-icon-setting2', title: 'Table 表格', path: '/11', children: [
             /*  { title: '带斑马纹表格', path: '/zebrapattern' },
              { title: '带边框表格', path: '/frame' }, */
             // { title: '带状态表格', path: '/statuTable' },
@@ -23,28 +23,28 @@ const Menu = [
             // { title: '流体高度', path: '/' },
             /*  { title: '多选表格', path: '/multipleSelection' },
              { title: '排序表格', path: '/sortTable' }, */
-            { icon: 'el-icon-setting2',title: '默认表格', path: '/filterTable' },
-            { icon: 'el-icon-setting2',title: '自定义列模板', path: '/customizeTable' },
+            { icon: 'el-icon-setting2', title: '默认表格', path: '/filterTable' },
+            { icon: 'el-icon-setting2', title: '自定义列模板', path: '/customizeTable' },
             // { title: '展开行', path: '/' },
-            { icon: 'el-icon-setting2',title: '自定义表头', path: '/customizeTableHead' },
-            { icon: 'el-icon-setting2',title: '自定义索引', path: '/customIndex' },
-            { icon: 'el-icon-setting2',title: '表格属性', path: '/tableAttributes' }
+            { icon: 'el-icon-setting2', title: '自定义表头', path: '/customizeTableHead' },
+            { icon: 'el-icon-setting2', title: '自定义索引', path: '/customIndex' },
+            { icon: 'el-icon-setting2', title: '表格属性', path: '/tableAttributes' }
         ]
     },
     {
         title: 'NavMenu 导航菜单', path: '/20', children: [
-            { icon: 'el-icon-setting2',title: '顶栏菜单', path: '/topBarMenu' },
-            { icon: 'el-icon-setting2',title: '侧栏菜单', path: '/sidebarMenu' },
-            { icon: 'el-icon-setting2',title: '菜单属性', path: '/navMenuAttribute' }
+            { icon: 'el-icon-setting2', title: '顶栏菜单', path: '/topBarMenu' },
+            { icon: 'el-icon-setting2', title: '侧栏菜单', path: '/sidebarMenu' },
+            { icon: 'el-icon-setting2', title: '菜单属性', path: '/navMenuAttribute' }
         ]
     },
     {
         title: 'Tree 树形控件', path: '/19', children: [
             // { title: '基础用法', path: '/basicTree' },
-            { icon: 'el-icon-setting2',title: '默认树使用方式', path: '/nodeFiltering' },
-            { icon: 'el-icon-setting2',title: '选择用法', path: '/selectedTree' },
+            { icon: 'el-icon-setting2', title: '默认树使用方式', path: '/nodeFiltering' },
+            { icon: 'el-icon-setting2', title: '选择用法', path: '/selectedTree' },
 
-            { icon: 'el-icon-setting2',title: 'Tree属性', path: '/treeAttribute' }
+            { icon: 'el-icon-setting2', title: 'Tree属性', path: '/treeAttribute' }
         ]
     },
     {
@@ -58,8 +58,8 @@ const Menu = [
     },
     {
         title: 'MessageBox 弹框', path: '/17', children: [
-            { icon: 'el-icon-setting2',title: '确认弹框', path: '/confirmationMessageBox' },
-            { icon: 'el-icon-setting2',title: '弹框参数属性', path: '/messageBoxAttribute' },
+            { icon: 'el-icon-setting2', title: '确认弹框', path: '/confirmationMessageBox' },
+            { icon: 'el-icon-setting2', title: '弹框参数属性', path: '/messageBoxAttribute' },
         ]
     },
     {
@@ -75,23 +75,6 @@ const Menu = [
             // { icon: 'el-icon-setting22', title: '位置变换选项卡', path: '/tabPosition' },
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/tabsAttributes' },
 
-        ]
-    },
-    {
-        icon: 'el-icon-setting', title: 'Layout 布局', path: '/1', children: [
-            { icon: 'el-icon-setting2', title: '基础布局', path: '/Layout1' },
-            { icon: 'el-icon-setting2', title: '分栏间隔', path: '/Layout2' },
-            { icon: 'el-icon-setting2', title: '混合布局', path: '/Layout3' },
-            { icon: 'el-icon-setting2', title: '分栏偏移', path: '/Layout4' },
-            { icon: 'el-icon-setting2', title: '对齐方式', path: '/Layout5' },
-            { icon: 'el-icon-setting2', title: '响应式布局', path: '/Layout6' },
-            { icon: 'el-icon-setting2', title: '方法说明', path: '/Layout/Explain' }
-        ]
-    },
-    {
-        icon: 'el-icon-setting', title: 'Container 布局容器', path: '/2', children: [
-            { icon: 'el-icon-setting2', title: '常见页面布局', path: '/Container1' },
-            { icon: 'el-icon-setting2', title: '方法说明', path: '/Container/Explain' }
         ]
     },
     {
@@ -159,16 +142,16 @@ const Menu = [
     }, */
     {
         title: 'Badge 标记', path: '/14', children: [
-            { icon: 'el-icon-setting2',title: '普通标记显示', path: '/generalMark' },
-            { icon: 'el-icon-setting2',title: '最大限制标记显示', path: '/maxMark' },
-            { icon: 'el-icon-setting2',title: '标记属性', path: '/maxAttribute' },
+            { icon: 'el-icon-setting2', title: '普通标记显示', path: '/generalMark' },
+            { icon: 'el-icon-setting2', title: '最大限制标记显示', path: '/maxMark' },
+            { icon: 'el-icon-setting2', title: '标记属性', path: '/maxAttribute' },
         ]
     },
     {
         title: 'Loading 加载', path: '/15', children: [
-            { icon: 'el-icon-setting2',title: '区域加载', path: '/regionLoading' },
-            { icon: 'el-icon-setting2',title: '整页加载', path: '/fullPageLoading' },
-            { icon: 'el-icon-setting2',title: '加载属性', path: '/loadingAttribute' },
+            { icon: 'el-icon-setting2', title: '区域加载', path: '/regionLoading' },
+            { icon: 'el-icon-setting2', title: '整页加载', path: '/fullPageLoading' },
+            { icon: 'el-icon-setting2', title: '加载属性', path: '/loadingAttribute' },
         ]
     },
     // {
@@ -180,9 +163,9 @@ const Menu = [
 
     {
         title: 'Notification 通知', path: '/18', children: [
-            { icon: 'el-icon-setting2',title: '基本用法', path: '/basicUsage' },
-            { icon: 'el-icon-setting2',title: '带有状态的用法', path: '/statusNotification' },
-            { icon: 'el-icon-setting2',title: '参数属性', path: '/notificationAttributes' },
+            { icon: 'el-icon-setting2', title: '基本用法', path: '/basicUsage' },
+            { icon: 'el-icon-setting2', title: '带有状态的用法', path: '/statusNotification' },
+            { icon: 'el-icon-setting2', title: '参数属性', path: '/notificationAttributes' },
         ]
     },
 
@@ -248,7 +231,24 @@ const Menu = [
             { icon: 'el-icon-setting22', title: '属性方法说明', path: '/infiniteScrollAttributes' }
 
         ]
-    }
+    }, 
+    {
+        icon: 'el-icon-setting', title: 'Layout 布局', path: '/1', children: [
+            { icon: 'el-icon-setting2', title: '基础布局', path: '/Layout1' },
+            { icon: 'el-icon-setting2', title: '分栏间隔', path: '/Layout2' },
+            { icon: 'el-icon-setting2', title: '混合布局', path: '/Layout3' },
+            { icon: 'el-icon-setting2', title: '分栏偏移', path: '/Layout4' },
+            { icon: 'el-icon-setting2', title: '对齐方式', path: '/Layout5' },
+            { icon: 'el-icon-setting2', title: '响应式布局', path: '/Layout6' },
+            { icon: 'el-icon-setting2', title: '方法说明', path: '/Layout/Explain' }
+        ]
+    },
+    {
+        icon: 'el-icon-setting', title: 'Container 布局容器', path: '/2', children: [
+            { icon: 'el-icon-setting2', title: '常见页面布局', path: '/Container1' },
+            { icon: 'el-icon-setting2', title: '方法说明', path: '/Container/Explain' }
+        ]
+    },
 ]
 
 export default Menu;
