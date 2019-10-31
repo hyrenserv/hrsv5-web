@@ -105,8 +105,8 @@ export default {
             this.dataCollectInfo = res.data[0];
         })
         collect.getHostoryCollect().then(res => {
-            this.chartData.columns = typeof Object.keys(res.data[0]);
-            this.chartData.rows = res.data.reverse('data');
+            this.chartData.columns = Object.keys(res.data[0]);
+            this.chartData.rows = res.data;
         })
     },
     watch: {
