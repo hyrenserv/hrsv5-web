@@ -87,9 +87,13 @@ export default {
     color: #fff;
 }
 
-.el-main {
-    padding: 15px
+.el-main{
+    padding: 10px;
+    min-height: 540px;
+     padding: 15px
 }
+
+
 
 .el-aside {
     height: 100%

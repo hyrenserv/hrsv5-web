@@ -9,88 +9,179 @@
       </router-link>
     </el-row>
     <div class="lines"></div>
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="datasource" label="数据源" width="180"></el-table-column>
-      <el-table-column prop="dbAgent" label="数据库 Agent" width="180">
-          <el-button type="primary" size="mini" @click="dialogTableVisible = true">任务配置</el-button>
+    <el-table :data="AgenttableData" border style="width: 100%">
+      <el-table-column prop="datasource_name" label="数据源" width="180"></el-table-column>
+      <el-table-column label="数据库 Agent" width="180">
+        <template scope="scope">
+          <el-button
+            v-if="scope.row.dbflag!=0"
+            type="primary"
+            size="mini"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)"
+          >任务配置</el-button>
+        </template>
       </el-table-column>
-      <el-table-column prop="dbfileAgent" label="数据文件 Agent" width="180"></el-table-column>
-      <el-table-column prop="unstructuredAgent" label="非结构化 Agent"></el-table-column>
-      <el-table-column prop="structuredAgent" label="半结构化 Agent"></el-table-column>
-      <el-table-column prop="ftpAgent" label="Ftp Agent"></el-table-column>
+      <el-table-column label="数据文件 Agent" width="180">
+        <template scope="scope">
+          <el-button
+            v-if="scope.row.dfflag!=0"
+            type="primary"
+            size="mini"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)"
+          >任务配置</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="非结构化 Agent">
+        <template scope="scope">
+          <el-button
+            v-if="scope.row.nonstructflag!=0"
+            type="primary"
+            size="mini"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)"
+          >任务配置</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="半结构化 Agent">
+        <template scope="scope">
+          <el-button
+            v-if="scope.row.halfstructflag!=0"
+            type="primary"
+            size="mini"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)"
+          >任务配置</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="Ftp Agent">
+        <template scope="scope">
+          <el-button
+            v-if="scope.row.ftpflag!=0"
+            type="primary"
+            size="mini"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)"
+          >任务配置</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-    <!--  -->
-    <el-dialog title="采集类型：数据库Agent，数据源名称：1023" :visible.sync="dialogTableVisible" width="80%">
-  <el-table :data="gridData2" border size="medium">
-    <el-table-column property="AgentName" label="Agent名称" width="150px"></el-table-column>
-    <el-table-column property="AgentIp" label="Agent IP" ></el-table-column>
-    <el-table-column property="AgentPort" label="Agent端口" width="100px"></el-table-column>
-    <el-table-column property="AgentType" label="采集类型" width="100px"></el-table-column>
-    <el-table-column property="AgentLink" label="Agent连接状态" width="160px"></el-table-column>
-    <el-table-column property="AgentOpt" label="操作" width="280px">
-        <el-row>
+    <!-- 点击部署显示弹框-->
+    <el-dialog title="" :visible.sync="dialogTableVisible" width="80%">
+      <div slot="title" class="header-title">
+        <span class="title-sourceName">数据源名称:{{ sourceName }}</span>
+        <span class="title-agentType">采集类型：{{agentType }}</span>
+      </div>
+      <el-table :data="gridData2" border size="medium">
+        <el-table-column property="agent_name" label="Agent名称" width="150px"></el-table-column>
+        <el-table-column property="agent_ip" label="Agent IP"></el-table-column>
+        <el-table-column property="agent_port" label="Agent端口" width="100px"></el-table-column>
+        <el-table-column label="采集类型" width="100px">{{agentType}}</el-table-column>
+        <el-table-column label="Agent连接状态" width="160px">{{agentStatus}}</el-table-column>
+        <el-table-column property="AgentOpt" label="操作" width="280px">
+            <template scope="scope">
+          <el-row>
             <el-col :span="8">
-             <router-link to="/addTask"><el-button type="primary" size="mini" >新增任务</el-button></router-link>
+              <router-link to="/addTask">
+                <el-button type="primary" size="mini">新增任务</el-button>
+              </router-link>
             </el-col>
-             <el-col :span="8">
-         <el-button type="primary" size="mini" >任务管理</el-button>
-          </el-col>
-          <el-col :span="8">
-         <el-button type="primary" size="mini" >日志查看</el-button>
-          </el-col>
-        </el-row>
-    </el-table-column>
-  </el-table>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogTableVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
-  </div>
-</el-dialog>
+            <el-col :span="8">
+              <el-button type="primary" size="mini" @click="dialogTableTask = true;taskManagement(scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button type="primary" size="mini">日志查看</el-button>
+            </el-col>
+          </el-row>
+            </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 点击任务管理出现弹层 -->
+    <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="50%" class="taskEx" >
+      <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
+      <el-table :data="taskMang" border size="medium" >
+        <el-table-column property="task_name" label="任务名称" width="150px"></el-table-column>
+        <el-table-column property="" label="采集类型">{{agentType}}</el-table-column>
+        <el-table-column property="" label="启动方式" width="100px"></el-table-column>
+        <el-table-column label="采集频率" width="100px"></el-table-column>
+        <el-table-column  label="操作" width="150px">
+          <el-row>
+            <el-col :span="8"  class="edilt" style="text-align: center;">
+              <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            </el-col>
+            <el-col :span="8" class="delbtn">
+              <el-button type="primary" icon="el-icon-delete" circle></el-button>
+            </el-col>
+            <el-col :span="8" class="sendmsg">
+              <el-button type="primary" icon="el-icon-position" circle ></el-button>
+            </el-col>
+          </el-row>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableTask = false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
+import * as agentList from "./agentList";
 export default {
   data() {
     return {
-      tableData: [
-        {
-          datasource: "1023",
-          dbAgent: "1234",
-          dbfileAgent: "13424",
-          unstructuredAgent:'1324',
-          structuredAgent:'1324',
-          ftpAgent:'143'
-        },
-        {
-          datasource: "1023",
-          dbAgent: "1234",
-          dbfileAgent: "13424",
-          unstructuredAgent:'1324',
-          structuredAgent:'1324',
-          ftpAgent:'143'
-        },
-         {
-          datasource: "1023",
-          dbAgent: "1234",
-          dbfileAgent: "13424",
-          unstructuredAgent:'1324',
-          structuredAgent:'1324',
-          ftpAgent:'143'
-        },
-      ],
-        gridData2: [{
-          AgentName: '2016-05-02',
-          AgentIp: '12.13.13.13',
-          AgentPort: '8888',
-          AgentType:'123',
-          AgentLink:'1324',
-          AgentOpt:'1324'
-        }],
-        dialogTableVisible: false,
+      AgenttableData: [],
+      gridData2: [],
+      taskMang:[],
+      dialogTableVisible: false,
+      agentType: "",
+      sourceName: "",
+      agentStatus: "",
+      dialogTableTask:false,
     };
   },
-  methods(){
-      
+  mounted() {
+    agentList.getAgentInfoList().then(res => {
+      this.AgenttableData = res.data;
+    });
+  },
+  methods: {
+    clickTaskflag(id, type) {
+      let params = {};
+      params["sourceId"] = id;
+      params["agentType"] = type;
+      agentList.getAgentInfo(params).then(res => {
+        this.gridData2 = res.data;
+        this.sourceName = res.data[0].datasource_name;
+        if (res.data[0].agent_type == 1) {
+          this.agentType = "数据库采集";
+        } else if (res.data[0].agent_type == 2) {
+          this.agentType = "非结构化采集";
+        } else if (res.data[0].agent_type == 3) {
+          this.agentType = "Ftp采集Agent";
+        } else if (res.data[0].agent_type == 4) {
+          this.agentType = "数据文件采集";
+        } else {
+          this.agentType = "半结构化采集";
+        }
+        if (res.data[0].agent_status == 1) {
+          this.agentStatus = "已连接";
+        } else if (res.data[0].agent_status == 2) {
+          this.agentStatus = "未连接";
+        } else {
+          this.agentStatus = "正在进行中";
+        }
+      });
+    },
+    taskManagement(Agentid,sourceid){
+      let params = {};
+      params["sourceId"] = sourceid;
+      params["agentId"] = Agentid;
+       agentList.getTaskInfo(params).then(res=>{
+        this.taskMang=res.data
+        console.log(this.taskMang)
+       })
+    }
   }
 };
 </script>
@@ -127,5 +218,26 @@ export default {
   min-height: 1px;
   background: #dddddd;
   margin-bottom: 15px;
+}
+.edilt{
+      text-align: center;
+    color: #4691ef;
+    font-size: 22px;
+    font-weight: bold;
+}
+.sendmsg{
+ text-align: center;
+    color: #4691ef;
+    font-size: 22px;
+    font-weight: bold;
+}
+.delbtn{
+   text-align: center;
+    color: #4691ef;
+    font-size: 22px;
+    font-weight: bold;
+}
+.taskEx>>>el-dialog__body{
+   padding:15px 20px;
 }
 </style>
