@@ -11,8 +11,7 @@ const Menu = [
         // children: [
         //     { icon: 'el-icon-document', title: '新增任务', path: '/addTask' }]
     },
-    { icon: 'el-icon-document', title: '数据源管理', path: '/index1001' },
-    { icon: 'el-icon-document', title: 'agent管理', path: '/addScoure' },
+    { icon: 'el-icon-document', title: '数据源管理', path: '/datasourceManagement' },
 
 
 

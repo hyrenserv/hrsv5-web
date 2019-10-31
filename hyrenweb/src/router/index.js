@@ -50,10 +50,10 @@ export default new Router({
                     component: () => import('@/hrds/b/collectmonitor/collectmonitor.vue')
                 },
                 {
-                    path: '/index1001',
-                    name: ' index1001',
+                    path: '/datasourceManagement',
+                    name: ' datasourceManagement',
                     title: '数据源管理',
-                    component: () => import('@/hrds/b/datasource/index1001.vue')
+                    component: () => import('@/hrds/b/datasource/datasourceManagement.vue')
                 },
                 {
                     path: '/addScoure',
