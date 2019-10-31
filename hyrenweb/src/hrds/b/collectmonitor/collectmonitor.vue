@@ -17,8 +17,20 @@
                 </el-badge>
             </el-col>
         </el-col>
-        <el-col :span="8">
-            <div class="grid-content bg-purple">{{}}</div>
+        <el-col :span="12">
+            <el-select v-model="database_id" filterable clearable placeholder="请选择任务进行查看">
+                <el-option v-for="item in dataBaseSet" :key="item.taskid" :label="item.taskname" :value="item.taskid">
+                    <span style="float: left">{{ item.taskname }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.agent_type }}</span>
+                </el-option>
+            </el-select>
+            <el-divider direction="vertical"></el-divider>
+            <span>成功 {{suceess}}</span>
+            <el-divider direction="vertical"></el-divider>
+            <span>失败 {{failure}}</span>
+            <el-divider direction="vertical"></el-divider>
+            <span>运行中 {{running}}</span>
+
         </el-col>
     </el-row>
     <el-row :gutter="20">
@@ -27,25 +39,34 @@
             <template>
                 <ve-histogram :data="chartData" :settings="chartSettings"></ve-histogram>
             </template>
-            <el-divider></el-divider>
+            <el-divider content-position="left">采集信息汇总</el-divider>
+            <div class="cccc">
+                <el-badge value="文件采集" class="items" style="border: 4px solid #19D4AE;" type="success">
+                    <span size="small">{{dataCollectInfo.filesize}}</span>
+                </el-badge>
+                <el-badge value="数据采集" class="items" style="border: 4px solid #5AB1EF;" type="warning">
+                    <span size="small">{{dataCollectInfo.dbsize}}</span>
+                </el-badge>
+                <el-badge value="采集任务数" class="items" style="border: 4px solid #EFCA69;" type="primary">
+                    <span size="small">{{dataCollectInfo.taskNum}}</span>
+                </el-badge>
+            </div>
         </el-col>
         <el-col :span="12">
             <el-divider content-position="left">数据采集信息列表</el-divider>
-            <el-badge :value="agentnum" class="item">
-                <el-button type="success" size="medium">
-                    <router-link to="/agentdeploy"><i class="el-icon-download"></i>部署Agent</router-link>
-                </el-button>
-            </el-badge>
-
         </el-col>
     </el-row>
-
 </div>
 </template>
 
 <script>
 import * as collect from './collectmonitor'
+//任务信息页面
+import dataBaseSet from './databaseCollectTable'
 export default {
+    components: {
+
+    },
     data() {
         this.chartSettings = {
             // metrics: ['数据采集'],
@@ -55,7 +76,12 @@ export default {
         return {
             agentnum: 0,
             sourcenum: 0,
-
+            database_id: '',
+            suceess: 0,
+            failure: 0,
+            running: 0,
+            dataBaseSet: [], //任采集任务信息
+            dataCollectInfo: {},
             chartData: {
                 columns: ['日期', '文件采集', '数据采集'],
                 rows: [{
@@ -113,7 +139,7 @@ export default {
             }
         }
     },
-    created() {
+    mounted() {
         collect.getAgentNumAndSourceNum().then((res) => {
             if (res.success) {
                 this.agentnum = res.data.agentnum;
@@ -121,9 +147,24 @@ export default {
             }
         })
 
-        // collect.lineData().then((res) => {
-        //     this.chartData = res;
-        // })
+        collect.getDatabaseSet().then((res) => {
+            this.dataBaseSet = res.data;
+        })
+
+        collect.getDataCollectInfo().then(res => {
+            this.dataCollectInfo = res.data[0];
+        })
+    },
+    watch: {
+        database_id(newVal, oldVal) {
+            let params = {
+                'name': 'databaseCollectTable',
+                'params': {
+                    'database_id': newVal
+                }
+            }
+            this.$router.push(params)
+        }
     }
 }
 </script>
@@ -136,5 +177,37 @@ export default {
 .grid-content {
     border-radius: 4px;
     min-height: 36px;
+}
+
+.cccc>>>.el-badge__content--success {
+    background-color: #19D4AE;
+}
+
+.cccc>>>.el-badge__content--warning {
+    background-color: #5AB1EF !important;
+}
+
+.cccc>>>.el-badge__content--primary {
+    background-color: #EFCA69;
+}
+
+.items>span {
+    position: absolute;
+    left: 50%;
+    margin-left: -40px;
+    width: 80px;
+    top: 50%;
+    margin-top: -10px;
+    height: 20px;
+}
+
+.items {
+    margin-right: 100px;
+    width: 100px;
+    height: 100px;
+    background: #fff;
+    border-radius: 50%;
+    text-align: center;
+    word-break: break-word;
 }
 </style>

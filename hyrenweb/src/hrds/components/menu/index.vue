@@ -19,7 +19,7 @@
                 <!-- 导航 -->
                 <el-menu router :default-active="menus[0].path">
                     <div v-for="items in menus" :key="items.name">
-                        <template  v-if="items.children">
+                        <template v-if="items.children">
                             <!--二级菜单循环-->
                             <el-submenu :index="items.children[0].path">
                                 <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
@@ -31,8 +31,8 @@
                                 </div>
                             </el-submenu>
                         </template>
-                        <template  v-else>
-                        <!--一级菜单循环-->
+                        <template v-else>
+                            <!--一级菜单循环-->
                             <el-menu-item :index="items.path">
                                 <i :class="items.icon"></i>
                                 <span>{{items.title}}</span>
@@ -48,7 +48,7 @@
                 <!-- <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer> -->
             </el-container>
         </el-container>
-        <el-header><span>版权所有：海云数服 Version 5.0</span></el-header>
+        <el-header class="fiexd"><span>版权所有：海云数服 Version 5.0</span></el-header>
     </el-container>
 </div>
 </template>
@@ -66,7 +66,7 @@ export default {
     },
     mounted() {
         // 这里是菜单默认路径
-        this.$router.push('syspara');
+        // this.$router.push('syspara');
     },
     methods: {
         ...mapActions(['resetToken']),
@@ -78,8 +78,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-
 <style scoped>
 .el-header,
 .el-footer {
@@ -88,25 +86,23 @@ export default {
     line-height: 50px;
     color: #fff;
 }
-.el-main{
+
+.el-main {
     padding: 10px
 }
+
 .el-aside {
     height: 100%
 }
-
 
 .home .el-header i {
     color: white;
 }
 
-.el-footer {
-    width: 100%;
-    height: 45px !important;
-    /* footer的高度一定要是固定值*/
-    position: relative;
-    bottom: 0px;
-    left: 0px;
+.fiexd {
+    height: 30px !important;
+    line-height: 35px;
     font-size: 12px;
+    margin-top: 6px;
 }
 </style>
