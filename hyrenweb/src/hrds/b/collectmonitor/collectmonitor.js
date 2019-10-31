@@ -29,6 +29,15 @@ export function getDataCollectInfo() {
   })
 }
 
+/**
+ * @returns {Object} 返回历史最近15天的采集数据信息
+ */
+export function getHostoryCollect() {
+  return request({
+    url : '/B/collectmonitor/getHostoryCollect'
+  })
+}
+
 export function lineData() {
     let data =  {
         columns: ['日期', '访问用户', '下单用户', '下单率'],

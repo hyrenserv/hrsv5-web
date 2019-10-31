@@ -88,7 +88,7 @@ export default {
 }
 
 .el-main {
-    padding: 10px
+    padding: 15px
 }
 
 .el-aside {
