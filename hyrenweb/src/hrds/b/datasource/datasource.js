@@ -40,7 +40,7 @@ export function deleteDataAgent(data) {
     return request({
         url: '/B/agentinfo/deleteAgent',
         method: 'post',
-        data:data
+        params:data
     })
 }
 
@@ -95,7 +95,7 @@ export function updateDataResource(data) {
  */
 export function getDepartmentInfo(data) {
     return request({
-        url: '/B/datasource/searchDataSource',
+        url: '/B/datasource/searchDataSourceById',
         method: 'post',
         params:data
     })
@@ -170,7 +170,18 @@ export function getDataDepInfo(data) {
 }
 
 /**
-   *分页查询
+   *数据管理列表分页查询
+   */
+  export function searchDatamanSource(data) {
+    return request({
+        url: '/B/datasource/getDataAuditInfoForPage',
+        method: 'post',
+        params:data
+    })
+}
+
+/**
+   *数据权限管理分页查询
    */
   export function searchDataSource(data) {
     return request({
@@ -179,3 +190,4 @@ export function getDataDepInfo(data) {
         params:data
     })
 }
+

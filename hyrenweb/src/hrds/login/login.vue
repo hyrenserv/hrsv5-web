@@ -66,7 +66,7 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.login(this.ruleForm).then((res) => {
-                        this.$router.push('home');
+                        this.$router.push('collectmonitor');
                     })
                 } else {
                     return false;

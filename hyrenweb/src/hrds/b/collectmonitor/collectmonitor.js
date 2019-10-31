@@ -1,10 +1,41 @@
 import request from '@/utils/request'
 
+/**
+ * @returns {Object} 返回Agent和采集任务数量
+ */
 export function getAgentNumAndSourceNum() {
 
     return request({
         url : '/B/collectmonitor/getAgentNumAndSourceNum',
     })
+}
+
+/**
+ * @returns {Object} 返回当前用户采集任务信息
+ */
+export function getDatabaseSet() {
+  return request({
+    url : '/B/collectmonitor/getDatabaseSet'
+  })
+}
+
+
+/**
+ * @returns {Object} 采集信息总况(总采集任务数,数据采集(数据库,数据文件)和文件采集大小)
+ */
+export function getDataCollectInfo() {
+  return request({
+    url : '/B/collectmonitor/getDataCollectInfo'
+  })
+}
+
+/**
+ * @returns {Object} 返回历史最近15天的采集数据信息
+ */
+export function getHostoryCollect() {
+  return request({
+    url : '/B/collectmonitor/getHostoryCollect'
+  })
 }
 
 export function lineData() {

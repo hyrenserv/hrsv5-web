@@ -12,7 +12,7 @@
             <el-button type="text" class="editBtn" @click="dialogFormVisibleAdd = true;clickEditButton(index)">
                 <i class="fa fa-pencil fa-lg"></i>
             </el-button>
-            <i class="fa fa-times fa-lg" v-if="showHidden" @click="dialogFormVisibleDelte = true;getIndex(index)"></i>
+            <i class="fa fa-times fa-lg" v-if="showHidden" @click="delteThisData(index)"></i>
         </div>
     </div>
 
@@ -41,13 +41,6 @@
         </div>
     </el-dialog>
     <!-- 点击删除弹出框 -->
-    <el-dialog title="温馨提示" :visible.sync="dialogFormVisibleDelte" width="40%">
-        <span>确定要删除吗？</span>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="danger" @click="dialogFormVisibleDelte = false" size="mini">取 消</el-button>
-            <el-button type="primary" @click="delteThisData" size="mini">确 定</el-button>
-        </span>
-    </el-dialog>
 </div>
 </template>
 
@@ -64,7 +57,6 @@ export default {
             sourceId: "",
             source_id:"",
             datasourceName: "",
-            dialogFormVisibleDelte: false,
             dialogFormVisibleAdd: false,
             depIds: [],
             formUpdate: {
@@ -138,12 +130,14 @@ export default {
                 this.showHidden = false;
             }
         },
-        // 点击删除按钮获取对应的index下标
-        getIndex(index) {
-            this.sourceId = this.data[index].source_id;
-        },
+
+       
         // 点击删除删除数据源
-        delteThisData() {
+        delteThisData(index) {
+            this.$confirm("确定要删除该条数据?", "提示",{
+                type:"warning"
+            }).then(()=>{
+            this.sourceId = this.data[index].source_id;
             functionAll.deleteDataSource({source_id: this.sourceId})
                 .then(res => {
                     if (res.code == 200) {
@@ -152,11 +146,11 @@ export default {
                             message: "删除成功!"
                         });
                         this.$emit("addEvent");
-                        this.dialogFormVisibleDelte = false;
                     } else {
                         this.$message.error("删除失败！");
                     }
                 });
+            }) 
         },
          // 点击下载图标数据
         downloadData(index){

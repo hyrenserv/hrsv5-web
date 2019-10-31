@@ -4,15 +4,14 @@
  * 
  */
 const Menu = [
-    { icon: 'el-icon-setting', title: '系统参数', path: '/syspara' },
+    // { icon: 'el-icon-setting', title: '系统参数', path: '/syspara' },
     // { icon: 'el-icon-document', title: 'Agent部署', path: '/agentdeploy' },
     {
         icon: 'el-icon-document', title: '采集监控首页', path: '/collectmonitor',
         // children: [
         //     { icon: 'el-icon-document', title: '新增任务', path: '/addTask' }]
     },
-    { icon: 'el-icon-document', title: '数据源管理', path: '/index1001' },
-    { icon: 'el-icon-document', title: 'agent管理', path: '/addScoure' },
+    { icon: 'el-icon-document', title: '数据源管理', path: '/datasourceManagement' },
 
 
 
