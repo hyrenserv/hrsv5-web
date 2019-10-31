@@ -8,7 +8,7 @@
             <i class="block_icon fa text-warning fa-book blue"></i>
             <span>数据管理列表</span>
             <div class="lines"></div>
-            <el-table stripe :data="dataIndexAll.dataAudit" border>
+            <el-table stripe :data="tableDatalist" border>
                 <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
                 <el-table-column prop="original_name" label="文件名" align="center"></el-table-column>
                 <el-table-column prop="file_suffix" label="文件后缀名" align="center"></el-table-column>
@@ -17,13 +17,13 @@
                 <el-table-column prop="applyDataTime" label="提交时间" width="192" align="center"></el-table-column>
                 <el-table-column prop="applyType_zh" label="申请类型" align="center"></el-table-column>
                 <el-table-column prop="agent_id" label="操作" align="center">
-                    <el-button type="text" size="mini">权限回收</el-button>
+                    <el-button type="text" @click="reclaimAuthority" size="mini">权限回收</el-button>
                 </el-table-column>
             </el-table>
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItem"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页"  @current-change="handleCurrentChangeList" :current-page="currentPagelist" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItem"></el-pagination>
         </el-row>
     </div>
     <!-- 数据管理列表完 -->
@@ -92,31 +92,42 @@ export default {
             formAdd: {},
             formLabelWidth: "150px",
             currentPage: 1,
+            currentPagelist:1,
             pageSize: 5,
             totalItems: "",
-            totalItem:"",
+            totalItem: "",
             options: [],
             sourceId: "",
             depIds: [],
-            tableData: []
+            tableData: [],
+            tableDatalist: []
         };
     },
     // 获取首页数据
     created() {
         functionAll.getIndexDataAll().then(res => {
             if (res.code == 200) {
+                // 获取所有数据
                 this.dataIndexAll = res.data;
+                // 获取数据权限管理分页总数
                 this.totalItems = res.data.dataSourceAndAgentCount.length;
+                // 获取数据管理列表分页总数
                 this.totalItem = res.data.dataAudit.length;
-
             }
         });
+        // 获取数据权限管理数据
         functionAll.searchDataSource({
             currPage: this.currentPage,
             pageSize: this.pageSize
         }).then(res => {
             this.tableData = res.data;
-            this.currentPage = 2;
+        }),
+        // 获取数据管理列表数据
+        functionAll.searchDatamanSource({
+            currPage: this.currentPagelist,
+            pageSize: this.pageSize
+        }).then(res=>{
+            this.tableDatalist = res.data;
         })
     },
     methods: {
@@ -179,7 +190,7 @@ export default {
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
         },
-        // 实现页面跳转
+        //获取数据权限管理数据实现分页功能
         handleCurrentChange(val) {
             //把val赋给当前页面
             this.currentPage = val;
@@ -190,6 +201,26 @@ export default {
                 this.tableData = res.data;
             })
         },
+        // 获取数据管理列表数据实现分页功能
+        handleCurrentChangeList(val){
+            //把val赋给当前页面
+            this.currentPagelist = val;
+            functionAll.searchDatamanSource({
+                currPage: this.currentPagelist,
+                pageSize: this.pageSize
+            }).then(res=>{
+                this.tableDatalist = res.data;
+            })
+
+        },
+        // 权限回收
+        reclaimAuthority(){
+            this.$confirm("确定要删除该条数据?", "提示",{
+                type:"warning"
+            }).then(()=>{
+                
+            })
+        }
     },
 };
 </script>
