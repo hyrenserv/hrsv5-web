@@ -235,7 +235,7 @@ export default {
         },
         // 点击查看获取数据采集信息
         DataCathInfo(index) {
-            functionAll.getDataUserInfo().then(res => {
+            functionAll.searchDataCollectUser().then(res => {
                 if (res.code == 200) {
                     this.options = res.data;
                 }

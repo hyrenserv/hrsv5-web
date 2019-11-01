@@ -108,7 +108,7 @@ export default {
     },
     // 获取首页数据
     created() {
-        functionAll.getIndexDataAll().then(res => {
+        functionAll.searchDataSourceInfo().then(res => {
             if (res.code == 200) {
                 // 获取所有数据
                 this.dataIndexAll = res.data;
@@ -126,7 +126,7 @@ export default {
             this.tableData = res.data;
         }),
         // 获取数据管理列表数据
-        functionAll.searchDatamanSource({
+        functionAll.getDataAuditInfoForPage({
             currPage: this.currentPagelist,
             pageSize: this.pageSize
         }).then(res=>{
@@ -140,7 +140,7 @@ export default {
         },
         // 封装调用事件
         getIndexData() {
-            functionAll.getIndexDataAll().then(res => {
+            functionAll.searchDataSourceInfo().then(res => {
                 if (res.code == 200) {
                     this.dataIndexAll = res.data;
                     this.totalItems = res.data.dataSourceAndAgentCount.length;
@@ -157,7 +157,7 @@ export default {
         saveChangeAgent() {
             this.formAdd["dep_id"] = this.depIds.join(",");
             this.formAdd["source_id"] = this.sourceId;
-            functionAll.upDatechargeDate(this.formAdd).then(res => {
+            functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
                 if (res.code == 200) {
                     this.$message({
                         type: "success",
@@ -176,13 +176,10 @@ export default {
         },
         // 点击添加按钮获取部门信息
         departmentInfo() {
-            const querystring = require("querystring");
-            functionAll.getDataDepInfo(querystring.stringify({
-                sourceId: this.sourceId
-            })).then(res => {
-                if (res.code == 200) {
+            functionAll.searchDataSourceOrDepartment({
+                source_id: this.sourceId
+            }).then(res => {
                     this.options = res.data.departmentInfo;
-                }
             });
         },
         // 点击取消按钮
@@ -197,7 +194,7 @@ export default {
         handleCurrentChange(val) {
             //把val赋给当前页面
             this.currentPage = val;
-            functionAll.searchDataSource({
+            functionAll.searchSourceRelationDepForPage({
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
@@ -208,7 +205,7 @@ export default {
         handleCurrentChangeList(val){
             //把val赋给当前页面
             this.currentPagelist = val;
-            functionAll.searchDatamanSource({
+            functionAll.getDataAuditInfoForPage({
                 currPage: this.currentPagelist,
                 pageSize: this.pageSize
             }).then(res=>{
