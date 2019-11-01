@@ -138,7 +138,21 @@ export function updateAuditSourceRelationDep(data) {
     })
 }
 
-/**
+// datasource页面
+
+/**(0)
+   * 查询数据源对应agent所有信息，数据源页面到agent页面
+   */
+  export function searchDatasourceAndAgentInfo(data) {
+    return request({
+        url: '/B/agentinfo/searchDatasourceAndAgentInfo',
+        method: 'post',
+        params: data
+    })
+}
+
+
+/**(1)
  * 点击新增数据库按钮增加信息
  */
 export function saveAgent(data) {
@@ -149,7 +163,7 @@ export function saveAgent(data) {
     })
 }
 
-/**
+/**(2)
  * 点击编辑数据库更新信息
  */
 export function updateAgent(data) {
@@ -160,10 +174,10 @@ export function updateAgent(data) {
     })
 }
 
-/**
+/**(3)
  * 删除agent信息
  */
-export function deleteDataAgent(data) {
+export function deleteAgent(data) {
     return request({
         url: '/B/agentinfo/deleteAgent',
         method: 'post',
@@ -188,17 +202,7 @@ export function deleteDataAgent(data) {
 
 
 
- /**
-   * 查询数据源对应agent所有信息，数据源页面到agent页面
-   */
-  export function getAgentData(data) {
-    return request({
-        url: '/B/agentinfo/searchDatasourceAndAgentInfo',
-        method: 'post',
-        params: data
-    })
-}
-
+ 
 
 
 

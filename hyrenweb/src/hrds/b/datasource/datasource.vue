@@ -198,7 +198,7 @@ export default {
         this.sourceId = this.$route.params.scouresId;
         this.datasourceName = this.$route.params.dataName;
         // 发送请求获取数据
-        functionAll.getAgentData({
+        functionAll.searchDatasourceAndAgentInfo({
             source_id: this.sourceId,
             datasource_name: this.datasourceName
         }).then(res => {
@@ -214,7 +214,7 @@ export default {
             this.sourceId = this.$route.params.scouresId;
             this.datasourceName = this.$route.params.dataName;
             // 发送请求获取数据
-            functionAll.getAgentData({
+            functionAll.searchDatasourceAndAgentInfo({
                 source_id: this.sourceId,
                 datasource_name: this.datasourceName
             }).then(res => {
@@ -361,7 +361,7 @@ export default {
                 type: "warning"
             }).then(() => {
                 functionAll
-                    .deleteDataAgent({
+                    .deleteAgent({
                         agent_id: this.agentId,
                         agent_type: this.agentType,
                         source_id: this.$route.params.scouresId
