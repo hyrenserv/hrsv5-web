@@ -1,3 +1,4 @@
+
 <template>
 <div class="home">
     <el-container>
@@ -86,17 +87,15 @@ export default {
     line-height: 50px;
     color: #fff;
 }
-
-.el-main{
-    padding: 10px;
-    min-height: 540px;
-     padding: 15px
+.el-header{
+    height: 50px !important;
+}
+.el-main {
+    padding: 15px
 }
 
-
-
-.el-aside {
-    height: 100%
+.el-container {
+    min-height: 556px;
 }
 
 .home .el-header i {

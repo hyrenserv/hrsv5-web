@@ -253,7 +253,6 @@ export default {
         // 新增数据库Agent
         add(formName) {
             // 调用添加方法
-             console.log(this.agent_type);
             this.formAdd["source_id"] = this.$route.params.scouresId;
             this.formAdd["agent_type"] = this.agent_type;
             functionAll.addDataAgent(this.formAdd).then(response => {
@@ -264,18 +263,7 @@ export default {
                     });
                     // 隐藏对话框
                     this.dialogFormVisible = false;
-                    // this.getAgentAllData(this.agent_type)
-                    if (this.agent_type == 1) {
-                        this.tableData = response.data;
-                    } else if (this.agent_type == 2) {
-                        this.tableData = response.data;
-                    } else if (this.agent_type == 3) {
-                        this.tableData = response.data;
-                    } else if (this.agent_type == 4) {
-                        this.tableData = response.data;
-                    } else if (this.agent_type == 5) {
-                        this.tableData = response.data;
-                    }
+                    this.getAgentAllData(this.agent_type)
                     // 表单清空
                     this.formAdd = {};
                 } else {
