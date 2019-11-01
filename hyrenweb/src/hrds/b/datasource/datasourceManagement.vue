@@ -119,7 +119,7 @@ export default {
             }
         });
         // 获取数据权限管理数据
-        functionAll.searchDataSource({
+        functionAll.searchSourceRelationDepForPage({
             currPage: this.currentPage,
             pageSize: this.pageSize
         }).then(res => {
@@ -134,7 +134,7 @@ export default {
         })
     },
     methods: {
-        // 子触发父事件
+        // 子触发父的事件
         addSucess() {
             this.getIndexData();
         },
