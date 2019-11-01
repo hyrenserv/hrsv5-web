@@ -9,7 +9,7 @@
       <el-step title="步骤 6" description="定义启动方式"></el-step>
     </el-steps>
     <keep-alive>
-      <steps0 v-if="active===0"></steps0>
+      <steps0 v-if="active===0" :steps0data='steps0Data'></steps0>
       <steps1 v-if="active===1"></steps1>
       <steps2 v-if="active===2"></steps2>
       <steps3 v-if="active===3"></steps3>
@@ -20,6 +20,7 @@
   </div>
 </template>
 <script>
+import * as addTaskAllFun from './addTask'
 import steps0 from './steps0'
 import steps1 from './steps1'
 import steps2 from './steps2'
@@ -38,10 +39,20 @@ export default {
   data() {
     return {
       active: 0,
-      title:"下一步"
+      title:"下一步",
+      steps0Data:[],
     };
   },
-
+  
+  mounted(){
+    if(this.$route.query.id){
+      let params = {};
+      params["databaseId"] = this.$route.query.id;
+      addTaskAllFun.getDBConfInfo(params).then(res=>{
+        this.steps0Data=res.data
+      })
+    }
+  },
   methods: {
      next() {
         if (this.active++ > 4){

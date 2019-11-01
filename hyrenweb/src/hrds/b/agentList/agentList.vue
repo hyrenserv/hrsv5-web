@@ -106,9 +106,10 @@
         <el-table-column property="" label="启动方式" width="100px"></el-table-column>
         <el-table-column label="采集频率" width="100px"></el-table-column>
         <el-table-column  label="操作" width="150px">
+           <template scope="scope">
           <el-row>
             <el-col :span="8"  class="edilt" style="text-align: center;">
-              <el-button type="primary" icon="el-icon-edit" circle></el-button>
+              <el-button type="primary" icon="el-icon-edit" circle @click="taskEditBtn(scope.row.id,sourceName)"></el-button>
             </el-col>
             <el-col :span="8" class="delbtn">
               <el-button type="primary" icon="el-icon-delete" circle></el-button>
@@ -117,6 +118,7 @@
               <el-button type="primary" icon="el-icon-position" circle ></el-button>
             </el-col>
           </el-row>
+           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
@@ -179,8 +181,10 @@ export default {
       params["agentId"] = Agentid;
        agentList.getTaskInfo(params).then(res=>{
         this.taskMang=res.data
-        console.log(this.taskMang)
        })
+    },
+    taskEditBtn(databaseId,sourceName){
+      this.$router.push({ path: '/addTask', query: { id: databaseId ,sName: sourceName} })
     }
   }
 };
