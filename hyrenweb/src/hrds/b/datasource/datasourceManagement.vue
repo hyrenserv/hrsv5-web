@@ -17,7 +17,9 @@
                 <el-table-column prop="applyDataTime" label="提交时间" width="192" align="center"></el-table-column>
                 <el-table-column prop="applyType_zh" label="申请类型" align="center"></el-table-column>
                 <el-table-column prop="agent_id" label="操作" align="center">
-                    <el-button type="text" @click="reclaimAuthority" size="mini">权限回收</el-button>
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
         </el-row>
@@ -98,6 +100,7 @@ export default {
             totalItem: "",
             options: [],
             sourceId: "",
+            da_id:"",
             depIds: [],
             tableData: [],
             tableDatalist: []
@@ -141,14 +144,14 @@ export default {
                 if (res.code == 200) {
                     this.dataIndexAll = res.data;
                     this.totalItems = res.data.dataSourceAndAgentCount.length;
-                    console.log(this.totalItems)
                 }
             });
         },
-        // 编辑获取当前数据
+        // 获取表格当前行数据
         handleEdit(index, row) {
             this.formAdd.datasource_name = row.datasource_name;
             this.sourceId = row.source_id;
+            this.da_id =row.da_id;
         },
         // 数据权限管理，更新数据源关系部门信息
         saveChangeAgent() {
@@ -215,10 +218,14 @@ export default {
         },
         // 权限回收
         reclaimAuthority(){
-            this.$confirm("确定要删除该条数据?", "提示",{
+            this.$confirm("确定要回收权限?", "提示",{
                 type:"warning"
             }).then(()=>{
-                
+                functionAll.deleteAudit({
+                    da_id:this.da_id
+                }).then(res=>{
+                    this.tableDatalist =res.data;
+                })
             })
         }
     },

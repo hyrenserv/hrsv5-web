@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
+// datasourceManagement页面
+
 
 /**
- * 点击查看按钮获取数据采集用户
+ * 点击导入按钮获取数据采集信息
  */
 export function getDataUserInfo() {
     return request({
@@ -14,7 +16,7 @@ export function getDataUserInfo() {
 /**
  * 点击新增数据库按钮增加信息
  */
-export function addDataAgent(data) {
+export function saveAgent(data) {
     return request({
         url: '/B/agentinfo/saveAgent',
         method: 'post',
@@ -25,9 +27,9 @@ export function addDataAgent(data) {
 /**
  * 点击编辑数据库更新信息
  */
-export function updateDataAgent(data) {
+export function updateAgent(data) {
     return request({
-        url: '/B/agentinfo/saveAgent',
+        url: '/B/agentinfo/updateAgent',
         method: 'post',
         params:data
     })
@@ -175,6 +177,18 @@ export function getDataDepInfo(data) {
   export function searchDatamanSource(data) {
     return request({
         url: '/B/datasource/getDataAuditInfoForPage',
+        method: 'post',
+        params:data
+    })
+}
+
+
+/**
+   *数据权限管理分页查询
+   */
+  export function deleteAudit(data) {
+    return request({
+        url: '/B/datasource/deleteAudit',
         method: 'post',
         params:data
     })

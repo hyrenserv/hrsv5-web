@@ -40,7 +40,6 @@
             <el-button type="primary" @click="update('formUpdate')" size="mini">保存</el-button>
         </div>
     </el-dialog>
-    <!-- 点击删除弹出框 -->
 </div>
 </template>
 
