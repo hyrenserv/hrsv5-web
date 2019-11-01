@@ -157,7 +157,7 @@ export default {
             this.sourceId = this.data[index].source_id;
             functionAll.tapDownloadData({source_id: this.sourceId}).then(res=>{
                 this.filename =this.data[index].source_id;
-                const blob = new Blob([JSON.stringify(res),{type: 'application/json'}]);
+                const blob = new Blob([JSON.stringify(res),{type: 'application/x-hrds'}]);
                
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10

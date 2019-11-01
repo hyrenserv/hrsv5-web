@@ -37,7 +37,7 @@
         <el-col :span="12">
             <el-divider content-position="left">最近15天进数情况</el-divider>
             <template>
-                <ve-histogram :loading="true" :data="chartData" :settings="chartSettings"></ve-histogram>
+                <ve-histogram :loading="true" :data="chartData" style="overflow:hidden" :settings="chartSettings"></ve-histogram>
             </template>
             <el-divider content-position="left">采集信息汇总</el-divider>
             <div class="cccc">

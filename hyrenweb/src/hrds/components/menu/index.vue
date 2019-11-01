@@ -86,13 +86,15 @@ export default {
     line-height: 50px;
     color: #fff;
 }
-
+.el-header{
+    height: 50px !important;
+}
 .el-main {
     padding: 15px
 }
 
-.el-aside {
-    height: 100%
+.el-container {
+    min-height: 556px;
 }
 
 .home .el-header i {
