@@ -93,7 +93,12 @@ export default {
 .el-main {
     padding: 15px
 }
-
+.el-menu{
+    border: none !important;
+}
+.el-aside{
+    border-right: 1px solid #e6e6e6 ;
+}
 .el-container {
     min-height: 556px;
 }

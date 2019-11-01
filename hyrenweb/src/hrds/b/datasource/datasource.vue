@@ -263,7 +263,7 @@ export default {
                     });
                     // 隐藏对话框
                     this.dialogFormVisible = false;
-                    this.getAgentAllData(this.agent_type)
+                    this.getAgentAllData(this.agent_type);
                     // 表单清空
                     this.formAdd = {};
                 } else {
