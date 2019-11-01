@@ -79,7 +79,7 @@
                 <el-table-column prop="agent_name" label="Agent名称" align="center"></el-table-column>
                 <el-table-column prop="agent_ip" label="Agent所在服务器IP" align="center"></el-table-column>
                 <el-table-column prop="agent_port" label="Agent 连接端口" align="center"></el-table-column>
-                <el-table-column prop="user_id" label="数据采集用户" align="center"></el-table-column>
+                <el-table-column prop="user_name" label="数据采集用户" align="center"></el-table-column>
                 <el-table-column label="操作" width="190" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
@@ -198,7 +198,7 @@ export default {
         this.sourceId = this.$route.params.scouresId;
         this.datasourceName = this.$route.params.dataName;
         // 发送请求获取数据
-        functionAll.getAgentData({
+        functionAll.searchDatasourceAndAgentInfo({
             source_id: this.sourceId,
             datasource_name: this.datasourceName
         }).then(res => {
@@ -214,7 +214,7 @@ export default {
             this.sourceId = this.$route.params.scouresId;
             this.datasourceName = this.$route.params.dataName;
             // 发送请求获取数据
-            functionAll.getAgentData({
+            functionAll.searchDatasourceAndAgentInfo({
                 source_id: this.sourceId,
                 datasource_name: this.datasourceName
             }).then(res => {
@@ -235,7 +235,7 @@ export default {
         },
         // 点击查看获取数据采集信息
         DataCathInfo(index) {
-            functionAll.getDataUserInfo().then(res => {
+            functionAll.searchDataCollectUser().then(res => {
                 if (res.code == 200) {
                     this.options = res.data;
                 }
@@ -255,7 +255,7 @@ export default {
             // 调用添加方法
             this.formAdd["source_id"] = this.$route.params.scouresId;
             this.formAdd["agent_type"] = this.agent_type;
-            functionAll.addDataAgent(this.formAdd).then(response => {
+            functionAll.saveAgent(this.formAdd).then(response => {
                 if (response && response.success) {
                     this.$message({
                         type: "success",
@@ -337,7 +337,7 @@ export default {
             this.form["source_id"] = this.$route.params.scouresId;
             this.form["agent_id"] = this.agentId;
             this.form["agent_type"] = this.agent_type;
-            functionAll.updateDataAgent(this.form).then(response => {
+            functionAll.updateAgent(this.form).then(response => {
                 if (response && response.success) {
                     this.$message({
                         type: "success",
@@ -361,7 +361,7 @@ export default {
                 type: "warning"
             }).then(() => {
                 functionAll
-                    .deleteDataAgent({
+                    .deleteAgent({
                         agent_id: this.agentId,
                         agent_type: this.agentType,
                         source_id: this.$route.params.scouresId

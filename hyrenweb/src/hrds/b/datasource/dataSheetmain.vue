@@ -40,7 +40,6 @@
             <el-button type="primary" @click="update('formUpdate')" size="mini">保存</el-button>
         </div>
     </el-dialog>
-    <!-- 点击删除弹出框 -->
 </div>
 </template>
 
@@ -71,13 +70,10 @@ export default {
         // 点击编辑小图标获取部门信息
         clickEditButton: function (index) {
             this.sourceId = this.data[index].source_id;
-            const querystring = require("querystring");
             functionAll
-                .getDataDepInfo(
-                    querystring.stringify({
-                        sourceId: this.data[index].source_id
-                    })
-                )
+                .searchDataSourceOrDepartment({
+                    source_id:this.data[index].source_id
+                })
                 .then(res => {
                     if (res.code == 200) {
                         this.options = res.data.departmentInfo;
@@ -92,7 +88,7 @@ export default {
         update() {
             this.formUpdate["dep_id"] = this.depIds.join(",");
             this.formUpdate["source_id"] = this.sourceId;
-            functionAll.updateDataResource(this.formUpdate).then(res => {
+            functionAll.updateDataSource(this.formUpdate).then(res => {
                 if (res.code == 200) {
                     this.$message({
                         type: "success",
@@ -155,7 +151,7 @@ export default {
          // 点击下载图标数据
         downloadData(index){
             this.sourceId = this.data[index].source_id;
-            functionAll.tapDownloadData({source_id: this.sourceId}).then(res=>{
+            functionAll.downloadFile({source_id: this.sourceId}).then(res=>{
                 this.filename =this.data[index].source_id;
                 const blob = new Blob([JSON.stringify(res),{type: 'application/x-hrds'}]);
                

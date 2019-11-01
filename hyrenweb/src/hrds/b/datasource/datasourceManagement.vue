@@ -17,7 +17,9 @@
                 <el-table-column prop="applyDataTime" label="提交时间" width="192" align="center"></el-table-column>
                 <el-table-column prop="applyType_zh" label="申请类型" align="center"></el-table-column>
                 <el-table-column prop="agent_id" label="操作" align="center">
-                    <el-button type="text" @click="reclaimAuthority" size="mini">权限回收</el-button>
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
         </el-row>
@@ -98,6 +100,7 @@ export default {
             totalItem: "",
             options: [],
             sourceId: "",
+            da_id:"",
             depIds: [],
             tableData: [],
             tableDatalist: []
@@ -105,7 +108,7 @@ export default {
     },
     // 获取首页数据
     created() {
-        functionAll.getIndexDataAll().then(res => {
+        functionAll.searchDataSourceInfo().then(res => {
             if (res.code == 200) {
                 // 获取所有数据
                 this.dataIndexAll = res.data;
@@ -116,14 +119,14 @@ export default {
             }
         });
         // 获取数据权限管理数据
-        functionAll.searchDataSource({
+        functionAll.searchSourceRelationDepForPage({
             currPage: this.currentPage,
             pageSize: this.pageSize
         }).then(res => {
             this.tableData = res.data;
         }),
         // 获取数据管理列表数据
-        functionAll.searchDatamanSource({
+        functionAll.getDataAuditInfoForPage({
             currPage: this.currentPagelist,
             pageSize: this.pageSize
         }).then(res=>{
@@ -131,30 +134,30 @@ export default {
         })
     },
     methods: {
-        // 子触发父事件
+        // 子触发父的事件
         addSucess() {
             this.getIndexData();
         },
         // 封装调用事件
         getIndexData() {
-            functionAll.getIndexDataAll().then(res => {
+            functionAll.searchDataSourceInfo().then(res => {
                 if (res.code == 200) {
                     this.dataIndexAll = res.data;
                     this.totalItems = res.data.dataSourceAndAgentCount.length;
-                    console.log(this.totalItems)
                 }
             });
         },
-        // 编辑获取当前数据
+        // 获取表格当前行数据
         handleEdit(index, row) {
             this.formAdd.datasource_name = row.datasource_name;
             this.sourceId = row.source_id;
+            this.da_id =row.da_id;
         },
         // 数据权限管理，更新数据源关系部门信息
         saveChangeAgent() {
             this.formAdd["dep_id"] = this.depIds.join(",");
             this.formAdd["source_id"] = this.sourceId;
-            functionAll.upDatechargeDate(this.formAdd).then(res => {
+            functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
                 if (res.code == 200) {
                     this.$message({
                         type: "success",
@@ -173,13 +176,10 @@ export default {
         },
         // 点击添加按钮获取部门信息
         departmentInfo() {
-            const querystring = require("querystring");
-            functionAll.getDataDepInfo(querystring.stringify({
-                sourceId: this.sourceId
-            })).then(res => {
-                if (res.code == 200) {
+            functionAll.searchDataSourceOrDepartment({
+                source_id: this.sourceId
+            }).then(res => {
                     this.options = res.data.departmentInfo;
-                }
             });
         },
         // 点击取消按钮
@@ -194,7 +194,7 @@ export default {
         handleCurrentChange(val) {
             //把val赋给当前页面
             this.currentPage = val;
-            functionAll.searchDataSource({
+            functionAll.searchSourceRelationDepForPage({
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
@@ -205,7 +205,7 @@ export default {
         handleCurrentChangeList(val){
             //把val赋给当前页面
             this.currentPagelist = val;
-            functionAll.searchDatamanSource({
+            functionAll.getDataAuditInfoForPage({
                 currPage: this.currentPagelist,
                 pageSize: this.pageSize
             }).then(res=>{
@@ -215,10 +215,14 @@ export default {
         },
         // 权限回收
         reclaimAuthority(){
-            this.$confirm("确定要删除该条数据?", "提示",{
+            this.$confirm("确定要回收权限?", "提示",{
                 type:"warning"
             }).then(()=>{
-                
+                functionAll.deleteAudit({
+                    da_id:this.da_id
+                }).then(res=>{
+                    this.tableDatalist =res.data;
+                })
             })
         }
     },

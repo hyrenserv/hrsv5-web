@@ -115,19 +115,17 @@ export default {
     methods: {
         // 点击添加按钮获取部门信息
         departmentInfo() {
-            functionAll.getDepartmentInfo().then(res => {
-                if (res.code == 200) {
+            functionAll.searchDataSourceOrDepartment().then(res => {
                     this.options = res.data.departmentInfo;
-                }
             });
         },
-        // 添加一条数据
+        // 添加数据来源表一条数据
         add(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 调用添加方法
                     this.formAdd["dep_id"] = this.depIds.join(",");
-                    functionAll.addDataResource(this.formAdd).then(response => {
+                    functionAll.saveDataSource(this.formAdd).then(response => {
                         if (response && response.success) {
                             this.$message({
                                 type: "success",
@@ -150,7 +148,7 @@ export default {
         },
         // 点击导入按钮获取数据采集信息
         DataCathInfo() {
-            functionAll.getDataUserInfo().then(res => {
+            functionAll.searchDataCollectUser().then(res => {
                 if (res.code == 200) {
                     this.options = res.data;
                 }
@@ -164,7 +162,7 @@ export default {
         upload() {
             // 要把userid可能提出去，然后在帮到下面
             this.formImport["file"] = this.filesr;
-            functionAll.tapUploadData(this.formImport).then(res => {
+            functionAll.uploadFile(this.formImport).then(res => {
              
             });
         },
