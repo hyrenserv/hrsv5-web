@@ -89,12 +89,10 @@
                         <el-input v-model="agentDeploy.passwd" show-password placeholder="密码" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                    <el-form-item label="是否自动部署:">
-                        <el-switch active-value="0" inactive-value="1" v-model="agentDeploy.deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否">
-                        </el-switch>
-                    </el-form-item>
-                </el-col>
+                <el-form-item label="是否自动部署:">
+                    <el-switch active-value="0" inactive-value="1" v-model="agentDeploy.deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否">
+                    </el-switch>
+                </el-form-item>
                 <el-col :span="8">
                     <el-form-item label="存放目录:">
                         <el-switch active-value="0" inactive-value="1" v-model="deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="系统默认" inactive-text="自定义">
@@ -199,8 +197,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.el-form-item__content {
-    line-height: 39px !important;
-}
-</style>
