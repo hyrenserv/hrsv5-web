@@ -30,12 +30,11 @@
             <span>失败 {{failure}}</span>
             <el-divider direction="vertical"></el-divider>
             <span>运行中 {{running}}</span>
-
         </el-col>
     </el-row>
     <el-row :gutter="20">
         <el-col :span="12">
-            <el-divider content-position="left">最近15天进数情况</el-divider>
+            <el-divider content-position="left">最近15天进数情况 ( 单位/MB )</el-divider>
             <template>
                 <ve-histogram :loading="true" :data="chartData" style="overflow:hidden" :settings="chartSettings"></ve-histogram>
             </template>
@@ -54,6 +53,7 @@
         </el-col>
         <el-col :span="12">
             <el-divider content-position="left">数据采集信息列表</el-divider>
+            <collectTable :tableData="jobTableData"></collectTable>
         </el-col>
     </el-row>
 </div>
@@ -61,9 +61,10 @@
 
 <script>
 import * as collect from './collectmonitor'
+import collectTable from './collectTable'
 export default {
     components: {
-
+        collectTable
     },
     data() {
         this.chartSettings = {
@@ -72,7 +73,7 @@ export default {
                 date: '采集日期',
                 data: '数据采集',
                 file: '文件采集'
-            },
+            }
         }
         return {
             agentnum: 0,
@@ -86,10 +87,12 @@ export default {
             chartData: {
                 columns: [],
                 rows: []
-            }
+            },
+            jobTableData: []
         }
     },
     mounted() {
+
         collect.getAgentNumAndSourceNum().then((res) => {
             if (res.success) {
                 this.agentnum = res.data.agentnum;
@@ -104,20 +107,30 @@ export default {
         collect.getDataCollectInfo().then(res => {
             this.dataCollectInfo = res.data[0];
         })
+
         collect.getHostoryCollect().then(res => {
             this.chartData.columns = Object.keys(res.data[0]);
-            this.chartData.rows = res.data;
+            this.chartData.rows = res.data.reverse();
         })
     },
     watch: {
         database_id(newVal, oldVal) {
-            let params = {
-                'name': 'databaseCollectTable',
-                'params': {
+
+            if (newVal) {
+                collect.getCurrentTaskJob({
                     'database_id': newVal
-                }
+                }).then(res => {
+                    this.jobTableData = res.data;
+                    // console.log(this.jobTableData)
+                    // let params = {
+                    //     'name': 'collectTable',
+                    //     'params': {
+                    //         'jobTableData': this.jobTableData
+                    //     }
+                    // }
+                    // this.$router.push(params)
+                })
             }
-            // this.$router.push(params)
         }
     }
 }

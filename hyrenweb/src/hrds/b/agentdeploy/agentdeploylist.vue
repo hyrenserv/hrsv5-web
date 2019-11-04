@@ -56,14 +56,14 @@
             </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-            <el-button type="danger" @click="outerVisible = false">取 消</el-button>
+            <el-button type="danger" size="mini" @click="outerVisible = false">取 消</el-button>
         </div>
     </el-dialog>
 
     <!--部署Agent模态框 agentDeploy-->
     <el-dialog title="Agent部署" :visible.sync="dialogFormVisible" width="75%">
-        <el-form :model="agentDeploy" label-width="110px" class="demo-form-inline" :inline="true" autocomplete="off">
-            <el-row>
+        <el-row type="flex" justify="space-around">
+            <el-form :model="agentDeploy" status-icon ref="agentDeploy" label-width="120px" autocomplete="off">
                 <el-col :span="8">
                     <el-form-item label="Agent名称:">
                         <el-input v-model="agentDeploy.agent_name" placeholder="Agent名称" readonly autocomplete="off"></el-input>
@@ -80,47 +80,49 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="用户名:">
+                    <el-form-item label="用户名:" prop="user_name" :rules="rule.default">
                         <el-input v-model="agentDeploy.user_name" placeholder="用户名" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="密码:">
+                    <el-form-item label="密码:" prop="passwd" :rules="rule.default">
                         <el-input v-model="agentDeploy.passwd" show-password placeholder="密码" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="是否自动部署:">
-                        <el-switch style="display: block" active-value="0" inactive-value="1" v-model="agentDeploy.deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否">
+                        <el-switch active-value="0" inactive-value="1" v-model="agentDeploy.deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否">
                         </el-switch>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="Agent存放目录:">
-                        <el-switch style="display: block" active-value="0" inactive-value="1" v-model="deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="系统默认" inactive-text="自定义">
+                    <el-form-item label="存放目录:">
+                        <el-switch active-value="0" inactive-value="1" v-model="deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="系统默认" inactive-text="自定义">
                         </el-switch>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8" v-if="deploy==0">
-                    <el-form-item label="Agent安装目录:">
-                        <el-input v-model="agentDeploy.save_dir" hide-required-asterisk="true" placeholder="Agent安装目录" autocomplete="off"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8" v-if="deploy==0">
-                    <el-form-item label="日志文件:">
-                        <el-input v-model="agentDeploy.log_dir" hide-required-asterisk="true" placeholder="日志文件" autocomplete="off"></el-input>
-                    </el-form-item>
-                </el-col>
+                <template v-if="deploy==0">
+                    <el-col :span="8">
+                        <el-form-item label="安装目录:" prop="save_dir" :rules="rule.default">
+                            <el-input v-model="agentDeploy.save_dir" hide-required-asterisk="true" placeholder="Agent安装目录" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="日志文件:" prop="log_dir" :rules="rule.default">
+                            <el-input v-model="agentDeploy.log_dir" hide-required-asterisk="true" placeholder="日志文件" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </template>
                 <el-col :span="8">
                     <el-form-item label="描述:">
-                        <el-input v-model="agentDeploy.name" autocomplete="off"></el-input>
+                        <el-input type="textarea" v-model="agentDeploy.name" placeholder="描述" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row>
-        </el-form>
+            </el-form>
+        </el-row>
         <div slot="footer" class="dialog-footer">
-            <el-button type="danger" @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="danger" size="mini" @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="dialogFormVisible = false">确 定</el-button>
         </div>
     </el-dialog>
 </div>
@@ -128,7 +130,7 @@
 
 <script>
 import * as agentDeployFun from './agentdeploy'
-
+import * as validator from '@/utils/js/validator'
 export default {
     data() {
         return {
@@ -140,6 +142,7 @@ export default {
                 agent_ip: '',
                 agent_port: ''
             }, //部署Agent信息
+            rule: validator.default,
             search: "",
             agentSearch: "",
             datasource_name: '',
@@ -152,26 +155,15 @@ export default {
             deploy: '1'
         }
     },
-    created() {
+    mounted() {
         agentDeployFun.getCollectData().then((res) => {
             this.sourceData = res.data;
         })
-        // .catch(error => {
-        //     this.$message({
-        //         message: "服务器连接异常",
-        //         type: "error"
-        //     });
-        // })
 
         agentDeployFun.getAgentTypeData().then((res) => {
             this.agentTypeData = res.data;
         })
-        // .catch(error => {
-        //     this.$message({
-        //         message: "服务器连接异常",
-        //         type: "error"
-        //     });
-        // })
+
     },
     methods: {
 
@@ -181,22 +173,18 @@ export default {
          * @row 当前行的数据
          */
         deployAgentList(agent_type, row) {
+            this.agentSearch = '';
             this.datasource_name = '数据源名称 : ' + row.datasource_name;
             row['agent_type'] = agent_type;
             agentDeployFun.deployAgentList(row).then(res => {
                 this.agentDataList = res.data;
                 this.outerVisible = true;
             })
-            // .catch(error => {
-            //     this.$message({
-            //         message: "服务器连接异常",
-            //         type: "error"
-            //     });
-            // })
+
         },
         handleEdit(row) {
 
-            agentDeployFun.handleEdit(row).then(res => {
+            agentDeployFun.getAgentDownInfo(row).then(res => {
                 this.dialogFormVisible = true;
                 this.agentDeploy = res.data;
                 if (typeof this.agentDeploy.down_id == 'undefined') {
@@ -205,13 +193,14 @@ export default {
                     this.agentDeploy.agent_port = row.agent_port;
                 }
             })
-            // .catch(error => {
-            //     this.$message({
-            //         message: "服务器连接异常",
-            //         type: "error"
-            //     });
-            // })
+
         }
     }
 }
 </script>
+
+<style scoped>
+.el-form-item__content {
+    line-height: 39px !important;
+}
+</style>

@@ -5,9 +5,9 @@ import request from '@/utils/request'
  */
 export function getAgentNumAndSourceNum() {
 
-    return request({
-        url : '/B/collectmonitor/getAgentNumAndSourceNum',
-    })
+  return request({
+    url: '/B/collectmonitor/getAgentNumAndSourceNum',
+  })
 }
 
 /**
@@ -15,7 +15,7 @@ export function getAgentNumAndSourceNum() {
  */
 export function getDatabaseSet() {
   return request({
-    url : '/B/collectmonitor/getDatabaseSet'
+    url: '/B/collectmonitor/getDatabaseSet'
   })
 }
 
@@ -25,7 +25,7 @@ export function getDatabaseSet() {
  */
 export function getDataCollectInfo() {
   return request({
-    url : '/B/collectmonitor/getDataCollectInfo'
+    url: '/B/collectmonitor/getDataCollectInfo'
   })
 }
 
@@ -34,22 +34,32 @@ export function getDataCollectInfo() {
  */
 export function getHostoryCollect() {
   return request({
-    url : '/B/collectmonitor/getHostoryCollect'
+    url: '/B/collectmonitor/getHoStoryCollect'
+  })
+}
+
+/**
+ * @returns {Object} 返回当前选择任务的采集表信息情况
+ */
+export function getCurrentTaskJob(data) {
+  return request({
+    url: '/B/collectmonitor/getCurrentTaskJob',
+    params: data
   })
 }
 
 export function lineData() {
-    let data =  {
-        columns: ['日期', '访问用户', '下单用户', '下单率'],
-        rows: [
-          { '日期': '1/1', '访问用户': 1393, '下单用户': 1093, '下单率': 0.32 },
-          { '日期': '1/2', '访问用户': 3530, '下单用户': 3230, '下单率': 0.26 },
-          { '日期': '1/3', '访问用户': 2923, '下单用户': 2623, '下单率': 0.76 },
-          { '日期': '1/4', '访问用户': 1723, '下单用户': 1423, '下单率': 0.49 },
-          { '日期': '1/5', '访问用户': 3792, '下单用户': 3492, '下单率': 0.323 },
-          { '日期': '1/6', '访问用户': 4593, '下单用户': 4293, '下单率': 0.78 }
-        ]
-      }
+  let data = {
+    columns: ['日期', '访问用户', '下单用户', '下单率'],
+    rows: [
+      { '日期': '1/1', '访问用户': 1393, '下单用户': 1093, '下单率': 0.32 },
+      { '日期': '1/2', '访问用户': 3530, '下单用户': 3230, '下单率': 0.26 },
+      { '日期': '1/3', '访问用户': 2923, '下单用户': 2623, '下单率': 0.76 },
+      { '日期': '1/4', '访问用户': 1723, '下单用户': 1423, '下单率': 0.49 },
+      { '日期': '1/5', '访问用户': 3792, '下单用户': 3492, '下单率': 0.323 },
+      { '日期': '1/6', '访问用户': 4593, '下单用户': 4293, '下单率': 0.78 }
+    ]
+  }
 
-      return data;
+  return data;
 }

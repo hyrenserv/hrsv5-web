@@ -35,7 +35,7 @@ export function deployAgentList(data) {
 /**
  * 编辑部署Agent信息
  */
-export function handleEdit(data) {
+export function getAgentDownInfo(data) {
 
     return request({
         url : '/B/agentdepoly/getAgentDownInfo',
