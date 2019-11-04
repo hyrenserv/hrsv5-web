@@ -21,6 +21,14 @@ import {
 } from 'vuex'
 export default {
     name: 'Login',
+    mounted() {
+        // 绑定enter事件
+        this.enterKeyup();
+    },
+    destroyed() {
+        // 销毁enter事件
+        this.enterKeyupDestroyed();
+    },
     data() {
         var validateLoginName = (rule, value, callback) => {
             if (value === '') {
@@ -75,7 +83,25 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        }
+        },
+        enterKey(event) {
+            const componentName = this.$options.name;
+            const code = event.keyCode ?
+                event.keyCode :
+                event.which ?
+                event.which :
+                event.charCode;
+            if (componentName == "Login" && code === 13) {
+
+                this.submitForm('ruleForm');
+            }
+        },
+        enterKeyupDestroyed() {
+            document.removeEventListener("keyup", this.enterKey);
+        },
+        enterKeyup() {
+            document.addEventListener("keyup", this.enterKey);
+        },
     }
 }
 </script>
