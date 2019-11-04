@@ -91,7 +91,7 @@
         </div>
         <!-- 点击新增数据库按钮弹出框 -->
         <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%">
-            <el-form :model="formAdd" ref="formAdd" :rules="rules">
+            <el-form :model="formAdd" ref="formAdd">
                 <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
                 </el-form-item>
@@ -114,7 +114,7 @@
         </el-dialog>
         <!-- 点击编辑按钮编辑信息弹出框 -->
         <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%">
-            <el-form :model="form" ref="form" :rules="rules">
+            <el-form :model="form" ref="form">
                 <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
@@ -142,6 +142,7 @@
 <script>
 import * as functionAll from "./datasource";
 import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     data() {
         return {

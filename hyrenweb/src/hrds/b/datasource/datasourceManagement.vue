@@ -68,7 +68,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItems"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems"></el-pagination>
         </el-row>
     </div>
     <!-- 数据权限管理完 -->
@@ -80,6 +80,7 @@ import * as functionAll from "./datasource";
 import Loheader from "./Loheader";
 import dataSheetmain from "./dataSheetmain";
 import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 
 export default {
     name: "index1001",
@@ -97,8 +98,8 @@ export default {
             currentPage: 1,
             currentPagelist: 1,
             pageSize: 5,
-            totalItems: "",
-            totalItem: "",
+            totalItems:0,
+            totalItem:0 ,
             options: [],
             source_id: "",
             da_id: "",
@@ -123,7 +124,7 @@ export default {
                     // 获取所有数据
                     this.dataIndexAll = res.data;
                     // 获取数据管理列表分页总数
-                    this.totalItem = res.data.dataAudit.totalSize;
+                    this.totalItem =res.data.dataAudit.totalSize;
                     // 获取数据管理列表信息
                     this.tableDatalist = res.data.dataAudit.dataAuditList;
                     // 获取数据权限管理分页总数
