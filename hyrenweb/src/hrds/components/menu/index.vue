@@ -80,6 +80,9 @@ export default {
 </script>
 
 <style scoped>
+.home{
+     padding-bottom: 60px;
+}
 .el-header,
 .el-footer {
     background-color: #3F51B5;
@@ -111,8 +114,9 @@ export default {
     height: 30px !important;
     line-height: 30px;
     font-size: 12px;
-    margin-top: 6px;
-    position: relative;
+    position: fixed;
     bottom: 0%;
+    width: 100%;
+    z-index: 10;
 }
 </style>
