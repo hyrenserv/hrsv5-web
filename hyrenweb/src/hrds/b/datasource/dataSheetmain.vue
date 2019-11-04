@@ -4,8 +4,8 @@
         <div @click="gotoScoureDetail(index)" @mouseenter="enter(index)">
             <i class="block_icon fa fa-sitemap fa-3x tree"></i>
             <p>{{itme.datasource_name}}</p>
-            <p class="postionP">Agent个数为 {{itme.sumagent}}</p>
-            <span>{{itme.sumagent}}</span>
+            <p class="postionP">Agent个数为 {{itme.sumAgent}}</p>
+            <span>{{itme.sumAgent}}</span>
         </div>
         <div class="boxshletr">
             <i class="fa fa-download fa-lg" @click="downloadData(index)"></i>
@@ -114,7 +114,7 @@ export default {
         },
         // 鼠标划入时判断显示数值是否为0；
         enter(index) {
-            let sumagentNum = this.data[index].sumagent;
+            let sumagentNum = this.data[index].sumAgent;
             if (sumagentNum === 0) {
                 this.showHidden = true;
             } else {

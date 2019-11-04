@@ -90,7 +90,7 @@
             <div class="lines"></div>
         </div>
         <!-- 点击新增数据库按钮弹出框 -->
-        <el-dialog title=" 新增 Agent" :visible.sync="dialogFormVisible" width="40%">
+        <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%">
             <el-form :model="formAdd" ref="formAdd" :rules="rules">
                 <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name">
                     <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
@@ -153,8 +153,8 @@ export default {
             datasource_name: "",
             agentId: "",
             agent_type: "",
-            agentType: "",
             dataAll: {},
+            dialogName: "",
             sourceAgent: true,
             dataFile: false,
             semiStructure: false,
@@ -200,6 +200,7 @@ export default {
         }).then(res => {
             // 传参
             this.tableData = res.data.sjkAgent;
+            this.dialogName = "添加数据库 Agent";
             this.agent_type = 1;
             this.dataAll = res.data;
         });
@@ -237,12 +238,11 @@ export default {
         },
         // 点击编辑获取当前数据赋给表单
         handleEdit(index, row) {
-            this.form.agent_name = row.address;
-            this.form.agent_port = row.name;
+            this.form = row;
             this.agentId = row.agent_id;
-            this.agentType = row.agent_type;
             this.agent_type = row.agent_type;
-            this.source_id = row.source_id
+            this.source_id = row.source_id;
+
         },
         // 新增数据库Agent
         add(formName) {
@@ -280,6 +280,7 @@ export default {
                 case 1:
                     this.agent_type = e;
                     // 给tableData渲染对应的数组，先看上面能不能拿到；
+                    this.dialogName = "添加数据库 Agent";
                     this.tableData = this.dataAll.sjkAgent;
                     this.sourceAgent = true;
                     this.nonStructural = false;
@@ -288,6 +289,7 @@ export default {
                     this.semiStructure = false;
                     break;
                 case 2:
+                    this.dialogName = "添加非结构化 Agent";
                     this.agent_type = e;
                     this.tableData = this.dataAll.fileSystemAgent;
                     this.nonStructural = true;
@@ -297,6 +299,7 @@ export default {
                     this.sourceAgent = false;
                     break;
                 case 3:
+                    this.dialogName = "添加ftp Agent";
                     this.agent_type = e;
                     this.tableData = this.dataAll.ftpAgent;
                     this.ftpAgent = true;
@@ -306,6 +309,7 @@ export default {
                     this.nonStructural = false;
                     break;
                 case 4:
+                    this.dialogName = "添加数据库文件 Agent";
                     this.agent_type = e;
                     this.tableData = this.dataAll.dbFileAgent;
                     this.dataFile = true;
@@ -315,6 +319,7 @@ export default {
                     this.ftpAgent = false;
                     break;
                 case 5:
+                    this.dialogName = "添加半结构化 Agent";
                     this.agent_type = e;
                     this.tableData = this.dataAll.dxAgent;
                     this.semiStructure = true;
@@ -357,7 +362,7 @@ export default {
                 functionAll
                     .deleteAgent({
                         agent_id: this.agentId,
-                        agent_type: this.agentType,
+                        agent_type: this.agent_type,
                         source_id: this.$route.query.source_id
                     })
                     .then(res => {
@@ -367,7 +372,7 @@ export default {
                             // 表单清空
                             this.form = {};
                             // // 重新渲染页面
-                            this.getAgentAllData(this.agentType);
+                            this.getAgentAllData(this.agent_type);
                         }
                     })
             })
