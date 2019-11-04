@@ -56,7 +56,7 @@
         <!-- 数据类型标题 -->
         <h4>
             当前所属数据源为：
-            <strong>{{this.$route.params.dataName}}</strong>
+            <strong>{{this.$route.query.datasource_name}}</strong>
         </h4>
         <!-- 数据表格标题 -->
         <div class="tableList">
@@ -150,7 +150,6 @@ export default {
             tableData: [],
             getAgentData: {},
             source_id: "",
-            sourceId: "",
             datasource_name: "",
             agentId: "",
             agent_type: "",
@@ -194,13 +193,10 @@ export default {
         };
     },
     created() {
-        // 获取所有数据
-        this.sourceId = this.$route.params.scouresId;
-        this.datasourceName = this.$route.params.dataName;
         // 发送请求获取数据
         functionAll.searchDatasourceAndAgentInfo({
-            source_id: this.sourceId,
-            datasource_name: this.datasourceName
+            source_id: this.$route.query.source_id,
+            datasource_name: this.$route.query.datasource_name
         }).then(res => {
             // 传参
             this.tableData = res.data.sjkAgent;
@@ -211,12 +207,10 @@ export default {
     methods: {
         // 获取agent数据内容方法
         getAgentAllData(e) {
-            this.sourceId = this.$route.params.scouresId;
-            this.datasourceName = this.$route.params.dataName;
             // 发送请求获取数据
             functionAll.searchDatasourceAndAgentInfo({
-                source_id: this.sourceId,
-                datasource_name: this.datasourceName
+                source_id: this.$route.query.source_id,
+                datasource_name: this.$route.query.datasource_name
             }).then(res => {
                 // 传参
                 this.dataAll = res.data;
@@ -253,7 +247,7 @@ export default {
         // 新增数据库Agent
         add(formName) {
             // 调用添加方法
-            this.formAdd["source_id"] = this.$route.params.scouresId;
+            this.formAdd["source_id"] = this.$route.query.source_id;
             this.formAdd["agent_type"] = this.agent_type;
             functionAll.saveAgent(this.formAdd).then(response => {
                 if (response && response.success) {
@@ -334,7 +328,7 @@ export default {
         },
         // 点击编辑的保存按钮更新数据
         AgentEdit() {
-            this.form["source_id"] = this.$route.params.scouresId;
+            this.form["source_id"] = this.$route.query.source_id;
             this.form["agent_id"] = this.agentId;
             this.form["agent_type"] = this.agent_type;
             functionAll.updateAgent(this.form).then(response => {
@@ -364,10 +358,10 @@ export default {
                     .deleteAgent({
                         agent_id: this.agentId,
                         agent_type: this.agentType,
-                        source_id: this.$route.params.scouresId
+                        source_id: this.$route.query.source_id
                     })
                     .then(res => {
-                        if (res.code == 200) {
+                        if (res && res.success) {
                             // 隐藏对话框
                             this.dialogFormVisibleDelte = false;
                             // 表单清空

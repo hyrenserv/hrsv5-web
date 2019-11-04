@@ -25,7 +25,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页"  @current-change="handleCurrentChangeList" :current-page="currentPagelist" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItem"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPagelist" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItem"></el-pagination>
         </el-row>
     </div>
     <!-- 数据管理列表完 -->
@@ -94,13 +94,13 @@ export default {
             formAdd: {},
             formLabelWidth: "150px",
             currentPage: 1,
-            currentPagelist:1,
+            currentPagelist: 1,
             pageSize: 5,
             totalItems: "",
             totalItem: "",
             options: [],
-            sourceId: "",
-            da_id:"",
+            source_id: "",
+            da_id: "",
             depIds: [],
             tableData: [],
             tableDatalist: []
@@ -108,30 +108,7 @@ export default {
     },
     // 获取首页数据
     created() {
-        functionAll.searchDataSourceInfo().then(res => {
-            if (res.code == 200) {
-                // 获取所有数据
-                this.dataIndexAll = res.data;
-                // 获取数据权限管理分页总数
-                this.totalItems = res.data.dataSourceAndAgentCount.length;
-                // 获取数据管理列表分页总数
-                this.totalItem = res.data.dataAudit.length;
-            }
-        });
-        // 获取数据权限管理数据
-        functionAll.searchSourceRelationDepForPage({
-            currPage: this.currentPage,
-            pageSize: this.pageSize
-        }).then(res => {
-            this.tableData = res.data;
-        }),
-        // 获取数据管理列表数据
-        functionAll.getDataAuditInfoForPage({
-            currPage: this.currentPagelist,
-            pageSize: this.pageSize
-        }).then(res=>{
-            this.tableDatalist = res.data;
-        })
+        this.getIndexData();
     },
     methods: {
         // 子触发父的事件
@@ -141,29 +118,38 @@ export default {
         // 封装调用事件
         getIndexData() {
             functionAll.searchDataSourceInfo().then(res => {
-                if (res.code == 200) {
+                if (res && res.success) {
+                    // 获取所有数据
                     this.dataIndexAll = res.data;
-                    this.totalItems = res.data.dataSourceAndAgentCount.length;
+                    // 获取数据管理列表分页总数
+                    this.totalItem = res.data.dataAudit.totalSize;
+                    // 获取数据管理列表信息
+                    this.tableDatalist = res.data.dataAudit.dataAuditList;
+                    // 获取数据权限管理分页总数
+                    this.totalItems = res.data.dataSourceRelationDep.totalSize;
+                    // 获取数据权限管理列表信息
+                    this.tableData = res.data.dataSourceRelationDep.sourceRelationDep;
                 }
             });
         },
         // 获取表格当前行数据
         handleEdit(index, row) {
             this.formAdd.datasource_name = row.datasource_name;
-            this.sourceId = row.source_id;
-            this.da_id =row.da_id;
+            this.depIds = row.dep_name.split(",");
+            this.source_id = row.source_id;
+            this.da_id = row.da_id;
         },
         // 数据权限管理，更新数据源关系部门信息
         saveChangeAgent() {
             this.formAdd["dep_id"] = this.depIds.join(",");
-            this.formAdd["source_id"] = this.sourceId;
+            this.formAdd["source_id"] = this.source_id;
             functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
                 if (res.code == 200) {
                     this.$message({
                         type: "success",
                         message: "更改成功!"
                     });
-                    this.handleCurrentChange();
+                    this.getIndexData();
                     // 隐藏对话框
                     this.dialogFormVisibleAdd = false;
                     // 表单清空
@@ -177,9 +163,9 @@ export default {
         // 点击添加按钮获取部门信息
         departmentInfo() {
             functionAll.searchDataSourceOrDepartment({
-                source_id: this.sourceId
+                source_id: this.source_id
             }).then(res => {
-                    this.options = res.data.departmentInfo;
+                this.options = res.data.departmentInfo;
             });
         },
         // 点击取消按钮
@@ -198,30 +184,30 @@ export default {
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
-                this.tableData = res.data;
+                this.tableData = res.data.sourceRelationDep;
             })
         },
         // 获取数据管理列表数据实现分页功能
-        handleCurrentChangeList(val){
+        handleCurrentChangeList(val) {
             //把val赋给当前页面
             this.currentPagelist = val;
             functionAll.getDataAuditInfoForPage({
                 currPage: this.currentPagelist,
                 pageSize: this.pageSize
-            }).then(res=>{
-                this.tableDatalist = res.data;
+            }).then(res => {
+                this.tableDatalist = res.data.dataAuditList;
             })
 
         },
         // 权限回收
-        reclaimAuthority(){
-            this.$confirm("确定要回收权限?", "提示",{
-                type:"warning"
-            }).then(()=>{
+        reclaimAuthority() {
+            this.$confirm("确定要回收权限?", "提示", {
+                type: "warning"
+            }).then(() => {
                 functionAll.deleteAudit({
-                    da_id:this.da_id
-                }).then(res=>{
-                    this.tableDatalist =res.data;
+                    da_id: this.da_id
+                }).then(res => {
+                    this.tableDatalist = res.data;
                 })
             })
         }

@@ -49,7 +49,7 @@
                 <!-- <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer> -->
             </el-container>
         </el-container>
-        <el-header class="fiexd"><span>版权所有：海云数服 Version 5.0</span></el-header>
+        <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
     </el-container>
 </div>
 </template>
@@ -107,10 +107,12 @@ export default {
     color: white;
 }
 
-.fiexd {
+.el-footer {
     height: 30px !important;
-    line-height: 35px;
+    line-height: 30px;
     font-size: 12px;
     margin-top: 6px;
+    position: relative;
+    bottom: 0%;
 }
 </style>
