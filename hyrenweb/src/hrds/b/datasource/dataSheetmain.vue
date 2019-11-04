@@ -20,23 +20,23 @@
     <!-- 编辑的弹出表单 -->
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formUpdate" ref="formUpdate">
-            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasourceName">
-                <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
+            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name"  :rules="filter_rules([{required: true}])">
+                <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px" :disabled="true"></el-input>
             </el-form-item>
-            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasourceNumber">
+            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="filter_rules([{required: true}])">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="sourceRemark">
+            <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="source_remark">
                 <el-input type="textarea" v-model="formUpdate.source_remark" autocomplete="off" placeholder="数据源详细描述" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisibleAdd = false" size="mini" type="danger">取 消</el-button>
+            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="update('formUpdate')" size="mini">保存</el-button>
         </div>
     </el-dialog>
@@ -45,6 +45,8 @@
 
 <script>
 import * as functionAll from "./datasource";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     props: ["data"],
     data() {
@@ -100,7 +102,14 @@ export default {
                 }
             });
         },
-
+         // 点击添加弹出框的取消按钮
+        cancleAdd() {
+            // 表单清空
+            this.formUpdate = {};
+            this.depIds = [];
+            // 隐藏对话框
+            this.dialogFormVisibleAdd = false;
+        },
         // 点击数据来源表的内容跳转页面
         gotoScoureDetail: function (index) {
             //进行页面的跳转

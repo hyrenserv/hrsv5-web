@@ -51,10 +51,10 @@
             <!-- 点击操作弹出框 -->
             <el-dialog title="更改部门" :visible.sync="dialogFormVisibleAdd" width="40%">
                 <el-form :model="formAdd" ref="formAdd">
-                    <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
+                    <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name"  >
                         <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
+                    <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds"  :rules="filter_rules([{required: true}])">
                         <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                             <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                         </el-select>
@@ -79,6 +79,7 @@
 import * as functionAll from "./datasource";
 import Loheader from "./Loheader";
 import dataSheetmain from "./dataSheetmain";
+import * as validator from "@/utils/js/validator";
 
 export default {
     name: "index1001",

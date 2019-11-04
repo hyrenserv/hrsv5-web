@@ -92,16 +92,16 @@
         <!-- 点击新增数据库按钮弹出框 -->
         <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%">
             <el-form :model="formAdd" ref="formAdd" :rules="rules">
-                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name">
+                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
+                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_ip" autocomplete="off" placeholder="例如 127.9.08.7" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
+                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_port" autocomplete="off" placeholder="端口范围1204-65535" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type">
+                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type"  :rules="filter_rules([{required: true}])">
                     <el-select v-model="formAdd.user_id" filterable placeholder="请选择" style="width:284px">
                         <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
                     </el-select>
@@ -115,16 +115,16 @@
         <!-- 点击编辑按钮编辑信息弹出框 -->
         <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%">
             <el-form :model="form" ref="form" :rules="rules">
-                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name">
+                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip">
+                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port">
+                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port"  :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds">
+                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds"  :rules="filter_rules([{required: true}])">
                     <el-select v-model="form.user_id" filterable placeholder="请选择" style="width:284px">
                         <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
                     </el-select>
@@ -141,6 +141,7 @@
 
 <script>
 import * as functionAll from "./datasource";
+import * as validator from "@/utils/js/validator";
 export default {
     data() {
         return {
@@ -171,23 +172,6 @@ export default {
                 agent_ip: "",
                 agent_port: "",
                 user_id: ""
-            },
-            rules: {
-                agent_name: [{
-                    required: true,
-                    message: "不能为空",
-                    trigger: "blur"
-                }],
-                agent_ip: [{
-                    required: true,
-                    message: "不能为空",
-                    trigger: "blur"
-                }],
-                agent_port: [{
-                    required: true,
-                    message: "不能为空",
-                    trigger: "blur"
-                }]
             },
             formLabelWidth: "150px"
         };

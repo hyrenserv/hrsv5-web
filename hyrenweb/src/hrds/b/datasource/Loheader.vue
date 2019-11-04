@@ -50,14 +50,14 @@
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
     <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
-        <el-form :model="formAdd" ref="formAdd" :rules="rules">
-            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
+        <el-form :model="formAdd" ref="formAdd">
+            <el-form-item label=" 数据源名称" :label-width="formLabelWidth"  prop="datasource_name"  :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number">
+            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number"  :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-input v-model="formAdd.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds">
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds"  :rules="filter_rules([{required: true}])">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
@@ -76,7 +76,8 @@
 
 <script>
 import * as functionAll from "./datasource";
-
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
@@ -97,18 +98,6 @@ export default {
             },
             importFileUrl:"",
             filesr:"",
-            rules: {
-                datasource_number: [{
-                    required: true,
-                    message: "数据源编号是以字母开头的不超过四位数的字母数字组合",
-                    trigger: "blur"
-                }],
-                datasource_name: [{
-                    required: true,
-                    message: "数据源名称是必填项",
-                    trigger: "blur"
-                }]
-            },
             formLabelWidth: "150px"
         };
     },
