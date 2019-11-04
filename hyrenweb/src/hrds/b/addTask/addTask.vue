@@ -45,9 +45,9 @@ export default {
   },
   
   mounted(){
-    if(this.$route.query.id){
+    if(this.$route.params.id){
       let params = {};
-      params["databaseId"] = this.$route.query.id;
+      params["databaseId"] = this.$route.params.id;
       addTaskAllFun.getDBConfInfo(params).then(res=>{
         this.steps0Data=res.data
       })
