@@ -19,7 +19,7 @@
     <!-- 实现点击编辑按钮进行数据更改-->
     <!-- 编辑的弹出表单 -->
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
-        <el-form :model="formUpdate" ref="formUpdate" :rules="rules">
+        <el-form :model="formUpdate" ref="formUpdate">
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasourceName">
                 <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
             </el-form-item>
@@ -49,13 +49,11 @@ export default {
     props: ["data"],
     data() {
         return {
-            filename :"",
+            filename: "",
             showHidden: "false",
             options: [],
             click: "",
-            sourceId: "",
-            source_id:"",
-            datasourceName: "",
+            source_id: "",
             dialogFormVisibleAdd: false,
             depIds: [],
             formUpdate: {
@@ -67,19 +65,18 @@ export default {
         };
     },
     methods: {
-        // 点击编辑小图标获取部门信息
+        // 点击编辑小图标获取部门信息和回显数据
         clickEditButton: function (index) {
-            this.sourceId = this.data[index].source_id;
+            this.source_id = this.data[index].source_id;
             functionAll
                 .searchDataSourceOrDepartment({
-                    source_id:this.data[index].source_id
+                    source_id: this.data[index].source_id
                 })
                 .then(res => {
-                    if (res.code == 200) {
+                    if (res && res.success) {
                         this.options = res.data.departmentInfo;
-                        // this.formUpdate.datasourceName =  res.data.dataSource[0].datasource_name;
-                        // this.formUpdate. datasourceNumber =  res.data.dataSource[0]. datasource_number;
-                        // this.formUpdate. sourceRemark =  res.data.dataSource[0]. source_remark;
+                        this.formUpdate = res.data;
+                        this.depIds = res.data.dep_name.split(",");
                     }
                 });
         },
@@ -87,7 +84,7 @@ export default {
         // 点击保存按钮更新当前的所有信息
         update() {
             this.formUpdate["dep_id"] = this.depIds.join(",");
-            this.formUpdate["source_id"] = this.sourceId;
+            this.formUpdate["source_id"] = this.source_id;
             functionAll.updateDataSource(this.formUpdate).then(res => {
                 if (res.code == 200) {
                     this.$message({
@@ -107,13 +104,11 @@ export default {
         // 点击数据来源表的内容跳转页面
         gotoScoureDetail: function (index) {
             //进行页面的跳转
-            let indexScoured = this.data[index].source_id;
-            let indexdatasourcename = this.data[index].datasource_name;
             this.$router.push({
                 name: "addScoure",
-                params: {
-                    scouresId: indexScoured,
-                    dataName: indexdatasourcename
+                query: {
+                    source_id: this.data[index].source_id,
+                    datasource_name: this.data[index].datasource_name
                 }
             });
         },
@@ -127,52 +122,57 @@ export default {
             }
         },
 
-       
         // 点击删除删除数据源
         delteThisData(index) {
-            this.$confirm("确定要删除该条数据?", "提示",{
-                type:"warning"
-            }).then(()=>{
-            this.sourceId = this.data[index].source_id;
-            functionAll.deleteDataSource({source_id: this.sourceId})
-                .then(res => {
-                    if (res.code == 200) {
-                        this.$message({
-                            type: "success",
-                            message: "删除成功!"
-                        });
-                        this.$emit("addEvent");
-                    } else {
-                        this.$message.error("删除失败！");
-                    }
-                });
-            }) 
+            this.$confirm("确定要删除该条数据?", "提示", {
+                type: "warning"
+            }).then(() => {
+                this.source_id = this.data[index].source_id;
+                functionAll.deleteDataSource({
+                        source_id: this.source_id
+                    })
+                    .then(res => {
+                        if (res.code == 200) {
+                            this.$message({
+                                type: "success",
+                                message: "删除成功!"
+                            });
+                            this.$emit("addEvent");
+                        } else {
+                            this.$message.error("删除失败！");
+                        }
+                    });
+            })
         },
-         // 点击下载图标数据
-        downloadData(index){
-            this.sourceId = this.data[index].source_id;
-            functionAll.downloadFile({source_id: this.sourceId}).then(res=>{
-                this.filename =this.data[index].source_id;
-                const blob = new Blob([JSON.stringify(res),{type: 'application/x-hrds'}]);
-               
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // 兼容IE10
-                    navigator.msSaveBlob(blob, this.filename);
-                } else {
-                    //  chrome/firefox
-                    let aTag = document.createElement("a");
-                    aTag.download = this.filename;
-                    aTag.href = URL.createObjectURL(blob);
-                if (aTag.all) {
-                     aTag.click();
-                 } else {
-                    //  兼容firefox
-                    var evt = document.createEvent("MouseEvents");
-                    evt.initEvent("click", true, true);
-                    aTag.dispatchEvent(evt);
-              }
-                    URL.revokeObjectURL(aTag.href);
-            }
+        // 点击下载图标数据
+        downloadData(index) {
+            this.source_id = this.data[index].source_id;
+            functionAll.downloadFile({
+                source_id: this.source_id
+            }).then(res => {
+                this.filename = this.data[index].source_id;
+                const blob = new Blob([JSON.stringify(res), {
+                    type: 'application/x-hrds'
+                }]);
+
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, this.filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    aTag.download = this.filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
             })
         },
     }
