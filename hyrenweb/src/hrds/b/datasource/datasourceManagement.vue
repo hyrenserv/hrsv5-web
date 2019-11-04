@@ -135,7 +135,7 @@ export default {
         // 获取表格当前行数据
         handleEdit(index, row) {
             this.formAdd.datasource_name = row.datasource_name;
-            this.depIds = row.dep_name.split(",");
+            // this.depIds = row.dep_name.split(",");
             this.source_id = row.source_id;
             this.da_id = row.da_id;
         },
@@ -144,12 +144,13 @@ export default {
             this.formAdd["dep_id"] = this.depIds.join(",");
             this.formAdd["source_id"] = this.source_id;
             functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
-                if (res.code == 200) {
+                if (res && res.success) {
                     this.$message({
                         type: "success",
                         message: "更改成功!"
                     });
-                    this.getIndexData();
+                    // 传入当前页数和当前需要的条数渲染
+                    this.handleCurrentChange(this.currentPage);
                     // 隐藏对话框
                     this.dialogFormVisibleAdd = false;
                     // 表单清空
