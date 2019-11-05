@@ -12,6 +12,8 @@ const Menu = [
         //     { icon: 'el-icon-document', title: '新增任务', path: '/addTask' }]
     },
     { icon: 'el-icon-document', title: '数据源管理', path: '/datasourceManagement' },
+    { icon: 'el-icon-document', title: '系统管理', path: '/managementsystem' },
+
 
 
 

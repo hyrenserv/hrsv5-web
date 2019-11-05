@@ -74,10 +74,30 @@ export default new Router({
                     component: () => import('@/hrds/b/agentList/agentList.vue')
                 },
                 {
+
                     path: '/taskLog',
                     name: 'taskLog',
                     title: 'taskLog日志查看',
                     component: () => import('@/hrds/b/agentList/taskLog.vue')
+                 },
+                {
+                    path: '/managementsystem',
+                    name: 'managementsystem',
+                    title: '系统管理',
+                    component: () => import('@/hrds/a/managementsystem/managementsystem.vue')
+                },
+                {
+                    path: '/userManagement',
+                    name: 'userManagement',
+                    title: '用户列表',
+                    component: () => import('@/hrds/a/managementsystem/userManagement.vue')
+                },
+                {
+                    path: '/departmentalList',
+                    name: 'departmentalList',
+                    title: '用户列表',
+                    component: () => import('@/hrds/a/managementsystem/departmentalList.vue')
+
                 },
             ]
         },
