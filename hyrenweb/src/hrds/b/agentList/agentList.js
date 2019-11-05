@@ -30,4 +30,11 @@ export function deleteDBTask(data) {
         params:data
     })
 }
-
+//查看任务日志
+export function viewTaskLog(data) {
+    return request({
+        url: '/B/agent/viewTaskLog',
+        method: 'post',
+        params:data
+    })
+}

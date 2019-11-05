@@ -9,9 +9,9 @@
       </router-link>
     </el-row>
     <div class="lines"></div>
-    <el-table :data="AgenttableData" border style="width: 100%">
-      <el-table-column prop="datasource_name" label="数据源" width="180"></el-table-column>
-      <el-table-column label="数据库 Agent" width="180">
+    <el-table :data="AgenttableData" border style="width: 100%" >
+      <el-table-column prop="datasource_name" label="数据源" width="180" align="center"></el-table-column>
+      <el-table-column label="数据库 Agent" width="180" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.dbflag!=0"
@@ -21,7 +21,7 @@
           >任务配置</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="数据文件 Agent" width="180">
+      <el-table-column label="数据文件 Agent" width="180" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.dfflag!=0"
@@ -31,7 +31,7 @@
           >任务配置</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="非结构化 Agent">
+      <el-table-column label="非结构化 Agent" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.nonstructflag!=0"
@@ -41,7 +41,7 @@
           >任务配置</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="半结构化 Agent">
+      <el-table-column label="半结构化 Agent" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.halfstructflag!=0"
@@ -51,7 +51,7 @@
           >任务配置</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="Ftp Agent">
+      <el-table-column label="Ftp Agent" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.ftpflag!=0"
@@ -65,16 +65,16 @@
     <!-- 点击部署显示弹框-->
     <el-dialog title="" :visible.sync="dialogTableVisible" width="80%">
       <div slot="title" class="header-title">
-        <span class="title-sourceName">数据源名称:{{ sourceName }}</span>
-        <span class="title-agentType">采集类型：{{agentType }}</span>
+        <span class="title-sourceName">数据源名称:{{ sourceName }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="title-agentType">采集类型:{{agentType }}</span>
       </div>
       <el-table :data="gridData2" border size="medium">
-        <el-table-column property="agent_name" label="Agent名称" width="150px"></el-table-column>
-        <el-table-column property="agent_ip" label="Agent IP"></el-table-column>
-        <el-table-column property="agent_port" label="Agent端口" width="100px"></el-table-column>
-        <el-table-column label="采集类型" width="100px">{{agentType}}</el-table-column>
-        <el-table-column label="Agent连接状态" width="160px">{{agentStatus}}</el-table-column>
-        <el-table-column property="AgentOpt" label="操作" width="280px">
+        <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
+        <el-table-column property="agent_ip" label="Agent IP" align="center"></el-table-column>
+        <el-table-column property="agent_port" label="Agent端口" width="100px" align="center"></el-table-column>
+        <el-table-column label="采集类型" width="100px" align="center">{{agentType}}</el-table-column>
+        <el-table-column label="Agent连接状态" width="160px" align="center">{{agentStatus}}</el-table-column>
+        <el-table-column property="AgentOpt" label="操作" width="280px" align="center">
             <template scope="scope">
           <el-row>
             <el-col :span="8">
@@ -86,7 +86,7 @@
               <el-button type="primary" size="mini" @click="dialogTableTask = true;taskManagement(scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
             </el-col>
             <el-col :span="8">
-              <el-button type="primary" size="mini">日志查看</el-button>
+              <el-button type="primary" size="mini" @click="tasklogFun(scope.row.agent_id)">日志查看</el-button>
             </el-col>
           </el-row>
             </template>
@@ -101,21 +101,24 @@
     <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="50%" class="taskEx" >
       <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
       <el-table :data="taskMang" border size="medium" >
-        <el-table-column property="task_name" label="任务名称" width="150px"></el-table-column>
-        <el-table-column property="" label="采集类型">{{agentType}}</el-table-column>
-        <el-table-column property="" label="启动方式" width="100px"></el-table-column>
-        <el-table-column label="采集频率" width="100px"></el-table-column>
-        <el-table-column  label="操作" width="150px">
+        <el-table-column property="task_name" label="任务名称" width="150px" align="center"></el-table-column>
+        <el-table-column property="" label="采集类型" align="center">{{agentType}}</el-table-column>
+        <el-table-column property="" label="启动方式" width="100px" align="center"></el-table-column>
+        <el-table-column label="采集频率" width="100px" align="center"></el-table-column>
+        <el-table-column  label="操作" width="200px" align="center">
            <template scope="scope">
           <el-row>
-            <el-col :span="8"  class="edilt" style="text-align: center;">
-              <el-button type="primary" icon="el-icon-edit" circle @click="taskEditBtn(scope.row,scope.row.agent_id,scope.row.id,scope.row.source_id,sourceName)"></el-button>
+            <el-col :span="5"  class="edilt" style="text-align: center;">
+              <el-button type="text" @click="taskEditBtn(scope.row.agent_id,scope.row.id,scope.row.source_id,sourceName)">编辑</el-button>
             </el-col>
-            <el-col :span="8" class="delbtn">
-              <el-button type="primary" icon="el-icon-delete" circle></el-button>
+            <el-col :span="5" class="delbtn">
+              <el-button type="text" >删除</el-button>
             </el-col>
-            <el-col :span="8" class="sendmsg">
-              <el-button type="primary" icon="el-icon-position" circle ></el-button>
+            <el-col :span="5" class="sendmsg">
+              <el-button type="text">发送</el-button>
+            </el-col>
+             <el-col :span="9" class="sendmsg">
+              <el-button type="text" >生成作业</el-button>
             </el-col>
           </el-row>
            </template>
@@ -183,8 +186,11 @@ export default {
         this.taskMang=res.data
        })
     },
-    taskEditBtn(row,agentId,databaseId,sourceId,sourceName){
-      this.$router.push({ name: 'addTask', params: {Row:row,aId:agentId, id: databaseId,sourId:sourceId,sName: sourceName} })
+    taskEditBtn(agentId,databaseId,sourceId,sourceName){
+      this.$router.push({ path: 'addTask', query: {aId:agentId, id: databaseId,sourId:sourceId,sName: sourceName} })
+    },
+    tasklogFun(agentid){
+       this.$router.push({ path: '/taskLog', query: {agenId:agentid} })
     }
   }
 };
@@ -241,7 +247,10 @@ export default {
     font-size: 22px;
     font-weight: bold;
 }
-.taskEx>>>el-dialog__body{
-   padding:15px 20px;
+.taskEx>>>.el-dialog__body{
+   padding:8px 20px;
+}
+.title-sourceName,.title-agentType{
+  font-size: 18px;
 }
 </style>

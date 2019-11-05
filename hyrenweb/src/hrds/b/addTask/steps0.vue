@@ -160,23 +160,22 @@
                     <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
                   </template>
                 </el-table-column>
-                <el-table-column property label="序号" width="40px" type="index"></el-table-column>
-                <el-table-column property="classify_num" label="分类编号"></el-table-column>
-                <el-table-column property="classify_name" label="分类名称" width="100px"></el-table-column>
-                <el-table-column property="remark" label="描述" width="100px"></el-table-column>
-                <el-table-column label="操作" width="150px">
+                <el-table-column property label="序号" width="60px" type="index" align="center"></el-table-column>
+                <el-table-column property="classify_num" label="分类编号" align="center"></el-table-column>
+                <el-table-column property="classify_name" label="分类名称" width="100px" align="center"></el-table-column>
+                <el-table-column property="remark" label="描述" width="100px" align="center"></el-table-column>
+                <el-table-column label="操作" width="150px" align="center">
                   <template scope="scope">
                     <el-row>
-                      <el-col :span="8" class="edilt" style="text-align: center;">
+                      <el-col :span="12" class="edilt" style="text-align: center;">
                         <el-button
-                          type="primary"
-                          icon="el-icon-edit"
+                          type="text" 
                           circle
                           @click="colltaskEditBtn(scope.row)"
-                        ></el-button>
+                        >编辑</el-button>
                       </el-col>
-                      <el-col :span="8" class="delbtn">
-                        <el-button type="primary" icon="el-icon-delete" circle @click="colltaskDeleBtn(scope.row)" @row-click="chooseone"></el-button>
+                      <el-col :span="12" class="delbtn">
+                        <el-button style="color:red" type="text"  circle @click="colltaskDeleBtn(scope.row)" @row-click="chooseone">删除</el-button>
                       </el-col>
                     </el-row>
                   </template>
@@ -191,7 +190,7 @@
           <el-dialog width="30%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
               <el-form :model="editClassTask" ref="addClassTask" >
                 <el-form-item label=" 分类编号"  prop="class_num" :rules="rule.default" >
-                    <el-input v-model="editClassTask.class_num"  readonly style="width:284px" ></el-input>
+                    <el-input v-model="editClassTask.class_num"  style="width:284px" ></el-input>
                 </el-form-item>
                 <el-form-item label=" 分类名称"  prop="class_name" :rules="rule.default">
                     <el-input v-model="editClassTask.class_name"   style="width:284px"></el-input>
@@ -240,6 +239,7 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
+import * as message from '@/utils/js/message'
 export default {
   props: ["steps0data"],
   data() {
@@ -292,9 +292,9 @@ export default {
     }
   },
   mounted() {
-    this.sourceName = this.$route.params.sName;
-    this.sourceId=this.$route.params.sourId;
-    this.agentId=this.$route.params.aId;
+    this.sourceName =this.$route.query.sName;
+    this.sourceId=this.$route.query.sourId;
+    this.agentId=this.$route.query.aId;
     if(this.sourceId){
       this.collTaskClassFun()
     }
@@ -352,9 +352,10 @@ export default {
       params["remark"] = data.class_des;
       params["agent_id"] = this.agentId;
       params["sourceId"] = this.sourceId;
+      console.log(params)
       addTaskAllFun.updateClassifyInfo(params).then(res=>{
-       alert("删除成功")
-       this.collTaskClassFun()
+       message.updateSuccess(res)
+     this.collTaskClassFun()
      })
     },
     colltaskDeleBtn(row){
@@ -362,7 +363,7 @@ export default {
       params["classifyId"] = row.classify_id;
        console.log(params)
        addTaskAllFun.deleteClassifyInfo(params).then(res=>{
-       console.log(res)
+      message.deleteSuccess(res)
        this.collTaskClassFun()
      })
     },
@@ -374,7 +375,8 @@ export default {
       params["agent_id"] = this.agentId;
       params["sourceId"] = this.sourceId;
      addTaskAllFun.saveClassifyInfo(params).then(res=>{
-       console.log(res)
+        message.saveSuccess(res)
+      this.collTaskClassFun()
      })
     }
   }
@@ -401,5 +403,8 @@ export default {
 }
 #dataAcquisition >>> .el-dialog__header {
   border-bottom: 1px solid #f3f0f0;
+}
+#jdbcUrl>>>.el-dialog__body{
+  padding:0;
 }
 </style>
