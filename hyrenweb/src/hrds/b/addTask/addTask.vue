@@ -1,6 +1,6 @@
 <template>
   <div>
-     <el-steps :active="active" finish-status="success" align-center style="margin: 15px 0;">
+     <el-steps :active="active" finish-status="success" align-center style="margin: 10px 60px 20px 60px;">
       <el-step title="步骤 1" description="配置源DB属性"></el-step>
       <el-step title="步骤 2" description="定义表抽取属性"></el-step>
       <el-step title="步骤 3" description="定义清洗规则"></el-step>
@@ -9,14 +9,15 @@
       <el-step title="步骤 6" description="定义启动方式"></el-step>
     </el-steps>
     <keep-alive>
-      <steps0 v-if="active===0" :steps0data='steps0Data'></steps0>
+      <steps0 v-if="active===0" :steps0data='steps0Data' ref="steps0"></steps0>
       <steps1 v-if="active===1"></steps1>
       <steps2 v-if="active===2"></steps2>
       <steps3 v-if="active===3"></steps3>
       <steps4 v-if="active===4"></steps4>
       <steps5 v-if="active===5"></steps5>
     </keep-alive>
-    <el-button style="margin-top: 12px;margin-top: 12px;float: right;margin: 15px;" @click="next()">{{title}}</el-button>
+    <el-button style="margin-top: 12px;margin-top: 12px;float: right;margin: 15px;" @click="next()">{{titleright}}</el-button>
+    <el-button v-if="active>0" style="margin-top: 12px;margin-top: 12px;float: left;margin: 15px;" @click="pre()">{{titleleft}}</el-button>
   </div>
 </template>
 <script>
@@ -39,15 +40,16 @@ export default {
   data() {
     return {
       active: 0,
-      title:"下一步",
+      titleleft:"上一步",
+      titleright:"下一步",
       steps0Data:[],
     };
   },
   
   mounted(){
-    if(this.$route.params.id){
+    if(this.$route.query.id){
       let params = {};
-      params["databaseId"] = this.$route.params.id;
+      params["databaseId"] = this.$route.query.id;
       addTaskAllFun.getDBConfInfo(params).then(res=>{
         this.steps0Data=res.data
       })
@@ -55,9 +57,29 @@ export default {
   },
   methods: {
      next() {
-        if (this.active++ > 4){
-          this.active ==4;
-          this.title='完成'
+        if (this.active++> 4){
+          this.active == 5;
+          this.titleright='完成'
+        }else{
+          //验证成功走下一步
+         console.log( this.$refs.steps0.ruleForm)
+         let formdata=this.$refs.steps0.ruleForm
+          this.$refs[formdata].validate((valid) => {
+          if (valid) {
+             this.active++
+              console.log('success!!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+         
+        }
+      },
+      pre() {
+         this.titleright='下一步'
+        if (this.active--  <0){
+          this.active ==0;
         } 
       },
    

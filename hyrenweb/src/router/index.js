@@ -62,7 +62,7 @@ export default new Router({
                     component: () => import('@/hrds/b/datasource/datasource.vue')
                 },
                 {
-                    path: '/addTask/:aId/:id/:sourId/:sName',
+                    path: '/addTask',
                     name: 'addTask',
                     title: '新增任务',
                     component: () => import('@/hrds/b/addTask/addTask.vue')
@@ -73,6 +73,13 @@ export default new Router({
                     title: 'agent列表',
                     component: () => import('@/hrds/b/agentList/agentList.vue')
                 },
+                {
+
+                    path: '/taskLog',
+                    name: 'taskLog',
+                    title: 'taskLog日志查看',
+                    component: () => import('@/hrds/b/agentList/taskLog.vue')
+                 },
                 {
                     path: '/managementsystem',
                     name: 'managementsystem',
@@ -90,6 +97,7 @@ export default new Router({
                     name: 'departmentalList',
                     title: '用户列表',
                     component: () => import('@/hrds/a/managementsystem/departmentalList.vue')
+
                 },
             ]
         },
