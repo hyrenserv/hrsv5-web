@@ -73,6 +73,24 @@ export default new Router({
                     title: 'agent列表',
                     component: () => import('@/hrds/b/agentList/agentList.vue')
                 },
+                {
+                    path: '/managementsystem',
+                    name: 'managementsystem',
+                    title: '系统管理',
+                    component: () => import('@/hrds/a/managementsystem/managementsystem.vue')
+                },
+                {
+                    path: '/userManagement',
+                    name: 'userManagement',
+                    title: '用户列表',
+                    component: () => import('@/hrds/a/managementsystem/userManagement.vue')
+                },
+                {
+                    path: '/departmentalList',
+                    name: 'departmentalList',
+                    title: '用户列表',
+                    component: () => import('@/hrds/a/managementsystem/departmentalList.vue')
+                },
             ]
         },
 
