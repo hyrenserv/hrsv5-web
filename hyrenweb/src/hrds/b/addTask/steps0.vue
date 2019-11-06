@@ -55,9 +55,17 @@
               <el-col :span="10">
                 <el-form-item label="数据库" :rules="rule.selected">
                   <el-col :span="16">
-                    <el-select placeholder="数据库类型" v-model="ruleForm.database_type">
-                      <el-option label="MYSQL" value="1"></el-option>
-                      <el-option label="Oracle9i及一下" value="11"></el-option>
+                    <el-select
+                      placeholder="数据库类型"
+                      v-model="ruleForm.database_type"
+                      @change="dbTypeFun"
+                    >
+                      <el-option
+                        v-for="(item,index) in DatabaseType"
+                        :key="index"
+                        :label="item.value"
+                        :value="item.code"
+                      ></el-option>
                     </el-select>
                   </el-col>
                 </el-form-item>
@@ -127,7 +135,7 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="6" style="text-align:right;">
-                <el-button type="text" @click="testLink = true">测试连接</el-button>
+                <el-button type="text" @click="testLink = true,testLinkFun()">测试连接</el-button>
               </el-col>
               <el-col :span="2">
                 <el-button type="text" @click="viewLog = true">查看日志</el-button>
@@ -135,32 +143,47 @@
             </el-row>
           </el-form>
           <!-- 分类编号弹层 -->
-          <el-dialog title="采集任务分类" :visible.sync="outerVisible">
+          <el-dialog title="采集任务分类" :visible.sync="outerVisible" class="collTask">
             <el-dialog width="30%" title="修改采集任务分类" :visible.sync="innerVisible" append-to-body>
-              <el-form :model="addClassTask" ref="addClassTask" >
-                <el-form-item label=" 分类编号"  prop="class_num" :rules="rule.default">
-                    <el-input v-model="addClassTask.class_num"  style="width:284px" ></el-input>
+              <el-form :model="addClassTask" ref="addClassTask">
+                <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default">
+                  <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 分类名称"  prop="class_name" :rules="rule.default">
-                    <el-input v-model="addClassTask.class_name"   style="width:284px"></el-input>
+                <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default">
+                  <el-input v-model="addClassTask.class_name" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label="备注"  prop="class_des">
-                    <el-input v-model="addClassTask.class_des" type="textarea"  style="width:284px"></el-input>
+                <el-form-item label="备注" prop="class_des">
+                  <el-input v-model="addClassTask.class_des" type="textarea" style="width:284px"></el-input>
                 </el-form-item>
-            </el-form>
-            <div slot="footer" >
-                <el-button size="mini" type="danger"  @click="innerVisible = false">取 消</el-button>
-                <el-button type="primary"  size="mini" @click="innerVisible = false;addClassTaskFun(addClassTask)">保存</el-button>
-            </div>
+              </el-form>
+              <div slot="footer">
+                <el-button size="mini" type="danger" @click="innerVisible = false">取 消</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="innerVisible = false;addClassTaskFun(addClassTask)"
+                >保存</el-button>
+              </div>
             </el-dialog>
             <div slot="footer" class="dialog-footer">
-              <el-table :data="CollTaskData" border size="medium" highlight-current-row @current-change="handleSelectionChange"  @row-click="chooseone">
-                <el-table-column property label="" width="60px" type="index">
+              <el-table
+                :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)"
+                border
+                size="medium"
+                highlight-current-row
+                @current-change="handleSelectionChange"
+                @row-click="chooseone"
+              >
+                <el-table-column property label width="60px" type="index">
                   <template slot-scope="scope">
                     <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
                   </template>
                 </el-table-column>
-                <el-table-column property label="序号" width="60px" type="index" align="center"></el-table-column>
+                <el-table-column property label="序号" width="60px" align="center">
+                  <template scope="scope">
+                    <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column property="classify_num" label="分类编号" align="center"></el-table-column>
                 <el-table-column property="classify_name" label="分类名称" width="100px" align="center"></el-table-column>
                 <el-table-column property="remark" label="描述" width="100px" align="center"></el-table-column>
@@ -168,42 +191,54 @@
                   <template scope="scope">
                     <el-row>
                       <el-col :span="12" class="edilt" style="text-align: center;">
-                        <el-button
-                          type="text" 
-                          circle
-                          @click="colltaskEditBtn(scope.row)"
-                        >编辑</el-button>
+                        <el-button type="text" circle @click="colltaskEditBtn(scope.row)">编辑</el-button>
                       </el-col>
                       <el-col :span="12" class="delbtn">
-                        <el-button style="color:red" type="text"  circle @click="colltaskDeleBtn(scope.row)" @row-click="chooseone">删除</el-button>
+                        <el-button
+                          style="color:red"
+                          type="text"
+                          circle
+                          @click="colltaskDeleBtn(scope.row)"
+                          @row-click="chooseone"
+                        >删除</el-button>
                       </el-col>
                     </el-row>
                   </template>
                 </el-table-column>
               </el-table>
-              <el-button @click="cancelClassNumBtn()">取 消</el-button>
-              <el-button type="primary" @click="innerVisible = true">新增</el-button>
-              <el-button @click="updataClassNumBtn()">确定</el-button>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-size="pagesize"
+                layout="total, prev, pager, next"
+                :total="CollTaskData.length"
+              ></el-pagination>
+              <div class="btntop">
+                <el-button @click="cancelClassNumBtn()">取 消</el-button>
+                <el-button type="primary" @click="innerVisible = true">新增</el-button>
+                <el-button @click="updataClassNumBtn()">确定</el-button>
+              </div>
             </div>
           </el-dialog>
           <!-- 点击编辑弹层 -->
-          <el-dialog width="30%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
-              <el-form :model="editClassTask" ref="addClassTask" >
-                <el-form-item label=" 分类编号"  prop="class_num" :rules="rule.default" >
-                    <el-input v-model="editClassTask.class_num"  style="width:284px" ></el-input>
-                </el-form-item>
-                <el-form-item label=" 分类名称"  prop="class_name" :rules="rule.default">
-                    <el-input v-model="editClassTask.class_name"   style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label="备注"  prop="class_des">
-                    <el-input v-model="editClassTask.class_des" type="textarea"  style="width:284px"></el-input>
-                </el-form-item>
+          <el-dialog width="40%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
+            <el-form :model="editClassTask" ref="addClassTask">
+              <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default" :label-width="formLabelWidth">
+                <el-input v-model="editClassTask.class_num" style="width:284px"></el-input>
+              </el-form-item>
+              <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default" :label-width="formLabelWidth">
+                <el-input v-model="editClassTask.class_name" style="width:284px"></el-input>
+              </el-form-item>
+              <el-form-item label="备注" prop="class_des" :label-width="formLabelWidth">
+                <el-input v-model="editClassTask.class_des" type="textarea" style="width:284px"></el-input>
+              </el-form-item>
             </el-form>
-            <div slot="footer" >
-                <el-button size="mini" type="danger"  @click="ediltVisible = false">取 消</el-button>
-                <el-button type="primary"  size="mini" @click="editClassTaskSane(editClassTask)">保存</el-button>
+            <div slot="footer">
+              <el-button size="mini" type="danger" @click="ediltVisible = false">取 消</el-button>
+              <el-button type="primary" size="mini" @click="editClassTaskSane(editClassTask)">保存</el-button>
             </div>
-            </el-dialog>
+          </el-dialog>
 
           <!-- 测试连接弹层 -->
           <el-dialog title="提示信息" :visible.sync="testLink" width="30%" :before-close="handleClose">
@@ -239,7 +274,7 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
-import * as message from '@/utils/js/message'
+import * as message from "@/utils/js/message";
 export default {
   props: ["steps0data"],
   data() {
@@ -247,6 +282,9 @@ export default {
       activeNames: "first",
       radio: null,
       CollTaskData: [],
+      currentPage: 1,
+      pagesize: 2,
+      formLabelWidth:'150px',
       ruleForm: {
         task_name: "",
         classify_num: "",
@@ -261,29 +299,34 @@ export default {
         database_type: ""
       },
       sourceName: "",
-      sourceId:'',
-      agentId:'',
+      sourceId: "",
+      agentId: "",
       rule: validator.default,
       outerVisible: false,
       innerVisible: false,
-      ediltVisible:false,
+      ediltVisible: false,
       testLink: false,
       viewLog: false,
       input0: "",
-      addClassTask:{
-        class_num:"",
-        class_name:'',
-        class_des:''
+      addClassTask: {
+        class_num: "",
+        class_name: "",
+        class_des: ""
       },
-      editClassTask:{
-        class_id:'',
-        class_num:"",
-        class_name:'',
-        class_des:''
+      editClassTask: {
+        class_id: "",
+        class_num: "",
+        class_name: "",
+        class_des: ""
       },
-       currentSelectItem: {},
-       classifyName:'',
-       classifyNum:'',
+      currentSelectItem: {},
+      classifyName: "",
+      classifyNum: "",
+      DatabaseType: [],
+      ipPlaceholder: "",
+      portPlaceholder: "",
+      urlPrefix: "",
+      urlSuffix: ""
     };
   },
   watch: {
@@ -291,17 +334,26 @@ export default {
       this.ruleForm = val[0];
     }
   },
-  mounted() {
-    this.sourceName =this.$route.query.sName;
-    this.sourceId=this.$route.query.sourId;
-    this.agentId=this.$route.query.aId;
-    if(this.sourceId){
-      this.collTaskClassFun()
+  created() {
+    addTaskAllFun.getAllCodeItems().then(res => {
+      this.DatabaseType = res.data.DatabaseType;
+    });
+    this.sourceName = this.$route.query.sName;
+    this.sourceId = this.$route.query.sourId;
+    this.agentId = this.$route.query.aId;
+    if (this.sourceId) {
+      this.collTaskClassFun();
     }
   },
   methods: {
     handleClick0(tab, event) {
       // console.log(tab, event);
+    },
+    handleSizeChange(size) {
+      this.pagesize = size;
+    },
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -310,26 +362,26 @@ export default {
         })
         .catch(_ => {});
     },
-     handleSelectionChange(row) {
+    handleSelectionChange(row) {
       this.currentSelectItem = row;
-      this.classifyName=row.classify_name;
-      this.classifyNum=row.classify_num
+      this.classifyName = row.classify_name;
+      this.classifyNum = row.classify_num;
     },
-     chooseone(row){
-      this.radio = row.classify_id
-      this.off='true'
+    chooseone(row) {
+      this.radio = row.classify_id;
+      this.off = "true";
     },
-    updataClassNumBtn(){
-     this.outerVisible = false;
-     this.ruleForm.classify_name=this.classifyName
-     this.ruleForm.classify_num=this.classifyNum
-    },
-    cancelClassNumBtn(){
+    updataClassNumBtn() {
       this.outerVisible = false;
-      this.radio=''
-      this.currentSelectItem={}
+      this.ruleForm.classify_name = this.classifyName;
+      this.ruleForm.classify_num = this.classifyNum;
     },
-    collTaskClassFun(){
+    cancelClassNumBtn() {
+      this.outerVisible = false;
+      this.radio = "";
+      this.currentSelectItem = {};
+    },
+    collTaskClassFun() {
       let params = {};
       params["sourceId"] = this.sourceId;
       addTaskAllFun.getClassifyInfo(params).then(res => {
@@ -337,14 +389,14 @@ export default {
       });
     },
     colltaskEditBtn(row) {
-      this.ediltVisible=true;
-     this.editClassTask.class_id=row.classify_id
-     this.editClassTask.class_name= row.classify_name
-     this.editClassTask.class_num= row.classify_num
-     this.editClassTask.class_des= row.remark
+      this.ediltVisible = true;
+      this.editClassTask.class_id = row.classify_id;
+      this.editClassTask.class_name = row.classify_name;
+      this.editClassTask.class_num = row.classify_num;
+      this.editClassTask.class_des = row.remark;
     },
-    editClassTaskSane(data){
-      this.ediltVisible=false;
+    editClassTaskSane(data) {
+      this.ediltVisible = false;
       let params = {};
       params["classify_id"] = data.class_id;
       params["classify_num"] = data.class_num;
@@ -352,32 +404,82 @@ export default {
       params["remark"] = data.class_des;
       params["agent_id"] = this.agentId;
       params["sourceId"] = this.sourceId;
-      console.log(params)
-      addTaskAllFun.updateClassifyInfo(params).then(res=>{
-       message.updateSuccess(res)
-     this.collTaskClassFun()
-     })
+      addTaskAllFun.updateClassifyInfo(params).then(res => {
+        message.updateSuccess(res);
+        this.collTaskClassFun();
+      });
     },
-    colltaskDeleBtn(row){
+    colltaskDeleBtn(row) {
       let params = {};
       params["classifyId"] = row.classify_id;
-       console.log(params)
-       addTaskAllFun.deleteClassifyInfo(params).then(res=>{
-      message.deleteSuccess(res)
-       this.collTaskClassFun()
-     })
+      addTaskAllFun.deleteClassifyInfo(params).then(res => {
+        message.deleteSuccess(res);
+        this.collTaskClassFun();
+      });
     },
-    addClassTaskFun(data){
+    addClassTaskFun(data) {
       let params = {};
       params["classify_num"] = data.class_num;
       params["classify_name"] = data.class_name;
       params["remark"] = data.class_des;
       params["agent_id"] = this.agentId;
       params["sourceId"] = this.sourceId;
-     addTaskAllFun.saveClassifyInfo(params).then(res=>{
-        message.saveSuccess(res)
-      this.collTaskClassFun()
-     })
+      addTaskAllFun.saveClassifyInfo(params).then(res => {
+        message.saveSuccess(res);
+        this.collTaskClassFun();
+      });
+    },
+    // 根据数据库类型获取数据驱动
+    dbTypeFun(sval) {
+      let params = {};
+      params["dbType"] = String(sval);
+      addTaskAllFun.getJDBCDriver(params).then(res => {
+        this.ruleForm.database_drive = res.data;
+      });
+      addTaskAllFun.getDBConnectionProp(params).then(res => {
+        this.ipPlaceholder = res.data.ipPlaceholder;
+        this.portPlaceholder = res.data.portPlaceholder;
+        this.urlPrefix = res.data.urlPrefix;
+        this.urlSuffix = res.data.urlSuffix;
+        let that = this;
+        let code;
+        that.DatabaseType.forEach(function(currentValue, index) {
+          if (currentValue.value == "TeraData") {
+            code = currentValue.code;
+            if (that.ruleForm.database_type == code) {
+              that.ruleForm.jdbc_url =
+                that.urlPrefix +
+                that.ruleForm.database_ip +
+                that.ipPlaceholder +
+                that.ruleForm.database_name +
+                that.urlSuffix +
+                that.ruleForm.database_port;
+            } else {
+              that.ruleForm.jdbc_url =
+                that.urlPrefix +
+                that.ruleForm.database_ip +
+                that.ipPlaceholder +
+                that.ruleForm.database_port +
+                that.portPlaceholder +
+                that.ruleForm.database_name +
+                that.urlSuffix;
+            }
+          }
+        });
+      });
+    },
+    // 点击测试连接
+    testLinkFun() {
+      let params = {};
+      params["database_drive"] = this.ruleForm.database_drive;
+      params["user_name"] = this.ruleForm.user_name;
+      params["database_pad"] = this.ruleForm.database_pad;
+      params["jdbc_url"] = this.ruleForm.jdbc_url;
+      params["database_type"] = this.ruleForm.database_type;
+      console.log(params);
+      addTaskAllFun.testConnection(params).then(res => {
+        console.log(res);
+      });
     }
   }
 };
@@ -404,7 +506,10 @@ export default {
 #dataAcquisition >>> .el-dialog__header {
   border-bottom: 1px solid #f3f0f0;
 }
-#jdbcUrl>>>.el-dialog__body{
-  padding:0;
+.collTask >>> .el-dialog__body {
+  padding: 0;
+}
+.btntop {
+  margin: 10px 0;
 }
 </style>
