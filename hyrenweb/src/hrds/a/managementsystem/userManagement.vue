@@ -40,8 +40,8 @@
                 </el-select>
             </el-form-item>
             <el-form-item label=" 用户类型" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
-                <el-radio v-model="radio" label="1">管理员</el-radio>
-                <el-radio v-model="radio" label="2">操作员</el-radio>
+                <el-radio @change="getUserFunctionMenu" v-model="radio" label="1">管理员</el-radio>
+                <el-radio @change="getUserFunctionMenu" v-model="radio" label="2">操作员</el-radio>
             </el-form-item>
             <el-form-item label=" 功能菜单" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-select v-model="depIds" filterable placeholder="请选择功能类型" style="width:284px">
@@ -93,7 +93,8 @@ export default {
             options: [],
             depIds: [],
             dialogFormVisibleAdd: false,
-            radio: 1,
+            radio: "1",
+            str: "",
             // 添加数据与导入源字段
             formAdd: {
                 datasource_number: "",
@@ -104,27 +105,54 @@ export default {
         }
     },
     created() {
-        functionAll.getSysUserInfo().then((res) => {
+        this.getSysUserInfoAll();
+    },
+    methods: {
+        getSysUserInfoAll() {
+            functionAll.getSysUserInfo().then((res) => {
                 if (res && res.success) {
                     for (let index = 0; index < res.data.length; index++) {
+                        // 更改日期格式
                         let year = res.data[index].create_date.substring(0, 4);
                         let month = res.data[index].create_date.substring(4, 6);
                         let day = res.data[index].create_date.substring(6, 9);
                         let date = year + "-" + month + "-" + day;
                         res.data[index].create_date = date;
+
+                        // 获取用户功能类型详细信息
+                        let type = res.data[index].usertype_group.split(",");
+                        console.log(res.data[index].usertype_group)
+                        for (let i = 0; i < type.length; i++) {
+                            console.log(type.length);
+                            let e = type[i];
+                            functionAll.getValue({
+                                category: "UserType",
+                                code: e
+                            }).then((res) => {
+                                if (res && res.success) {
+                                    this.str += res.data;
+                                    console.log(this.str);
+                                }
+                            })
+                        }
                     }
                     this.userTablelist = res.data;
                     this.totalItem = res.data.length;
-                }
-            }),
-            functionAll.getAllCodeItems().then((res) => {
-                if (res && res.success) {
-                    this.getAllCodeItems = res.data.UserType;
-                    console.log(this.getAllCodeItems);
+
                 }
             })
-    },
-    methods: {
+        },
+        // getValue(e) {
+        //     functionAll.getValue({
+        //         category: "UserType",
+        //         code: e
+        //     }).then((res) => {
+        //         if (res && res.success) {
+
+        //             return res.data;
+        //         }
+        //     })
+        // },
         // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
@@ -133,7 +161,7 @@ export default {
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
         },
-         // 获取数据管理列表数据实现分页功能
+        // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {
             //把val赋给当前页面
             this.currentPage = val;
@@ -143,8 +171,44 @@ export default {
             }).then(res => {
                 this.tableDatalist = res.data.dataAuditList;
             })
+        },
+        getUserFunctionMenu(e) {
+            if (e == 1) {
+                this.getUserFunctionMenuAll(0);
+            } else if (e == 2) {
+                this.getUserFunctionMenuAll(1);
+            }
+        },
+        getUserFunctionMenuAll(val) {
+            functionAll.getUserFunctionMenu({
+                user_is_admin: val
+            }).then((res) => {
+                if (res && res.success) {
+                    this.options = res.data;
+                }
+            })
+        },
+        // 获取表格当前行数据
+        handleEdit(index, row) {
+            this.user_id = row.user_id;
+        },
+        // 删除部门信息
+        delteThisData() {
+            this.$confirm("确定要删除该条数据?", "提示", {
+                type: "warning"
+            }).then(() => {
+                functionAll.deleteSysUser({
+                        user_id: this.user_id,
+                    })
+                    .then(res => {
+                        if (res && res.success) {
+                            this.getSysUserInfoAll();
+                        }
+                    })
+            })
 
         },
+
     }
 }
 </script>
