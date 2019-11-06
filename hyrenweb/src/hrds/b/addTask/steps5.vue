@@ -1,18 +1,11 @@
 <template>
-    <div>
-   5
-    </div>
+  <div>5</div>
 </template>
 <script>
 export default {
-  
   data() {
-    return {
-     
-    };
-  },
-
- 
+    return {};
+  }
 };
 </script>
 <style scoped>

@@ -12,33 +12,37 @@
               stripe
               :default-sort="{prop: 'date', order: 'descending'}"
               style="width: 100%"
-              height="350"
+              height="360"
               border
-              :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)"
             >
-              <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column label="序号" type="index"></el-table-column>
-              <el-table-column prop="tableName" label="表名" width="180">
+              <el-table-column type="selection" width="55" align="center"></el-table-column>
+              <el-table-column label="序号" align="center" width="60">
+                <template scope="scope">
+                  <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="tableName" label="表名" width="180" align="center">
                 <template>
                   <span>表名</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="tableChName" label="表中文名" width="180">
+              <el-table-column prop="tableChName" label="表中文名" width="180" align="center">
                 <template>
                   <el-input v-model="input" placeholder="中文名"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="parallelExtraction" label=" 是否并行抽取" width="180">
+              <el-table-column prop="parallelExtraction" label=" 是否并行抽取" width="180" align="center">
                 <template slot-scope="scope">
                   <el-checkbox v-model="scope.row.checked" @change="checkedFun"></el-checkbox>
                 </template>
               </el-table-column>
-              <el-table-column prop="sqlFiltering" label="SQL过滤" width="180">
+              <el-table-column prop="sqlFiltering" label="SQL过滤" width="180" align="center">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="Sqlfilt(scope.$index, scope.row)">定义过滤</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="selectCol" label="选择列">
+              <el-table-column prop="selectCol" label="选择列" align="center">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="selectCol(scope.$index, scope.row)">选择列</el-button>
                 </template>
@@ -48,10 +52,10 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="currentPage"
-              :page-sizes="[2, 200, 300, 400]"
-              :page-size="3"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="pagesize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="5"
+              :total="tableData.length"
             ></el-pagination>
           </div>
           <!-- 是否并行抽取弹层 -->
@@ -64,7 +68,33 @@
           </el-dialog>
           <!-- 定义过滤弹层 -->
           <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%">
-            <el-button type="text">测试</el-button>
+            <el-form :model="sqlFiltSetData" ref="addClassTask">
+              <el-row type="flex" >
+                <el-col :span="10">
+                  <el-form-item label=" 表名:" prop="table_name" class="bordernone">
+                    <el-input v-model="sqlFiltSetData.table_name" style="width:150px"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label=" 变量名" prop="Variable_name">
+                    <el-select
+                      placeholder="变量名"
+                      v-model="sqlFiltSetData.Variable_name"
+                      style="width:150px"
+                    >
+                      <el-option label="ad" value='1'></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row type="flex" justify="center">
+                <el-col :span="24">
+                  <el-form-item prop="table_des">
+                    <el-input v-model="sqlFiltSetData.table_des" type="textarea"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogTableSqlFilt = false">取 消</el-button>
               <el-button type="primary" @click="dialogTableSqlFilt = false">确 定</el-button>
@@ -73,7 +103,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="使用SQL抽取数据" name="second">
-          <div>使用SQL抽取数据</div>
+        <div>使用SQL抽取数据</div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -83,13 +113,13 @@ export default {
   data() {
     return {
       activeName: "first",
-       data:[],
+      data: [],
       currentPage: 1,
-      pagesize:2,
+      pagesize: 10,
       search: "",
-      input:"",
+      input: "",
       dialogTableVisible: false,
-      dialogTableSqlFilt:false,
+      dialogTableSqlFilt: false,
       tableData: [
         {
           tableName: "name",
@@ -105,31 +135,43 @@ export default {
           sqlFiltering: "true",
           selectCol: "true"
         },
-         {
+        {
           tableName: "name",
           tableChName: "京津冀",
           parallelExtraction: "true",
           sqlFiltering: "true",
           selectCol: "true"
         },
-         {
+        {
           tableName: "name",
           tableChName: "京津冀",
           parallelExtraction: "true",
           sqlFiltering: "true",
           selectCol: "true"
         },
-         {
+        {
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
+        },
+        {
           tableName: "name",
           tableChName: "京津冀",
           parallelExtraction: "true",
           sqlFiltering: "true",
           selectCol: "true"
         }
-      ]
+      ],
+      sqlFiltSetData: {
+        table_name: "",
+        Variable_name: "",
+        table_des: ""
+      }
     };
   },
-   methods: {
+  methods: {
     formatter(row, column) {
       return row.address;
     },
@@ -138,17 +180,17 @@ export default {
     },
     Sqlfilt(value, row) {
       console.log(value, row);
-      this.dialogTableSqlFilt=true
+      this.dialogTableSqlFilt = true;
     },
-    checkedFun(e){
-      if(e){
-        this.dialogTableVisible=true
+    checkedFun(e) {
+      if (e) {
+        this.dialogTableVisible = true;
       }
     },
     selectCol(value, row) {
       console.log(value, row);
     },
-    ParallelExtraction(value, row){
+    ParallelExtraction(value, row) {
       console.log(value, row);
     },
     filterHandler(value, row, column) {
@@ -177,8 +219,25 @@ export default {
   top: -49px;
   right: 0;
 }
-.el-pagination{
-      text-align: center;
-    margin-top: 6px;
+#singleTable >>> .el-pagination {
+  text-align: center;
+  margin-top: 6px;
 }
+#singleTable >>> .el-table__header tr,
+#singleTable >>> .el-table__header th {
+  padding: 0;
+  height: 40px;
+}
+#singleTable >>> .el-table__body tr,
+#singleTable >>> .el-table__body td {
+  padding: 0;
+  height: 40px;
+}
+#singleTable >>> .el-input__inner {
+  height: 30px;
+}
+.bordernone>>>.el-input__inner {
+        border: 0 none;
+        border-radius: 0px;
+    }
 </style>

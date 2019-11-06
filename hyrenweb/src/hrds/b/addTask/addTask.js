@@ -39,3 +39,34 @@ export function deleteClassifyInfo(data) {
         params:data
     })
 }
+// 获取所有数据库的编码和名称
+export function getAllCodeItems() {
+    return request({
+        url: '/A/codes/getAllCodeItems',
+        method: 'post',
+    })
+}
+//根据数据类型获取数据驱动
+export function getJDBCDriver(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/getJDBCDriver',
+        method: 'post',
+        params:data
+    })
+}
+// 根据数据类型获取jdbcurl
+export function getDBConnectionProp(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/getDBConnectionProp',
+        method: 'post',
+        params:data
+    })
+}
+// 测试连接
+export function testConnection(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/testConnection',
+        method: 'post',
+        params:data
+    })
+}
