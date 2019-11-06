@@ -1,14 +1,14 @@
 <template>
 <div class="userManagement">
     <el-row>
-        <i class="el-icon-view"></i>
+        <i class="el-icon-s-check"></i>
         <span>部门列表</span>
         <router-link to="managementsystem">
             <el-button type="primary" class="el1 els" size="small">
                 <i class="block_icon fa fa-cubes"></i>返回首页
             </el-button>
         </router-link>
-        <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;departmentInfo()" size="small">
+        <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
             <i class="fa fa-cloud-upload"></i>新增部门
         </el-button>
     </el-row>
@@ -17,7 +17,7 @@
         <el-table-column prop="dep_name" label="部门名称" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="300">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
+                <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
                 <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -31,16 +31,33 @@
     <!-- 添加的弹出表单 -->
     <el-dialog title="新增部门" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formAdd" ref="formAdd">
-            <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.datasource_number" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formAdd.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 备注" :label-width="formLabelWidth" prop="source_remark">
-                <el-input type="textarea" v-model="formAdd.source_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label=" 备注" :label-width="formLabelWidth" prop="dep_remark">
+                <el-input type="textarea" v-model="formAdd.dep_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
+            <el-button type="primary" @click="addDepartmentInfo('formAdd')" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 实现点击编辑按钮进行页面部门更新-->
+    <!-- 编辑的弹出表单 -->
+    <el-dialog title="更新部门信息" :visible.sync="dialogFormVisibleUpdate" width="40%">
+        <el-form :model="formUpdate" ref="formUpdate">
+            <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formUpdate.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 备注" :label-width="formLabelWidth" prop="dep_remark">
+                <el-input type="textarea" v-model="formUpdate.dep_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="updateDepartmentInfo('formUpdate')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -59,47 +76,99 @@ export default {
             currentPage: 1,
             pageSize: 5,
             options: [],
-            depIds: [],
             dialogFormVisibleAdd: false,
-            radio: 1,
+            dialogFormVisibleUpdate: false,
             // 添加数据与导入源字段
             formAdd: {
-                datasource_number: "",
-                datasource_name: "",
-                source_remark: ""
+                dep_name: "",
+                dep_remark: ""
+            },
+            formUpdate: {
+                dep_name: "",
+                dep_remark: ""
             },
             formLabelWidth: "150px"
         }
     },
     created() {
-        functionAll.getDepartmentInfo({
-            currPage: this.currentPage,
-            pageSize: this.pageSize
-        }).then((res) => {
-            if (res && res.success) {
-                this.departmentalList = res.data;
-                this.totalItem = res.data.length;
-            }
-        })
+        this.getDepartmentInfoAll();
     },
     methods: {
+        // 获取部门列表信息
+        getDepartmentInfoAll() {
+            functionAll.getDepartmentInfo({
+                currPage: this.currentPage,
+                pageSize: this.pageSize
+            }).then((res) => {
+                if (res && res.success) {
+                    this.departmentalList = res.data.departmentInfos;
+                    this.totalItem = res.data.totalSize;
+                  
+                }
+            })
+        },
+        // 添加新的部门信息
+        addDepartmentInfo() {
+            functionAll.addDepartmentInfo(this.formAdd).then((res) => {
+                if (res && res.success) {
+                    this.getDepartmentInfoAll();
+                    this.dialogFormVisibleAdd = false;
+                    this.formAdd = {};
+                }
+            })
+        },
         // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
             this.formAdd = {};
-            this.depIds = [];
+            this.formUpdate = {};
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
+            this.dialogFormVisibleUpdate = false;
         },
-         // 获取数据管理列表数据实现分页功能
+        // 获取表格当前行数据
+        handleEdit(index, row) {
+            this.dep_id = row.dep_id;
+            this.formUpdate =row;
+        },
+        //编辑部门信息
+        updateDepartmentInfo() {
+            this.formUpdate["dep_id"] = this.dep_id;
+            functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
+                if (res && res.success) {
+                    this.getDepartmentInfoAll();
+                    this.dialogFormVisibleUpdate = false;
+                    this.formUpdate = {};
+                }
+            })
+        },
+        // 删除部门信息
+        delteThisData() {
+            this.$confirm("确定要删除该条数据?", "提示", {
+                type: "warning"
+            }).then(() => {
+                functionAll
+                    .deleteDepartmentInfo({
+                        dep_id: this.dep_id,
+                    })
+                    .then(res => {
+                        if (res && res.success) {
+                            // 从新渲染表格
+                            this.getDepartmentInfoAll();
+                        }
+                    })
+            })
+
+        },
+        // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {
             //把val赋给当前页面
-            this.currentPage= val;
-            functionAll.getDataAuditInfoForPage({
+            this.currentPage = val;
+            functionAll.getDepartmentInfo({
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
-                this.tableDatalist = res.data.dataAuditList;
+                this.departmentalList = res.data;
             })
 
         },
