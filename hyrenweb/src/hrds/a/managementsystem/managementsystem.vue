@@ -11,10 +11,12 @@
         </router-link>
     </div>
     <div class="grid-content">
-        <p><i class="el-icon-coin"></i>系统参数配置</p>
+        <router-link to="systemParameters">
+            <p><i class="el-icon-coin"></i>系统参数配置</p>
+        </router-link>
     </div>
     <div class="grid-content ">
-        <router-link to="datasourceManagement">
+        <router-link to="systemParameters">
             <p><i class="el-icon-cpu"></i>系统数据整理</p>
         </router-link>
     </div>

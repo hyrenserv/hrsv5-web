@@ -99,6 +99,13 @@ export default new Router({
                     component: () => import('@/hrds/a/managementsystem/departmentalList.vue')
 
                 },
+                {
+                    path: '/systemParameters',
+                    name: 'systemParameters',
+                    title: '用户列表',
+                    component: () => import('@/hrds/a/managementsystem/systemParameters.vue')
+
+                },
             ]
         },
 
