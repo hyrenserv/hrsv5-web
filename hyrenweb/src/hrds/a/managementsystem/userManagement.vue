@@ -8,7 +8,7 @@
                 <i class="block_icon fa fa-cubes"></i>返回首页
             </el-button>
         </router-link>
-        <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;departmentInfo()" size="small">
+        <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
             <i class="fa fa-cloud-upload"></i>新增用户
         </el-button>
     </el-row>
@@ -16,11 +16,11 @@
         <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
         <el-table-column prop="user_id" label="用户登录账号" align="center"></el-table-column>
         <el-table-column prop="user_name" label="创建用户名" align="center"></el-table-column>
-        <el-table-column prop="usertype_group" label="用户功能类型" align="center"></el-table-column>
+        <el-table-column prop="usertype_group" label="用户功能类型" width="380" align="center"></el-table-column>
         <el-table-column prop="create_date" label="创建时间" align="center"></el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" width="160" align="center">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
+                <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
                 <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -44,13 +44,13 @@
                 <el-radio @change="getUserFunctionMenu" v-model="radio" label="2">操作员</el-radio>
             </el-form-item>
             <el-form-item label=" 功能菜单" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
-                <el-select v-model="depIds" filterable placeholder="请选择功能类型" style="width:284px">
-                    <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" multiple :value="item.dep_id"></el-option>
+                <el-select v-model="depIds" filterable  multiple placeholder="请选择功能类型" style="width:284px">
+                    <el-option v-for="(item,index) in options" :key="index" :label="item"  :value="item"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label=" 默认功能" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-select v-model="depIds" filterable placeholder="请选择默认功能" style="width:284px">
-                    <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
+                    <el-option v-for="(item,index) in options" :key="index" :label="item" :value="item"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label=" 用户名" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
@@ -82,6 +82,33 @@
 import * as functionAll from "@/hrds/a/managementsystem/managementsystem";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
+// Promise封装
+async function getPro(type, functionAll, selt) {
+    return new Promise(function (resolve, reject) {
+        let target = []; // 存放下面循环的所有值
+        let n = 0; // 计数器
+        let len = type.length;
+        for (let i = 0; i < len; i++) {
+            let e = type[i];
+            functionAll.getValue({
+                category: "UserType",
+                code: e
+            }).then((res) => {
+                if (res && res.success) {
+                    let cur = res.data;
+                    target.push(cur);
+                    selt.str += res.data;
+                    n++;
+                    if (n === len) {
+                        resolve(target); // 所有循环完成，将所有数据返回；
+                    }
+                }
+            }).catch((err) => {
+                reject(`第${i}次的——请求过程  出错`);
+            })
+        }
+    })
+}
 export default {
     data() {
         return {
@@ -94,8 +121,7 @@ export default {
             depIds: [],
             dialogFormVisibleAdd: false,
             radio: "1",
-            str: "",
-            // 添加数据与导入源字段
+            // 添加数据表单
             formAdd: {
                 datasource_number: "",
                 datasource_name: "",
@@ -105,11 +131,13 @@ export default {
         }
     },
     created() {
+        // 获取用户所有信息
         this.getSysUserInfoAll();
     },
     methods: {
+        // 用户信息方法封装
         getSysUserInfoAll() {
-            functionAll.getSysUserInfo().then((res) => {
+            functionAll.getSysUserInfo().then(async (res) => {
                 if (res && res.success) {
                     for (let index = 0; index < res.data.length; index++) {
                         // 更改日期格式
@@ -118,41 +146,17 @@ export default {
                         let day = res.data[index].create_date.substring(6, 9);
                         let date = year + "-" + month + "-" + day;
                         res.data[index].create_date = date;
-
-                        // 获取用户功能类型详细信息
                         let type = res.data[index].usertype_group.split(",");
-                        console.log(res.data[index].usertype_group)
-                        for (let i = 0; i < type.length; i++) {
-                            console.log(type.length);
-                            let e = type[i];
-                            functionAll.getValue({
-                                category: "UserType",
-                                code: e
-                            }).then((res) => {
-                                if (res && res.success) {
-                                    this.str += res.data;
-                                    console.log(this.str);
-                                }
-                            })
-                        }
+                        let resAll = getPro(type, functionAll, this);
+                        // 获取用户功能类型详细信息
+                        let resAlls = await getPro(type, functionAll, this)
+                        res.data[index].usertype_group = resAlls.join(",")
                     }
                     this.userTablelist = res.data;
                     this.totalItem = res.data.length;
-
                 }
             })
         },
-        // getValue(e) {
-        //     functionAll.getValue({
-        //         category: "UserType",
-        //         code: e
-        //     }).then((res) => {
-        //         if (res && res.success) {
-
-        //             return res.data;
-        //         }
-        //     })
-        // },
         // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
@@ -175,6 +179,8 @@ export default {
         getUserFunctionMenu(e) {
             if (e == 1) {
                 this.getUserFunctionMenuAll(0);
+              
+
             } else if (e == 2) {
                 this.getUserFunctionMenuAll(1);
             }
@@ -184,7 +190,7 @@ export default {
                 user_is_admin: val
             }).then((res) => {
                 if (res && res.success) {
-                    this.options = res.data;
+                    this.options = res.data[0];
                 }
             })
         },

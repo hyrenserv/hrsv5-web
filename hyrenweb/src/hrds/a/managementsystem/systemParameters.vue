@@ -1,21 +1,27 @@
 <template>
-<div class="departmentalList">
+<div class="systemParameters">
     <el-row>
-        <i class="el-icon-s-check"></i>
-        <span>部门列表</span>
+        <i class="el-icon-coin"></i>
+        <span>系统参数列表</span>
         <router-link to="managementsystem">
             <el-button type="primary" class="el1 els" size="small">
                 <i class="block_icon fa fa-cubes"></i>返回首页
             </el-button>
         </router-link>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
-            <i class="fa fa-cloud-upload"></i>新增部门
+            <i class="fa fa-cloud-upload"></i>新增系统参数
         </el-button>
     </el-row>
-    <el-table stripe :data="departmentalList" border>
+    <el-table stripe :data="systemParameters.filter(data => !search || data.para_name.toLowerCase().includes(search.toLowerCase()))" border>
         <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
-        <el-table-column prop="dep_name" label="部门名称" align="center"></el-table-column>
+        <el-table-column prop="para_name" label="系统参数名称" width="130" align="center"></el-table-column>
+        <el-table-column prop="para_value" label="系统参数值" align="center"></el-table-column>
+        <el-table-column prop="para_type" label="系统参数类型 " width="150" align="center"></el-table-column>
+        <el-table-column prop="remark" label="系统参数备注" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="160">
+            <template slot="header" slot-scope="scope">
+                <el-input v-model="search" size="small" placeholder="关键字搜索" />
+            </template>
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
                 <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
@@ -29,35 +35,47 @@
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="新增部门" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formAdd" ref="formAdd">
-            <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formAdd.para_name" autocomplete="off" placeholder="请输入系统参数名称" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 备注" :label-width="formLabelWidth" prop="dep_remark">
-                <el-input type="textarea" v-model="formAdd.dep_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label=" 系统参数值" :label-width="formLabelWidth" prop="para_value" :rules="filter_rules([{required: true}])">
+                <el-input type="textarea" v-model="formAdd.para_value" autocomplete="off" placeholder="请输入系统参数值" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 系统参数类型" :label-width="formLabelWidth" prop="para_type" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formAdd.para_type" autocomplete="off" placeholder="请输入系统参数类型" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 系统参数备注" :label-width="formLabelWidth" prop="remark">
+                <el-input type="textarea" v-model="formAdd.remark" autocomplete="off" placeholder="请输入系统参数备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="addDepartmentInfo('formAdd')" size="mini">保存</el-button>
+            <el-button type="primary" @click="addSysPara('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 
     <!-- 实现点击编辑按钮进行页面部门更新-->
     <!-- 编辑的弹出表单 -->
-    <el-dialog title="更新部门信息" :visible.sync="dialogFormVisibleUpdate" width="40%">
+    <el-dialog title="更新系统参数信息" :visible.sync="dialogFormVisibleUpdate" width="40%">
         <el-form :model="formUpdate" ref="formUpdate">
-            <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formUpdate.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formUpdate.para_name" autocomplete="off" placeholder="请输入系统参数名称" :disabled="true" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 备注" :label-width="formLabelWidth" prop="dep_remark">
-                <el-input type="textarea" v-model="formUpdate.dep_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label=" 系统参数值" :label-width="formLabelWidth" prop="para_value" :rules="filter_rules([{required: true}])">
+                <el-input type="textarea" v-model="formUpdate.para_value" autocomplete="off" placeholder="请输入系统参数值" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 系统参数类型" :label-width="formLabelWidth" prop="para_type" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formUpdate.para_type" autocomplete="off" placeholder="请输入系统参数类型" :disabled="true" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 系统参数备注" :label-width="formLabelWidth" prop="remark">
+                <el-input type="textarea" v-model="formUpdate.remark" autocomplete="off" placeholder="系统参数备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="updateDepartmentInfo('formUpdate')" size="mini">保存</el-button>
+            <el-button type="primary" @click="updateSysPara('formUpdate')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -70,8 +88,9 @@ import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
-            departmentalList: [],
+            systemParameters: [],
             totalItem: 0,
+            search: '',
             getAllCodeItems: [],
             currentPage: 1,
             pageSize: 5,
@@ -80,38 +99,38 @@ export default {
             dialogFormVisibleUpdate: false,
             // 添加数据与导入源字段
             formAdd: {
-                dep_name: "",
-                dep_remark: ""
+                para_name: "",
+                para_value: "",
+                para_type: "",
+                remark: ""
             },
             formUpdate: {
-                dep_name: "",
-                dep_remark: ""
+                para_name: "",
+                para_value: "",
+                para_type: "",
+                remark: ""
             },
             formLabelWidth: "150px"
         }
     },
     created() {
-        this.getDepartmentInfoAll();
+        this.getSysPara();
     },
     methods: {
         // 获取部门列表信息
-        getDepartmentInfoAll() {
-            functionAll.getDepartmentInfo({
-                currPage: this.currentPage,
-                pageSize: this.pageSize
-            }).then((res) => {
+        getSysPara() {
+            functionAll.getSysPara().then((res) => {
                 if (res && res.success) {
-                    this.departmentalList = res.data.departmentInfos;
-                    this.totalItem = res.data.totalSize;
-                  
+                    this.systemParameters = res.data;
+                    this.totalItem = res.data.length;
                 }
             })
         },
         // 添加新的部门信息
-        addDepartmentInfo() {
-            functionAll.addDepartmentInfo(this.formAdd).then((res) => {
+        addSysPara() {
+            functionAll.addSysPara(this.formAdd).then((res) => {
                 if (res && res.success) {
-                    this.getDepartmentInfoAll();
+                    this.getSysPara();
                     this.dialogFormVisibleAdd = false;
                     this.formAdd = {};
                 }
@@ -128,15 +147,16 @@ export default {
         },
         // 获取表格当前行数据
         handleEdit(index, row) {
-            this.dep_id = row.dep_id;
-            this.formUpdate =row;
+            this.para_id = row.para_id;
+            this.formUpdate = row;
+            this.para_name = row.para_name;
         },
         //编辑部门信息
-        updateDepartmentInfo() {
-            this.formUpdate["dep_id"] = this.dep_id;
-            functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
+        updateSysPara() {
+            this.formUpdate["para_id"] = this.para_id;
+            functionAll.updateSysPara(this.formUpdate).then((res) => {
                 if (res && res.success) {
-                    this.getDepartmentInfoAll();
+                    this.getSysPara();
                     this.dialogFormVisibleUpdate = false;
                     this.formUpdate = {};
                 }
@@ -148,13 +168,14 @@ export default {
                 type: "warning"
             }).then(() => {
                 functionAll
-                    .deleteDepartmentInfo({
-                        dep_id: this.dep_id,
+                    .deleteSysPara({
+                        para_id: this.para_id,
+                        para_name: this.para_name
                     })
                     .then(res => {
                         if (res && res.success) {
                             // 从新渲染表格
-                            this.getDepartmentInfoAll();
+                            this.getSysPara();
                         }
                     })
             })

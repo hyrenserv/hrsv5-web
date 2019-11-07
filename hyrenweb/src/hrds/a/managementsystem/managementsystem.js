@@ -101,3 +101,48 @@ import request from '@/utils/request'
         params: data
     })
 }
+
+// sysyemParameters页
+/**(0)
+   * 模糊查询获取系统参数信息
+   */
+  export function getSysPara(data) {
+    return request({
+        url: '/A/syspara/getSysPara',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(1)
+   *新增系统参数
+   */
+  export function addSysPara(data) {
+    return request({
+        url: '/A/syspara/addSysPara',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(2)
+   *更新系统参数
+   */
+  export function updateSysPara(data) {
+    return request({
+        url: '/A/syspara/updateSysPara',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(3)
+   *删除系统参数
+   */
+  export function deleteSysPara(data) {
+    return request({
+        url: '/A/syspara/deleteSysPara',
+        method: 'post',
+        params: data
+    })
+}
