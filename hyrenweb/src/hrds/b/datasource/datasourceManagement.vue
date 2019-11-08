@@ -167,9 +167,12 @@ export default {
             functionAll.searchDataSourceOrDepartment({
                 source_id: this.source_id
             }).then(res => {
-                this.options = res.data.departmentInfo;
-                this.formAdd = res.data;
-                this.depIds = res.data.dep_name.split(",");
+                if (res && res.success) {
+                    this.options = res.data.departmentInfo;
+                    this.formAdd = res.data;
+                    this.depIds = res.data.dep_name.split(",");
+                }
+
             });
         },
         // 点击取消按钮
@@ -188,7 +191,10 @@ export default {
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
-                this.tableData = res.data.sourceRelationDep;
+                if (res && res.success) {
+                    this.tableData = res.data.sourceRelationDep;
+                }
+
             })
         },
         // 获取数据管理列表数据实现分页功能
@@ -199,7 +205,10 @@ export default {
                 currPage: this.currentPagelist,
                 pageSize: this.pageSize
             }).then(res => {
-                this.tableDatalist = res.data.dataAuditList;
+                if (res && res.success) {
+                    this.tableDatalist = res.data.dataAuditList;
+                }
+
             })
 
         },
@@ -211,7 +220,10 @@ export default {
                 functionAll.deleteAudit({
                     da_id: this.da_id
                 }).then(res => {
-                    this.tableDatalist = res.data;
+                    if (res && res.success) {
+                        this.tableDatalist = res.data;
+                    }
+
                 })
             })
         }

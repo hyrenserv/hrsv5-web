@@ -64,13 +64,13 @@
                 <el-input v-model="formUpdate.para_name" autocomplete="off" placeholder="请输入系统参数名称" :disabled="true" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 系统参数值" :label-width="formLabelWidth" prop="para_value" :rules="filter_rules([{required: true}])">
-                <el-input type="textarea" v-model="formUpdate.para_value" autocomplete="off" placeholder="请输入系统参数值" style="width:284px"></el-input>
+                <el-input type="textarea" v-model="formUpdate.para_value" autosize autocomplete="off" placeholder="请输入系统参数值" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 系统参数类型" :label-width="formLabelWidth" prop="para_type" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formUpdate.para_type" autocomplete="off" placeholder="请输入系统参数类型" :disabled="true" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 系统参数备注" :label-width="formLabelWidth" prop="remark">
-                <el-input type="textarea" v-model="formUpdate.remark" autocomplete="off" placeholder="系统参数备注" style="width:284px"></el-input>
+                <el-input type="textarea" v-model="formUpdate.remark" autosize autocomplete="off" placeholder="系统参数备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
