@@ -204,7 +204,7 @@ export default {
     width: 100%;
 }
 
-.el-row span {
+.el-icon-coin, .el-row span {
     color: #2196f3;
     font-size: 18px;
 }

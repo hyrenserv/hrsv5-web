@@ -51,10 +51,10 @@
             <!-- 点击操作弹出框 -->
             <el-dialog title="更改部门" :visible.sync="dialogFormVisibleAdd" width="40%">
                 <el-form :model="formAdd" ref="formAdd">
-                    <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name"  >
+                    <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name">
                         <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds"  :rules="filter_rules([{required: true}])">
+                    <el-form-item label=" 所属部门" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                         <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                             <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                         </el-select>
@@ -98,8 +98,8 @@ export default {
             currentPage: 1,
             currentPagelist: 1,
             pageSize: 5,
-            totalItems:0,
-            totalItem:0 ,
+            totalItems: 0,
+            totalItem: 0,
             options: [],
             source_id: "",
             da_id: "",
@@ -124,7 +124,7 @@ export default {
                     // 获取所有数据
                     this.dataIndexAll = res.data;
                     // 获取数据管理列表分页总数
-                    this.totalItem =res.data.dataAudit.totalSize;
+                    this.totalItem = res.data.dataAudit.totalSize;
                     // 获取数据管理列表信息
                     this.tableDatalist = res.data.dataAudit.dataAuditList;
                     // 获取数据权限管理分页总数
@@ -136,7 +136,6 @@ export default {
         },
         // 获取表格当前行数据
         handleEdit(index, row) {
-            this.formAdd.datasource_name = row.datasource_name;
             // this.depIds = row.dep_name.split(",");
             this.source_id = row.source_id;
             this.da_id = row.da_id;
@@ -169,6 +168,8 @@ export default {
                 source_id: this.source_id
             }).then(res => {
                 this.options = res.data.departmentInfo;
+                this.formAdd = res.data;
+                this.depIds = res.data.dep_name.split(",");
             });
         },
         // 点击取消按钮
