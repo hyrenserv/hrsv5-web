@@ -22,10 +22,12 @@
       <steps5 v-if="active===5"></steps5>
     </keep-alive>
     <el-button
+      type="primary"
       style="margin-top: 12px;margin-top: 12px;float: right;margin: 15px;"
       @click="next()"
     >{{titleright}}</el-button>
     <el-button
+      type="primary"
       v-if="active>0"
       style="margin-top: 12px;margin-top: 12px;float: left;margin: 15px;"
       @click="pre()"
@@ -69,14 +71,14 @@ export default {
   },
   methods: {
     next() {
-      if (this.active>=5) {
+      if (this.active >= 5) {
         this.active == 6;
         this.titleright = "完成";
       } else {
         //验证成功走下一步
-       /*  console.log(this.$refs.steps0.ruleForm);
+        /*  console.log(this.$refs.steps0.ruleForm);
         let formdata = this.$refs.steps0.ruleForm; */
-     /*    this.$refs[formdata].validate(valid => {
+        /*    this.$refs[formdata].validate(valid => {
           if (valid) {
             this.active++;
             console.log("success!!");
@@ -85,7 +87,7 @@ export default {
             return false;
           }
         }); */
-         this.active++;
+        this.active++;
       }
     },
     pre() {
