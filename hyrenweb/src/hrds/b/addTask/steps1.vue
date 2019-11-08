@@ -1,5 +1,5 @@
 <template>
-  <div class="singlesearch">
+  <div class="singlesearch" id="singleTable">
     <el-tabs v-model="activeName" type="border-card">
       <el-tab-pane label="单表查询" name="first">
         <div id="singleTable">
@@ -28,8 +28,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="tableChName" label="表中文名" width="180" align="center">
-                <template>
-                  <el-input v-model="input" placeholder="中文名"></el-input>
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.tableChName" placeholder="中文名"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="parallelExtraction" label=" 是否并行抽取" width="180" align="center">
@@ -49,8 +49,8 @@
               </el-table-column>
             </el-table>
             <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
+              @size-change="sig_handleSizeChange"
+              @current-change="sig_handleCurrentChange"
               :current-page="currentPage"
               :page-sizes="[5, 10, 15, 20]"
               :page-size="pagesize"
@@ -69,7 +69,7 @@
           <!-- 定义过滤弹层 -->
           <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%">
             <el-form :model="sqlFiltSetData" ref="addClassTask">
-              <el-row type="flex" >
+              <el-row type="flex">
                 <el-col :span="10">
                   <el-form-item label=" 表名:" prop="table_name" class="bordernone">
                     <el-input v-model="sqlFiltSetData.table_name" style="width:150px"></el-input>
@@ -82,7 +82,7 @@
                       v-model="sqlFiltSetData.Variable_name"
                       style="width:150px"
                     >
-                      <el-option label="ad" value='1'></el-option>
+                      <el-option label="ad" value="1"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -100,10 +100,121 @@
               <el-button type="primary" @click="dialogTableSqlFilt = false">确 定</el-button>
             </div>
           </el-dialog>
+          <!-- 选择列弹层 -->
+          <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="50%">
+            <el-table
+              :data="SelectColumnData"
+              border
+              size="medium"
+              highlight-current-row
+              @selection-change="handleSelectionChange"
+            >
+              <el-table-column
+                property="SelectCol"
+                type="selection"
+                label="选择列"
+                width="60px"
+                align="center"
+              ></el-table-column>
+              <el-table-column property="SelectCol_name" label="列名" align="center" width="150px"></el-table-column>
+              <el-table-column property="SelectCol_type" label="字段类型" width="100px" align="center"></el-table-column>
+              <el-table-column property="SelectCol_chname" label="列中文名" align="center">
+                <template>
+                  <el-input v-model="input2" placeholder="中文名"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="160px" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    :disabled="scope.$index===0"
+                    @click="moveUp(scope.$index,scope.row,SelectColumnData)"
+                  >
+                    <i class="el-icon-arrow-up"></i>
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    :disabled="scope.$index===(SelectColumnData.length-1)"
+                    @click="moveDown(scope.$index,scope.row,SelectColumnData)"
+                  >
+                    <i class="el-icon-arrow-down"></i>
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogSelectColumn = false">取 消</el-button>
+              <el-button type="primary" @click="dialogSelectColumn = false">确 定</el-button>
+            </div>
+          </el-dialog>
         </div>
       </el-tab-pane>
       <el-tab-pane label="使用SQL抽取数据" name="second">
-        <div>使用SQL抽取数据</div>
+        <el-button type="primary" width="20" @click="addRow(sqlExtractData)">新增行</el-button>
+        <el-table
+          :data="sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)"
+          border
+          size="medium"
+          highlight-current-row
+          @current-change="handleSelectionChange"
+        >
+          <el-table-column property label="序号" width="60px" align="center">
+            <template scope="scope">
+              <span>{{scope.$index+(sqlexcurrentPage - 1) * sqlexpagesize + 1}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column property="sqlExtractData_name" label="表名" width="150px" align="center">
+            <template scope="scope">
+              <el-input v-model="scope.row.sqlExtractData_name" placeholder="表名"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            property="sqlExtractData_chname"
+            label="表中文名"
+            width="150px"
+            align="center"
+          >
+            <template scope="scope">
+              <el-input v-model="scope.row.sqlExtractData_chname" placeholder="表中文名"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column property="sqlExtractData_sql" label="查询SQL语句" align="center">
+            <template scope="scope">
+              <el-input
+                v-model="scope.row.sqlExtractData_sql"
+                type="textarea"
+                placeholder="查询SQL语句"
+              ></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="150px" align="center">
+            <template scope="scope">
+              <el-row>
+                <el-col :span="24" class="delbtn">
+                  <el-button
+                    style="color:red"
+                    type="text"
+                    circle
+                    @click="DelRowFun(scope.$index, sqlExtractData)"
+                  >删除</el-button>
+                </el-col>
+              </el-row>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          @size-change="sqlex_handleSizeChange"
+          @current-change="sqlex_handleCurrentChange"
+          :current-page.sync="sqlexcurrentPage"
+          :page-size="sqlexpagesize"
+          layout="total, prev, pager, next"
+          :total="sqlExtractData.length"
+          class="locationcenter"
+        ></el-pagination>
+        <div class="locationright">
+          <el-button>取 消</el-button>
+          <el-button>确定</el-button>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -116,10 +227,14 @@ export default {
       data: [],
       currentPage: 1,
       pagesize: 10,
+      sqlexcurrentPage: 1,
+      sqlexpagesize: 5,
       search: "",
       input: "",
+      input2: "",
       dialogTableVisible: false,
       dialogTableSqlFilt: false,
+      dialogSelectColumn: false,
       tableData: [
         {
           tableName: "name",
@@ -168,16 +283,60 @@ export default {
         table_name: "",
         Variable_name: "",
         table_des: ""
-      }
+      },
+      SelectColumnData: [
+        {
+          SelectCol_name: "name1",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name2",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name3",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name4",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name5",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name6",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        }
+      ],
+      multipleSelection: [],
+      sqlExtractData: [
+        {
+          sqlExtractData_name: "name1",
+          sqlExtractData_chname: "京津冀",
+          sqlExtractData_sql: "true"
+        },
+        {
+          sqlExtractData_name: "name1",
+          sqlExtractData_chname: "京津冀",
+          sqlExtractData_sql: "true"
+        },
+        {
+          sqlExtractData_name: "name1",
+          sqlExtractData_chname: "京津冀",
+          sqlExtractData_sql: "true"
+        }
+      ]
     };
   },
   methods: {
-    formatter(row, column) {
-      return row.address;
-    },
-    filterTag(value, row) {
-      return row.tag === value;
-    },
     Sqlfilt(value, row) {
       console.log(value, row);
       this.dialogTableSqlFilt = true;
@@ -188,6 +347,7 @@ export default {
       }
     },
     selectCol(value, row) {
+      this.dialogSelectColumn = true;
       console.log(value, row);
     },
     ParallelExtraction(value, row) {
@@ -197,11 +357,54 @@ export default {
       const property = column["property"];
       return row[property] === value;
     },
-    handleSizeChange(size) {
+    sig_handleSizeChange(size) {
       this.pagesize = size;
     },
-    handleCurrentChange(currentPage) {
+    sig_handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
+    },
+    sqlex_handleSizeChange(size) {
+      this.sqlexpagesize = size;
+    },
+    sqlex_handleCurrentChange(currentPage) {
+      this.sqlexcurrentPage = currentPage;
+    },
+    //选择复选框数据
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    //上移
+    moveUp(index, row, tableData) {
+      if (index > 0) {
+        let upDate = tableData[index - 1];
+        tableData.splice(index - 1, 1);
+        tableData.splice(index, 0, upDate);
+      } else {
+        alert("已经是第一条，不可上移");
+      }
+    },
+
+    //下移
+    moveDown(index, row, tableData) {
+      if (index + 1 === tableData.length) {
+        alert("已经是最后一条，不可下移");
+      } else {
+        let downDate = tableData[index + 1];
+        tableData.splice(index + 1, 1);
+        tableData.splice(index, 0, downDate);
+      }
+    },
+    //删除
+    DelRowFun(index, rows) {
+      rows.splice(index, 1);
+    },
+    //新增行
+    addRow(tableData, event) {
+      tableData.push({
+        sqlExtractData_name: "",
+        sqlExtractData_chname: "",
+        sqlExtractData_sql: ""
+      });
     }
   }
 };
@@ -236,8 +439,14 @@ export default {
 #singleTable >>> .el-input__inner {
   height: 30px;
 }
-.bordernone>>>.el-input__inner {
-        border: 0 none;
-        border-radius: 0px;
-    }
+#singleTable >>> .el-textarea__inner {
+  height: 30px;
+}
+.locationcenter {
+  text-align: center;
+  margin-top: 5px;
+}
+.locationright {
+  text-align: right;
+}
 </style>

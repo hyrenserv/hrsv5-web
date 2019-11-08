@@ -224,10 +224,20 @@
           <!-- 点击编辑弹层 -->
           <el-dialog width="40%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
             <el-form :model="editClassTask" ref="addClassTask">
-              <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default" :label-width="formLabelWidth">
+              <el-form-item
+                label=" 分类编号"
+                prop="class_num"
+                :rules="rule.default"
+                :label-width="formLabelWidth"
+              >
                 <el-input v-model="editClassTask.class_num" style="width:284px"></el-input>
               </el-form-item>
-              <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default" :label-width="formLabelWidth">
+              <el-form-item
+                label=" 分类名称"
+                prop="class_name"
+                :rules="rule.default"
+                :label-width="formLabelWidth"
+              >
                 <el-input v-model="editClassTask.class_name" style="width:284px"></el-input>
               </el-form-item>
               <el-form-item label="备注" prop="class_des" :label-width="formLabelWidth">
@@ -284,7 +294,7 @@ export default {
       CollTaskData: [],
       currentPage: 1,
       pagesize: 2,
-      formLabelWidth:'150px',
+      formLabelWidth: "150px",
       ruleForm: {
         task_name: "",
         classify_num: "",

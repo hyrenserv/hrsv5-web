@@ -78,19 +78,21 @@
           <template scope="scope">
             <el-row>
               <el-col :span="8">
-                <router-link to="/addTask">
-                  <el-button type="primary" size="mini">新增任务</el-button>
-                </router-link>
+                <el-button type="primary" size="mini" @click="addtask(scope.row.agent_type)">新增任务</el-button>
               </el-col>
               <el-col :span="8">
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="dialogTableTask = true;taskManagement(scope.row.agent_id,scope.row.source_id)"
+                  @click="taskManagement(scope.row.agent_id,scope.row.source_id)"
                 >任务管理</el-button>
               </el-col>
               <el-col :span="8">
-                <el-button type="primary" size="mini" @click="tasklogFun(scope.row.agent_id)">日志查看</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="tasklogFun(scope.row.agent_type,scope.row.agent_id)"
+                >日志查看</el-button>
               </el-col>
             </el-row>
           </template>
@@ -115,7 +117,7 @@
               <el-col :span="5" class="edilt" style="text-align: center;">
                 <el-button
                   type="text"
-                  @click="taskEditBtn(scope.row.agent_id,scope.row.id,scope.row.source_id,sourceName)"
+                  @click="taskEditBtn(agentType,scope.row.agent_id,scope.row.id,scope.row.source_id,sourceName)"
                 >编辑</el-button>
               </el-col>
               <el-col :span="5" class="delbtn">
@@ -186,6 +188,7 @@ export default {
       });
     },
     taskManagement(Agentid, sourceid) {
+      this.dialogTableTask = true;
       let params = {};
       params["sourceId"] = sourceid;
       params["agentId"] = Agentid;
@@ -193,19 +196,30 @@ export default {
         this.taskMang = res.data;
       });
     },
-    taskEditBtn(agentId, databaseId, sourceId, sourceName) {
-      this.$router.push({
-        path: "addTask",
-        query: {
-          aId: agentId,
-          id: databaseId,
-          sourId: sourceId,
-          sName: sourceName
-        }
-      });
+    // 任务管理里面的编辑  根据不同类型跳转不同页面
+    taskEditBtn(type, agentId, databaseId, sourceId, sourceName) {
+      if (type == "数据库采集") {
+        this.$router.push({
+          path: "addTask",
+          query: {
+            aId: agentId,
+            id: databaseId,
+            sourId: sourceId,
+            sName: sourceName
+          }
+        });
+      }
     },
-    tasklogFun(agentid) {
-      this.$router.push({ path: "/taskLog", query: { agenId: agentid } });
+    // 新增任务  根据不同类型跳转不同页面
+    addtask(type) {
+      if (type == "1") {
+        this.$router.push({ path: "/addTask" });
+      }
+    },
+    tasklogFun(type, agentid) {
+      if (type == "1") {
+        this.$router.push({ path: "/taskLog", query: { agenId: agentid } });
+      }
     }
   }
 };
