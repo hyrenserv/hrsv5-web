@@ -139,7 +139,7 @@ export default {
         // 点击导入按钮获取数据采集信息
         DataCathInfo() {
             functionAll.searchDataCollectUser().then(res => {
-                if (res.code == 200) {
+                if (res && res.success) {
                     this.options = res.data;
                 }
             });

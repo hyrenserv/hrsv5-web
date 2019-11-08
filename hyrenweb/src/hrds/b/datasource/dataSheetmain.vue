@@ -20,13 +20,13 @@
     <!-- 编辑的弹出表单 -->
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formUpdate" ref="formUpdate">
-            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name"  :rules="filter_rules([{required: true}])">
+            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth"  :rules="filter_rules([{required: true}])">
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
@@ -88,7 +88,7 @@ export default {
             this.formUpdate["dep_id"] = this.depIds.join(",");
             this.formUpdate["source_id"] = this.source_id;
             functionAll.updateDataSource(this.formUpdate).then(res => {
-                if (res.code == 200) {
+                if (res && res.success) {
                     this.$message({
                         type: "success",
                         message: "编辑成功!"
@@ -102,7 +102,7 @@ export default {
                 }
             });
         },
-         // 点击添加弹出框的取消按钮
+        // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
             this.formUpdate = {};
@@ -141,14 +141,8 @@ export default {
                         source_id: this.source_id
                     })
                     .then(res => {
-                        if (res.code == 200) {
-                            this.$message({
-                                type: "success",
-                                message: "删除成功!"
-                            });
+                        if (res && res.success) {
                             this.$emit("addEvent");
-                        } else {
-                            this.$message.error("删除失败！");
                         }
                     });
             })
@@ -222,8 +216,8 @@ export default {
 
 .dataSheetmainDiv p {
     color: #fff;
+    margin-left: 5px;
     font-size: 18px;
-    width: 100px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
