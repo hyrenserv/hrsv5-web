@@ -11,9 +11,9 @@
 /* ------------------------------------- table ------------------------------------------------------ */
 
 /* 表格表头样式,不需要添加属性即可更改，如有特别样式请自行设置class名谢谢 */
-/* .el-table th{
-  background-color: black !important;
-} */
+.el-table th{
+  
+}
 /* 斑马纹样式，需要在table里面写stripe属性然后在这里实现样式的更改 */
 .el-table--striped .el-table__body tr.el-table__row--striped td{
   
@@ -21,11 +21,11 @@
 
 /* 表格td样式，不需要添加属性即可更改 */
  .el-table--enable-row-transition .el-table__body td{
-    background-color: cyan;
+    /* background-color: cyan; */
 }
 /* 其他表格鼠标划入时的颜色，不需要添加属性即可更改 */
 .el-table--enable-row-hover .el-table__body tr:hover>td{
-    background-color:cyan !important;
+    /* background-color:cyan !important; */
 }
 
 /* 默认表格鼠标划入时的颜色，不需要添加属性即可更改 */

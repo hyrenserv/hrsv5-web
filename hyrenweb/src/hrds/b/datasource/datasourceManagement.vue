@@ -36,7 +36,7 @@
         <span>数据权限管理</span>
         <div class="lines"></div>
         <!-- 表格 -->
-        <el-table :data="tableData" border stripe>
+        <el-table :data="tableData" border stripe size="mini">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
             <el-table-column prop="datasource_name" label="数据源名称" align="center"></el-table-column>
             <el-table-column prop="dep_name" label="所属部门" align="center"></el-table-column>
