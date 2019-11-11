@@ -95,14 +95,14 @@ export default new Router({
                 {
                     path: '/departmentalList',
                     name: 'departmentalList',
-                    title: '用户列表',
+                    title: '部门列表',
                     component: () => import('@/hrds/a/managementsystem/departmentalList.vue')
 
                 },
                 {
                     path: '/systemParameters',
                     name: 'systemParameters',
-                    title: '用户列表',
+                    title: '系统列表',
                     component: () => import('@/hrds/a/managementsystem/systemParameters.vue')
 
                 },
@@ -110,8 +110,22 @@ export default new Router({
                 {
                     path: '/semiStructuredAgent',
                     name: 'semiStructuredAgent',
-                    title: '用户列表',
-                    component: () => import('@/hrds/b/semiStructuredAgent/semiStructuredAgent.vue')
+                    title: '半结构采集',
+                    component: () => import('@/hrds/b/semiStructuredAgent/semiStructuredAgent.vue'),
+                    children:[
+                        {
+                            path: '/collectOption',
+                            name: 'collectOption',
+                            title: '采集设置',
+                            component: () => import('@/hrds/b/semiStructuredAgent/collectOption.vue')
+                        },
+                        {
+                            path: '/collectFileOption',
+                            name: 'collectFileOption',
+                            title: '采集文件设置',
+                            component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')
+                        },
+                    ]
                 },
             ]
         },
