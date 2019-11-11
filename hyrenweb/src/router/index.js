@@ -106,6 +106,13 @@ export default new Router({
                     component: () => import('@/hrds/a/managementsystem/systemParameters.vue')
 
                 },
+                // 半结构化agent采集
+                {
+                    path: '/semiStructuredAgent',
+                    name: 'semiStructuredAgent',
+                    title: '用户列表',
+                    component: () => import('@/hrds/b/semiStructuredAgent/semiStructuredAgent.vue')
+                },
             ]
         },
 
