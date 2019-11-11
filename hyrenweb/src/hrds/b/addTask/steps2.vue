@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="cleanbtn">
-      <el-button size="mini" type="success" @click="dialogalltableClean=true">所有表清洗设置</el-button>
+      <el-button
+        size="mini"
+        type="success"
+        @click="dialogalltableClean=true;alltableClean(databaseId)"
+      >所有表清洗设置</el-button>
       <el-button size="mini" type="success" @click="dialogtableClean=true">全表清洗优先级</el-button>
     </div>
     <el-table
@@ -20,34 +24,24 @@
           <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="tableName" label="表名" width="180" align="center">
-        <template>
-          <span>表名</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="tableChName" label="表中文名" width="180" align="center">
-        <template>
-          <span>表中文名</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="characterCompletion" label=" 字符补齐(整表清洗设置)" width="180" align="center">
+      <el-table-column prop="table_name" label="表名" width="180" align="center"></el-table-column>
+      <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center"></el-table-column>
+      <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)" width="180" align="center">
         <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.characterCompletion"></el-checkbox>
+          <el-checkbox :checked="scope.row.compflag==1"
+            v-model="scope.row.compflag"
+            @change="table_zfbqFun(scope.row.table_id,scope.row.compflag)"
+          ></el-checkbox>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="characterSubstitution"
-        label=" 字符替换(整表清洗设置)"
-        width="180"
-        align="center"
-      >
+      <el-table-column prop="replaceflag" label=" 字符替换(整表清洗设置)" width="180" align="center">
         <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.characterSubstitution"></el-checkbox>
+          <el-checkbox :checked="scope.row.replaceflag==1" v-model="scope.row.replaceflag" @change="table_zfthFun"></el-checkbox>
         </template>
       </el-table-column>
-      <el-table-column prop="headAndTailEmpty" label=" 首尾去空" width="180" align="center">
+      <el-table-column prop="trimflag" label=" 首尾去空" width="180" align="center">
         <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.headAndTailEmpty"></el-checkbox>
+          <el-checkbox :checked="scope.row.trimflag==1" v-model="scope.row.trimflag"></el-checkbox>
         </template>
       </el-table-column>
       <el-table-column prop="selectCol" label="列清洗" align="center">
@@ -66,6 +60,65 @@
       :total="cleantableData.length"
       class="locationcenter"
     ></el-pagination>
+    <!-- 表-字符补齐 -->
+    <el-dialog title="字符补齐" :visible.sync="dialogTable_zfbq" width="50%" class="alltable">
+      <el-form ref="form" :model="table_zfbq" label-width="240px" text-align="center">
+        <el-form-item label="补齐方式">
+          <el-radio-group v-model="table_zfbq.filling_type">
+            <el-radio
+              v-for="(item,index) in FillingType"
+              :key="index"
+              :label="item.code"
+            >{{item.value}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="补齐字符">
+          <el-input v-model="table_zfbq.character_filling" style="width:190px"></el-input>
+        </el-form-item>
+        <el-form-item label="补齐长度">
+          <el-input v-model="table_zfbq.filling_length" style="width:190px"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTable_zfbq = false;Table_zfbqclose()">取 消</el-button>
+        <el-button type="primary" @click="dialogTable_zfbq = false;" >确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 表-字符替换 -->
+    <el-dialog title="字符替换" :visible.sync="dialogTable_zfth" width="50%" class="alltable">
+      <el-button type="primary" width="20" @click="addRow(Col_zfth)">新增行</el-button>
+      <el-table :data="table_zfth" border size="medium" highlight-current-row>
+        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
+        <el-table-column property="oldCharacter" label="原字符" align="center">
+          <template scope="scope">
+            <el-input v-model="scope.row.oldCharacter" placeholder="原字符"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column property="newCharacter" label="替换后字符" align="center">
+          <template scope="scope">
+            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="160px" align="center">
+          <template scope="scope">
+            <el-row>
+              <el-col :span="24" class="delbtn">
+                <el-button
+                  style="color:red"
+                  type="text"
+                  circle
+                  @click="DelRowFun(scope.$index, table_zfth)"
+                >删除</el-button>
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTable_zfth = false">取 消</el-button>
+        <el-button type="primary" @click="dialogTable_zfth = false">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- 全表清洗优先级 -->
     <el-dialog title="全表清洗优先级" :visible.sync="dialogtableClean" width="50%">
       <el-table :data="tableCleanData" border size="medium" highlight-current-row>
@@ -557,11 +610,15 @@
   </div>
 </template>
 <script>
+import * as addTaskAllFun from "./addTask";
 export default {
+  props: ["steps0data"],
   data() {
     return {
       dialogtableClean: false,
       dialogalltableClean: false,
+      dialogTable_zfbq: false,
+      dialogTable_zfth: false,
       dialogColClean: false,
       dialogCol_zfbq: false,
       dialogCol_zfth: false,
@@ -573,25 +630,14 @@ export default {
       dialogcolumnMerge: false,
       dialogcolSelectData: false,
       colClean_currentPage: 1,
-      colClean_pagesize: 5,
+      colClean_pagesize: 10,
       colSelect_currentPage: 1,
       colSelect_pagesize: 10,
       cleantableData: [
         {
-          tableName: "",
-          tableChName: "",
-          characterCompletion: "",
-          characterSubstitution: "",
-          headAndTailEmpty: "",
-          selectCol: ""
-        },
-        {
-          tableName: "",
-          tableChName: "",
-          characterCompletion: "",
-          characterSubstitution: "",
-          headAndTailEmpty: "",
-          selectCol: ""
+          compflag: 0,
+          replaceflag: 0,
+          trimflag: 0
         }
       ],
       cleancurrentPage: 1,
@@ -615,12 +661,23 @@ export default {
         nm: "",
         length: ""
       },
+      table_zfbq: {
+        filling_type: "",
+        character_filling: "",
+        filling_length: ""
+      },
       Col_zfbq: {
         type: "",
         nm: "",
         length: ""
       },
       Col_zfth: [
+        {
+          oldCharacter: "",
+          newCharacter: ""
+        }
+      ],
+      table_zfth: [
         {
           oldCharacter: "",
           newCharacter: ""
@@ -693,12 +750,41 @@ export default {
           colName: "",
           colchName: ""
         }
-      ]
+      ],
+      databaseId: "",
+      FillingType: []
     };
   },
+  mounted() {
+    this.databaseId = this.steps0data[0].database_id;
+    let params = {};
+    params["colSetId"] = this.databaseId;
+    addTaskAllFun.getCleanConfInfo(params).then(res => {
+      console.log(res.data);
+      this.cleantableData = res.data;
+    });
+    let params2 = {};
+    params2["category"] = "FillingType";
+    addTaskAllFun.getCategoryItems(params2).then(res => {
+      this.FillingType = res.data;
+      console.log(this.FillingType);
+    });
+  },
   methods: {
-    clean_handleSizeChange() {},
-    clean_handleCurrentChange() {},
+    clean_handleSizeChange(size) {
+      this.cleanpagesize = size;
+    },
+    clean_handleCurrentChange(currentPage) {
+      this.cleancurrentPage = currentPage;
+    },
+    //所有表清洗设置
+    alltableClean(id) {
+      let params = {};
+      params["colSetId"] = id;
+      addTaskAllFun.getAllTbCleanConfInfo(params).then(res => {
+        console.log(res);
+      });
+    },
     colClean_handleSizeChange(size) {
       this.colClean_pagesize = size;
     },
@@ -745,6 +831,29 @@ export default {
     },
     selectCol(index, row) {
       this.dialogColClean = true;
+    },
+    //表字符补齐显示
+    table_zfbqFun(tableid, compflag) {
+      this.dialogTable_zfbq = true;
+      this.table_zfbq.filling_type = "";
+      this.table_zfbq.character_filling = "";
+      this.table_zfbq.filling_length = "";
+      if (compflag) {
+        this.cleantableData.compflag = 1;
+        let params = {};
+        params["tableId"] = tableid;
+        addTaskAllFun.getTbCompletionInfo(params).then(res => {
+          if (res.data[0]) {
+            this.table_zfbq = res.data[0];
+          }
+        });
+      }
+    },
+    Table_zfbqclose(){
+
+    },
+    table_zfthFun() {
+      this.dialogTable_zfth = true;
     },
     zfbqFun() {
       this.colCleanData.zfbq = "true";
@@ -834,7 +943,6 @@ export default {
   padding: 0 20px;
 }
 .alltablebox {
-  border: 1px solid #ccc;
   padding: 10px;
 }
 .alltableaddrow {

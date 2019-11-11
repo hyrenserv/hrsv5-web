@@ -345,8 +345,10 @@ export default {
     }
   },
   created() {
-    addTaskAllFun.getAllCodeItems().then(res => {
-      this.DatabaseType = res.data.DatabaseType;
+    let params = {};
+    params["category"] = "DatabaseType";
+    addTaskAllFun.getCategoryItems(params).then(res => {
+      this.DatabaseType = res.data;
     });
     this.sourceName = this.$route.query.sName;
     this.sourceId = this.$route.query.sourId;
