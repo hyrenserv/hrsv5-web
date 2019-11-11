@@ -15,8 +15,8 @@
     </el-steps>
     <keep-alive>
       <steps0 v-if="active===0" :steps0data="steps0Data" ref="steps0"></steps0>
-      <steps1 v-if="active===1"></steps1>
-      <steps2 v-if="active===2"></steps2>
+      <steps1 v-if="active===1" :steps0data="steps0Data"></steps1>
+      <steps2 v-if="active===2" :steps0data="steps0Data"></steps2>
       <steps3 v-if="active===3"></steps3>
       <steps4 v-if="active===4"></steps4>
       <steps5 v-if="active===5"></steps5>
@@ -56,7 +56,7 @@ export default {
       active: 0,
       titleleft: "上一步",
       titleright: "下一步",
-      steps0Data: []
+      steps0Data: [],
     };
   },
 

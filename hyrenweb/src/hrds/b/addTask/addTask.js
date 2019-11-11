@@ -39,11 +39,12 @@ export function deleteClassifyInfo(data) {
         params:data
     })
 }
-// 获取所有数据库的编码和名称
-export function getAllCodeItems() {
+// 获取所有数据库的编码和名称 //获取字符补齐
+export function getCategoryItems(data) {
     return request({
-        url: '/A/codes/getAllCodeItems',
+        url: '/A/codes/getCategoryItems',
         method: 'post',
+        params:data
     })
 }
 //根据数据类型获取数据驱动
@@ -66,6 +67,32 @@ export function getDBConnectionProp(data) {
 export function testConnection(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/testConnection',
+        method: 'post',
+        params:data
+    })
+}
+
+// 第三步骤
+// 清洗规则配置页面初始信息
+export function getCleanConfInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getCleanConfInfo',
+        method: 'post',
+        params:data
+    })
+}
+//所有表清洗设置
+export function getAllTbCleanConfInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanConfInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 根据表id获取字符补齐信息
+export function getTbCompletionInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getTbCompletionInfo',
         method: 'post',
         params:data
     })
