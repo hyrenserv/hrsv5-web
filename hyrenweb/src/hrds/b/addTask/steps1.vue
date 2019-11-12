@@ -8,7 +8,7 @@
           </div>
           <div>
             <el-table
-              ref="filterTable"
+              ref="filterTable" size="medium"
               stripe
               :default-sort="{prop: 'date', order: 'descending'}"
               style="width: 100%"
@@ -39,12 +39,12 @@
               </el-table-column>
               <el-table-column prop="sqlFiltering" label="SQL过滤" width="180" align="center">
                 <template slot-scope="scope">
-                  <el-button size="mini" @click="Sqlfilt(scope.$index, scope.row)">定义过滤</el-button>
+                  <el-button size="mini" @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
                 </template>
               </el-table-column>
               <el-table-column prop="selectCol" label="选择列" align="center">
                 <template slot-scope="scope">
-                  <el-button size="mini" @click="selectCol(scope.$index, scope.row)">选择列</el-button>
+                  <el-button size="mini" @click="selectCol(scope.$index, scope.row)" type="info">选择列</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -62,8 +62,8 @@
           <el-dialog title="定义分页抽取SQL" :visible.sync="dialogTableVisible" width="50%">
             <el-button type="text">测试</el-button>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogTableVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+              <el-button @click="dialogTableVisible = false" type="danger" size="mini">取 消</el-button>
+              <el-button  @click="dialogTableVisible = false" type="primary" size="mini">确 定</el-button>
             </div>
           </el-dialog>
           <!-- 定义过滤弹层 -->
@@ -96,8 +96,8 @@
               </el-row>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogTableSqlFilt = false">取 消</el-button>
-              <el-button type="primary" @click="dialogTableSqlFilt = false">确 定</el-button>
+              <el-button @click="dialogTableSqlFilt = false" type="danger" size="mini">取 消</el-button>
+              <el-button type="primary" @click="dialogTableSqlFilt = false" size="mini">确 定</el-button>
             </div>
           </el-dialog>
           <!-- 选择列弹层 -->
@@ -143,14 +143,14 @@
               </el-table-column>
             </el-table>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogSelectColumn = false">取 消</el-button>
-              <el-button type="primary" @click="dialogSelectColumn = false">确 定</el-button>
+              <el-button @click="dialogSelectColumn = false" type="danger" size="mini">取 消</el-button>
+              <el-button type="primary" @click="dialogSelectColumn = false" size="mini">确 定</el-button>
             </div>
           </el-dialog>
         </div>
       </el-tab-pane>
       <el-tab-pane label="使用SQL抽取数据" name="second">
-        <el-button type="primary" width="20" @click="addRow(sqlExtractData)">新增行</el-button>
+        <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(sqlExtractData)" size="mini">新增行</el-button>
         <el-table
           :data="sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)"
           border
@@ -212,8 +212,8 @@
           class="locationcenter"
         ></el-pagination>
         <div class="locationright">
-          <el-button>取 消</el-button>
-          <el-button>确定</el-button>
+          <el-button size="medium" type="danger">取 消</el-button>
+          <el-button  size="medium" type="primary">确定</el-button>
         </div>
       </el-tab-pane>
     </el-tabs>
