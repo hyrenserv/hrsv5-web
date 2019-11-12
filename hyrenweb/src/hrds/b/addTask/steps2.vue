@@ -80,23 +80,23 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTable_zfbq = false;Table_zfbqclose()">取 消</el-button>
-        <el-button type="primary" @click="dialogTable_zfbq = false;" >确 定</el-button>
+        <el-button @click="dialogTable_zfbq = false;Table_zfbqclose()" size="mini" type="danger">取 消</el-button>
+        <el-button type="primary" @click="dialogTable_zfbq = false;" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 表-字符替换 -->
     <el-dialog title="字符替换" :visible.sync="dialogTable_zfth" width="50%" class="alltable">
-      <el-button type="primary" width="20" @click="addRow(Col_zfth)">新增行</el-button>
-      <el-table :data="table_zfth" border size="medium" highlight-current-row>
+      <el-button type="success" width="20" @click="addRow(Col_zfth)" size="mini" class="addline">新增行</el-button>
+      <el-table :data="table_zfth" border size="medium" highlight-current-row >
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column property="oldCharacter" label="原字符" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.oldCharacter" placeholder="原字符"></el-input>
+            <el-input v-model="scope.row.oldCharacter" placeholder="原字符" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="newCharacter" label="替换后字符" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符"></el-input>
+            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -115,13 +115,13 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTable_zfth = false">取 消</el-button>
-        <el-button type="primary" @click="dialogTable_zfth = false">确 定</el-button>
+        <el-button @click="dialogTable_zfth = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogTable_zfth = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 全表清洗优先级 -->
     <el-dialog title="全表清洗优先级" :visible.sync="dialogtableClean" width="50%">
-      <el-table :data="tableCleanData" border size="medium" highlight-current-row>
+      <el-table :data="tableCleanData" border size="medium" highlight-current-row >
         <el-table-column property="SelectCol" type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column property="tableCleanCon" label="内容" align="center"></el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -144,8 +144,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogtableClean = false">取 消</el-button>
-        <el-button type="primary" @click="dialogtableClean = false">确 定</el-button>
+        <el-button @click="dialogtableClean = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogtableClean = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 所有表清洗设置 -->
@@ -156,19 +156,19 @@
           <span>(大小写敏感,替换字符只能为一个,如需多次替换请添加行 )</span>
         </div>
         <div class="alltableaddrow">
-          <el-button type="primary" width="20" @click="addRow(allTableCleanSettingData)">新增行</el-button>
+          <el-button type="success" width="20" @click="addRow(allTableCleanSettingData)">新增行</el-button>
         </div>
         <div class="TableClean">
           <el-table :data="allTableCleanSettingData" border size="medium" highlight-current-row>
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column property="oldCharacter" label="原字符" align="center">
               <template scope="scope">
-                <el-input v-model="scope.row.oldCharacter" placeholder="原字符"></el-input>
+                <el-input v-model="scope.row.oldCharacter" placeholder="原字符" size="medium"></el-input>
               </template>
             </el-table-column>
             <el-table-column property="newCharacter" label="替换后字符" align="center">
               <template scope="scope">
-                <el-input v-model="scope.row.newCharacter" placeholder="替换后字符"></el-input>
+                <el-input v-model="scope.row.newCharacter" placeholder="替换后字符" size="medium"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="160px" align="center">
@@ -204,16 +204,16 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="补齐字符">
-            <el-input v-model="characterCompletion.nm"></el-input>
+            <el-input v-model="characterCompletion.nm" size="medium"></el-input>
           </el-form-item>
           <el-form-item label="补齐长度">
-            <el-input v-model="characterCompletion.length"></el-input>
+            <el-input v-model="characterCompletion.length" size="medium"></el-input>
           </el-form-item>
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogalltableClean = false">取 消</el-button>
-        <el-button type="primary" @click="dialogalltableClean = false">确 定</el-button>
+        <el-button @click="dialogalltableClean = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogalltableClean = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列弹框 -->
@@ -246,7 +246,7 @@
               <el-checkbox v-model="scope.row.zfth" @change="zfthFun">设置</el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column property="rqgsh" label="日期格式化" width="80px" align="center">
+          <el-table-column property="rqgsh" label="日期格式化" width="100px" align="center">
             <template scope="scope">
               <el-checkbox v-model="scope.row.rqgsh" @change="rqgshFun">设置</el-checkbox>
             </template>
@@ -268,7 +268,7 @@
           </el-table-column>
           <el-table-column label="清洗优先级" prop="yxjtz" align="center">
             <template scope="scope">
-              <el-button type="mini" @click="yxjFun(scope.row)">优先级调整</el-button>
+              <el-button type="success" @click="yxjFun(scope.row)" size="mini">优先级调整</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -281,8 +281,8 @@
           :total="colCleanData.length"
           class="locationcenter"
         ></el-pagination>
-        <el-button @click="dialogColClean = false">取 消</el-button>
-        <el-button type="primary" @click="dialogColClean = false">确 定</el-button>
+        <el-button @click="dialogColClean = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogColClean = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列-字符补齐弹框 -->
@@ -295,30 +295,30 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="补齐字符">
-          <el-input v-model="Col_zfbq.nm" style="width:190px"></el-input>
+          <el-input v-model="Col_zfbq.nm" style="width:190px" size="medium"></el-input>
         </el-form-item>
         <el-form-item label="补齐长度">
-          <el-input v-model="Col_zfbq.length" style="width:190px"></el-input>
+          <el-input v-model="Col_zfbq.length" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_zfbq = false">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_zfbq = false">确 定</el-button>
+        <el-button @click="dialogCol_zfbq = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogCol_zfbq = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列-字符替换弹框 -->
     <el-dialog title="字符替换" :visible.sync="dialogCol_zfth" width="50%" class="alltable">
-      <el-button type="primary" width="20" @click="addRow(Col_zfth)">新增行</el-button>
+      <el-button type="success" size="mini" width="20" @click="addRow(Col_zfth)" class="addline">新增行</el-button>
       <el-table :data="Col_zfth" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column property="oldCharacter" label="原字符" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.oldCharacter" placeholder="原字符"></el-input>
+            <el-input v-model="scope.row.oldCharacter" placeholder="原字符" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="newCharacter" label="替换后字符" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符"></el-input>
+            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -337,23 +337,23 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_zfth = false">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_zfth = false">确 定</el-button>
+        <el-button @click="dialogCol_zfth = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogCol_zfth = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列-日期格式化弹框 -->
     <el-dialog title="日期格式化" :visible.sync="dialogCol_rqgsh" width="50%" class="alltable">
       <el-form ref="form" :model="Col_rqgsh" label-width="240px" text-align="center">
         <el-form-item label="原格式">
-          <el-input v-model="Col_rqgsh.oldtype" style="width:190px"></el-input>
+          <el-input v-model="Col_rqgsh.oldtype" style="width:190px" size="medium"></el-input>
         </el-form-item>
         <el-form-item label="转换格式">
-          <el-input v-model="Col_rqgsh.newtype" style="width:190px"></el-input>
+          <el-input v-model="Col_rqgsh.newtype" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_rqgsh = false">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_rqgsh = false">确 定</el-button>
+        <el-button @click="dialogCol_rqgsh = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogCol_rqgsh = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--选择列-列拆分弹框  -->
@@ -362,7 +362,7 @@
         <span class="title">列拆分(拆分的是最后的数据)&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span class="title">列名称:134</span>
       </div>
-      <el-button type="primary" width="20" @click="addRow(Col_colcf)">新增行</el-button>
+      <el-button type="success" size="mini" width="20" @click="addRow(Col_colcf)" class="addline">新增行</el-button>
       <el-table :data="Col_colcf" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column property="name" label="字段名称" align="center" width="140px">
@@ -372,12 +372,12 @@
         </el-table-column>
         <el-table-column property="chNamw" label="中文名称" align="center" width="140px">
           <template scope="scope">
-            <el-input v-model="scope.row.chNamw" placeholder="中文名称"></el-input>
+            <el-input v-model="scope.row.chNamw" placeholder="中文名称" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="cftype" label="拆分方式" align="center" width="180px">
           <template scope="scope">
-            <el-select placeholder="选择" v-model="scope.row.cftype" style="width:150px">
+            <el-select placeholder="选择" v-model="scope.row.cftype" style="width:150px" size="medium">
               <el-option label="自定义变量" value="1"></el-option>
               <el-option label="偏移量" value="2"></el-option>
             </el-select>
@@ -385,12 +385,12 @@
         </el-table-column>
         <el-table-column property="pyl" label="偏移量/字符拆分" align="center" width="140px">
           <template scope="scope">
-            <el-input v-model="scope.row.pyl" placeholder="偏移量/字符拆分"></el-input>
+            <el-input v-model="scope.row.pyl" placeholder="偏移量/字符拆分" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="zftype" label="类型" align="center" width="140px">
           <template scope="scope">
-            <el-input v-model="scope.row.zftype" placeholder="varchar(80)"></el-input>
+            <el-input v-model="scope.row.zftype" placeholder="varchar(80)" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -409,8 +409,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_colcf = false">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_colcf = false">确 定</el-button>
+        <el-button @click="dialogCol_colcf = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogCol_colcf = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--选择列-码值转换弹框  -->
@@ -421,7 +421,7 @@
           <el-table :data="Col_mzzh" border size="medium" highlight-current-row>
             <el-table-column property="sysname" label="系统名称" align="center" width="200px">
               <template scope="scope">
-                <el-select placeholder="选择" v-model="scope.row.sysname">
+                <el-select placeholder="选择" v-model="scope.row.sysname" size="medium">
                   <el-option label="123" value="1"></el-option>
                   <el-option label="133" value="2"></el-option>
                 </el-select>
@@ -429,7 +429,7 @@
             </el-table-column>
             <el-table-column property="mztype" label="码值类型" align="center">
               <template scope="scope">
-                <el-select placeholder="选择" v-model="scope.row.mztype">
+                <el-select placeholder="选择" v-model="scope.row.mztype" size="medium">
                   <el-option label="123" value="1"></el-option>
                   <el-option label="133" value="2"></el-option>
                 </el-select>
@@ -454,8 +454,8 @@
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_mzzh = false">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_mzzh = false">确 定</el-button>
+        <el-button @click="dialogCol_mzzh = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogCol_mzzh = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--选择列-优先级调整弹框  -->
@@ -487,8 +487,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogtableCleanOrd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogtableCleanOrd = false">确 定</el-button>
+        <el-button @click="dialogtableCleanOrd = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogtableCleanOrd = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--整表优先级-->
@@ -520,8 +520,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAlltableCleanOrd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogAlltableCleanOrd = false">确 定</el-button>
+        <el-button @click="dialogAlltableCleanOrd = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogAlltableCleanOrd = false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 列合并 -->
@@ -529,32 +529,32 @@
       <div slot="title" class="header-title">
         <span class="title">列合并(合并的是最后的数据)</span>
       </div>
-      <el-button type="primary" width="20" @click="addRow(columnMerge)">新增行</el-button>
+      <el-button type="success" size="mini" width="20" @click="addRow(columnMerge)" class="addline">新增行</el-button>
       <el-table :data="columnMerge" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column label="选择" align="center">
           <template scope="scope">
-            <el-button type="primary" @click="colSelectFun(scope.rows)">列选择</el-button>
+            <el-button type="success" @click="colSelectFun(scope.rows)" size="mini">列选择</el-button>
           </template>
         </el-table-column>
         <el-table-column property="colName" label="列名" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colName" placeholder="列名"></el-input>
+            <el-input v-model="scope.row.colName" placeholder="列名" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="colMerchName" label="合并列名" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colMerchName" placeholder="合并列名"></el-input>
+            <el-input v-model="scope.row.colMerchName" placeholder="合并列名" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="colMerchName" label="合并列中文名" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colMerchName" placeholder="合并列中文名"></el-input>
+            <el-input v-model="scope.row.colMerchName" placeholder="合并列中文名" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column property="colMertype" label="字段类型" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colMertype" placeholder="字段类型"></el-input>
+            <el-input v-model="scope.row.colMertype" placeholder="字段类型" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -562,7 +562,7 @@
             <el-row>
               <el-col :span="24" class="delbtn">
                 <el-button
-                  style="color:red"
+                  style="color:red" size="medium"
                   type="text"
                   circle
                   @click="DelRowFun(scope.$index,columnMerge)"
@@ -573,8 +573,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogcolumnMerge = false">取 消</el-button>
-        <el-button type="primary" @click="dialogcolumnMerge= false">确 定</el-button>
+        <el-button @click="dialogcolumnMerge = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogcolumnMerge= false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列 -->
@@ -603,8 +603,8 @@
         class="locationcenter"
       ></el-pagination>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogcolSelectData = false">取 消</el-button>
-        <el-button type="primary" @click="dialogcolSelectData= false">确 定</el-button>
+        <el-button @click="dialogcolSelectData = false" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="dialogcolSelectData= false" size="mini">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -850,7 +850,7 @@ export default {
       }
     },
     Table_zfbqclose(){
-
+     this.cleantableData.compflag = 0
     },
     table_zfthFun() {
       this.dialogTable_zfth = true;
@@ -965,5 +965,8 @@ export default {
 .TableClean {
   padding: 15px 15px;
   border: 1px solid #eae8e8;
+}
+.addline{
+  margin: 5px 0
 }
 </style>

@@ -13,27 +13,27 @@
         <el-table-column prop="datasource_name" label="数据源" width="180" align="center"></el-table-column>
         <el-table-column label="数据库 Agent" width="180" align="center">
             <template scope="scope">
-                <el-button v-if="scope.row.dbflag!=0" type="primary" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)">任务配置</el-button>
+                <el-button v-if="scope.row.dbflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="数据文件 Agent" width="180" align="center">
             <template scope="scope">
-                <el-button v-if="scope.row.dfflag!=0" type="primary" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
+                <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="非结构化 Agent" align="center">
             <template scope="scope">
-                <el-button v-if="scope.row.nonstructflag!=0" type="primary" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)">任务配置</el-button>
+                <el-button v-if="scope.row.nonstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="半结构化 Agent" align="center">
             <template scope="scope">
-                <el-button v-if="scope.row.halfstructflag!=0" type="primary" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
+                <el-button v-if="scope.row.halfstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="Ftp Agent" align="center">
             <template scope="scope">
-                <el-button v-if="scope.row.ftpflag!=0" type="primary" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)">任务配置</el-button>
+                <el-button v-if="scope.row.ftpflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)">任务配置</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -53,13 +53,13 @@
                 <template scope="scope">
                     <el-row>
                         <el-col :span="8">
-                            <el-button type="primary" size="mini" @click="addtask(scope.row.agent_type)">新增任务</el-button>
+                            <el-button type="success" size="mini" @click="addtask(scope.row.agent_type)">新增任务</el-button>
                         </el-col>
                         <el-col :span="8">
                             <el-button type="primary" size="mini" @click="taskManagement(scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
                         </el-col>
                         <el-col :span="8">
-                            <el-button type="primary" size="mini" @click="tasklogFun(scope.row.agent_type,scope.row.agent_id)">日志查看</el-button>
+                            <el-button type="warning" size="mini" @click="tasklogFun(scope.row.agent_type,scope.row.agent_id)">日志查看</el-button>
                         </el-col>
                     </el-row>
                 </template>
