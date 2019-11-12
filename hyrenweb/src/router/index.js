@@ -125,6 +125,12 @@ export default new Router({
                             title: '采集文件设置',
                             component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')
                         },
+                        {
+                            path: '/collectionStructureSet',
+                            name: 'collectionStructureSet',
+                            title: '采集文件设置',
+                            component: () => import('@/hrds/b/semiStructuredAgent/collectionStructureSet.vue')
+                        },
                     ]
                 },
             ]

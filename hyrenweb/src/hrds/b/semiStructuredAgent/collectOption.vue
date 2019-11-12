@@ -108,9 +108,12 @@
                 <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
                     <el-tab-pane label="月" name="first">
                         <el-radio-group v-model="form.resource">
-                            <el-radio label="线上品牌商赞助"></el-radio>
-                            <el-radio label="线下场地免费"></el-radio>
+                            <el-radio label="每月"></el-radio>
+                            <el-radio label="指定月"></el-radio>
                         </el-radio-group>
+                        <p>
+                            当前采集频率为 :{{每月}} -- {{每星期}}
+                        </p>
                     </el-tab-pane>
                 </el-tabs>
                 <p class="elTabinfo">第一步，设置月频率</p>
@@ -119,8 +122,8 @@
                 <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
                     <el-tab-pane label="星期" name="first">
                         <el-radio-group v-model="form.resource">
-                            <el-radio label="线上品牌商赞助"></el-radio>
-                            <el-radio label="线下场地免费"></el-radio>
+                            <el-radio label="每月"></el-radio>
+                            <el-radio label="指定月"></el-radio>
                         </el-radio-group>
                     </el-tab-pane>
                     <el-tab-pane label="天" name="second">
@@ -144,6 +147,7 @@
 </template>
 
 <script>
+import * as functionAll from "./semiStructuredAgent";
 export default {
     data() {
         return {
@@ -154,6 +158,10 @@ export default {
             formLabelWidth: "150px"
         }
     },
+    created(){
+       
+    }
+
 }
 </script>
 

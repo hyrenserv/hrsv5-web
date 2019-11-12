@@ -53,7 +53,11 @@
                 <template scope="scope">
                     <el-row>
                         <el-col :span="8">
-                            <el-button type="success" size="mini" @click="addtask(scope.row.agent_type)">新增任务</el-button>
+
+                            <el-button type="primary" size="mini" @click="addtask(scope.row.agent_type,scope.row.agent_id)">新增任务</el-button>
+
+                        
+
                         </el-col>
                         <el-col :span="8">
                             <el-button type="primary" size="mini" @click="taskManagement(scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
@@ -176,7 +180,7 @@ export default {
             }
         },
         // 新增任务  根据不同类型跳转不同页面
-        addtask(type) {
+        addtask(type,agent_id) {
             if (type == "1") {
                 this.$router.push({
                     path: "/addTask"
@@ -189,7 +193,10 @@ export default {
 
             } else if (type == "5") {
                 this.$router.push({
-                    path: "/semiStructuredAgent"
+                    path: "/semiStructuredAgent",
+                     query: {
+                        agent_id: agent_id
+                    }
                 });
             }
         },
@@ -197,6 +204,13 @@ export default {
             if (type == "1") {
                 this.$router.push({
                     path: "/taskLog",
+                    query: {
+                        agenId: agentid
+                    }
+                });
+            }else if(type=="5"){
+                 this.$router.push({
+                    path: "/semiStructuredAgent",
                     query: {
                         agenId: agentid
                     }

@@ -1,13 +1,14 @@
 import request from '@/utils/request'
 
-// datasourceManagement页面
 
+//collectOption页面
 /**(0)
- * 获取datasourceManagement首页的数据
+ * 获取半结构化采集配置页面初始化的值
  */
-export function searchDataSourceInfo() {
+export function searchObjectCollect(data) {
     return request({
-        url: '/B/datasource/searchDataSourceInfo',
-        method: 'post'
+        url: '/B/agent/objectcollect/searchObjectCollect',
+        method: 'post',
+        params: data
     })
 }
