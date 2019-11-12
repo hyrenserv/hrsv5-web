@@ -14,14 +14,14 @@
               <el-col :span="10">
                 <el-form-item label="数据采集任务名" prop="task_name" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.task_name"></el-input>
+                    <el-input v-model="ruleForm.task_name" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item label="作业编号" prop="classify_num">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.classify_num"></el-input>
+                    <el-input v-model="ruleForm.classify_num" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -30,7 +30,7 @@
               <el-col :span="10">
                 <el-form-item label="分类编号" prop="classify_num" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.classify_num">
+                    <el-input v-model="ruleForm.classify_num" size="medium">
                       <el-button slot="append" icon="el-icon-zoom-in" @click="outerVisible = true"></el-button>
                     </el-input>
                   </el-col>
@@ -39,7 +39,7 @@
               <el-col :span="10">
                 <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.classify_name"></el-input>
+                    <el-input v-model="ruleForm.classify_name" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -48,7 +48,7 @@
               <el-col :span="10">
                 <el-form-item label="数据源" prop="sourceName">
                   <el-col :span="16">
-                    <el-input v-model="sourceName"></el-input>
+                    <el-input v-model="sourceName" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -58,7 +58,7 @@
                     <el-select
                       placeholder="数据库类型"
                       v-model="ruleForm.database_type"
-                      @change="dbTypeFun"
+                      @change="dbTypeFun" size="medium"
                     >
                       <el-option
                         v-for="(item,index) in DatabaseType"
@@ -75,14 +75,14 @@
               <el-col :span="10">
                 <el-form-item label="数据库驱动" prop="database_drive">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_drive"></el-input>
+                    <el-input v-model="ruleForm.database_drive" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item label="数据库名称" prop="database_name" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_name"></el-input>
+                    <el-input v-model="ruleForm.database_name" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -91,14 +91,14 @@
               <el-col :span="10">
                 <el-form-item label="数据库服务器IP" prop="database_ip" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_ip"></el-input>
+                    <el-input v-model="ruleForm.database_ip" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item label="数据库端口" prop="database_port" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_port"></el-input>
+                    <el-input v-model="ruleForm.database_port" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -107,14 +107,14 @@
               <el-col :span="10">
                 <el-form-item label="用户名" :rules="rule.default" prop="user_name">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.user_name"></el-input>
+                    <el-input v-model="ruleForm.user_name" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="10" prop="database_pad">
                 <el-form-item label="密码" :rules="rule.default" prop="database_pad">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_pad"></el-input>
+                    <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -128,23 +128,23 @@
                   style="width: 70%;"
                 >
                   <el-col :span="24">
-                    <el-input style="width: 124%;" v-model="ruleForm.jdbc_url"></el-input>
+                    <el-input style="width: 124%;" v-model="ruleForm.jdbc_url" size="medium"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="6" style="text-align:right;">
-                <el-button type="text" @click="testLink = true,testLinkFun()">测试连接</el-button>
+                <el-button type="text" @click="testLink = true,testLinkFun()" size="medium">测试连接</el-button>
               </el-col>
               <el-col :span="2">
-                <el-button type="text" @click="viewLog = true">查看日志</el-button>
+                <el-button type="text" @click="viewLog = true" size="medium">查看日志</el-button>
               </el-col>
             </el-row>
           </el-form>
           <!-- 分类编号弹层 -->
           <el-dialog title="采集任务分类" :visible.sync="outerVisible" class="collTask">
-            <el-dialog width="30%" title="修改采集任务分类" :visible.sync="innerVisible" append-to-body>
+            <el-dialog width="40%" title="修改采集任务分类" :visible.sync="innerVisible" append-to-body>
               <el-form :model="addClassTask" ref="addClassTask">
                 <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default">
                   <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
@@ -195,7 +195,7 @@
                       </el-col>
                       <el-col :span="12" class="delbtn">
                         <el-button
-                          style="color:red"
+                          class="delbtn"
                           type="text"
                           circle
                           @click="colltaskDeleBtn(scope.row)"
@@ -215,20 +215,21 @@
                 :total="CollTaskData.length"
               ></el-pagination>
               <div class="btntop">
-                <el-button @click="cancelClassNumBtn()">取 消</el-button>
-                <el-button type="primary" @click="innerVisible = true">新增</el-button>
-                <el-button @click="updataClassNumBtn()">确定</el-button>
+                <el-button @click="cancelClassNumBtn()" type="danger" size="mini">取 消</el-button>
+                <el-button  @click="innerVisible = true" type="success"  size="mini">新增</el-button>
+                <el-button @click="updataClassNumBtn()"  type="primary" size="mini">确定</el-button>
               </div>
             </div>
           </el-dialog>
           <!-- 点击编辑弹层 -->
-          <el-dialog width="40%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
+          <el-dialog width="50%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
             <el-form :model="editClassTask" ref="addClassTask">
               <el-form-item
                 label=" 分类编号"
                 prop="class_num"
                 :rules="rule.default"
                 :label-width="formLabelWidth"
+                width="130"
               >
                 <el-input v-model="editClassTask.class_num" style="width:284px"></el-input>
               </el-form-item>
@@ -245,8 +246,8 @@
               </el-form-item>
             </el-form>
             <div slot="footer">
-              <el-button size="mini" type="danger" @click="ediltVisible = false">取 消</el-button>
-              <el-button type="primary" size="mini" @click="editClassTaskSane(editClassTask)">保存</el-button>
+              <el-button size="mini"  class="cancelbtn" @click="ediltVisible = false">取 消</el-button>
+              <el-button  size="mini" @click="editClassTaskSane(editClassTask)" class="okbtn">保存</el-button>
             </div>
           </el-dialog>
 

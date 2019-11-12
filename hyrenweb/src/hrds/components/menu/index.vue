@@ -4,14 +4,14 @@
     <el-container>
         <el-header>
             <el-row type="flex" :gutter="29">
-                <el-col :span="3">
+                <el-col :span="6">
                     <span><i class="el-icon-menu"></i>菜单列表</span>
                 </el-col>
                 <el-col :span="2" :offset="19">
                     <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
                 </el-col>
-                <el-col :span="3">
-                    <el-link :underline="false" @click="goback"><i class="el-icon-s-custom">退出登录</i></el-link>
+                <el-col :span="6">
+                    <el-link :underline="false" @click="goback"><i class="el-icon-s-custom" style="color:#fff">退出登录</i></el-link>
                 </el-col>
             </el-row>
         </el-header>
@@ -80,35 +80,43 @@ export default {
 </script>
 
 <style scoped>
-.home{
-     padding-bottom: 60px;
-}
 .el-header,
 .el-footer {
-    background-color: #3F51B5;
+    background-color: #495179;
     text-align: center;
     line-height: 50px;
     color: #fff;
 }
+.el-aside{background-color: #495179;}
 .el-header{
     height: 50px !important;
 }
 .el-main {
-    padding: 15px
+    padding: 15px;
+    margin-bottom: 15px;
 }
 .el-menu{
     border: none !important;
+    background-color: #495179 !important;
+    color:#fff;
 }
-.el-aside{
-    border-right: 1px solid #e6e6e6 ;
+.el-menu-item{
+    color: #fff !important;
+}
+.el-menu-item:focus, .el-menu-item:hover {
+    outline: 0;
+    background-color: #aacaf0;
 }
 .el-container {
     min-height: 556px;
 }
-
-.home .el-header i {
-    color: white;
+.el-menu-item.is-active {
+    color: #409EFF !important;
 }
+
+/* .home .el-header i {
+    color: white;
+} */
 
 .el-footer {
     height: 30px !important;

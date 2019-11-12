@@ -21,15 +21,12 @@
       <steps4 v-if="active===4"></steps4>
       <steps5 v-if="active===5"></steps5>
     </keep-alive>
+    <el-button type="primary" size="medium" class="rightbtn" @click="next()">{{titleright}}</el-button>
     <el-button
       type="primary"
-      style="margin-top: 12px;margin-top: 12px;float: right;margin: 15px;"
-      @click="next()"
-    >{{titleright}}</el-button>
-    <el-button
-      type="primary"
+      size="medium"
+      class="leftbtn"
       v-if="active>0"
-      style="margin-top: 12px;margin-top: 12px;float: left;margin: 15px;"
       @click="pre()"
     >{{titleleft}}</el-button>
   </div>
@@ -56,7 +53,7 @@ export default {
       active: 0,
       titleleft: "上一步",
       titleright: "下一步",
-      steps0Data: [],
+      steps0Data: []
     };
   },
 
@@ -100,4 +97,18 @@ export default {
 };
 </script>
 <style scoped>
+.leftbtn {
+  margin-top: 12px;
+  margin-top: 12px;
+  float: left;
+  margin: 15px;
+  margin-bottom: 10px;
+}
+.rightbtn {
+  margin-top: 12px;
+  margin-top: 12px;
+  float: right;
+  margin: 15px;
+  margin-bottom: 10px;
+}
 </style>
