@@ -12,3 +12,14 @@ export function searchObjectCollect(data) {
         params: data
     })
 }
+
+/**(1)
+ * 获取半结构化采集配置页面初始化的值
+ */
+export function getCategoryItems(data) {
+    return request({
+        url: '/A/codes/getCategoryItems',
+        method: 'post',
+        params: data
+    })
+}
