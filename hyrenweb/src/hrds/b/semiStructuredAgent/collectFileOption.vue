@@ -20,19 +20,19 @@
 
         <el-table-column prop="datasource_name" label="英文名" align="center">
             <template slot-scope="scope">
-                <el-input placeholder="英文名"></el-input>
+                <el-input placeholder="英文名" v-model="englishName"></el-input>
             </template>
         </el-table-column>
 
         <el-table-column prop="dep_name" label="中文名" align="center">
             <template slot-scope="scope">
-                <el-input placeholder="中文名"></el-input>
+                <el-input placeholder="中文名" v-model="cnName"></el-input>
             </template>
         </el-table-column>
 
         <el-table-column label="数据类型" align="center">
             <template slot-scope="scope">
-                <el-select placeholder="数据类型" style="width: 100%;">
+                <el-select placeholder="数据类型" style="width: 100%;" v-model="dataTypeCode">
                     <el-option v-for="item in dataType" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                 </el-select>
             </template>
@@ -40,7 +40,7 @@
 
         <el-table-column label="数据更新方式" align="center">
             <template slot-scope="scope">
-                <el-select placeholder="数据更新方式" style="width: 100%;">
+                <el-select placeholder="数据更新方式" style="width: 100%;" v-model="upDateWayCode" >
                     <el-option v-for="item in upDateWay" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                 </el-select>
             </template>
@@ -48,7 +48,7 @@
 
         <el-table-column label="数据字符编码" align="center">
             <template slot-scope="scope">
-                <el-select placeholder="数据字符编码" style="width: 100%;">
+                <el-select placeholder="数据字符编码" style="width: 100%;"  v-model="optionsCode" >
                     <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                 </el-select>
             </template>
@@ -82,8 +82,14 @@ export default {
         return {
             active: 1,
             tableData: [],
-            options:[],
-            dataType:[]
+            options: [],
+            dataType: [],
+            englishName:"",
+            cnName:"",
+            dataTypeCode:"",
+            upDateWayCode:"",
+            optionsCode:"",
+
         }
     },
     methods: {
@@ -136,9 +142,9 @@ export default {
         // 添加新的一行数据
         addOneRow() {
             this.tableData.push({});
-           this.getCategoryItems("DataBaseCode");
-           this.getCategoryItems("CollectDataType");
-           
+            this.getCategoryItems("DataBaseCode");
+            this.getCategoryItems("CollectDataType");
+
         }
     }
 }
