@@ -108,30 +108,22 @@ export default new Router({
                 },
                 // 半结构化agent采集
                 {
-                    path: '/semiStructuredAgent',
-                    name: 'semiStructuredAgent',
-                    title: '半结构采集',
-                    component: () => import('@/hrds/b/semiStructuredAgent/semiStructuredAgent.vue'),
-                    children:[
-                        {
-                            path: '/collectOption',
-                            name: 'collectOption',
-                            title: '采集设置',
-                            component: () => import('@/hrds/b/semiStructuredAgent/collectOption.vue')
-                        },
-                        {
-                            path: '/collectFileOption',
-                            name: 'collectFileOption',
-                            title: '采集文件设置',
-                            component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')
-                        },
-                        {
-                            path: '/collectionStructureSet',
-                            name: 'collectionStructureSet',
-                            title: '采集文件设置',
-                            component: () => import('@/hrds/b/semiStructuredAgent/collectionStructureSet.vue')
-                        },
-                    ]
+                    path: '/collectOption',
+                    name: 'collectOption',
+                    title: '采集设置',
+                    component: () => import('@/hrds/b/semiStructuredAgent/collectOption.vue')
+                },
+                {
+                    path: '/collectFileOption',
+                    name: 'collectFileOption',
+                    title: '采集文件设置',
+                    component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')
+                },
+                {
+                    path: '/collectionStructureSet',
+                    name: 'collectionStructureSet',
+                    title: '采集文件设置',
+                    component: () => import('@/hrds/b/semiStructuredAgent/collectionStructureSet.vue')
                 },
             ]
         },

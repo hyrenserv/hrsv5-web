@@ -193,7 +193,7 @@ export default {
 
             } else if (type == "5") {
                 this.$router.push({
-                    path: "/semiStructuredAgent",
+                    path: "/collectOption",
                      query: {
                         agent_id: agent_id
                     }
@@ -210,7 +210,7 @@ export default {
                 });
             }else if(type=="5"){
                  this.$router.push({
-                    path: "/semiStructuredAgent",
+                    path: "/collectOption",
                     query: {
                         agenId: agentid
                     }
