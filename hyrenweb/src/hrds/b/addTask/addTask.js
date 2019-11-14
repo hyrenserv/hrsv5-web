@@ -81,10 +81,26 @@ export function getCleanConfInfo(data) {
         params:data
     })
 }
-//所有表清洗设置
-export function getAllTbCleanConfInfo(data) {
+//所有表清洗设置-字符替换规则
+export function getAllTbCleanReplaceInfo(data) {
     return request({
-        url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanConfInfo',
+        url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanReplaceInfo',
+        method: 'post',
+        params:data
+    })
+}
+//所有表清洗设置-字符补齐规则
+export function getAllTbCleanCompInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanCompInfo',
+        method: 'post',
+        params:data
+    })
+}
+//保存所有表清洗设置 
+export function saveAllTbCleanConfigInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanConfigInfo',
         method: 'post',
         params:data
     })
@@ -93,6 +109,47 @@ export function getAllTbCleanConfInfo(data) {
 export function getTbCompletionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getTbCompletionInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 表字符补齐提交确定接口
+export function saveSingleTbCompletionInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveSingleTbCompletionInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 表-字符替换弹框
+export function getSingleTbReplaceInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getSingleTbReplaceInfo',
+        method: 'post',
+        params:data
+    })
+}
+//表字符替换提交确定接口
+export function saveSingleTbReplaceInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveSingleTbReplaceInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 全表清洗优先级提交保存
+export function saveAllTbCleanOrder(data) {
+    return request({
+        // url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanOrder'
+        url:'/A/codes/getArry',
+        method: 'post',
+        params:data
+    })
+}
+//根据表ID获取该表所有的列清洗信息 
+export function getColumnInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getColumnInfo',
         method: 'post',
         params:data
     })
