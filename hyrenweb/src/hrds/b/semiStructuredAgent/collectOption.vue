@@ -10,6 +10,7 @@
             </el-steps>
         </el-col>
     </el-row>
+
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
             <el-col :span="12">
@@ -17,108 +18,144 @@
                     <el-input v-model="form.obj_number" placeholder="半结构化设置编号"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="半结构化任务名称" :label-width="formLabelWidth">
                     <el-input v-model="form.obj_collect_name" placeholder="半结构化任务名称"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="操作系统类型" :label-width="formLabelWidth">
                     <el-input v-model="form.system_name	" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="主机名" :label-width="formLabelWidth">
                     <el-input v-model="form.host_name" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="本地系统时间" :label-width="formLabelWidth">
                     <el-input v-model="form.local_time" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="服务器日期" :label-width="formLabelWidth">
                     <el-input v-model="form.server_date" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="11">
                 <el-form-item label="开始日期" :label-width="formLabelWidth">
                     <el-date-picker type="date" placeholder="选择开始日期" v-model="form.s_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
+
             <el-col :span="1">
                 <el-tooltip class="item" effect="dark" content="任务采集开始日期" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
             </el-col>
+
             <el-col :span="11">
                 <el-form-item label="结束日期" :label-width="formLabelWidth">
                     <el-date-picker type="date" placeholder="选择结束日期" v-model="form.e_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
+
             <el-col :span="1">
                 <el-tooltip class="item" effect="dark" content="任务采集结束日期，不填写默认为9999-12-31" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="数据字符编码" :label-width="formLabelWidth">
-                    <el-select v-model="form.dataBaseCodevalue" placeholder="请选择数据字符编码" clearable style="width: 100%;">
+                    <el-select v-model="form.database_code" placeholder="请选择数据字符编码" clearable style="width: 100%;">
                         <el-option v-for="item in dataBaseCode" :key="item.value" :label="item.value" :value="item.code">
                         </el-option>
                     </el-select>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="采集方式" :label-width="formLabelWidth">
-                    <el-radio-group v-model="radio">
-                        <el-radio v-for="item in collect_type" :key="item.value" :label="item.value"></el-radio>
+                    <el-radio-group v-model="form.object_collect_type">
+                        <el-radio v-for="item in collect_type" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="启动方式" :label-width="formLabelWidth">
-                    <el-select v-model="form.runWayvalue" placeholder="请选择启动方式" clearable style="width: 100%;">
+                    <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code">
                         </el-option>
                     </el-select>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="行分隔符" :label-width="formLabelWidth">
-                    <el-input v-model="form.name"></el-input>
+                    <el-input v-model="form.remark"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="列分隔符" :label-width="formLabelWidth">
-                    <el-input v-model="form.name"></el-input>
+                    <el-input v-model="form.remark"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
                 <el-form-item label="是否为隐藏字符" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.resource">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.value"></el-radio>
+                    <el-radio-group v-model="form.is_sendok">
+                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-col>
+
             <el-col :span="18">
                 <el-form-item label="选择采集路径" :label-width="formLabelWidth">
-                    <el-input v-model="form.file_path"></el-input>
+                    <el-input v-model="form.file_path" :disabled="disabled">
+                        <template slot="prepend">
+                            <el-button @click="dialogSelectfolder = true">选择文件夹</el-button>
+                        </template>
+                        <template slot="append">
+                            <el-button type="primary">查看表</el-button>
+                        </template>
+                    </el-input>
                 </el-form-item>
             </el-col>
         </el-form>
     </el-row>
+
     <el-row class="partFour">
         <el-col :span="12">
             <el-button type="primary" @click="goBackQuit"> 返回</el-button>
         </el-col>
+
         <el-col :span="12">
             <div class="partFourDiv">
                 <el-button type="primary" style="float:right" @click="nextSteps"> 下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
+
+    <!-- 选择文件夹弹窗框 -->
+    <el-dialog title="选择文件夹" :visible.sync="dialogSelectfolder">
+        <div slot="footer" class="dialog-footer">
+            <el-tree show-checkbox accordion :data="data" :props="defaultProps" default-expand-all :filter-node-method="filterNode" ref="tree">
+            </el-tree>
+            <el-button @click="dialogSelectfolder = false" size="mini">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false" size="mini">确 定</el-button>
+        </div>
+    </el-dialog>
+
     <!-- <el-row class="partThree">
         <el-row>
             <el-col :span="8" class="tabcol">
@@ -169,20 +206,18 @@ export default {
     data() {
         return {
             form: {
-                name: "",
-                month: "",
-                week: "",
                 database_code: "",
-                dataBaseCodevalue: "",
-                runWayvalue: ""
+                run_way: "",
+                object_collect_type: "1",
+                is_sendok: "1"
             },
+            dialogSelectfolder: false,
             active: 0,
             collect_type: [],
             dataBaseCode: [],
             runWay: [],
-            YesNo:[],
-            disabled: true,
-            radio: 0,
+            YesNo: [],
+            disabled: false,
             formLabelWidth: "150px"
         }
     },
@@ -202,8 +237,13 @@ export default {
         // 下一步
         nextSteps() {
             this.$router.push({
-                name: "collectFileOption"
-            })
+                    name: "collectFileOption"
+                }),
+                functionAll.addObjectCollect(this.form).then((res) => {
+                    if (res && res.success) {
+                        console.log("100")
+                    }
+                })
         },
         // 获取代码项对应的值
         getCategoryItems(e) {

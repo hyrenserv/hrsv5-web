@@ -56,8 +56,6 @@
 
                             <el-button type="primary" size="mini" @click="addtask(scope.row.agent_type,scope.row.agent_id)">新增任务</el-button>
 
-                        
-
                         </el-col>
                         <el-col :span="8">
                             <el-button type="primary" size="mini" @click="taskManagement(scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
@@ -180,7 +178,7 @@ export default {
             }
         },
         // 新增任务  根据不同类型跳转不同页面
-        addtask(type,agent_id) {
+        addtask(type, agent_id) {
             if (type == "1") {
                 this.$router.push({
                     path: "/addTask"
@@ -188,13 +186,18 @@ export default {
             } else if (type == "2") {
 
             } else if (type == "3") {
-
+                this.$router.push({
+                    path: "/ftpCollect",
+                    query: {
+                        agent_id: agent_id
+                    }
+                });
             } else if (type == "4") {
 
             } else if (type == "5") {
                 this.$router.push({
                     path: "/collectOption",
-                     query: {
+                    query: {
                         agent_id: agent_id
                     }
                 });
@@ -208,8 +211,8 @@ export default {
                         agenId: agentid
                     }
                 });
-            }else if(type=="5"){
-                 this.$router.push({
+            } else if (type == "5") {
+                this.$router.push({
                     path: "/collectOption",
                     query: {
                         agenId: agentid

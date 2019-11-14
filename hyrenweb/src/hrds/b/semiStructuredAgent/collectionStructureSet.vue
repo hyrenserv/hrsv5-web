@@ -32,7 +32,7 @@
     </el-row>
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit"> 返回</el-button>
         </el-col>
         <el-col :span="12">
             <div class="partFourDiv">
@@ -52,11 +52,24 @@ export default {
         }
     },
     methods: {
+        // 返回上一级
+        goBackQuit() {
+            this.$router.push({
+                name: "agentList"
+            })
+        },
+        // 上一步
         backSteps() {
             this.$router.push({
                 name: "collectFileOption"
             })
-        }
+        },
+        // 下一步
+        nextSteps() {
+            this.$router.push({
+                name: "collectionStructureSet"
+            })
+        },
     },
 }
 </script>
