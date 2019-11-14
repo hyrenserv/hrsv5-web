@@ -125,6 +125,14 @@ export default new Router({
                     title: '采集文件设置',
                     component: () => import('@/hrds/b/semiStructuredAgent/collectionStructureSet.vue')
                 },
+
+                //ftp agent采集
+                {
+                    path: '/ftpCollect',
+                    name: 'ftpCollect',
+                    title: '采集文件设置',
+                    component: () => import('@/hrds/b/ftpCollect/ftpCollect.vue')
+                },
             ]
         },
 

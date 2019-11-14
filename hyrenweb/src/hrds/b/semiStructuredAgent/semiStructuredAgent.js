@@ -23,3 +23,14 @@ export function getCategoryItems(data) {
         params: data
     })
 }
+
+/**(2)
+ * 保存半结构化文件采集设置页面信息
+ */
+export function addObjectCollect(data) {
+    return request({
+        url: '/B/agent/objectcollect/addObjectCollect',
+        method: 'post',
+        params: data
+    })
+}
