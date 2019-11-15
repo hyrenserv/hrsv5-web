@@ -130,8 +130,15 @@ export default new Router({
                 {
                     path: '/ftpCollect',
                     name: 'ftpCollect',
-                    title: '采集文件设置',
+                    title: '采集ftp agent',
                     component: () => import('@/hrds/b/ftpCollect/ftpCollect.vue')
+                },
+                // 非结构化 Agent采集
+                {
+                    path: '/unstructuredAgent',
+                    name: 'configureStartMode',
+                    title: '配置启动方式',
+                    component: () => import('@/hrds/b/unstructuredAgent/configureStartMode.vue')
                 },
             ]
         },

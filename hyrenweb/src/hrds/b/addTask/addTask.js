@@ -140,7 +140,8 @@ export function saveSingleTbReplaceInfo(data) {
 // 全表清洗优先级提交保存
 export function saveAllTbCleanOrder(data) {
     return request({
-        url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanOrder',
+        // url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanOrder'
+        url:'/A/codes/getArry',
         method: 'post',
         params:data
     })
@@ -264,4 +265,5 @@ export function deleteColMergeInfo(data) {
         method: 'post',
         params:data
     })
+
 }
