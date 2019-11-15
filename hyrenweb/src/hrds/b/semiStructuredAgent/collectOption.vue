@@ -305,7 +305,8 @@ export default {
 /* 提示信息 */
 .collectOption .item {
     float: right;
-    margin-top: 12px;
+    /* margin-top: 12px; */
+    margin-top: 24%;
 }
 
 /* 选项卡作用描述信息 */

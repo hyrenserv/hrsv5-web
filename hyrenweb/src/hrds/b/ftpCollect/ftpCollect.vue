@@ -14,7 +14,7 @@
 
             <el-col :span="12">
                 <el-form-item label="ftp名称" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_name" placeholder="ftp名称"  :size="size"></el-input>
+                    <el-input v-model="form.ftp_name" placeholder="ftp名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -44,39 +44,39 @@
 
             <el-col :span="12">
                 <el-form-item label="ftp服务IP" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_ip" placeholder="ftp服务IP"  :size="size"></el-input>
+                    <el-input v-model="form.ftp_ip" placeholder="ftp服务IP" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="ftp服务端口" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_port" placeholder="ftp服务端口"  :size="size"></el-input>
+                    <el-input v-model="form.ftp_port" placeholder="ftp服务端口" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="ftp用户名" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_username" placeholder="ftp用户名"  :size="size"></el-input>
+                    <el-input v-model="form.ftp_username" placeholder="ftp用户名" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="ftp密码" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_password" placeholder="ftp密码"  :size="size"></el-input>
+                    <el-input v-model="form.ftp_password" placeholder="ftp密码" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="18">
                 <el-form-item label="ftp服务器目录" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_dir" placeholder="ftp服务器目录"  :size="size"></el-input>
+                    <el-input v-model="form.ftp_dir" placeholder="ftp服务器目录" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="18">
                 <el-form-item label="agent机器目录" :label-width="formLabelWidth">
-                    <el-input :disabled="disabled"  :size="size">
+                    <el-input :disabled="disabled" :size="size">
                         <template slot="prepend">
-                            <el-button @click="dialogSelectfolder = true">选择目录</el-button>
+                            <el-button @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
                         </template>
                     </el-input>
                 </el-form-item>
@@ -84,15 +84,21 @@
 
             <el-col :span="12">
                 <el-form-item label="是否实时读取" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.is_read_realtime">
+                    <el-radio-group v-model="form.is_read_realtime" @change="handerChange_realtime">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-col>
 
+            <el-col :span="12" v-if="showOrHidden_realtime">
+                <el-form-item label="实时读取间隔时间" :label-width="formLabelWidth">
+                    <el-input v-model="form.realtime_interval" placeholder="实时读取间隔时间 单位：秒" :size="size"></el-input>
+                </el-form-item>
+            </el-col>
+
             <el-col :span="12">
-                <el-form-item label="ftp模式" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.ftp_model">
+                <el-form-item label="ftp推拉模式" :label-width="formLabelWidth">
+                    <el-radio-group v-model="form.ftp_model" @change="handerChange_model">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -107,17 +113,26 @@
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :span="12" v-if="showOrHidden_unzip">
                 <el-form-item label="是否解压" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.is_unzip">
+                    <el-radio-group v-model="form.is_unzip" @change="handerChange_unzip">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-col>
 
+            <el-col :span="12" v-if="showOrHidden_reduce">
+                <el-form-item label="解压方式" :label-width="formLabelWidth">
+                    <el-select v-model="form.reduce_type" placeholder="请选择解压方式" clearable style="width: 100%;">
+                        <el-option v-for="item in reduceType" :key="item.value" :label="item.value" :value="item.code">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
             <el-col :span="12">
                 <el-form-item label="获取文件后缀" :label-width="formLabelWidth">
-                    <el-input v-model="form.file_suffix" placeholder="文件后缀名称"  :size="size"></el-input>
+                    <el-input v-model="form.file_suffix" placeholder="文件后缀名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -153,25 +168,43 @@ export default {
     data() {
         return {
             form: {
-
+                is_read_realtime: "0",
+                ftp_model: "0",
+                is_unzip: "0"
             },
             FtpRule: [],
             dataBaseCode: [],
             runWay: [],
             YesNo: [],
+            reduceType: [],
             disabled: true,
-            size:"medium",
+            showOrHidden_realtime: false,
+            showOrHidden_reduce: false,
+            showOrHidden_unzip: false,
+            size: "medium",
+            params: "",
             formLabelWidth: "150px"
         }
     },
     created() {
-        // functionAll.selectPath({
-        //     agent_id: this.$route.query.agent_id
-        // }).then((res) => {
-        //     if (res && res.success) {
-        //         console.log("908")
-        //     }
-        // }),
+        // //// 是否实时读取判断是否实时读取间隔时间
+        if (this.form.is_read_realtime == "0") {
+            this.showOrHidden_realtime = false;
+        } else if (this.form.is_read_realtime == "1") {
+            this.showOrHidden_realtime = true;
+        };
+        // 是否解压控制解压类型
+        if (this.form.is_unzip == "0") {
+            this.showOrHidden_reduce = false;
+        } else if (this.form.is_unzip == "1") {
+            this.showOrHidden_reduce = true;
+        };
+        // 是否推拉模式控制是否解压
+        if (this.form.ftp_model == "0") {
+            this.showOrHidden_unzip = true;
+        } else if (this.form.ftp_model == "1") {
+            this.showOrHidden_unzip = false;
+        };
         this.getCategoryItems("IsFlag");
         this.getCategoryItems("ExecuteWay");
         this.getCategoryItems("FtpRule");
@@ -193,12 +226,12 @@ export default {
                         this.FtpRule = res.data;
                     }
                 })
-            } else if (e == "DataBaseCode") {
+            } else if (e == "ReduceType") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
                     if (res && res.success) {
-                        this.dataBaseCode = res.data;
+                        this.reduceType = res.data;
                     }
                 })
             } else if (e == "ExecuteWay") {
@@ -228,6 +261,46 @@ export default {
 
                 }
             })
+        },
+        // 是否实时读取控制实时读取间隔时间
+        handerChange_realtime(val) {
+            if (val == 1) {
+                this.showOrHidden_realtime = true;
+            } else if (val == 0) {
+                this.showOrHidden_realtime = false;
+            }
+        },
+        // 是否推拉模式控制是否解压
+        handerChange_model(val) {
+            if (val == 1) {
+                this.showOrHidden_unzip = false;
+            } else if (val == 0) {
+                this.showOrHidden_unzip = true;
+            }
+        },
+        // 是否解压控制解压类型
+        handerChange_unzip(val) {
+            if (val == 1) {
+                this.showOrHidden_reduce = true;
+                this.getCategoryItems("ReduceType");
+            } else if (val == 0) {
+                this.showOrHidden_reduce = false;
+            }
+        },
+        // 获取目录结构
+        seletFilePath() {
+            let arry = []
+            functionAll.selectPath({
+                agent_id: this.$route.query.agent_id,
+                path: "/"
+            }).then((res) => {
+                if (res && res.success) {
+                    for (let i = 0; i < res.data.length; i++) {
+                        arry.push({child:res.data[i].split("^")[0]});
+                    }
+                    console.log(arry);
+                }
+            });
         }
     }
 
@@ -262,6 +335,7 @@ export default {
 /* 提示信息 */
 .ftpCollect .item {
     float: right;
-    margin-top: 12px;
+    /* margin-top: 12px; */
+    margin-top: 24%;
 }
 </style>
