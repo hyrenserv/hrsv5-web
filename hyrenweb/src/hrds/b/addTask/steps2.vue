@@ -1008,7 +1008,7 @@ export default {
         console.log(res);
       });
     },
-    // 优先级排序sort
+    // 优先级排序sort1
     // priorityOrdSortFun(){
     // }
     //

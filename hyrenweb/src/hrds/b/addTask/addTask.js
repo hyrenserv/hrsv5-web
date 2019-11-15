@@ -257,7 +257,7 @@ export function saveColMergeInfo(data) {
         params:data
     })
 }
-// 列清洗-列合并删除
+// 列清洗-列合并删除s
 export function deleteColMergeInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/deleteColMergeInfo',
