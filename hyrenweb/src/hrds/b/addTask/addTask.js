@@ -140,8 +140,7 @@ export function saveSingleTbReplaceInfo(data) {
 // 全表清洗优先级提交保存
 export function saveAllTbCleanOrder(data) {
     return request({
-        // url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanOrder'
-        url:'/A/codes/getArry',
+        url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanOrder',
         method: 'post',
         params:data
     })
@@ -150,6 +149,118 @@ export function saveAllTbCleanOrder(data) {
 export function getColumnInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColumnInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 列清洗--根据列ID获得列字符补齐信息
+export function getColCompletionInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getColCompletionInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-字符补齐保存 
+export function saveColCompletionInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveColCompletionInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 列清洗--根据列ID获得列字符替换信息
+export function getColReplaceInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getColReplaceInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-字符替换保存 
+export function saveColReplaceInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveColReplaceInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-日期格式化 
+export function getDateFormatInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getDateFormatInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 列清洗-日期格式化保存 
+export function saveDateFormatInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveDateFormatInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 列清洗-列拆分
+export function getColSplitInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getColSplitInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-列拆分保存 
+export function saveColSplitInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveColSplitInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-列拆分删除  agent/dbagentconf/cleanconf/deleteColSplitInfo
+export function deleteColSplitInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/deleteColSplitInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-清洗优先级保存 
+export function saveColCleanOrder(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveColCleanOrder',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-整表优先级保存
+export function saveSingleTbCleanOrder(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveSingleTbCleanOrder',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-列合并 agent/dbagentconf/cleanconf/getColMergeInfo
+export function getColMergeInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/getColMergeInfo',
+        method: 'post',
+        params:data
+    })
+}
+//列清洗-列合并保存
+export function saveColMergeInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/saveColMergeInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 列清洗-列合并删除
+export function deleteColMergeInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/cleanconf/deleteColMergeInfo',
         method: 'post',
         params:data
     })
