@@ -82,7 +82,13 @@
       class="locationcenter"
     ></el-pagination>
     <!-- 表-字符补齐 -->
-    <el-dialog title="字符补齐" :visible.sync="dialogTable_zfbq" width="50%" class="alltable">
+    <el-dialog
+      title="字符补齐"
+      :visible.sync="dialogTable_zfbq"
+      width="50%"
+      class="alltable"
+      @close="Table_zfbqclose()"
+    >
       <el-form ref="form" :model="table_zfbq" label-width="240px" text-align="center">
         <el-form-item label="补齐方式">
           <el-radio-group v-model="table_zfbq.filling_type">
@@ -110,7 +116,13 @@
       </div>
     </el-dialog>
     <!-- 表-字符替换 -->
-    <el-dialog title="字符替换" :visible.sync="dialogTable_zfth" width="50%" class="alltable">
+    <el-dialog
+      title="字符替换"
+      :visible.sync="dialogTable_zfth"
+      width="50%"
+      class="alltable"
+      @close="Table_zfthclose()"
+    >
       <el-button
         type="success"
         width="20"
@@ -308,7 +320,7 @@
           </el-table-column>
           <el-table-column property="splitflag" label="列拆分" width="80px" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.splitflag"  :checked="scope.row.splitflag!=0"></el-checkbox>
+              <el-checkbox v-model="scope.row.splitflag" :checked="scope.row.splitflag!=0"></el-checkbox>
               <span
                 class="settingbtn"
                 v-if="scope.row.splitflag!=0"
@@ -335,7 +347,7 @@
           </el-table-column>
           <el-table-column label="清洗优先级" align="center">
             <template scope="scope">
-              <el-button type="success" @click="yxjFun(scope.row)" size="mini">优先级调整</el-button>
+              <el-button type="success" @click="yxjFun(scope.$index,scope.row)" size="mini">优先级调整</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -353,39 +365,54 @@
       </div>
     </el-dialog>
     <!-- 选择列-字符补齐弹框 -->
-    <el-dialog title="字符补齐" :visible.sync="dialogCol_zfbq" width="50%" class="alltable">
+    <el-dialog
+      title="字符补齐"
+      :visible.sync="dialogCol_zfbq"
+      width="50%"
+      class="alltable"
+      @close="Col_zfbqCloseFun()"
+    >
       <el-form ref="form" :model="Col_zfbq" label-width="240px" text-align="center">
         <el-form-item label="补齐方式">
-          <el-radio-group v-model="Col_zfbq.type">
-            <el-radio label="前补齐"></el-radio>
-            <el-radio label="后补齐"></el-radio>
+          <el-radio-group v-model="Col_zfbq.filling_type">
+            <el-radio
+              v-for="(item,index) in FillingType"
+              :key="index"
+              :label="item.code"
+            >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="补齐字符">
-          <el-input v-model="Col_zfbq.nm" style="width:190px" size="medium"></el-input>
+          <el-input v-model="Col_zfbq.character_filling" style="width:190px" size="medium"></el-input>
         </el-form-item>
         <el-form-item label="补齐长度">
-          <el-input v-model="Col_zfbq.length" style="width:190px" size="medium"></el-input>
+          <el-input v-model="Col_zfbq.filling_length" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_zfbq = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_zfbq = false" size="mini">确 定</el-button>
+        <el-button @click="Col_zfbqCloseFun()" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="Col_zfbqSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列-字符替换弹框 -->
-    <el-dialog title="字符替换" :visible.sync="dialogCol_zfth" width="50%" class="alltable">
+    <el-dialog
+      title="字符替换"
+      :visible.sync="dialogCol_zfth"
+      width="50%"
+      class="alltable"
+      @close="Col_zfthCloseFun()"
+    >
       <el-button type="success" size="mini" width="20" @click="addRow(Col_zfth)" class="addline">新增行</el-button>
       <el-table :data="Col_zfth" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="oldCharacter" label="原字符" align="center">
+        <el-table-column property="field" label="原字符" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.oldCharacter" placeholder="原字符" size="medium"></el-input>
+            <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
           </template>
         </el-table-column>
-        <el-table-column property="newCharacter" label="替换后字符" align="center">
+        <el-table-column property="replace_feild" label="替换后字符" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符" size="medium"></el-input>
+            <el-input v-model="scope.row.replace_feild" placeholder="替换后字符" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -404,30 +431,45 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_zfth = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_zfth = false" size="mini">确 定</el-button>
+        <el-button @click="Col_zfthCloseFun()" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="Col_zfthSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列-日期格式化弹框 -->
-    <el-dialog title="日期格式化" :visible.sync="dialogCol_rqgsh" width="50%" class="alltable">
+    <el-dialog
+      title="日期格式化"
+      :visible.sync="dialogCol_rqgsh"
+      width="50%"
+      class="alltable"
+      @close="Col_rqgshCloseFun()"
+    >
       <el-form ref="form" :model="Col_rqgsh" label-width="240px" text-align="center">
         <el-form-item label="原格式">
-          <el-input v-model="Col_rqgsh.oldtype" style="width:190px" size="medium"></el-input>
+          <el-input v-model="Col_rqgsh.old_format" style="width:190px" size="medium"></el-input>
         </el-form-item>
         <el-form-item label="转换格式">
-          <el-input v-model="Col_rqgsh.newtype" style="width:190px" size="medium"></el-input>
+          <el-input v-model="Col_rqgsh.convert_format" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_rqgsh = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_rqgsh = false" size="mini">确 定</el-button>
+        <el-button @click="Col_rqgshCloseFun()" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="Col_rqgshSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--选择列-列拆分弹框  -->
-    <el-dialog title :visible.sync="dialogCol_colcf" width="70%" class="alltable">
+    <el-dialog
+      title
+      :visible.sync="dialogCol_colcf"
+      width="70%"
+      class="alltable"
+      @close="Col_colcfCloseFun()"
+    >
       <div slot="title" class="header-title">
         <span class="title">列拆分(拆分的是最后的数据)&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="title">列名称:134</span>
+        <span class="title">
+          列名称:
+          <p class="topcolumename">{{columechname}}({{columename}})</p>
+        </span>
       </div>
       <el-button
         type="success"
@@ -438,37 +480,54 @@
       >新增行</el-button>
       <el-table :data="Col_colcf" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="name" label="字段名称" align="center" width="140px">
+        <el-table-column property="col_name" label="字段名称" align="center" width="140px">
           <template scope="scope">
-            <el-input v-model="scope.row.name" placeholder="字段名称"></el-input>
+            <el-input v-model="scope.row.col_name" placeholder="字段名称" size="medium"></el-input>
           </template>
         </el-table-column>
-        <el-table-column property="chNamw" label="中文名称" align="center" width="140px">
+        <el-table-column property="col_zhname" label="中文名称" align="center" width="140px">
           <template scope="scope">
-            <el-input v-model="scope.row.chNamw" placeholder="中文名称" size="medium"></el-input>
+            <el-input v-model="scope.row.col_zhname" placeholder="中文名称" size="medium"></el-input>
           </template>
         </el-table-column>
-        <el-table-column property="cftype" label="拆分方式" align="center" width="180px">
+        <el-table-column property="split_type" label="拆分方式" align="center" width="180px">
           <template scope="scope">
             <el-select
               placeholder="选择"
-              v-model="scope.row.cftype"
+              v-model="scope.row.split_type"
               style="width:150px"
               size="medium"
             >
-              <el-option label="自定义变量" value="1"></el-option>
-              <el-option label="偏移量" value="2"></el-option>
+              <el-option
+                v-for="(item,index) in CharSplitType"
+                :key="index"
+                :label="item.value"
+                :value="item.code"
+              ></el-option>
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column property="pyl" label="偏移量/字符拆分" align="center" width="140px">
+        <el-table-column property="pyl" label="偏移量/字符拆分" align="center" width="160px">
           <template scope="scope">
-            <el-input v-model="scope.row.pyl" placeholder="偏移量/字符拆分" size="medium"></el-input>
+            <el-input
+              v-if="scope.row.split_type==1"
+              v-model="scope.row.col_offset"
+              placeholder="偏移量"
+              size="medium"
+            ></el-input>
+            <div class="demo-input-suffix" v-if="scope.row.split_type==2">
+              分隔符：
+              <el-input placeholder="分隔符" v-model="scope.row.split_sep" size="mini"></el-input>
+            </div>
+            <div class="demo-input-suffix" v-if="scope.row.split_type==2">
+              值位置：
+              <el-input placeholder="值位置" v-model="scope.row.seq" size="mini"></el-input>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column property="zftype" label="类型" align="center" width="140px">
+        <el-table-column property="col_type" label="类型" align="center" width="140px">
           <template scope="scope">
-            <el-input v-model="scope.row.zftype" placeholder="varchar(80)" size="medium"></el-input>
+            <el-input v-model="scope.row.col_type" placeholder="varchar(80)" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -479,7 +538,7 @@
                   style="color:red"
                   type="text"
                   circle
-                  @click="DelRowFun(scope.$index, Col_colcf)"
+                  @click="Col_colcfDelFun(scope.$index, Col_colcf)"
                 >删除</el-button>
               </el-col>
             </el-row>
@@ -487,8 +546,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_colcf = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_colcf = false" size="mini">确 定</el-button>
+        <el-button @click="Col_colcfCloseFun()" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="Col_colcfSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--选择列-码值转换弹框  -->
@@ -537,14 +596,17 @@
       </div>
     </el-dialog>
     <!--选择列-优先级调整弹框  -->
-    <el-dialog title :visible.sync="dialogtableCleanOrd" width="50%">
+    <el-dialog title :visible.sync="dialogtableCleanOrd" width="50%" @close="Col_yxjCloseFun()">
       <div slot="title" class="header-title">
         <span class="title">清洗排序&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="title">表名:134</span>
+        <span class="title">
+          列名称:
+          <p class="topcolumename">{{columechname}}({{columename}})</p>
+        </span>
       </div>
       <el-table :data="tableCleanOrdData" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="tableCleanOrdCon" label="内容" align="center"></el-table-column>
+        <el-table-column property="value" label="内容" align="center"></el-table-column>
         <el-table-column label="操作" width="160px" align="center">
           <template slot-scope="scope">
             <el-button
@@ -565,8 +627,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogtableCleanOrd = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogtableCleanOrd = false" size="mini">确 定</el-button>
+        <el-button @click="Col_yxjCloseFun()" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="Col_yxjSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!--整表优先级-->
@@ -577,7 +639,7 @@
       </div>
       <el-table :data="AlltableCleanOrdData" border size="medium" highlight-current-row>
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="tableCleanOrdCon" label="内容" align="center"></el-table-column>
+        <el-table-column property="value" label="内容" align="center"></el-table-column>
         <el-table-column label="操作" width="160px" align="center">
           <template slot-scope="scope">
             <el-button
@@ -598,8 +660,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAlltableCleanOrd = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogAlltableCleanOrd = false" size="mini">确 定</el-button>
+        <el-button @click="dialogAlltableCleanOrd = false;" type="danger" size="mini">取 消</el-button>
+        <el-button type="primary" @click="AlltableCleanOrdSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 列合并 -->
@@ -618,27 +680,27 @@
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column label="选择" align="center">
           <template scope="scope">
-            <el-button type="success" @click="colSelectFun(scope.rows)" size="mini">列选择</el-button>
+            <el-button type="success" @click="colSelectFun(scope.$index,scope.rows)" size="mini">列选择</el-button>
           </template>
         </el-table-column>
-        <el-table-column property="colName" label="列名" align="center">
+        <el-table-column property="col_name" label="列名" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colName" placeholder="列名" size="medium"></el-input>
+            <el-input v-model="scope.row.col_name" placeholder="列名" size="medium"></el-input>
           </template>
         </el-table-column>
-        <el-table-column property="colMerchName" label="合并列名" align="center">
+        <el-table-column property="old_name" label="合并列名" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colMerchName" placeholder="合并列名" size="medium"></el-input>
+            <el-input v-model="scope.row.old_name" placeholder="合并列名" size="medium"></el-input>
           </template>
         </el-table-column>
-        <el-table-column property="colMerchName" label="合并列中文名" align="center">
+        <el-table-column property="col_zhname" label="合并列中文名" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colMerchName" placeholder="合并列中文名" size="medium"></el-input>
+            <el-input v-model="scope.row.col_zhname" placeholder="合并列中文名" size="medium"></el-input>
           </template>
         </el-table-column>
-        <el-table-column property="colMertype" label="字段类型" align="center">
+        <el-table-column property="col_type" label="字段类型" align="center">
           <template scope="scope">
-            <el-input v-model="scope.row.colMertype" placeholder="字段类型" size="medium"></el-input>
+            <el-input v-model="scope.row.col_type" placeholder="字段类型" size="medium"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -650,7 +712,7 @@
                   size="medium"
                   type="text"
                   circle
-                  @click="DelRowFun(scope.$index,columnMerge)"
+                  @click="columnMergeDelFun(scope.$index,columnMerge)"
                 >删除</el-button>
               </el-col>
             </el-row>
@@ -659,23 +721,21 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogcolumnMerge = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogcolumnMerge= false" size="mini">确 定</el-button>
+        <el-button type="primary" @click="columnMergeSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列 -->
     <el-dialog title="列信息" :visible.sync="dialogcolSelectData" width="70%" class="alltable">
       <el-table
-        :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)"
+        :data="colSelectData"
         border
         size="medium"
         highlight-current-row
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column property="colName" label="列名称" align="center">
-          <span>列名称</span>
+        <el-table-column property="colume_name" label="列名称" align="center">
         </el-table-column>
-        <el-table-column property="colchName" label="中文名" align="center">
-          <span>中文名</span>
+        <el-table-column property="colume_ch_name" label="中文名" align="center">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -719,7 +779,7 @@ export default {
       colClean_currentPage: 1,
       colClean_pagesize: 10,
       colSelect_currentPage: 1,
-      colSelect_pagesize: 10,
+      colSelect_pagesize: 5,
       cleantableData: [
         {
           compflag: 0,
@@ -729,6 +789,7 @@ export default {
       ],
       cleancurrentPage: 1,
       cleanpagesize: 5,
+      priorityData: [],
       tableCleanData: [],
       allTableCleanSettingData: [
         {
@@ -747,14 +808,14 @@ export default {
         filling_length: ""
       },
       Col_zfbq: {
-        type: "",
-        nm: "",
-        length: ""
+        filling_type: "",
+        character_filling: "",
+        filling_length: ""
       },
       Col_zfth: [
         {
-          oldCharacter: "",
-          newCharacter: ""
+          field: "",
+          replace_feild: ""
         }
       ],
       table_zfth: [
@@ -764,16 +825,18 @@ export default {
         }
       ],
       Col_rqgsh: {
-        oldtype: "",
-        newtype: ""
+        old_format: "",
+        convert_format: ""
       },
       Col_colcf: [
         {
-          name: "",
-          chNamw: "",
-          cftype: "",
-          pyl: "",
-          zftype: ""
+          col_name: "",
+          col_zhname: "",
+          split_type: "",
+          col_offset: "",
+          seq: "",
+          split_sep: "",
+          col_type: ""
         }
       ],
       Col_mzzh: [
@@ -790,8 +853,8 @@ export default {
       ],
       colCleanData: [
         {
-          colume_name: "13",
-          colume_ch_name: "3124",
+          colume_name: "",
+          colume_ch_name: "",
           compflag: "",
           replaceflag: "",
           formatflag: "",
@@ -808,27 +871,9 @@ export default {
           tableCleanOrdCon: "1"
         }
       ],
-      AlltableCleanOrdData: [
-        {
-          tableCleanOrdCon: "1"
-        },
-        {
-          tableCleanOrdCon: "1"
-        }
-      ],
-      columnMerge: [
-        {
-          colName: "",
-          colMerchName: "",
-          colMerchName: "",
-          colMertype: ""
-        }
-      ],
+      AlltableCleanOrdData: [],
+      columnMerge: [],
       colSelectData: [
-        {
-          colName: "",
-          colchName: ""
-        }
       ],
       databaseId: "",
       FillingType: [],
@@ -845,16 +890,23 @@ export default {
           split: 6,
           trim: 7
         }
-      ]
+      ],
+      columnid: null,
+      columnindex: null,
+      columechname: "",
+      columename: "",
+      CharSplitType: [],
+      tableid: ""
     };
   },
   mounted() {
     this.cleantableDataFun();
-    let params2 = {};
-    params2["category"] = "FillingType";
-    addTaskAllFun.getCategoryItems(params2).then(res => {
+    let params = {};
+    params["category"] = "FillingType";
+    addTaskAllFun.getCategoryItems(params).then(res => {
       this.FillingType = res.data;
     });
+    this.priorityDataFun();
   },
   methods: {
     clean_handleSizeChange(size) {
@@ -911,23 +963,27 @@ export default {
       params["replaceFlag"] = this.allTableCleanSettingData == "" ? "0" : "1";
       params["compFlag"] = this.characterCompletion == "" ? "0" : "1";
       addTaskAllFun.saveAllTbCleanConfigInfo(params).then(res => {
-        message.updateSuccess(res);
+        message.saveSuccess(res);
         this.colSetid = null;
       });
     },
     // 全表清洗优先级
     allTableCleanPriorityFun(id) {
       this.colSetid = id;
+      this.tableCleanData = this.priorityData;
+    },
+    // 优先级默认显示数据
+    priorityDataFun() {
       let params = {};
       params["category"] = "CleanType";
       addTaskAllFun.getCategoryItems(params).then(res => {
-        this.tableCleanData = res.data;
+        this.priorityData = res.data;
       });
     },
     // 全表清洗优先级确定提交
     allTableCleanPrioritySubmitFun() {
-      var alltable = JSON.parse(JSON.stringify(this.cleantableData));
-      var ordarr = JSON.parse(JSON.stringify(this.tableCleanData));
+      let alltable = JSON.parse(JSON.stringify(this.cleantableData));
+      let ordarr = JSON.parse(JSON.stringify(this.tableCleanData));
       let arr = [];
       for (var i = 0; i < alltable.length; i++) {
         for (var j in alltable[i]) {
@@ -936,7 +992,7 @@ export default {
           }
         }
       }
-      var ord = JSON.parse(JSON.stringify(this.cleanord));
+      let ord = JSON.parse(JSON.stringify(this.cleanord));
       ord[0].complement = ordarr[0].code;
       ord[0].replacement = ordarr[1].code;
       ord[0].formatting = ordarr[2].code;
@@ -945,13 +1001,16 @@ export default {
       ord[0].split = ordarr[5].code;
       ord[0].trim = ordarr[6].code;
       let params = {};
-      // params["sort"] = ord[0];
-      params["ary"] = arr;
+      params["sort"] = ord[0];
+      params["tableIds"] = arr;
       console.log(params);
       addTaskAllFun.saveAllTbCleanOrder(params).then(res => {
         console.log(res);
       });
     },
+    // 优先级排序sort
+    // priorityOrdSortFun(){
+    // }
     //
     colClean_handleSizeChange(size) {
       this.colClean_pagesize = size;
@@ -998,19 +1057,22 @@ export default {
     },
     // 表选择列点击
     selectCol(index, row) {
+      console.log(row);
       this.dialogColClean = true;
       let id = row.table_id;
       this.selectColPageFun(id);
     },
     // 选择列弹框出现翻页渲染
     selectColPageFun(id) {
+      this.tableid = id;
       let params = {};
       params["tableId"] = id;
       params["currPage"] = this.colClean_currentPage;
       params["pageSize"] = this.colClean_pagesize;
+      console.log(params)
       addTaskAllFun.getColumnInfo(params).then(res => {
-        console.log(res);
         this.colCleanData = res.data;
+        console.log(res)
       });
     },
     //表字符补齐显示
@@ -1053,6 +1115,7 @@ export default {
       params["filling_type"] = this.table_zfbq.filling_type;
       params["table_id"] = this.cleantableData[this.index].table_id;
       addTaskAllFun.saveSingleTbCompletionInfo(params).then(res => {
+        message.saveSuccess(res);
         this.cleantableData[this.index].compflag = true;
         this.index = null;
         this.changecheck = null;
@@ -1095,37 +1158,262 @@ export default {
       params["tableId"] = this.cleantableData[this.index].table_id;
       console.log(params);
       addTaskAllFun.saveSingleTbReplaceInfo(params).then(res => {
+        message.saveSuccess(res);
         this.cleantableData[this.index].replaceflag = true;
         this.index = null;
         this.changecheck = null;
       });
     },
+    // 列清洗-字符补齐方法
     zfbqFun(index, row) {
       this.dialogCol_zfbq = true;
+      this.columnid = row.column_id;
+      this.columnindex = index;
+      if (row.compflag != 0) {
+        let params = {};
+        params["columnId"] = row.column_id;
+        addTaskAllFun.getColCompletionInfo(params).then(res => {
+          this.Col_zfbq = res.data[0];
+        });
+      }
     },
+    Col_zfbqCloseFun() {
+      this.dialogCol_zfbq = false;
+      this.columnid = null;
+      this.columnindex = null;
+      this.Col_zfbq.filling_type = "";
+      this.Col_zfbq.character_filling = "";
+      this.Col_zfbq.filling_length = "";
+    },
+    Col_zfbqSubmitFun() {
+      this.dialogCol_zfbq = false;
+      let params = {};
+      params["column_id"] = this.columnid;
+      params["character_filling"] = this.Col_zfbq.character_filling;
+      params["filling_length"] = this.Col_zfbq.filling_length;
+      params["filling_type"] = this.Col_zfbq.filling_type;
+      addTaskAllFun.saveColCompletionInfo(params).then(res => {
+        message.saveSuccess(res);
+        this.colCleanData[this.columnindex].compflag = true;
+        this.columnid = null;
+        this.columnindex = null;
+        this.Col_zfbq.filling_type = "";
+        this.Col_zfbq.character_filling = "";
+        this.Col_zfbq.filling_length = "";
+      });
+    },
+    // 列清洗-字符替换方法
     zfthFun(index, row) {
       this.dialogCol_zfth = true;
+      this.columnid = row.column_id;
+      this.columnindex = index;
+      if (row.replaceflag != 0) {
+        let params = {};
+        params["columnId"] = row.column_id;
+        addTaskAllFun.getColReplaceInfo(params).then(res => {
+          this.Col_zfth = res.data;
+          console.log(res);
+        });
+      }
     },
+    Col_zfthCloseFun() {
+      this.dialogCol_zfth = false;
+      this.columnid = null;
+      this.columnindex = null;
+      this.Col_zfth = [];
+    },
+    Col_zfthSubmitFun() {
+      this.dialogCol_zfth = false;
+      let arr = [];
+      let list = this.Col_zfth;
+      let a = this.columnindex;
+      list.map((item, index) => {
+        arr.push(
+          Object.assign({}, item, { clean_type: "2", column_id: this.columnid })
+        );
+      });
+      let params = {};
+      params["columnId"] = this.columnid;
+      params["replaceString"] = JSON.stringify(arr);
+      addTaskAllFun.saveColReplaceInfo(params).then(res => {
+        message.saveSuccess(res);
+        this.colCleanData[a].replaceflag = true;
+        this.columnid = null;
+        this.columnindex = null;
+        this.Col_zfth = [];
+      });
+    },
+    //列清洗-日期格式化方法
     rqgshFun(index, row) {
       this.dialogCol_rqgsh = true;
+      this.columnid = row.column_id;
+      this.columnindex = index;
+      if (row.formatflag != 0) {
+        let params = {};
+        params["columnId"] = row.column_id;
+        addTaskAllFun.getDateFormatInfo(params).then(res => {
+          this.Col_rqgsh = res.data[0];
+        });
+      }
     },
+    Col_rqgshCloseFun() {
+      this.dialogCol_rqgsh = false;
+      this.columnid = null;
+      this.columnindex = null;
+      this.Col_rqgsh.old_format = "";
+      this.Col_rqgsh.convert_format = "";
+    },
+    Col_rqgshSubmitFun() {
+      this.dialogCol_rqgsh = false;
+      let a = this.columnindex;
+      let params = {};
+      params["column_id"] = this.columnid;
+      params["old_format"] = this.Col_rqgsh.old_format;
+      params["convert_format"] = this.Col_rqgsh.convert_format;
+      addTaskAllFun.saveDateFormatInfo(params).then(res => {
+        message.saveSuccess(res);
+        this.colCleanData[a].formatflag = true;
+        this.columnid = null;
+        this.columnindex = null;
+        this.Col_rqgsh.old_format = "";
+        this.Col_rqgsh.convert_format = "";
+      });
+    },
+    //列清洗-列拆分方法
     colcfFun(index, row) {
+      this.columechname = row.colume_ch_name;
+      this.columename = row.colume_name;
       this.dialogCol_colcf = true;
+      this.columnid = row.column_id;
+      this.columnindex = index;
+      if (row.splitflag != 0) {
+        let params = {};
+        params["columnId"] = row.column_id;
+        addTaskAllFun.getColSplitInfo(params).then(res => {
+          this.Col_colcf = res.data;
+          console.log(res.data, 1);
+        });
+      }
+      let params1 = {};
+      params1["category"] = "CharSplitType";
+      addTaskAllFun.getCategoryItems(params1).then(res => {
+        this.CharSplitType = res.data;
+      });
     },
+    Col_colcfCloseFun() {
+      this.dialogCol_colcf = false;
+      this.columnid = null;
+      this.columnindex = null;
+      this.Col_colcf = [];
+    },
+    Col_colcfSubmitFun() {
+      this.dialogCol_colcf = false;
+      let a = this.columnindex;
+      let params = {};
+      params["column_id"] = this.columnid;
+      params["tableId"] = this.tableid;
+      if (this.Col_colcf[0].col_clean_id) {
+        params["col_clean_id"] = this.Col_colcf[0].col_clean_id;
+      }
+      params["columnSplitString"] = JSON.stringify(this.Col_colcf);
+      addTaskAllFun.saveColSplitInfo(params).then(res => {
+        message.saveSuccess(res);
+        this.colCleanData[a].splitflag = true;
+        this.columnid = null;
+        this.columnindex = null;
+        this.Col_colcf = [];
+      });
+    },
+    Col_colcfDelFun(index, rows) {
+      let params = {};
+      params["colCleanId"] = rows[index].col_clean_id;
+      params["colSplitId"] = rows[index].col_split_id;
+      addTaskAllFun.deleteColSplitInfo(params).then(res => {
+        rows.splice(index, 1);
+        message.deleteSuccess(res);
+      });
+    },
+    //列清洗-码值转换方法
     mzzhFun(index, row) {
       this.dialogCol_mzzh = true;
     },
-    yxjFun(row) {
+    //列清洗-优先级调整
+    yxjFun(index, row) {
       this.dialogtableCleanOrd = true;
+      this.columechname = row.colume_ch_name;
+      this.columename = row.colume_name;
+      this.columnid = row.column_id;
+      this.tableCleanOrdData = this.priorityData;
     },
+    Col_yxjCloseFun() {
+      this.dialogtableCleanOrd = false;
+    },
+    Col_yxjSubmitFun() {
+      this.dialogtableCleanOrd = false;
+      let ordarr = JSON.parse(JSON.stringify(this.tableCleanOrdData));
+      let ord = JSON.parse(JSON.stringify(this.cleanord));
+      ord[0].complement = ordarr[0].code;
+      ord[0].replacement = ordarr[1].code;
+      ord[0].formatting = ordarr[2].code;
+      ord[0].conversion = ordarr[3].code;
+      ord[0].merge = ordarr[4].code;
+      ord[0].split = ordarr[5].code;
+      ord[0].trim = ordarr[6].code;
+      let params = {};
+      params["columnId"] = this.columnid;
+      params["sort"] = ord[0];
+      addTaskAllFun.saveColCleanOrder(params).then(res => {
+        message.saveSuccess(res);
+        console.log("列清洗优先级显示有问题");
+      });
+    },
+    //列清洗-整表优先级
     allTableOrd() {
       this.dialogAlltableCleanOrd = true;
+      this.AlltableCleanOrdData = this.priorityData;
     },
+    //列清洗-整表优先级提交
+    AlltableCleanOrdSubmitFun() {
+      // saveSingleTbCleanOrder  调整接口中
+    },
+    // 列清洗-列合并
     columnMergeFun() {
       this.dialogcolumnMerge = true;
+      // getColMergeInfo
+      let params = {};
+      params["tableId"] = this.tableid;
+      addTaskAllFun.getColMergeInfo(params).then(res => {
+        console.log(res);
+        this.columnMerge = res.data;
+      });
     },
-    colSelectFun(row) {
+    columnMergeSubmitFun() {
+      this.dialogcolumnMerge = false;
+      let params = {};
+      params["tableId"] = this.tableid;
+      params["columnMergeString"] = JSON.stringify(this.columnMerge);
+      addTaskAllFun.saveColMergeInfo(params).then(res => {
+        console.log(res);
+      });
+    },
+    columnMergeDelFun(index, rows) {
+      let params = {};
+      params["colMergeId"] = rows[index].col_merge_id;
+      addTaskAllFun.deleteColMergeInfo(params).then(res => {
+        rows.splice(index, 1);
+        message.deleteSuccess(res);
+      });
+    },
+    colSelectFun(index, row) {
       this.dialogcolSelectData = true;
+       let params = {};
+      params["tableId"] = this.tableid;
+      params["currPage"] = this.colSelect_currentPage;
+      params["pageSize"] = this.colSelect_pagesize;
+      addTaskAllFun.getColumnInfo(params).then(res => {
+        this.colSelectData = res.data;
+        console.log(res)
+      });
     }
   }
 };
@@ -1204,5 +1492,18 @@ export default {
   margin-left: 10px;
   font-size: 14px;
   font-weight: bold;
+}
+.topcolumename {
+  display: inline-block;
+  background: #f3eded;
+  color: #ec0b35;
+  padding: 2px;
+}
+.demo-input-suffix {
+  margin: 2px 0;
+}
+.demo-input-suffix > .el-input--mini {
+  font-size: 12px;
+  width: 70px !important;
 }
 </style>
