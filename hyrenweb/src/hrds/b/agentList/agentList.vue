@@ -179,11 +179,18 @@ export default {
         },
         // 新增任务  根据不同类型跳转不同页面
         addtask(type, agent_id) {
+            console.log(type)
             if (type == "1") {
                 this.$router.push({
                     path: "/addTask"
                 });
             } else if (type == "2") {
+                this.$router.push({
+                    path: "/unstructuredAgent",
+                    query: {
+                        agent_id: agent_id
+                    }
+                });
 
             } else if (type == "3") {
                 this.$router.push({
