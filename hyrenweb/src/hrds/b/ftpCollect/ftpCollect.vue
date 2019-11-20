@@ -1,6 +1,8 @@
 <template>
 <div class="ftpCollect">
-    <el-row></el-row>
+    <el-row class="partOne">
+        卸数 > 配置数据源与启动方式
+    </el-row>
 
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
@@ -18,7 +20,7 @@
 
             <el-col :span="11">
                 <el-form-item label="开始日期" :label-width="formLabelWidth">
-                    <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
+                    <el-date-picker type="date" v-model="start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -30,7 +32,7 @@
 
             <el-col :span="11">
                 <el-form-item label="结束日期" :label-width="formLabelWidth">
-                    <el-date-picker type="date" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
+                    <el-date-picker type="date" v-model="end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -72,7 +74,7 @@
 
             <el-col :span="18">
                 <el-form-item label="agent机器目录" :label-width="formLabelWidth">
-                    <el-input :disabled="disabled" :size="size">
+                    <el-input v-model="form.local_path" :disabled="disabled" :size="size">
                         <template slot="prepend">
                             <el-button @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
                         </template>
@@ -140,9 +142,6 @@
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
-                <el-tree :data="data2" show-checkbox :props="defaultProps" @node-click="handleNodeClick"></el-tree>
-            </el-col>
         </el-form>
     </el-row>
 
@@ -160,6 +159,22 @@
             </div>
         </el-col>
     </el-row>
+    <!-- 选择目录弹出框 -->
+    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder" width="40%">
+        <el-tree :data="data2" show-checkbox :props="defaultProps" @node-click="handleNodeClick" @check-change="handleCheckChange"></el-tree>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
+    <!-- 添加ftp采集成功后选择下一步的弹出框 -->
+    <el-dialog title="提示信息" :visible.sync="dialogSelectOk" width="30%">
+        <p>设置完成！请等待Agent运行...不运行请点击取消按钮</p>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogSelectOk=false" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="goBackQuit" size="mini">确定</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -168,22 +183,27 @@ import * as functionAll from "./ftpCollect";
 import {
     log
 } from 'util';
+let arrData = [{
+    children: []
+}]
+let DataAll = {}
 export default {
     data() {
         return {
             form: {
                 is_read_realtime: "0",
                 ftp_model: "0",
-                is_unzip: "0"
+                is_unzip: "0",
+                local_path: ''
             },
+            start_date: "",
+            end_date: "",
             FtpRule: [],
             dataBaseCode: [],
             runWay: [],
             YesNo: [],
             reduceType: [],
-            data2: [
-
-            ],
+            data2: [],
             item: {},
             defaultProps: {
                 children: "children",
@@ -194,12 +214,14 @@ export default {
             showOrHidden_reduce: false,
             showOrHidden_unzip: false,
             size: "medium",
-            params: "",
+            dialogSelectfolder: false,
+            dialogSelectOk: false,
             formLabelWidth: "150px",
-
         };
     },
     created() {
+        //判断是新增采集还是编辑更新采集
+        this.addOrUpdate();
         //  是否实时读取判断是否实时读取间隔时间
         if (this.form.is_read_realtime == "0") {
             this.showOrHidden_realtime = false;
@@ -223,6 +245,30 @@ export default {
         this.getCategoryItems("FtpRule");
     },
     methods: {
+        //判断是新增采集还是编辑更新采集
+        addOrUpdate() {
+            let ftp_id = this.$route.query.ftp_id;
+            if (ftp_id || '') {
+                functionAll.searchFtp_collect({
+                    ftp_id: ftp_id,
+                    agent_id: this.$route.query.agent_id
+                }).then((res) => {
+                    this.form = res.data;
+                    let year = res.data.start_date.substring(0, 4);
+                    let month = res.data.start_date.substring(4, 6);
+                    let day = res.data.start_date.substring(6, 9);
+                    let dateStart = year + "-" + month + "-" + day;
+                    this.start_date = dateStart;
+                    let yearEnd = res.data.end_date.substring(0, 4);
+                    let monthEnd = res.data.end_date.substring(4, 6);
+                    let dayEnd = res.data.end_date.substring(6, 9);
+                    let dateEnd = yearEnd + "-" + monthEnd + "-" + dayEnd;
+                    this.end_date = dateEnd;
+                })
+            } else {
+
+            }
+        },
         // 返回上一级
         goBackQuit() {
             this.$router.push({
@@ -273,11 +319,29 @@ export default {
                     });
             }
         },
-        // 添加ftp收集任务
+        // 添加ftp收集任务或者编辑更新判断
         addFtpCollect() {
-            functionAll.addFtp_collect(this.form).then(res => {
-                if (res && res.success) {}
-            });
+            let ftp_id = this.$route.query.ftp_id;
+            let date = this.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+            let date2 = this.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+            this.form["agent_id"] = this.$route.query.agent_id;
+            this.form["start_date"] = date2;
+            this.form["end_date"] = date;
+            if (ftp_id || '') {
+                this.form["ftp_id"] = this.$route.query.ftp_id;
+                functionAll.updateFtp_collect(this.form).then(res => {
+                    if (res && res.success) {
+                        this.dialogSelectOk = true;
+                    }
+                });
+            } else {
+                functionAll.addFtp_collect(this.form).then(res => {
+                    if (res && res.success) {
+                        this.dialogSelectOk = true;
+                    }
+                });
+            }
+
         },
         // 是否实时读取控制实时读取间隔时间
         handerChange_realtime(val) {
@@ -307,81 +371,43 @@ export default {
         // 获取目录结构
         seletFilePath(data) {
             let arry = [];
-            let path; 
-            console.log(data)
+            let path;
             if (typeof (data) != "undefined") {
-              path =  data.path;
+                path = data.path;
             }
             functionAll
                 .selectPath({
                     agent_id: this.$route.query.agent_id,
-                    path: "path"
+                    path: path
                 })
                 .then(res => {
                     if (typeof (data) == 'undefined') {
-                        // this.data2 = [{
-                        //     label: '/'命令行呢
-                        // }];
                         this.data2 = res.data;
                     } else if (typeof (data.path) != "undefined") {
-                        // let itme  = {}
-                            //第一层
-                        // this.data2.map(v => {
-                        //     //返回数据
-                            
-                        //     if (v.path == label) {
-                        //         itme['children']=res.data;
-                        //         this.data2.$set() = res.data;
-                        //         return;
-                        //     }
-                        
-                        // })
                         data['children'] = res.data;
-                        console.log(data)
-                        // this.toolkit(this.data2,res.data)
-
+                        DataAll = data;
+                        arrData.push(data)
+                        this.data2 = arrData;
                     }
-                });
-        },
-        // 处理后台数据
-        toolkit(target, data) {
-            this.data2 = target;
-            console.log(this.data2)
-            data = data.map(function (p) {
-                return {
-                    label: p.path
-                }
-            });
-            let flagStr = data[0].label.slice(0, data[0].label.lastIndexOf('/'));
 
-            function filter(t) {
-                let index = t.findIndex(function (p, i) {
-                    return p.label.startsWith(flagStr);
                 });
-                if (index !== -1) {
-                    t[index].children = data;
-                } else if (t.children) {
-                    filter(target[children]);
-                } else {
-                    console.log(`target中没有label以flagStr开头的对象`);
-                }
-            }
-            filter(target);
         },
         // 获取目录下一级
         handleNodeClick(data) {
             this.seletFilePath(data);
+        },
+        //获取选中状态下的数据
+        handleCheckChange(data) {
+            this.form.local_path = data.path;
+        },
+        // 取消选择目录并且关闭弹出框
+        cancelSelect() {
+            this.form.child_file_path = "";
+            this.dialogSelectfolder = false;
+        },
+        changeTimeType(str) {
+
         }
-        // 拼接子目录
-        // append(data, parentNode) {
-        //     let arry2 = [{label:parentNode,children:[]}]
-        //     for (let i = 0; i < data.length; i++) {
-        //         arry2[0].children.push({
-        //             label: data[i].label
-        //         })
-        //     }
-        //     this.data = arry2;
-        // }
     }
 };
 </script>
@@ -393,6 +419,11 @@ export default {
 
 .ftpCollect .el-row {
     margin-top: 20px;
+}
+
+.ftpCollect .partOne {
+    font-size: 13px;
+    color: #777;
 }
 
 /* form表单 */

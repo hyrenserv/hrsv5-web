@@ -58,7 +58,7 @@
 
                         </el-col>
                         <el-col :span="8">
-                            <el-button type="primary" size="mini" @click="taskManagement(scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
+                            <el-button type="primary" size="mini" @click="taskManagement(scope.row.agent_type,scope.row.agent_id,scope.row.source_id)">任务管理</el-button>
                         </el-col>
                         <el-col :span="8">
                             <el-button type="warning" size="mini" @click="tasklogFun(scope.row.agent_type,scope.row.agent_id)">日志查看</el-button>
@@ -154,7 +154,7 @@ export default {
                 }
             });
         },
-        taskManagement(Agentid, sourceid) {
+        taskManagement(type, Agentid, sourceid) {
             this.dialogTableTask = true;
             let params = {};
             params["sourceId"] = sourceid;
@@ -165,6 +165,7 @@ export default {
         },
         // 任务管理里面的编辑  根据不同类型跳转不同页面
         taskEditBtn(type, agentId, databaseId, sourceId, sourceName) {
+            console.log(databaseId)
             if (type == "数据库采集") {
                 this.$router.push({
                     path: "addTask",
@@ -173,6 +174,14 @@ export default {
                         id: databaseId,
                         sourId: sourceId,
                         sName: sourceName
+                    }
+                });
+            } else if (type == "Ftp采集Agent") {
+                this.$router.push({
+                    path: "/ftpCollect",
+                    query: {
+                        agent_id: agentId,
+                        ftp_id: databaseId
                     }
                 });
             }
