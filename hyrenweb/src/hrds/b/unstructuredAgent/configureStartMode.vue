@@ -1,7 +1,7 @@
 <template>
 <div class="configureStartMode">
-    <el-row>
-
+    <el-row class="partOne">
+        卸数 > 配置启动方式
     </el-row>
 
     <el-row class="partTwo">
@@ -249,7 +249,10 @@ export default {
 .configureStartMode .el-row {
     margin-top: 20px;
 }
-
+.configureStartMode .partOne {
+    font-size: 13px;
+    color: #777;
+}
 /* form表单 */
 .configureStartMode .partTwo {
     padding: 2%;
