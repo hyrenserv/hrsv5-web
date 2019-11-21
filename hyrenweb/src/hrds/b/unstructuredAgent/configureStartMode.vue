@@ -1,44 +1,44 @@
 <template>
 <div class="configureStartMode">
     <el-row class="partOne">
-        卸数 > 配置启动方式
+        卸数 > 配置启动方式 
     </el-row>
 
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
             <el-col :span="12">
                 <el-form-item label="归属Agent" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_number" placeholder="ftp任务编号" :size="size"></el-input>
+                    <el-input v-model="form.agent_name" placeholder="归属Agent" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="非结构化任务名称" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_name" placeholder="非结构化任务名称" :size="size"></el-input>
+                    <el-input v-model="form.fcs_name" placeholder="非结构化任务名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="操作系统类型" :label-width=" formLabelWidth">
-                    <el-input v-model="form.system_type" placeholder="ftp服务IP" :size="size"></el-input>
+                    <el-input v-model="form.system_type" placeholder="操作系统类型" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="主机名" :label-width="formLabelWidth">
-                    <el-input v-model="form.host_name" placeholder="ftp服务端口" :size="size"></el-input>
+                    <el-input v-model="form.host_name" placeholder="主机名" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="本地系统时间" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_username" placeholder="ftp用户名" :size="size"></el-input>
+                    <el-input v-model="form.systemtime" placeholder="本地系统时间" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth">
-                    <el-input v-model="form.ftp_password" placeholder="ftp密码" :size="size"></el-input>
+                    <el-input v-model="form.agent_time" placeholder="数据采集服务器时间" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -68,7 +68,7 @@
 
             <el-col :span="12">
                 <el-form-item label="是否建立全文检索" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.is_read_realtime" @change="handerChange_realtime">
+                    <el-radio-group v-model="form.is_solr" @change="handerChange_realtime">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -83,11 +83,11 @@
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <!-- <el-col :span="12">
                 <el-form-item label="设置文件源" :label-width="formLabelWidth">
                     <el-button size="medium" type="success">设置文件源</el-button>
                 </el-form-item>
-            </el-col>
+            </el-col> -->
         </el-form>
     </el-row>
 
@@ -98,7 +98,7 @@
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="medium" type="primary" style="float:right" @click="addFtpCollect">下一步<i class="el-icon-right"></i></el-button>
+                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect">下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -111,15 +111,10 @@ export default {
     data() {
         return {
             form: {
-                is_read_realtime: "0",
-                ftp_model: "0",
-                is_unzip: "0"
+                is_solr: "1"
             },
-            FtpRule: [],
-            dataBaseCode: [],
             runWay: [],
             YesNo: [],
-            reduceType: [],
             disabled: true,
             showOrHidden_realtime: false,
             showOrHidden_reduce: false,
@@ -129,34 +124,11 @@ export default {
         }
     },
     created() {
-        functionAll.selectPath({
-            agent_id: this.$route.query.agent_id
-        }).then((res) => {
-            if (res && res.success) {
-                console.log(res.data)
-            }
-        });
-        // //// 是否实时读取判断是否实时读取间隔时间
-        if (this.form.is_read_realtime == "0") {
-            this.showOrHidden_realtime = false;
-        } else if (this.form.is_read_realtime == "1") {
-            this.showOrHidden_realtime = true;
-        };
-        // 是否解压控制解压类型
-        if (this.form.is_unzip == "0") {
-            this.showOrHidden_reduce = false;
-        } else if (this.form.is_unzip == "1") {
-            this.showOrHidden_reduce = true;
-        };
-        // 是否推拉模式控制是否解压
-        if (this.form.ftp_model == "0") {
-            this.showOrHidden_unzip = true;
-        } else if (this.form.ftp_model == "1") {
-            this.showOrHidden_unzip = false;
-        };
+        // 获取首页数据
+        this.searchFileCollect();
+        // 获取代码项对应值
         this.getCategoryItems("IsFlag");
         this.getCategoryItems("ExecuteWay");
-        this.getCategoryItems("FtpRule");
     },
     methods: {
         // 返回上一级
@@ -165,25 +137,36 @@ export default {
                 name: "agentList"
             })
         },
+        // 获取首页数据
+        searchFileCollect() {
+            functionAll.searchFileCollect({
+                agent_id: this.$route.query.agent_id
+            }).then((res) => {
+                if (res && res.success) {
+                    this.form.system_type = res.data.osName;
+                    this.form.agent_name = this.$route.query.agent_name;
+                    this.form.host_name = res.data.userName;
+                    let date = new Date();
+                    this.form.systemtime = date.toLocaleString('chinese', {
+                        hour12: false
+                    }).replace(/\//g, '-');
+                    // 处理传来的年月日
+                    let year = res.data.agentdate.substring(0, 4);
+                    let month = res.data.agentdate.substring(4, 6);
+                    let day = res.data.agentdate.substring(6, 9);
+                    let dateChange = year + "-" + month + "-" + day;
+                    // 处理传来的时分秒
+                    let hour = res.data.agenttime.substring(0, 2);
+                    let minutes = res.data.agenttime.substring(2, 4);
+                    let seconds = res.data.agenttime.substring(4, 6);
+                    let hourChange = hour + ":" + minutes + ":" + seconds;
+                    this.form.agent_time = dateChange + " " + hourChange;
+                }
+            });
+        },
         // 获取代码项对应的值
         getCategoryItems(e) {
-            if (e == "FtpRule") {
-                functionAll.getCategoryItems({
-                    category: e
-                }).then((res) => {
-                    if (res && res.success) {
-                        this.FtpRule = res.data;
-                    }
-                })
-            } else if (e == "ReduceType") {
-                functionAll.getCategoryItems({
-                    category: e
-                }).then((res) => {
-                    if (res && res.success) {
-                        this.reduceType = res.data;
-                    }
-                })
-            } else if (e == "ExecuteWay") {
+            if (e == "ExecuteWay") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
@@ -201,13 +184,24 @@ export default {
                 })
             }
         },
-        // 添加ftp收集任务
-        addFtpCollect() {
-            functionAll.addFtp_collect(
+        // 保存非结构化文件采集页面信息
+        unStructuredCollect() {
+            let date = this.form.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+            let date2 = this.form.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+            this.form["agent_id"] = this.$route.query.agent_id;
+            this.form["start_date"] = date2;
+            this.form["end_date"] = date;
+            functionAll.addFileCollect(
                 this.form
             ).then((res) => {
                 if (res && res.success) {
-
+                     this.$router.push({
+                    path: "/configureFileOption",
+                    query: {
+                        fcs_id:res.data,
+                        agent_id:this.$route.query.agent_id
+                    }
+                });
                 }
             })
         },
@@ -217,23 +211,6 @@ export default {
                 this.showOrHidden_realtime = true;
             } else if (val == 0) {
                 this.showOrHidden_realtime = false;
-            }
-        },
-        // 是否推拉模式控制是否解压
-        handerChange_model(val) {
-            if (val == 1) {
-                this.showOrHidden_unzip = false;
-            } else if (val == 0) {
-                this.showOrHidden_unzip = true;
-            }
-        },
-        // 是否解压控制解压类型
-        handerChange_unzip(val) {
-            if (val == 1) {
-                this.showOrHidden_reduce = true;
-                this.getCategoryItems("ReduceType");
-            } else if (val == 0) {
-                this.showOrHidden_reduce = false;
             }
         },
     }
@@ -249,10 +226,12 @@ export default {
 .configureStartMode .el-row {
     margin-top: 20px;
 }
+
 .configureStartMode .partOne {
     font-size: 13px;
     color: #777;
 }
+
 /* form表单 */
 .configureStartMode .partTwo {
     padding: 2%;

@@ -54,7 +54,7 @@
                     <el-row>
                         <el-col :span="8">
 
-                            <el-button type="primary" size="mini" @click="addtask(scope.row.agent_type,scope.row.agent_id)">新增任务</el-button>
+                            <el-button type="primary" size="mini" @click="addtask(scope.row.agent_name,scope.row.agent_type,scope.row.agent_id)">新增任务</el-button>
 
                         </el-col>
                         <el-col :span="8">
@@ -187,8 +187,8 @@ export default {
             }
         },
         // 新增任务  根据不同类型跳转不同页面
-        addtask(type, agent_id) {
-            console.log(type)
+        addtask(name,type, agent_id) {
+            console.log(name)
             if (type == "1") {
                 this.$router.push({
                     path: "/addTask"
@@ -197,6 +197,7 @@ export default {
                 this.$router.push({
                     path: "/unstructuredAgent",
                     query: {
+                        agent_name:name,
                         agent_id: agent_id
                     }
                 });

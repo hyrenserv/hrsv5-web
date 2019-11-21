@@ -45,7 +45,7 @@ export function searchFtp_collect(data) {
 }
 
 /**(4)
- * 获取半结构化采集配置页面初始化的值
+ * 获取ftp采集配置页面初始化的值（代码项）
  */
 export function getCategoryItems(data) {
     return request({

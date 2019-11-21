@@ -140,6 +140,12 @@ export default new Router({
                     title: '配置启动方式',
                     component: () => import('@/hrds/b/unstructuredAgent/configureStartMode.vue')
                 },
+                {
+                    path: '/configureFileOption',
+                    name: 'configureFileOption',
+                    title: '配置连接属性',
+                    component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue')
+                },
             ]
         },
 

@@ -415,7 +415,13 @@
 .el-form-item.is-error .el-textarea__inner {
     /* border-color: blue; */
 }
-
+/* 被禁用时候的样式更改 */
+.el-input.is-disabled .el-input__inner {
+    /* background-color: blue;
+    border-color: #E4E7ED;
+    color: #C0C4CC;
+    cursor: not-allowed; */
+}
 /* ------------------------------------- checkbox ------------------------------------------------------- */
 
 /*复选框默认样式设置，不需要添加属性，可以直接更改*/
