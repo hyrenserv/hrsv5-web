@@ -62,10 +62,40 @@ export default new Router({
                     component: () => import('@/hrds/b/datasource/datasource.vue')
                 },
                 {
-                    path: '/addTask',
-                    name: 'addTask',
-                    title: '新增任务',
-                    component: () => import('@/hrds/b/addTask/addTask.vue')
+                    path: '/dbaddTasksteps01',
+                    name: 'addTask01',
+                    title: '数据库采集',
+                    component: () => import('@/hrds/b/addTask/steps1.vue')
+                },
+                {
+                    path: '/dbaddTasksteps02',
+                    name: 'addTask02',
+                    title: '数据库采集02',
+                    component: () => import('@/hrds/b/addTask/steps2.vue')
+                },
+                {
+                    path: '/dbaddTasksteps03',
+                    name: 'addTask03',
+                    title: '数据库采集03',
+                    component: () => import('@/hrds/b/addTask/steps3.vue')
+                },
+                {
+                    path: '/dbaddTasksteps04',
+                    name: 'addTask04',
+                    title: '数据库采集04',
+                    component: () => import('@/hrds/b/addTask/steps4.vue')
+                },
+                {
+                    path: '/dbaddTasksteps05',
+                    name: 'addTask05',
+                    title: '数据库采集05',
+                    component: () => import('@/hrds/b/addTask/steps5.vue')
+                },
+                {
+                    path: '/dbaddTasksteps06',
+                    name: 'addTask06',
+                    title: '数据库采集06',
+                    component: () => import('@/hrds/b/addTask/steps6.vue')
                 },
                 {
                     path: '/agentList',

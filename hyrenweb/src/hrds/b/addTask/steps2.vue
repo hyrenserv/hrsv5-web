@@ -1,969 +1,452 @@
 <template>
-  <div>
-    <div class="cleanbtn">
-      <el-button
-        size="mini"
-        type="success"
-        @click="dialogalltableClean=true;alltableClean(databaseId)"
-      >所有表清洗设置</el-button>
-      <el-button
-        size="mini"
-        type="success"
-        @click="dialogtableClean=true;allTableCleanPriorityFun(databaseId)"
-      >全表清洗优先级</el-button>
-    </div>
-    <el-table
-      :header-cell-style="{background:'#e6e0e0'}"
-      ref="filterTable"
-      stripe
-      :default-sort="{prop: 'date', order: 'descending'}"
-      style="width: 100%"
-      height="360"
-      border
-      :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)"
-    >
-      <el-table-column type="selection" width="55" align="center"></el-table-column>
-      <el-table-column label="序号" align="center" width="60">
-        <template scope="scope">
-          <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="table_name" label="表名" width="180" align="center"></el-table-column>
-      <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center"></el-table-column>
-      <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)" width="180" align="center">
-        <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag!=0"></el-checkbox>
-          <span
-            class="settingbtn"
-            v-if="scope.row.compflag!=0"
-            @click="table_zfbqFun(scope.$index,scope.row.table_id,scope.row.compflag)"
-          >查看</span>
-          <span
-            class="settingbtn"
-            v-else
-            @click="table_zfbqFun(scope.$index,scope.row.table_id,scope.row.compflag)"
-          >设置</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="replaceflag" label=" 字符替换(整表清洗设置)" width="180" align="center">
-        <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag!=0"></el-checkbox>
-          <span
-            class="settingbtn"
-            v-if="scope.row.replaceflag!=0"
-            @click="table_zfthFun(scope.$index,scope.row.table_id,scope.row.replaceflag)"
-          >查看</span>
-          <span
-            class="settingbtn"
-            v-else
-            @click="table_zfthFun(scope.$index,scope.row.table_id,scope.row.replaceflag)"
-          >设置</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="trimflag" label=" 首尾去空" width="180" align="center">
-        <template slot-scope="scope">
-          <el-checkbox :checked="scope.row.trimflag!=0" v-model="scope.row.trimflag"></el-checkbox>
-        </template>
-      </el-table-column>
-      <el-table-column prop="selectCol" label="列清洗" align="center">
-        <template slot-scope="scope">
-          <el-button size="mini" type="info" @click="selectCol(scope.$index, scope.row)">选择列</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="clean_handleSizeChange"
-      @current-change="clean_handleCurrentChange"
-      :current-page="cleancurrentPage"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="cleanpagesize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="cleantableData.length"
-      class="locationcenter"
-    ></el-pagination>
-    <!-- 表-字符补齐 -->
-    <el-dialog title="字符补齐" :visible.sync="dialogTable_zfbq" width="50%" class="alltable">
-      <el-form ref="form" :model="table_zfbq" label-width="240px" text-align="center">
-        <el-form-item label="补齐方式">
-          <el-radio-group v-model="table_zfbq.filling_type">
-            <el-radio
-              v-for="(item,index) in FillingType"
-              :key="index"
-              :label="item.code"
-            >{{item.value}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="补齐字符">
-          <el-input v-model="table_zfbq.character_filling" style="width:190px"></el-input>
-        </el-form-item>
-        <el-form-item label="补齐长度">
-          <el-input v-model="table_zfbq.filling_length" style="width:190px"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="Table_zfbqclose()" size="mini" type="danger">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="dialogTable_zfbq = false;Table_zfbqsubmit()"
-          size="mini"
-        >确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 表-字符替换 -->
-    <el-dialog title="字符替换" :visible.sync="dialogTable_zfth" width="50%" class="alltable">
-      <el-button
-        type="success"
-        width="20"
-        @click="addRow(table_zfth)"
-        size="mini"
-        class="addline"
-      >新增行</el-button>
-      <el-table :data="table_zfth" border size="medium" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="field" label="原字符" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="replace_feild" label="替换后字符" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.replace_feild" placeholder="替换后字符" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="160px" align="center">
-          <template scope="scope">
-            <el-row>
-              <el-col :span="24" class="delbtn">
-                <el-button
-                  style="color:red"
-                  type="text"
-                  circle
-                  @click="DelRowFun(scope.$index, table_zfth)"
-                >删除</el-button>
-              </el-col>
-            </el-row>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="Table_zfthclose()" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click=" Table_zfthsubmit()" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 全表清洗优先级 -->
-    <el-dialog title="全表清洗优先级" :visible.sync="dialogtableClean" width="50%">
-      <el-table :data="tableCleanData" border size="medium" highlight-current-row>
-        <el-table-column property="SelectCol" type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="value" label="内容" align="center"></el-table-column>
-        <el-table-column label="操作" width="160px" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              :disabled="scope.$index===0"
-              @click="moveUp(scope.$index,scope.row,tableCleanData)"
+  <div class="singlesearch" id="singleTable">
+    <Step :active="active"></Step>
+    <el-tabs v-model="activeName" type="border-card">
+      <el-tab-pane label="单表查询" name="first">
+        <div id="singleTable">
+          <div class="rightSearch">
+            <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          </div>
+          <div>
+            <el-table
+              ref="filterTable"
+              size="medium"
+              stripe
+              :default-sort="{prop: 'date', order: 'descending'}"
+              style="width: 100%"
+              height="360"
+              border
+              :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)"
             >
-              <i class="el-icon-arrow-up"></i>
-            </el-button>
-            <el-button
-              size="mini"
-              :disabled="scope.$index===(tableCleanData.length-1)"
-              @click="moveDown(scope.$index,scope.row,tableCleanData)"
+              <el-table-column type="selection" width="55" align="center"></el-table-column>
+              <el-table-column label="序号" align="center" width="60">
+                <template scope="scope">
+                  <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="tableName" label="表名" width="180" align="center">
+                <template>
+                  <span>表名</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="tableChName" label="表中文名" width="180" align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.tableChName" placeholder="中文名"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="parallelExtraction" label=" 是否并行抽取" width="180" align="center">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="scope.row.checked" @change="checkedFun"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column prop="sqlFiltering" label="SQL过滤" width="180" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    @click="Sqlfilt(scope.$index, scope.row)"
+                    type="success"
+                  >定义过滤</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column prop="selectCol" label="选择列" align="center">
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="selectCol(scope.$index, scope.row)" type="info">选择列</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-pagination
+              @size-change="sig_handleSizeChange"
+              @current-change="sig_handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="tableData.length"
+            ></el-pagination>
+          </div>
+          <!-- 是否并行抽取弹层 -->
+          <el-dialog title="定义分页抽取SQL" :visible.sync="dialogTableVisible" width="50%">
+            <el-button type="text">测试</el-button>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogTableVisible = false" type="danger" size="mini">取 消</el-button>
+              <el-button @click="dialogTableVisible = false" type="primary" size="mini">确 定</el-button>
+            </div>
+          </el-dialog>
+          <!-- 定义过滤弹层 -->
+          <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%">
+            <el-form :model="sqlFiltSetData" ref="addClassTask">
+              <el-row type="flex">
+                <el-col :span="10">
+                  <el-form-item label=" 表名:" prop="table_name" class="bordernone">
+                    <el-input v-model="sqlFiltSetData.table_name" style="width:150px"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label=" 变量名" prop="Variable_name">
+                    <el-select
+                      placeholder="变量名"
+                      v-model="sqlFiltSetData.Variable_name"
+                      style="width:150px"
+                    >
+                      <el-option label="ad" value="1"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row type="flex" justify="center">
+                <el-col :span="24">
+                  <el-form-item prop="table_des">
+                    <el-input v-model="sqlFiltSetData.table_des" type="textarea"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogTableSqlFilt = false" type="danger" size="mini">取 消</el-button>
+              <el-button type="primary" @click="dialogTableSqlFilt = false" size="mini">确 定</el-button>
+            </div>
+          </el-dialog>
+          <!-- 选择列弹层 -->
+          <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="50%">
+            <el-table
+              :data="SelectColumnData"
+              border
+              size="medium"
+              highlight-current-row
+              @selection-change="handleSelectionChange"
             >
-              <i class="el-icon-arrow-down"></i>
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogtableClean = false" type="danger" size="mini">取 消</el-button>
+              <el-table-column
+                property="SelectCol"
+                type="selection"
+                label="选择列"
+                width="60px"
+                align="center"
+              ></el-table-column>
+              <el-table-column property="SelectCol_name" label="列名" align="center" width="150px"></el-table-column>
+              <el-table-column property="SelectCol_type" label="字段类型" width="100px" align="center"></el-table-column>
+              <el-table-column property="SelectCol_chname" label="列中文名" align="center">
+                <template>
+                  <el-input v-model="input2" placeholder="中文名"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="160px" align="center">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    :disabled="scope.$index===0"
+                    @click="moveUp(scope.$index,scope.row,SelectColumnData)"
+                  >
+                    <i class="el-icon-arrow-up"></i>
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    :disabled="scope.$index===(SelectColumnData.length-1)"
+                    @click="moveDown(scope.$index,scope.row,SelectColumnData)"
+                  >
+                    <i class="el-icon-arrow-down"></i>
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogSelectColumn = false" type="danger" size="mini">取 消</el-button>
+              <el-button type="primary" @click="dialogSelectColumn = false" size="mini">确 定</el-button>
+            </div>
+          </el-dialog>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="使用SQL抽取数据" name="second">
         <el-button
-          type="primary"
-          @click="dialogtableClean = false;allTableCleanPrioritySubmitFun()"
+          type="success"
+          style="margin:0 0 5px 0"
+          class="addline"
+          @click="addRow(sqlExtractData)"
           size="mini"
-        >确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 所有表清洗设置 -->
-    <el-dialog title="所有表清洗设置" :visible.sync="dialogalltableClean" width="50%" class="alltable">
-      <div class="alltablebox">
-        <div class="alltabletitle">
-          字符替换
-          <span>(大小写敏感,替换字符只能为一个,如需多次替换请添加行 )</span>
-        </div>
-        <div class="alltableaddrow">
-          <el-button type="success" width="20" @click="addRow(allTableCleanSettingData)">新增行</el-button>
-        </div>
-        <div class="TableClean">
-          <el-table :data="allTableCleanSettingData" border size="medium" highlight-current-row>
-            <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-            <el-table-column property="field" label="原字符" align="center">
-              <template scope="scope">
-                <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column property="replace_feild" label="替换后字符" align="center">
-              <template scope="scope">
-                <el-input v-model="scope.row.replace_feild" placeholder="替换后字符" size="medium"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="160px" align="center">
-              <template scope="scope">
-                <el-row>
-                  <el-col :span="24" class="delbtn">
-                    <el-button
-                      style="color:red"
-                      type="text"
-                      circle
-                      @click="DelRowFun(scope.$index, allTableCleanSettingData)"
-                    >删除</el-button>
-                  </el-col>
-                </el-row>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </div>
-      <div class="alltablebox">
-        <div class="alltabletitle">字符补齐</div>
-        <el-form
-          ref="form"
-          :model="characterCompletion"
-          label-width="250px"
-          text-align="center"
-          class="alltableform"
+        >新增行</el-button>
+        <el-table
+          :data="sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)"
+          border
+          size="medium"
+          highlight-current-row
+          @current-change="handleSelectionChange"
         >
-          <el-form-item label="补齐方式">
-            <el-radio-group v-model="characterCompletion.filling_type">
-              <el-radio
-                v-for="(item,index) in FillingType"
-                :key="index"
-                :label="item.code"
-              >{{item.value}}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="补齐字符">
-            <el-input v-model="characterCompletion.character_filling" size="medium"></el-input>
-          </el-form-item>
-          <el-form-item label="补齐长度">
-            <el-input v-model="characterCompletion.filling_length" size="medium"></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogalltableClean = false" type="danger" size="mini">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="dialogalltableClean = false;saveAllTbCleanConfigInfo()"
-          size="mini"
-        >确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 选择列弹框 -->
-    <el-dialog title="列清洗" :visible.sync="dialogColClean" width="70%" class="alltable">
-      <div>
-        <el-button size="mini" type="primary" @click="columnMergeFun">列合并</el-button>
-        <el-button size="mini" type="success" @click="allTableOrd">整表优先级</el-button>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-table :data="colCleanData" border size="medium" highlight-current-row>
           <el-table-column property label="序号" width="60px" align="center">
             <template scope="scope">
-              <span>{{scope.$index+(colClean_currentPage - 1) * colClean_pagesize + 1}}</span>
+              <span>{{scope.$index+(sqlexcurrentPage - 1) * sqlexpagesize + 1}}</span>
             </template>
           </el-table-column>
-          <el-table-column property="colume_name" label="列名" width="120px" align="center"></el-table-column>
-          <el-table-column property="colume_ch_name" label="列中文名" width="120px" align="center"></el-table-column>
-          <el-table-column property="compflag" label="字符补齐" width="80px" align="center">
+          <el-table-column property="sqlExtractData_name" label="表名" width="150px" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag!=0"></el-checkbox>
-              <span
-                class="settingbtn"
-                v-if="scope.row.compflag!=0"
-                @click="zfbqFun(scope.$index,scope.row)"
-              >查看</span>
-              <span class="settingbtn" v-else @click="zfbqFun(scope.$index,scope.row)">设置</span>
+              <el-input v-model="scope.row.sqlExtractData_name" placeholder="表名"></el-input>
             </template>
           </el-table-column>
-          <el-table-column property="replaceflag" label="字符替换" width="80px" align="center">
+          <el-table-column
+            property="sqlExtractData_chname"
+            label="表中文名"
+            width="150px"
+            align="center"
+          >
             <template scope="scope">
-              <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag!=0"></el-checkbox>
-              <span
-                class="settingbtn"
-                v-if="scope.row.replaceflag!=0"
-                @click="zfthFun(scope.$index,scope.row)"
-              >查看</span>
-              <span class="settingbtn" v-else @click="zfthFun(scope.$index,scope.row)">设置</span>
+              <el-input v-model="scope.row.sqlExtractData_chname" placeholder="表中文名"></el-input>
             </template>
           </el-table-column>
-          <el-table-column property="formatflag" label="日期格式化" width="100px" align="center">
+          <el-table-column property="sqlExtractData_sql" label="查询SQL语句" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.formatflag" :checked="scope.row.formatflag!=0"></el-checkbox>
-              <span
-                class="settingbtn"
-                v-if="scope.row.formatflag!=0"
-                @click="rqgshFun(scope.$index,scope.row)"
-              >查看</span>
-              <span class="settingbtn" v-else @click="rqgshFun(scope.$index,scope.row)">设置</span>
+              <el-input
+                v-model="scope.row.sqlExtractData_sql"
+                type="textarea"
+                placeholder="查询SQL语句"
+              ></el-input>
             </template>
           </el-table-column>
-          <el-table-column property="splitflag" label="列拆分" width="80px" align="center">
+          <el-table-column label="操作" width="150px" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.splitflag"  :checked="scope.row.splitflag!=0"></el-checkbox>
-              <span
-                class="settingbtn"
-                v-if="scope.row.splitflag!=0"
-                @click="colcfFun(scope.$index,scope.row)"
-              >查看</span>
-              <span class="settingbtn" v-else @click="colcfFun(scope.$index,scope.row)">设置</span>
-            </template>
-          </el-table-column>
-          <el-table-column property="codevalueflag" label="码值转换" width="80px" align="center">
-            <template scope="scope">
-              <el-checkbox v-model="scope.row.codevalueflag" :checked="scope.row.codevalueflag!=0"></el-checkbox>
-              <span
-                class="settingbtn"
-                v-if="scope.row.codevalueflag!=0"
-                @click="mzzhFun(scope.$index,scope.row)"
-              >查看</span>
-              <span class="settingbtn" v-else @click="mzzhFun(scope.$index,scope.row)">设置</span>
-            </template>
-          </el-table-column>
-          <el-table-column property="trimflag" label="首尾去空" width="80px" align="center">
-            <template scope="scope">
-              <el-checkbox v-model="scope.row.trimflag" :checked="scope.row.trimflag!=0"></el-checkbox>
-            </template>
-          </el-table-column>
-          <el-table-column label="清洗优先级" align="center">
-            <template scope="scope">
-              <el-button type="success" @click="yxjFun(scope.row)" size="mini">优先级调整</el-button>
+              <el-row>
+                <el-col :span="24" class="delbtn">
+                  <el-button
+                    style="color:red"
+                    type="text"
+                    circle
+                    @click="DelRowFun(scope.$index, sqlExtractData)"
+                  >删除</el-button>
+                </el-col>
+              </el-row>
             </template>
           </el-table-column>
         </el-table>
         <el-pagination
-          @size-change="colClean_handleSizeChange"
-          @current-change="colClean_handleCurrentChange"
-          :current-page.sync="colClean_currentPage"
-          :page-size="colClean_pagesize"
+          @size-change="sqlex_handleSizeChange"
+          @current-change="sqlex_handleCurrentChange"
+          :current-page.sync="sqlexcurrentPage"
+          :page-size="sqlexpagesize"
           layout="total, prev, pager, next"
-          :total="colCleanData.length"
+          :total="sqlExtractData.length"
           class="locationcenter"
         ></el-pagination>
-        <el-button @click="dialogColClean = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogColClean = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 选择列-字符补齐弹框 -->
-    <el-dialog title="字符补齐" :visible.sync="dialogCol_zfbq" width="50%" class="alltable">
-      <el-form ref="form" :model="Col_zfbq" label-width="240px" text-align="center">
-        <el-form-item label="补齐方式">
-          <el-radio-group v-model="Col_zfbq.type">
-            <el-radio label="前补齐"></el-radio>
-            <el-radio label="后补齐"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="补齐字符">
-          <el-input v-model="Col_zfbq.nm" style="width:190px" size="medium"></el-input>
-        </el-form-item>
-        <el-form-item label="补齐长度">
-          <el-input v-model="Col_zfbq.length" style="width:190px" size="medium"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_zfbq = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_zfbq = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 选择列-字符替换弹框 -->
-    <el-dialog title="字符替换" :visible.sync="dialogCol_zfth" width="50%" class="alltable">
-      <el-button type="success" size="mini" width="20" @click="addRow(Col_zfth)" class="addline">新增行</el-button>
-      <el-table :data="Col_zfth" border size="medium" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="oldCharacter" label="原字符" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.oldCharacter" placeholder="原字符" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="newCharacter" label="替换后字符" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.newCharacter" placeholder="替换后字符" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="160px" align="center">
-          <template scope="scope">
-            <el-row>
-              <el-col :span="24" class="delbtn">
-                <el-button
-                  style="color:red"
-                  type="text"
-                  circle
-                  @click="DelRowFun(scope.$index, Col_zfth)"
-                >删除</el-button>
-              </el-col>
-            </el-row>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_zfth = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_zfth = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 选择列-日期格式化弹框 -->
-    <el-dialog title="日期格式化" :visible.sync="dialogCol_rqgsh" width="50%" class="alltable">
-      <el-form ref="form" :model="Col_rqgsh" label-width="240px" text-align="center">
-        <el-form-item label="原格式">
-          <el-input v-model="Col_rqgsh.oldtype" style="width:190px" size="medium"></el-input>
-        </el-form-item>
-        <el-form-item label="转换格式">
-          <el-input v-model="Col_rqgsh.newtype" style="width:190px" size="medium"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_rqgsh = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_rqgsh = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!--选择列-列拆分弹框  -->
-    <el-dialog title :visible.sync="dialogCol_colcf" width="70%" class="alltable">
-      <div slot="title" class="header-title">
-        <span class="title">列拆分(拆分的是最后的数据)&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="title">列名称:134</span>
-      </div>
-      <el-button
-        type="success"
-        size="mini"
-        width="20"
-        @click="addRow(Col_colcf)"
-        class="addline"
-      >新增行</el-button>
-      <el-table :data="Col_colcf" border size="medium" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="name" label="字段名称" align="center" width="140px">
-          <template scope="scope">
-            <el-input v-model="scope.row.name" placeholder="字段名称"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="chNamw" label="中文名称" align="center" width="140px">
-          <template scope="scope">
-            <el-input v-model="scope.row.chNamw" placeholder="中文名称" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="cftype" label="拆分方式" align="center" width="180px">
-          <template scope="scope">
-            <el-select
-              placeholder="选择"
-              v-model="scope.row.cftype"
-              style="width:150px"
-              size="medium"
-            >
-              <el-option label="自定义变量" value="1"></el-option>
-              <el-option label="偏移量" value="2"></el-option>
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column property="pyl" label="偏移量/字符拆分" align="center" width="140px">
-          <template scope="scope">
-            <el-input v-model="scope.row.pyl" placeholder="偏移量/字符拆分" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="zftype" label="类型" align="center" width="140px">
-          <template scope="scope">
-            <el-input v-model="scope.row.zftype" placeholder="varchar(80)" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template scope="scope">
-            <el-row>
-              <el-col :span="24" class="delbtn">
-                <el-button
-                  style="color:red"
-                  type="text"
-                  circle
-                  @click="DelRowFun(scope.$index, Col_colcf)"
-                >删除</el-button>
-              </el-col>
-            </el-row>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_colcf = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_colcf = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!--选择列-码值转换弹框  -->
-    <el-dialog title="码值转换" :visible.sync="dialogCol_mzzh" width="70%" class="alltable">
-      <el-row :gutter="20">
-        <el-col :span="12" :offset="1">
-          <div>填写完成后请保存</div>
-          <el-table :data="Col_mzzh" border size="medium" highlight-current-row>
-            <el-table-column property="sysname" label="系统名称" align="center" width="200px">
-              <template scope="scope">
-                <el-select placeholder="选择" v-model="scope.row.sysname" size="medium">
-                  <el-option label="123" value="1"></el-option>
-                  <el-option label="133" value="2"></el-option>
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column property="mztype" label="码值类型" align="center">
-              <template scope="scope">
-                <el-select placeholder="选择" v-model="scope.row.mztype" size="medium">
-                  <el-option label="123" value="1"></el-option>
-                  <el-option label="133" value="2"></el-option>
-                </el-select>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-        <el-col :span="9" :offset="1">
-          <div>码值信息</div>
-          <el-table :data="Col_mzzh2" border size="medium" highlight-current-row>
-            <el-table-column property="oldmz" label="原码值" align="center" width="160px">
-              <template>
-                <span>原码值</span>
-              </template>
-            </el-table-column>
-            <el-table-column property="newmz" label="新码值" align="center">
-              <template>
-                <span>新码值</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCol_mzzh = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogCol_mzzh = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!--选择列-优先级调整弹框  -->
-    <el-dialog title :visible.sync="dialogtableCleanOrd" width="50%">
-      <div slot="title" class="header-title">
-        <span class="title">清洗排序&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="title">表名:134</span>
-      </div>
-      <el-table :data="tableCleanOrdData" border size="medium" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="tableCleanOrdCon" label="内容" align="center"></el-table-column>
-        <el-table-column label="操作" width="160px" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              :disabled="scope.$index===0"
-              @click="moveUp(scope.$index,scope.row,tableCleanOrdData)"
-            >
-              <i class="el-icon-arrow-up"></i>
-            </el-button>
-            <el-button
-              size="mini"
-              :disabled="scope.$index===(tableCleanOrdData.length-1)"
-              @click="moveDown(scope.$index,scope.row,tableCleanOrdData)"
-            >
-              <i class="el-icon-arrow-down"></i>
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogtableCleanOrd = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogtableCleanOrd = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!--整表优先级-->
-    <el-dialog title :visible.sync="dialogAlltableCleanOrd" width="50%">
-      <div slot="title" class="header-title">
-        <span class="title">清洗排序&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span class="title">表名:134</span>
-      </div>
-      <el-table :data="AlltableCleanOrdData" border size="medium" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column property="tableCleanOrdCon" label="内容" align="center"></el-table-column>
-        <el-table-column label="操作" width="160px" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              :disabled="scope.$index===0"
-              @click="moveUp(scope.$index,scope.row,AlltableCleanOrdData)"
-            >
-              <i class="el-icon-arrow-up"></i>
-            </el-button>
-            <el-button
-              size="mini"
-              :disabled="scope.$index===(AlltableCleanOrdData.length-1)"
-              @click="moveDown(scope.$index,scope.row,AlltableCleanOrdData)"
-            >
-              <i class="el-icon-arrow-down"></i>
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAlltableCleanOrd = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogAlltableCleanOrd = false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 列合并 -->
-    <el-dialog :visible.sync="dialogcolumnMerge" width="70%" class="alltable">
-      <div slot="title" class="header-title">
-        <span class="title">列合并(合并的是最后的数据)</span>
-      </div>
-      <el-button
-        type="success"
-        size="mini"
-        width="20"
-        @click="addRow(columnMerge)"
-        class="addline"
-      >新增行</el-button>
-      <el-table :data="columnMerge" border size="medium" highlight-current-row>
-        <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
-        <el-table-column label="选择" align="center">
-          <template scope="scope">
-            <el-button type="success" @click="colSelectFun(scope.rows)" size="mini">列选择</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column property="colName" label="列名" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.colName" placeholder="列名" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="colMerchName" label="合并列名" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.colMerchName" placeholder="合并列名" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="colMerchName" label="合并列中文名" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.colMerchName" placeholder="合并列中文名" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column property="colMertype" label="字段类型" align="center">
-          <template scope="scope">
-            <el-input v-model="scope.row.colMertype" placeholder="字段类型" size="medium"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="160px" align="center">
-          <template scope="scope">
-            <el-row>
-              <el-col :span="24" class="delbtn">
-                <el-button
-                  style="color:red"
-                  size="medium"
-                  type="text"
-                  circle
-                  @click="DelRowFun(scope.$index,columnMerge)"
-                >删除</el-button>
-              </el-col>
-            </el-row>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogcolumnMerge = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogcolumnMerge= false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 选择列 -->
-    <el-dialog title="列信息" :visible.sync="dialogcolSelectData" width="70%" class="alltable">
-      <el-table
-        :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)"
-        border
-        size="medium"
-        highlight-current-row
-      >
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column property="colName" label="列名称" align="center">
-          <span>列名称</span>
-        </el-table-column>
-        <el-table-column property="colchName" label="中文名" align="center">
-          <span>中文名</span>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="colSelect_handleSizeChange"
-        @current-change="colSelect_handleCurrentChange"
-        :current-page.sync="colSelect_currentPage"
-        :page-size="colSelect_pagesize"
-        layout="total, prev, pager, next"
-        :total="colSelectData.length"
-        class="locationcenter"
-      ></el-pagination>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogcolSelectData = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogcolSelectData= false" size="mini">确 定</el-button>
-      </div>
-    </el-dialog>
+        <div class="locationright">
+          <el-button size="medium" type="danger">取 消</el-button>
+          <el-button size="medium" type="primary">确定</el-button>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
+    <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
   </div>
 </template>
 <script>
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
-import { parse } from "path";
+import Step from "./step";
 export default {
-  props: ["steps0data"],
+  components: {
+    Step
+  },
   data() {
     return {
-      dialogtableClean: false,
-      dialogalltableClean: false,
-      dialogTable_zfbq: false,
-      dialogTable_zfth: false,
-      dialogColClean: false,
-      dialogCol_zfbq: false,
-      dialogCol_zfth: false,
-      dialogCol_rqgsh: false,
-      dialogCol_colcf: false,
-      dialogCol_mzzh: false,
-      dialogtableCleanOrd: false,
-      dialogAlltableCleanOrd: false,
-      dialogcolumnMerge: false,
-      dialogcolSelectData: false,
-      colClean_currentPage: 1,
-      colClean_pagesize: 10,
-      colSelect_currentPage: 1,
-      colSelect_pagesize: 10,
-      cleantableData: [
+      active: 1,
+      activeName: "first",
+      data: [],
+      currentPage: 1,
+      pagesize: 10,
+      sqlexcurrentPage: 1,
+      sqlexpagesize: 5,
+      search: "",
+      input: "",
+      input2: "",
+      dialogTableVisible: false,
+      dialogTableSqlFilt: false,
+      dialogSelectColumn: false,
+      tableData: [
         {
-          compflag: 0,
-          replaceflag: 0,
-          trimflag: 0
-        }
-      ],
-      cleancurrentPage: 1,
-      cleanpagesize: 5,
-      tableCleanData: [],
-      allTableCleanSettingData: [
-        {
-          field: "",
-          replace_feild: ""
-        }
-      ],
-      characterCompletion: {
-        filling_type: "",
-        character_filling: "",
-        filling_length: ""
-      },
-      table_zfbq: {
-        filling_type: "",
-        character_filling: "",
-        filling_length: ""
-      },
-      Col_zfbq: {
-        type: "",
-        nm: "",
-        length: ""
-      },
-      Col_zfth: [
-        {
-          oldCharacter: "",
-          newCharacter: ""
-        }
-      ],
-      table_zfth: [
-        {
-          field: "",
-          replace_feild: ""
-        }
-      ],
-      Col_rqgsh: {
-        oldtype: "",
-        newtype: ""
-      },
-      Col_colcf: [
-        {
-          name: "",
-          chNamw: "",
-          cftype: "",
-          pyl: "",
-          zftype: ""
-        }
-      ],
-      Col_mzzh: [
-        {
-          sysname: "",
-          mztype: ""
-        }
-      ],
-      Col_mzzh2: [
-        {
-          oldmz: "",
-          newmz: ""
-        }
-      ],
-      colCleanData: [
-        {
-          colume_name: "13",
-          colume_ch_name: "3124",
-          compflag: "",
-          replaceflag: "",
-          formatflag: "",
-          splitflag: "",
-          codevalueflag: "",
-          trimflag: ""
-        }
-      ],
-      tableCleanOrdData: [
-        {
-          tableCleanOrdCon: "1"
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
         },
         {
-          tableCleanOrdCon: "1"
-        }
-      ],
-      AlltableCleanOrdData: [
-        {
-          tableCleanOrdCon: "1"
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
         },
         {
-          tableCleanOrdCon: "1"
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
+        },
+        {
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
+        },
+        {
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
+        },
+        {
+          tableName: "name",
+          tableChName: "京津冀",
+          parallelExtraction: "true",
+          sqlFiltering: "true",
+          selectCol: "true"
         }
       ],
-      columnMerge: [
+      sqlFiltSetData: {
+        table_name: "",
+        Variable_name: "",
+        table_des: ""
+      },
+      SelectColumnData: [
         {
-          colName: "",
-          colMerchName: "",
-          colMerchName: "",
-          colMertype: ""
+          SelectCol_name: "name1",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name2",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name3",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name4",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name5",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
+        },
+        {
+          SelectCol_name: "name6",
+          SelectCol_type: "京津冀",
+          SelectCol_chname: "true"
         }
       ],
-      colSelectData: [
+      multipleSelection: [],
+      sqlExtractData: [
         {
-          colName: "",
-          colchName: ""
+          sqlExtractData_name: "name1",
+          sqlExtractData_chname: "京津冀",
+          sqlExtractData_sql: "true"
+        },
+        {
+          sqlExtractData_name: "name1",
+          sqlExtractData_chname: "京津冀",
+          sqlExtractData_sql: "true"
+        },
+        {
+          sqlExtractData_name: "name1",
+          sqlExtractData_chname: "京津冀",
+          sqlExtractData_sql: "true"
         }
       ],
-      databaseId: "",
-      FillingType: [],
-      changecheck: null,
-      index: null,
-      colSetid: null,
-      cleanord: [
-        {
-          complement: 1,
-          replacement: 2,
-          formatting: 3,
-          conversion: 4,
-          merge: 5,
-          split: 6,
-          trim: 7
-        }
-      ]
+      dbid: null,
+      aId: null,
+      sourId: null,
+      sName: null
     };
   },
-  mounted() {
-    this.cleantableDataFun();
-    let params2 = {};
-    params2["category"] = "FillingType";
-    addTaskAllFun.getCategoryItems(params2).then(res => {
-      this.FillingType = res.data;
-    });
+  created() {
+      this.dbid = this.$route.query.id;
+      this.aId = this.$route.query.aId;
+      this.sourId = this.$route.query.sourId;
+      this.sName = this.$route.query.sName;
   },
   methods: {
-    clean_handleSizeChange(size) {
-      this.cleanpagesize = size;
-    },
-    clean_handleCurrentChange(currentPage) {
-      this.cleancurrentPage = currentPage;
-    },
-    // 获取所有数据显示
-    cleantableDataFun() {
-      this.databaseId = this.steps0data[0].database_id;
-      let params = {};
-      params["colSetId"] = this.databaseId;
-      addTaskAllFun.getCleanConfInfo(params).then(res => {
-        this.cleantableData = res.data;
-      });
-    },
-    //所有表清洗设置显示数据
-    alltableClean(id) {
-      this.colSetid = id;
-      let params = {};
-      params["colSetId"] = id;
-      // 字符替换
-      addTaskAllFun.getAllTbCleanReplaceInfo(params).then(res => {
-        this.allTableCleanSettingData = res.data;
-      });
-      // 字符补齐
-      addTaskAllFun.getAllTbCleanCompInfo(params).then(res => {
-        this.characterCompletion = res.data[0];
-      });
-    },
-    // 所有表清洗设置确定提交
-    saveAllTbCleanConfigInfo() {
-      var all = JSON.parse(JSON.stringify(this.allTableCleanSettingData));
-      var arr1 = [];
-      var arr2 = [];
-      for (var i = 0; i < all.length; i++) {
-        for (var j in all[i]) {
-          console.log(j, typeof j);
-          if (j == "field") {
-            arr1.push(all[i][j]);
-          } else if (j == "replace_feild") {
-            arr2.push(all[i][j]);
-          }
+    next() {
+       let data={}
+      if(this.$route.query.edit=='yes'){
+         data={
+          aId: this.$route.query.aId,
+          id: this.$route.query.id,
+          sourId:this.$route.query.sourId,
+          sName: this.$route.query.sName,
+          edit:'yes'
         }
       }
-      let params = {};
-      params["oriFieldArr"] = arr1;
-      params["replaceFeildArr"] = arr2;
-      params["compChar"] = this.characterCompletion.character_filling;
-      params["compLen"] = this.characterCompletion.filling_length;
-      params["compType"] = this.characterCompletion.filling_type;
-      params["colSetId"] = this.colSetid;
-      params["replaceFlag"] = this.allTableCleanSettingData == "" ? "0" : "1";
-      params["compFlag"] = this.characterCompletion == "" ? "0" : "1";
-      addTaskAllFun.saveAllTbCleanConfigInfo(params).then(res => {
-        message.updateSuccess(res);
-        this.colSetid = null;
-      });
-    },
-    // 全表清洗优先级
-    allTableCleanPriorityFun(id) {
-      this.colSetid = id;
-      let params = {};
-      params["category"] = "CleanType";
-      addTaskAllFun.getCategoryItems(params).then(res => {
-        this.tableCleanData = res.data;
-      });
-    },
-    // 全表清洗优先级确定提交
-    allTableCleanPrioritySubmitFun() {
-      var alltable = JSON.parse(JSON.stringify(this.cleantableData));
-      var ordarr = JSON.parse(JSON.stringify(this.tableCleanData));
-      let arr = [];
-      for (var i = 0; i < alltable.length; i++) {
-        for (var j in alltable[i]) {
-          if (j == "table_id") {
-            arr.push(alltable[i][j]);
-          }
+      else{
+         data={
+          aId: this.$route.query.agent_id,
         }
       }
-      var ord = JSON.parse(JSON.stringify(this.cleanord));
-      ord[0].complement = ordarr[0].code;
-      ord[0].replacement = ordarr[1].code;
-      ord[0].formatting = ordarr[2].code;
-      ord[0].conversion = ordarr[3].code;
-      ord[0].merge = ordarr[4].code;
-      ord[0].split = ordarr[5].code;
-      ord[0].trim = ordarr[6].code;
-      let params = {};
-      // params["sort"] = ord[0];
-      params["ary"] = arr;
-      console.log(params);
-      addTaskAllFun.saveAllTbCleanOrder(params).then(res => {
-        console.log(res);
+      this.$router.push({
+        path: "/dbaddTasksteps03",
+        query:data
       });
     },
-    //
-    colClean_handleSizeChange(size) {
-      this.colClean_pagesize = size;
+    pre() {
+          let data={}
+      if(this.$route.query.edit=='yes'){
+         data={
+          aId: this.$route.query.aId,
+          id: this.$route.query.id,
+          sourId:this.$route.query.sourId,
+          sName: this.$route.query.sName,
+          edit:'yes'
+        }
+      }
+      else{
+         data={
+           aId: this.$route.query.agent_id,
+        }
+      }
+      this.$router.push({
+        path: "/dbaddTasksteps01",
+        query:data
+      });
     },
-    colClean_handleCurrentChange(currentPage) {
-      this.colClean_currentPage = currentPage;
+    Sqlfilt(value, row) {
+      console.log(value, row);
+      this.dialogTableSqlFilt = true;
     },
-    colSelect_handleSizeChange(size) {
-      this.colSelect_pagesize = size;
+    checkedFun(e) {
+      if (e) {
+        this.dialogTableVisible = true;
+      }
     },
-    colSelect_handleCurrentChange(currentPage) {
-      this.colSelect_currentPage = currentPage;
+    selectCol(value, row) {
+      this.dialogSelectColumn = true;
+      console.log(value, row);
+    },
+    ParallelExtraction(value, row) {
+      console.log(value, row);
+    },
+    filterHandler(value, row, column) {
+      const property = column["property"];
+      return row[property] === value;
+    },
+    sig_handleSizeChange(size) {
+      this.pagesize = size;
+    },
+    sig_handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+    },
+    sqlex_handleSizeChange(size) {
+      this.sqlexpagesize = size;
+    },
+    sqlex_handleCurrentChange(currentPage) {
+      this.sqlexcurrentPage = currentPage;
+    },
+    //选择复选框数据
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     },
     //上移
     moveUp(index, row, tableData) {
@@ -975,6 +458,7 @@ export default {
         alert("已经是第一条，不可上移");
       }
     },
+
     //下移
     moveDown(index, row, tableData) {
       if (index + 1 === tableData.length) {
@@ -985,224 +469,73 @@ export default {
         tableData.splice(index, 0, downDate);
       }
     },
-    //新增行
-    addRow(tableData, event) {
-      tableData.push({
-        field: "",
-        replace_feild: ""
-      });
-    },
     //删除
     DelRowFun(index, rows) {
       rows.splice(index, 1);
     },
-    // 表选择列点击
-    selectCol(index, row) {
-      this.dialogColClean = true;
-      let id = row.table_id;
-      this.selectColPageFun(id);
-    },
-    // 选择列弹框出现翻页渲染
-    selectColPageFun(id) {
-      let params = {};
-      params["tableId"] = id;
-      params["currPage"] = this.colClean_currentPage;
-      params["pageSize"] = this.colClean_pagesize;
-      addTaskAllFun.getColumnInfo(params).then(res => {
-        console.log(res);
-        this.colCleanData = res.data;
+    //新增行
+    addRow(tableData, event) {
+      tableData.push({
+        sqlExtractData_name: "",
+        sqlExtractData_chname: "",
+        sqlExtractData_sql: ""
       });
-    },
-    //表字符补齐显示
-    table_zfbqFun(index, tableid, compflags) {
-      this.dialogTable_zfbq = true;
-      //  清楚字符弹框数据
-      this.table_zfbq.filling_type = "";
-      this.table_zfbq.character_filling = "";
-      this.table_zfbq.filling_length = "";
-      if (compflags != 0) {
-        let params = {};
-        params["tableId"] = tableid;
-        addTaskAllFun.getTbCompletionInfo(params).then(res => {
-          if (res.data[0]) {
-            this.table_zfbq = res.data[0];
-          }
-        });
-      }
-      this.changecheck = compflags;
-      this.index = index;
-    },
-    // 点击表字符补齐取消按钮事件
-    Table_zfbqclose() {
-      this.dialogTable_zfbq = false;
-      if (this.changecheck) {
-        this.cleantableData[this.index].compflag = true;
-        this.index = null;
-        this.changecheck = null;
-      } else {
-        this.cleantableData[this.index].compflag = false;
-        this.index = null;
-        this.changecheck = null;
-      }
-    },
-    // 点击表字符补齐提交确定按钮
-    Table_zfbqsubmit() {
-      let params = {};
-      params["character_filling"] = this.table_zfbq.character_filling;
-      params["filling_length"] = this.table_zfbq.filling_length;
-      params["filling_type"] = this.table_zfbq.filling_type;
-      params["table_id"] = this.cleantableData[this.index].table_id;
-      addTaskAllFun.saveSingleTbCompletionInfo(params).then(res => {
-        this.cleantableData[this.index].compflag = true;
-        this.index = null;
-        this.changecheck = null;
-      });
-    },
-    // 点击表字符替换显示弹框
-    table_zfthFun(index, tableid, compflags) {
-      this.dialogTable_zfth = true;
-      if (compflags != 0 || compflags) {
-        console.log(compflags, 111);
-        let params = {};
-        params["tableId"] = tableid;
-        console.log(params);
-        addTaskAllFun.getSingleTbReplaceInfo(params).then(res => {
-          this.table_zfth = res.data;
-          console.log(res.data);
-        });
-      }
-      this.changecheck = compflags;
-      this.index = index;
-    },
-    // 点击表字符替换取消按钮事件
-    Table_zfthclose() {
-      this.dialogTable_zfth = false;
-      if (this.changecheck) {
-        this.cleantableData[this.index].replaceflag = true;
-        this.index = null;
-        this.changecheck = null;
-      } else {
-        this.cleantableData[this.index].replaceflag = false;
-        this.index = null;
-        this.changecheck = null;
-      }
-    },
-    // 点击表字符替换提交确定按钮
-    Table_zfthsubmit() {
-      this.dialogTable_zfth = false;
-      let params = {};
-      params["replaceString"] = JSON.stringify(this.table_zfth);
-      params["tableId"] = this.cleantableData[this.index].table_id;
-      console.log(params);
-      addTaskAllFun.saveSingleTbReplaceInfo(params).then(res => {
-        this.cleantableData[this.index].replaceflag = true;
-        this.index = null;
-        this.changecheck = null;
-      });
-    },
-    zfbqFun(index, row) {
-      this.dialogCol_zfbq = true;
-    },
-    zfthFun(index, row) {
-      this.dialogCol_zfth = true;
-    },
-    rqgshFun(index, row) {
-      this.dialogCol_rqgsh = true;
-    },
-    colcfFun(index, row) {
-      this.dialogCol_colcf = true;
-    },
-    mzzhFun(index, row) {
-      this.dialogCol_mzzh = true;
-    },
-    yxjFun(row) {
-      this.dialogtableCleanOrd = true;
-    },
-    allTableOrd() {
-      this.dialogAlltableCleanOrd = true;
-    },
-    columnMergeFun() {
-      this.dialogcolumnMerge = true;
-    },
-    colSelectFun(row) {
-      this.dialogcolSelectData = true;
     }
   }
 };
 </script>
 <style scoped>
-.cleanbtn {
-  width: 100%;
-  background: #f3f1f1;
-  padding: 10px 0;
-  overflow: hidden;
+.singlesearch >>> .el-tabs__content {
+  overflow: visible !important;
+}
+#singleTable {
   position: relative;
 }
-.cleanbtn > button {
-  float: right;
-  margin: 0 10px;
+.rightSearch {
+  width: 20%;
+  position: absolute;
+  top: -49px;
+  right: 0;
+}
+#singleTable >>> .el-pagination {
+  text-align: center;
+  margin-top: 6px;
+}
+#singleTable >>> .el-table__header tr,
+#singleTable >>> .el-table__header th {
+  padding: 0;
+  height: 40px;
+}
+#singleTable >>> .el-table__body tr,
+#singleTable >>> .el-table__body td {
+  padding: 0;
+  height: 40px;
+}
+#singleTable >>> .el-input__inner {
+  height: 30px;
+}
+#singleTable >>> .el-textarea__inner {
+  height: 30px;
 }
 .locationcenter {
   text-align: center;
   margin-top: 5px;
 }
-.alltablebox {
-  min-height: 20px;
-  margin: 5px 0;
+.locationright {
+  text-align: right;
 }
-.alltabletitle {
-  height: 36px;
-  line-height: 36px;
-  font-size: 16px;
-  padding-left: 5px;
-  border: 1px solid #eae8e8;
-  box-sizing: border-box;
-  border-bottom: 0;
+.leftbtn {
+  margin-top: 12px;
+  margin-top: 12px;
+  float: left;
+  margin: 15px;
+  margin-bottom: 10px;
 }
-.alltabletitle > span {
-  font-size: 14px;
-  color: #d86b6b;
-}
-.alltableform {
-  border: 1px solid #eae8e8;
-}
-.alltablebox >>> .el-input__inner {
-  width: 160px;
-}
-.alltable >>> .el-dialog__body {
-  padding: 0 20px;
-}
-.alltablebox {
-  padding: 10px;
-}
-.alltableaddrow {
-  height: 48px;
-  line-height: 48px;
-  font-size: 16px;
-  padding-left: 5px;
-  border: 1px solid #eae8e8;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  border-bottom: 0;
-  margin: 0;
-}
-.alltableaddrow .el-button {
-  height: 28px;
-  line-height: 20px;
-  padding: 0;
-  width: 64px;
-}
-.TableClean {
-  padding: 15px 15px;
-  border: 1px solid #eae8e8;
-}
-.addline {
-  margin: 5px 0;
-}
-.settingbtn {
-  color: #409eff;
-  margin-left: 10px;
-  font-size: 14px;
-  font-weight: bold;
+.rightbtn {
+  margin-top: 12px;
+  margin-top: 12px;
+  float: right;
+  margin: 15px;
+  margin-bottom: 10px;
 }
 </style>

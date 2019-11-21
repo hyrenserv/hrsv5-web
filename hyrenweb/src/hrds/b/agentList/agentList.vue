@@ -168,12 +168,13 @@ export default {
             console.log(databaseId)
             if (type == "数据库采集") {
                 this.$router.push({
-                    path: "addTask",
+                    path: "dbaddTasksteps01",
                     query: {
-                        aId: agentId,
+                         aId: agentId,
                         id: databaseId,
                         sourId: sourceId,
-                        sName: sourceName
+                        sName: sourceName,
+                        edit:'yes'
                     }
                 });
             } else if (type == "Ftp采集Agent") {
@@ -191,7 +192,10 @@ export default {
             console.log(name)
             if (type == "1") {
                 this.$router.push({
-                    path: "/addTask"
+                    path: "/dbaddTasksteps01",
+                    query: {
+                        agent_id: agent_id
+                    }
                 });
             } else if (type == "2") {
                 this.$router.push({
