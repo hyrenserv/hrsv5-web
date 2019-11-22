@@ -108,10 +108,10 @@
             >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="补齐字符">
+        <el-form-item label="补齐字符" :rules="rule.default">
           <el-input v-model="table_zfbq.character_filling" style="width:190px"></el-input>
         </el-form-item>
-        <el-form-item label="补齐长度">
+        <el-form-item label="补齐长度" :rules="rule.default">
           <el-input v-model="table_zfbq.filling_length" style="width:190px"></el-input>
         </el-form-item>
       </el-form>
@@ -262,10 +262,10 @@
               >{{item.value}}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="补齐字符">
+          <el-form-item label="补齐字符" :rules="rule.default">
             <el-input v-model="characterCompletion.character_filling" size="medium"></el-input>
           </el-form-item>
-          <el-form-item label="补齐长度">
+          <el-form-item label="补齐长度" :rules="rule.default">
             <el-input v-model="characterCompletion.filling_length" size="medium"></el-input>
           </el-form-item>
         </el-form>
@@ -297,7 +297,6 @@
           border
           size="medium"
           highlight-current-row
-          :row-key="(row)=>{ return row.classId}"
         >
           <el-table-column property label="序号" width="60px" align="center">
             <template scope="scope">
@@ -371,8 +370,8 @@
               <span class="settingbtn" v-else @click="mzzhFun(scope.$index,scope.row)">设置</span>
             </template>
           </el-table-column>
-          <el-table-column property="trimflag" label="首尾去空" align="center">
-            <template slot="header">
+          <el-table-column property="trimflag" label="" class="is-checked" align="center">
+            <template slot="header" slot-scope="scope">
               <el-checkbox
                 @change="handleCheckAllChange(colCleanData,colcheckAll)"
                 v-model="colcheckAll"
@@ -422,10 +421,10 @@
             >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="补齐字符">
+        <el-form-item label="补齐字符" :rules="rule.default">
           <el-input v-model="Col_zfbq.character_filling" style="width:190px" size="medium"></el-input>
         </el-form-item>
-        <el-form-item label="补齐长度">
+        <el-form-item label="补齐长度" :rules="rule.default">
           <el-input v-model="Col_zfbq.filling_length" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
@@ -490,10 +489,10 @@
       @close="Col_rqgshCloseFun()"
     >
       <el-form ref="form" :model="Col_rqgsh" label-width="240px" text-align="center">
-        <el-form-item label="原格式">
+        <el-form-item label="原格式" :rules="rule.default">
           <el-input v-model="Col_rqgsh.old_format" style="width:190px" size="medium"></el-input>
         </el-form-item>
-        <el-form-item label="转换格式">
+        <el-form-item label="转换格式" :rules="rule.default">
           <el-input v-model="Col_rqgsh.convert_format" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
@@ -830,8 +829,9 @@
         highlight-current-row
         @selection-change="changeFun"
         ref="multipleTable"
+        :row-key="getRowKey"
       >
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" :reserve-selection="true" width="55" align="center"></el-table-column>
         <el-table-column property="colume_name" label="列名称" align="center"></el-table-column>
         <el-table-column property="colume_ch_name" label="中文名" align="center"></el-table-column>
       </el-table>
@@ -871,6 +871,7 @@ export default {
   data() {
     return {
       active: 2,
+      rule: validator.default,
       checkAll: false,
       colcheckAll: false,
       dialogtableClean: false,
@@ -1013,6 +1014,9 @@ export default {
     this.priorityDataFun();
   },
   methods: {
+    getRowKey(row){
+      return row.column_id
+    },
     next() {
       let tbCleanString = this.dataCleanConfigFun();
          let data={}

@@ -292,7 +292,6 @@ import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
 export default {
-  // props: ["steps0data"],
   components: {
     Step
   },
@@ -350,11 +349,6 @@ export default {
       dbid: null
     };
   },
-  /*   watch: {
-    steps0data(val) {
-      this.ruleForm = val[0];
-    }
-  }, */
   created() {
     let params = {};
     params["category"] = "DatabaseType";
@@ -380,6 +374,7 @@ export default {
   },
   methods: {
     next() {
+      // saveDbConf
       let data={}
       if(this.$route.query.edit=='yes'){
          data={

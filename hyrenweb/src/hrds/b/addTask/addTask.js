@@ -71,7 +71,14 @@ export function testConnection(data) {
         params:data
     })
 }
-
+//保存数据库采集Agent数据库配置信息 
+export function saveDbConf(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/saveDbConf',
+        method: 'post',
+        params:data
+    })
+}
 //steps3
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
