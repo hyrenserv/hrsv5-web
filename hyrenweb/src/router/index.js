@@ -165,7 +165,7 @@ export default new Router({
                 },
                 // 非结构化 Agent采集
                 {
-                    path: '/unstructuredAgent',
+                    path: '/configureStartMode',
                     name: 'configureStartMode',
                     title: '配置启动方式',
                     component: () => import('@/hrds/b/unstructuredAgent/configureStartMode.vue')

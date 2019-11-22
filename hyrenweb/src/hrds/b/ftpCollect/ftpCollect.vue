@@ -152,7 +152,7 @@
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="medium" type="success" style="float:right" @click="addFtpCollect">
+                <el-button size="medium" type="success" style="float:right" @click="dialogSelectOk=true">
                     完成
                     <i class="el-icon-check"></i>
                 </el-button>
@@ -172,7 +172,7 @@
         <p>设置完成！请等待Agent运行...不运行请点击取消按钮</p>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogSelectOk=false" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="goBackQuit" size="mini">确定</el-button>
+            <el-button type="primary" @click="addFtpCollect" size="mini">确定</el-button>
         </div>
     </el-dialog>
 </div>
@@ -183,9 +183,7 @@ import * as functionAll from "./ftpCollect";
 import {
     log
 } from 'util';
-let arrData = [{
-    children: []
-}]
+let arrData = []
 let DataAll = {}
 export default {
     data() {
@@ -331,13 +329,17 @@ export default {
                 this.form["ftp_id"] = this.$route.query.ftp_id;
                 functionAll.updateFtp_collect(this.form).then(res => {
                     if (res && res.success) {
-                        this.dialogSelectOk = true;
+                        this.$router.push({
+                            name: "agentList"
+                        });
                     }
                 });
             } else {
                 functionAll.addFtp_collect(this.form).then(res => {
                     if (res && res.success) {
-                        this.dialogSelectOk = true;
+                        this.$router.push({
+                            name: "agentList"
+                        });
                     }
                 });
             }
@@ -405,9 +407,6 @@ export default {
             this.form.child_file_path = "";
             this.dialogSelectfolder = false;
         },
-        changeTimeType(str) {
-
-        }
     }
 };
 </script>
