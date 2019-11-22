@@ -1,7 +1,7 @@
 <template>
 <div class="configureStartMode">
     <el-row class="partOne">
-        卸数 > 配置启动方式 
+        卸数 > 配置启动方式
     </el-row>
 
     <el-row class="partTwo">
@@ -123,9 +123,9 @@ export default {
             formLabelWidth: "150px"
         }
     },
-    created() {
+    async created() {
         // 获取首页数据
-        this.searchFileCollect();
+        await this.searchFileCollect();
         // 获取代码项对应值
         this.getCategoryItems("IsFlag");
         this.getCategoryItems("ExecuteWay");
@@ -195,13 +195,14 @@ export default {
                 this.form
             ).then((res) => {
                 if (res && res.success) {
-                     this.$router.push({
-                    path: "/configureFileOption",
-                    query: {
-                        fcs_id:res.data,
-                        agent_id:this.$route.query.agent_id
-                    }
-                });
+                    this.$router.push({
+                        path: "/configureFileOption",
+                        query: {
+                            fcs_id: res.data,
+                            agent_id: this.$route.query.agent_id,
+                            agent_name: this.$route.query.agent_name
+                        }
+                    });
                 }
             })
         },

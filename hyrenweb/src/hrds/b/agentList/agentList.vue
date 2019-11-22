@@ -166,15 +166,16 @@ export default {
         // 任务管理里面的编辑  根据不同类型跳转不同页面
         taskEditBtn(type, agentId, databaseId, sourceId, sourceName) {
             console.log(databaseId)
+            console.log(type)
             if (type == "数据库采集") {
                 this.$router.push({
                     path: "dbaddTasksteps01",
                     query: {
-                         aId: agentId,
+                        aId: agentId,
                         id: databaseId,
                         sourId: sourceId,
                         sName: sourceName,
-                        edit:'yes'
+                        edit: 'yes'
                     }
                 });
             } else if (type == "Ftp采集Agent") {
@@ -185,10 +186,18 @@ export default {
                         ftp_id: databaseId
                     }
                 });
+            } else if (type == "非结构化采集") {
+                this.$router.push({
+                    path: "/configureStartMode",
+                    query: {
+                        agent_id: agentId,
+                        fcs_id: databaseId
+                    }
+                });
             }
         },
         // 新增任务  根据不同类型跳转不同页面
-        addtask(name,type, agent_id) {
+        addtask(name, type, agent_id) {
             console.log(name)
             if (type == "1") {
                 this.$router.push({
@@ -199,9 +208,9 @@ export default {
                 });
             } else if (type == "2") {
                 this.$router.push({
-                    path: "/unstructuredAgent",
+                    path: "/configureStartMode",
                     query: {
-                        agent_name:name,
+                        agent_name: name,
                         agent_id: agent_id
                     }
                 });
