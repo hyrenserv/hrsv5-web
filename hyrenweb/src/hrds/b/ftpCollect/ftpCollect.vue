@@ -185,6 +185,7 @@ import {
 } from 'util';
 let arrData = []
 let DataAll = {}
+let objjson;
 export default {
     data() {
         return {
@@ -263,8 +264,6 @@ export default {
                     let dateEnd = yearEnd + "-" + monthEnd + "-" + dayEnd;
                     this.end_date = dateEnd;
                 })
-            } else {
-
             }
         },
         // 返回上一级
@@ -372,7 +371,7 @@ export default {
         },
         // 获取目录结构
         seletFilePath(data) {
-            let arry = [];
+            let arry;
             let path;
             if (typeof (data) != "undefined") {
                 path = data.path;
@@ -386,10 +385,34 @@ export default {
                     if (typeof (data) == 'undefined') {
                         this.data2 = res.data;
                     } else if (typeof (data.path) != "undefined") {
-                        data['children'] = res.data;
-                        DataAll = data;
-                        arrData.push(data)
-                        this.data2 = arrData;
+                        if (path == "/") {
+                            data['children'] = res.data;
+                            objjson = data;
+                            DataAll = data;
+                            arrData.push(data)
+                            this.data2 = arrData;
+                        } else {
+                            for (let i in objjson) {
+                                if (i == "children") {
+                                    let asr = objjson[i]
+                                    asr.forEach(item => {
+                                        if (item.path) {
+                                            item["children"] = []
+                                            if (item.path == path) {
+                                                item.children = res.data
+                                                arrData = []
+                                                arrData.push(objjson)
+                                                var returnedItem;
+                                                this.data2 = arrData;
+                                            }
+                                        }
+
+                                    })
+                                }
+                            }
+
+                        }
+
                     }
 
                 });
@@ -397,6 +420,7 @@ export default {
         // 获取目录下一级
         handleNodeClick(data) {
             this.seletFilePath(data);
+            // console.log(objjson, "i an jsonobj")
         },
         //获取选中状态下的数据
         handleCheckChange(data) {
