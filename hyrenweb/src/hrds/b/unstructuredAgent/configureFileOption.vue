@@ -59,9 +59,9 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="customSuffix" label="自定义后缀名" width="110" align="center">
+            <el-table-column prop="custom_suffix" label="自定义后缀名" width="110" align="center">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.customSuffix" size="mini"></el-input>
+                    <el-input v-model="scope.row.custom_suffix" size="mini"></el-input>
                     <el-tooltip class="item" effect="dark" content="多个后缀名，请用|分隔符隔开" placement="bottom">
                         <i class="fa fa-question-circle" aria-hidden="true"></i>
                     </el-tooltip>
@@ -76,6 +76,18 @@
             <el-table-column label="操作" width="80" align="center">
                 <template slot-scope="scope">
                     <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                </template>
+            </el-table-column>
+
+            <el-table-column v-if="hiddenSuccess">
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.fcs_id" size="mini"></el-input>
+                </template>
+            </el-table-column>
+
+            <el-table-column v-if="hiddenSuccess">
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.agent_id" size="mini"></el-input>
                 </template>
             </el-table-column>
         </el-table>
@@ -129,6 +141,7 @@ export default {
             disabled: true,
             showButton: true,
             showInput: false,
+            hiddenSuccess: false,
             size: "medium",
             defaultProps: {
                 children: "children",
@@ -141,7 +154,7 @@ export default {
         }
     },
     created() {
-
+        this.searchFileSource();
     },
     methods: {
         // 返回采集主页面
@@ -160,6 +173,24 @@ export default {
                 }
             })
         },
+        // 编辑时获取回显数据
+        searchFileSource() {
+            functionAll.searchFileSource({
+                fcs_id: this.$route.query.fcs_id
+            }).then((res) => {
+                if (res && res.success) {
+                    res.data.forEach((item) => {
+                        delete item["agent_id"];
+                        delete item["fcs_id"];
+                        delete item["file_source_id"]
+                    })
+                    let ArrJson = JSON.stringify(res.data).replace(/1/g, "true").replace(/0/g, "false").replace(/"true"/g, true).replace(/"false"/g, false);
+                    let jsonArr = JSON.parse(ArrJson)
+                    this.tableData = jsonArr
+                    console.log(this.tableData)
+                }
+            })
+        },
         // 添加行数据
         addTableData() {
             this.tableData.push({
@@ -172,7 +203,9 @@ export default {
                 is_image: true,
                 is_other: true,
                 is_compress: true,
-                customSuffix: ""
+                custom_suffix: "",
+                fcs_id: this.$route.query.fcs_id,
+                agent_id: this.$route.query.agent_id
             })
         },
         // 获取表格当前行数据
@@ -221,12 +254,16 @@ export default {
         },
         // 点击完成保存数据
         saveOk() {
+            this.tableData.forEach((item) => {
+                item["agent_id"] = this.$route.query.agent_id;
+                item["fcs_id"]= this.$route.query.fcs_id;
+            })
             let ArrJson = JSON.stringify(this.tableData).replace(/true/g, '1').replace(/false/g, '0');
             functionAll.saveFileSource({
-                file_sources_array: ArrJson,
-                // fcs_id: this.this.$route.query.fcs_id
+                file_sources_array: ArrJson
             }).then((res) => {
-                if (res && res.data) {
+                if (res && res.success) {
+                    this.dialogSelectOk = false;
                     this.$router.push({
                         name: "agentList"
                     })

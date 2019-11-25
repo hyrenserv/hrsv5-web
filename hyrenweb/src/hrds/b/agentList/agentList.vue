@@ -191,7 +191,8 @@ export default {
                     path: "/configureStartMode",
                     query: {
                         agent_id: agentId,
-                        fcs_id: databaseId
+                        fcs_id: databaseId,
+                        agent_name:type
                     }
                 });
             }

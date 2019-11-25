@@ -176,6 +176,13 @@ export default new Router({
                     title: '配置连接属性',
                     component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue')
                 },
+                // dataStoreAction
+                {
+                    path: '/dataStoreAction',
+                    name: 'dataStoreAction',
+                    title: 'dataStoreAction',
+                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue')
+                },
             ]
         },
 
