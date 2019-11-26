@@ -12,7 +12,7 @@
             <i class="fa fa-cloud-upload"></i>新增系统参数
         </el-button>
     </el-row>
-    <el-table stripe :data="systemParameters.filter(data => !search || data.para_name.toLowerCase().includes(search.toLowerCase()))" border>
+    <el-table stripe :data="systemParameters.filter(data => !search || data.para_name.toLowerCase().includes(search.toLowerCase()))" size="medium" border>
         <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
         <el-table-column prop="para_name" label="系统参数名称" width="130" align="center"></el-table-column>
         <el-table-column prop="para_value" label="系统参数值" align="center"></el-table-column>
@@ -20,7 +20,7 @@
         <el-table-column prop="remark" label="系统参数备注" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="160">
             <template slot="header" slot-scope="scope">
-                <el-input v-model="search" size="small" placeholder="关键字搜索" />
+                <el-input v-model="search" size="mini" placeholder="关键字搜索" />
             </template>
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>

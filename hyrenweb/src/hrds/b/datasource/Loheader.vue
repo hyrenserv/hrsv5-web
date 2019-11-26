@@ -105,8 +105,9 @@ export default {
     methods: {
         // 点击添加按钮获取部门信息
         departmentInfo() {
-            functionAll.searchDataSourceOrDepartment().then(res => {
-                    this.options = res.data.departmentInfo;
+            functionAll.searchDataSourceOrDepartment({
+            }).then(res => {
+                    this.options = res.data;
             });
         },
         // 添加数据来源表一条数据

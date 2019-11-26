@@ -129,7 +129,8 @@ export default {
         // 点击保存添加
         saveData() {
             // 处理参数
-             this.change_storelayer = [];
+            this.change_storelayer = [];
+            console.log(  this.dsla_storelayer)
             this.dsla_storelayer.forEach((item) => {
                 if (item == "主键") {
                     this.change_storelayer.push("01");
@@ -145,13 +146,14 @@ export default {
                     this.change_storelayer.push("06");
                 }
             })
-            this.form['dsla_storelayer'] = this.change_storelayer;
+            this.form['dsla_storelayer'] =  JSON.parse(JSON.stringify( this.change_storelayer))
             this.form['dataStoreLayerAttr'] = JSON.stringify(this.tableData);
+            console.log(this.form.dsla_storelayer)
             functionAll.addDataStore(
-                this.form
+                    this.form
             ).then((res) => {
                 if (res && res.success) {
-                    console.log(res)
+                   
                 }
             })
         },

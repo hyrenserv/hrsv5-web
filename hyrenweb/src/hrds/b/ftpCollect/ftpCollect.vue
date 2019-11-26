@@ -7,19 +7,19 @@
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
             <el-col :span="12">
-                <el-form-item label="ftp任务编号" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp任务编号" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_number" placeholder="ftp任务编号" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp名称" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp名称" :label-width="formLabelWidth" prop="ftp_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_name" placeholder="ftp名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="开始日期" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="开始日期" :label-width="formLabelWidth">
                     <el-date-picker type="date" v-model="start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -31,7 +31,7 @@
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="结束日期" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="结束日期" :label-width="formLabelWidth">
                     <el-date-picker type="date" v-model="end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -43,37 +43,37 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp服务IP" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp服务IP" :label-width="formLabelWidth" prop="ftp_ip" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_ip" placeholder="ftp服务IP" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp服务端口" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp服务端口" :label-width="formLabelWidth" prop="ftp_port" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_port" placeholder="ftp服务端口" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp用户名" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp用户名" :label-width="formLabelWidth" prop="ftp_username" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_username" placeholder="ftp用户名" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp密码" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp密码" :label-width="formLabelWidth" prop="ftp_password" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_password" placeholder="ftp密码" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="18">
-                <el-form-item label="ftp服务器目录" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="ftp服务器目录" :label-width="formLabelWidth" prop="ftp_dir" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_dir" placeholder="ftp服务器目录" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="18">
-                <el-form-item label="agent机器目录" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="agent机器目录" :label-width="formLabelWidth" prop="local_path" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.local_path" :disabled="disabled" :size="size">
                         <template slot="prepend">
                             <el-button @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
@@ -91,7 +91,7 @@
             </el-col>
 
             <el-col :span="12" v-if="showOrHidden_realtime">
-                <el-form-item label="实时读取间隔时间" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="实时读取间隔时间" :label-width="formLabelWidth">
                     <el-input v-model="form.realtime_interval" placeholder="实时读取间隔时间 单位：秒" :size="size"></el-input>
                 </el-form-item>
             </el-col>
@@ -105,7 +105,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="下级目录规则" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="下级目录规则" :label-width="formLabelWidth" prop="ftp_rule_path" :rules="filter_rules([{required: true}])">
                     <el-select v-model="form.ftp_rule_path" placeholder="请选择数据下级目录规则" clearable style="width: 100%;">
                         <el-option v-for="item in FtpRule" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -135,7 +135,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="启动方式" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="filter_rules([{required: true}])">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -152,7 +152,7 @@
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="medium" type="success" style="float:right" @click="dialogSelectOk=true">
+                <el-button size="medium" type="success" style="float:right" @click="submitForm('form')">
                     完成
                     <i class="el-icon-check"></i>
                 </el-button>
@@ -193,10 +193,21 @@ export default {
     data() {
         return {
             form: {
+                ftp_number: "",
+                ftp_name: "",
+                ftp_ip: "",
+                ftp_port: "",
+                ftp_username: "",
                 is_read_realtime: "0",
                 ftp_model: "0",
                 is_unzip: "0",
-                local_path: ''
+                local_path: '',
+                ftp_number: "",
+                ftp_password: "",
+                ftp_dir: "",
+                local_path: "",
+                ftp_rule_path: "",
+                run_way: ""
             },
             start_date: "",
             end_date: "",
@@ -446,6 +457,18 @@ export default {
             this.form.child_file_path = "";
             this.dialogSelectfolder = false;
         },
+        // 检查表单有没有填写完整
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.dialogSelectOk = true
+                }
+                else {
+                    return false;
+                }
+            });
+        },
+
     }
 };
 </script>
