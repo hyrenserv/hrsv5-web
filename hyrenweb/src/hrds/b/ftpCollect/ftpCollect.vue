@@ -7,19 +7,19 @@
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
             <el-col :span="12">
-                <el-form-item label="ftp任务编号" :label-width="formLabelWidth">
+                <el-form-item label="ftp任务编号" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_number" placeholder="ftp任务编号" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp名称" :label-width="formLabelWidth">
+                <el-form-item label="ftp名称" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_name" placeholder="ftp名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="开始日期" :label-width="formLabelWidth">
+                <el-form-item label="开始日期" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-date-picker type="date" v-model="start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -31,7 +31,7 @@
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="结束日期" :label-width="formLabelWidth">
+                <el-form-item label="结束日期" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-date-picker type="date" v-model="end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -43,37 +43,37 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp服务IP" :label-width="formLabelWidth">
+                <el-form-item label="ftp服务IP" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_ip" placeholder="ftp服务IP" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp服务端口" :label-width="formLabelWidth">
+                <el-form-item label="ftp服务端口" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_port" placeholder="ftp服务端口" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp用户名" :label-width="formLabelWidth">
+                <el-form-item label="ftp用户名" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_username" placeholder="ftp用户名" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="ftp密码" :label-width="formLabelWidth">
+                <el-form-item label="ftp密码" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_password" placeholder="ftp密码" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="18">
-                <el-form-item label="ftp服务器目录" :label-width="formLabelWidth">
+                <el-form-item label="ftp服务器目录" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.ftp_dir" placeholder="ftp服务器目录" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="18">
-                <el-form-item label="agent机器目录" :label-width="formLabelWidth">
+                <el-form-item label="agent机器目录" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.local_path" :disabled="disabled" :size="size">
                         <template slot="prepend">
                             <el-button @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
@@ -91,7 +91,7 @@
             </el-col>
 
             <el-col :span="12" v-if="showOrHidden_realtime">
-                <el-form-item label="实时读取间隔时间" :label-width="formLabelWidth">
+                <el-form-item label="实时读取间隔时间" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.realtime_interval" placeholder="实时读取间隔时间 单位：秒" :size="size"></el-input>
                 </el-form-item>
             </el-col>
@@ -105,7 +105,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="下级目录规则" :label-width="formLabelWidth">
+                <el-form-item label="下级目录规则" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-select v-model="form.ftp_rule_path" placeholder="请选择数据下级目录规则" clearable style="width: 100%;">
                         <el-option v-for="item in FtpRule" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -135,7 +135,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="启动方式" :label-width="formLabelWidth">
+                <el-form-item label="启动方式" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -180,13 +180,15 @@
 
 <script>
 import * as functionAll from "./ftpCollect";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 import {
     log
 } from 'util';
 let arrData = []
 let DataAll = {}
 let objjson;
-let itemChildrenPath=[];
+let itemChildrenPath = [];
 export default {
     data() {
         return {
@@ -412,10 +414,10 @@ export default {
                                                         //     console.log(itemChildren.path, "woshi itemChildren.path");
                                                         //     console.log(path, "woshi path");
                                                         // }
-                                                        itemChildrenPath.push(itemChildren.path) 
-                                                     
+                                                        itemChildrenPath.push(itemChildren.path)
+
                                                     })
-                                                       console.log(itemChildrenPath, "woshi path");
+                                                    console.log(itemChildrenPath, "woshi path");
                                                 }
                                             }
                                         }

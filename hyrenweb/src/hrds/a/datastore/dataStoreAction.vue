@@ -108,7 +108,6 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            console.log(res.data, "i am data")
                             this.checkboxType = res.data;
                         }
                     });
@@ -146,7 +145,7 @@ export default {
                     this.change_storelayer.push("06");
                 }
             })
-            this.form['dsla_storelayer'] = JSON.stringify(this.change_storelayer);
+            this.form['dsla_storelayer'] = this.change_storelayer;
             this.form['dataStoreLayerAttr'] = JSON.stringify(this.tableData);
             functionAll.addDataStore(
                 this.form
