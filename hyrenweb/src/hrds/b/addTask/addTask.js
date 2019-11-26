@@ -359,3 +359,19 @@ export function getInitInfo(data) {
         params:data
     })
 }
+//根据数据抽取方式返回卸数文件格式
+export function getFileFormatByExtractType(data) {
+    return request({
+        url: '/B/agent/dbagentconf/fileconf/getFileFormatByExtractType',
+        method: 'post',
+        params:data
+    })
+}
+// 抽取数据保存
+export function saveFileConf(data) {
+    return request({
+        url: '/B/agent/dbagentconf/fileconf/saveFileConf',
+        method: 'post',
+        params:data
+    })
+}
