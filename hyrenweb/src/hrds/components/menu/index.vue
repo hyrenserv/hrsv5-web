@@ -18,11 +18,11 @@
         <el-container>
             <el-aside width="15%">
                 <!-- 导航 -->
-                <el-menu router :default-active="menus[0].path">
+                <el-menu router :default-active="deflink">
                     <div v-for="items in menus" :key="items.name">
-                        <template v-if="items.children">
+                        <!-- <template v-if="items.children"> -->
                             <!--二级菜单循环-->
-                            <el-submenu :index="items.children[0].path">
+                           <!--  <el-submenu :index="items.children[0].path">
                                 <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
                                 <div v-for="item in items.children" :key="item.name">
                                     <el-menu-item :index="item.path">
@@ -30,15 +30,15 @@
                                         <span>{{item.title}}</span>
                                     </el-menu-item>
                                 </div>
-                            </el-submenu>
-                        </template>
-                        <template v-else>
+                            </el-submenu> -->
+                        <!-- </template> -->
+                        <!-- <template v-else> -->
                             <!--一级菜单循环-->
                             <el-menu-item :index="items.path">
                                 <i :class="items.icon"></i>
                                 <span>{{items.title}}</span>
                             </el-menu-item>
-                        </template>
+                        <!-- </template> -->
                     </div>
                 </el-menu>
             </el-aside>
@@ -58,16 +58,27 @@
 import {
     mapActions
 } from 'vuex'
-import menu from './menu'
+import * as addTaskAllFun from './menu'
 export default {
     data() {
         return {
-            menus: menu
+            menus:[],
+            deflink:''
         }
     },
     mounted() {
         // 这里是菜单默认路径
         // this.$router.push('syspara');
+        addTaskAllFun.getMenu().then(res=>{
+            let Data=res.data;
+            let arr=[]
+            for(var i=0;i<Data.length;i++){              
+              arr.push({'icon':Data[i].menu_remark,'title':Data[i].menu_name,'path':Data[i].menu_path})
+            }
+             this.menus=JSON.parse(JSON.stringify(arr))
+              this.deflink=this.menus[0].path
+
+        })
     },
     methods: {
         ...mapActions(['resetToken']),
