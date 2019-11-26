@@ -82,13 +82,13 @@ export default {
   methods: {
     ...mapActions(["login"]),
     submitForm(formName) {
-      addTaskAllFun.getDefaultPage().then(res => {
-        this.link = res.data;
-      });
-      this.$refs[formName].validate(valid => {
+      var that = this;
+      that.$refs[formName].validate(valid => {
         if (valid) {
-          this.login(this.ruleForm).then(res => {
-            this.$router.push(this.link);
+          that.login(that.ruleForm).then(res => {
+            addTaskAllFun.getDefaultPage().then(res => {
+              that.$router.push(res.data);
+            });
           });
         } else {
           return false;
