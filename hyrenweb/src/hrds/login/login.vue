@@ -19,11 +19,15 @@
 import {
     mapActions
 } from 'vuex'
+import * as addTaskAllFun from './login'
 export default {
     name: 'Login',
     mounted() {
         // 绑定enter事件
         this.enterKeyup();
+         addTaskAllFun.getDefaultPage().then(res=>{
+            this.link=res.data
+         })
     },
     destroyed() {
         // 销毁enter事件
@@ -49,6 +53,7 @@ export default {
             }
         };
         return {
+            link:'',
             ruleForm: {
                 user_id: '',
                 password: ''
@@ -74,7 +79,7 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.login(this.ruleForm).then((res) => {
-                        this.$router.push('collectmonitor');
+                        this.$router.push(this.link);
                     })
                 } else {
                     return false;

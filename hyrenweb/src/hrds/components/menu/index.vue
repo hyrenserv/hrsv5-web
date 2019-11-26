@@ -79,6 +79,7 @@ export default {
               this.deflink=this.menus[0].path
 
         })
+        
     },
     methods: {
         ...mapActions(['resetToken']),

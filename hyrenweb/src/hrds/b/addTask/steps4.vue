@@ -9,123 +9,153 @@
         class="alltables"
       >所有表分隔符设置</el-button>
     </div>
-      <el-form ref="form" >
-    <el-table
-      :header-cell-style="{background:'#e6e0e0'}"
-      ref="filterTable"
-      stripe
-      :default-sort="{prop: 'date', order: 'descending'}"
-      style="width: 100%"
-      height="360"
-      size="medium"
-      border
-      :data="unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)"
-    >
-      <el-table-column label="序号" align="center" width="60">
-        <template scope="scope">
-          <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="table_name" label="表名" width="110" align="center"></el-table-column>
-      <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center"></el-table-column>
-      <el-table-column label=" 是否仅抽取" width="120" align="center">
-        <template slot="header">
-          <el-checkbox
-            @change="exCheckAllChange(unloadingFileData,excheckAll)"
-            v-model="excheckAll"
-            :checked="excheckAll"
-          >
-            <span class="allclickColor">是否仅抽取</span>
-          </el-checkbox>
-        </template>
-        <template slot-scope="scope">
-          <el-checkbox
-            :checked="scope.row.data_extract_type=='true'"
-            v-model="scope.row.data_extract_type"
-            @change="singleChangeFun(scope.row)"
-          ></el-checkbox>
-        </template>
-      </el-table-column>
-      <el-table-column label=" 抽取数据存储方式" width="180" align="center"  >
-        <template slot-scope="scope">
-          <el-select
-            placeholder="抽取数据存储方式"
-            v-model="scope.row.dbfile_format"
-            style="width:150px"
-            size="medium"
-            @focus="IsExDataFun(scope.row.data_extract_type)"
-            @change="IsExChangeDataFun(scope.row)"           
-          >
-            <el-option
+    <el-form ref="form" class="steps4">
+      <el-table
+        :header-cell-style="{background:'#e6e0e0'}"
+        ref="filterTable"
+        stripe
+        :default-sort="{prop: 'date', order: 'descending'}"
+        style="width: 100%"
+        height="360"
+        size="medium"
+        border
+        :data="unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)"
+      >
+        <el-table-column label="序号" align="center" width="60">
+          <template scope="scope">
+            <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="table_name" label="表名" width="110" align="center"></el-table-column>
+        <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center"></el-table-column>
+        <el-table-column label=" 是否仅抽取" width="120" align="center">
+          <template slot="header">
+            <el-checkbox
+              @change="exCheckAllChange(unloadingFileData,excheckAll)"
+              v-model="excheckAll"
+              :checked="excheckAll"
+            >
+              <span class="allclickColor">是否仅抽取</span>
+            </el-checkbox>
+          </template>
+          <template slot-scope="scope">
+            <el-checkbox
+              :checked="scope.row.data_extract_type=='true'"
+              v-model="scope.row.data_extract_type"
+              @change="singleChangeFun(scope.row)"
+            ></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column label=" 抽取数据存储方式" width="180" align="center">
+          <template slot-scope="scope">
+            <el-select
+              placeholder="抽取数据存储方式"
+              v-model="scope.row.dbfile_format"
+              style="width:150px"
               size="medium"
-              v-for="(item,index) in ExtractDataType"
-              :key="index"
-              :label="item.value"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column label=" 换行符" width="180" align="center">
-        <template scope="scope">
-          <el-select
-            placeholder="换行符"
-            v-model="scope.row.row_separator"
-            style="width:150px"
-            size="medium"
-            :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
-          >
-            <el-option
+              @focus="IsExDataFun(scope.row.data_extract_type)"
+              @change="IsExChangeDataFun(scope.row)"
+            >
+              <el-option
+                size="medium"
+                v-for="(item,index) in ExtractDataType"
+                :key="index"
+                :label="item.value"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label=" 换行符" width="180" align="center">
+          <template scope="scope">
+             <el-form-item v-if="scope.row.dbfile_format=='非定长'"
+              :prop="'unloadingFileData.' + scope.$index + '.row_separator'"
+              :rules="rule.default"
+            >
+            <el-select
+              placeholder="换行符"
+              v-model="scope.row.row_separator"
+              style="width:150px"
               size="medium"
-              v-for="(item,index) in newlineCharacter"
-              :key="index"
-              :label="item.value"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column label width="180" align="center">
-        <template slot="header">
-          <el-tooltip class="item" effect="light" content placement="right">
-            <div slot="content">
-              多行信息
-              <br />第二行信息
-            </div>
-            <i class="el-icon-question" aria-hidden="true">数据列分隔符</i>
-          </el-tooltip>
-        </template>
-        <template scope="scope">
-           <el-form-item  :prop="'unloadingFileData.' + scope.$index + '.database_separatorr'" :rules="rule.default">
-          <el-input
-            :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
-            size="medium"
-            v-model="scope.row.database_separatorr"
-            style="width:150px"
-            placeholder="数据列分隔符"
-          ></el-input>
-           </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="数据字符集" align="center">
-        <template scope="scope">
-          <el-select
-            placeholder="数据字符集"
-            v-model="scope.row.database_code"
-            style="width:150px"
-            size="medium"
-          >
-            <el-option
-              v-for="(item,index) in DataBaseCode"
-              :key="index"
-              :label="item.value"
-              :value="item.code"
-            ></el-option>
-          </el-select>
-        </template>
-      </el-table-column>
-    </el-table>
-      </el-form>
+              :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
+            >
+              <el-option
+                size="medium"
+                v-for="(item,index) in newlineCharacter"
+                :key="index"
+                :label="item.value"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+             </el-form-item>
+              <el-select v-else
+              placeholder="换行符"
+              v-model="scope.row.row_separator"
+              style="width:150px"
+              size="medium"
+              :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
+            >
+              <el-option
+                size="medium"
+                v-for="(item,index) in newlineCharacter"
+                :key="index"
+                :label="item.value"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label width="180" align="center">
+          <template slot="header">
+            <el-tooltip class="item" effect="light" content placement="right">
+              <div slot="content">
+                多行信息
+                <br />第二行信息
+              </div>
+              <i class="el-icon-question" aria-hidden="true">数据列分隔符</i>
+            </el-tooltip>
+          </template>
+          <template scope="scope">
+            <el-form-item v-if="scope.row.dbfile_format=='非定长'"
+              :prop="'unloadingFileData.' + scope.$index + '.database_separatorr'"
+              :rules="rule.default"
+            >
+              <el-input
+                :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
+                size="medium"
+                v-model="scope.row.database_separatorr"
+                style="width:150px"
+                placeholder="数据列分隔符"
+              ></el-input>
+            </el-form-item>
+             <el-input v-else
+                :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
+                size="medium"
+                v-model="scope.row.database_separatorr"
+                style="width:150px"
+                placeholder="数据列分隔符"
+              ></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="数据字符集" align="center">
+          <template scope="scope">
+            <el-select
+              placeholder="数据字符集"
+              v-model="scope.row.database_code"
+              style="width:150px"
+              size="medium"
+            >
+              <el-option
+                v-for="(item,index) in DataBaseCode"
+                :key="index"
+                :label="item.value"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-form>
     <el-pagination
       @size-change="unloading_handleSizeChange"
       @current-change="unloading_handleCurrentChange"
@@ -342,7 +372,7 @@ export default {
   },
   methods: {
     next() {
-      var a=this.unloadingFileData
+      var a = this.unloadingFileData;
       let dataAll = this.unloadingFileData;
       for (var i = 0; i < dataAll.length; i++) {
         delete dataAll[i].table_ch_name;
@@ -374,7 +404,7 @@ export default {
       addTaskAllFun.saveFileConf(params).then(res => {
         console.log(res);
         message.saveSuccess(res);
-        this.getInitInfo()
+        this.getInitInfo();
       });
       /*  let data = {};
       if (this.$route.query.edit == "yes") {
@@ -641,5 +671,16 @@ export default {
 #steps4 >>> .el-icon-question:after {
   content: "\E7A4" !important;
   margin-left: 10px;
+}
+.steps4 >>> .el-form-item {
+  margin-bottom: 0 !important;
+}
+.steps4 >>> .el-form-item__content::before {
+  content: "*";
+  color: #f56c6c;
+  margin-right: 4px;
+  display: inline-block;
+  position: absolute;
+  left: -5px;
 }
 </style>
