@@ -39,7 +39,7 @@ export function uploadFile(data) {
  */
 export function searchDataSourceOrDepartment(data) {
     return request({
-        url: '/B/datasource/searchDataSourceOrDepartment',
+        url: '/B/datasource/searchDepartmentInfo',
         method: 'post',
         params:data
     })
