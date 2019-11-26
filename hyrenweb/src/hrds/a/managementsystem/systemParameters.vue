@@ -93,7 +93,7 @@ export default {
             search: '',
             getAllCodeItems: [],
             currentPage: 1,
-            pageSize: 5,
+            pageSize: 10,
             options: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleUpdate: false,
@@ -121,8 +121,8 @@ export default {
         getSysPara() {
             functionAll.getSysPara().then((res) => {
                 if (res && res.success) {
-                    this.systemParameters = res.data;
-                    this.totalItem = res.data.length;
+                    this.systemParameters = res.data.sysParas;
+                    this.totalItem = res.data.totalSize;
                 }
             })
         },

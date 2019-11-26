@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function searchDataSourceInfo() {
     return request({
-        url: '/B/datasource/searchDataSourceInfo',
+        url: '/B/datasource/searchDataSourceAndAgentCount',
         method: 'post'
     })
 }
