@@ -48,6 +48,10 @@
         </el-table-column>
         <el-table-column label=" 抽取数据存储方式" width="180" align="center">
           <template slot-scope="scope">
+             <el-form-item 
+              :prop="'unloadingFileData.' + scope.$index + '.dbfile_format'"
+              :rules="rule.default"
+            >
             <el-select
               placeholder="抽取数据存储方式"
               v-model="scope.row.dbfile_format"
@@ -64,6 +68,7 @@
                 :value="item.value"
               ></el-option>
             </el-select>
+             </el-form-item>
           </template>
         </el-table-column>
         <el-table-column label=" 换行符" width="180" align="center">
@@ -186,7 +191,7 @@
             >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="抽取数据存储格式">
+        <el-form-item label="抽取数据存储格式" :rules="rule.default">
           <el-select
             placeholder="抽取数据存储方式"
             v-model="separatorData.Extractformat"
