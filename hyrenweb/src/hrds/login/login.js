@@ -12,3 +12,8 @@ export function login(data) {
     params : data
   })
 }
+export function getDefaultPage() {
+  return request({
+      url: '/A/login/getDefaultPage',
+  })
+}
