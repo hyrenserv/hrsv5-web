@@ -186,6 +186,7 @@ import {
 let arrData = []
 let DataAll = {}
 let objjson;
+let itemChildrenPath=[];
 export default {
     data() {
         return {
@@ -391,6 +392,7 @@ export default {
                             DataAll = data;
                             arrData.push(data)
                             this.data2 = arrData;
+                            arrData = []
                         } else {
                             for (let i in objjson) {
                                 if (i == "children") {
@@ -399,11 +401,22 @@ export default {
                                         if (item.path) {
                                             item["children"] = []
                                             if (item.path == path) {
-                                                item.children = res.data
+                                                item.children = res.data;
                                                 arrData = []
                                                 arrData.push(objjson)
                                                 var returnedItem;
                                                 this.data2 = arrData;
+                                                if (item.children.length > 0) {
+                                                    item.children.forEach((itemChildren) => {
+                                                        // if (itemChildren.path == "") {
+                                                        //     console.log(itemChildren.path, "woshi itemChildren.path");
+                                                        //     console.log(path, "woshi path");
+                                                        // }
+                                                        itemChildrenPath.push(itemChildren.path) 
+                                                     
+                                                    })
+                                                       console.log(itemChildrenPath, "woshi path");
+                                                }
                                             }
                                         }
 
