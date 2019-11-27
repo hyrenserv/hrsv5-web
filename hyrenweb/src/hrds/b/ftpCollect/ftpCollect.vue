@@ -19,8 +19,8 @@
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="开始日期" :label-width="formLabelWidth">
-                    <el-date-picker type="date" v-model="start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
+                <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date"  :rules="rule.selected">
+                    <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -30,9 +30,9 @@
                 </el-tooltip>
             </el-col>
 
-            <el-col :span="11">
-                <el-form-item label="结束日期" :label-width="formLabelWidth">
-                    <el-date-picker type="date" v-model="end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
+           <el-col :span="11">
+                <el-form-item label="结束日期" :label-width="formLabelWidth" prop="end_date"  :rules="rule.selected">
+                    <el-date-picker type="date" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -105,7 +105,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="下级目录规则" :label-width="formLabelWidth" prop="ftp_rule_path" :rules="filter_rules([{required: true}])">
+                <el-form-item label="下级目录规则" :label-width="formLabelWidth" prop="ftp_rule_path" :rules="rule.selected">
                     <el-select v-model="form.ftp_rule_path" placeholder="请选择数据下级目录规则" clearable style="width: 100%;">
                         <el-option v-for="item in FtpRule" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -135,7 +135,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="filter_rules([{required: true}])">
+                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -229,6 +229,7 @@ export default {
             size: "medium",
             dialogSelectfolder: false,
             dialogSelectOk: false,
+            rule: validator.default,
             formLabelWidth: "150px",
         };
     },
@@ -462,8 +463,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.dialogSelectOk = true
-                }
-                else {
+                } else {
                     return false;
                 }
             });

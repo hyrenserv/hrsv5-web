@@ -26,7 +26,7 @@
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="filter_rules([{required: true}])">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
@@ -68,24 +68,30 @@ export default {
     },
     methods: {
         // 点击编辑小图标获取部门信息和回显数据
-        clickEditButton: function (index) {
+        clickEditButton(index) {
             this.source_id = this.data[index].source_id;
+            // 获取部门信息
             functionAll
-                .searchDataSourceOrDepartment({
-                    source_id: this.data[index].source_id
-                })
+                .searchDataSourceOrDepartment()
                 .then(res => {
                     if (res && res.success) {
-                        this.options = res.data.departmentInfo;
-                        this.formUpdate = res.data;
-                        this.depIds = res.data.dep_name.split(",");
+                        this.options = res.data;
                     }
                 });
+            // 数据回显
+            functionAll.searchDataSourceById({
+                source_id: this.data[index].source_id
+            }).then((res) => {
+                if (res && res.success) {
+                    this.formUpdate = res.data;
+                    this.depIds = res.data.dep_name.split(",");
+                }
+            })
         },
 
         // 点击保存按钮更新当前的所有信息
         update() {
-            this.formUpdate["dep_id"] = this.depIds.join(",");
+            this.formUpdate["dep_id"] = this.depIds;
             this.formUpdate["source_id"] = this.source_id;
             functionAll.updateDataSource(this.formUpdate).then(res => {
                 if (res && res.success) {
@@ -153,29 +159,31 @@ export default {
             functionAll.downloadFile({
                 source_id: this.source_id
             }).then(res => {
-                this.filename = this.data[index].source_id;
-                const blob = new Blob([JSON.stringify(res), {
-                    type: 'application/x-hrds'
-                }]);
-
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // 兼容IE10
-                    navigator.msSaveBlob(blob, this.filename);
-                } else {
-                    //  chrome/firefox
-                    let aTag = document.createElement("a");
-                    aTag.download = this.filename;
-                    aTag.href = URL.createObjectURL(blob);
-                    if (aTag.all) {
-                        aTag.click();
+                    this.filename = this.data[index].source_id;
+                    const blob = new Blob([JSON.stringify(res)], {
+                        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, this.filename);
                     } else {
-                        //  兼容firefox
-                        var evt = document.createEvent("MouseEvents");
-                        evt.initEvent("click", true, true);
-                        aTag.dispatchEvent(evt);
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        // document.body.appendChild(aTag);
+                        aTag.download = this.filename + ".hrds";
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
                     }
-                    URL.revokeObjectURL(aTag.href);
-                }
+               
+
             })
         },
     }

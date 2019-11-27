@@ -7,43 +7,43 @@
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
             <el-col :span="12">
-                <el-form-item label="归属Agent" :label-width="formLabelWidth">
+                <el-form-item label="归属Agent" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_name" placeholder="归属Agent" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="非结构化任务名称" :label-width="formLabelWidth">
+                <el-form-item label="非结构化任务名称" :label-width="formLabelWidth" prop="fcs_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.fcs_name" placeholder="非结构化任务名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="操作系统类型" :label-width=" formLabelWidth">
+                <el-form-item label="操作系统类型" :label-width=" formLabelWidth" prop="system_type" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.system_type" placeholder="操作系统类型" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="主机名" :label-width="formLabelWidth">
+                <el-form-item label="主机名" :label-width="formLabelWidth" prop="host_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.host_name" placeholder="主机名" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="本地系统时间" :label-width="formLabelWidth">
+                <el-form-item label="本地系统时间" :label-width="formLabelWidth" prop="systemtime" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.systemtime" placeholder="本地系统时间" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth">
+                <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth" prop="agent_time" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_time" placeholder="数据采集服务器时间" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="开始日期" :label-width="formLabelWidth">
+                <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date" :rules="rule.selected">
                     <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -55,7 +55,7 @@
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="结束日期" :label-width="formLabelWidth">
+                <el-form-item label="结束日期" :label-width="formLabelWidth" prop="end_date" :rules="rule.selected">
                     <el-date-picker type="date" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -75,7 +75,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="启动方式" :label-width="formLabelWidth">
+                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code">
                         </el-option>
@@ -98,7 +98,7 @@
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect">下一步<i class="el-icon-right"></i></el-button>
+                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect('form')">下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -107,6 +107,8 @@
 
 <script>
 import * as functionAll from "./unstructuredAgent";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
@@ -122,6 +124,7 @@ export default {
             showOrHidden_reduce: false,
             showOrHidden_unzip: false,
             size: "medium",
+            rule: validator.default,
             formLabelWidth: "150px"
         }
     },
@@ -229,49 +232,55 @@ export default {
             }
         },
         // 保存非结构化文件采集页面信息跳转下一步和更新非结构化文件采集到下一步
-        unStructuredCollect() {
-            // 处理传参日期与form
-            let fcs_id = this.$route.query.fcs_id;
-            let date = this.form.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
-            let date2 = this.form.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
-            this.form["agent_id"] = this.$route.query.agent_id;
-            this.form["start_date"] = date2;
-            this.form["end_date"] = date;
-            this.form["fcs_id"] = fcs_id;
-            // 通过fcs_id判断是更新还是新建任务
-            if (fcs_id || '') {
-                // 更新任务
-                functionAll.updateFileCollect(
-                    this.form
-                ).then((res) => {
-                    if (res && res.success) {
-                        this.$router.push({
-                            path: "/configureFileOption",
-                            query: {
-                                fcs_id: fcs_id,
-                                agent_id: this.$route.query.agent_id,
-                                agent_name: this.$route.query.agent_name
+        unStructuredCollect(formName) {
+            this.$refs[formName].validate(valid => {
+                // 处理传参日期与form
+                let fcs_id = this.$route.query.fcs_id;
+                let date = this.form.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+                let date2 = this.form.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+                this.form["agent_id"] = this.$route.query.agent_id;
+                this.form["start_date"] = date2;
+                this.form["end_date"] = date;
+                this.form["fcs_id"] = fcs_id;
+                // 通过fcs_id判断是更新还是新建任务
+                if (valid) {
+                    if (fcs_id || '') {
+                        // 更新任务
+                        functionAll.updateFileCollect(
+                            this.form
+                        ).then((res) => {
+                            if (res && res.success) {
+                                this.$router.push({
+                                    path: "/configureFileOption",
+                                    query: {
+                                        fcs_id: fcs_id,
+                                        agent_id: this.$route.query.agent_id,
+                                        agent_name: this.$route.query.agent_name
+                                    }
+                                });
                             }
-                        });
-                    }
-                })
-            } else {
-                // 新建任务
-                functionAll.addFileCollect(
-                    this.form
-                ).then((res) => {
-                    if (res && res.success) {
-                        this.$router.push({
-                            path: "/configureFileOption",
-                            query: {
-                                fcs_id: res.data,
-                                agent_id: this.$route.query.agent_id,
-                                agent_name: this.$route.query.agent_name
+                        })
+                    } else {
+                        // 新建任务
+                        functionAll.addFileCollect(
+                            this.form
+                        ).then((res) => {
+                            if (res && res.success) {
+                                this.$router.push({
+                                    path: "/configureFileOption",
+                                    query: {
+                                        fcs_id: res.data,
+                                        agent_id: this.$route.query.agent_id,
+                                        agent_name: this.$route.query.agent_name
+                                    }
+                                });
                             }
-                        });
+                        })
                     }
-                })
-            }
+                } else {
+                    return false;
+                }
+            });
 
         },
         // 是否实时读取控制实时读取间隔时间

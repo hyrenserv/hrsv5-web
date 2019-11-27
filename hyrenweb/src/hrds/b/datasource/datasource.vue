@@ -92,16 +92,16 @@
         <!-- 点击新增数据库按钮弹出框 -->
         <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%">
             <el-form :model="formAdd" ref="formAdd">
-                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_ip" autocomplete="off" placeholder="例如 127.9.08.7" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_port" autocomplete="off" placeholder="端口范围1204-65535" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="agent_type"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
                     <el-select v-model="formAdd.user_id" filterable placeholder="请选择" style="width:284px">
                         <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
                     </el-select>
@@ -115,16 +115,16 @@
         <!-- 点击编辑按钮编辑信息弹出框 -->
         <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%">
             <el-form :model="form" ref="form">
-                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="depIds"  :rules="filter_rules([{required: true}])">
+                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
                     <el-select v-model="form.user_id" filterable placeholder="请选择" style="width:284px">
                         <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
                     </el-select>
@@ -166,14 +166,14 @@ export default {
                 agent_name: "",
                 agent_ip: "",
                 agent_port: "",
-                user_id: ""
+
             },
             form: {
                 agent_name: "",
                 agent_ip: "",
                 agent_port: "",
-                user_id: ""
             },
+            rule: validator.default,
             formLabelWidth: "150px"
         };
     },
@@ -234,22 +234,27 @@ export default {
             // 调用添加方法
             this.formAdd["source_id"] = this.$route.query.source_id;
             this.formAdd["agent_type"] = this.agent_type;
-            functionAll.saveAgent(this.formAdd).then(response => {
-                if (response && response.success) {
-                    this.$message({
-                        type: "success",
-                        message: "添加成功!"
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    functionAll.saveAgent(this.formAdd).then(response => {
+                        if (response && response.success) {
+                            this.$message({
+                                type: "success",
+                                message: "添加成功!"
+                            });
+                            // 隐藏对话框
+                            this.dialogFormVisible = false;
+                            this.getAgentAllData(this.agent_type);
+                            // 表单清空
+                            this.formAdd = {};
+                        } else {
+                            this.$message.error("添加失败！");
+                        }
                     });
-                    // 隐藏对话框
-                    this.dialogFormVisible = false;
-                    this.getAgentAllData(this.agent_type);
-                    // 表单清空
-                    this.formAdd = {};
                 } else {
-                    this.$message.error("添加失败！");
+                    return false;
                 }
             });
-
         },
         // 点击取消按钮
         cancleAdd() {
@@ -317,27 +322,34 @@ export default {
 
         },
         // 点击编辑的保存按钮更新数据
-        AgentEdit() {
+        AgentEdit(formName) {
             this.form["source_id"] = this.$route.query.source_id;
             this.form["agent_id"] = this.agentId;
             this.form["agent_type"] = this.agent_type;
-            functionAll.updateAgent(this.form).then(response => {
-                if (response && response.success) {
-                    this.$message({
-                        type: "success",
-                        message: "更新成功!"
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    functionAll.updateAgent(this.form).then(response => {
+                        if (response && response.success) {
+                            this.$message({
+                                type: "success",
+                                message: "更新成功!"
+                            });
+                            this.getAgentAllData(this.agent_type);
+                            // 隐藏对话框
+                            this.dialogFormVisibleview = false;
+                            // 表单清空
+                            this.form = {};
+                             // 重新渲染页面
+                            // this.tableData = response.data;
+                        } else {
+                            this.$message.error("更新失败！");
+                        }
                     });
-                    this.getAgentAllData(this.agent_type);
-                    // 隐藏对话框
-                    this.dialogFormVisibleview = false;
-                    // 表单清空
-                    this.form = {};
-                    // // 重新渲染页面
-                    // this.tableData = response.data;
                 } else {
-                    this.$message.error("更新失败！");
+                    return false;
                 }
             });
+
         },
         // 点击删除数据
         delteThisData() {
