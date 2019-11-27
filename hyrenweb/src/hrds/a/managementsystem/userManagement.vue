@@ -17,7 +17,7 @@
         <el-table-column prop="user_id" label="用户登录账号" align="center"></el-table-column>
         <el-table-column prop="user_name" label="创建用户名" align="center"></el-table-column>
         <el-table-column prop="usertype_group" label="用户功能类型" width="370" show-overflow-tooltip=true align="center"></el-table-column>
-        <el-table-column prop="create_date" label="创建时间" align="center" ></el-table-column>
+        <el-table-column prop="create_date" label="创建时间" align="center"></el-table-column>
         <el-table-column label="操作" width="160" align="center">
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
@@ -149,8 +149,64 @@ export default {
                         res.data[index].create_date = date;
                         let type = res.data[index].usertype_group.split(",");
                         // 获取用户功能类型详细信息
-                        let resAlls = await getPro(type, functionAll, this)
-                        res.data[index].usertype_group = resAlls.join(",");
+                        // let resAlls = await getPro(type, functionAll, this)
+                        // res.data[index].usertype_group = resAlls.join(",");
+                        for(let j = 0;j<type.length;j++){
+                           if(type[j] == "01"){
+                               
+                           }else if(type[j] == "02"){
+                               
+                           }else if(type[j] == "03"){
+
+                           }else if(type[j] == "04"){
+
+                           }else if(type[j] == "05"){
+
+                           }else if(type[j] == "06"){
+                               
+                           }else if(type[j] == "07"){
+                               
+                           }else if(type[j] == "08"){
+                               
+                           }else if(type[j] == "09"){
+                               
+                           }else if(type[j] == "10"){
+                               
+                           }else if(type[j] == "11"){
+                               
+                           }else if(type[j] == "12"){
+                               
+                           }else if(type[j] == "13"){
+                               
+                           }else if(type[j] == "14"){
+                               
+                           }else if(type[j] == "15"){
+                               
+                           }else if(type[j] == "16"){
+                               
+                           }else if(type[j] == "17"){
+                               
+                           }else if(type[j] == "18"){
+                               
+                           }else if(type[j] == "19"){
+                               
+                           }else if(type[j] == "20"){
+                               
+                           }else if(type[j] == "21"){
+                               
+                           }else if(type[j] == "22"){
+                               
+                           }else if(type[j] == "23"){
+                               
+                           }else if(type[j] == "24"){
+                               
+                           }else if(type[j] == "25"){
+                               
+                           }else if(type[j] == "26"){
+                               
+                           }
+                        }
+
                     }
                     this.userTablelist = res.data;
                     this.totalItem = res.data.length;

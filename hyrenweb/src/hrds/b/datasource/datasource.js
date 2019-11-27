@@ -63,7 +63,8 @@ export function downloadFile(data) {
     return request({
         url: '/B/datasource/downloadFile',
         method: 'post',
-        params: data
+        params: data,
+        responseType: "arraybuffer"
     })
 }
 
@@ -138,6 +139,16 @@ export function updateAuditSourceRelationDep(data) {
     })
 }
 
+/**(12)
+ * 点击数据来源表获取source_id的所有信息
+ */
+export function searchDataSourceById(data) {
+    return request({
+        url: '/B/datasource/searchDataSourceById',
+        method: 'post',
+        params:data
+    })
+}
 // datasource页面
 
 /**(0)

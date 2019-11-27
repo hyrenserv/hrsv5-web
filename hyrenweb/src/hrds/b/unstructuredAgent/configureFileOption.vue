@@ -101,7 +101,7 @@
         <el-col :span="12">
             <div class="partThreeDiv">
                 <el-button type="primary" style="float:left" size="medium" @click="backSteps"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="success" style="float:right" size="medium" @click="dialogSelectOk=true"> 完成 <i class="el-icon-check"></i></el-button>
+                <el-button type="success" style="float:right" size="medium" @click="checkDataOk"> 完成 <i class="el-icon-check"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -270,6 +270,18 @@ export default {
                 }
             })
         },
+        // 检查必填项是否填写
+        checkDataOk(){
+            this.tableData.every((item)=>{
+                console.log(item)
+              if(item.file_source_path == ""){
+                    this.$message({
+                        type: "info",
+                        message: "请选择文件源"
+                    });
+              }
+            })
+        }
     }
 
 }
