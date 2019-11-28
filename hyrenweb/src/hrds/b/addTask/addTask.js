@@ -375,3 +375,21 @@ export function saveFileConf(data) {
         params:data
     })
 }
+
+// 第五步  存储目的地
+
+export function stodegetInitInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getInitInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 存储目的地弹框
+export function getStoDestByTableId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getStoDestByTableId',
+        method: 'post',
+        params:data
+    })
+}
