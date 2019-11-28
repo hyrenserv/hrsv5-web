@@ -9,7 +9,7 @@
         class="alltables"
       >所有表分隔符设置</el-button>
     </div>
-    <el-form ref="form" class="steps4">
+    <el-form ref="ruleForm" :model="ruleForm" class="steps4">
       <el-table
         :header-cell-style="{background:'#e6e0e0'}"
         ref="filterTable"
@@ -19,7 +19,7 @@
         height="360"
         size="medium"
         border
-        :data="unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)"
+        :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)"
       >
         <el-table-column label="序号" align="center" width="60">
           <template scope="scope">
@@ -48,36 +48,54 @@
         </el-table-column>
         <el-table-column label=" 抽取数据存储方式" width="180" align="center">
           <template slot-scope="scope">
-             <el-form-item 
-              :prop="'unloadingFileData.' + scope.$index + '.dbfile_format'"
-              :rules="rule.default"
+            <el-form-item
+              :prop="'unloadingFileData.'+scope.$index+'.dbfile_format'"
+              :rules="rule.selected"
             >
-            <el-select
-              placeholder="抽取数据存储方式"
-              v-model="scope.row.dbfile_format"
-              style="width:150px"
-              size="medium"
-              @focus="IsExDataFun(scope.row.data_extract_type)"
-              @change="IsExChangeDataFun(scope.row)"
-            >
-              <el-option
+              <el-select
+                placeholder="抽取数据存储方式"
+                v-model="scope.row.dbfile_format"
+                style="width:150px"
                 size="medium"
-                v-for="(item,index) in ExtractDataType"
-                :key="index"
-                :label="item.value"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-             </el-form-item>
+                @focus="IsExDataFun(scope.row.data_extract_type)"
+                @change="IsExChangeDataFun(scope.row)"
+              >
+                <el-option
+                  size="medium"
+                  v-for="(item,index) in ExtractDataType"
+                  :key="index"
+                  :label="item.value"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
           </template>
         </el-table-column>
         <el-table-column label=" 换行符" width="180" align="center">
-          <template scope="scope">
-             <el-form-item v-if="scope.row.dbfile_format=='非定长'"
-              :prop="'unloadingFileData.' + scope.$index + '.row_separator'"
-              :rules="rule.default"
+          <template slot-scope="scope">
+            <el-form-item
+              v-if="scope.row.dbfile_format=='非定长'"
+              :prop="'unloadingFileData.'+scope.$index+'.row_separator'"
+              :rules="rule.selected"
             >
+              <el-select
+                placeholder="换行符"
+                v-model="scope.row.row_separator"
+                style="width:150px"
+                size="medium"
+                :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
+              >
+                <el-option
+                  size="medium"
+                  v-for="(item,index) in newlineCharacter"
+                  :key="index"
+                  :label="item.value"
+                  :value="item.value"
+                >{{item.title}}</el-option>
+              </el-select>
+            </el-form-item>
             <el-select
+              v-else
               placeholder="换行符"
               v-model="scope.row.row_separator"
               style="width:150px"
@@ -90,23 +108,7 @@
                 :key="index"
                 :label="item.value"
                 :value="item.value"
-              ></el-option>
-            </el-select>
-             </el-form-item>
-              <el-select v-else
-              placeholder="换行符"
-              v-model="scope.row.row_separator"
-              style="width:150px"
-              size="medium"
-              :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
-            >
-              <el-option
-                size="medium"
-                v-for="(item,index) in newlineCharacter"
-                :key="index"
-                :label="item.value"
-                :value="item.value"
-              ></el-option>
+              >{{item.title}}</el-option>
             </el-select>
           </template>
         </el-table-column>
@@ -121,8 +123,9 @@
             </el-tooltip>
           </template>
           <template scope="scope">
-            <el-form-item v-if="scope.row.dbfile_format=='非定长'"
-              :prop="'unloadingFileData.' + scope.$index + '.database_separatorr'"
+            <el-form-item
+              v-if="scope.row.dbfile_format=='非定长'"
+              :prop="'unloadingFileData.'+scope.$index+'.database_separatorr'"
               :rules="rule.default"
             >
               <el-input
@@ -133,13 +136,14 @@
                 placeholder="数据列分隔符"
               ></el-input>
             </el-form-item>
-             <el-input v-else
-                :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
-                size="medium"
-                v-model="scope.row.database_separatorr"
-                style="width:150px"
-                placeholder="数据列分隔符"
-              ></el-input>
+            <el-input
+              v-else
+              :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'"
+              size="medium"
+              v-model="scope.row.database_separatorr"
+              style="width:150px"
+              placeholder="数据列分隔符"
+            ></el-input>
           </template>
         </el-table-column>
         <el-table-column label="数据字符集" align="center">
@@ -168,7 +172,7 @@
       :page-sizes="[5, 10, 15, 20]"
       :page-size="unloadingpagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="unloadingFileData.length"
+      :total="ruleForm.unloadingFileData.length"
       class="locationcenter"
     ></el-pagination>
     <!--所有表分隔符设置  -->
@@ -179,8 +183,8 @@
       class="alltable"
       @close="AllTable_SeparatorCloseFun()"
     >
-      <el-form ref="form" :model="separatorData" label-width="240px" text-align="center">
-        <el-form-item label="是否仅抽取:">
+      <el-form ref="separatorData" :model="separatorData" label-width="240px" text-align="center">
+        <el-form-item label="是否仅抽取:" prop="isExtraction" :rules="rule.selected">
           <el-radio-group v-model="separatorData.isExtraction">
             <el-radio
               v-for="(item,index) in AlltableisExData"
@@ -191,7 +195,7 @@
             >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="抽取数据存储格式" :rules="rule.default">
+        <el-form-item label="抽取数据存储格式" prop="Extractformat" :rules="rule.selected">
           <el-select
             placeholder="抽取数据存储方式"
             v-model="separatorData.Extractformat"
@@ -208,7 +212,13 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="换行符" v-if="separatorData.Extractformat=='非定长'" :rules="rule.default">
+        <el-form-item
+          label="换行符"
+          key="1"
+          v-if="separatorData.Extractformat=='非定长'"
+          prop="Newlinecharacte"
+          :rules="rule.selected"
+        >
           <el-select
             placeholder="换行符"
             v-model="separatorData.Newlinecharacte"
@@ -220,11 +230,11 @@
               v-for="(item,index) in newlineCharacter"
               :key="index"
               :label="item.value"
-              :value="item.code"
-            ></el-option>
+              :value="item.value"
+            >{{item.title}}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="换行符" v-else>
+        <el-form-item label="换行符" key="2" v-else>
           <el-select
             placeholder="换行符"
             v-model="separatorData.Newlinecharacte"
@@ -243,6 +253,8 @@
         <el-form-item
           label="数据列分隔符"
           v-if="separatorData.Extractformat=='非定长'"
+          key='3'
+          prop="Datacolumnseparator"
           :rules="rule.default"
         >
           <el-input
@@ -253,7 +265,7 @@
             size="medium"
           ></el-input>
         </el-form-item>
-        <el-form-item label="数据列分隔符" v-else>
+        <el-form-item label="数据列分隔符" key='4' v-else>
           <el-input
             :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'"
             v-model="separatorData.Datacolumnseparator"
@@ -282,11 +294,15 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="AllTable_SeparatorCloseFun()" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="AllTable_SeparatorSubmitFun()" size="mini">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="AllTable_SeparatorSubmitFun('separatorData')"
+          size="mini"
+        >确 定</el-button>
       </div>
     </el-dialog>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
   </div>
 </template>
 <script>
@@ -309,9 +325,12 @@ export default {
       dialogAllTableSeparatorSettings: false,
       unloadingcurrentPage: 1,
       unloadingpagesize: 10,
+      ruleForm: {
+        unloadingFileData: []
+      },
       unloadingFileData: [],
       separatorData: {
-        isExtraction: "1",
+        isExtraction: "",
         Extractformat: "",
         Newlinecharacte: "",
         Datacolumnseparator: "",
@@ -325,16 +344,19 @@ export default {
       DataBaseCode: [],
       newlineCharacter: [
         {
-          value: "\\n  (windows换行符)",
-          code: "1"
+          value: "\\n",
+          code: "1",
+          title: "\\n  (windows换行符)"
         },
         {
-          value: "\\r  (Mac OS换行符)",
-          code: "2"
+          value: "\\r",
+          code: "2",
+          title: "\\r  (Mac OS换行符)"
         },
         {
-          value: "\\r \\n  (Linux、Unix换行符)",
-          code: "3"
+          value: "\\r\\n",
+          code: "3",
+          title: "\\r\\n  (Linux、Unix换行符)"
         }
       ],
       isExData: [],
@@ -376,59 +398,62 @@ export default {
     });
   },
   methods: {
-    next() {
-      var a = this.unloadingFileData;
-      let dataAll = this.unloadingFileData;
-      for (var i = 0; i < dataAll.length; i++) {
-        delete dataAll[i].table_ch_name;
-        delete dataAll[i].table_name;
-        dataAll[i].row_separator = dataAll[i].row_separator
-          .split("(")[0]
-          .split(" ")
-          .join("");
-        if (dataAll[i].data_extract_type == true) {
-          for (var key in IsExtypeData1) {
-            if (IsExtypeData1[key].value == dataAll[i].dbfile_format) {
-              dataAll[i].dbfile_format = IsExtypeData1[key].code;
+    next(formName) {
+      var a = this.ruleForm.unloadingFileData;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let dataAll = a;
+          for (var i = 0; i < dataAll.length; i++) {
+            delete dataAll[i].table_ch_name;
+            delete dataAll[i].table_name;
+            dataAll[i].row_separator = dataAll[i].row_separator
+              .split("(")[0]
+              .split(" ")
+              .join("");
+            if (dataAll[i].data_extract_type == true) {
+              for (var key in IsExtypeData1) {
+                if (IsExtypeData1[key].value == dataAll[i].dbfile_format) {
+                  dataAll[i].dbfile_format = IsExtypeData1[key].code;
+                }
+              }
+              dataAll[i].data_extract_type = "1";
+            } else {
+              for (var key in IsExtypeData2) {
+                if (IsExtypeData2[key].value == dataAll[i].dbfile_format) {
+                  dataAll[i].dbfile_format = IsExtypeData2[key].code;
+                }
+                dataAll[i].data_extract_type = "2";
+              }
             }
           }
-          dataAll[i].data_extract_type = "1";
+          let params = {};
+          params["colSetId"] = this.databaseId;
+          params["extractionDefString"] = JSON.stringify(dataAll);
+          addTaskAllFun.saveFileConf(params).then(res => {
+            this.getInitInfo();
+            let data = {};
+            if (this.$route.query.edit == "yes") {
+              data = {
+                aId: this.$route.query.aId,
+                id: res.data,
+                sourId: this.$route.query.sourId,
+                sName: this.$route.query.sName,
+                edit: "yes"
+              };
+            } else {
+              data = {
+                aId: this.$route.query.agent_id
+              };
+            }
+            this.$router.push({
+              path: "/dbaddTasksteps05",
+              query: data
+            });
+          });
         } else {
-          for (var key in IsExtypeData2) {
-            if (IsExtypeData2[key].value == dataAll[i].dbfile_format) {
-              dataAll[i].dbfile_format = IsExtypeData2[key].code;
-            }
-            dataAll[i].data_extract_type = "2";
-          }
+          return false;
         }
-      }
-      let params = {};
-      params["colSetId"] = this.databaseId;
-      params["extractionDefString"] = JSON.stringify(dataAll);
-      console.log(params);
-      addTaskAllFun.saveFileConf(params).then(res => {
-        console.log(res);
-        message.saveSuccess(res);
-        this.getInitInfo();
       });
-      /*  let data = {};
-      if (this.$route.query.edit == "yes") {
-        data = {
-          aId: this.$route.query.aId,
-          id: this.$route.query.id,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName,
-          edit: "yes"
-        };
-      } else {
-        data = {
-          aId: this.$route.query.agent_id
-        };
-      }
-      this.$router.push({
-        path: "/dbaddTasksteps05",
-        query: data
-      }); */
     },
     pre() {
       let data = {};
@@ -465,8 +490,11 @@ export default {
         let arr = res.data;
         for (var i = 0; i < arr.length; i++) {
           if (arr[i].data_extract_type) {
-            if (arr[i].data_extract_type == "1") {
-              arr[i].data_extract_type = "true";
+            if (
+              arr[i].data_extract_type == "1" ||
+              arr[i].data_extract_type == "true"
+            ) {
+              arr[i].data_extract_type = true;
               IsExtypeData1.forEach(item => {
                 if (arr[i].dbfile_format == item.code) {
                   arr[i].dbfile_format = item.value;
@@ -497,8 +525,7 @@ export default {
             arr[i].row_separator = "";
           }
         }
-        this.unloadingFileData = arr;
-        console.log(arr);
+        this.ruleForm.unloadingFileData = arr;
       });
     },
     IsExData1() {
@@ -523,38 +550,45 @@ export default {
         }
       });
     },
-    AllTable_SeparatorSubmitFun() {
-      this.dialogAllTableSeparatorSettings = false;
-      console.log(this.separatorData);
-      let data = this.separatorData;
-      let alldata = this.unloadingFileData;
-      console.log(alldata);
-      for (var i = 0; i < alldata.length; i++) {
-        for (var key in alldata[i]) {
-          if (key == "data_extract_type") {
-            if (data.isExtraction == "1") {
-              alldata[i][key] = true;
-            } else {
-              alldata[i][key] = false;
+    AllTable_SeparatorSubmitFun(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.dialogAllTableSeparatorSettings = false;
+          let data = this.separatorData;
+          let alldata = this.ruleForm.unloadingFileData;
+          console.log(alldata);
+          for (var i = 0; i < alldata.length; i++) {
+            for (var key in alldata[i]) {
+              if (key == "data_extract_type") {
+                if (data.isExtraction == "1") {
+                  alldata[i][key] = true;
+                } else {
+                  alldata[i][key] = false;
+                }
+              } else if (key == "dbfile_format") {
+                alldata[i][key] = data.Extractformat;
+              } else if (key == "row_separator") {
+                alldata[i][key] = data.Newlinecharacte;
+              } else if (key == "database_separatorr") {
+                alldata[i][key] = data.Datacolumnseparator;
+              } else if (key == "database_code") {
+                alldata[i][key] = data.Datacharacterset;
+              }
             }
-          } else if (key == "dbfile_format") {
-            alldata[i][key] = data.Extractformat;
-          } else if (key == "row_separator") {
-            alldata[i][key] = data.Newlinecharacte;
-          } else if (key == "database_separatorr") {
-            alldata[i][key] = data.Datacolumnseparator;
-          } else if (key == "database_code") {
-            alldata[i][key] = data.Datacharacterset;
           }
+          this.separatorData = {
+            isExtraction: "1",
+            Extractformat: "",
+            Newlinecharacte: "",
+            Datacolumnseparator: "",
+            Datacharacterset: ""
+          };
+        } else {
+          console.log("error submit!!");
+          this.dialogAllTableSeparatorSettings = true;
+          return false;
         }
-      }
-      this.separatorData = {
-        isExtraction: "1",
-        Extractformat: "",
-        Newlinecharacte: "",
-        Datacolumnseparator: "",
-        Datacharacterset: ""
-      };
+      });
     },
     AllTable_SeparatorCloseFun() {
       this.dialogAllTableSeparatorSettings = false;
@@ -599,7 +633,6 @@ export default {
         type = "2";
       }
       params["extractType"] = type;
-      console.log(params);
       addTaskAllFun.getFileFormatByExtractType(params).then(res => {
         let arr = res.data;
         for (var key in arr) {
