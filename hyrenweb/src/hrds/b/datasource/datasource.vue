@@ -143,6 +143,7 @@
 import * as functionAll from "./datasource";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
+let agentTupe;
 export default {
     data() {
         return {
@@ -187,6 +188,7 @@ export default {
             this.tableData = res.data.sjkAgent;
             this.dialogName = "添加数据库 Agent";
             this.agent_type = 1;
+            agentTupe =1;
             this.dataAll = res.data;
         });
     },
@@ -225,9 +227,8 @@ export default {
         handleEdit(index, row) {
             this.form = row;
             this.agentId = row.agent_id;
-            this.agent_type = row.agent_type;
+            this.agent_type = agentTupe;
             this.source_id = row.source_id;
-
         },
         // 新增数据库Agent
         add(formName) {
@@ -269,6 +270,7 @@ export default {
             switch (e) {
                 case 1:
                     this.agent_type = e;
+                    agentTupe = e;
                     // 给tableData渲染对应的数组，先看上面能不能拿到；
                     this.dialogName = "添加数据库 Agent";
                     this.tableData = this.dataAll.sjkAgent;
@@ -280,6 +282,7 @@ export default {
                     break;
                 case 2:
                     this.dialogName = "添加非结构化 Agent";
+                    agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.fileSystemAgent;
                     this.nonStructural = true;
@@ -290,6 +293,7 @@ export default {
                     break;
                 case 3:
                     this.dialogName = "添加ftp Agent";
+                    agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.ftpAgent;
                     this.ftpAgent = true;
@@ -300,6 +304,7 @@ export default {
                     break;
                 case 4:
                     this.dialogName = "添加数据库文件 Agent";
+                    agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.dbFileAgent;
                     this.dataFile = true;
@@ -310,6 +315,7 @@ export default {
                     break;
                 case 5:
                     this.dialogName = "添加半结构化 Agent";
+                    agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.dxAgent;
                     this.semiStructure = true;
@@ -325,7 +331,7 @@ export default {
         AgentEdit(formName) {
             this.form["source_id"] = this.$route.query.source_id;
             this.form["agent_id"] = this.agentId;
-            this.form["agent_type"] = this.agent_type;
+            this.form["agent_type"] = agentTupe;
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     functionAll.updateAgent(this.form).then(response => {
@@ -334,7 +340,7 @@ export default {
                                 type: "success",
                                 message: "更新成功!"
                             });
-                            this.getAgentAllData(this.agent_type);
+                            this.getAgentAllData(agentTupe);
                             // 隐藏对话框
                             this.dialogFormVisibleview = false;
                             // 表单清空
@@ -359,7 +365,7 @@ export default {
                 functionAll
                     .deleteAgent({
                         agent_id: this.agentId,
-                        agent_type: this.agent_type,
+                        agent_type: agentTupe,
                         source_id: this.$route.query.source_id
                     })
                     .then(res => {
@@ -369,7 +375,7 @@ export default {
                             // 表单清空
                             this.form = {};
                             // // 重新渲染页面
-                            this.getAgentAllData(this.agent_type);
+                            this.getAgentAllData(agentTupe);
                         }
                     })
             })

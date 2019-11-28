@@ -147,62 +147,64 @@ export default {
                         let day = res.data[index].create_date.substring(6, 9);
                         let date = year + "-" + month + "-" + day;
                         res.data[index].create_date = date;
-                        let type = res.data[index].usertype_group.split(",");
+                        let type = res.data[index].usertype_group;
+                        console.log(type)
                         // 获取用户功能类型详细信息
                         // let resAlls = await getPro(type, functionAll, this)
                         // res.data[index].usertype_group = resAlls.join(",");
-                        for(let j = 0;j<type.length;j++){
-                           if(type[j] == "01"){
+                        for(let j in type){
+                            console.log(j)
+                           if(j== "01"){
+                               console.log("111")
+                           }else if(j== "02"){
                                
-                           }else if(type[j] == "02"){
-                               
-                           }else if(type[j] == "03"){
+                           }else if(j== "03"){
 
-                           }else if(type[j] == "04"){
+                           }else if(j== "04"){
 
-                           }else if(type[j] == "05"){
+                           }else if(j== "05"){
 
-                           }else if(type[j] == "06"){
+                           }else if(j== "06"){
                                
-                           }else if(type[j] == "07"){
+                           }else if(j== "07"){
                                
-                           }else if(type[j] == "08"){
+                           }else if(j== "08"){
                                
-                           }else if(type[j] == "09"){
+                           }else if(j== "09"){
                                
-                           }else if(type[j] == "10"){
+                           }else if(j== "10"){
                                
-                           }else if(type[j] == "11"){
+                           }else if(j== "11"){
                                
-                           }else if(type[j] == "12"){
+                           }else if(j== "12"){
                                
-                           }else if(type[j] == "13"){
+                           }else if(j== "13"){
                                
-                           }else if(type[j] == "14"){
+                           }else if(j== "14"){
                                
-                           }else if(type[j] == "15"){
+                           }else if(j== "15"){
                                
-                           }else if(type[j] == "16"){
+                           }else if(j== "16"){
                                
-                           }else if(type[j] == "17"){
+                           }else if(j== "17"){
                                
-                           }else if(type[j] == "18"){
+                           }else if(j== "18"){
                                
-                           }else if(type[j] == "19"){
+                           }else if(j== "19"){
                                
-                           }else if(type[j] == "20"){
+                           }else if(j== "20"){
                                
-                           }else if(type[j] == "21"){
+                           }else if(j== "21"){
                                
-                           }else if(type[j] == "22"){
+                           }else if(j== "22"){
                                
-                           }else if(type[j] == "23"){
+                           }else if(j== "23"){
                                
-                           }else if(type[j] == "24"){
+                           }else if(j== "24"){
                                
-                           }else if(type[j] == "25"){
+                           }else if(j== "25"){
                                
-                           }else if(type[j] == "26"){
+                           }else if(j== "26"){
                                
                            }
                         }

@@ -7,7 +7,7 @@
     <el-row class="partTwo">
         <el-form ref="form" :model="form">
             <el-col :span="12">
-                <el-form-item label="归属Agent" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
+                <el-form-item label="归属Agent" :label-width="formLabelWidth">
                     <el-input v-model="form.agent_name" placeholder="归属Agent" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
@@ -19,25 +19,25 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="操作系统类型" :label-width=" formLabelWidth" prop="system_type" :rules="filter_rules([{required: true}])">
+                <el-form-item label="操作系统类型" :label-width=" formLabelWidth">
                     <el-input v-model="form.system_type" placeholder="操作系统类型" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="主机名" :label-width="formLabelWidth" prop="host_name" :rules="filter_rules([{required: true}])">
+                <el-form-item label="主机名" :label-width="formLabelWidth">
                     <el-input v-model="form.host_name" placeholder="主机名" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="本地系统时间" :label-width="formLabelWidth" prop="systemtime" :rules="filter_rules([{required: true}])">
+                <el-form-item label="本地系统时间" :label-width="formLabelWidth">
                     <el-input v-model="form.systemtime" placeholder="本地系统时间" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth" prop="agent_time" :rules="filter_rules([{required: true}])">
+                <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth">
                     <el-input v-model="form.agent_time" placeholder="数据采集服务器时间" :size="size" :disabled="disabled"></el-input>
                 </el-form-item>
             </el-col>
