@@ -241,7 +241,6 @@ export default {
                 }),
                 functionAll.addObjectCollect(this.form).then((res) => {
                     if (res && res.success) {
-                        console.log("100")
                     }
                 })
         },

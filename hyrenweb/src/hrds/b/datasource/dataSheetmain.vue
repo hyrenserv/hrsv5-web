@@ -26,7 +26,7 @@
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth" :rules="filter_rules([{required: true}])">
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
@@ -57,48 +57,61 @@ export default {
             click: "",
             source_id: "",
             dialogFormVisibleAdd: false,
-            depIds: [],
             formUpdate: {
                 datasource_name: "",
                 datasource_number: "",
                 source_remark: "",
             },
+             depIds: [],
+             rule: validator.default,
             formLabelWidth: "150px"
         };
     },
     methods: {
         // 点击编辑小图标获取部门信息和回显数据
-        clickEditButton: function (index) {
+        clickEditButton(index) {
             this.source_id = this.data[index].source_id;
+            // 获取部门信息
             functionAll
-                .searchDataSourceOrDepartment({
-                    source_id: this.data[index].source_id
-                })
+                .searchDataSourceOrDepartment()
                 .then(res => {
                     if (res && res.success) {
-                        this.options = res.data.departmentInfo;
-                        this.formUpdate = res.data;
-                        this.depIds = res.data.dep_name.split(",");
+                        this.options = res.data;
                     }
                 });
+            // 数据回显
+            functionAll.searchDataSourceById({
+                source_id: this.data[index].source_id
+            }).then((res) => {
+                if (res && res.success) {
+                    this.formUpdate = res.data;
+                    this.depIds = res.data.dep_name.split(",");
+                }
+            })
         },
 
         // 点击保存按钮更新当前的所有信息
-        update() {
-            this.formUpdate["dep_id"] = this.depIds.join(",");
-            this.formUpdate["source_id"] = this.source_id;
-            functionAll.updateDataSource(this.formUpdate).then(res => {
-                if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "编辑成功!"
+        update(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.formUpdate["dep_id"] = this.depIds;
+                    this.formUpdate["source_id"] = this.source_id;
+                    functionAll.updateDataSource(this.formUpdate).then(res => {
+                        if (res && res.success) {
+                            this.$message({
+                                type: "success",
+                                message: "编辑成功!"
+                            });
+                            this.$emit("addEvent");
+                            this.dialogFormVisibleAdd = false;
+                            this.formUpdate = {};
+                            this.depIds = [];
+                        } else {
+                            this.$message.error("编辑失败！");
+                        }
                     });
-                    this.$emit("addEvent");
-                    this.dialogFormVisibleAdd = false;
-                    this.formUpdate = {};
-                    this.depIds = [];
                 } else {
-                    this.$message.error("编辑失败！");
+                    return false;
                 }
             });
         },
@@ -154,17 +167,17 @@ export default {
                 source_id: this.source_id
             }).then(res => {
                 this.filename = this.data[index].source_id;
-                const blob = new Blob([JSON.stringify(res), {
-                    type: 'application/x-hrds'
-                }]);
-
+                const blob = new Blob([JSON.stringify(res)], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                });
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10
                     navigator.msSaveBlob(blob, this.filename);
                 } else {
                     //  chrome/firefox
                     let aTag = document.createElement("a");
-                    aTag.download = this.filename;
+                    // document.body.appendChild(aTag);
+                    aTag.download = this.filename + ".hrds";
                     aTag.href = URL.createObjectURL(blob);
                     if (aTag.all) {
                         aTag.click();
@@ -176,6 +189,7 @@ export default {
                     }
                     URL.revokeObjectURL(aTag.href);
                 }
+
             })
         },
     }

@@ -101,14 +101,23 @@
         <el-col :span="12">
             <div class="partThreeDiv">
                 <el-button type="primary" style="float:left" size="medium" @click="backSteps"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="success" style="float:right" size="medium" @click="dialogSelectOk=true"> 完成 <i class="el-icon-check"></i></el-button>
+                <el-button type="success" style="float:right" size="medium" @click="checkDataOk"> 完成 <i class="el-icon-check"></i></el-button>
             </div>
         </el-col>
     </el-row>
 
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder" width="40%">
-        <el-tree :data="data2" show-checkbox :props="defaultProps" @node-click="handleNodeClick" @check-change="handleCheckChange"></el-tree>
+        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+                <span>
+                    <el-button class="netxNUM" type="text" @click="() => append(data)">
+                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                    </el-button>
+                </span>
+            </span>
+        </el-tree>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
@@ -187,7 +196,6 @@ export default {
                     let ArrJson = JSON.stringify(res.data).replace(/1/g, "true").replace(/0/g, "false").replace(/"true"/g, true).replace(/"false"/g, false);
                     let jsonArr = JSON.parse(ArrJson)
                     this.tableData = jsonArr
-                    console.log(this.tableData)
                 }
             })
         },
@@ -231,18 +239,22 @@ export default {
                 .then(res => {
                     if (typeof (data) == 'undefined') {
                         this.data2 = res.data;
-                    } else if (typeof (data.path) != "undefined") {
-                        data['children'] = res.data;
-                        DataAll = data;
-                        arrData.push(data)
-                        this.data2 = arrData;
                     }
-
                 });
         },
-        // 获取目录下一级
-        handleNodeClick(data) {
-            this.seletFilePath(data);
+        //  获取目录下一级
+        append(data) {
+            if (!data.children) {
+                this.$set(data, 'children', []);
+            }
+            functionAll
+                .selectPath({
+                    agent_id: this.$route.query.agent_id,
+                    path: data.path
+                })
+                .then(res => {
+                    data.children = res.data
+                });
         },
         //获取选中状态下的数据
         handleCheckChange(data) {
@@ -256,7 +268,7 @@ export default {
         saveOk() {
             this.tableData.forEach((item) => {
                 item["agent_id"] = this.$route.query.agent_id;
-                item["fcs_id"]= this.$route.query.fcs_id;
+                item["fcs_id"] = this.$route.query.fcs_id;
             })
             let ArrJson = JSON.stringify(this.tableData).replace(/true/g, '1').replace(/false/g, '0');
             functionAll.saveFileSource({
@@ -270,6 +282,17 @@ export default {
                 }
             })
         },
+        // 检查必填项是否填写
+        checkDataOk() {
+            this.tableData.every((item) => {
+                if (item.file_source_path == "") {
+                    this.$message({
+                        type: "info",
+                        message: "请选择文件源"
+                    });
+                }
+            })
+        }
     }
 
 }
@@ -307,6 +330,10 @@ export default {
 
 .configureFileOption .partThreeDiv .el-button {
     margin-bottom: 20px;
+}
+
+.configureFileOption .netxNUM {
+    color: transparent;
 }
 
 /* 小图标提醒tip */

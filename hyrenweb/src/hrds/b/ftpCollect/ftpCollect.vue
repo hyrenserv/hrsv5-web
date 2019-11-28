@@ -19,8 +19,8 @@
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="开始日期" :label-width="formLabelWidth">
-                    <el-date-picker type="date" v-model="start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
+                <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date" :rules="rule.selected">
+                    <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -31,8 +31,8 @@
             </el-col>
 
             <el-col :span="11">
-                <el-form-item label="结束日期" :label-width="formLabelWidth">
-                    <el-date-picker type="date" v-model="end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
+                <el-form-item label="结束日期" :label-width="formLabelWidth" prop="end_date" :rules="rule.selected">
+                    <el-date-picker type="date" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -105,7 +105,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="下级目录规则" :label-width="formLabelWidth" prop="ftp_rule_path" :rules="filter_rules([{required: true}])">
+                <el-form-item label="下级目录规则" :label-width="formLabelWidth" prop="ftp_rule_path" :rules="rule.selected">
                     <el-select v-model="form.ftp_rule_path" placeholder="请选择数据下级目录规则" clearable style="width: 100%;">
                         <el-option v-for="item in FtpRule" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -135,7 +135,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="filter_rules([{required: true}])">
+                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -161,7 +161,16 @@
     </el-row>
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder" width="40%">
-        <el-tree :data="data2" show-checkbox :props="defaultProps" @node-click="handleNodeClick" @check-change="handleCheckChange"></el-tree>
+        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+           <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+                <span>
+                    <el-button class="netxNUM" type="text" @click="() => append(data)">
+                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                    </el-button>
+                </span>
+            </span>
+        </el-tree>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
@@ -229,6 +238,7 @@ export default {
             size: "medium",
             dialogSelectfolder: false,
             dialogSelectOk: false,
+            rule: validator.default,
             formLabelWidth: "150px",
         };
     },
@@ -385,7 +395,7 @@ export default {
         },
         // 获取目录结构
         seletFilePath(data) {
-            let arry;
+            let arry = [];
             let path;
             if (typeof (data) != "undefined") {
                 path = data.path;
@@ -398,55 +408,22 @@ export default {
                 .then(res => {
                     if (typeof (data) == 'undefined') {
                         this.data2 = res.data;
-                    } else if (typeof (data.path) != "undefined") {
-                        if (path == "/") {
-                            data['children'] = res.data;
-                            objjson = data;
-                            DataAll = data;
-                            arrData.push(data)
-                            this.data2 = arrData;
-                            arrData = []
-                        } else {
-                            for (let i in objjson) {
-                                if (i == "children") {
-                                    let asr = objjson[i]
-                                    asr.forEach(item => {
-                                        if (item.path) {
-                                            item["children"] = []
-                                            if (item.path == path) {
-                                                item.children = res.data;
-                                                arrData = []
-                                                arrData.push(objjson)
-                                                var returnedItem;
-                                                this.data2 = arrData;
-                                                if (item.children.length > 0) {
-                                                    item.children.forEach((itemChildren) => {
-                                                        // if (itemChildren.path == "") {
-                                                        //     console.log(itemChildren.path, "woshi itemChildren.path");
-                                                        //     console.log(path, "woshi path");
-                                                        // }
-                                                        itemChildrenPath.push(itemChildren.path)
-
-                                                    })
-                                                    console.log(itemChildrenPath, "woshi path");
-                                                }
-                                            }
-                                        }
-
-                                    })
-                                }
-                            }
-
-                        }
-
                     }
-
                 });
         },
-        // 获取目录下一级
-        handleNodeClick(data) {
-            this.seletFilePath(data);
-            // console.log(objjson, "i an jsonobj")
+        //  获取目录下一级
+        append(data) {
+            if (!data.children) {
+                this.$set(data, 'children', []);
+            }
+            functionAll
+                .selectPath({
+                    agent_id: this.$route.query.agent_id,
+                    path: data.path
+                })
+                .then(res => {
+                    data.children = res.data
+                });
         },
         //获取选中状态下的数据
         handleCheckChange(data) {
@@ -462,8 +439,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.dialogSelectOk = true
-                }
-                else {
+                } else {
                     return false;
                 }
             });
@@ -498,7 +474,9 @@ export default {
 .ftpCollect .partThreeDiv {
     float: right;
 }
-
+.ftpCollect .netxNUM{
+    color: transparent;
+}
 .ftpCollect .partThreeDiv .el-button {
     margin-bottom: 20px;
 }
