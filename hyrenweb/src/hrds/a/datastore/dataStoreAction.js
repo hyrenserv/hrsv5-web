@@ -21,3 +21,47 @@ export function getCategoryItems(data) {
         params: data
     })
 }
+
+/**(2)
+ * 关联查询数据存储层信息
+ */
+export function searchDataStore(data) {
+    return request({
+        url: '/A/datastore/searchDataStore',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(3)
+ * 删除数据存储层信息
+ */
+export function deleteDataStore(data) {
+    return request({
+        url: '/A/datastore/deleteDataStore',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(4)
+ * 根据权限数据存储层配置ID关联查询数据存储层信息
+ */
+export function searchDataStoreById(data) {
+    return request({
+        url: '/A/datastore/searchDataStoreById',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(5)
+ * 编辑保存数据存储层信息
+ */
+export function updateDataStore(data) {
+    return request({
+        url: '/A/datastore/updateDataStore',
+        method: 'post',
+        params: data
+    })
+}

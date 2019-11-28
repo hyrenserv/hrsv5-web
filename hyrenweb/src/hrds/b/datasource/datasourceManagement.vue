@@ -119,6 +119,7 @@ export default {
         // 子触发父的事件
         addSucess() {
             this.getIndexData();
+            this.handleCurrentChange();
         },
         // 封装调用事件
         getIndexData() {
