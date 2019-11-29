@@ -64,7 +64,7 @@ export function downloadFile(data) {
         url: '/B/datasource/downloadFile',
         method: 'post',
         params: data,
-        responseType: "arraybuffer"
+        responseType: 'blob'
     })
 }
 

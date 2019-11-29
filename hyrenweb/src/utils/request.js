@@ -29,6 +29,20 @@ service.interceptors.request.use(
     return Promise.error(error);
   })
 
+  // service.interceptors.response.use(
+  //   response => {
+  //     // 导出
+  //     const headers = response.headers
+  //     if (headers['content-type'] === 'application/octet-stream;charset=utf-8') {
+  //       return response
+  //     }
+      
+  //   },
+  //   error => {
+  //     return Promise.reject(error)
+  //   }
+  // )
+
 // response interceptor
 service.interceptors.response.use(
   /**
@@ -43,10 +57,11 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+   
     // console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
-
+      const headers = response.headers
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
@@ -68,8 +83,11 @@ service.interceptors.response.use(
           duration: 5 * 1000
         })
       }
-      else {
-        Message({
+      else if(headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8'){
+        return  response.data
+       
+      }else{
+         Message({
           message: res.message,
           type: 'error',
           duration: 5 * 1000
@@ -82,6 +100,8 @@ service.interceptors.response.use(
       
       return res
     }
+   
+       
   },
   error => {
     // console.log('err' + error) // for debug

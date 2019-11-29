@@ -28,7 +28,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
@@ -148,14 +148,12 @@ export default {
                         let date = year + "-" + month + "-" + day;
                         res.data[index].create_date = date;
                         let type = res.data[index].usertype_group;
-                        console.log(type)
                         // 获取用户功能类型详细信息
                         // let resAlls = await getPro(type, functionAll, this)
                         // res.data[index].usertype_group = resAlls.join(",");
                         for(let j in type){
-                            console.log(j)
                            if(j== "01"){
-                               console.log("111")
+                               
                            }else if(j== "02"){
                                
                            }else if(j== "03"){

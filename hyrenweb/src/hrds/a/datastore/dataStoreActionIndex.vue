@@ -1,44 +1,38 @@
 <template>
 <div class="dataStoreAction">
     <el-row class="dataSave">
-        <span>数据存储层配置定义</span>
-    </el-row>
-    <el-row class="partOne">
-        <el-form ref="form" :model="form" label-width="80px">
-            <el-col :span="12">
-                <el-col :span="16">
-                    <el-form-item label="名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
-                        <el-input v-model="form.dsl_name" placeholder="请输入名称"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-col>
-
-            <el-col :span="12">
-                <el-col :span="16">
-                    <el-form-item label="附加信息" prop="dsla_storelayer" :rules="rule.selected">
-                        <el-checkbox-group v-model="form.dsla_storelayer">
-                            <el-checkbox v-for="item in checkboxType" :key="item.value" :label="item.value" :value="item.code"></el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item>
-                </el-col>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item label="存储类型" prop="store_type" :rules="rule.selected">
-                    <el-select v-model="form.store_type" placeholder="请选择存储类型">
-                        <el-option v-for="item in storeType" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-
-        </el-form>
+        <span>数据存储层定义</span>
     </el-row>
 
     <el-row class="partTwo">
-
-        <span>数据存储层配置属性</span>
-        <el-button size="medium" class="partTwoBtn" type="success" @click="addTableData">增加行</el-button>
         <el-table :data="tableData" border stripe size="medium">
+            <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+
+            <el-table-column prop="dsl_name" label="名称" align="center">
+
+            </el-table-column>
+
+            <el-table-column prop="store_type" label="存储类型" align="center">
+
+            </el-table-column>
+
+            <el-table-column prop="store_type" label="数据存储层配置属性" align="center">
+                  <template slot-scope="scope">
+                    <el-button type="info" size="mini" @click="dataSaveConfigure = true">数据存储层配置属性</el-button>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="操作" width="160" align="center">
+                <template slot-scope="scope">
+                    <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <!-- 数据存储层配置属性弹出框 -->
+    <el-dialog title="数据存储层配置属性" :visible.sync="dataSaveConfigure">
+        <el-form :model="formImport">
+            <el-table :data="tableData" border stripe size="medium">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
 
             <el-table-column prop="storage_property_key" label="key" align="center">
@@ -58,21 +52,14 @@
                     <el-input type="textarea" v-model="scope.row.dsla_remark"></el-input>
                 </template>
             </el-table-column>
-
-            <el-table-column label="操作" width="80" align="center">
-                <template slot-scope="scope">
-                    <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
-                </template>
-            </el-table-column>
         </el-table>
-    </el-row>
-    <el-row class="partFour">
-        <div class="elButton">
-            <el-button type="primary" size="medium">取消</el-button>
-            <el-button type="primary" size="medium" @click="saveData('form')">保存</el-button>
+          
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancleImport" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>
         </div>
-
-    </el-row>
+    </el-dialog>
 </div>
 </template>
 
@@ -88,20 +75,30 @@ export default {
                 store_type: '',
                 dsla_storelayer: [],
             },
-
+            dslId: [],
             change_storelayer: [],
             tableData: [],
             storeType: [],
             checkboxType: [],
+            dataSaveConfigure:false,
             rule: validator.default
         }
     },
     created() {
+        this.searchDataStore();
         this.getCategoryItems("store_type");
         this.getCategoryItems("StoreLayerAdded");
-        this.getCategoryItems("UserType")
+        // this.getCategoryItems("UserType");
     },
     methods: {
+        // 查询首页信息
+        searchDataStore() {
+            functionAll.searchDataStore().then((res) => {
+                if (res && res.success) {
+                    this.tableData = res.data.storeLayer
+                }
+            })
+        },
         // 获取代码项对应的值
         getCategoryItems(e) {
             if (e == "store_type") {
@@ -111,7 +108,7 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.storeType = res.data;
+                            // this.storeType = res.data;
                         }
                     });
             } else if (e == "StoreLayerAdded") {
@@ -130,12 +127,23 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            console.log(res.data)
-                        }
+                        if (res && res.success) {}
                     });
             }
 
+        },
+        // 获取下拉框的值
+        changeData(data) {
+            this.searchDataStoreById(data);
+        },
+        // 根据dsl_id显示对应的数据
+        searchDataStoreById(e) {
+            functionAll.searchDataStoreById({
+                dsl_id: e
+            }).then((res) => {
+                this.tableData = res.data.layerAndAttr;
+                this.form.store_type = res.data.store_type;
+            })
         },
         // 添加行数据
         addTableData() {

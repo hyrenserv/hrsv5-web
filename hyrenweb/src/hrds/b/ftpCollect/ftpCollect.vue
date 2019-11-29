@@ -160,7 +160,7 @@
         </el-col>
     </el-row>
     <!-- 选择目录弹出框 -->
-    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder" width="40%">
+    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
         <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
            <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>

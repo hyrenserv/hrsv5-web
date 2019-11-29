@@ -14,7 +14,7 @@ Vue.use(Router)
  *  }
  * 
  */
-export default new Router({/*mode: 'history',*/routes: [
+export default new Router({mode: 'history',routes: [
     {path: '/',name: 'login',component: () => import('@/hrds/login/login.vue')},
     //菜单路由地址配置
     {path: "/home",name: 'home',component: () => import('@/hrds/components/menu'),children: [
@@ -31,9 +31,13 @@ export default new Router({/*mode: 'history',*/routes: [
         {path: '/dbaddTasksteps06',name: 'addTask06',title: '数据库采集06',component: () => import('@/hrds/b/addTask/steps6.vue')},
         {path: '/agentList',name: 'agentList',title: 'agent列表',component: () => import('@/hrds/b/agentList/agentList.vue')},
         {path: '/taskLog',name: 'taskLog',title: 'taskLog日志查看',component: () => import('@/hrds/b/agentList/taskLog.vue')},
+        // 系统管理
         {path: '/managementsystem',name: 'managementsystem',title: '系统管理',component: () => import('@/hrds/a/managementsystem/managementsystem.vue')},
+        // 用户列表
         {path: '/userManagement',name: 'userManagement',title: '用户列表',component: () => import('@/hrds/a/managementsystem/userManagement.vue')},
-        {path: '/departmentalList',name: 'departmentalList',title: '部门列表',component: () => import('@/hrds/a/managementsystem/departmentalList.vue')},    
+        // 部门列表
+        {path: '/departmentalList',name: 'departmentalList',title: '部门列表',component: () => import('@/hrds/a/managementsystem/departmentalList.vue')},   
+        // 系统参数列表 
         {path: '/systemParameters',name: 'systemParameters',title: '系统列表',component: () => import('@/hrds/a/managementsystem/systemParameters.vue')},
         // 半结构化agent采集    
         {path: '/collectOption',name: 'collectOption',title: '采集设置',component: () => import('@/hrds/b/semiStructuredAgent/collectOption.vue')},
@@ -45,6 +49,7 @@ export default new Router({/*mode: 'history',*/routes: [
         {path: '/configureStartMode',name: 'configureStartMode',title: '配置启动方式',component: () => import('@/hrds/b/unstructuredAgent/configureStartMode.vue')},
         {path: '/configureFileOption',name: 'configureFileOption',title: '配置连接属性',component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue')},
         // dataStoreAction
+        {path: '/dataStoreLayer',name: 'dataStoreActionIndex',title: 'dataStoreActionIndex',component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')},
         {path: '/dataStoreAction',name: 'dataStoreAction',title: 'dataStoreAction',component: () => import('@/hrds/a/datastore/dataStoreAction.vue')},
     ]}, 
     {path: '*',name: '*',component: () => import('@/hrds/components/notFound.vue')},
