@@ -393,3 +393,43 @@ export function getStoDestByTableId(data) {
         params:data
     })
 }
+// 点击详情
+export function getStoDestDetail(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getStoDestDetail',
+        method: 'post',
+        params:data
+    })
+}
+// 点击配置属性按钮
+export function getColumnStoInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getColumnStoInfo',
+        method: 'post',
+        params:data
+    })
+}
+// getColumnHeader
+export function getColumnHeader(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getColumnHeader',
+        method: 'post',
+        params:data
+    })
+}
+// 获取特殊字段id接口
+export function getDataStoreLayerAddedId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getDataStoreLayerAddedId',
+        method: 'post',
+        params:data
+    })
+}
+// 配置字段属性的提交
+export function saveColStoInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/saveColStoInfo',
+        method: 'post',
+        params:data
+    })
+}
