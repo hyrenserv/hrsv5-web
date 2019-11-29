@@ -9,7 +9,7 @@
             </el-button>
         </router-link>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
-            <i class="fa fa-cloud-upload"></i>新增系统参数
+            <i class="el-icon-circle-plus-outline"></i>新增系统参数
         </el-button>
     </el-row>
     <el-table stripe :data="systemParameters.filter(data => !search || data.para_name.toLowerCase().includes(search.toLowerCase()))" size="medium" border>
@@ -130,6 +130,10 @@ export default {
         addSysPara() {
             functionAll.addSysPara(this.formAdd).then((res) => {
                 if (res && res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    })
                     this.getSysPara();
                     this.dialogFormVisibleAdd = false;
                     this.formAdd = {};
@@ -156,6 +160,10 @@ export default {
             this.formUpdate["para_id"] = this.para_id;
             functionAll.updateSysPara(this.formUpdate).then((res) => {
                 if (res && res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '更新成功!'
+                    })
                     this.getSysPara();
                     this.dialogFormVisibleUpdate = false;
                     this.formUpdate = {};
@@ -164,22 +172,31 @@ export default {
         },
         // 删除部门信息
         delteThisData() {
-            this.$confirm("确定要删除该条数据?", "提示", {
-                type: "warning"
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
             }).then(() => {
-                functionAll
-                    .deleteSysPara({
+                functionAll.deleteSysPara({
                         para_id: this.para_id,
                         para_name: this.para_name
                     })
                     .then(res => {
                         if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
                             // 从新渲染表格
                             this.getSysPara();
                         }
                     })
-            })
-
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
         // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {
@@ -204,7 +221,8 @@ export default {
     width: 100%;
 }
 
-.el-icon-coin, .el-row span {
+.el-icon-coin,
+.el-row span {
     color: #2196f3;
     font-size: 18px;
 }

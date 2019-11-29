@@ -4,7 +4,7 @@
         <i class="block_icon fa text-warning fa-globe blue"></i>
         <span>数据来源表</span>
         <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;departmentInfo()" size="small">
-            <i class="block_icon fa fa-cubes"></i>添加数据源
+            <i class="el-icon-circle-plus-outline"></i>添加数据源
         </el-button>
         <el-button type="primary" class="els" @click="dialogFormVisibleImport = true;DataCathInfo()" size="small">
             <i class="fa fa-cloud-upload"></i>导入数据源

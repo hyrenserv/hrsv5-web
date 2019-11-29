@@ -9,7 +9,7 @@
         <el-table :data="tableData" border stripe size="mini">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
 
-            <el-table-column prop="file_source_path" label="选择文件源路径" width="116" align="center">
+            <el-table-column prop="file_source_path" label="选择文件源路径" width="126" align="center">
                 <template slot-scope="scope">
                     <el-button size="mini" type="success" @click="dialogSelectfolder = true;seletFilePath();handleEdit(scope.$index, scope.row)" v-if="showButton">选择文件夹</el-button>
                     <el-input v-model="scope.row.file_source_path" v-if="showInput" disabled></el-input>
@@ -20,7 +20,7 @@
                 <template slot-scope="scope">
                     <el-form ref="form" :model="scope.row">
                         <el-form-item class="ruleFormItem" prop="file_source_path" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="scope.row.file_source_path"  size="mini" placeholder="点击按钮选择"></el-input>
+                            <el-input v-model="scope.row.file_source_path" size="mini" placeholder="点击按钮选择"></el-input>
                         </el-form-item>
                     </el-form>
 
@@ -287,6 +287,10 @@ export default {
                 file_sources_array: ArrJson
             }).then((res) => {
                 if (res && res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    })
                     this.dialogSelectOk = false;
                     this.$router.push({
                         name: "agentList"
@@ -304,7 +308,7 @@ export default {
                         showClose: true,
                         message: '文件源路径为必填项',
                         type: 'warning',
-                        duration:0
+                        duration: 0
                     });
                 }
             });

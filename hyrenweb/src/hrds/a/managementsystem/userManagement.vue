@@ -9,7 +9,7 @@
             </el-button>
         </router-link>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true; getDepartAndUsertype()" size="small">
-            <i class="fa fa-cloud-upload"></i>新增用户
+            <i class="el-icon-circle-plus-outline"></i>新增用户
         </el-button>
     </el-row>
     <el-table stripe :data="userTablelist" border>
@@ -32,7 +32,7 @@
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog title="添加部门信息" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="filter_rules([{required: true}])">
                 <el-select v-model="depIds" filterable placeholder="请选择部门" style="width:284px">
@@ -151,60 +151,60 @@ export default {
                         // 获取用户功能类型详细信息
                         // let resAlls = await getPro(type, functionAll, this)
                         // res.data[index].usertype_group = resAlls.join(",");
-                        for(let j in type){
-                           if(j== "01"){
-                               
-                           }else if(j== "02"){
-                               
-                           }else if(j== "03"){
+                        for (let j in type) {
+                            if (j == "01") {
 
-                           }else if(j== "04"){
+                            } else if (j == "02") {
 
-                           }else if(j== "05"){
+                            } else if (j == "03") {
 
-                           }else if(j== "06"){
-                               
-                           }else if(j== "07"){
-                               
-                           }else if(j== "08"){
-                               
-                           }else if(j== "09"){
-                               
-                           }else if(j== "10"){
-                               
-                           }else if(j== "11"){
-                               
-                           }else if(j== "12"){
-                               
-                           }else if(j== "13"){
-                               
-                           }else if(j== "14"){
-                               
-                           }else if(j== "15"){
-                               
-                           }else if(j== "16"){
-                               
-                           }else if(j== "17"){
-                               
-                           }else if(j== "18"){
-                               
-                           }else if(j== "19"){
-                               
-                           }else if(j== "20"){
-                               
-                           }else if(j== "21"){
-                               
-                           }else if(j== "22"){
-                               
-                           }else if(j== "23"){
-                               
-                           }else if(j== "24"){
-                               
-                           }else if(j== "25"){
-                               
-                           }else if(j== "26"){
-                               
-                           }
+                            } else if (j == "04") {
+
+                            } else if (j == "05") {
+
+                            } else if (j == "06") {
+
+                            } else if (j == "07") {
+
+                            } else if (j == "08") {
+
+                            } else if (j == "09") {
+
+                            } else if (j == "10") {
+
+                            } else if (j == "11") {
+
+                            } else if (j == "12") {
+
+                            } else if (j == "13") {
+
+                            } else if (j == "14") {
+
+                            } else if (j == "15") {
+
+                            } else if (j == "16") {
+
+                            } else if (j == "17") {
+
+                            } else if (j == "18") {
+
+                            } else if (j == "19") {
+
+                            } else if (j == "20") {
+
+                            } else if (j == "21") {
+
+                            } else if (j == "22") {
+
+                            } else if (j == "23") {
+
+                            } else if (j == "24") {
+
+                            } else if (j == "25") {
+
+                            } else if (j == "26") {
+
+                            }
                         }
 
                     }
@@ -263,21 +263,31 @@ export default {
         },
         // 删除部门信息
         delteThisData() {
-            this.$confirm("确定要删除该条数据?", "提示", {
-                type: "warning"
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
             }).then(() => {
                 functionAll.deleteSysUser({
                         user_id: this.user_id,
                     })
                     .then(res => {
                         if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                            // 从新渲染表格
                             this.getSysUserInfoAll();
                         }
                     })
-            })
-
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
-
     }
 }
 </script>

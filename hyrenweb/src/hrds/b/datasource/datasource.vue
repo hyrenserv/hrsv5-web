@@ -359,18 +359,23 @@ export default {
         },
         // 点击删除数据
         delteThisData() {
-            this.$confirm("确定要删除该条数据?", "提示", {
-                type: "warning"
+          this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
             }).then(() => {
-                functionAll
-                    .deleteAgent({
+                functionAll.deleteAgent({
                         agent_id: this.agentId,
                         agent_type: agentTupe,
                         source_id: this.$route.query.source_id
                     })
                     .then(res => {
                         if (res && res.success) {
-                            // 隐藏对话框
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                           // 隐藏对话框
                             this.dialogFormVisibleDelte = false;
                             // 表单清空
                             this.form = {};
@@ -378,8 +383,12 @@ export default {
                             this.getAgentAllData(agentTupe);
                         }
                     })
-            })
-
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         }
     }
 };

@@ -9,7 +9,7 @@
             </el-button>
         </router-link>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
-            <i class="fa fa-cloud-upload"></i>新增部门
+            <i class="el-icon-circle-plus-outline"></i>新增部门
         </el-button>
     </el-row>
     <el-table stripe :data="departmentalList" border>
@@ -103,7 +103,7 @@ export default {
                 if (res && res.success) {
                     this.departmentalList = res.data.departmentInfos;
                     this.totalItem = res.data.totalSize;
-                  
+
                 }
             })
         },
@@ -111,6 +111,10 @@ export default {
         addDepartmentInfo() {
             functionAll.addDepartmentInfo(this.formAdd).then((res) => {
                 if (res && res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    })
                     this.getDepartmentInfoAll();
                     this.dialogFormVisibleAdd = false;
                     this.formAdd = {};
@@ -129,13 +133,17 @@ export default {
         // 获取表格当前行数据
         handleEdit(index, row) {
             this.dep_id = row.dep_id;
-            this.formUpdate =row;
+            this.formUpdate = row;
         },
         //编辑部门信息
         updateDepartmentInfo() {
             this.formUpdate["dep_id"] = this.dep_id;
             functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
                 if (res && res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '更新成功!'
+                    })
                     this.getDepartmentInfoAll();
                     this.dialogFormVisibleUpdate = false;
                     this.formUpdate = {};
@@ -144,22 +152,32 @@ export default {
         },
         // 删除部门信息
         delteThisData() {
-            this.$confirm("确定要删除该条数据?", "提示", {
-                type: "warning"
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
             }).then(() => {
-                functionAll
-                    .deleteDepartmentInfo({
+                functionAll.deleteDepartmentInfo({
                         dep_id: this.dep_id,
                     })
                     .then(res => {
                         if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
                             // 从新渲染表格
                             this.getDepartmentInfoAll();
                         }
                     })
-            })
-
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
+
         // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {
             //把val赋给当前页面
@@ -183,7 +201,8 @@ export default {
     width: 100%;
 }
 
-.el-icon-s-check,.el-row span {
+.el-icon-s-check,
+.el-row span {
     color: #2196f3;
     font-size: 18px;
 }
