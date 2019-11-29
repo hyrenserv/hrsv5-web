@@ -167,9 +167,7 @@ export default {
                 source_id: this.source_id
             }).then(res => {
                 this.filename = this.data[index].source_id;
-                const blob = new Blob([JSON.stringify(res)], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                });
+                const blob = new Blob([JSON.stringify(res)]);
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10
                     navigator.msSaveBlob(blob, this.filename);

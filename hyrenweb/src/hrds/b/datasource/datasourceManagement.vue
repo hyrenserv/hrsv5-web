@@ -8,7 +8,7 @@
             <i class="block_icon fa text-warning fa-book blue"></i>
             <span>数据管理列表</span>
             <div class="lines"></div>
-            <el-table stripe :data="tableDatalist" border>
+            <el-table stripe :data="tableDatalist" size="medium" border>
                 <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
                 <el-table-column prop="original_name" label="文件名" align="center"></el-table-column>
                 <el-table-column prop="file_suffix" label="文件后缀名" align="center"></el-table-column>
@@ -25,7 +25,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPagelist" :page-size="pageSize" layout=" total,prev, pager, next" :total="totalItem"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPagelist" :page-size="pageSize" layout=" total, prev, pager, next, jumper" :total="totalItem"></el-pagination>
         </el-row>
     </div>
     <!-- 数据管理列表完 -->
@@ -36,7 +36,7 @@
         <span>数据权限管理</span>
         <div class="lines"></div>
         <!-- 表格 -->
-        <el-table :data="tableData" border stripe size="mini">
+        <el-table :data="tableData" border stripe size="medium">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
             <el-table-column prop="datasource_name" label="数据源名称" align="center"></el-table-column>
             <el-table-column prop="dep_name" label="所属部门" align="center"></el-table-column>
@@ -68,7 +68,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" :page-size="pageSize" layout="total, prev, pager, next" :total="totalItems"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" :page-size="pageSize" layout="total, prev, pager, next,jumper" :total="totalItems"></el-pagination>
         </el-row>
     </div>
     <!-- 数据权限管理完 -->

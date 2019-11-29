@@ -9,12 +9,22 @@
         <el-table :data="tableData" border stripe size="mini">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
 
-            <el-table-column prop="file_source_path" label="文件源路径" width="116" align="center">
+            <el-table-column prop="file_source_path" label="选择文件源路径" width="116" align="center">
                 <template slot-scope="scope">
                     <el-button size="mini" type="success" @click="dialogSelectfolder = true;seletFilePath();handleEdit(scope.$index, scope.row)" v-if="showButton">选择文件夹</el-button>
                     <el-input v-model="scope.row.file_source_path" v-if="showInput" disabled></el-input>
                 </template>
+            </el-table-column>
 
+            <el-table-column prop="file_source_path" label="文件源路径" width="116" align="center">
+                <template slot-scope="scope">
+                    <el-form ref="form" :model="scope.row">
+                        <el-form-item class="ruleFormItem" prop="file_source_path" :rules="filter_rules([{required: true}])">
+                            <el-input v-model="scope.row.file_source_path"  size="mini" placeholder="点击按钮选择"></el-input>
+                        </el-form-item>
+                    </el-form>
+
+                </template>
             </el-table-column>
 
             <el-table-column prop="is_pdf" label="PDF文件" align="center">
@@ -101,13 +111,13 @@
         <el-col :span="12">
             <div class="partThreeDiv">
                 <el-button type="primary" style="float:left" size="medium" @click="backSteps"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="success" style="float:right" size="medium" @click="checkDataOk"> 完成 <i class="el-icon-check"></i></el-button>
+                <el-button type="success" style="float:right" size="medium" @click="checkDataOk('form')"> 完成 <i class="el-icon-check"></i></el-button>
             </div>
         </el-col>
     </el-row>
 
     <!-- 选择目录弹出框 -->
-    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder" width="40%">
+    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
         <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
             <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
@@ -137,6 +147,8 @@
 
 <script>
 import * as functionAll from "./unstructuredAgent";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 let arrData = [];
 let DataAll = {};
 let i = "";
@@ -283,15 +295,20 @@ export default {
             })
         },
         // 检查必填项是否填写
-        checkDataOk() {
-            this.tableData.every((item) => {
-                if (item.file_source_path == "") {
+        checkDataOk(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.dialogSelectOk = true;
+                } else {
                     this.$message({
-                        type: "info",
-                        message: "请选择文件源"
+                        showClose: true,
+                        message: '文件源路径为必填项',
+                        type: 'warning',
+                        duration:0
                     });
                 }
-            })
+            });
+
         }
     }
 
@@ -341,5 +358,9 @@ export default {
     position: absolute;
     right: 14%;
     top: 38%;
+}
+
+.configureFileOption .ruleFormItem {
+    margin: 0;
 }
 </style>
