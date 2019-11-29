@@ -62,8 +62,8 @@ export default {
                 datasource_number: "",
                 source_remark: "",
             },
-             depIds: [],
-             rule: validator.default,
+            depIds: [],
+            rule: validator.default,
             formLabelWidth: "150px"
         };
     },
@@ -100,14 +100,14 @@ export default {
                         if (res && res.success) {
                             this.$message({
                                 type: "success",
-                                message: "编辑成功!"
+                                message: "更新成功!"
                             });
                             this.$emit("addEvent");
                             this.dialogFormVisibleAdd = false;
                             this.formUpdate = {};
                             this.depIds = [];
                         } else {
-                            this.$message.error("编辑失败！");
+                            this.$message.error("更新失败！");
                         }
                     });
                 } else {
@@ -146,8 +146,10 @@ export default {
 
         // 点击删除删除数据源
         delteThisData(index) {
-            this.$confirm("确定要删除该条数据?", "提示", {
-                type: "warning"
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
             }).then(() => {
                 this.source_id = this.data[index].source_id;
                 functionAll.deleteDataSource({
@@ -155,11 +157,21 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
                             this.$emit("addEvent");
                         }
-                    });
-            })
+                    })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
+
         // 点击下载图标数据
         downloadData(index) {
             this.source_id = this.data[index].source_id;

@@ -352,6 +352,10 @@ export default {
                 this.form["ftp_id"] = this.$route.query.ftp_id;
                 functionAll.updateFtp_collect(this.form).then(res => {
                     if (res && res.success) {
+                        this.$message({
+                                type: 'success',
+                                message: '更新成功!'
+                            })
                         this.$router.push({
                             name: "agentList"
                         });
@@ -360,6 +364,10 @@ export default {
             } else {
                 functionAll.addFtp_collect(this.form).then(res => {
                     if (res && res.success) {
+                        this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            })
                         this.$router.push({
                             name: "agentList"
                         });

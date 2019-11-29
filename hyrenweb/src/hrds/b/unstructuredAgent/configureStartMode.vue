@@ -250,6 +250,10 @@ export default {
                             this.form
                         ).then((res) => {
                             if (res && res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '更新成功!'
+                                })
                                 this.$router.push({
                                     path: "/configureFileOption",
                                     query: {
@@ -266,6 +270,10 @@ export default {
                             this.form
                         ).then((res) => {
                             if (res && res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '添加成功!'
+                                })
                                 this.$router.push({
                                     path: "/configureFileOption",
                                     query: {

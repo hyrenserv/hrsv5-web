@@ -30,12 +30,10 @@
                     </el-select>
                 </el-form-item>
             </el-col>
-
         </el-form>
     </el-row>
 
     <el-row class="partTwo">
-
         <span>数据存储层配置属性</span>
         <el-button size="medium" class="partTwoBtn" type="success" @click="addTableData">增加行</el-button>
         <el-table :data="tableData" border stripe size="medium">
@@ -68,10 +66,9 @@
     </el-row>
     <el-row class="partFour">
         <div class="elButton">
-            <el-button type="primary" size="medium">取消</el-button>
+            <el-button type="primary" size="medium" @click="cancelSave">取消</el-button>
             <el-button type="primary" size="medium" @click="saveData('form')">保存</el-button>
         </div>
-
     </el-row>
 </div>
 </template>
@@ -176,15 +173,26 @@ export default {
                         this.form
                     ).then((res) => {
                         if (res && res.success) {
-
+                             this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            })
+                            this.$router.push({
+                                name: "dataStoreActionIndex"
+                            })
                         }
                     })
                 } else {
                     return false;
                 }
             });
-
         },
+        // 点击取消返回展示页面        
+        cancelSave() {
+            this.$router.push({
+                name: "dataStoreActionIndex"
+            })
+        }
     }
 }
 </script>
@@ -192,7 +200,6 @@ export default {
 <style scoped>
 .dataStoreAction {
     padding: 0 2% 0 2%;
-
 }
 
 /* form边框 */
@@ -222,7 +229,7 @@ export default {
 /* span字体样式 */
 .dataStoreAction .partTwo span {
     display: inline-block;
-    margin-top: 26px;
+    margin-top: 20px;
     color: #2196f3;
     font-size: 18px;
 }

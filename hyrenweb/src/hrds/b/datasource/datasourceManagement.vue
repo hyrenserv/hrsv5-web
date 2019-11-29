@@ -223,20 +223,32 @@ export default {
         },
         // 权限回收
         reclaimAuthority() {
-            this.$confirm("确定要回收权限?", "提示", {
-                type: "warning"
+            this.$confirm('确定要回收权限, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
             }).then(() => {
                 functionAll.deleteAudit({
-                    da_id: this.da_id
-                }).then(res => {
-                    if (res && res.success) {
-                        this.tableDatalist = res.data;
-                    }
-                })
-            })
+                        da_id: this.da_id,
+                    })
+                    .then(res => {
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '回收权限成功!'
+                            });
+                            this.tableDatalist = res.data;
+                        }
+                    })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消回收权限'
+                });
+            });
         }
     },
-};
+}
 </script>
 
 <style scoped>
