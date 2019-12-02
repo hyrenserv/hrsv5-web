@@ -33,7 +33,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="上传要导入的数据源 :" :label-width="formLabelWidth">
-                <el-upload class="upload-demo" action="http://localhost:8080/Upload" multiple :limit="1" :auto-upload="false" :on-change="handleChange">
+                <el-upload class="upload-demo" ref="upload" :file-list="fileList" action="" multiple :limit="1" :auto-upload="false" :on-change="handleChange" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBeforeUpload" :on-progress="handleProgress">
                     <el-button size="small" type="primary">选择上传文件</el-button>
                 </el-upload>
                 <el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">
@@ -83,6 +83,7 @@ export default {
         return {
             options: [],
             depIds: [],
+            fileList:[],
             dialogFormVisibleImport: false,
             dialogFormVisibleAdd: false,
             rule: validator.default,
@@ -146,11 +147,32 @@ export default {
         },
         // 获取上传的文件详情
         handleChange(file, fileList) {
-            this.filesr = file;
+        
         },
+        // ------------------test------------------------
+        handleSuccess(res, file, fileList) { // 文件上传成功时的钩子
+        console.log("111111")
+            console.log(res, "i am res")
+            console.log(file, "i am file")
+            console.log(fileList, "i am fileList")
+        },
+        handleError(err, file, fileList) { // 文件上传失败时的钩子
+            this.$message({
+                type: 'error',
+                message: res.data.msg
+            });
+
+        },
+        handleBeforeUpload(file) { // 上传文件之前的钩子
+        },
+        handleProgress(event, file, fileList) { // 文件上传时的钩子 触发
+
+        },
+        // -----------------test------------------
         // 点击上传数据
         upload() {
             // 要把userid可能提出去，然后在帮到下面
+            this.$refs.upload.submit()
             this.formImport["file"] = this.filesr;
             functionAll.uploadFile(this.formImport).then(res => {
 
