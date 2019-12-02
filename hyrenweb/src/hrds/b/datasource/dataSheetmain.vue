@@ -155,7 +155,7 @@ export default {
                 functionAll.deleteDataSource({
                         source_id: this.source_id
                     })
-                    .then(res => {
+                    .then((res) => {
                         if (res && res.success) {
                             this.$message({
                                 type: 'success',
@@ -177,9 +177,9 @@ export default {
             this.source_id = this.data[index].source_id;
             functionAll.downloadFile({
                 source_id: this.source_id
-            }).then(res => {
+            }).then((res) => {
                 this.filename = this.data[index].source_id;
-                const blob = new Blob([JSON.stringify(res)]);
+                const blob = new Blob([res]);
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10
                     navigator.msSaveBlob(blob, this.filename);
