@@ -64,7 +64,10 @@ export function downloadFile(data) {
         url: '/B/datasource/downloadFile',
         method: 'post',
         params: data,
-        responseType: 'blob'
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
 

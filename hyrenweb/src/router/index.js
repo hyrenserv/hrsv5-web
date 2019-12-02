@@ -14,7 +14,7 @@ Vue.use(Router)
  *  }
  * 
  */
-export default new Router({mode: 'history',routes: [
+export default new Router({routes: [
     {path: '/',name: 'login',component: () => import('@/hrds/login/login.vue')},
     //菜单路由地址配置
     {path: "/home",name: 'home',component: () => import('@/hrds/components/menu'),children: [
