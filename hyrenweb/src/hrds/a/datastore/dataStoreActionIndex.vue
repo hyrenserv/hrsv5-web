@@ -65,7 +65,6 @@
 
     <!-- 编辑数据存储层配置属性弹出框 -->
     <el-dialog title="更新数据存储层" :visible.sync="dialogFormVisibleUpdate">
-        <el-form>
             <el-row class="partOne">
                 <el-form ref="form" :model="form" label-width="80px">
                     <el-col :span="12">
@@ -85,47 +84,49 @@
                     </el-col>
 
                     <el-col>
-                        <el-form-item label="附加信息" prop="dsla_storelayer" :rules="rule.selected">
+                        <el-form-item label="附加信息">
                             <el-checkbox-group v-model="form.dsla_storelayer">
                                 <el-checkbox v-for="(item,index) in checkboxType" :key="index" :label="item.value" :value="item.code"></el-checkbox>
                             </el-checkbox-group>
                         </el-form-item>
                     </el-col>
+
+                    <el-button size="mini" class="partTwoBtn" type="success" @click="addTableDataData">增加行</el-button>
+                    <el-table :data="form.tableDataConfigure" border stripe size="medium">
+                        <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+
+                        <el-table-column label="key" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`tableDataConfigure.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
+                                    <el-input v-model="scope.row.storage_property_key" size="small"></el-input>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="value" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`tableDataConfigure.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
+                                    <el-input v-model="scope.row.storage_property_val" size="small"></el-input>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column prop="dsla_remark" label="描述" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item>
+                                    <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="操作" width="80" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArrydata(scope.$index, scope.row);">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-form>
             </el-row>
-
-            <el-row class="partTwo">
-                <el-button size="mini" class="partTwoBtn" type="success" @click="addTableDataData">增加行</el-button>
-                <el-table :data="tableDataConfigure" border stripe size="medium">
-                    <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
-
-                    <el-table-column prop="storage_property_key" label="key" align="center">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.storage_property_key" size="small"></el-input>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column prop="storage_property_val" label="value" align="center">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.storage_property_val" size="small"></el-input>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column prop="dsla_remark" label="描述" align="center">
-                        <template slot-scope="scope">
-                            <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column label="操作" width="80" align="center">
-                        <template slot-scope="scope">
-                            <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArrydata(scope.$index, scope.row);">删除</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </el-row>
-
-        </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisibleUpdate = false" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="upDate('form')" size="mini">更新</el-button>
@@ -151,12 +152,12 @@ export default {
                 dsl_name: '',
                 store_type: '',
                 dsla_storelayer: [],
+                tableDataConfigure: [],
             },
             dsl_id: '',
             dslId: [],
             change_storelayer: [],
             tableData: [],
-            tableDataConfigure: [],
             storeType: [],
             checkboxType: [],
             dataSaveConfigure: false,
@@ -188,7 +189,7 @@ export default {
         handleEdit(index, row) {
             this.searchDataStoreById(row.dsl_id)
         },
-        // 根据dsl_id显示对应的数据
+        // 根据dsl_id显示对应的数据(数据存储层配置属性)
         searchDataStoreById(e) {
             this.checkboxType = [];
             functionAll.searchDataStoreById({
@@ -246,29 +247,34 @@ export default {
             functionAll.searchDataStoreById({
                 dsl_id: e
             }).then((res) => {
-                this.tableDataConfigure = res.data.layerAndAttr;
+                this.form.tableDataConfigure = res.data.layerAndAttr;
                 this.form.dsl_name = res.data.dsl_name;
                 this.form.store_type = res.data.store_type;
                 this.form.dsla_storelayer = [];
                 arr = [];
-                res.data.layerAndAdded.forEach((item) => {
-                    if (item.dsla_storelayer) {
-                        functionAll.getValue({
-                            category: "StoreLayerAdded",
-                            code: item.dsla_storelayer
-                        }).then((res) => {
-                            if (res && res.success) {
-                                arr.push({
-                                    value: res.data,
-                                    code: item.dsla_storelayer
-                                })
-                                this.fixedError2(arr);
-                            }
-                        })
-                    } else {}
-                });
+                if (res.data.layerAndAdded[0].dsla_storelayer == undefined) {
+                    this.getCategoryItems("StoreLayerAdded");
+                } else {
+                    res.data.layerAndAdded.forEach((item) => {
+                        if (item.dsla_storelayer) {
+                            functionAll.getValue({
+                                category: "StoreLayerAdded",
+                                code: item.dsla_storelayer
+                            }).then((res) => {
+                                if (res && res.success) {
+                                    arr.push({
+                                        value: res.data,
+                                        code: item.dsla_storelayer
+                                    })
+                                    this.fixedError2(arr);
+                                }
+                            })
+                        }
+                    });
+                }
             })
         },
+        // 封装调用方法处理冲突2
         fixedError2(arr) {
             functionAll.getCategoryItems({
                 category: "StoreLayerAdded"
@@ -299,7 +305,7 @@ export default {
         },
         // 编辑时table新增一行
         addTableDataData() {
-            this.tableDataConfigure.push({
+            this.form.tableDataConfigure.push({
                 storage_property_key: "",
                 storage_property_val: "",
                 dsla_remark: ""
@@ -307,48 +313,57 @@ export default {
         },
         // 编辑时table删除一行
         deleteArrydata(index, row) {
-            this.tableDataConfigure.splice(index, 1)
+            this.form.tableDataConfigure.splice(index, 1)
         },
         //更新数据
         upDate(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 处理参数
-                    this.change_storelayer = [];
-                    this.form.dsla_storelayer.forEach((item) => {
-                        if (item == "主键") {
-                            this.change_storelayer.push("01");
-                        } else if (item == "rowkey") {
-                            this.change_storelayer.push("02");
-                        } else if (item == "索引列") {
-                            this.change_storelayer.push("03");
-                        } else if (item == "预聚合列") {
-                            this.change_storelayer.push("04");
-                        } else if (item == "排序列") {
-                            this.change_storelayer.push("05");
-                        } else if (item == "分区列") {
-                            this.change_storelayer.push("06");
-                        }
-                    })
-                    this.form['dsla_storelayer'] = JSON.parse(JSON.stringify(this.change_storelayer))
-                    this.form['dataStoreLayerAttr'] = JSON.stringify(this.tableDataConfigure);
-                    this.form['dsl_id'] = this.dsl_id;
-                    functionAll.updateDataStore(
-                        this.form
-                    ).then((res) => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '更新成功!'
-                            });
-                            // 重新渲染页面
-                            this.searchDataStore();
-                            // 关闭弹出层
-                            this.dialogFormVisibleUpdate = false;
-                        }
-                    })
-                } else {
-                    return false;
+                    if (this.form.tableDataConfigure.length == 0) {
+                        this.$message({
+                            showClose: true,
+                            type: 'warning',
+                            message: '表格数据信息为必填项',
+                            duration: 0
+                        })
+                    } else if (this.form.tableDataConfigure.length > 0) {
+                        this.change_storelayer = [];
+                        this.form.dsla_storelayer.forEach((item) => {
+                            if (item == "主键") {
+                                this.change_storelayer.push("01");
+                            } else if (item == "rowkey") {
+                                this.change_storelayer.push("02");
+                            } else if (item == "索引列") {
+                                this.change_storelayer.push("03");
+                            } else if (item == "预聚合列") {
+                                this.change_storelayer.push("04");
+                            } else if (item == "排序列") {
+                                this.change_storelayer.push("05");
+                            } else if (item == "分区列") {
+                                this.change_storelayer.push("06");
+                            }
+                        });
+                        this.form['dsla_storelayer'] = JSON.parse(JSON.stringify(this.change_storelayer))
+                        this.form['dataStoreLayerAttr'] = JSON.stringify(this.form.tableDataConfigure);
+                        this.form['dsl_id'] = this.dsl_id;
+                        functionAll.updateDataStore(
+                            this.form
+                        ).then((res) => {
+                            if (res && res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '更新成功!'
+                                });
+                                // 重新渲染页面
+                                this.searchDataStore();
+                                // 关闭弹出层
+                                this.dialogFormVisibleUpdate = false;
+                            }
+                        })
+                    } else {
+                        return false;
+                    }
                 }
             });
         },
@@ -427,5 +442,14 @@ export default {
     margin-top: 26px;
     color: #2196f3;
     font-size: 18px;
+}
+
+/* table的input样式 */
+.dataStoreAction .el-table>>>.el-form-item {
+    margin-bottom: 17px !important;
+}
+
+.dataStoreAction .el-table>>>.el-form-item__content {
+    margin-left: 0 !important;
 }
 </style>
