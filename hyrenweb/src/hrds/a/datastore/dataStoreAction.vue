@@ -103,7 +103,6 @@ export default {
     created() {
         this.getCategoryItems("store_type");
         this.getCategoryItems("StoreLayerAdded");
-        this.getCategoryItems("UserType")
     },
     methods: {
         // 获取代码项对应的值
@@ -128,18 +127,7 @@ export default {
                             this.checkboxType = res.data;
                         }
                     });
-            } else {
-                functionAll
-                    .getCategoryItems({
-                        category: e
-                    })
-                    .then(res => {
-                        if (res && res.success) {
-
-                        }
-                    });
-            }
-
+            } 
         },
         // 添加行数据
         addTableData() {
