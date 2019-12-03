@@ -85,6 +85,7 @@
 import * as functionAll from "@/hrds/a/managementsystem/managementsystem";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
+let savecurrentPage;
 export default {
     data() {
         return {
@@ -114,12 +115,15 @@ export default {
         }
     },
     created() {
-        this.getSysPara();
+        this.getSysPara("1");
     },
     methods: {
         // 获取部门列表信息
-        getSysPara() {
-            functionAll.getSysPara().then((res) => {
+        getSysPara(e) {
+            functionAll.getSysPara({
+                currPage: e,
+                pageSize: this.pageSize
+            }).then((res) => {
                 if (res && res.success) {
                     this.systemParameters = res.data.sysParas;
                     this.totalItem = res.data.totalSize;
@@ -127,18 +131,24 @@ export default {
             })
         },
         // 添加新的部门信息
-        addSysPara() {
-            functionAll.addSysPara(this.formAdd).then((res) => {
-                if (res && res.success) {
-                    this.$message({
-                        type: 'success',
-                        message: '添加成功!'
+        addSysPara(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    functionAll.addSysPara(this.formAdd).then((res) => {
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            })
+                            this.getSysPara("1");
+                            this.dialogFormVisibleAdd = false;
+                            this.formAdd = {};
+                        }
                     })
-                    this.getSysPara();
-                    this.dialogFormVisibleAdd = false;
-                    this.formAdd = {};
+                } else {
+                    return false;
                 }
-            })
+            });
         },
         // 点击添加弹出框的取消按钮
         cancleAdd() {
@@ -156,19 +166,27 @@ export default {
             this.para_name = row.para_name;
         },
         //编辑部门信息
-        updateSysPara() {
-            this.formUpdate["para_id"] = this.para_id;
-            functionAll.updateSysPara(this.formUpdate).then((res) => {
-                if (res && res.success) {
-                    this.$message({
-                        type: 'success',
-                        message: '更新成功!'
+        updateSysPara(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.formUpdate["para_id"] = this.para_id;
+                    functionAll.updateSysPara(this.formUpdate).then((res) => {
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '更新成功!'
+                            })
+                            // 渲染页面
+                            this.currentPage = savecurrentPage
+                            this.getSysPara(savecurrentPage);
+                            this.dialogFormVisibleUpdate = false;
+                            this.formUpdate = {};
+                        }
                     })
-                    this.getSysPara();
-                    this.dialogFormVisibleUpdate = false;
-                    this.formUpdate = {};
+                } else {
+                    return false;
                 }
-            })
+            });
         },
         // 删除部门信息
         delteThisData() {
@@ -188,7 +206,8 @@ export default {
                                 message: '删除成功!'
                             })
                             // 从新渲染表格
-                            this.getSysPara();
+                            this.currentPage = savecurrentPage
+                            this.getSysPara(savecurrentPage);
                         }
                     })
             }).catch(() => {
@@ -201,14 +220,9 @@ export default {
         // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {
             //把val赋给当前页面
+            savecurrentPage = val;
             this.currentPage = val;
-            functionAll.getDepartmentInfo({
-                currPage: this.currentPage,
-                pageSize: this.pageSize
-            }).then(res => {
-                this.departmentalList = res.data;
-            })
-
+            this.getSysPara(val)
         },
     }
 }

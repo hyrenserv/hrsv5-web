@@ -83,7 +83,7 @@ export default {
         return {
             options: [],
             depIds: [],
-            fileList:[],
+            fileList: [],
             dialogFormVisibleImport: false,
             dialogFormVisibleAdd: false,
             rule: validator.default,
@@ -147,14 +147,11 @@ export default {
         },
         // 获取上传的文件详情
         handleChange(file, fileList) {
-        
+            this.filesr = file;
         },
         // ------------------test------------------------
         handleSuccess(res, file, fileList) { // 文件上传成功时的钩子
-        console.log("111111")
-            console.log(res, "i am res")
-            console.log(file, "i am file")
-            console.log(fileList, "i am fileList")
+
         },
         handleError(err, file, fileList) { // 文件上传失败时的钩子
             this.$message({
@@ -172,7 +169,7 @@ export default {
         // 点击上传数据
         upload() {
             // 要把userid可能提出去，然后在帮到下面
-            this.$refs.upload.submit()
+            // this.$refs.upload.submit()
             this.formImport["file"] = this.filesr;
             functionAll.uploadFile(this.formImport).then(res => {
 

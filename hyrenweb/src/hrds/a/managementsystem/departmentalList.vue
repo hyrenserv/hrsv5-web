@@ -108,18 +108,25 @@ export default {
             })
         },
         // 添加新的部门信息
-        addDepartmentInfo() {
-            functionAll.addDepartmentInfo(this.formAdd).then((res) => {
-                if (res && res.success) {
-                    this.$message({
-                        type: 'success',
-                        message: '添加成功!'
+        addDepartmentInfo(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    functionAll.addDepartmentInfo(this.formAdd).then((res) => {
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            })
+                            this.getDepartmentInfoAll();
+                            this.dialogFormVisibleAdd = false;
+                            this.formAdd = {};
+                        }
                     })
-                    this.getDepartmentInfoAll();
-                    this.dialogFormVisibleAdd = false;
-                    this.formAdd = {};
+                } else {
+                    return false;
                 }
-            })
+            });
+
         },
         // 点击添加弹出框的取消按钮
         cancleAdd() {
@@ -136,19 +143,26 @@ export default {
             this.formUpdate = row;
         },
         //编辑部门信息
-        updateDepartmentInfo() {
-            this.formUpdate["dep_id"] = this.dep_id;
-            functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
-                if (res && res.success) {
-                    this.$message({
-                        type: 'success',
-                        message: '更新成功!'
+        updateDepartmentInfo(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.formUpdate["dep_id"] = this.dep_id;
+                    functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '更新成功!'
+                            })
+                            this.getDepartmentInfoAll();
+                            this.dialogFormVisibleUpdate = false;
+                            this.formUpdate = {};
+                        }
                     })
-                    this.getDepartmentInfoAll();
-                    this.dialogFormVisibleUpdate = false;
-                    this.formUpdate = {};
+                } else {
+                    return false;
                 }
-            })
+            });
+
         },
         // 删除部门信息
         delteThisData() {

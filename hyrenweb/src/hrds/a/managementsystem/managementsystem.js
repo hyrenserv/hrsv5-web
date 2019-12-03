@@ -27,9 +27,9 @@ import request from '@/utils/request'
 /**(2)
    * 新增系统用户
    */
-  export function addSysUser(data) {
+  export function saveSysUser(data) {
     return request({
-        url: '/A/sysuser/addSysUser',
+        url: '/A/sysuser/saveSysUser',
         method: 'post',
         params: data
     })
@@ -45,6 +45,63 @@ import request from '@/utils/request'
         params: data
     })
 }
+
+/**(4)
+   * 修改更新系统用户信息
+   */
+  export function updateSysUser(data) {
+    return request({
+        url: '/A/sysuser/updateSysUser',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(5)
+   * 获取所有系统用户分页
+   */
+  export function getSysUserAll(data) {
+    return request({
+        url: '/A/sysuser/getSysUserAll',
+        method: 'post',
+        params: data
+    })
+}
+
+
+/**(6)
+   * 编辑系统用户功能
+   */
+  export function editSysUserFunction(data) {
+    return request({
+        url: '/A/sysuser/editSysUserFunction',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(7)
+   * 获取部门信息和用户功能菜单信息
+   */
+  export function getDepartmentInfoAndUserFunctionMenuInfo(data) {
+    return request({
+        url: '/A/sysuser/getDepartmentInfoAndUserFunctionMenuInfo',
+        method: 'post',
+        params: data
+    })
+}
+
+/**(8)
+   * 获取部门信息和用户功能菜单信息
+   */
+  export function getSysUserByUserId(data) {
+    return request({
+        url: '/A/sysuser/getSysUserByUserId',
+        method: 'post',
+        params: data
+    })
+}
+
 
 // departmentalList页
 /**(0)

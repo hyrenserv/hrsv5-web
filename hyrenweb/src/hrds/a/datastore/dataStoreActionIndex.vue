@@ -156,6 +156,7 @@ export default {
             },
             dsl_id: '',
             dslId: [],
+            tableDataConfigure:[],
             change_storelayer: [],
             tableData: [],
             storeType: [],
@@ -173,7 +174,7 @@ export default {
         searchDataStore() {
             functionAll.searchDataStore().then((res) => {
                 if (res && res.success) {
-                    res.data.storeLayer.forEach((item) => {
+                    res.data.forEach((item) => {
                         functionAll.getValue({
                             category: "store_type",
                             code: item.store_type
@@ -181,7 +182,7 @@ export default {
                             item.store_type = res.data;
                         })
                     })
-                    this.tableData = res.data.storeLayer;
+                    this.tableData = res.data;
                 }
             })
         },
@@ -252,7 +253,7 @@ export default {
                 this.form.store_type = res.data.store_type;
                 this.form.dsla_storelayer = [];
                 arr = [];
-                if (res.data.layerAndAdded[0].dsla_storelayer == undefined) {
+                if (res.data.layerAndAdded.length == 0) {
                     this.getCategoryItems("StoreLayerAdded");
                 } else {
                     res.data.layerAndAdded.forEach((item) => {
