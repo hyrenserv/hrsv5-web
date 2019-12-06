@@ -54,7 +54,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="数据库" :rules="rule.selected">
+                <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
                   <el-col :span="16">
                     <el-select
                       placeholder="数据库类型"
@@ -84,7 +84,11 @@
               <el-col :span="10">
                 <el-form-item label="数据库名称" prop="database_name" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_name" size="medium"></el-input>
+                    <el-input
+                      v-model="ruleForm.database_name"
+                      size="medium"
+                      @input="jdbcChangeFun()"
+                    ></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -93,14 +97,18 @@
               <el-col :span="10">
                 <el-form-item label="数据库服务器IP" prop="database_ip" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_ip" size="medium"></el-input>
+                    <el-input v-model="ruleForm.database_ip" size="medium" @input="jdbcChangeFun()"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item label="数据库端口" prop="database_port" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_port" size="medium"></el-input>
+                    <el-input
+                      v-model="ruleForm.database_port"
+                      size="medium"
+                      @input="jdbcChangeFun()"
+                    ></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -137,7 +145,7 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="6" style="text-align:right;">
-                <el-button type="text" @click="testLink = true,testLinkFun()" size="medium">测试连接</el-button>
+                <el-button type="text" @click="testLink = true,testLinkFun('1')" size="medium">测试连接</el-button>
               </el-col>
               <el-col :span="2">
                 <el-button type="text" @click="viewLog = true" size="medium">查看日志</el-button>
@@ -254,9 +262,9 @@
           </el-dialog>
 
           <!-- 测试连接弹层 -->
-          <el-dialog title="提示信息" :visible.sync="testLink" width="30%" :before-close="handleClose">
+          <el-dialog title="提示信息" :visible.sync="testLink" width="30%">
             <div class="testLinnk">
-              <span>连接成功</span>
+              <span>{{linkTip}}</span>
             </div>
           </el-dialog>
           <!-- 查看日志弹层 -->
@@ -272,7 +280,7 @@
               </el-input>
             </div>
             <div>
-              <span>连接成功</span>
+              <span></span>
             </div>
           </el-dialog>
         </div>
@@ -282,7 +290,7 @@
       </el-tab-pane>
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">返回</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
   </div>
 </template>
 <script>
@@ -300,6 +308,7 @@ export default {
       active: 0,
       activeNames: "first",
       radio: null,
+      linkTip: "",
       CollTaskData: [],
       currentPage: 1,
       pagesize: 2,
@@ -318,8 +327,8 @@ export default {
         database_type: ""
       },
       sourceName: "",
-      sourceId: "",
-      agentId: "",
+      sourceId: null,
+      agentId: null,
       rule: validator.default,
       outerVisible: false,
       innerVisible: false,
@@ -346,7 +355,8 @@ export default {
       portPlaceholder: "",
       urlPrefix: "",
       urlSuffix: "",
-      dbid: null
+      dbid: null,
+      activelink: ""
     };
   },
   created() {
@@ -369,31 +379,72 @@ export default {
       params["databaseId"] = this.$route.query.id;
       addTaskAllFun.getDBConfInfo(params).then(res => {
         this.ruleForm = res.data[0];
+        let params = {};
+        params["dbType"] = String(res.data[0].database_type);
+        addTaskAllFun.getDBConnectionProp(params).then(res => {
+          this.ipPlaceholder = res.data.ipPlaceholder;
+          this.portPlaceholder = res.data.portPlaceholder;
+          this.urlPrefix = res.data.urlPrefix;
+          this.urlSuffix = res.data.urlSuffix;
+        });
+        //
       });
     }
   },
   methods: {
-    next() {
-      // saveDbConf
-      let data={}
-      if(this.$route.query.edit=='yes'){
-         data={
-          aId: this.agentId,
-          id: this.dbid,
-          sourId: this.sourceId,
-          sName: this.sourceName,
-          edit:'yes'
+    next(formName) {
+      let that = this;
+
+      that.$refs[formName].validate(valid => {
+        if (valid) {
+          that.testLinkFun("2");
         }
-      }
-      else{
-         data={
-          aId: this.$route.query.agent_id,
-        }
-      }
-      this.$router.push({
-        path: "/dbaddTasksteps02",
-        query: data
       });
+      // saveDbConf
+    },
+    nextLink(data) {
+      if (data == "true") {
+        let params = {};
+        params["task_name"] = this.ruleForm.task_name;
+        params["database_number"] = this.ruleForm.database_number;
+        params["classify_id"] = this.ruleForm.classify_id;
+        params["database_type"] = this.ruleForm.database_type;
+        params["database_drive"] = this.ruleForm.database_drive;
+        params["database_name"] = this.ruleForm.database_name;
+        params["database_ip"] = this.ruleForm.database_ip;
+        params["database_port"] = this.ruleForm.database_port;
+        params["user_name"] = this.ruleForm.user_name;
+        params["database_pad"] = this.ruleForm.database_pad;
+        params["jdbc_url"] = this.ruleForm.jdbc_url;
+        params["database_id"] = this.dbid;
+        addTaskAllFun.saveDbConf(params).then(res => {
+          // this.DatabaseType = res.data;
+          let data = {};
+          if (this.$route.query.edit == "yes") {
+            data = {
+              aId: this.agentId,
+              id: res.data,
+              sourId: this.sourceId,
+              sName: this.sourceName,
+              edit: "yes"
+            };
+          } else {
+            data = {
+              aId: this.$route.query.agent_id
+            };
+          }
+          this.$router.push({
+            path: "/dbaddTasksteps02",
+            query: data
+          });
+        });
+      }else{
+        this.$message({
+          showClose: true,
+          message: '提交失败，请检查信息',
+          type: 'error'
+        });
+      }
     },
     pre() {
       this.$router.push({ path: "/agentList" });
@@ -493,44 +544,59 @@ export default {
         this.portPlaceholder = res.data.portPlaceholder;
         this.urlPrefix = res.data.urlPrefix;
         this.urlSuffix = res.data.urlSuffix;
-        let that = this;
-        let code;
-        that.DatabaseType.forEach(function(currentValue, index) {
-          if (currentValue.value == "TeraData") {
-            code = currentValue.code;
-            if (that.ruleForm.database_type == code) {
-              that.ruleForm.jdbc_url =
-                that.urlPrefix +
-                that.ruleForm.database_ip +
-                that.ipPlaceholder +
-                that.ruleForm.database_name +
-                that.urlSuffix +
-                that.ruleForm.database_port;
-            } else {
-              that.ruleForm.jdbc_url =
-                that.urlPrefix +
-                that.ruleForm.database_ip +
-                that.ipPlaceholder +
-                that.ruleForm.database_port +
-                that.portPlaceholder +
-                that.ruleForm.database_name +
-                that.urlSuffix;
-            }
-          }
-        });
+        this.jdbcUrlFun();
       });
     },
+    jdbcUrlFun() {
+      let that = this;
+      let code;
+      that.DatabaseType.forEach(function(currentValue, index) {
+        if (currentValue.value == "TeraData") {
+          code = currentValue.code;
+          if (that.ruleForm.database_type == code) {
+            that.ruleForm.jdbc_url =
+              that.urlPrefix +
+              that.ruleForm.database_ip +
+              that.ipPlaceholder +
+              that.ruleForm.database_name +
+              that.urlSuffix +
+              that.ruleForm.database_port;
+          } else {
+            that.ruleForm.jdbc_url =
+              that.urlPrefix +
+              that.ruleForm.database_ip +
+              that.ipPlaceholder +
+              that.ruleForm.database_port +
+              that.portPlaceholder +
+              that.ruleForm.database_name +
+              that.urlSuffix;
+          }
+        }
+      });
+    },
+    jdbcChangeFun() {
+      this.jdbcUrlFun();
+    },
     // 点击测试连接
-    testLinkFun() {
+    testLinkFun(n) {
       let params = {};
       params["database_drive"] = this.ruleForm.database_drive;
       params["user_name"] = this.ruleForm.user_name;
       params["database_pad"] = this.ruleForm.database_pad;
       params["jdbc_url"] = this.ruleForm.jdbc_url;
       params["database_type"] = this.ruleForm.database_type;
-      console.log(params);
+      params["agent_id"] = parseInt(this.agentId);
       addTaskAllFun.testConnection(params).then(res => {
-        console.log(res);
+        if (res.success == true) {
+          this.linkTip = "连接成功";
+          this.activelink = "true";
+        } else {
+          this.linkTip = res.message;
+          this.activelink = "false";
+        }
+        if (n == "2") {
+          this.nextLink(this.activelink);
+        }
       });
     }
   }
@@ -559,6 +625,7 @@ export default {
 }
 .testLinnk > span {
   font-size: 18px;
+  color: #409eff;
 }
 .logseach {
   width: 25%;

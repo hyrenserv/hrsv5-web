@@ -86,6 +86,8 @@ service.interceptors.response.use(
       else if(headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8'){
         return  response.data
        
+      }else if (res.code == 220) {//如果返回的状态是 500表示服务器异常
+       return response.data
       }else{
          Message({
           message: res.message,
