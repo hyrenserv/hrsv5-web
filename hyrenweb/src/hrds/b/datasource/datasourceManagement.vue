@@ -81,7 +81,7 @@ import Loheader from "./Loheader";
 import dataSheetmain from "./dataSheetmain";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-
+let arrData;
 export default {
     name: "index1001",
     components: {
@@ -133,7 +133,6 @@ export default {
         },
         // 获取表格当前行数据
         handleEdit(index, row) {
-            // this.depIds = row.dep_name.split(",");
             this.source_id = row.source_id;
             this.da_id = row.da_id;
         },
@@ -168,9 +167,11 @@ export default {
         },
         // 点击添加按钮获取部门信息
         departmentInfo() {
+            this.depIds = [];
             functionAll.searchDataSourceOrDepartment().then(res => {
                 if (res && res.success) {
                     this.options = res.data;
+                    arrData = res.data;
                 }
             });
             // 数据回显
@@ -179,7 +180,9 @@ export default {
             }).then((res) => {
                 if (res && res.success) {
                     this.formAdd = res.data;
-                    this.depIds = res.data.dep_name.split(",");
+                    res.data.depNameAndId.forEach((item) => {
+                        this.depIds.push(item.dep_id);
+                    })
                 }
             })
         },

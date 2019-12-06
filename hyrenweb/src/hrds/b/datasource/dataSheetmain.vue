@@ -70,6 +70,7 @@ export default {
     methods: {
         // 点击编辑小图标获取部门信息和回显数据
         clickEditButton(index) {
+            this.depIds = [];
             this.source_id = this.data[index].source_id;
             // 获取部门信息
             functionAll
@@ -85,7 +86,9 @@ export default {
             }).then((res) => {
                 if (res && res.success) {
                     this.formUpdate = res.data;
-                    this.depIds = res.data.dep_name.split(",");
+                    res.data.depNameAndId.forEach((item)=>{
+                        this.depIds.push(item.dep_id);
+                    })
                 }
             })
         },

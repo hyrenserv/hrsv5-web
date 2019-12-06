@@ -58,7 +58,7 @@
 
     <!-- 实现点击编辑按钮进行页面部门更新-->
     <!-- 编辑的弹出表单 -->
-    <el-dialog title="更新系统参数信息" :visible.sync="dialogFormVisibleUpdate" width="40%">
+    <el-dialog title="更新系统参数信息" :visible.sync="dialogFormVisibleUpdate" width="40%" :before-close="beforeClose">
         <el-form :model="formUpdate" ref="formUpdate">
             <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formUpdate.para_name" autocomplete="off" placeholder="请输入系统参数名称" :disabled="true" style="width:284px"></el-input>
@@ -156,6 +156,7 @@ export default {
             this.formAdd = {};
             this.formUpdate = {};
             // 隐藏对话框
+            this.getSysPara(savecurrentPage);
             this.dialogFormVisibleAdd = false;
             this.dialogFormVisibleUpdate = false;
         },
@@ -187,6 +188,12 @@ export default {
                     return false;
                 }
             });
+        },
+        // 关闭弹出框之前触发事件
+        beforeClose() {
+            this.getSysPara(savecurrentPage);
+            this.dialogFormVisibleUpdate = false;
+
         },
         // 删除部门信息
         delteThisData() {

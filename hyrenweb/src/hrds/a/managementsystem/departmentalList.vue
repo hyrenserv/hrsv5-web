@@ -46,7 +46,7 @@
 
     <!-- 实现点击编辑按钮进行页面部门更新-->
     <!-- 编辑的弹出表单 -->
-    <el-dialog title="更新部门信息" :visible.sync="dialogFormVisibleUpdate" width="40%">
+    <el-dialog title="更新部门信息" :visible.sync="dialogFormVisibleUpdate" width="40%" :before-close="beforeClose">
         <el-form :model="formUpdate" ref="formUpdate">
             <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formUpdate.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
@@ -134,6 +134,7 @@ export default {
             this.formAdd = {};
             this.formUpdate = {};
             // 隐藏对话框
+            this.getDepartmentInfoAll();
             this.dialogFormVisibleAdd = false;
             this.dialogFormVisibleUpdate = false;
         },
@@ -190,6 +191,12 @@ export default {
                     message: '已取消删除'
                 });
             });
+        },
+        // 关闭弹出框之前触发事件
+        beforeClose() {
+            this.getDepartmentInfoAll();
+            this.dialogFormVisibleUpdate = false;
+
         },
 
         // 获取数据管理列表数据实现分页功能

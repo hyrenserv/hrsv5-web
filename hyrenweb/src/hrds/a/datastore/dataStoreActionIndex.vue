@@ -64,71 +64,71 @@
     </el-dialog>
 
     <!-- 编辑数据存储层配置属性弹出框 -->
-    <el-dialog title="更新数据存储层" :visible.sync="dialogFormVisibleUpdate">
-            <el-row class="partOne">
-                <el-form ref="form" :model="form" label-width="80px">
-                    <el-col :span="12">
-                        <el-col :span="16">
-                            <el-form-item label="名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
-                                <el-input v-model="form.dsl_name" placeholder="请输入名称"></el-input>
+    <el-dialog title="更新数据存储层" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeClose">
+        <el-row class="partOne">
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-col :span="12">
+                    <el-col :span="16">
+                        <el-form-item label="名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
+                            <el-input v-model="form.dsl_name" placeholder="请输入名称"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="存储类型" prop="store_type" :rules="rule.selected">
+                        <el-select v-model="form.store_type" placeholder="请选择存储类型">
+                            <el-option v-for="item in storeType" :key="item.value" :label="item.value" :value="item.code"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col>
+                    <el-form-item label="附加信息">
+                        <el-checkbox-group v-model="form.dsla_storelayer">
+                            <el-checkbox v-for="(item,index) in checkboxType" :key="index" :label="item.value" :value="item.code"></el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-col>
+
+                <el-button size="mini" class="partTwoBtn" type="success" @click="addTableDataData">增加行</el-button>
+                <el-table :data="form.tableDataConfigure" border stripe size="medium">
+                    <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+
+                    <el-table-column label="key" align="center">
+                        <template slot-scope="scope">
+                            <el-form-item :prop="`tableDataConfigure.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
+                                <el-input v-model="scope.row.storage_property_key" size="small"></el-input>
                             </el-form-item>
-                        </el-col>
-                    </el-col>
+                        </template>
+                    </el-table-column>
 
-                    <el-col :span="12">
-                        <el-form-item label="存储类型" prop="store_type" :rules="rule.selected">
-                            <el-select v-model="form.store_type" placeholder="请选择存储类型">
-                                <el-option v-for="item in storeType" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
+                    <el-table-column label="value" align="center">
+                        <template slot-scope="scope">
+                            <el-form-item :prop="`tableDataConfigure.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
+                                <el-input v-model="scope.row.storage_property_val" size="small"></el-input>
+                            </el-form-item>
+                        </template>
+                    </el-table-column>
 
-                    <el-col>
-                        <el-form-item label="附加信息">
-                            <el-checkbox-group v-model="form.dsla_storelayer">
-                                <el-checkbox v-for="(item,index) in checkboxType" :key="index" :label="item.value" :value="item.code"></el-checkbox>
-                            </el-checkbox-group>
-                        </el-form-item>
-                    </el-col>
+                    <el-table-column prop="dsla_remark" label="描述" align="center">
+                        <template slot-scope="scope">
+                            <el-form-item>
+                                <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
+                            </el-form-item>
+                        </template>
+                    </el-table-column>
 
-                    <el-button size="mini" class="partTwoBtn" type="success" @click="addTableDataData">增加行</el-button>
-                    <el-table :data="form.tableDataConfigure" border stripe size="medium">
-                        <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
-
-                        <el-table-column label="key" align="center">
-                            <template slot-scope="scope">
-                                <el-form-item :prop="`tableDataConfigure.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
-                                    <el-input v-model="scope.row.storage_property_key" size="small"></el-input>
-                                </el-form-item>
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column label="value" align="center">
-                            <template slot-scope="scope">
-                                <el-form-item :prop="`tableDataConfigure.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
-                                    <el-input v-model="scope.row.storage_property_val" size="small"></el-input>
-                                </el-form-item>
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column prop="dsla_remark" label="描述" align="center">
-                            <template slot-scope="scope">
-                                <el-form-item>
-                                    <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
-                                </el-form-item>
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column label="操作" width="80" align="center">
-                            <template slot-scope="scope">
-                                <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArrydata(scope.$index, scope.row);">删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-form>
-            </el-row>
+                    <el-table-column label="操作" width="80" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArrydata(scope.$index, scope.row);">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-form>
+        </el-row>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisibleUpdate = false" size="mini" type="danger">取 消</el-button>
+            <el-button @click="cancelUpdate" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="upDate('form')" size="mini">更新</el-button>
         </div>
     </el-dialog>
@@ -156,7 +156,7 @@ export default {
             },
             dsl_id: '',
             dslId: [],
-            tableDataConfigure:[],
+            tableDataConfigure: [],
             change_storelayer: [],
             tableData: [],
             storeType: [],
@@ -367,6 +367,17 @@ export default {
                     }
                 }
             });
+        },
+        // // 取消更新触发事件
+        cancelUpdate() {
+            this.searchDataStore();
+            this.dialogFormVisibleUpdate = false;
+        },
+        // 关闭弹出框之前触发事件
+        beforeClose() {
+            this.searchDataStore();
+            this.dialogFormVisibleUpdate = false;
+
         },
         // 获取代码项对应的值
         getCategoryItems(e) {
