@@ -389,6 +389,8 @@ export default {
                         }
                     })
             }).catch(() => {
+                // 未删除时数据回显
+                this.getSysUserInfoAll();
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
@@ -403,7 +405,7 @@ export default {
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
-             
+
             })
         },
         // getvalue代码项
