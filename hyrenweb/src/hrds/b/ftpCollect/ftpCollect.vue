@@ -162,7 +162,7 @@
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
         <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
-           <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
                 <span>
                     <el-button class="netxNUM" type="text" @click="() => append(data)">
@@ -353,24 +353,30 @@ export default {
                 functionAll.updateFtp_collect(this.form).then(res => {
                     if (res && res.success) {
                         this.$message({
-                                type: 'success',
-                                message: '更新成功!'
-                            })
+                            type: 'success',
+                            message: '更新成功!'
+                        })
                         this.$router.push({
                             name: "agentList"
                         });
+                    } else {
+                        this.form["start_date"] = "";
+                        this.form["end_date"] = "";
                     }
                 });
             } else {
                 functionAll.addFtp_collect(this.form).then(res => {
                     if (res && res.success) {
                         this.$message({
-                                type: 'success',
-                                message: '添加成功!'
-                            })
+                            type: 'success',
+                            message: '添加成功!'
+                        })
                         this.$router.push({
                             name: "agentList"
                         });
+                    } else {
+                        this.form["start_date"] = "";
+                        this.form["end_date"] = "";
                     }
                 });
             }
@@ -448,7 +454,8 @@ export default {
                 if (valid) {
                     this.dialogSelectOk = true
                 } else {
-                    return false;
+                    this.form["start_date"] = "";
+                    this.form["end_date"] = "";
                 }
             });
         },
@@ -482,9 +489,11 @@ export default {
 .ftpCollect .partThreeDiv {
     float: right;
 }
-.ftpCollect .netxNUM{
+
+.ftpCollect .netxNUM {
     color: transparent;
 }
+
 .ftpCollect .partThreeDiv .el-button {
     margin-bottom: 20px;
 }
