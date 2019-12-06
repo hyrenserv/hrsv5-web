@@ -13,7 +13,7 @@
 
     <!-- 实现点击导入按钮进行页面数据导入-->
     <!-- 弹出表单 -->
-    <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">
+    <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%" :before-close="beforeClose">
         <el-form :model="formImport">
             <el-form-item label="Agent IP地址 :" :label-width="formLabelWidth">
                 <el-input v-model="formImport.agent_ip" autocomplete="off" style="width:284px" placeholder=" Ip"></el-input>
@@ -33,7 +33,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="上传要导入的数据源 :" :label-width="formLabelWidth">
-                <el-upload class="upload-demo" ref="upload" :file-list="fileList" action="" multiple :limit="1" :auto-upload="false" :on-change="handleChange" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBeforeUpload" :on-progress="handleProgress">
+                <el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBeforeUpload" :on-progress="handleProgress">
                     <el-button size="small" type="primary">选择上传文件</el-button>
                 </el-upload>
                 <el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">
@@ -49,7 +49,7 @@
 
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
@@ -147,7 +147,10 @@ export default {
         },
         // 获取上传的文件详情
         handleChange(file, fileList) {
-            this.filesr = file;
+            if (fileList.length > 0) {
+                this.fileList = [fileList[fileList.length - 1]]
+            }
+
         },
         // ------------------test------------------------
         handleSuccess(res, file, fileList) { // 文件上传成功时的钩子
@@ -168,12 +171,24 @@ export default {
         // -----------------test------------------
         // 点击上传数据
         upload() {
-            // 要把userid可能提出去，然后在帮到下面
-            // this.$refs.upload.submit()
-            this.formImport["file"] = this.filesr;
-            functionAll.uploadFile(this.formImport).then(res => {
+            let param = new FormData() // 创建form对象
+            this.fileList.forEach((list, index) => {
+                param.append(`file${index + 1}`, list.raw);
+            })
+            param.append('agent_ip', this.formImport.agent_ip);
+            param.append('agent_port', this.formImport.agent_port);
+            param.append('user_id', this.formImport.depIds);
+            functionAll.uploadFile(param).then(res => {
 
             });
+
+            // this.fileList.forEach((list, index) => {
+            //     this.formImport.file = list.raw;
+            // })
+            // functionAll.uploadFile(this.formImport).then(res => {
+
+            // });
+
         },
         // 点击导入弹出框的取消按钮
         cancleImport() {
@@ -187,6 +202,13 @@ export default {
             this.depIds = [];
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
+        },
+        // 关闭弹框之前
+        beforeClose() {
+            this.formAdd = {};
+            this.dialogFormVisibleAdd = false;
+            this.formImport = {};
+            this.dialogFormVisibleImport = false;
         }
     }
 };
@@ -244,5 +266,11 @@ export default {
 
 .fa-question-circle {
     margin-top: 12px;
+}
+
+/* 上传选择文件 */
+.loheader>>>.el-list-enter-active,
+.loheader>>>.el-list-leave-active {
+    transition: none;
 }
 </style>
