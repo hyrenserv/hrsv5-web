@@ -1,40 +1,51 @@
 <template>
   <div>
     <Step :active="active"></Step>
-    <el-table
-      :header-cell-style="{background:'#e6e0e0'}"
-      ref="filterTable"
-      stripe
-      :default-sort="{prop: 'date', order: 'descending'}"
-      style="width: 100%"
-      height="360"
-      size="medium"
-      border
-      :data="ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)"
-    >
-      <el-table-column label="序号" align="center" width="60">
-        <template scope="scope">
-          <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="表名" width="150" align="center">
-        <template slot-scope="scope">
-          <el-input size="medium" v-model="scope.row.table_name" style="width:120px"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column label="表中文名" width="150" align="center">
-        <template slot-scope="scope">
-          <el-input size="medium" v-model="scope.row.table_ch_name" style="width:120px"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column label=" 选择目的地" width="150" align="center">
-        <!--  <template slot="header">
+    <el-form ref="ruleForm" :model="ruleForm" class="steps5">
+      <el-table
+        :header-cell-style="{background:'#e6e0e0'}"
+        ref="filterTable"
+        stripe
+        :default-sort="{prop: 'date', order: 'descending'}"
+        style="width: 100%"
+        height="360"
+        size="medium"
+        border
+        :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)"
+      >
+        <el-table-column label="序号" align="center" width="60">
+          <template scope="scope">
+            <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="表名" width="150" align="center">
+          <template slot-scope="scope">
+            <el-form-item
+              :prop="'ex_destinationData.'+scope.$index+'.table_name'"
+              :rules="rule.default"
+            >
+              <el-input size="medium" v-model="scope.row.table_name" style="width:120px"></el-input>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column label="表中文名" width="150" align="center">
+          <template slot-scope="scope">
+            <el-form-item
+              :prop="'ex_destinationData.'+scope.$index+'.table_ch_name'"
+              :rules="rule.default"
+            >
+              <el-input size="medium" v-model="scope.row.table_ch_name" style="width:120px"></el-input>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column label=" 选择目的地" width="150" align="center">
+          <!--  <template slot="header">
           <el-checkbox>
             <span class="allclickColor">选择目的地</span>
           </el-checkbox>
-        </template>-->
-        <template slot-scope="scope">
-          <el-checkbox
+          </template>-->
+          <template slot-scope="scope">
+            <!--   <el-checkbox
             @change="dialogChooseDestination=true"
             key="1"
             v-if="scope.row.data_extract_type=='1'"
@@ -42,38 +53,78 @@
             v-model="scope.row.data_extract_type"
           ></el-checkbox>
           <el-checkbox
-            @change="ChooseDestination(scope.row)"
+            @change="ChooseDestination(scope.row,scope.$index)"
             key="2"
-            v-else
+            v-if="scope.row.data_extract_type=='2'"
             v-model="scope.row.data_extract_type"
-          ></el-checkbox>
-        </template>
-      </el-table-column>
-      <el-table-column label=" 是否拉链存储" width="150" align="center">
-        <template slot="header">
-          <el-checkbox
-            @change="Allis_zipperFun(ex_destinationData,Allis_zippercheck)"
-            v-model="Allis_zippercheck"
-            :checked="Allis_zippercheck"
-          >
-            <span class="allclickColor">是否拉链存储</span>
-          </el-checkbox>
-        </template>
-        <template slot-scope="scope">
-          <el-checkbox
-            :checked="scope.row.is_zipper=='1'"
-            v-model="scope.row.is_zipper"
-            @change="is_zipperFun(scope.row)"
-          ></el-checkbox>
-        </template>
-      </el-table-column>
-      <el-table-column label=" 存储方式" align="center">
-        <template slot="header">
-          <el-checkbox v-if="Allis_zippercheck==false" disabled>
-            <span class="allclickColor">存储方式</span>
-          </el-checkbox>
-          <el-popover v-else placement="right" width="120" height="50" v-model="visible">
-            <el-select placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
+        
+            ></el-checkbox>-->
+            <span
+              class="settingbtn"
+              v-if="scope.row.data_extract_type=='2'"
+              @click="ChooseDestination(scope.row,scope.$index)"
+            >设置</span>
+          </template>
+        </el-table-column>
+        <el-table-column label=" 是否拉链存储" width="150" align="center">
+          <template slot="header">
+            <el-checkbox
+              @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)"
+              v-model="Allis_zippercheck"
+              :checked="Allis_zippercheck"
+            >
+              <span class="allclickColor">是否拉链存储</span>
+            </el-checkbox>
+          </template>
+          <template slot-scope="scope">
+            <el-checkbox
+              :checked="scope.row.is_zipper=='1'"
+              v-model="scope.row.is_zipper"
+              @change="is_zipperFun(scope.row)"
+            ></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column label=" 存储方式" align="center">
+          <template slot="header">
+            <el-checkbox v-if="Allis_zippercheck==false" disabled>
+              <span class="allclickColor">存储方式</span>
+            </el-checkbox>
+            <el-popover v-else placement="right" width="120" height="50" v-model="visible">
+              <el-select
+                placeholder="存储方式"
+                v-model="allstoragetype"
+                style="width:140px"
+                size="mini"
+              >
+                <el-option
+                  v-for="(item,index) in StorageType"
+                  :key="index"
+                  :label="item.value"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+              <div style="text-align: right; margin:30px 0 5px 0">
+                <el-button size="mini" type="text" @click="allStorageModeCloseFun()">取消</el-button>
+                <el-button type="primary" size="mini" @click="allStorageModeFun()">确定</el-button>
+              </div>
+              <el-checkbox
+                slot="reference"
+                @change="allcunchuFun(allcunchu)"
+                :checked="allcunchu"
+                v-model="allcunchu"
+              >
+                <span class="allclickColor">存储方式</span>
+              </el-checkbox>
+            </el-popover>
+          </template>
+          <template slot-scope="scope">
+            <el-select
+              placeholder="存储方式"
+              v-model="scope.row.storage_type"
+              size="medium"
+              v-if="scope.row.is_zipper==false"
+              disabled
+            >
               <el-option
                 v-for="(item,index) in StorageType"
                 :key="index"
@@ -81,64 +132,55 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-            <div style="text-align: right; margin:30px 0 5px 0">
-              <el-button size="mini" type="text" @click="allStorageModeCloseFun()">取消</el-button>
-              <el-button type="primary" size="mini" @click="allStorageModeFun()">确定</el-button>
-            </div>
-            <el-checkbox
-              slot="reference"
-              @change="allcunchuFun(allcunchu)"
-              :checked="allcunchu"
-              v-model="allcunchu"
+            <el-form-item
+              v-else
+              :prop="'ex_destinationData.'+scope.$index+'.storage_type'"
+              :rules="rule.selected"
             >
-              <span class="allclickColor">存储方式</span>
-            </el-checkbox>
-          </el-popover>
-        </template>
-        <template slot-scope="scope">
-          <el-select
-            placeholder="存储方式"
-            v-model="scope.row.storage_type"
-            style="width:150px"
-            size="medium"
-            v-if="scope.row.is_zipper==false"
-            disabled
-          >
-            <el-option
-              v-for="(item,index) in StorageType"
-              :key="index"
-              :label="item.value"
-              :value="item.code"
-            ></el-option>
-          </el-select>
-          <el-select
-            placeholder="存储方式"
-            v-model="scope.row.storage_type"
-            style="width:150px"
-            size="medium"
-            v-else
-          >
-            <!-- StorageType -->
-            <el-option
-              v-for="(item,index) in StorageType"
-              :key="index"
-              :label="item.value"
-              :value="item.code"
-            ></el-option>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column label=" 数据保留天数" width="150" align="center">
-        <template slot="header">
-          <el-checkbox>
-            <span class="allclickColor">数据保留天数</span>
-          </el-checkbox>
-        </template>
-        <template slot-scope="scope">
-          <el-input size="medium" v-model="scope.row.storage_time" style="width:120px"></el-input>
-        </template>
-      </el-table-column>
-    </el-table>
+              <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
+                <!-- StorageType -->
+                <el-option
+                  v-for="(item,index) in StorageType"
+                  :key="index"
+                  :label="item.value"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column label=" 数据保留天数" width="170" align="center">
+          <template slot="header">
+            <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
+              <div class="alldays">
+                <el-input size="medium" v-model="allSaveDay" style="width:66px"></el-input>
+                <span style="margin-left: 10px;">天</span>
+              </div>
+              <div style="text-align: right; margin:10px">
+                <el-button size="mini" type="danger" @click="allsaveDayCloseFun()">取消</el-button>
+                <el-button type="primary" size="mini" @click="allsaveDaySubmitFun()">确定</el-button>
+              </div>
+              <el-checkbox
+                slot="reference"
+                @change="allsaveDayFun(allSaveDayActive)"
+                :checked="allSaveDayActive"
+                v-model="allSaveDayActive"
+              >
+                <span class="allclickColor">数据保留天数(/天)</span>
+              </el-checkbox>
+            </el-popover>
+          </template>
+          <template slot-scope="scope">
+            <el-form-item
+              :prop="'ex_destinationData.'+scope.$index+'.storage_time'"
+              :rules="rule.default"
+            >
+              <el-input size="medium" v-model="scope.row.storage_time" style="width: 90px"></el-input>
+            </el-form-item>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-form>
     <el-pagination
       @size-change="ex_destination_handleSizeChange"
       @current-change="ex_destination_handleCurrentChange"
@@ -146,11 +188,11 @@
       :page-sizes="[5, 10, 15, 20]"
       :page-size="ex_destinationpagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="ex_destinationData.length"
+      :total="ruleForm.ex_destinationData.length"
       class="locationcenter"
     ></el-pagination>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
     <!-- 选择目的地弹框 -->
     <el-dialog title=" 选择目的地" :visible.sync="dialogChooseDestination" width="70%" class="alltable">
       <el-table
@@ -159,8 +201,11 @@
         size="medium"
         highlight-current-row
         ref="multipleTable"
+        tooltip-effect="dark"
+        @selection-change="handleSelectionChange"
+        :row-key="getRowKeys"
       >
-        <el-table-column type="selection" property="usedflag" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" :reserve-selection="true" width="55" align="center"></el-table-column>
         <el-table-column label="序号" align="center" width="60">
           <template slot-scope="scope">
             <span>{{scope.$index+(destination_currentPage - 1) * destination_pagesize + 1}}</span>
@@ -199,7 +244,7 @@
       ></el-pagination>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogChooseDestination = false" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="dialogChooseDestination= false" size="mini">确 定</el-button>
+        <el-button type="primary" @click="ChooseDestinationSubmitFun()" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 查看详情 -->
@@ -323,12 +368,14 @@ import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
+import { parse } from "path";
 export default {
   components: {
     Step
   },
   data() {
     return {
+      rule: validator.default,
       dbid: null,
       aId: null,
       sourId: null,
@@ -337,13 +384,18 @@ export default {
       Allis_zippercheck: false,
       pzcheckAll: false,
       allcunchu: false,
+      allSaveDayActive: false,
       visible: false,
+      saveDayvisible: false,
       ex_destinationcurrentPage: 1,
       ex_destinationpagesize: 10,
       destination_currentPage: 1,
       destination_pagesize: 10,
       fieldProperty_currentPage: 1,
       fieldProperty_pagesize: 10,
+      ruleForm: {
+        ex_destinationData: []
+      },
       ex_destinationData: [],
       dialogChooseDestination: false,
       dialogViewDetails: false,
@@ -372,7 +424,11 @@ export default {
       type: "",
       dslid: "",
       allstoragetype: "",
-      StoreData: []
+      allSaveDay: "",
+      StoreData: [],
+      dslIdString: [],
+      multipleSelection: [],
+      dataExtractypeindex: ""
     };
   },
   created() {
@@ -386,6 +442,7 @@ export default {
     params["colSetId"] = this.dbid;
     addTaskAllFun.stodegetInitInfo(params).then(res => {
       let arr = res.data;
+      console.log(arr);
       for (var i = 0; i < arr.length; i++) {
         if (!arr[i].is_zipper) {
           arr[i].is_zipper = "0";
@@ -397,7 +454,7 @@ export default {
           arr[i].storage_time = "";
         }
       }
-      this.ex_destinationData = arr;
+      this.ruleForm.ex_destinationData = arr;
     });
     let params2 = {};
     params2["category"] = "StorageType";
@@ -407,9 +464,50 @@ export default {
     this.storeTypeFun();
     this.specialfieldFun();
   },
+
   methods: {
-    next() {
-      let data = {};
+    next(formName) {
+      let a = this.ruleForm.ex_destinationData;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let tbStoInfoString = [],tableString=[],
+            arr = a;
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].is_zipper == true) {
+              arr[i].is_zipper = "1";
+            }
+            if (arr[i].data_extract_type == "2") {
+              tbStoInfoString.push({
+                is_zipper: arr[i].is_zipper,
+                storage_time: parseInt(arr[i].storage_time),
+                storage_type: arr[i].storage_type,
+                table_id: arr[i].table_id
+              });
+            }
+            tableString.push({
+              table_id: arr[i].table_id,
+              table_ch_name:arr[i].table_ch_name,
+              table_name:arr[i].table_name,
+            })
+          }
+          let params = {};
+          params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
+          params["colSetId"] = parseInt(this.dbid);
+          params["dslIdString"] = JSON.stringify(this.dslIdString);
+          console.log(params);
+          addTaskAllFun.saveTbStoInfo(params).then(res => {
+            console.log(res);
+            
+          });
+          let params0 = {};
+          params0["tableString"] = JSON.stringify(tableString);
+             addTaskAllFun.updateTableName(params0).then(res => {
+            console.log(res);
+          });
+        }
+      });
+
+      /*   let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
           aId: this.$route.query.aId,
@@ -426,7 +524,7 @@ export default {
       this.$router.push({
         path: "/dbaddTasksteps06",
         query: data
-      });
+      }); */
     },
     pre() {
       let data = {};
@@ -489,18 +587,18 @@ export default {
       items.forEach((item, i) => {
         if (e) {
           item.is_zipper = true;
-          console.log(item.is_zipper);
         } else {
           item.is_zipper = false;
+          item.storage_type = "";
         }
       });
     },
-    ChooseDestination(row) {
+    ChooseDestination(row, index) {
+      this.dataExtractypeindex = index;
       let params = {};
       this.tableId = row.table_id;
       params["tableId"] = row.table_id;
       addTaskAllFun.getStoDestByTableId(params).then(res => {
-        console.log(res);
         let arr = JSON.parse(JSON.stringify(res.data));
         let data = this.storeTypeData;
         for (let i = 0; i < arr.length; i++) {
@@ -511,6 +609,82 @@ export default {
           }
         }
         this.destinationData = arr;
+        if (this.dslIdString.length != 0) {
+          let aartrue = [],
+            aarfalse = [],
+            arrall = [];
+          for (let m = 0; m < this.dslIdString.length; m++) {
+            arrall.push(this.dslIdString[m].tableId);
+          }
+          if (arrall.indexOf(row.table_id) != -1) {
+            for (let m = 0; m < this.dslIdString.length; m++) {
+              if (this.dslIdString[m].tableId == row.table_id) {
+                if (this.dslIdString[m].dslIds.length != 0) {
+                  console.log(12, aartrue);
+                  for (let n = 0; n < this.dslIdString[m].dslIds.length; n++) {
+                    for (let yn = 0; yn < this.destinationData.length; yn++) {
+                      if (
+                        this.destinationData[yn].dsl_id ==
+                        this.dslIdString[m].dslIds[n]
+                      ) {
+                        aartrue.push(yn);
+                      } else {
+                        aarfalse.push(yn);
+                      }
+                    }
+                  }
+                  console.log(13, aartrue);
+
+                  for (let ya = 0; ya < aartrue.length; ya++) {
+                    this.$refs.multipleTable.toggleRowSelection(
+                      this.destinationData[aartrue[ya]],
+                      true
+                    );
+                  }
+                  aartrue.length = 0;
+                } else {
+                  for (let y = 0; y < this.destinationData.length; y++) {
+                    this.$refs.multipleTable.toggleRowSelection(
+                      this.destinationData[y],
+                      false
+                    );
+                  }
+                }
+              }
+            }
+          } else {
+            for (let i = 0; i < this.destinationData.length; i++) {
+              if (this.destinationData[i].usedflag == "0") {
+                this.$refs.multipleTable.toggleRowSelection(
+                  this.destinationData[i],
+                  false
+                );
+              } else {
+                this.$refs.multipleTable.toggleRowSelection(
+                  this.destinationData[i],
+                  true
+                );
+              }
+              //
+            }
+          }
+        } else {
+          console.log(1);
+          for (let i = 0; i < this.destinationData.length; i++) {
+            if (this.destinationData[i].usedflag == "0") {
+              this.$refs.multipleTable.toggleRowSelection(
+                this.destinationData[i],
+                false
+              );
+            } else {
+              this.$refs.multipleTable.toggleRowSelection(
+                this.destinationData[i],
+                true
+              );
+            }
+            //
+          }
+        }
       });
       this.dialogChooseDestination = true;
     },
@@ -521,7 +695,6 @@ export default {
       params["dslId"] = row.dsl_id;
       addTaskAllFun.getStoDestDetail(params).then(res => {
         this.viewDatilsData = res.data;
-        console.log(res.data);
       });
     },
     // 点击配置属性按钮
@@ -538,44 +711,51 @@ export default {
       let params0 = {};
       params0["dslId"] = row.dsl_id;
       addTaskAllFun.getColumnHeader(params0).then(res => {
-        console.log(res.data);
-        let arr = [];
-        for (var key in res.data) {
-          if (key == "colume_name") {
-            arr.push({ id: key, value: res.data[key] });
-          } else if (key == "colume_ch_name") {
-            arr.push({ id: key, value: res.data[key] });
-          } else {
-            arr.push({ id: key, value: "是否" + res.data[key], active: false });
+        if (res.data) {
+          let arr = [];
+          for (var key in res.data) {
+            if (key == "colume_name") {
+              arr.push({ id: key, value: res.data[key] });
+            } else if (key == "colume_ch_name") {
+              arr.push({ id: key, value: res.data[key] });
+            } else {
+              arr.push({
+                id: key,
+                value: "是否" + res.data[key],
+                active: false
+              });
+            }
           }
+          this.selectedColumnList = arr.reverse();
         }
-        this.selectedColumnList = arr.reverse();
       });
       // 获取数据
       let params = {};
       params["dslId"] = row.dsl_id;
       params["tableId"] = this.tableId;
       addTaskAllFun.getColumnStoInfo(params).then(res => {
-        let arr = JSON.parse(JSON.stringify(res.data));
-        for (let i = 0; i < arr.length; i++) {
-          for (let key in arr[i]) {
-            if (
-              key == "column_id" ||
-              key == "colume_ch_name" ||
-              key == "colume_name" ||
-              key == "csi_number"
-            ) {
-              key = arr[i][key];
-            } else {
-              if (arr[i][key] == "0") {
-                arr[i][key] = false;
+        if (res.data) {
+          let arr = JSON.parse(JSON.stringify(res.data));
+          for (let i = 0; i < arr.length; i++) {
+            for (let key in arr[i]) {
+              if (
+                key == "column_id" ||
+                key == "colume_ch_name" ||
+                key == "colume_name" ||
+                key == "csi_number"
+              ) {
+                key = arr[i][key];
               } else {
-                arr[i][key] = true;
+                if (arr[i][key] == "0") {
+                  arr[i][key] = false;
+                } else {
+                  arr[i][key] = true;
+                }
               }
             }
           }
+          this.FieldProperty = arr;
         }
-        this.FieldProperty = arr;
       });
     },
     allSelectFun(tit, e) {
@@ -624,6 +804,7 @@ export default {
     ConfigureFieldPropertiesSubmitFun() {
       let data = this.FieldProperty;
       let arr = data,
+        columnString = [],
         count = 0,
         specialfield = [],
         arrlist = [];
@@ -650,81 +831,160 @@ export default {
             }
           }
         }
-        //
+        //columnString
         for (let i = 0; i < arr.length; i++) {
+          columnString.push({
+            column_id: arr[i].column_id,
+            colume_ch_name: arr[i].colume_ch_name
+          });
           delete arr[i].colume_name;
           delete arr[i].colume_ch_name;
-          arr[i].dslIds = [];
-          // Hbase类型增加csi_number字段
+          arr[i].dsladIds = [];
+          // Hbase类型增加csiNumber字段
           if (this.type == "Hbase") {
-            delete arr[i].csi_number;
-            if (arr[i].rowkey == true) {
-              count = count + 1;
-              arr[i].csi_number = count;
+            delete arr[i].csiNumber;
+            if (arr[i].rowkey) {
+              if (arr[i].rowkey == true) {
+                count = count + 1;
+                arr[i].csiNumber = count;
+              }
             }
           }
-          // 遍历得到dslIds数组
+          // 遍历得到dsladIds数组
           for (let key in arr[i]) {
-            if (key != "csi_number" && key != "column_id" && key != "dslIds") {
+            if (
+              key != "csiNumber" &&
+              key != "column_id" &&
+              key != "dsladIds" &&
+              key != "csi_number"
+            ) {
               if (key) {
                 if (arr[i][key] == true) {
                   delete arr[i][key];
-                  arr[i].dslIds.push(key);
+                  arr[i].dsladIds.push(key);
                 } else {
                   delete arr[i][key];
                 }
               }
+            }
+            if (key == "column_id") {
+              arr[i].columnId = arr[i][key];
+              delete arr[i][key];
+            }
+            if (key == "csi_number") {
+              delete arr[i][key];
             }
           }
         }
         arrlist = JSON.parse(JSON.stringify(arr));
         // dslIds空的删除，并替换对应特殊字段id
         for (let j = 0; j < arrlist.length; j++) {
-          if (arrlist[j].dslIds.length == "0") {
+          if (arrlist[j].dsladIds.length == "0") {
             arrlist.splice(j, 1);
             j--;
           } else {
-            for (let n = 0; n < arrlist[j].dslIds.length; n++) {
+            for (let n = 0; n < arrlist[j].dsladIds.length; n++) {
               for (let m = 0; m < specialfield.length; m++) {
-                if (specialfield[m].key == arrlist[j].dslIds[n]) {
-                  arrlist[j].dslIds[n] = specialfield[m].value;
+                if (specialfield[m].key == arrlist[j].dsladIds[n]) {
+                  arrlist[j].dsladIds[n] = specialfield[m].value;
                 }
               }
             }
           }
         }
-        //  console.log(arrlist);
-        // 调提交接口saveColStoInfo
+        // 保存特殊字段
         let params = {};
         params["colStoInfoString"] = JSON.stringify(arrlist);
         params["tableId"] = this.tableId;
         addTaskAllFun.saveColStoInfo(params).then(res => {
-          console.log(res.data);
+          message.saveSuccess(res);
+        });
+        // 保存修改的中文列名
+        let params1 = {};
+        params1["columnString"] = JSON.stringify(columnString);
+        addTaskAllFun.updateColumnZhName(params1).then(res => {
+          // message.saveSuccess(res);
+          this.dialogFieldProperty = false;
         });
       });
     },
+    // 配置字段属性取消按钮
     ConfigureFieldPropertiesCloseFun() {
       this.dialogFieldProperty = false;
     },
+    // 改变所有存储方式确定按钮方法
     allcunchuFun(e) {
       if (e) {
         this.visible = true;
-      }else{
+      } else {
         this.visible = false;
-
       }
     },
-    // 改变所有存储方式确定按钮方法
     allStorageModeFun() {
       this.visible = false;
-      console.log(this.allstoragetype, this.ex_destinationData);
-      for (let i = 0; i < this.ex_destinationData.length; i++) {
-        this.ex_destinationData[i].storage_type = this.allstoragetype;
+      for (let i = 0; i < this.ruleForm.ex_destinationData.length; i++) {
+        this.ruleForm.ex_destinationData[i].storage_type = this.allstoragetype;
       }
     },
-    allStorageModeCloseFun(){
+    allStorageModeCloseFun() {
       this.visible = false;
-      this.allcunchu=false
+      this.allcunchu = false;
+    },
+    //保留天数弹出
+    allsaveDayCloseFun() {
+      this.allSaveDay = "";
+      this.saveDayvisible = false;
+      this.allSaveDayActive = false;
+    },
+    allsaveDaySubmitFun() {
+      this.saveDayvisible = false;
+      for (let i = 0; i < this.ruleForm.ex_destinationData.length; i++) {
+        this.ruleForm.ex_destinationData[i].storage_time = this.allSaveDay;
+      }
+    },
+    allsaveDayFun(e) {
+      if (e) {
+        this.saveDayvisible = true;
+      } else {
+        this.saveDayvisible = false;
+      }
+    },
+    //选择目的地弹框提交确定按钮
+    ChooseDestinationSubmitFun() {
+      let data = JSON.parse(JSON.stringify(this.multipleSelection));
+      let dslIds = [];
+      if (this.dslIdString.length > 0) {
+        for (let j = 0; j < this.dslIdString.length; j++) {
+          if (this.dslIdString[j].tableId == this.tableId) {
+            this.dslIdString.splice(j, 1);
+          }
+        }
+      }
+      for (let i = 0; i < data.length; i++) {
+        dslIds.push(data[i].dsl_id);
+      }
+      if(dslIds.length!=0){
+         this.dslIdString.push({ dslIds: dslIds, tableId: this.tableId });
+      this.$refs.multipleTable.clearSelection();
+      this.dialogChooseDestination = false;
+      }
+     else{
+this. open()
+     }
+      console.log(this.dslIdString);
+    },
+      open() {
+        this.$message({
+          showClose: true,
+          message: '请至少选择一个存储目的地',
+          type: 'error'
+        });
+      },
+    getRowKeys(row) {
+      return row.dsl_id;
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val; //勾选放在multipleSelection数组中
     }
   }
 };
@@ -793,5 +1053,29 @@ export default {
   text-align: center;
   font-weight: normal;
   border-right: 0;
+}
+.alldays {
+  text-align: center;
+  margin-top: 10px;
+}
+.alldays >>> .el-input--medium .el-input__inner {
+  height: 24px !important;
+}
+.settingbtn {
+  color: #409eff;
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.steps5 >>> .el-form-item {
+  margin-bottom: 0 !important;
+}
+.steps5 >>> .el-form-item__content::before {
+  content: "*";
+  color: #f56c6c;
+  margin-right: 4px;
+  display: inline-block;
+  position: absolute;
+  left: -5px;
 }
 </style>

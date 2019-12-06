@@ -79,6 +79,95 @@ export function saveDbConf(data) {
         params:data
     })
 }
+// steps2
+// 获取初始信息
+export function steps_getInitInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getInitInfo',
+        method: 'post',
+        params:data
+    })
+}
+//获取所有表信息 
+export function getAllTableInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getAllTableInfo',
+        method: 'post',
+        params:data
+    })
+}
+//是否并行抽取弹框显示sql
+export function getPageSQL(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getPageSQL',
+        method: 'post',
+        params:data
+    })
+}
+// sql测试
+export function testParallelExtraction(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/testParallelExtraction',
+        method: 'post',
+        params:data
+    })
+}
+// 使用sql抽取数据tap
+export function getAllSQLs(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getAllSQLs',
+        method: 'post',
+        params:data
+    })
+}
+// 使用sql抽取数据保存
+export function saveAllSQL(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getAllSQLs',
+        method: 'post',
+        params:data
+    })
+}
+// 定义过滤
+export function getSingleTableSQL(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getSingleTableSQL',
+        method: 'post',
+        params:data
+    })
+}
+// 选择列
+export function getColumnsigleInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getColumnInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 保存全部走下一步
+export function saveCollTbInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 得到是否过滤和并行抽取之前原有数据
+export function getSQLInfoByColSetId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getSQLInfoByColSetId',
+        method: 'post',
+        params:data
+    })
+}
+// 得到表的选择列之前原有数据
+export function getColumnInfoByColSetId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getColumnInfoByColSetId',
+        method: 'post',
+        params:data
+    })
+}
 //steps3
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
@@ -429,6 +518,30 @@ export function getDataStoreLayerAddedId(data) {
 export function saveColStoInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/saveColStoInfo',
+        method: 'post',
+        params:data
+    })
+}
+//配置字段属性弹框保存中文名称
+export function updateColumnZhName(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/updateColumnZhName',
+        method: 'post',
+        params:data
+    })
+}
+// 存储目的地下一步保存
+export function saveTbStoInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/saveTbStoInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 
+export function updateTableName(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/updateTableName',
         method: 'post',
         params:data
     })
