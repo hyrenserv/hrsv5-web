@@ -262,6 +262,9 @@ export default {
                                         agent_name: this.$route.query.agent_name
                                     }
                                 });
+                            } else {
+                                this.form["start_date"] = "";
+                                this.form["end_date"] = "";
                             }
                         })
                     } else {
@@ -282,11 +285,15 @@ export default {
                                         agent_name: this.$route.query.agent_name
                                     }
                                 });
+                            } else {
+                                this.form["start_date"] = "";
+                                this.form["end_date"] = "";
                             }
                         })
                     }
                 } else {
-                    return false;
+                    this.form["start_date"] = "";
+                    this.form["end_date"] = "";
                 }
             });
 
