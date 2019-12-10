@@ -21,9 +21,11 @@ service.interceptors.request.use(
     config.method = 'POST'
     if (token) {
       //config.headers.Authorization = getToken();
-      config.headers['Hyren_userCookie'] = getToken();
+        // config.data = true;
+        config.headers['Hyren_userCookie'] = getToken();
     }
     return config;
+   
   },
   error => {
     return Promise.error(error);
