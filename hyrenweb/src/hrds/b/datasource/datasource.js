@@ -30,10 +30,8 @@ export function uploadFile(data) {
     return request({
         url: '/B/datasource/uploadFile',
         method: 'post',
-        params: data,
-        headers: { 
-            'Content-Type': 'multipart/form-data'
-        }
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 

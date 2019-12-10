@@ -12,7 +12,7 @@
             <i class="el-icon-circle-plus-outline"></i>新增用户
         </el-button>
     </el-row>
-    <el-table stripe :data="userTablelist" border>
+    <el-table stripe :data="userTablelist" border size="medium">
         <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
         <el-table-column prop="user_id" label="用户登录账号" align="center"></el-table-column>
         <el-table-column prop="user_name" label="创建用户名" align="center"></el-table-column>
@@ -154,6 +154,8 @@ import {
 } from 'fs';
 //保存后台传过来未处理的usertype_group
 let arryCode = [];
+// 保存当前为第几页
+let pageNow;
 export default {
     data() {
         return {
@@ -189,30 +191,33 @@ export default {
     },
     created() {
         // 获取用户所有信息
-        this.getSysUserInfoAll();
+        this.getSysUserInfoAll(1);
     },
     methods: {
         // 用户信息方法封装
-        getSysUserInfoAll() {
-            functionAll.getSysUserInfo().then(async (res) => {
+        getSysUserInfoAll(e) {
+            functionAll.getSysUserInfo({
+                currPage: e,
+                pageSize: this.pageSize
+            }).then(async (res) => {
                 if (res && res.success) {
                     arryCode = [];
-                    for (let i = 0; i < res.data.length; i++) {
-                        arryCode.push(res.data[i].usertype_group);
+                    for (let i = 0; i < res.data.sysUsers.length; i++) {
+                        arryCode.push(res.data.sysUsers[i].usertype_group);
                     }
-                    for (let index = 0; index < res.data.length; index++) {
+                    for (let index = 0; index < res.data.sysUsers.length; index++) {
                         // 更改日期格式
-                        let year = res.data[index].create_date.substring(0, 4);
-                        let month = res.data[index].create_date.substring(4, 6);
-                        let day = res.data[index].create_date.substring(6, 9);
+                        let year = res.data.sysUsers[index].create_date.substring(0, 4);
+                        let month = res.data.sysUsers[index].create_date.substring(4, 6);
+                        let day = res.data.sysUsers[index].create_date.substring(6, 9);
                         let date = year + "-" + month + "-" + day;
-                        res.data[index].create_date = date;
+                        res.data.sysUsers[index].create_date = date;
                         // getvalue代码项
-                        let typeArr = res.data[index].usertype_group.split(",");
+                        let typeArr = res.data.sysUsers[index].usertype_group.split(",");
                         let dataType = this.getValueWithcode(typeArr);
-                        res.data[index].usertype_group = JSON.stringify(dataType).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "")
+                        res.data.sysUsers[index].usertype_group = JSON.stringify(dataType).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "")
                     }
-                    this.userTablelist = res.data;
+                    this.userTablelist = res.data.sysUsers;
                     this.totalItem = res.data.totalSize;
                 }
             })
@@ -291,7 +296,8 @@ export default {
                                 type: 'success',
                                 message: '添加成功!'
                             })
-                            this.getSysUserInfoAll();
+                            this.getSysUserInfoAll("1");
+                            this.currentPage = 1;
                             this.dialogFormVisibleAdd = false;
                             // 表单清空
                             this.formAdd = {};
@@ -339,7 +345,7 @@ export default {
                             })
                             // 表单清空
                             this.formUpdate = {};
-                            this.getSysUserInfoAll();
+                            this.getSysUserInfoAll(pageNow);
                             this.dialogFormVisibleUpdate = false;
 
                         } else {
@@ -360,11 +366,11 @@ export default {
             this.formUpdate = {};
             // 隐藏对话框
             this.dialogFormVisibleUpdate = false;
-            this.getSysUserInfoAll();
+            this.getSysUserInfoAll(pageNow);
         },
         // 关闭弹出框之前触发事件
         beforeClose() {
-            this.getSysUserInfoAll();
+            this.getSysUserInfoAll(pageNow);
             this.dialogFormVisibleUpdate = false;
 
         },
@@ -385,12 +391,12 @@ export default {
                                 message: '删除成功!'
                             })
                             // 从新渲染表格
-                            this.getSysUserInfoAll();
+                            this.getSysUserInfoAll(pageNow);
                         }
                     })
             }).catch(() => {
                 // 未删除时数据回显
-                this.getSysUserInfoAll();
+                this.getSysUserInfoAll(pageNow);
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
@@ -400,13 +406,8 @@ export default {
         //用户列表数据实现分页功能
         handleCurrentChangeList(val) {
             //把val赋给当前页面
-            this.currentPage = val;
-            functionAll.getSysUserInfo({
-                currPage: this.currentPage,
-                pageSize: this.pageSize
-            }).then(res => {
-
-            })
+            pageNow = val;
+            this.getSysUserInfoAll(pageNow);
         },
         // getvalue代码项
         getValueWithcode(type) {

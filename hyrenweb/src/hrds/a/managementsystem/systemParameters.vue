@@ -12,16 +12,20 @@
             <i class="el-icon-circle-plus-outline"></i>新增系统参数
         </el-button>
     </el-row>
-    <el-table stripe :data="systemParameters.filter(data => !search || data.para_name.toLowerCase().includes(search.toLowerCase()))" size="medium" border>
+
+    <el-col :span="8" class="searchData">
+        <el-input v-model="search" size="medium" @change="searchData" placeholder="系统参数名称">
+            <el-button slot="append" icon="el-icon-search" @click="searchData" class="searchBtn">搜索</el-button>
+        </el-input>
+    </el-col>
+
+    <el-table stripe :data="systemParameters" size="medium" border>
         <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
         <el-table-column prop="para_name" label="系统参数名称" width="130" align="center"></el-table-column>
         <el-table-column prop="para_value" label="系统参数值" align="center"></el-table-column>
         <el-table-column prop="para_type" label="系统参数类型 " width="150" align="center"></el-table-column>
         <el-table-column prop="remark" label="系统参数备注" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="160">
-            <template slot="header" slot-scope="scope">
-                <el-input v-model="search" size="mini" placeholder="关键字搜索" />
-            </template>
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
                 <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
@@ -85,6 +89,7 @@
 import * as functionAll from "@/hrds/a/managementsystem/managementsystem";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
+// 保存当前为第几页
 let savecurrentPage;
 export default {
     data() {
@@ -141,6 +146,7 @@ export default {
                                 message: '添加成功!'
                             })
                             this.getSysPara("1");
+                            this.currentPage = 1;
                             this.dialogFormVisibleAdd = false;
                             this.formAdd = {};
                         }
@@ -231,6 +237,19 @@ export default {
             this.currentPage = val;
             this.getSysPara(val)
         },
+        // 实现查询功能
+        searchData() {
+            functionAll.getSysPara({
+                currPage: savecurrentPage,
+                pageSize: this.pageSize,
+                paraName: this.search
+            }).then((res) => {
+                if (res && res.success) {
+                    this.systemParameters = res.data.sysParas;
+                    this.totalItem = res.data.totalSize;
+                }
+            })
+        }
     }
 }
 </script>
@@ -240,6 +259,10 @@ export default {
     height: 64px;
     line-height: 64px;
     width: 100%;
+}
+
+.searchData {
+    margin-bottom: 4px;
 }
 
 .el-icon-coin,
@@ -269,6 +292,11 @@ export default {
 
 .fa-question-circle {
     margin-top: 12px;
+}
+
+.searchBtn:hover {
+    background-color: #409EFF;
+    color: #FFF;
 }
 
 /* 分页 */

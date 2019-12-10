@@ -33,7 +33,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="上传要导入的数据源 :" :label-width="formLabelWidth">
-                <el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBeforeUpload" :on-progress="handleProgress">
+                <el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange">
                     <el-button size="small" type="primary">选择上传文件</el-button>
                 </el-upload>
                 <el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">
@@ -152,43 +152,16 @@ export default {
             }
 
         },
-        // ------------------test------------------------
-        handleSuccess(res, file, fileList) { // 文件上传成功时的钩子
-
-        },
-        handleError(err, file, fileList) { // 文件上传失败时的钩子
-            this.$message({
-                type: 'error',
-                message: res.data.msg
-            });
-
-        },
-        handleBeforeUpload(file) { // 上传文件之前的钩子
-        },
-        handleProgress(event, file, fileList) { // 文件上传时的钩子 触发
-
-        },
-        // -----------------test------------------
         // 点击上传数据
         upload() {
             let param = new FormData() // 创建form对象
-            this.fileList.forEach((list, index) => {
-                param.append(`file${index + 1}`, list.raw);
-            })
+            param.append('file', this.fileList[0].raw);
             param.append('agent_ip', this.formImport.agent_ip);
             param.append('agent_port', this.formImport.agent_port);
-            param.append('user_id', this.formImport.depIds);
+            param.append('user_id', this.formImport.user_id);
             functionAll.uploadFile(param).then(res => {
 
             });
-
-            // this.fileList.forEach((list, index) => {
-            //     this.formImport.file = list.raw;
-            // })
-            // functionAll.uploadFile(this.formImport).then(res => {
-
-            // });
-
         },
         // 点击导入弹出框的取消按钮
         cancleImport() {
