@@ -31,7 +31,7 @@
         <el-table-column label=" 是否仅抽取" width="120" align="center">
           <template slot="header">
             <el-checkbox
-              @change="exCheckAllChange(unloadingFileData,excheckAll)"
+              @change="exCheckAllChange(ruleForm.unloadingFileData,excheckAll)"
               v-model="excheckAll"
               :checked="excheckAll"
             >
@@ -382,7 +382,10 @@ export default {
   mounted() {
     this.IsExData1();
     this.IsExData2();
+      // 获取进入页面的总数据
+    if (this.$route.query.edit == "yes") {
     this.getInitInfo();
+    }
     // 是否仅抽取
     let params = {};
     params["category"] = "DataExtractType";
@@ -435,14 +438,14 @@ export default {
             if (this.$route.query.edit == "yes") {
               data = {
                 aId: this.$route.query.aId,
-                id: res.data,
+                id: this.dbid,
                 sourId: this.$route.query.sourId,
                 sName: this.$route.query.sName,
                 edit: "yes"
               };
             } else {
               data = {
-                aId: this.$route.query.agent_id
+                id:this.dbid
               };
             }
             this.$router.push({
@@ -467,7 +470,7 @@ export default {
         };
       } else {
         data = {
-          aId: this.$route.query.agent_id
+          id: this.$route.query.id
         };
       }
       this.$router.push({
@@ -608,13 +611,10 @@ export default {
     exCheckAllChange(items, e) {
       items.forEach((item, i) => {
         if (e) {
-          if (item.data_extract_type == true) {
-          } else {
-            item.data_extract_type = true;
+          item.data_extract_type = true;
             item.dbfile_format = "";
             item.row_separator = "";
             item.database_separatorr = "";
-          }
         } else {
           item.data_extract_type = false;
           item.dbfile_format = "";

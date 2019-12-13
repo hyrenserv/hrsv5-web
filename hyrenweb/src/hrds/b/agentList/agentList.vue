@@ -54,7 +54,7 @@
                     <el-row>
                         <el-col :span="8">
 
-                            <el-button type="primary" size="mini" @click="addtask(scope.row.agent_name,scope.row.agent_type,scope.row.agent_id)">新增任务</el-button>
+                            <el-button type="primary" size="mini" @click="addtask(scope.row.agent_name,scope.row.agent_type,scope.row.agent_id,sourceName)">新增任务</el-button>
 
                         </el-col>
                         <el-col :span="8">
@@ -198,13 +198,13 @@ export default {
             }
         },
         // 新增任务  根据不同类型跳转不同页面
-        addtask(name, type, agent_id) {
-            console.log(name)
+        addtask(name, type, agent_id,sourceName) {
             if (type == "1") {
                 this.$router.push({
                     path: "/dbaddTasksteps01",
                     query: {
-                        agent_id: agent_id
+                        agent_id: agent_id,
+                        sName: sourceName,
                     }
                 });
             } else if (type == "2") {

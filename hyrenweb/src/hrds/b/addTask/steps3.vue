@@ -1005,7 +1005,10 @@ export default {
     this.sName = this.$route.query.sName;
   },
   mounted() {
+     // 获取进入页面的总数据
+    if (this.$route.query.edit == "yes") {
     this.cleantableDataFun();
+    }
     let params = {};
     params["category"] = "FillingType";
     addTaskAllFun.getCategoryItems(params).then(res => {
@@ -1031,7 +1034,7 @@ export default {
       }
       else{
          data={
-          aId: this.$route.query.agent_id,
+          id: this.dbid,
         }
       }
       let params = {};
@@ -1058,7 +1061,7 @@ export default {
       }
       else{
          data={
-          aId: this.$route.query.agent_id,
+          id: this.$route.query.id,
         }
       }
       this.$router.push({
@@ -1131,6 +1134,7 @@ export default {
       params["colSetId"] = this.databaseId;
       addTaskAllFun.getCleanConfInfo(params).then(res => {
         this.cleantableData = res.data;
+        console.log(res.data)
       });
     },
     //所有表清洗设置显示数据
@@ -1193,9 +1197,15 @@ export default {
     changeDataPriorFun(data) {
       let arr = [];
       for (let key in data) {
-        arr.push({ value: key, code: data[key] });
+        console.log()
+        arr.push({ code: key, order: data[key] });
         arr.forEach(item => {
-          if (item.value == "complement") {
+          this.priorityData.forEach(items=>{
+            if(item.code==items.code){
+             item.value=items.value
+            }
+          })
+          /* if (item.value == "complement") {
             item.value = "字符补齐";
           } else if (item.value == "replacement") {
             item.value = "字符替换";
@@ -1209,7 +1219,7 @@ export default {
             item.value = "列拆分";
           } else if (item.value == "trim") {
             item.value = "字符trim";
-          }
+          } */
         });
       }
       return arr;
@@ -1220,6 +1230,7 @@ export default {
       params["category"] = "CleanType";
       addTaskAllFun.getCategoryItems(params).then(res => {
         this.priorityData = res.data;
+        console.log(res.data)
       });
     },
     // 全表清洗优先级确定提交
@@ -1755,6 +1766,7 @@ export default {
       params["tableId"] = this.tableid;
       addTaskAllFun.getColCleanOrder(params).then(res => {
         if (res.data[0].tc_or) {
+          console.log(1,res.data[0].tc_or)
           let data = JSON.parse(res.data[0].tc_or);
           this.tableCleanOrdData = this.changeDataPriorFun(data);
         } else {
@@ -1783,6 +1795,7 @@ export default {
       params["tableId"] = this.tableid;
       params["colSetId"] = this.databaseId;
       addTaskAllFun.getSingleTbCleanOrder(params).then(res => {
+        console.log(res.data[0].ti_or)
         let data = JSON.parse(res.data[0].ti_or);
         this.AlltableCleanOrdData = this.changeDataPriorFun(data);
       });
@@ -1952,6 +1965,7 @@ export default {
   margin-left: 10px;
   font-size: 14px;
   font-weight: bold;
+  cursor: pointer;
 }
 .topcolumename {
   display: inline-block;
