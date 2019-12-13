@@ -39,6 +39,14 @@
           </template>
         </el-table-column>
         <el-table-column label=" 选择目的地" width="150" align="center">
+          <template slot="header">
+            <el-tooltip class="item" effect="light" content placement="right">
+              <div slot="content">
+               请至少选择一个目的地
+              </div>
+              <i class="el-icon-question" aria-hidden="true">选择目的地</i>
+            </el-tooltip>
+          </template>
           <!--  <template slot="header">
           <el-checkbox>
             <span class="allclickColor">选择目的地</span>
@@ -63,7 +71,15 @@
               class="settingbtn"
               v-if="scope.row.data_extract_type=='2'"
               @click="ChooseDestination(scope.row,scope.$index)"
-            >设置</span>
+            >
+            <!--  <el-link type="success"  v-if="scope.row.table_setting==true">已设置</el-link>
+               <el-link type="warning" v-else>未设置</el-link> -->
+               <el-checkbox
+            @change="ChooseDestination(scope.row,scope.$index)"
+            v-model="scope.row.table_setting"
+            :checked="scope.row.table_setting"
+            ></el-checkbox>
+            </span>
           </template>
         </el-table-column>
         <el-table-column label=" 是否拉链存储" width="150" align="center">
@@ -78,7 +94,7 @@
           </template>
           <template slot-scope="scope">
             <el-checkbox
-              :checked="scope.row.is_zipper=='1'"
+              :checked="scope.row.is_zipper"
               v-model="scope.row.is_zipper"
               @change="is_zipperFun(scope.row)"
             ></el-checkbox>
@@ -428,8 +444,27 @@ export default {
       StoreData: [],
       dslIdString: [],
       multipleSelection: [],
-      dataExtractypeindex: ""
+      dataExtractypeindex: "",
+      oldTbData: [],
+      submit_0: false,
+      submit_1: false
     };
+  },
+  computed: {
+    address() {
+      const { submit_0, submit_1 } = this;
+      return {
+        submit_0,
+        submit_1
+      };
+    }
+  },
+  watch: {
+    address(val) {
+      if (val.submit_0 == true && val.submit_1 == true) {
+        this.nextLinkfun();
+      }
+    }
   },
   created() {
     this.dbid = this.$route.query.id;
@@ -442,19 +477,34 @@ export default {
     params["colSetId"] = this.dbid;
     addTaskAllFun.stodegetInitInfo(params).then(res => {
       let arr = res.data;
-      console.log(arr);
-      for (var i = 0; i < arr.length; i++) {
-        if (!arr[i].is_zipper) {
-          arr[i].is_zipper = "0";
+      let paramst = {};
+      paramst["colSetId"] = this.$route.query.id;
+      addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
+        this.oldTbData = res.data;
+        for (var i = 0; i < arr.length; i++) {
+          for (let j = 0; j < this.oldTbData.length; j++) {
+            if (arr[i].table_id == this.oldTbData[j].tableId) {
+              if (this.oldTbData[j].dslIds.length > 0) {
+                arr[i].table_setting = true;
+              } else {
+                arr[i].table_setting = false;
+              }
+            }
+          }
+          if (arr[i].is_zipper=='1') {
+            arr[i].is_zipper = true;
+          }else{
+             arr[i].is_zipper = false;
+          }
+          if (!arr[i].storage_type) {
+            arr[i].storage_type = "";
+          }
+          if (!arr[i].storage_time) {
+            arr[i].storage_time = "";
+          }
         }
-        if (!arr[i].storage_type) {
-          arr[i].storage_type = "";
-        }
-        if (!arr[i].storage_time) {
-          arr[i].storage_time = "";
-        }
-      }
-      this.ruleForm.ex_destinationData = arr;
+        this.ruleForm.ex_destinationData = arr;
+      });
     });
     let params2 = {};
     params2["category"] = "StorageType";
@@ -463,68 +513,113 @@ export default {
     });
     this.storeTypeFun();
     this.specialfieldFun();
+    // this.getSaveDataFun();
   },
 
   methods: {
     next(formName) {
-      let a = this.ruleForm.ex_destinationData;
+      let dataAll = this.ruleForm.ex_destinationData;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let tbStoInfoString = [],tableString=[],
-            arr = a;
+          // oldTbData this.dslIdString
+          let tbStoInfoString = [],
+            tableString = [],
+            arr = dataAll,
+            desDataArr = [],
+            dslIdString = [];
           for (let i = 0; i < arr.length; i++) {
-            if (arr[i].is_zipper == true) {
+            /* if (arr[i].is_zipper == true) {
               arr[i].is_zipper = "1";
-            }
+            }else{
+              arr[i].is_zipper = "0";
+            } */
             if (arr[i].data_extract_type == "2") {
               tbStoInfoString.push({
-                is_zipper: arr[i].is_zipper,
+                is_zipper: arr[i].is_zipper?'1':'0',
                 storage_time: parseInt(arr[i].storage_time),
                 storage_type: arr[i].storage_type,
                 table_id: arr[i].table_id
               });
+              desDataArr.push({ tableId: arr[i].table_id, dslIds: [] });
             }
+
             tableString.push({
               table_id: arr[i].table_id,
-              table_ch_name:arr[i].table_ch_name,
-              table_name:arr[i].table_name,
-            })
+              table_ch_name: arr[i].table_ch_name,
+              table_name: arr[i].table_name
+            });
           }
+          // 判断获得的表里面
+          for (let j = 0; j < desDataArr.length; j++) {
+            for (let k = 0; k < this.oldTbData.length; k++) {
+              if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
+                desDataArr[j].dslIds = this.oldTbData[k].dslIds;
+              }
+            }
+          }
+          for (let m = 0; m < desDataArr.length; m++) {
+            for (let n = 0; n < this.dslIdString.length; n++) {
+              if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
+                desDataArr[m].dslIds =this.dslIdString[n].dslIds
+              }
+            }
+          }
+          dslIdString = desDataArr;
           let params = {};
           params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
           params["colSetId"] = parseInt(this.dbid);
-          params["dslIdString"] = JSON.stringify(this.dslIdString);
+          params["dslIdString"] = JSON.stringify(dslIdString);
           console.log(params);
           addTaskAllFun.saveTbStoInfo(params).then(res => {
             console.log(res);
-            
+            if (res.code == 200) {
+              this.submit_1 = true;
+              this.dbid = res.data;
+            } else {
+              this.$message({
+                showClose: true,
+                message: res.message,
+                type: "error"
+              });
+            }
           });
+          // 保存表名
           let params0 = {};
           params0["tableString"] = JSON.stringify(tableString);
-             addTaskAllFun.updateTableName(params0).then(res => {
-            console.log(res);
+          addTaskAllFun.updateTableName(params0).then(res => {
+            if (res.code == 200) {
+              this.submit_0 = true;
+              this.dbid = res.data;
+            } else {
+              this.$message({
+                showClose: true,
+                message: res.message,
+                type: "error"
+              });
+            }
           });
         }
       });
-
-      /*   let data = {};
+    },
+    nextLinkfun() {
+      let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
           aId: this.$route.query.aId,
-          id: this.$route.query.id,
+          id: this.dbid,
           sourId: this.$route.query.sourId,
           sName: this.$route.query.sName,
           edit: "yes"
         };
       } else {
         data = {
-          aId: this.$route.query.agent_id
+          id: this.dbid
         };
       }
       this.$router.push({
         path: "/dbaddTasksteps06",
         query: data
-      }); */
+      });
     },
     pre() {
       let data = {};
@@ -538,7 +633,7 @@ export default {
         };
       } else {
         data = {
-          aId: this.$route.query.agent_id
+          id: this.$route.query.id
         };
       }
       this.$router.push({
@@ -546,6 +641,14 @@ export default {
         query: data
       });
     },
+  /*   // 获取编辑状态下原有存储数据
+    getSaveDataFun() {
+      let paramst = {};
+      paramst["colSetId"] = this.$route.query.id;
+      addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
+        console.log(res);
+      });
+    }, */
     // store_type
     storeTypeFun() {
       let params = {};
@@ -582,6 +685,9 @@ export default {
     }, */
     is_zipperFun(row) {
       console.log(row, 1);
+      if(row.is_zipper==false){
+      row.storage_type=''
+      }
     },
     Allis_zipperFun(items, e) {
       items.forEach((item, i) => {
@@ -963,23 +1069,22 @@ export default {
       for (let i = 0; i < data.length; i++) {
         dslIds.push(data[i].dsl_id);
       }
-      if(dslIds.length!=0){
-         this.dslIdString.push({ dslIds: dslIds, tableId: this.tableId });
-      this.$refs.multipleTable.clearSelection();
-      this.dialogChooseDestination = false;
+      if (dslIds.length != 0) {
+        this.dslIdString.push({ dslIds: dslIds, tableId: this.tableId });
+        this.$refs.multipleTable.clearSelection();
+        this.dialogChooseDestination = false;
+      } else {
+        this.open();
       }
-     else{
-this. open()
-     }
       console.log(this.dslIdString);
     },
-      open() {
-        this.$message({
-          showClose: true,
-          message: '请至少选择一个存储目的地',
-          type: 'error'
-        });
-      },
+    open() {
+      this.$message({
+        showClose: true,
+        message: "请至少选择一个存储目的地",
+        type: "error"
+      });
+    },
     getRowKeys(row) {
       return row.dsl_id;
     },
@@ -1077,5 +1182,12 @@ this. open()
   display: inline-block;
   position: absolute;
   left: -5px;
+}
+.steps5 >>> .el-icon-question:before {
+  content: "" !important;
+}
+.steps5 >>> .el-icon-question:after {
+  content: "\E7A4" !important;
+  margin-left: 10px;
 }
 </style>

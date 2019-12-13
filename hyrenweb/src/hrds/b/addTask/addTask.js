@@ -112,6 +112,14 @@ export function testParallelExtraction(data) {
         params:data
     })
 }
+// 数据总量
+export function getTableDataCount(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getTableDataCount',
+        method: 'post',
+        params:data
+    })
+}
 // 使用sql抽取数据tap
 export function getAllSQLs(data) {
     return request({
@@ -123,7 +131,7 @@ export function getAllSQLs(data) {
 // 使用sql抽取数据保存
 export function saveAllSQL(data) {
     return request({
-        url: '/B/agent/dbagentconf/tableconf/getAllSQLs',
+        url: '/B/agent/dbagentconf/tableconf/saveAllSQL',
         method: 'post',
         params:data
     })
@@ -538,10 +546,18 @@ export function saveTbStoInfo(data) {
         params:data
     })
 }
-// 
+// 保存表名
 export function updateTableName(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/updateTableName',
+        method: 'post',
+        params:data
+    })
+}
+//编辑状态下获取目的地起初数据
+export function getTbStoDestByColSetId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getTbStoDestByColSetId',
         method: 'post',
         params:data
     })

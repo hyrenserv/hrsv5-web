@@ -13,26 +13,30 @@
           >
             <el-row type="flex" justify="center">
               <el-col :span="10">
-                <el-form-item label="数据采集任务名" prop="task_name" :rules="rule.default">
+                <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.task_name" size="medium"></el-input>
+                    <el-input v-model="ruleForm.task_name" size="medium" ></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="作业编号" prop="classify_num">
+                <el-form-item label="作业编号" prop="database_number">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.classify_num" size="medium"></el-input>
+                    <el-input v-model="ruleForm.database_number" size="medium" disabled placeholder="作业编号"></el-input>
                   </el-col>
+                   <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                </el-tooltip>
                 </el-form-item>
+              
               </el-col>
             </el-row>
             <el-row type="flex" justify="center">
               <el-col :span="10">
-                <el-form-item label="分类编号" prop="classify_num" :rules="rule.default">
+                <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'composition'}])">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.classify_num" size="medium">
-                      <el-button slot="append" icon="el-icon-zoom-in" @click="outerVisible = true"></el-button>
+                    <el-input v-model="ruleForm.classify_num" size="medium" disabled placeholder="分类编号">
+                      <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun();outerVisible = true"></el-button>
                     </el-input>
                   </el-col>
                 </el-form-item>
@@ -40,7 +44,7 @@
               <el-col :span="10">
                 <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.classify_name" size="medium"></el-input>
+                    <el-input v-model="ruleForm.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -49,7 +53,7 @@
               <el-col :span="10">
                 <el-form-item label="数据源" prop="sourceName">
                   <el-col :span="16">
-                    <el-input v-model="sourceName" size="medium"></el-input>
+                    <el-input v-model="sourceName" size="medium" disabled ></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -77,7 +81,7 @@
               <el-col :span="10">
                 <el-form-item label="数据库驱动" prop="database_drive">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_drive" size="medium"></el-input>
+                    <el-input v-model="ruleForm.database_drive" size="medium" disabled></el-input>
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -102,7 +106,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="数据库端口" prop="database_port" :rules="rule.default">
+                <el-form-item label="数据库端口" prop="database_port" :rules="filter_rules([{required: true,dataType:'number'}])">
                   <el-col :span="16">
                     <el-input
                       v-model="ruleForm.database_port"
@@ -122,7 +126,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="10" prop="database_pad">
-                <el-form-item label="密码" :rules="rule.default" prop="database_pad">
+                <el-form-item label="密码" :rules="filter_rules([{required: true,dataType:'password'}])" prop="database_pad">
                   <el-col :span="16">
                     <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
                   </el-col>
@@ -155,14 +159,14 @@
           <!-- 分类编号弹层 -->
           <el-dialog title="采集任务分类" :visible.sync="outerVisible" class="collTask">
             <el-dialog width="40%" title="修改采集任务分类" :visible.sync="innerVisible" append-to-body>
-              <el-form :model="addClassTask" ref="addClassTask">
-                <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default">
+              <el-form :model="addClassTask" ref="addClassTask" >
+                <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default" :label-width="formLabelWidth">
                   <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default">
+                <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default" :label-width="formLabelWidth">
                   <el-input v-model="addClassTask.class_name" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" prop="class_des">
+                <el-form-item label="备注" prop="class_des" :label-width="formLabelWidth">
                   <el-input v-model="addClassTask.class_des" type="textarea" style="width:284px"></el-input>
                 </el-form-item>
               </el-form>
@@ -195,7 +199,8 @@
                   </template>
                 </el-table-column>
                 <el-table-column property="classify_num" label="分类编号" align="center"></el-table-column>
-                <el-table-column property="classify_name" label="分类名称" width="100px" align="center"></el-table-column>
+                <el-table-column property="classify_name" label="分类名称" width="100px" align="center">
+                </el-table-column>
                 <el-table-column property="remark" label="描述" width="100px" align="center"></el-table-column>
                 <el-table-column label="操作" width="150px" align="center">
                   <template scope="scope">
@@ -226,13 +231,13 @@
               ></el-pagination>
               <div class="btntop">
                 <el-button @click="cancelClassNumBtn()" type="danger" size="mini">取 消</el-button>
-                <el-button @click="innerVisible = true" type="success" size="mini">新增</el-button>
+                <el-button @click="addClassNumBtn();innerVisible = true" type="success" size="mini">新增</el-button>
                 <el-button @click="updataClassNumBtn()" type="primary" size="mini">确定</el-button>
               </div>
             </div>
           </el-dialog>
           <!-- 点击编辑弹层 -->
-          <el-dialog width="50%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
+          <el-dialog width="40%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
             <el-form :model="editClassTask" ref="addClassTask">
               <el-form-item
                 label=" 分类编号"
@@ -256,8 +261,8 @@
               </el-form-item>
             </el-form>
             <div slot="footer">
-              <el-button size="mini" class="cancelbtn" @click="ediltVisible = false">取 消</el-button>
-              <el-button size="mini" @click="editClassTaskSane(editClassTask)" class="okbtn">保存</el-button>
+              <el-button size="mini" type="danger"  @click="ediltVisible = false">取 消</el-button>
+              <el-button size="mini" type="primary" @click="editClassTaskSane(editClassTask)" >保存</el-button>
             </div>
           </el-dialog>
 
@@ -311,12 +316,13 @@ export default {
       linkTip: "",
       CollTaskData: [],
       currentPage: 1,
-      pagesize: 2,
+      pagesize: 10,
       formLabelWidth: "150px",
       ruleForm: {
         task_name: "",
+        database_number: "",
         classify_num: "",
-        classify_num: "",
+         classify_name: "",
         database_drive: "",
         database_name: "",
         database_ip: "",
@@ -356,7 +362,8 @@ export default {
       urlPrefix: "",
       urlSuffix: "",
       dbid: null,
-      activelink: ""
+      activelink: "",
+      formLabelWidth:'150px'
     };
   },
   created() {
@@ -368,12 +375,9 @@ export default {
     this.sourceName = this.$route.query.sName;
     this.sourceId = this.$route.query.sourId;
     this.agentId = this.$route.query.aId;
-    if (this.sourceId) {
-      this.collTaskClassFun();
-    }
   },
   mounted() {
-    if (this.$route.query.id) {
+    if (this.$route.query.edit=='yes') {
       this.dbid = this.$route.query.id;
       let params = {};
       params["databaseId"] = this.$route.query.id;
@@ -394,7 +398,6 @@ export default {
   methods: {
     next(formName) {
       let that = this;
-
       that.$refs[formName].validate(valid => {
         if (valid) {
           that.testLinkFun("2");
@@ -406,6 +409,8 @@ export default {
       if (data == "true") {
         let params = {};
         params["task_name"] = this.ruleForm.task_name;
+        params["classify_name"] = this.ruleForm.classify_name;
+        params["classify_num"] = this.ruleForm.classify_num;
         params["database_number"] = this.ruleForm.database_number;
         params["classify_id"] = this.ruleForm.classify_id;
         params["database_type"] = this.ruleForm.database_type;
@@ -417,6 +422,7 @@ export default {
         params["database_pad"] = this.ruleForm.database_pad;
         params["jdbc_url"] = this.ruleForm.jdbc_url;
         params["database_id"] = this.dbid;
+        console.log( this.ruleForm)
         addTaskAllFun.saveDbConf(params).then(res => {
           // this.DatabaseType = res.data;
           let data = {};
@@ -430,7 +436,7 @@ export default {
             };
           } else {
             data = {
-              aId: this.$route.query.agent_id
+              id: res.data
             };
           }
           this.$router.push({
@@ -465,32 +471,57 @@ export default {
         })
         .catch(_ => {});
     },
+    // 采集任务分类单选选择时
     handleSelectionChange(row) {
-      this.currentSelectItem = row;
+      if(row){
+  this.currentSelectItem = row;
       this.classifyName = row.classify_name;
       this.classifyNum = row.classify_num;
+      }
+    
     },
     chooseone(row) {
       this.radio = row.classify_id;
-      this.off = "true";
     },
+    // 采集任务分类确定提交时
     updataClassNumBtn() {
-      this.outerVisible = false;
-      this.ruleForm.classify_name = this.classifyName;
+     
+      if(this.classifyName){
+         this.outerVisible = false;
+            this.ruleForm.classify_name = this.classifyName;
       this.ruleForm.classify_num = this.classifyNum;
+        this.radio=null
+
+      }else{
+          this.$message({
+          showClose: true,
+          message: "至少选择一项",
+          type: "error"
+        });
+      }
+  
+  
     },
+    // 采集任务取消时
     cancelClassNumBtn() {
       this.outerVisible = false;
       this.radio = "";
       this.currentSelectItem = {};
+       this.classifyName =''
+      this.classifyNum = ""
     },
+    // 点击分类编号时调
     collTaskClassFun() {
+   this.ruleForm.classify_name = '';
+      this.ruleForm.classify_num = '';
       let params = {};
       params["sourceId"] = this.sourceId;
       addTaskAllFun.getClassifyInfo(params).then(res => {
+          console.log(res,1)
         this.CollTaskData = res.data;
       });
     },
+    // 点击编辑按钮回显之前数据
     colltaskEditBtn(row) {
       this.ediltVisible = true;
       this.editClassTask.class_id = row.classify_id;
@@ -498,6 +529,7 @@ export default {
       this.editClassTask.class_num = row.classify_num;
       this.editClassTask.class_des = row.remark;
     },
+    // 点击编辑后-提交
     editClassTaskSane(data) {
       this.ediltVisible = false;
       let params = {};
@@ -507,11 +539,14 @@ export default {
       params["remark"] = data.class_des;
       params["agent_id"] = this.agentId;
       params["sourceId"] = this.sourceId;
+      console.log(params)
       addTaskAllFun.updateClassifyInfo(params).then(res => {
+        console.log(res)
         message.updateSuccess(res);
         this.collTaskClassFun();
       });
     },
+    // 点击任务采集-删除
     colltaskDeleBtn(row) {
       let params = {};
       params["classifyId"] = row.classify_id;
@@ -520,6 +555,13 @@ export default {
         this.collTaskClassFun();
       });
     },
+    // 点击新增
+    addClassNumBtn(){
+ this.addClassTask.class_num="",
+         this.addClassTask.class_name="",
+         this.addClassTask.class_des=""
+    },
+    // 点击新增后的弹框保存
     addClassTaskFun(data) {
       let params = {};
       params["classify_num"] = data.class_num;
