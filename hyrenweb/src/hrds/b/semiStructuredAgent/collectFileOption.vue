@@ -10,57 +10,66 @@
             </el-steps>
         </el-col>
     </el-row>
-    <el-row><i class="fa fa-signal"></i>采集文件列表</el-row>
-    <el-row>
-        <el-button size="medium" type="success" @click="addOneRow">添加</el-button>
+
+    <el-row class="partTwo">
+
+        <el-row class="spanCollect"><i class="fa fa-signal"></i>采集文件列表</el-row>
+        <div class="partTwoContent">
+
+            <el-row>
+                <el-button size="mini" type="success" @click="addOneRow">添加</el-button>
+            </el-row>
+
+            <el-table :data="tableData" border stripe size="mini">
+                <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+
+                <el-table-column prop="datasource_name" label="英文名" align="center">
+                    <template slot-scope="scope">
+                        <el-input placeholder="英文名" v-model="englishName"></el-input>
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop="dep_name" label="中文名" align="center">
+                    <template slot-scope="scope">
+                        <el-input placeholder="中文名" v-model="cnName"></el-input>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="数据类型" align="center">
+                    <template slot-scope="scope">
+                        <el-select placeholder="数据类型" style="width: 100%;" v-model="dataTypeCode">
+                            <el-option v-for="item in dataType" :key="item.value" :label="item.value" :value="item.code"> </el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="数据更新方式" align="center">
+                    <template slot-scope="scope">
+                        <el-select placeholder="数据更新方式" style="width: 100%;" v-model="upDateWayCode">
+                            <el-option v-for="item in upDateWay" :key="item.value" :label="item.value" :value="item.code"> </el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="数据字符编码" align="center">
+                    <template slot-scope="scope">
+                        <el-select placeholder="数据字符编码" style="width: 100%;" v-model="optionsCode">
+                            <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.code"> </el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="操作" width="120" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="deleteArry(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-row class="pagination">
+                <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+            </el-row>
+        </div>
     </el-row>
-
-    <el-table :data="tableData" border stripe size="mini">
-        <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
-
-        <el-table-column prop="datasource_name" label="英文名" align="center">
-            <template slot-scope="scope">
-                <el-input placeholder="英文名" v-model="englishName"></el-input>
-            </template>
-        </el-table-column>
-
-        <el-table-column prop="dep_name" label="中文名" align="center">
-            <template slot-scope="scope">
-                <el-input placeholder="中文名" v-model="cnName"></el-input>
-            </template>
-        </el-table-column>
-
-        <el-table-column label="数据类型" align="center">
-            <template slot-scope="scope">
-                <el-select placeholder="数据类型" style="width: 100%;" v-model="dataTypeCode">
-                    <el-option v-for="item in dataType" :key="item.value" :label="item.value" :value="item.code"> </el-option>
-                </el-select>
-            </template>
-        </el-table-column>
-
-        <el-table-column label="数据更新方式" align="center">
-            <template slot-scope="scope">
-                <el-select placeholder="数据更新方式" style="width: 100%;" v-model="upDateWayCode" >
-                    <el-option v-for="item in upDateWay" :key="item.value" :label="item.value" :value="item.code"> </el-option>
-                </el-select>
-            </template>
-        </el-table-column>
-
-        <el-table-column label="数据字符编码" align="center">
-            <template slot-scope="scope">
-                <el-select placeholder="数据字符编码" style="width: 100%;"  v-model="optionsCode" >
-                    <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.code"> </el-option>
-                </el-select>
-            </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="120" align="center">
-            <template slot-scope="scope">
-                <el-button type="text" @click="dialogFormVisibleAdd = true;handleEdit(scope.$index, scope.row);departmentInfo()">删除</el-button>
-            </template>
-        </el-table-column>
-    </el-table>
-
     <el-row class="partFour">
         <el-col :span="12">
             <el-button type="primary" @click="goBackQuit"> 返回</el-button>
@@ -84,11 +93,11 @@ export default {
             tableData: [],
             options: [],
             dataType: [],
-            englishName:"",
-            cnName:"",
-            dataTypeCode:"",
-            upDateWayCode:"",
-            optionsCode:"",
+            englishName: "",
+            cnName: "",
+            dataTypeCode: "",
+            upDateWayCode: "",
+            optionsCode: "",
 
         }
     },
@@ -145,7 +154,21 @@ export default {
             this.getCategoryItems("DataBaseCode");
             this.getCategoryItems("CollectDataType");
 
-        }
+        },
+        // 删除表格的当前行
+        deleteArry(index, row) {
+            if (this.tableData.length > 1) {
+                this.tableData.splice(index, 1)
+            } else if (this.tableData.length <= 1) {
+                this.$message({
+                    showClose: true,
+                    message: '请至少填写一项',
+                    type: 'warning',
+                    duration: 0
+                });
+            }
+
+        },
     }
 }
 </script>
@@ -155,9 +178,28 @@ export default {
     padding: 0 2% 0 2%;
 }
 
+.collectFileOption .partTwo {
+    padding: 0 0 2% 0;
+    width: 100%;
+    border: 1px solid #e6e6e6;
+}
+
+.collectFileOption .partTwoContent {
+    padding: 0 2%;
+}
+
 /* 行设置 */
 .collectFileOption .el-row {
     margin-top: 20px;
+}
+
+.collectFileOption .partTwo .spanCollect {
+    width: 100%;
+    background-color: #f5f5f5;
+    margin-top: 0;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 2%;
 }
 
 /* 表格设置 */
@@ -172,5 +214,15 @@ export default {
 
 .collectFileOption.partFourDiv .el-button {
     margin-bottom: 20px;
+}
+
+/* 分页 */
+.pagination {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.el-pagination {
+    float: right;
 }
 </style>
