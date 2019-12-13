@@ -220,8 +220,6 @@ export default {
                 start_date: "",
                 end_date: "",
             },
-            start_date: "",
-            end_date: "",
             FtpRule: [],
             dataBaseCode: [],
             runWay: [],
@@ -283,12 +281,12 @@ export default {
                     let month = res.data.start_date.substring(4, 6);
                     let day = res.data.start_date.substring(6, 9);
                     let dateStart = year + "-" + month + "-" + day;
-                    this.start_date = dateStart;
+                    this.form.start_date = dateStart;
                     let yearEnd = res.data.end_date.substring(0, 4);
                     let monthEnd = res.data.end_date.substring(4, 6);
                     let dayEnd = res.data.end_date.substring(6, 9);
                     let dateEnd = yearEnd + "-" + monthEnd + "-" + dayEnd;
-                    this.end_date = dateEnd;
+                    this.form.end_date = dateEnd;
                 })
             }
         },
@@ -345,11 +343,9 @@ export default {
         // 添加ftp收集任务或者编辑更新判断
         addFtpCollect() {
             let ftp_id = this.$route.query.ftp_id;
-            let date = this.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
-            let date2 = this.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
             this.form["agent_id"] = this.$route.query.agent_id;
-            this.form["start_date"] = date2;
-            this.form["end_date"] = date;
+            this.form["start_date"] = this.form.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+            this.form["end_date"] = this.form.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
             if (ftp_id || '') {
                 this.form["ftp_id"] = this.$route.query.ftp_id;
                 functionAll.updateFtp_collect(this.form).then(res => {

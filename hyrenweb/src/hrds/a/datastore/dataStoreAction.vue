@@ -38,7 +38,7 @@
 
                 <el-table-column label="key" align="center">
                     <template slot-scope="scope">
-                        <el-form-item  :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
+                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
                             <el-input size="meduim" v-model="scope.row.storage_property_key"></el-input>
                         </el-form-item>
                     </template>
@@ -127,7 +127,7 @@ export default {
                             this.checkboxType = res.data;
                         }
                     });
-            } 
+            }
         },
         // 添加行数据
         addTableData() {
@@ -139,7 +139,17 @@ export default {
         },
         // 删除表格的当前行
         deleteArry(index, row) {
-            this.form.tableData.splice(index, 1)
+            if (this.form.tableData.length > 1) {
+                this.form.tableData.splice(index, 1)
+            } else if (this.form.tableData.length <= 1) {
+                this.$message({
+                    showClose: true,
+                    message: '请至少填写一项',
+                    type: 'warning',
+                    duration: 0
+                });
+            }
+
         },
         // 点击保存添加
         saveData(formName) {
