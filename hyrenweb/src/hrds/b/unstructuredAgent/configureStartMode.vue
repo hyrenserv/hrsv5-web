@@ -45,6 +45,7 @@
             <el-col :span="11">
                 <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date" :rules="rule.selected">
                     <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
+                    <el-input v-model="DifferenceValue" v-if="hidden = false"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -233,70 +234,81 @@ export default {
         },
         // 保存非结构化文件采集页面信息跳转下一步和更新非结构化文件采集到下一步
         unStructuredCollect(formName) {
-            this.$refs[formName].validate(valid => {
-                // 处理传参日期与form
-                let fcs_id = this.$route.query.fcs_id;
-                let date = this.form.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
-                let date2 = this.form.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
-                this.form["agent_id"] = this.$route.query.agent_id;
-                this.form["start_date"] = date2;
-                this.form["end_date"] = date;
-                this.form["fcs_id"] = fcs_id;
-                // 通过fcs_id判断是更新还是新建任务
-                if (valid) {
-                    if (fcs_id || '') {
-                        // 更新任务
-                        functionAll.updateFileCollect(
-                            this.form
-                        ).then((res) => {
-                            if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '更新成功!'
-                                })
-                                this.$router.push({
-                                    path: "/configureFileOption",
-                                    query: {
-                                        fcs_id: fcs_id,
-                                        agent_id: this.$route.query.agent_id,
-                                        agent_name: this.$route.query.agent_name
-                                    }
-                                });
-                            } else {
-                                this.form["start_date"] = "";
-                                this.form["end_date"] = "";
-                            }
-                        })
-                    } else {
-                        // 新建任务
-                        functionAll.addFileCollect(
-                            this.form
-                        ).then((res) => {
-                            if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '添加成功!'
-                                })
-                                this.$router.push({
-                                    path: "/configureFileOption",
-                                    query: {
-                                        fcs_id: res.data,
-                                        agent_id: this.$route.query.agent_id,
-                                        agent_name: this.$route.query.agent_name
-                                    }
-                                });
-                            } else {
-                                this.form["start_date"] = "";
-                                this.form["end_date"] = "";
-                            }
-                        })
+            if (this.DifferenceValue <= 0) {
+                this.$message({
+                    showClose: true,
+                    type: 'warning',
+                    message: '结束日期不能小于开始日期!',
+                    duration: 0
+                })
+            } else {
+                this.$refs[formName].validate(valid => {
+                    function changeData(num) {
+                        return num > 9 ? (num + "") : ("0" + num);
                     }
-                } else {
-                    this.form["start_date"] = "";
-                    this.form["end_date"] = "";
-                }
-            });
-
+                    // 处理传参日期与form
+                    let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
+                    let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
+                    this.form["start_date"] = s_date;
+                    this.form["end_date"] = e_date;
+                    let fcs_id = this.$route.query.fcs_id;
+                    this.form["agent_id"] = this.$route.query.agent_id;
+                    this.form["fcs_id"] = fcs_id;
+                    // 通过fcs_id判断是更新还是新建任务
+                    if (valid) {
+                        if (fcs_id || '') {
+                            // 更新任务
+                            functionAll.updateFileCollect(
+                                this.form
+                            ).then((res) => {
+                                if (res && res.success) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '更新成功!'
+                                    })
+                                    this.$router.push({
+                                        path: "/configureFileOption",
+                                        query: {
+                                            fcs_id: fcs_id,
+                                            agent_id: this.$route.query.agent_id,
+                                            agent_name: this.$route.query.agent_name
+                                        }
+                                    });
+                                } else {
+                                    this.form["start_date"] = "";
+                                    this.form["end_date"] = "";
+                                }
+                            })
+                        } else {
+                            // 新建任务
+                            functionAll.addFileCollect(
+                                this.form
+                            ).then((res) => {
+                                if (res && res.success) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '添加成功!'
+                                    })
+                                    this.$router.push({
+                                        path: "/configureFileOption",
+                                        query: {
+                                            fcs_id: res.data,
+                                            agent_id: this.$route.query.agent_id,
+                                            agent_name: this.$route.query.agent_name
+                                        }
+                                    });
+                                } else {
+                                    this.form["start_date"] = "";
+                                    this.form["end_date"] = "";
+                                }
+                            })
+                        }
+                    } else {
+                        this.form["start_date"] = "";
+                        this.form["end_date"] = "";
+                    }
+                });
+            }
         },
         // 是否实时读取控制实时读取间隔时间
         handerChange_realtime(val) {
@@ -306,8 +318,12 @@ export default {
                 this.showOrHidden_realtime = false;
             }
         },
+    },
+    computed: {
+        DifferenceValue() {
+            return this.form.end_date - this.form.start_date
+        }
     }
-
 }
 </script>
 
