@@ -21,6 +21,7 @@
             <el-col :span="11">
                 <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date" :rules="rule.selected">
                     <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
+                    <el-input v-model="DifferenceValue" v-if="hidden = false"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -342,10 +343,15 @@ export default {
         },
         // 添加ftp收集任务或者编辑更新判断
         addFtpCollect() {
+            function changeData(num) {
+                return num > 9 ? (num + "") : ("0" + num);
+            }
+            let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
+            let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
             let ftp_id = this.$route.query.ftp_id;
             this.form["agent_id"] = this.$route.query.agent_id;
-            this.form["start_date"] = this.form.start_date.toLocaleString().substring(0, 10).replace(/\//g, '');
-            this.form["end_date"] = this.form.end_date.toLocaleString().substring(0, 10).replace(/\//g, '');
+            this.form["start_date"] = s_date;
+            this.form["end_date"] = e_date;
             if (ftp_id || '') {
                 this.form["ftp_id"] = this.$route.query.ftp_id;
                 functionAll.updateFtp_collect(this.form).then(res => {
@@ -448,16 +454,29 @@ export default {
         },
         // 检查表单有没有填写完整
         submitForm(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    this.dialogSelectOk = true
-                } else {
-                    this.form["start_date"] = "";
-                    this.form["end_date"] = "";
-                }
-            });
+            if (this.DifferenceValue <= 0) {
+                this.$message({
+                    showClose: true,
+                    type: 'warning',
+                    message: '结束日期不能小于开始日期!',
+                    duration: 0
+                })
+            } else {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        this.dialogSelectOk = true
+                    } else {
+                        this.form["start_date"] = "";
+                        this.form["end_date"] = "";
+                    }
+                });
+            }
         },
-
+    },
+    computed: {
+        DifferenceValue() {
+            return this.form.end_date - this.form.start_date
+        }
     }
 };
 </script>
