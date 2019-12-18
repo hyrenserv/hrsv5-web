@@ -1,7 +1,7 @@
 <template>
   <div>
     <Step :active="active"></Step>
-    <el-tabs v-model="activeNames" type="border-card" @tab-click="handleClick0">
+    <el-tabs v-model="activeNames" type="border-card">
       <el-tab-pane label="数据采集" name="first">
         <div id="dataAcquisition">
           <el-form
@@ -20,9 +20,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="作业编号" prop="database_number">
+                <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true}])">
                   <el-col :span="16">
-                    <el-input v-model="ruleForm.database_number" size="medium" disabled placeholder="作业编号"></el-input>
+                    <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
+                    <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
                   </el-col>
                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
@@ -160,7 +161,7 @@
           <el-dialog title="采集任务分类" :visible.sync="outerVisible" class="collTask">
             <el-dialog width="40%" title="修改采集任务分类" :visible.sync="innerVisible" append-to-body>
               <el-form :model="addClassTask" ref="addClassTask" >
-                <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default" :label-width="formLabelWidth">
+                <el-form-item label=" 分类编号" prop="class_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
                   <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
                 </el-form-item>
                 <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default" :label-width="formLabelWidth">
@@ -246,7 +247,7 @@
                 :label-width="formLabelWidth"
                 width="130"
               >
-                <el-input v-model="editClassTask.class_num" style="width:284px"></el-input>
+                <el-input v-model="editClassTask.class_num" style="width:284px" disabled></el-input>
               </el-form-item>
               <el-form-item
                 label=" 分类名称"
@@ -363,7 +364,8 @@ export default {
       urlSuffix: "",
       dbid: null,
       activelink: "",
-      formLabelWidth:'150px'
+      formLabelWidth:'150px',
+      show:false
     };
   },
   created() {
@@ -375,14 +377,18 @@ export default {
     this.sourceName = this.$route.query.sName;
     this.sourceId = this.$route.query.sourId;
     this.agentId = this.$route.query.aId;
+      this.dbid = this.$route.query.id;
+
   },
   mounted() {
+
     if (this.$route.query.edit=='yes') {
-      this.dbid = this.$route.query.id;
+      this.show=true
       let params = {};
       params["databaseId"] = this.$route.query.id;
       addTaskAllFun.getDBConfInfo(params).then(res => {
         this.ruleForm = res.data[0];
+        this.radio=res.data[0].classify_id
         let params = {};
         params["dbType"] = String(res.data[0].database_type);
         addTaskAllFun.getDBConnectionProp(params).then(res => {
@@ -409,10 +415,8 @@ export default {
       if (data == "true") {
         let params = {};
         params["task_name"] = this.ruleForm.task_name;
-        params["classify_name"] = this.ruleForm.classify_name;
-        params["classify_num"] = this.ruleForm.classify_num;
         params["database_number"] = this.ruleForm.database_number;
-        params["classify_id"] = this.ruleForm.classify_id;
+        params["classify_id"] =  this.radio
         params["database_type"] = this.ruleForm.database_type;
         params["database_drive"] = this.ruleForm.database_drive;
         params["database_name"] = this.ruleForm.database_name;
@@ -421,11 +425,13 @@ export default {
         params["user_name"] = this.ruleForm.user_name;
         params["database_pad"] = this.ruleForm.database_pad;
         params["jdbc_url"] = this.ruleForm.jdbc_url;
-        params["database_id"] = this.dbid;
-        console.log( this.ruleForm)
+        if(this.$route.query.edit=='yes'){
+        params["database_id"] =  this.$route.query.id;
+        }
+        params["agent_id"] = this.$route.query.aId;
         addTaskAllFun.saveDbConf(params).then(res => {
-          // this.DatabaseType = res.data;
-          let data = {};
+          if(res.code=='200'){
+             let data = {};
           if (this.$route.query.edit == "yes") {
             data = {
               aId: this.agentId,
@@ -436,13 +442,23 @@ export default {
             };
           } else {
             data = {
-              id: res.data
+              id: res.data,
+              sourId: this.sourceId,
+              sName: this.sourceName,
             };
           }
           this.$router.push({
             path: "/dbaddTasksteps02",
             query: data
           });
+          }else{
+            this.$message({
+          showClose: true,
+          message: res.message,
+          type: 'error'
+        });
+          }
+         
         });
       }else{
         this.$message({
@@ -454,9 +470,6 @@ export default {
     },
     pre() {
       this.$router.push({ path: "/agentList" });
-    },
-    handleClick0(tab, event) {
-      // console.log(tab, event);
     },
     handleSizeChange(size) {
       this.pagesize = size;
@@ -490,7 +503,7 @@ export default {
          this.outerVisible = false;
             this.ruleForm.classify_name = this.classifyName;
       this.ruleForm.classify_num = this.classifyNum;
-        this.radio=null
+        // this.radio=null
 
       }else{
           this.$message({
@@ -517,7 +530,6 @@ export default {
       let params = {};
       params["sourceId"] = this.sourceId;
       addTaskAllFun.getClassifyInfo(params).then(res => {
-          console.log(res,1)
         this.CollTaskData = res.data;
       });
     },
@@ -537,11 +549,9 @@ export default {
       params["classify_num"] = data.class_num;
       params["classify_name"] = data.class_name;
       params["remark"] = data.class_des;
-      params["agent_id"] = this.agentId;
-      params["sourceId"] = this.sourceId;
-      console.log(params)
+      params["agent_id"] = parseInt(this.agentId);
+      params["sourceId"] =parseInt( this.sourceId);
       addTaskAllFun.updateClassifyInfo(params).then(res => {
-        console.log(res)
         message.updateSuccess(res);
         this.collTaskClassFun();
       });

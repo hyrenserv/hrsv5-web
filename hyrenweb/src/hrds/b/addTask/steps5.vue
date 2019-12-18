@@ -18,7 +18,7 @@
             <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="表名" width="150" align="center">
+        <el-table-column label="表名" width="150" align="center" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <el-form-item
               :prop="'ex_destinationData.'+scope.$index+'.table_name'"
@@ -28,7 +28,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="表中文名" width="150" align="center">
+        <el-table-column label="表中文名" width="150" align="center" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <el-form-item
               :prop="'ex_destinationData.'+scope.$index+'.table_ch_name'"
@@ -165,7 +165,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label=" 数据保留天数" width="170" align="center">
+        <el-table-column label=" 数据保留天数" width="180" align="center">
           <template slot="header">
             <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
               <div class="alldays">
@@ -191,7 +191,7 @@
               :prop="'ex_destinationData.'+scope.$index+'.storage_time'"
               :rules="rule.default"
             >
-              <el-input size="medium" v-model="scope.row.storage_time" style="width: 90px"></el-input>
+              <el-input size="medium" v-model="scope.row.storage_time" ></el-input>
             </el-form-item>
           </template>
         </el-table-column>
@@ -201,7 +201,7 @@
       @size-change="ex_destination_handleSizeChange"
       @current-change="ex_destination_handleCurrentChange"
       :current-page="ex_destinationcurrentPage"
-      :page-sizes="[5, 10, 15, 20]"
+      :page-sizes="[100, 200, 300, 400]"
       :page-size="ex_destinationpagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="ruleForm.ex_destinationData.length"
@@ -227,8 +227,8 @@
             <span>{{scope.$index+(destination_currentPage - 1) * destination_pagesize + 1}}</span>
           </template>
         </el-table-column>
-        <el-table-column property="dsl_name" label="存储名称" align="center"></el-table-column>
-        <el-table-column property="store_type" label="存储类型" align="center"></el-table-column>
+        <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="详情" width="160px" align="center">
           <template slot-scope="scope">
             <el-row>
@@ -404,7 +404,7 @@ export default {
       visible: false,
       saveDayvisible: false,
       ex_destinationcurrentPage: 1,
-      ex_destinationpagesize: 10,
+      ex_destinationpagesize: 100,
       destination_currentPage: 1,
       destination_pagesize: 10,
       fieldProperty_currentPage: 1,
@@ -569,9 +569,7 @@ export default {
           params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
           params["colSetId"] = parseInt(this.dbid);
           params["dslIdString"] = JSON.stringify(dslIdString);
-          console.log(params);
           addTaskAllFun.saveTbStoInfo(params).then(res => {
-            console.log(res);
             if (res.code == 200) {
               this.submit_1 = true;
               this.dbid = res.data;
@@ -613,7 +611,9 @@ export default {
         };
       } else {
         data = {
-          id: this.dbid
+          id: this.dbid,
+              sourId:this.$route.query.sourId,
+              sName: this.$route.query.sName,
         };
       }
       this.$router.push({
@@ -633,7 +633,9 @@ export default {
         };
       } else {
         data = {
-          id: this.$route.query.id
+           id:this.$route.query.id,
+              sourId:this.$route.query.sourId,
+              sName: this.$route.query.sName,
         };
       }
       this.$router.push({
@@ -684,7 +686,6 @@ export default {
       });
     }, */
     is_zipperFun(row) {
-      console.log(row, 1);
       if(row.is_zipper==false){
       row.storage_type=''
       }
@@ -726,7 +727,6 @@ export default {
             for (let m = 0; m < this.dslIdString.length; m++) {
               if (this.dslIdString[m].tableId == row.table_id) {
                 if (this.dslIdString[m].dslIds.length != 0) {
-                  console.log(12, aartrue);
                   for (let n = 0; n < this.dslIdString[m].dslIds.length; n++) {
                     for (let yn = 0; yn < this.destinationData.length; yn++) {
                       if (
@@ -739,8 +739,6 @@ export default {
                       }
                     }
                   }
-                  console.log(13, aartrue);
-
                   for (let ya = 0; ya < aartrue.length; ya++) {
                     this.$refs.multipleTable.toggleRowSelection(
                       this.destinationData[aartrue[ya]],
@@ -775,7 +773,6 @@ export default {
             }
           }
         } else {
-          console.log(1);
           for (let i = 0; i < this.destinationData.length; i++) {
             if (this.destinationData[i].usedflag == "0") {
               this.$refs.multipleTable.toggleRowSelection(
@@ -1076,7 +1073,6 @@ export default {
       } else {
         this.open();
       }
-      console.log(this.dslIdString);
     },
     open() {
       this.$message({

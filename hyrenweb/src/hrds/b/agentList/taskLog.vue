@@ -75,7 +75,6 @@ export default {
       params["agentId"] = this.agentid;
       params["logType"] = this.formInline.LogType;
       params["readNum"] = this.formInline.lognum;
-      console.log(params);
       agentList.viewTaskLog(params).then(res => {
         console.log(res);
       });

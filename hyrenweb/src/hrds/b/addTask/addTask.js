@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import Qs from 'qs'
 //根据数据库采集任务ID进行查询并在页面上回显数据源配置信息
 export function getDBConfInfo(data) {
     return request({
@@ -153,12 +154,22 @@ export function getColumnsigleInfo(data) {
     })
 }
 // 保存全部走下一步
-export function saveCollTbInfo(data) {
+/* export function saveCollTbInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
         method: 'post',
         params:data
     })
+} */
+// 保存全部走下一步
+
+export function saveCollTbInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
+        method: 'post',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
 }
 // 得到是否过滤和并行抽取之前原有数据
 export function getSQLInfoByColSetId(data) {
@@ -445,7 +456,9 @@ export function saveDataCleanConfig(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveDataCleanConfig',
         method: 'post',
-        params:data
+        // params:data
+         data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 //steps4 卸数文件
@@ -469,7 +482,8 @@ export function saveFileConf(data) {
     return request({
         url: '/B/agent/dbagentconf/fileconf/saveFileConf',
         method: 'post',
-        params:data
+         data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 
@@ -543,7 +557,8 @@ export function saveTbStoInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/saveTbStoInfo',
         method: 'post',
-        params:data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 // 保存表名
@@ -551,7 +566,8 @@ export function updateTableName(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/updateTableName',
         method: 'post',
-        params:data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 //编辑状态下获取目的地起初数据
