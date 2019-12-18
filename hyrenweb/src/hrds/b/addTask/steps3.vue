@@ -28,14 +28,14 @@
           <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="table_name" label="表名" width="180" align="center"></el-table-column>
-      <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center"></el-table-column>
+      <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)" width="180" align="center">
         <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag!=0"></el-checkbox>
+          <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag"></el-checkbox>
           <span
             class="settingbtn"
-            v-if="scope.row.compflag!=0"
+            v-if="scope.row.compflag==true"
             @click="table_zfbqFun(scope.$index,scope.row.table_id,scope.row.compflag)"
           >查看</span>
           <span
@@ -47,10 +47,10 @@
       </el-table-column>
       <el-table-column prop="replaceflag" label=" 字符替换(整表清洗设置)" width="180" align="center">
         <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag!=0"></el-checkbox>
+          <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag"></el-checkbox>
           <span
             class="settingbtn"
-            v-if="scope.row.replaceflag!=0"
+            v-if="scope.row.replaceflag==true"
             @click="table_zfthFun(scope.$index,scope.row.table_id,scope.row.replaceflag)"
           >查看</span>
           <span
@@ -71,7 +71,7 @@
           </el-checkbox>
         </template>
         <template slot-scope="scope">
-          <el-checkbox :checked="scope.row.trimflag!=0" v-model="scope.row.trimflag"></el-checkbox>
+          <el-checkbox :checked="scope.row.trimflag" v-model="scope.row.trimflag"></el-checkbox>
         </template>
       </el-table-column>
       <el-table-column prop="selectCol" label="列清洗" align="center">
@@ -84,7 +84,7 @@
       @size-change="clean_handleSizeChange"
       @current-change="clean_handleCurrentChange"
       :current-page="cleancurrentPage"
-      :page-sizes="[5, 10, 15, 20]"
+      :page-sizes="[100, 200, 300, 400]"
       :page-size="cleanpagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="cleantableData.length"
@@ -98,8 +98,8 @@
       class="alltable"
       @close="Table_zfbqclose()"
     >
-      <el-form ref="form" :model="table_zfbq" label-width="240px" text-align="center">
-        <el-form-item label="补齐方式">
+      <el-form ref="table_zfbq" :model="table_zfbq" label-width="240px" text-align="center">
+        <el-form-item label="补齐方式" :rules="rule.selected" prop="filling_type">
           <el-radio-group v-model="table_zfbq.filling_type">
             <el-radio
               v-for="(item,index) in FillingType"
@@ -108,20 +108,16 @@
             >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="补齐字符" :rules="rule.default">
+        <el-form-item label="补齐字符" :rules="rule.default" prop="character_filling">
           <el-input v-model="table_zfbq.character_filling" style="width:190px"></el-input>
         </el-form-item>
-        <el-form-item label="补齐长度" :rules="rule.default">
+        <el-form-item label="补齐长度" :rules="rule.default" prop="filling_length">
           <el-input v-model="table_zfbq.filling_length" style="width:190px"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="Table_zfbqclose()" size="mini" type="danger">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="dialogTable_zfbq = false;Table_zfbqsubmit()"
-          size="mini"
-        >确 定</el-button>
+        <el-button type="primary" @click="Table_zfbqsubmit('table_zfbq')" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 表-字符替换 -->
@@ -135,7 +131,7 @@
       <el-button
         type="success"
         width="20"
-        @click="addRow(table_zfth)"
+        @click="Table_zfthaddRow(table_zfth)"
         size="mini"
         class="addline"
       >新增行</el-button>
@@ -212,11 +208,24 @@
           <span>(大小写敏感,替换字符只能为一个,如需多次替换请添加行 )</span>
         </div>
         <div class="alltableaddrow">
-          <el-button type="success" width="20" @click="addRow(allTableCleanSettingData)">新增行</el-button>
+          <el-button
+            type="success"
+            width="20"
+            @click="alltablebox_addRow(allTableCleanSettingData)"
+          >新增行</el-button>
         </div>
         <div class="TableClean">
-          <el-table :data="allTableCleanSettingData" border size="medium" highlight-current-row>
-            <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
+          <el-table
+            :data="allTableCleanSettingData.slice((allTableCleanSetData_currentPage - 1) * allTableCleanSetData_pagesize, allTableCleanSetData_currentPage * allTableCleanSetData_pagesize)"
+            border
+            size="medium"
+            highlight-current-row
+          >
+            <el-table-column type="index" label="序号" width="60px" align="center">
+              <template scope="scope">
+                <span>{{scope.$index+(allTableCleanSetData_currentPage - 1) * allTableCleanSetData_pagesize + 1}}</span>
+              </template>
+            </el-table-column>
             <el-table-column property="field" label="原字符" align="center">
               <template scope="scope">
                 <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
@@ -242,6 +251,15 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination
+            @size-change="allTableCleanSetData_handleSizeChange"
+            @current-change="allTableCleanSetData_handleCurrentChange"
+            :current-page.sync="allTableCleanSetData_currentPage"
+            :page-size="allTableCleanSetData_pagesize"
+            layout="total, prev, pager, next"
+            :total="allTableCleanSettingData.length"
+            class="locationcenter"
+          ></el-pagination>
         </div>
       </div>
       <div class="alltablebox">
@@ -262,10 +280,10 @@
               >{{item.value}}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="补齐字符" :rules="rule.default">
+          <el-form-item label="补齐字符">
             <el-input v-model="characterCompletion.character_filling" size="medium"></el-input>
           </el-form-item>
-          <el-form-item label="补齐长度" :rules="rule.default">
+          <el-form-item label="补齐长度">
             <el-input v-model="characterCompletion.filling_length" size="medium"></el-input>
           </el-form-item>
         </el-form>
@@ -297,23 +315,28 @@
           border
           size="medium"
           highlight-current-row
+          :default-sort="{prop: 'date', order: 'descending'}"
         >
           <el-table-column property label="序号" width="60px" align="center">
             <template scope="scope">
               <span>{{scope.$index+(colClean_currentPage - 1) * colClean_pagesize + 1}}</span>
             </template>
           </el-table-column>
-          <el-table-column property="colume_name" label="列名" width="100px" align="center"></el-table-column>
-          <el-table-column property="colume_ch_name" label="列中文名" width="100px" align="center"></el-table-column>
+          <el-table-column property="colume_name" label="列名" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="colume_ch_name" label="列中文名" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column property="compflag" label="字符补齐" width="80px" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag!=0"></el-checkbox>
+              <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag"></el-checkbox>
               <span
                 class="settingbtn"
-                v-if="scope.row.compflag!=0"
-                @click="zfbqFun(scope.$index,scope.row)"
+                v-if="scope.row.compflag==true"
+                @click="zfbqFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
               >查看</span>
-              <span class="settingbtn" v-else @click="zfbqFun(scope.$index,scope.row)">设置</span>
+              <span
+                class="settingbtn"
+                v-else
+                @click="zfbqFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
+              >设置</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -324,53 +347,69 @@
             :reserve-selection="true"
           >
             <template scope="scope">
-              <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag!=0"></el-checkbox>
+              <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag"></el-checkbox>
               <span
                 class="settingbtn"
-                v-if="scope.row.replaceflag!=0"
-                @click="zfthFun(scope.$index,scope.row)"
+                v-if="scope.row.replaceflag==true"
+                @click="zfthFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
               >查看</span>
-              <span class="settingbtn" v-else @click="zfthFun(scope.$index,scope.row)">设置</span>
+              <span
+                class="settingbtn"
+                v-else
+                @click="zfthFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
+              >设置</span>
             </template>
           </el-table-column>
           <el-table-column property="formatflag" label="日期格式化" width="100px" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.formatflag" :checked="scope.row.formatflag!=0"></el-checkbox>
+              <el-checkbox v-model="scope.row.formatflag" :checked="scope.row.formatflag"></el-checkbox>
               <span
                 class="settingbtn"
-                v-if="scope.row.formatflag!=0"
-                @click="rqgshFun(scope.$index,scope.row)"
+                v-if="scope.row.formatflag==true"
+                @click="rqgshFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
               >查看</span>
-              <span class="settingbtn" v-else @click="rqgshFun(scope.$index,scope.row)">设置</span>
+              <span
+                class="settingbtn"
+                v-else
+                @click="rqgshFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
+              >设置</span>
             </template>
           </el-table-column>
           <el-table-column property="splitflag" label="列拆分" width="80px" align="center">
             <template scope="scope">
-              <el-checkbox v-model="scope.row.splitflag" :checked="scope.row.splitflag!=0"></el-checkbox>
+              <el-checkbox v-model="scope.row.splitflag" :checked="scope.row.splitflag"></el-checkbox>
               <span
                 class="settingbtn"
-                v-if="scope.row.splitflag!=0"
-                @click="colcfFun(scope.$index,scope.row)"
+                v-if="scope.row.splitflag==true"
+                @click="colcfFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
               >查看</span>
-              <span class="settingbtn" v-else @click="colcfFun(scope.$index,scope.row)">设置</span>
+              <span
+                class="settingbtn"
+                v-else
+                @click="colcfFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
+              >设置</span>
             </template>
           </el-table-column>
           <el-table-column property="codevalueflag" label="码值转换" width="80px" align="center">
             <template scope="scope">
               <el-checkbox
                 v-model="scope.row.codevalueflag"
-                :value="scope.row.codevalueflag!=0"
-                :checked="scope.row.codevalueflag!=0"
+                :value="scope.row.codevalueflag"
+                :checked="scope.row.codevalueflag"
               ></el-checkbox>
               <span
                 class="settingbtn"
-                v-if="scope.row.codevalueflag!=0"
-                @click="mzzhFun(scope.$index,scope.row)"
+                v-if="scope.row.codevalueflag==true"
+                @click="mzzhFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
               >查看</span>
-              <span class="settingbtn" v-else @click="mzzhFun(scope.$index,scope.row)">设置</span>
+              <span
+                class="settingbtn"
+                v-else
+                @click="mzzhFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
+              >设置</span>
             </template>
           </el-table-column>
-          <el-table-column property="trimflag" label="" class="is-checked" align="center">
+          <el-table-column property="trimflag" label class="is-checked" align="center">
             <template slot="header" slot-scope="scope">
               <el-checkbox
                 @change="handleCheckAllChange(colCleanData,colcheckAll)"
@@ -381,12 +420,16 @@
               </el-checkbox>
             </template>
             <template scope="scope">
-              <el-checkbox v-model="scope.row.trimflag" :checked="scope.row.trimflag!=0"></el-checkbox>
+              <el-checkbox v-model="scope.row.trimflag" :checked="scope.row.trimflag"></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column label="清洗优先级" align="center" width="120">
             <template scope="scope">
-              <el-button type="success" @click="yxjFun(scope.$index,scope.row)" size="mini">优先级调整</el-button>
+              <el-button
+                type="success"
+                @click="yxjFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)"
+                size="mini"
+              >优先级调整</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -411,8 +454,8 @@
       class="alltable"
       @close="Col_zfbqCloseFun()"
     >
-      <el-form ref="form" :model="Col_zfbq" label-width="240px" text-align="center">
-        <el-form-item label="补齐方式">
+      <el-form ref="Col_zfbq" :model="Col_zfbq" label-width="240px" text-align="center">
+        <el-form-item label="补齐方式" prop="filling_type" :rules="rule.selected">
           <el-radio-group v-model="Col_zfbq.filling_type">
             <el-radio
               v-for="(item,index) in FillingType"
@@ -421,16 +464,16 @@
             >{{item.value}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="补齐字符" :rules="rule.default">
+        <el-form-item label="补齐字符" :rules="rule.default" prop="character_filling">
           <el-input v-model="Col_zfbq.character_filling" style="width:190px" size="medium"></el-input>
         </el-form-item>
-        <el-form-item label="补齐长度" :rules="rule.default">
+        <el-form-item label="补齐长度" :rules="rule.default" prop="filling_length">
           <el-input v-model="Col_zfbq.filling_length" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="Col_zfbqCloseFun()" type="danger" size="mini">取 消</el-button>
-        <el-button type="primary" @click="Col_zfbqSubmitFun()" size="mini">确 定</el-button>
+        <el-button type="primary" @click="Col_zfbqSubmitFun('Col_zfbq')" size="mini">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 选择列-字符替换弹框 -->
@@ -489,10 +532,10 @@
       @close="Col_rqgshCloseFun()"
     >
       <el-form ref="form" :model="Col_rqgsh" label-width="240px" text-align="center">
-        <el-form-item label="原格式" :rules="rule.default">
+        <el-form-item label="原格式">
           <el-input v-model="Col_rqgsh.old_format" style="width:190px" size="medium"></el-input>
         </el-form-item>
-        <el-form-item label="转换格式" :rules="rule.default">
+        <el-form-item label="转换格式">
           <el-input v-model="Col_rqgsh.convert_format" style="width:190px" size="medium"></el-input>
         </el-form-item>
       </el-form>
@@ -745,7 +788,7 @@
       </div>
     </el-dialog>
     <!-- 列合并 -->
-    <el-dialog :visible.sync="dialogcolumnMerge" width="70%" class="alltable">
+    <el-dialog :visible.sync="dialogcolumnMerge" width="70%" class="alltable" id="colmerg">
       <div slot="title" class="header-title">
         <span class="title">列合并(合并的是最后的数据)</span>
       </div>
@@ -760,7 +803,7 @@
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column label="选择" align="center">
           <template scope="scope">
-            <el-button type="success" @click="colSelectFun(scope.$index,scope.rows)" size="mini">列选择</el-button>
+            <el-button type="success" @click="colSelectFun(scope.$index,scope.row)" size="mini">列选择</el-button>
           </template>
         </el-table-column>
         <el-table-column property="col_name" label="列名" align="center">
@@ -795,6 +838,14 @@
           </template>
         </el-table-column>
         <el-table-column property="col_type" label="字段类型" align="center">
+           <template slot="header">
+            <el-tooltip class="item" effect="light" content placement="right">
+              <div slot="content">
+               varchar需要填写长度.如 : varchar(10)
+              </div>
+              <i class="el-icon-question" aria-hidden="true">字段类型</i>
+            </el-tooltip>
+          </template>
           <template scope="scope">
             <el-input v-model="scope.row.col_type" placeholder="字段类型" size="medium"></el-input>
           </template>
@@ -821,19 +872,33 @@
       </div>
     </el-dialog>
     <!-- 选择列 -->
-    <el-dialog title="列信息" :visible.sync="dialogcolSelectData" width="70%" class="alltable">
+    <el-dialog title="列信息" :visible.sync="dialogcolSelectData" width="70%" class="alltable" @close="colSelectCloseFun()">
       <el-table
         :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)"
         border
         size="medium"
         highlight-current-row
-        @selection-change="changeFun"
         ref="multipleTable"
         :row-key="getRowKey"
       >
-        <el-table-column type="selection" :reserve-selection="true" width="55" align="center"></el-table-column>
-        <el-table-column property="colume_name" label="列名称" align="center"></el-table-column>
-        <el-table-column property="colume_ch_name" label="中文名" align="center"></el-table-column>
+        <el-table-column width="55" align="center" prop="selectionState">
+                <template slot="header" slot-scope="scope">
+                  <el-checkbox
+                    @change="Allis_colselectionStateFun(colSelectData,Allis_colselectionState)"
+                    v-model="Allis_colselectionState"
+                    :checked="Allis_colselectionState"
+                  ></el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                  <el-checkbox
+                    :checked="scope.row.selectionState"
+                    v-model="scope.row.selectionState"
+                    @change="col_evercheck(scope.row.selectionState,scope.row.colume_name)"
+                  ></el-checkbox>
+                </template>
+              </el-table-column>
+        <el-table-column property="colume_name" label="列名称" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property="colume_ch_name" label="中文名" align="center" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <el-pagination
         @size-change="colSelect_handleSizeChange"
@@ -845,7 +910,7 @@
         class="locationcenter"
       ></el-pagination>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogcolSelectData = false" type="danger" size="mini">取 消</el-button>
+        <el-button @click="colSelectCloseFun()" type="danger" size="mini">取 消</el-button>
         <el-button
           type="primary"
           @click="dialogcolSelectData= false;colSelectSubmitFun()"
@@ -894,15 +959,17 @@ export default {
       colSelect_pagesize: 5,
       colmzzh_currentPage: 1,
       colmzzh_pagesize: 5,
+      allTableCleanSetData_pagesize: 5,
+      allTableCleanSetData_currentPage: 1,
       cleantableData: [
-        {
+        /*  {
           compflag: 0,
           replaceflag: 0,
           trimflag: 0
-        }
+        } */
       ],
       cleancurrentPage: 1,
-      cleanpagesize: 5,
+      cleanpagesize: 100,
       priorityData: [],
       tableCleanData: [],
       allTableCleanSettingData: [
@@ -995,7 +1062,8 @@ export default {
       dbid: null,
       aId: null,
       sourId: null,
-      sName: null
+      sName: null,
+      Allis_colselectionState:false,
     };
   },
   created() {
@@ -1005,10 +1073,10 @@ export default {
     this.sName = this.$route.query.sName;
   },
   mounted() {
-     // 获取进入页面的总数据
-    if (this.$route.query.edit == "yes") {
+    // 获取进入页面的总数据
+    // if (this.$route.query.edit == "yes") {
     this.cleantableDataFun();
-    }
+    // }
     let params = {};
     params["category"] = "FillingType";
     addTaskAllFun.getCategoryItems(params).then(res => {
@@ -1017,25 +1085,26 @@ export default {
     this.priorityDataFun();
   },
   methods: {
-    getRowKey(row){
-      return row.column_id
+    getRowKey(row) {
+      return row.column_id;
     },
     next() {
       let tbCleanString = this.dataCleanConfigFun();
-         let data={}
-      if(this.$route.query.edit=='yes'){
-         data={
+      let data = {};
+      if (this.$route.query.edit == "yes") {
+        data = {
           aId: this.$route.query.aId,
           id: this.dbid,
-          sourId:this.$route.query.sourId,
+          sourId: this.$route.query.sourId,
           sName: this.$route.query.sName,
-          edit:'yes'
-        }
-      }
-      else{
-         data={
+          edit: "yes"
+        };
+      } else {
+        data = {
           id: this.dbid,
-        }
+          sourId: this.$route.query.sourId,
+          sName: this.$route.query.sName
+        };
       }
       let params = {};
       params["tbCleanString"] = JSON.stringify(tbCleanString);
@@ -1049,24 +1118,25 @@ export default {
       });
     },
     pre() {
-         let data={}
-      if(this.$route.query.edit=='yes'){
-         data={
+      let data = {};
+      if (this.$route.query.edit == "yes") {
+        data = {
           aId: this.$route.query.aId,
           id: this.$route.query.id,
-          sourId:this.$route.query.sourId,
+          sourId: this.$route.query.sourId,
           sName: this.$route.query.sName,
-          edit:'yes'
-        }
-      }
-      else{
-         data={
+          edit: "yes"
+        };
+      } else {
+        data = {
           id: this.$route.query.id,
-        }
+          sourId: this.$route.query.sourId,
+          sName: this.$route.query.sName
+        };
       }
       this.$router.push({
         path: "/dbaddTasksteps02",
-        query:data
+        query: data
       });
     },
     dataCleanConfigFun() {
@@ -1127,14 +1197,38 @@ export default {
     clean_handleCurrentChange(currentPage) {
       this.cleancurrentPage = currentPage;
     },
+    // 所有表清洗设置翻页
+    allTableCleanSetData_handleSizeChange(size) {
+      this.allTableCleanSetData_pagesize = size;
+    },
+    allTableCleanSetData_handleCurrentChange(currentPage) {
+      this.allTableCleanSetData_currentPage = currentPage;
+    },
     // 获取所有数据显示
     cleantableDataFun() {
       this.databaseId = this.dbid;
       let params = {};
       params["colSetId"] = this.databaseId;
       addTaskAllFun.getCleanConfInfo(params).then(res => {
-        this.cleantableData = res.data;
-        console.log(res.data)
+        let arrdata = JSON.parse(JSON.stringify(res.data));
+        for (let i = 0; i < arrdata.length; i++) {
+          if (arrdata[i].compflag != 0) {
+            arrdata[i].compflag = true;
+          } else {
+            arrdata[i].compflag = false;
+          }
+          if (arrdata[i].replaceflag != 0) {
+            arrdata[i].replaceflag = true;
+          } else {
+            arrdata[i].replaceflag = false;
+          }
+          if (arrdata[i].trimflag != 0) {
+            arrdata[i].trimflag = true;
+          } else {
+            arrdata[i].trimflag = false;
+          }
+        }
+        this.cleantableData = arrdata;
       });
     },
     //所有表清洗设置显示数据
@@ -1144,11 +1238,14 @@ export default {
       params["colSetId"] = id;
       // 字符替换
       addTaskAllFun.getAllTbCleanReplaceInfo(params).then(res => {
+        console.log(res)
         this.allTableCleanSettingData = res.data;
       });
       // 字符补齐
       addTaskAllFun.getAllTbCleanCompInfo(params).then(res => {
-        this.characterCompletion = res.data[0];
+        if(res.data.length!=0){
+this.characterCompletion = res.data[0];
+        }
       });
     },
     // 所有表清洗设置确定提交
@@ -1185,8 +1282,8 @@ export default {
       let params = {};
       params["colSetId"] = this.colSetid;
       addTaskAllFun.getAllTbCleanOrder(params).then(res => {
-        if (res.data[0].cp_or) {
-          let data = JSON.parse(res.data[0].cp_or);
+        if (res.data) {
+          let data = res.data;
           this.tableCleanData = this.changeDataPriorFun(data);
         } else {
           this.tableCleanData = this.priorityData;
@@ -1195,34 +1292,14 @@ export default {
     },
     // 优先级获取数据转换
     changeDataPriorFun(data) {
-      let arr = [];
-      for (let key in data) {
-        console.log()
-        arr.push({ code: key, order: data[key] });
-        arr.forEach(item => {
-          this.priorityData.forEach(items=>{
-            if(item.code==items.code){
-             item.value=items.value
-            }
-          })
-          /* if (item.value == "complement") {
-            item.value = "字符补齐";
-          } else if (item.value == "replacement") {
-            item.value = "字符替换";
-          } else if (item.value == "formatting") {
-            item.value = "日期格式化";
-          } else if (item.value == "conversion") {
-            item.value = "码值转换";
-          } else if (item.value == "merge") {
-            item.value = "列合并";
-          } else if (item.value == "split") {
-            item.value = "列拆分";
-          } else if (item.value == "trim") {
-            item.value = "字符trim";
-          } */
-        });
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < this.priorityData.length; j++) {
+          if (data[i].code == this.priorityData[j].code) {
+            data[i].value = this.priorityData[j].value;
+          }
+        }
       }
-      return arr;
+      return data;
     },
     // 优先级默认显示数据
     priorityDataFun() {
@@ -1230,14 +1307,13 @@ export default {
       params["category"] = "CleanType";
       addTaskAllFun.getCategoryItems(params).then(res => {
         this.priorityData = res.data;
-        console.log(res.data)
       });
     },
     // 全表清洗优先级确定提交
     allTableCleanPrioritySubmitFun() {
       let ordarr = JSON.parse(JSON.stringify(this.tableCleanData));
       let params = {};
-      params["sort"] = eval("(" + this.priSubmitFun(ordarr) + ")");
+      params["sort"] = this.priSubmitFun(ordarr);
       params["colSetId"] = this.colSetid;
       addTaskAllFun.saveAllTbCleanOrder(params).then(res => {
         message.saveSuccess(res);
@@ -1245,35 +1321,18 @@ export default {
     },
     // 优先级提交数据转换
     priSubmitFun(ordarr) {
-      let str = "";
-      ordarr.forEach((item, i) => {
-        if (item.value == "字符补齐") {
-          item.value = "complement";
-        } else if (item.value == "字符替换") {
-          item.value = "replacement";
-        } else if (item.value == "日期格式化") {
-          item.value = "formatting";
-        } else if (item.value == "码值转换") {
-          item.value = "conversion";
-        } else if (item.value == "列合并") {
-          item.value = "merge";
-        } else if (item.value == "列拆分") {
-          item.value = "split";
-        } else if (item.value == "字符trim") {
-          item.value = "trim";
-        }
-        if (ordarr.length > 0) {
-          if (i == 0) {
-            str += "{" + item.value + ":" + item.code;
-          } else if (i == ordarr.length - 1) {
-            str += "," + item.value + ":" + item.code + "}";
+      let str = "{";
+      for (let i = 0; i < ordarr.length; i++) {
+        if (ordarr.length > 1) {
+          if (i < ordarr.length - 1) {
+            str += '"' + ordarr[i].code + '"' + ":" + (i + 1) + ",";
           } else {
-            str += "," + item.value + ":" + item.code;
+            str += '"' + ordarr[i].code + '"' + ":" + (i + 1) + "}";
           }
         } else {
-          str += "{" + item.value + ":" + item.code + "}";
+          str += '"' + ordarr[i].code + '"' + ":" + (i + 1) + "}";
         }
-      });
+      }
       return str;
     },
     colClean_handleSizeChange(size) {
@@ -1282,7 +1341,7 @@ export default {
     colClean_handleCurrentChange(currentPage) {
       this.colClean_currentPage = currentPage;
       let id = this.tableid;
-      this.selectColPageFun(id);
+      // this.selectColPageFun(id);
     },
     //上移
     moveUp(index, row, tableData) {
@@ -1322,9 +1381,40 @@ export default {
       let params = {};
       params["tableId"] = id;
       addTaskAllFun.getColumnInfo(params).then(res => {
-        if (res.data.totalSize != 0) {
-          this.colCleanData = res.data;
+        let arrdata = res.data;
+        for (let i = 0; i < arrdata.length; i++) {
+          if (arrdata[i].codevalueflag == "1") {
+            arrdata[i].codevalueflag = true;
+          } else {
+            arrdata[i].codevalueflag = false;
+          }
+          if (arrdata[i].compflag == "1") {
+            arrdata[i].compflag = true;
+          } else {
+            arrdata[i].compflag = false;
+          }
+          if (arrdata[i].formatflag == "1") {
+            arrdata[i].formatflag = true;
+          } else {
+            arrdata[i].formatflag = false;
+          }
+          if (arrdata[i].replaceflag == "1") {
+            arrdata[i].replaceflag = true;
+          } else {
+            arrdata[i].replaceflag = false;
+          }
+          if (arrdata[i].splitflag == "1") {
+            arrdata[i].splitflag = true;
+          } else {
+            arrdata[i].splitflag = false;
+          }
+          if (arrdata[i].trimflag == "1") {
+            arrdata[i].trimflag = true;
+          } else {
+            arrdata[i].trimflag = false;
+          }
         }
+        this.colCleanData = arrdata;
       });
     },
     selectColCloseFun() {
@@ -1430,28 +1520,31 @@ export default {
       }
     },
     // 点击表字符补齐提交确定按钮
-    Table_zfbqsubmit() {
-      let params = {};
-      let index = this.index;
-      params["character_filling"] = this.table_zfbq.character_filling;
-      params["filling_length"] = this.table_zfbq.filling_length;
-      params["filling_type"] = this.table_zfbq.filling_type;
-      params["table_id"] = this.cleantableData[index].table_id;
-      addTaskAllFun.saveSingleTbCompletionInfo(params).then(res => {
-        message.saveSuccess(res);
-        this.cleantableData[index].compflag = true;
-        index = null;
-        this.changecheck = null;
+    Table_zfbqsubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let params = {};
+          let index = this.index,that=this;
+          params["character_filling"] = that.table_zfbq.character_filling;
+          params["filling_length"] = that.table_zfbq.filling_length;
+          params["filling_type"] = that.table_zfbq.filling_type;
+          params["table_id"] = that.cleantableData[index].table_id;
+          addTaskAllFun.saveSingleTbCompletionInfo(params).then(res => {
+            message.saveSuccess(res);
+            that.cleantableData[index].compflag=true;
+            index = null;
+            that.changecheck = null;
+            that.dialogTable_zfbq = false;
+          });
+        }
       });
     },
     // 点击表字符替换显示弹框
     table_zfthFun(index, tableid, compflags) {
       this.dialogTable_zfth = true;
       if (compflags != 0 || compflags) {
-        console.log(compflags, 111);
         let params = {};
         params["tableId"] = tableid;
-        console.log(params);
         addTaskAllFun.getSingleTbReplaceInfo(params).then(res => {
           this.table_zfth = res.data;
         });
@@ -1508,22 +1601,26 @@ export default {
       this.Col_zfbq.character_filling = "";
       this.Col_zfbq.filling_length = "";
     },
-    Col_zfbqSubmitFun() {
-      this.dialogCol_zfbq = false;
-      let columnindex = this.columnindex;
-      let params = {};
-      params["column_id"] = this.columnid;
-      params["character_filling"] = this.Col_zfbq.character_filling;
-      params["filling_length"] = this.Col_zfbq.filling_length;
-      params["filling_type"] = this.Col_zfbq.filling_type;
-      addTaskAllFun.saveColCompletionInfo(params).then(res => {
-        message.saveSuccess(res);
-        this.colCleanData[columnindex].compflag = true;
-        this.columnid = null;
-        columnindex = null;
-        this.Col_zfbq.filling_type = "";
-        this.Col_zfbq.character_filling = "";
-        this.Col_zfbq.filling_length = "";
+    Col_zfbqSubmitFun(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.dialogCol_zfbq = false;
+          let columnindex = this.columnindex;
+          let params = {};
+          params["column_id"] = this.columnid;
+          params["character_filling"] = this.Col_zfbq.character_filling;
+          params["filling_length"] = this.Col_zfbq.filling_length;
+          params["filling_type"] = this.Col_zfbq.filling_type;
+          addTaskAllFun.saveColCompletionInfo(params).then(res => {
+            message.saveSuccess(res);
+            this.colCleanData[columnindex].compflag = true;
+            this.columnid = null;
+            columnindex = null;
+            this.Col_zfbq.filling_type = "";
+            this.Col_zfbq.character_filling = "";
+            this.Col_zfbq.filling_length = "";
+          });
+        }
       });
     },
     // 列清洗-字符替换方法
@@ -1539,8 +1636,14 @@ export default {
         });
       }
     },
+    Table_zfthaddRow(tableData){
+        tableData.push({
+        field: "",
+        replace_feild: ""
+      });
+    },
     //字符替换新增行
-    addRow(tableData, event) {
+    Col_zfthaddRow(tableData, event) {
       tableData.push({
         field: "",
         replace_feild: ""
@@ -1765,9 +1868,8 @@ export default {
       params["columnId"] = this.columnid;
       params["tableId"] = this.tableid;
       addTaskAllFun.getColCleanOrder(params).then(res => {
-        if (res.data[0].tc_or) {
-          console.log(1,res.data[0].tc_or)
-          let data = JSON.parse(res.data[0].tc_or);
+        if (res.data) {
+          let data = res.data;
           this.tableCleanOrdData = this.changeDataPriorFun(data);
         } else {
           this.tableCleanOrdData = this.priorityData;
@@ -1782,10 +1884,10 @@ export default {
       let ordarr = JSON.parse(JSON.stringify(this.tableCleanOrdData));
       let params = {};
       params["columnId"] = this.columnid;
-      params["sort"] = eval("(" + this.priSubmitFun(ordarr) + ")");
+      params["sort"] = this.priSubmitFun(ordarr);
       addTaskAllFun.saveColCleanOrder(params).then(res => {
         message.saveSuccess(res);
-        this.tableCleanOrdData = [];
+        // this.tableCleanOrdData = [];
       });
     },
     //列清洗-整表优先级
@@ -1795,8 +1897,7 @@ export default {
       params["tableId"] = this.tableid;
       params["colSetId"] = this.databaseId;
       addTaskAllFun.getSingleTbCleanOrder(params).then(res => {
-        console.log(res.data[0].ti_or)
-        let data = JSON.parse(res.data[0].ti_or);
+        let data = JSON.parse(JSON.stringify(res.data));
         this.AlltableCleanOrdData = this.changeDataPriorFun(data);
       });
     },
@@ -1806,7 +1907,7 @@ export default {
       let ordarr = JSON.parse(JSON.stringify(this.AlltableCleanOrdData));
       let params = {};
       params["tableId"] = this.tableid;
-      params["sort"] = eval("(" + this.priSubmitFun(ordarr) + ")");
+      params["sort"] = this.priSubmitFun(ordarr);
       addTaskAllFun.saveSingleTbCleanOrder(params).then(res => {
         message.saveSuccess(res);
         this.AlltableCleanOrdData = [];
@@ -1840,44 +1941,98 @@ export default {
         message.deleteSuccess(res);
       });
     },
-    colSelectFun(index, row) {
+    colSelectFun(index,row) {
+      let arrdata=row.col_name.split(',')
       this.dialogcolSelectData = true;
-      let page = this.colSelect_currentPage;
-      this.getColumnInfo(page);
+      // let page = this.colSelect_currentPage;
+      this.getColumnInfo(arrdata);
       this.colindex = index;
     },
     // 选择列获取方法
-    getColumnInfo(page) {
+    getColumnInfo(arr) {
       let params = {};
       params["tableId"] = this.tableid;
       addTaskAllFun.getColumnInfo(params).then(res => {
-        this.colSelectData = res.data;
+        let arrdata=res.data
+         for(let i=0;i<arrdata.length;i++){
+           arrdata[i].selectionState=false
+         }
+          for(let j=0;j<arr.length;j++){
+        for(let i=0;i<arrdata.length;i++){
+            if(arr[j]==arrdata[i].colume_name){
+              arrdata[i].selectionState=true
+            }
+          }
+        }
+        this.colSelectData = arrdata;
       });
+    },
+    // 列信息选择全选
+    Allis_colselectionStateFun(items,e){
+        let that = this;
+      items.forEach((item, j) => {
+        if (e) {
+          item.selectionState = true;
+          for (let i = 0; i < that.colSelectData.length; i++) {
+            if (that.colSelectData[i].colume_name == item.colume_name) {
+              that.colSelectData[i].selectionState = true;
+            }
+          }
+        } else {
+          item.selectionState = false;
+          for (let i = 0; i < that.colSelectData.length; i++) {
+            if (that.colSelectData[i].colume_name == item.colume_name) {
+              that.colSelectData[i].selectionState = false;
+            }
+          }
+        }
+      });
+    },
+    // 列信息选择某一个
+    col_evercheck(val,name){
+       if (val == true) {
+        for (let i = 0; i < this.colSelectData.length; i++) {
+          if (this.colSelectData[i].colume_name == name) {
+            this.colSelectData[i].selectionState = true;
+          }
+        }
+      } else {
+        for (let i = 0; i < this.colSelectData.length; i++) {
+          if (this.colSelectData[i].colume_name == name) {
+            this.colSelectData[i].selectionState = false;
+          }
+        }
+      }
     },
     colSelect_handleSizeChange(size) {
       this.colSelect_pagesize = size;
     },
     colSelect_handleCurrentChange(currentPage) {
       this.colSelect_currentPage = currentPage;
-      this.getColumnInfo(currentPage);
+      // this.getColumnInfo(currentPage);
     },
-    // 列选择-列信息提交确定
-    changeFun(val) {
-      this.multipleTable = val;
-      let str = "";
-      this.multipleTable.forEach((item, i) => {
-        if (i == 0) {
-          str = item.colume_name;
-        } else {
-          str += "," + item.colume_name;
-        }
-      });
-      this.col_namstr = str;
-    },
+  //  列信息选择后提交
     colSelectSubmitFun() {
-      let index = this.colindex;
+      let index = this.colindex,arrdata=this.colSelectData,str = "",count=0;
+      for(let i=0;i<arrdata.length;i++){
+        if(arrdata[i].selectionState==true){
+          count++
+          if(count==1){
+str = arrdata[i].colume_name
+          }else{
+            str += "," + arrdata[i].colume_name;
+          }
+        }
+      }
+      this.col_namstr = str;
       this.columnMerge[index].col_name = this.col_namstr;
       this.col_namstr = "";
+      this.Allis_colselectionState=false
+    },
+    // 
+    colSelectCloseFun(){
+       this.Allis_colselectionState=false
+       this.dialogcolSelectData= false
     },
     // 列合并-新增行
     columnMerge_addRow(tableData) {
@@ -1886,6 +2041,13 @@ export default {
         col_type: "",
         col_zhname: "",
         old_name: ""
+      });
+    },
+    // 所有表设置新增行
+    alltablebox_addRow(tableData) {
+      tableData.push({
+        field: "",
+        replace_feild: ""
       });
     }
   }
@@ -1997,5 +2159,12 @@ export default {
   float: right;
   margin: 15px;
   margin-bottom: 10px;
+}
+#colmerg >>> .el-icon-question:before {
+  content: "" !important;
+}
+#colmerg >>> .el-icon-question:after {
+  content: "\E7A4" !important;
+  margin-left: 10px;
 }
 </style>

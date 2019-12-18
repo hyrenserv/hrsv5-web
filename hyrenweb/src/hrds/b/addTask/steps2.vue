@@ -22,7 +22,6 @@
           <div>
             <el-table
               ref="filterTable"
-              size="medium"
               stripe
               :default-sort="{prop: 'date', order: 'descending'}"
               style="width: 100%"
@@ -51,12 +50,12 @@
                   <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="table_name" label="表名" width="180" align="center">
+              <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true">
                 <!-- <template>
                   <span>table_name</span>
                 </template>-->
               </el-table-column>
-              <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center">
+              <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.table_ch_name"
@@ -93,7 +92,7 @@
               @size-change="sig_handleSizeChange"
               @current-change="sig_handleCurrentChange"
               :current-page="currentPage"
-              :page-sizes="[5, 10, 15, 20]"
+              :page-sizes="[100, 200, 300, 400]"
               :page-size="pagesize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="tableData.length"
@@ -250,29 +249,73 @@
             <el-table :data="SelectColumnData" border size="medium" highlight-current-row>
               <el-table-column label="选择列" align="center" width="150px">
                 <template slot="header" slot-scope="scope">
-                  <!--   <el-checkbox
-                    @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)"
-                    v-model="Allis_SelectColumn"
-                    :checked="Allis_SelectColumn"
-                     v-if="edit='yes'" disabled
-                  ></el-checkbox>-->
                   <el-checkbox
                     @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)"
                     v-model="Allis_SelectColumn"
                     :checked="Allis_SelectColumn"
+                    v-if="disShow==true"
+                    disabled
                   ></el-checkbox>
+                  <el-checkbox
+                    v-else
+                    @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)"
+                    v-model="Allis_SelectColumn"
+                    :checked="Allis_SelectColumn"
+                  ></el-checkbox>&nbsp;选择列
                 </template>
                 <template slot-scope="scope">
-                  <!--    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="edit='yes'" disabled></el-checkbox>
-                  <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else></el-checkbox>-->
-                  <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox>
+                  <el-checkbox
+                    :checked="scope.row.is_get"
+                    v-model="scope.row.is_get"
+                    v-if="disShow==true"
+                    disabled
+                  ></el-checkbox>
+                  <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else></el-checkbox>
+                  <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                 </template>
               </el-table-column>
-              <el-table-column property="colume_name" label="列名" align="center" width="150px"></el-table-column>
-              <el-table-column property="column_type" label="字段类型" width="150px" align="center"></el-table-column>
-              <el-table-column property="colume_ch_name" label="列中文名" align="center">
+              <el-table-column label="主键定义" align="center" width="150px">
+                <template slot="header" slot-scope="scope">
+                  <el-checkbox
+                    @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)"
+                    v-model="Alliskey_SelectColumn"
+                    :checked="Alliskey_SelectColumn"
+                    v-if="disShow==true"
+                    disabled
+                  ></el-checkbox> 
+                  <el-checkbox
+                    v-else
+                    @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)"
+                    v-model="Alliskey_SelectColumn"
+                    :checked="Alliskey_SelectColumn"
+                  ></el-checkbox>
+                  主键定义
+                </template>
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.colume_ch_name" placeholder="中文名"></el-input>
+                  <el-checkbox
+                    :checked="scope.row.is_primary_key"
+                    v-model="scope.row.is_primary_key"
+                    v-if="disShow==true"
+                    disabled
+                  ></el-checkbox>
+                  <el-checkbox
+                    :checked="scope.row.is_primary_key"
+                    v-model="scope.row.is_primary_key"
+                    v-else
+                  ></el-checkbox>
+                  <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+              </el-table-column>
+              <el-table-column property="colume_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="column_type" label="字段类型" width="150px" align="center" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="colume_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.colume_ch_name!=''"
+                    v-model="scope.row.colume_ch_name"
+                    placeholder="中文名"
+                  ></el-input>
+                  <el-input v-else v-model="scope.row.colume_name" placeholder="中文名"></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="160px" align="center">
@@ -316,7 +359,7 @@
           class="addline"
           @click="addRow(ruleForm.sqlExtractData)"
           size="mini"
-        >新增行</el-button>
+        >新增行</el-button><span class="alltabletitle">填写信息后请记得点击保存</span>
         <el-form ref="ruleForm" :model="ruleForm" class="steps2">
           <el-table
             :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)"
@@ -349,9 +392,9 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column property="sql" label="查询SQL语句" align="center">
+            <el-table-column property="sql" label="查询SQL语句" align="center" style="line-height: 30px;">
               <template scope="scope">
-                <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default">
+                <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default" class="textclass">
                   <el-input v-model="scope.row.sql" type="textarea" placeholder="查询SQL语句"></el-input>
                 </el-form-item>
               </template>
@@ -407,12 +450,13 @@ export default {
       rule: validator.default,
       Allis_selectionState: false,
       Allis_SelectColumn: false,
+      Alliskey_SelectColumn: false,
       activeName: "first",
       data: [],
       currentPage: 1,
-      pagesize: 10,
+      pagesize: 100,
       sqlexcurrentPage: 1,
-      sqlexpagesize: 5,
+      sqlexpagesize: 10,
       search: "",
       input: "",
       input2: "",
@@ -457,11 +501,12 @@ export default {
       tablein: [],
       activeFirst: false,
       activeSec: false,
-      edit: false
+      edit: false,
+      disShow: false
     };
   },
   created() {
-    this.dbid = this.$route.query.id;
+    this.dbid = parseInt(this.$route.query.id);
     this.aId = this.$route.query.aId;
     this.sourId = this.$route.query.sourId;
     this.sName = this.$route.query.sName;
@@ -502,7 +547,6 @@ export default {
   },
   watch: {
     address(val) {
-      console.log(val.activeFirst, val.activeSec);
       if (val.activeFirst == true && val.activeSec == true) {
         this.nextlinkFun();
       }
@@ -615,9 +659,11 @@ export default {
           sName: this.$route.query.sName,
           edit: "yes"
         };
-      } else {
+      }else{
         data = {
-          id: this.dbid
+          id: this.dbid,
+          sourId: this.$route.query.sourId,
+          sName: this.$route.query.sName,
         };
       }
       this.$router.push({
@@ -626,13 +672,12 @@ export default {
       });
     },
     saveTableConfFun() {
-      let arrb = [],
-        arrc = [],
-        arrData = [],
+      let arrData = [],
         tableInfoString = [],
         params = {};
       params["colSetId"] = this.dbid;
       addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
+        // 遍历拿到所有勾选的数据
         for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].selectionState == true) {
             arrData.push(this.tableData[i]);
@@ -640,7 +685,6 @@ export default {
         }
         if (res.data.length > 0) {
           let arr = res.data;
-          console.log(arr, 22, arrData);
           for (let i = 0; i < arrData.length; i++) {
             //与原接口数据对比
             for (let j = 0; j < arr.length; j++) {
@@ -664,28 +708,28 @@ export default {
             }
           }
         }
-        arrb = arrData;
         if (this.ParallelExtractionArr.length > 0) {
-          for (let j = 0; j < arrb.length; j++) {
+          for (let j = 0; j < arrData.length; j++) {
             for (let jj = 0; jj < this.ParallelExtractionArr.length; jj++) {
               if (
-                arrb[j].table_name == this.ParallelExtractionArr[jj].tablename
+                arrData[j].table_name ==
+                this.ParallelExtractionArr[jj].tablename
               ) {
                 if (this.ParallelExtractionArr[jj].page_sql) {
-                  arrb[j].page_sql = this.ParallelExtractionArr[jj].page_sql;
+                  arrData[j].page_sql = this.ParallelExtractionArr[jj].page_sql;
                 }
                 if (this.ParallelExtractionArr[jj].pageparallels) {
-                  arrb[j].pageparallels = this.ParallelExtractionArr[
+                  arrData[j].pageparallels = this.ParallelExtractionArr[
                     jj
                   ].pageparallels;
                 }
                 if (this.ParallelExtractionArr[jj].dataincrement) {
-                  arrb[j].dataincrement = this.ParallelExtractionArr[
+                  arrData[j].dataincrement = this.ParallelExtractionArr[
                     jj
                   ].dataincrement;
                 }
                 if (this.ParallelExtractionArr[jj].table_count) {
-                  arrb[j].table_count = this.ParallelExtractionArr[
+                  arrData[j].table_count = this.ParallelExtractionArr[
                     jj
                   ].table_count;
                 }
@@ -693,80 +737,39 @@ export default {
             }
           }
         }
-        arrc = arrb;
         if (this.sqlFiltArr.length > 0) {
-          for (let j = 0; j < arrc.length; j++) {
+          for (let j = 0; j < arrData.length; j++) {
             for (let jj = 0; jj < this.sqlFiltArr.length; jj++) {
-              if (arrc[j].table_name == this.sqlFiltArr[jj].tablename) {
+              if (arrData[j].table_name == this.sqlFiltArr[jj].tablename) {
                 if (this.sqlFiltArr[jj].sql) {
-                  arrc[j].sql = this.sqlFiltArr[jj].sql;
+                  arrData[j].sql = this.sqlFiltArr[jj].sql;
                 }
               }
             }
           }
         }
-        for (let k = 0; k < arrc.length; k++) {
-          //存在问题
-          /* if (arrc[k].page_sql && arrc[k].sql) {
-            tableInfoString.push({
-              database_id: this.dbid,
-              table_id: arrc[k].table_id ? parseInt(arrc[k].table_id) : "",
-              is_parallel: arrc[k].is_parallel ? "1" : "0",
-              table_ch_name: arrc[k].table_ch_name,
-              table_name: arrc[k].table_name,
-              page_sql: arrc[k].page_sql ? arrc[k].page_sql : "",
-              sql: arrc[k].sql ? arrc[k].sql : "",
-              pageparallels:arrc[k].pageparallels?parseInt(arrc[k].pageparallels):'',
-              dataincrement:arrc[k].dataincrement?parseInt(arrc[k].dataincrement):'',
-              table_count:arrc[k].table_count?parseInt(arrc[k].table_count):'',
-            });
-          } else if (arrc[k].page_sql) {
-            tableInfoString.push({
-              database_id: this.dbid,
-              table_id: arrc[k].table_id ? parseInt(arrc[k].table_id) : "",
-              is_parallel: arrc[k].is_parallel ? "1" : "0",
-              table_ch_name: arrc[k].table_ch_name,
-              table_name: arrc[k].table_name,
-              page_sql: arrc[k].page_sql ? arrc[k].page_sql : ""
-            });
-          } else if (arrc[k].sql) {
-            tableInfoString.push({
-              database_id: this.dbid,
-              table_id: arrc[k].table_id ? parseInt(arrc[k].table_id) : "",
-              is_parallel: arrc[k].is_parallel ? "1" : "0",
-              table_ch_name: arrc[k].table_ch_name,
-              table_name: arrc[k].table_name,
-              sql: arrc[k].sql ? arrc[k].sql : ""
-            });
-          } else {
-            tableInfoString.push({
-              database_id: this.dbid,
-              table_id: arrc[k].table_id ? parseInt(arrc[k].table_id) : "",
-              is_parallel: arrc[k].is_parallel ? "1" : "0",
-              table_ch_name: arrc[k].table_ch_name,
-              table_name: arrc[k].table_name
-            });
-          } */
-
+        for (let k = 0; k < arrData.length; k++) {
           tableInfoString.push({
             database_id: this.dbid,
-            table_id: arrc[k].table_id ? parseInt(arrc[k].table_id) : "",
-            is_parallel: arrc[k].is_parallel ? "1" : "0",
-            table_ch_name: arrc[k].table_ch_name,
-            table_name: arrc[k].table_name,
-            page_sql: arrc[k].page_sql ? arrc[k].page_sql : "",
-            sql: arrc[k].sql ? arrc[k].sql : "",
-            pageparallels: arrc[k].pageparallels
-              ? parseInt(arrc[k].pageparallels)
+            table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+            is_parallel: arrData[k].is_parallel ? "1" : "0",
+            table_ch_name: arrData[k].table_ch_name,
+            table_name: arrData[k].table_name,
+            page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
+            sql: arrData[k].sql ? arrData[k].sql : "",
+            pageparallels: arrData[k].pageparallels
+              ? parseInt(arrData[k].pageparallels)
               : null,
-            dataincrement: arrc[k].dataincrement
-              ? parseInt(arrc[k].dataincrement)
+            dataincrement: arrData[k].dataincrement
+              ? parseInt(arrData[k].dataincrement)
               : null,
-            table_count: arrc[k].table_count ? "" + arrc[k].table_count : ""
+            table_count: arrData[k].table_count
+              ? "" + arrData[k].table_count
+              : ""
           });
         }
         this.tablein = tableInfoString;
-        this.saveTableInfofun(arrc);
+        this.saveTableInfofun(arrData);
       });
     },
     saveTableInfofun(arrData) {
@@ -777,7 +780,6 @@ export default {
         params2 = {};
       params["colSetId"] = this.dbid;
       addTaskAllFun.getColumnInfoByColSetId(params).then(res => {
-        console.log(res.data);
         let colData = res.data ? res.data : [];
         for (let i = 0; i < arrData.length; i++) {
           if (arrData[i].selectionState == true) {
@@ -785,10 +787,12 @@ export default {
               for (let key in colData) {
                 if (arrData[i].table_name == key) {
                   arrData[i].data = colData[key];
+                  arrData[i].edit = "1";
                 }
               }
               arrcol.push({
                 tablename: arrData[i].table_name,
+                edit: arrData[i].edit ? arrData[i].edit : "0",
                 data: arrData[i].data ? arrData[i].data : ""
               });
             }
@@ -798,7 +802,20 @@ export default {
         if (this.SelectColumn.length > 0) {
           for (let j = 0; j < cola.length; j++) {
             for (let n = 0; n < this.SelectColumn.length; n++) {
-              if (cola[j].tablename == this.SelectColumn[n].tablename) {
+              if (
+                cola[j].tablename == this.SelectColumn[n].tablename &&
+                cola[j].edit == "1"
+              ) {
+                let arrdataCol = [];
+                for (let k = 0; k < this.SelectColumn[n].data.length; k++) {
+                  arrdataCol.push({
+                    column_id: this.SelectColumn[n].data[k].column_id,
+                    colume_ch_name: this.SelectColumn[n].data[k].colume_ch_name,
+                    colume_name: this.SelectColumn[n].data[k].colume_name
+                  });
+                }
+                cola[j].data = arrdataCol;
+              } else if (cola[j].tablename == this.SelectColumn[n].tablename) {
                 cola[j].data = this.SelectColumn[n].data;
               }
             }
@@ -806,15 +823,14 @@ export default {
         }
         for (let m = 0; m < cola.length; m++) {
           let a = [],
-            b = [];
+            b = [],
+            c = [];
+          a = JSON.parse(JSON.stringify(cola[m].data));
           for (let mm = 0; mm < cola[m].data.length; mm++) {
             b.push({ sort: mm + 1, columnName: cola[m].data[mm].colume_name });
-            a.push(cola[m].data[mm]);
           }
           for (let i = 0; i < a.length; i++) {
-            console.log(a[i].is_get);
             for (let key in a[i]) {
-              console.log(key);
               if (key == "is_get") {
                 if (a[i][key] == true) {
                   a[i][key] = "1";
@@ -822,16 +838,20 @@ export default {
                   a[i][key] = "0";
                 }
               }
-              if (key == "tc_or") {
+              if (key == "colume_ch_name") {
+                if (a[i][key] == "") {
+                  a[i][key] = a[i].colume_name;
+                }
+              }
+              if (key == "is_primary_key") {
+                if (a[i][key] == true) {
+                  a[i][key] = "1";
+                } else if (a[i][key] == false) {
+                  a[i][key] = "0";
+                }
+              }
+              /*  if (key == "tc_or") {
                 a[i][key] = "" + a[i][key];
-              }
-              /* if (a[i][j].is_get == true) {
-                a[i][j].is_get = "1";
-              } else if (a[i][j].is_get == false) {
-                a[i][j].is_get = "0";
-              }
-              if(a[i][j].tc_or){
-a[i][j].tc_or=''+a[i][j].tc_or
               } */
             }
           }
@@ -840,12 +860,10 @@ a[i][j].tc_or=''+a[i][j].tc_or
             columnSortString: b.length != 0 ? JSON.stringify(b) : ""
           });
         }
+        let collstring = collTbConfParamString;
         params2["colSetId"] = parseInt(this.dbid);
         params2["tableInfoString"] = JSON.stringify(this.tablein);
-        params2["collTbConfParamString"] = JSON.stringify(
-          collTbConfParamString
-        );
-        console.log(params2, 222);
+        params2["collTbConfParamString"] = JSON.stringify(collstring);
         addTaskAllFun.saveCollTbInfo(params2).then(res => {
           if (res.code == 200) {
             this.activeFirst = true;
@@ -872,7 +890,9 @@ a[i][j].tc_or=''+a[i][j].tc_or
         };
       } else {
         data = {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          sourId: this.sourceId,
+          sName: this.sourceName
         };
       }
       this.$router.push({
@@ -1039,7 +1059,6 @@ a[i][j].tc_or=''+a[i][j].tc_or
       let params = {};
       params["tableName"] = this.EXtable_name;
       params["colSetId"] = parseInt(this.dbid);
-      console.log(params);
       addTaskAllFun.getTableDataCount(params).then(res => {
         this.ruleForm_ParallelEx.db_allnum = res.data;
       });
@@ -1127,6 +1146,7 @@ a[i][j].tc_or=''+a[i][j].tc_or
     selectCol(value, row) {
       this.dialogSelectColumn = true;
       this.tablename = row.table_name;
+      this.disShow = row.table_id ? true : false;
       if (this.SelectColumn.length != 0) {
         let arrid = [];
         for (let i = 0; i < this.SelectColumn.length; i++) {
@@ -1136,13 +1156,6 @@ a[i][j].tc_or=''+a[i][j].tc_or
           arrid.length = 0;
           for (let i = 0; i < this.SelectColumn.length; i++) {
             if (this.SelectColumn[i].tablename == this.tablename) {
-              /* for(let m=0;m<this.SelectColumn[i].data.length;m++){
-if(this.SelectColumn[i].data[m].is_get=='1'){
-this.SelectColumn[i].data[m].is_get=true
-}else{
-  this.SelectColumn[i].data[m].is_get=false
-}
-              } */
               this.SelectColumnData = this.SelectColumn[i].data;
             }
           }
@@ -1161,11 +1174,11 @@ this.SelectColumn[i].data[m].is_get=true
       params["tableName"] = name;
       params["tableId"] = id;
       addTaskAllFun.getColumnsigleInfo(params).then(res => {
-        console.log(res.data);
         this.coltable_name = "";
         this.coltable_name = res.data.tableName;
         let data = res.data.columnInfo,
-          count = 0;
+          count = 0,
+          num = 0;
         for (let i = 0; i < data.length; i++) {
           if (data[i].is_get) {
             if (data[i].is_get == "1") {
@@ -1177,10 +1190,30 @@ this.SelectColumn[i].data[m].is_get=true
           } else {
             data[i].is_get = false;
           }
+          if (data[i].is_primary_key) {
+            if (data[i].is_primary_key == "1") {
+              num++;
+              data[i].is_primary_key = true;
+            } else {
+              data[i].is_primary_key = false;
+            }
+          } else {
+            data[i].is_primary_key = false;
+          }
         }
-        if ((count = data.length && data.length > 0)) {
+        if (count == data.length && data) {
           this.Allis_SelectColumn = true;
           count = 0;
+        } else {
+          this.Allis_SelectColumn = false;
+          count = 0;
+        }
+        if (num == data.length && data) {
+          this.Alliskey_SelectColumn = true;
+          num = 0;
+        } else {
+          this.Alliskey_SelectColumn = false;
+          num = 0;
         }
         this.SelectColumnData = JSON.parse(JSON.stringify(data));
       });
@@ -1215,6 +1248,16 @@ this.SelectColumn[i].data[m].is_get=true
           item.is_get = true;
         } else {
           item.is_get = false;
+        }
+      });
+    },
+    //
+    Alliskey_SelectColumnFun(items, e) {
+      items.forEach((item, i) => {
+        if (e) {
+          item.is_primary_key = true;
+        } else {
+          item.is_primary_key = false;
         }
       });
     },
@@ -1312,7 +1355,7 @@ this.SelectColumn[i].data[m].is_get=true
   text-align: center;
   margin-top: 6px;
 }
-#singleTable >>> .el-table__header tr,
+/* #singleTable >>> .el-table__header tr,
 #singleTable >>> .el-table__header th {
   padding: 0;
   height: 40px;
@@ -1322,10 +1365,11 @@ this.SelectColumn[i].data[m].is_get=true
   padding: 0;
   height: 40px;
 }
-#singleTable >>> .el-input__inner {
-  height: 30px;
-}
+
 #singleTable >>> .el-textarea__inner {
+  height: 30px;
+} */
+.rightSearch >>> .el-input__inner {
   height: 30px;
 }
 .locationcenter {
@@ -1378,5 +1422,24 @@ this.SelectColumn[i].data[m].is_get=true
   display: inline-block;
   position: absolute;
   left: -8px;
+}
+.alltabletitle {
+  height: 36px;
+  line-height: 36px;
+  font-size: 14px;
+  color: #d86b6b;
+  padding-left: 8px;
+}
+.steps2>>>.el-form-item__error{
+    color: #F56C6C;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 6px;
+    position: absolute;
+    top: -18%;
+    left: 23%;
+}
+.textclass>>>.el-form-item__content{
+line-height: 30px;
 }
 </style>

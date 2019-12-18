@@ -26,9 +26,9 @@
             <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="table_name" label="表名" width="110" align="center"></el-table-column>
-        <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center"></el-table-column>
-        <el-table-column label=" 是否仅抽取" width="120" align="center">
+        <el-table-column prop="table_name" label="表名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label=" 是否仅抽取" width="115" align="center">
           <template slot="header">
             <el-checkbox
               @change="exCheckAllChange(ruleForm.unloadingFileData,excheckAll)"
@@ -169,7 +169,7 @@
       @size-change="unloading_handleSizeChange"
       @current-change="unloading_handleCurrentChange"
       :current-page="unloadingcurrentPage"
-      :page-sizes="[5, 10, 15, 20]"
+      :page-sizes="[100, 200, 300, 400]"
       :page-size="unloadingpagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="ruleForm.unloadingFileData.length"
@@ -324,7 +324,7 @@ export default {
       excheckAll: false,
       dialogAllTableSeparatorSettings: false,
       unloadingcurrentPage: 1,
-      unloadingpagesize: 10,
+      unloadingpagesize: 100,
       ruleForm: {
         unloadingFileData: []
       },
@@ -383,15 +383,14 @@ export default {
     this.IsExData1();
     this.IsExData2();
       // 获取进入页面的总数据
-    if (this.$route.query.edit == "yes") {
+    // if (this.$route.query.edit == "yes") {
     this.getInitInfo();
-    }
+    // }
     // 是否仅抽取
     let params = {};
     params["category"] = "DataExtractType";
     addTaskAllFun.getCategoryItems(params).then(res => {
       this.isExData = res.data;
-      console.log(res);
     });
     // 字符集下拉
     let params2 = {};
@@ -445,7 +444,9 @@ export default {
               };
             } else {
               data = {
-                id:this.dbid
+                id: this.dbid,
+              sourId:this.$route.query.sourId,
+              sName: this.$route.query.sName,
               };
             }
             this.$router.push({
@@ -470,7 +471,9 @@ export default {
         };
       } else {
         data = {
-          id: this.$route.query.id
+           id: res.data,
+              sourId:this.$route.query.sourId,
+              sName: this.$route.query.sName,
         };
       }
       this.$router.push({
@@ -559,7 +562,6 @@ export default {
           this.dialogAllTableSeparatorSettings = false;
           let data = this.separatorData;
           let alldata = this.ruleForm.unloadingFileData;
-          console.log(alldata);
           for (var i = 0; i < alldata.length; i++) {
             for (var key in alldata[i]) {
               if (key == "data_extract_type") {
@@ -587,7 +589,6 @@ export default {
             Datacharacterset: ""
           };
         } else {
-          console.log("error submit!!");
           this.dialogAllTableSeparatorSettings = true;
           return false;
         }
