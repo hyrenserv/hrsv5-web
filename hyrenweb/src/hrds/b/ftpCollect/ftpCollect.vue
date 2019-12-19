@@ -454,7 +454,7 @@ export default {
         },
         // 检查表单有没有填写完整
         submitForm(formName) {
-            if (this.DifferenceValue <= 0) {
+            if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
                     type: 'warning',

@@ -234,7 +234,7 @@ export default {
         },
         // 保存非结构化文件采集页面信息跳转下一步和更新非结构化文件采集到下一步
         unStructuredCollect(formName) {
-            if (this.DifferenceValue <= 0) {
+            if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
                     type: 'warning',
