@@ -25,7 +25,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
@@ -203,13 +203,13 @@ export default {
         handleCurrentChangeList(val) {
             //把val赋给当前页面
             this.currentPage = val;
-            functionAll.getDepartmentInfo({
-                currPage: this.currentPage,
-                pageSize: this.pageSize
-            }).then(res => {
-                this.departmentalList = res.data;
-            })
-
+            this.getDepartmentInfoAll();
+        },
+        // 改变每页显示条数
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.getDepartmentInfoAll();
+            this.currentPage = 1;
         },
     }
 }

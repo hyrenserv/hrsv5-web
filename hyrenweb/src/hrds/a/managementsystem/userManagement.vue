@@ -28,7 +28,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮增加新的用户信息-->
     <!-- 新增用户弹出框 -->
@@ -408,6 +408,12 @@ export default {
             //把val赋给当前页面
             pageNow = val;
             this.getSysUserInfoAll(pageNow);
+        },
+        // 改变每页显示条数
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.getSysUserInfoAll("1");
+            this.currentPage = 1;
         },
         // getvalue代码项
         getValueWithcode(type) {

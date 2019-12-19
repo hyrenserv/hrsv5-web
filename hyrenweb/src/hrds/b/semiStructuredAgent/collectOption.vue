@@ -300,22 +300,22 @@ export default {
         },
         // 下一步
         nextSteps(formName) {
-            if (this.DifferenceValue <= 0) {
+            if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
                     type: 'warning',
                     message: '结束日期不能小于开始日期!',
                     duration: 0
                 })
-            } else {
-                function changeData(num) {
-                    return num > 9 ? (num + "") : ("0" + num);
-                }
-                let s_date = (this.form.s_date.getFullYear() + '-' + changeData((this.form.s_date.getMonth() + 1)) + '-' + changeData(this.form.s_date.getDate())).replace(/\-/g, '');
-                let e_date = (this.form.e_date.getFullYear() + '-' + changeData((this.form.e_date.getMonth() + 1)) + '-' + changeData(this.form.e_date.getDate())).replace(/\-/g, '');
+            } else{
                 this.form.file_path = "/";
                 this.$refs[formName].validate(valid => {
                     if (valid) {
+                        function changeData(num) {
+                            return num > 9 ? (num + "") : ("0" + num);
+                        }
+                        let s_date = (this.form.s_date.getFullYear() + '-' + changeData((this.form.s_date.getMonth() + 1)) + '-' + changeData(this.form.s_date.getDate())).replace(/\-/g, '');
+                        let e_date = (this.form.e_date.getFullYear() + '-' + changeData((this.form.e_date.getMonth() + 1)) + '-' + changeData(this.form.e_date.getDate())).replace(/\-/g, '');
                         //这里有一个保存的接口成功才会跳转
                         this.form["s_date"] = s_date;
                         this.form["e_date"] = e_date;
