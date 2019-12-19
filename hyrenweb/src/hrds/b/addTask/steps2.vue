@@ -481,9 +481,9 @@ export default {
         pageExnum: 5
       },
       dbid: null,
-      aId: null,
-      sourId: null,
-      sName: null,
+      agentId: null,
+      sourceId: null,
+      sourceName: null,
       allData: [],
       callTable: [],
       EXtable_name: "",
@@ -507,9 +507,9 @@ export default {
   },
   created() {
     this.dbid = parseInt(this.$route.query.id);
-    this.aId = this.$route.query.aId;
-    this.sourId = this.$route.query.sourId;
-    this.sName = this.$route.query.sName;
+    this.agentId = this.$route.query.agent_id;
+    this.sourceId = this.$route.query.source_id;
+    this.sourceName = this.$route.query.source_name;
     this.edit = this.$route.query.edit;
   },
   mounted() {
@@ -653,21 +653,21 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-          aId: this.$route.query.aId,
-          id: this.dbid,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName,
-          edit: "yes"
+            agent_id: this.agentId,
+            id: this.dbid,
+            source_id:  this.sourceId,
+            source_name: this.sourceName,
+            edit: "yes"
         };
       }else{
         data = {
           id: this.dbid,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName,
+          source_id: this.sourceId,
+          source_name: this.sourceName,
         };
       }
       this.$router.push({
-        path: "/dbaddTasksteps03",
+        path: "/collection1_3",
         query: data
       });
     },
@@ -882,21 +882,21 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-          aId: this.$route.query.aId,
-          id: this.$route.query.id,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName,
-          edit: "yes"
+            agent_id: this.agentId,
+            id: this.dbid,
+            source_id:  this.sourceId,
+            source_name: this.sourceName,
+            edit: "yes"
         };
       } else {
         data = {
-          id: this.$route.query.id,
-          sourId: this.sourceId,
-          sName: this.sourceName
+          id:this.dbid,
+          source_id: this.sourceId,
+          source_name: this.sourceName
         };
       }
       this.$router.push({
-        path: "/dbaddTasksteps01",
+        path: "/collection1_1",
         query: data
       });
     },
