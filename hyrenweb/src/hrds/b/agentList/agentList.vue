@@ -21,17 +21,17 @@
           >任务配置</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="对象文件 Agent" width="180" align="center">
+      <el-table-column label="非结构化 Agent" width="180" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.dfflag!=0"
             type="success"
             size="mini"
-            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)"
           >任务配置</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="文件 Agent" align="center">
+      <el-table-column label="半结构化 Agent" align="center">
         <template scope="scope">
           <el-button
             v-if="scope.row.nonstructflag!=0"
@@ -47,7 +47,7 @@
             v-if="scope.row.halfstructflag!=0"
             type="success"
             size="mini"
-            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)"
           >任务配置</el-button>
         </template>
       </el-table-column>
@@ -57,7 +57,7 @@
             v-if="scope.row.ftpflag!=0"
             type="success"
             size="mini"
-            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)"
+            @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)"
           >任务配置</el-button>
         </template>
       </el-table-column>
@@ -107,9 +107,9 @@
     <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="50%" class="taskEx">
       <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
       <el-table :data="taskMang" border size="medium">
-        <el-table-column property="task_name" label="任务名称" width="150px" align="center"></el-table-column>
+        <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
-        <el-table-column property label="启动方式" width="100px" align="center"></el-table-column>
+        <el-table-column property label="启动方式" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="采集频率" width="100px" align="center"></el-table-column>
         <el-table-column label="操作" width="200px" align="center">
           <template scope="scope">
@@ -167,7 +167,7 @@ export default {
     getType() {
       // CollectType
       let params = {};
-      params["category"] = "CollectType";
+      params["category"] = "AgentType";
       agentList.getCategoryItems(params).then(res => {
         this.CollectType = res.data;
       });
@@ -273,6 +273,7 @@ export default {
     },
     // 新增任务  根据不同类型跳转不同页面
     addtask(row, sourceName) {
+      console.log(row)
        for (let i = 0; i < this.CollectType.length; i++) {
         if (this.CollectType[i].value == row.agent_type) {
           this.agentType = this.CollectType[i].code;
@@ -286,39 +287,6 @@ export default {
           });
         }
       }
-      /* if (type == "数据库采集") {
-        this.$router.push({
-          path: "/dbaddTasksteps01",
-          query: {
-            aId: agent_id,
-            sName: sourceName,
-            sourId: sourceId
-          }
-        });
-      } else if (type == "2") {
-        this.$router.push({
-          path: "/configureStartMode",
-          query: {
-            agent_name: name,
-            agent_id: agent_id
-          }
-        });
-      } else if (type == "3") {
-        this.$router.push({
-          path: "/ftpCollect",
-          query: {
-            agent_id: agent_id
-          }
-        });
-      } else if (type == "4") {
-      } else if (type == "5") {
-        this.$router.push({
-          path: "/collectOption",
-          query: {
-            agent_id: agent_id
-          }
-        });
-      } */
     },
     tasklogFun(row) {
        for (let i = 0; i < this.CollectType.length; i++) {
@@ -331,21 +299,6 @@ export default {
           });
         }
       }
-      /* if (type == "数据库采集") {
-        this.$router.push({
-          path: "/taskLog",
-          query: {
-            agenId: agentid
-          }
-        });
-      } else if (type == "5") {
-        this.$router.push({
-          path: "/collectOption",
-          query: {
-            agenId: agentid
-          }
-        });
-      } */
     },
     //删除
     taskDelBtn(type, row) {
@@ -353,7 +306,7 @@ export default {
         let params = {};
         params["collectSetId"] = row.id;
         agentList.deleteDBTask(params).then(res => {
-          this.taskManagement(type, row.agent_id, row.source_id);
+          this.taskManagement(row);
           message.deleteSuccess(res);
         });
       }
@@ -423,7 +376,9 @@ export default {
 .taskEx >>> .el-dialog__body {
   padding: 8px 20px;
 }
-
+.taskEx>>>.el-table__row>td{
+  padding: 0;
+}
 .title-sourceName,
 .title-agentType {
   font-size: 18px;
