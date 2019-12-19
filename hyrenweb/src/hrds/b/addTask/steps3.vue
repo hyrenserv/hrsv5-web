@@ -1068,9 +1068,9 @@ export default {
   },
   created() {
     this.dbid = this.$route.query.id;
-    this.aId = this.$route.query.aId;
-    this.sourId = this.$route.query.sourId;
-    this.sName = this.$route.query.sName;
+    this.aId = this.$route.query.agent_id;
+    this.sourId = this.$route.query.source_id;
+    this.sName = this.$route.query.source_name;
   },
   mounted() {
     // 获取进入页面的总数据
@@ -1093,17 +1093,17 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-          aId: this.$route.query.aId,
+          agent_id: this.aId,
           id: this.dbid,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName,
+          source_id: this.sourId,
+          source_name: this.sName,
           edit: "yes"
         };
       } else {
         data = {
           id: this.dbid,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName
+          source_id: this.sourId,
+          source_name: this.sName
         };
       }
       let params = {};
@@ -1112,7 +1112,7 @@ export default {
       addTaskAllFun.saveDataCleanConfig(params).then(res => {
         this.dbid = res.data;
         this.$router.push({
-          path: "/dbaddTasksteps04",
+          path: "/collection1_4",
           query: data
         });
       });
@@ -1121,21 +1121,21 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-          aId: this.$route.query.aId,
-          id: this.$route.query.id,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName,
+         agent_id: this.aId,
+          id: this.dbid,
+          source_id: this.sourId,
+          source_name: this.sName,
           edit: "yes"
         };
       } else {
         data = {
-          id: this.$route.query.id,
-          sourId: this.$route.query.sourId,
-          sName: this.$route.query.sName
+          id: this.dbid,
+          source_id: this.sourId,
+          source_name: this.sName
         };
       }
       this.$router.push({
-        path: "/dbaddTasksteps02",
+        path: "/collection1_2",
         query: data
       });
     },

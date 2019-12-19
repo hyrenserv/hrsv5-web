@@ -68,17 +68,12 @@
         <span class="title-sourceName">数据源名称:{{ sourceName }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span class="title-agentType">采集类型:{{agentType }}</span>
       </div>
-      <el-table :data="gridData2" border >
+      <el-table :data="gridData2" border>
         <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
         <el-table-column property="agent_ip" label="Agent IP" align="center"></el-table-column>
         <el-table-column property="agent_port" label="Agent端口" width="100px" align="center"></el-table-column>
         <el-table-column property="agent_type" label="采集类型" width="100px" align="center"></el-table-column>
-        <el-table-column
-          property="agent_status" 
-          label="Agent连接状态"
-          width="160px"
-          align="center"
-        ></el-table-column>
+        <el-table-column property="agent_status" label="Agent连接状态" width="160px" align="center"></el-table-column>
         <el-table-column property="AgentOpt" label="操作" width="280px" align="center">
           <template scope="scope">
             <el-row>
@@ -86,21 +81,17 @@
                 <el-button
                   type="success"
                   size="mini"
-                  @click="addtask(scope.row.source_id,scope.row.agent_name,scope.row.agent_type,scope.row.agent_id,sourceName)"
+                  @click="addtask(scope.row,sourceName)"
                 >新增任务</el-button>
               </el-col>
               <el-col :span="8">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="taskManagement(scope.row.agent_type,scope.row.agent_id,scope.row.source_id)"
-                >任务管理</el-button>
+                <el-button type="primary" size="mini" @click="taskManagement(scope.row)">任务管理</el-button>
               </el-col>
               <el-col :span="8">
                 <el-button
                   type="warning"
                   size="mini"
-                  @click="tasklogFun(scope.row.agent_type,scope.row.agent_id)"
+                  @click="tasklogFun(scope.row)"
                 >日志查看</el-button>
               </el-col>
             </el-row>
@@ -117,17 +108,14 @@
       <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
       <el-table :data="taskMang" border size="medium">
         <el-table-column property="task_name" label="任务名称" width="150px" align="center"></el-table-column>
-        <el-table-column property label="采集类型" align="center">{{agentType}}</el-table-column>
+        <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
         <el-table-column property label="启动方式" width="100px" align="center"></el-table-column>
         <el-table-column label="采集频率" width="100px" align="center"></el-table-column>
         <el-table-column label="操作" width="200px" align="center">
           <template scope="scope">
             <el-row>
               <el-col :span="5" class="edilt" style="text-align: center;">
-                <el-button
-                  type="text"
-                  @click="taskEditBtn(agentType,scope.row.agent_id,scope.row.id,scope.row.source_id,sourceName)"
-                >编辑</el-button>
+                <el-button type="text" @click="taskEditBtn(scope.row,sourceName)">编辑</el-button>
               </el-col>
               <el-col :span="5" class="delbtn">
                 <el-button type="text" @click="taskDelBtn(agentType,scope.row)">删除</el-button>
@@ -184,6 +172,7 @@ export default {
         this.CollectType = res.data;
       });
     },
+    // 获取状态
     getStatus() {
       let params = {};
       params["category"] = "AgentStatus";
@@ -197,6 +186,7 @@ export default {
       params["sourceId"] = id;
       params["agentType"] = type;
       agentList.getAgentInfo(params).then(res => {
+        console.log(res);
         let arrdata = res.data;
         for (let i = 0; i < this.CollectType.length; i++) {
           if (this.CollectType[i].code == arrdata[0].agent_type) {
@@ -216,52 +206,48 @@ export default {
           }
         }
         this.sourceName = arrdata[0].datasource_name;
-
         this.gridData2 = arrdata;
-
-        /*  if (res.data[0].agent_type == 1) {
-          this.agentType = "数据库采集";
-        } else if (res.data[0].agent_type == 2) {
-          this.agentType = "非结构化采集";
-        } else if (res.data[0].agent_type == 3) {
-          this.agentType = "Ftp采集Agent";
-        } else if (res.data[0].agent_type == 4) {
-          this.agentType = "数据文件采集";
-        } else {
-          this.agentType = "半结构化采集";
-        } */
-        /*  for(let i=0;i<this.AgentStatus.length;i++){
-          if(res.data[0].agent_status==this.AgentStatus[i].code){
-this.agentStatus=this.AgentStatus[i].value
-          }
-        } */
-        /* if (res.data[0].agent_status == 1) {
-          this.agentStatus = "已连接";
-        } else if (res.data[0].agent_status == 2) {
-          this.agentStatus = "未连接";
-        } else {
-          this.agentStatus = "正在进行中";
-        } */
       });
     },
-    taskManagement(type, Agentid, sourceid) {
+    taskManagement(row) {
+      console.log(row);
       this.dialogTableTask = true;
       let params = {};
-      params["sourceId"] = sourceid;
-      params["agentId"] = Agentid;
+      params["sourceId"] = row.source_id;
+      params["agentId"] = row.agent_id;
       agentList.getTaskInfo(params).then(res => {
-        this.taskMang = res.data;
+        let arrdata = res.data;
+        for (let i = 0; i < arrdata.length; i++) {
+          arrdata[i].agent_type = row.agent_type;
+        }
+        this.taskMang = arrdata;
+        console.log(res);
       });
     },
     // 任务管理里面的编辑  根据不同类型跳转不同页面
-    taskEditBtn(type, agentId, databaseId, sourceId, sourceName) {
-      if (type == "数据库采集") {
+    taskEditBtn(row, sourceName) {
+      for (let i = 0; i < this.CollectType.length; i++) {
+        if (this.CollectType[i].value == row.agent_type) {
+          this.agentType = this.CollectType[i].code;
+          this.$router.push({
+            path: "collection" + this.CollectType[i].code + "_1",
+            query: {
+              agent_id: row.agent_id,
+              id: row.id,
+              source_id: row.source_id,
+              source_name: sourceName,
+              edit: "yes"
+            }
+          });
+        }
+      }
+      /*     if (row.agent_type == "数据库采集") {
         this.$router.push({
           path: "dbaddTasksteps01",
           query: {
-            aId: agentId,
-            id: databaseId,
-            sourId: sourceId,
+            aId: row.agent_id,
+            id: row.id,
+            sourId: row.source_id,
             sName: sourceName,
             edit: "yes"
           }
@@ -283,11 +269,24 @@ this.agentStatus=this.AgentStatus[i].value
             agent_name: type
           }
         });
-      }
+      } */
     },
     // 新增任务  根据不同类型跳转不同页面
-    addtask(sourceId, name, type, agent_id, sourceName) {
-      if (type == "数据库采集") {
+    addtask(row, sourceName) {
+       for (let i = 0; i < this.CollectType.length; i++) {
+        if (this.CollectType[i].value == row.agent_type) {
+          this.agentType = this.CollectType[i].code;
+          this.$router.push({
+            path: "collection" + this.CollectType[i].code + "_1",
+            query: {
+              agent_id: row.agent_id,
+              source_id: row.source_id,
+              source_name: sourceName,
+            }
+          });
+        }
+      }
+      /* if (type == "数据库采集") {
         this.$router.push({
           path: "/dbaddTasksteps01",
           query: {
@@ -319,10 +318,20 @@ this.agentStatus=this.AgentStatus[i].value
             agent_id: agent_id
           }
         });
-      }
+      } */
     },
-    tasklogFun(type, agentid) {
-      if (type == "数据库采集") {
+    tasklogFun(row) {
+       for (let i = 0; i < this.CollectType.length; i++) {
+        if (this.CollectType[i].value == row.agent_type) {
+          this.$router.push({
+            path: "taskLog" + this.CollectType[i].code,
+            query: {
+              agent_id: row.agent_id,
+            }
+          });
+        }
+      }
+      /* if (type == "数据库采集") {
         this.$router.push({
           path: "/taskLog",
           query: {
@@ -336,11 +345,11 @@ this.agentStatus=this.AgentStatus[i].value
             agenId: agentid
           }
         });
-      }
+      } */
     },
     //删除
     taskDelBtn(type, row) {
-      if (type == "数据库采集") {
+         if (type == "数据库采集") {
         let params = {};
         params["collectSetId"] = row.id;
         agentList.deleteDBTask(params).then(res => {

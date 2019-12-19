@@ -374,9 +374,9 @@ export default {
     addTaskAllFun.getCategoryItems(params).then(res => {
       this.DatabaseType = res.data;
     });
-    this.sourceName = this.$route.query.sName;
-    this.sourceId = this.$route.query.sourId;
-    this.agentId = this.$route.query.aId;
+    this.sourceName = this.$route.query.source_name;
+    this.sourceId = this.$route.query.source_id;
+    this.agentId = this.$route.query.agent_id;
       this.dbid = this.$route.query.id;
 
   },
@@ -428,27 +428,27 @@ export default {
         if(this.$route.query.edit=='yes'){
         params["database_id"] =  this.$route.query.id;
         }
-        params["agent_id"] = this.$route.query.aId;
+        params["agent_id"] = this.$route.query.agent_id;
         addTaskAllFun.saveDbConf(params).then(res => {
           if(res.code=='200'){
              let data = {};
           if (this.$route.query.edit == "yes") {
             data = {
-              aId: this.agentId,
-              id: res.data,
-              sourId: this.sourceId,
-              sName: this.sourceName,
-              edit: "yes"
+              agent_id: this.agentId,
+            id: res.data,
+            source_id:  this.sourceId,
+            source_name: this.sourceName,
+            edit: "yes"
             };
           } else {
             data = {
               id: res.data,
-              sourId: this.sourceId,
-              sName: this.sourceName,
+              source_id: this.sourceId,
+              source_name: this.sourceName,
             };
           }
           this.$router.push({
-            path: "/dbaddTasksteps02",
+            path: "/collection1_2",
             query: data
           });
           }else{

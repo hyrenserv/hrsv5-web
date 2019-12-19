@@ -38,7 +38,7 @@ export function viewTaskLog(data) {
         params:data
     })
 }
-// 获取所有数据库的编码和名称 //获取字符补齐
+// 获取编码项
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
