@@ -10,6 +10,7 @@
               placeholder="查询表名"
               style="width: 50%;
     margin-right: 10px;"
+              @keyup.enter.native="searchEnterFun"
             />
             <el-button
               size="mini"
@@ -24,6 +25,7 @@
               ref="filterTable"
               stripe
               :default-sort="{prop: 'date', order: 'descending'}"
+              :empty-text="tableloadingInfo"
               style="width: 100%"
               height="360"
               border
@@ -50,12 +52,24 @@
                   <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true">
+              <el-table-column
+                prop="table_name"
+                label="表名"
+                width="180"
+                align="center"
+                :show-overflow-tooltip="true"
+              >
                 <!-- <template>
                   <span>table_name</span>
                 </template>-->
               </el-table-column>
-              <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center" :show-overflow-tooltip="true">
+              <el-table-column
+                prop="table_ch_name"
+                label="表中文名"
+                width="180"
+                align="center"
+                :show-overflow-tooltip="true"
+              >
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.table_ch_name"
@@ -282,14 +296,13 @@
                     :checked="Alliskey_SelectColumn"
                     v-if="disShow==true"
                     disabled
-                  ></el-checkbox> 
+                  ></el-checkbox>
                   <el-checkbox
                     v-else
                     @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)"
                     v-model="Alliskey_SelectColumn"
                     :checked="Alliskey_SelectColumn"
-                  ></el-checkbox>
-                  主键定义
+                  ></el-checkbox>主键定义
                 </template>
                 <template slot-scope="scope">
                   <el-checkbox
@@ -306,9 +319,26 @@
                   <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                 </template>
               </el-table-column>
-              <el-table-column property="colume_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column property="column_type" label="字段类型" width="150px" align="center" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column property="colume_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
+              <el-table-column
+                property="colume_name"
+                label="列名"
+                align="center"
+                width="150px"
+                :show-overflow-tooltip="true"
+              ></el-table-column>
+              <el-table-column
+                property="column_type"
+                label="字段类型"
+                width="150px"
+                align="center"
+                :show-overflow-tooltip="true"
+              ></el-table-column>
+              <el-table-column
+                property="colume_ch_name"
+                label="列中文名"
+                align="center"
+                :show-overflow-tooltip="true"
+              >
                 <template slot-scope="scope">
                   <el-input
                     v-if="scope.row.colume_ch_name!=''"
@@ -359,7 +389,8 @@
           class="addline"
           @click="addRow(ruleForm.sqlExtractData)"
           size="mini"
-        >新增行</el-button><span class="alltabletitle">填写信息后请记得点击保存</span>
+        >新增行</el-button>
+        <span class="alltabletitle">填写信息后请记得点击保存</span>
         <el-form ref="ruleForm" :model="ruleForm" class="steps2">
           <el-table
             :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)"
@@ -392,10 +423,25 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column property="sql" label="查询SQL语句" align="center" style="line-height: 30px;">
+            <el-table-column
+              property="sql"
+              label="查询SQL语句"
+              align="center"
+              style="line-height: 30px;"
+              class="textlinght"
+            >
               <template scope="scope">
-                <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default" class="textclass">
-                  <el-input v-model="scope.row.sql" type="textarea" placeholder="查询SQL语句"></el-input>
+                <el-form-item
+                  :prop="'sqlExtractData.'+scope.$index+'.sql'"
+                  :rules="rule.default"
+                  class="textclass"
+                >
+                  <el-input
+                    v-model="scope.row.sql"
+                    type="textarea"
+                    placeholder="查询SQL语句"
+                    style="line-height: 14px;"
+                  ></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -447,6 +493,7 @@ export default {
   data() {
     return {
       active: 1,
+      tableloadingInfo: "数据加载中...",
       rule: validator.default,
       Allis_selectionState: false,
       Allis_SelectColumn: false,
@@ -486,6 +533,8 @@ export default {
       sourceName: null,
       allData: [],
       callTable: [],
+      allDataList: [],
+      isdata: [],
       EXtable_name: "",
       testLinkReturn: "",
       coltable_name: "",
@@ -509,7 +558,7 @@ export default {
     this.dbid = parseInt(this.$route.query.id);
     this.agentId = this.$route.query.agent_id;
     this.sourceId = this.$route.query.source_id;
-    this.sourceName = this.$route.query.source_name;
+    this.sourceName =this.$Base64.decode(this.$route.query.source_name);
     this.edit = this.$route.query.edit;
   },
   mounted() {
@@ -533,7 +582,7 @@ export default {
           data[i].is_parallel = false;
         }
       }
-      this.allData = data;
+      this.allDataList = data;
     });
   },
   computed: {
@@ -557,22 +606,27 @@ export default {
     steps_getInitInfo() {
       let params = {};
       params["colSetId"] = this.dbid;
+      // this.tableloadingInfo='数据加载中...'
       addTaskAllFun.steps_getInitInfo(params).then(res => {
-        let data = res.data;
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].table_id) {
-            data[i].selectionState = true;
+        if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+          let data = res.data;
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].table_id) {
+              data[i].selectionState = true;
+            }
+            if (data[i].is_parallel != "0") {
+              data[i].is_parallel = true;
+            } else {
+              data[i].is_parallel = false;
+            }
           }
-          if (data[i].is_parallel != "0") {
-            data[i].is_parallel = true;
-          } else {
-            data[i].is_parallel = false;
-          }
+          this.tableData = data;
+          this.callTable = data;
+          this.Allis_selectionState = true;
         }
-        this.tableData = data;
-        this.callTable = data;
       });
-      this.Allis_selectionState = true;
     },
     // 表第一列的全选
     Allis_selectionStateFun(items, e) {
@@ -599,7 +653,8 @@ export default {
     getAllTableInfoFun() {
       this.Allis_selectionState = false;
       this.tableData.length = 0;
-      this.tableData = this.allData;
+      this.isdata = this.allDataList;
+      this.tableData = this.allDataList;
     },
     // 全表点击单个复选框
     evercheck(val, name) {
@@ -619,16 +674,28 @@ export default {
     },
     // 搜索
     schfilter(val) {
-      if (this.allData.length != 0) {
-        this.tableData = this.allData.filter(
+      if (this.isdata.length != 0) {
+        this.tableData = this.allDataList.filter(
           data =>
             !val || data.table_name.toLowerCase().includes(val.toLowerCase())
         );
+        if (this.tableData.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        }
       } else {
         this.tableData = this.callTable.filter(
           data =>
             !val || data.table_name.toLowerCase().includes(val.toLowerCase())
         );
+        if (this.tableData.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        }
+      }
+    },
+    searchEnterFun(e) {
+      var keyCode = window.event ? e.keyCode : e.which;
+      if (keyCode == 13 && this.search) {
+        this.schfilter(this.search);
       }
     },
     next() {
@@ -639,7 +706,7 @@ export default {
       addTaskAllFun.saveAllSQL(params1).then(res => {
         if (res.code == 200) {
           this.activeSec = true;
-          this.dbid = res.data;
+          // this.dbid = res.data;
         } else {
           this.$message({
             showClose: true,
@@ -653,17 +720,17 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-            agent_id: this.agentId,
-            id: this.dbid,
-            source_id:  this.sourceId,
-            source_name: this.sourceName,
-            edit: "yes"
+          agent_id: this.agentId,
+          id: this.dbid,
+          source_id: this.sourceId,
+          source_name: this.$Base64.encode(this.sourceName),
+          edit: "yes"
         };
-      }else{
+      } else {
         data = {
           id: this.dbid,
           source_id: this.sourceId,
-          source_name: this.sourceName,
+          source_name:this.$Base64.encode(this.sourceName),
         };
       }
       this.$router.push({
@@ -867,7 +934,7 @@ export default {
         addTaskAllFun.saveCollTbInfo(params2).then(res => {
           if (res.code == 200) {
             this.activeFirst = true;
-            this.dbid = res.data;
+            // this.dbid = res.data;
           } else {
             this.$message({
               showClose: true,
@@ -882,17 +949,17 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-            agent_id: this.agentId,
-            id: this.dbid,
-            source_id:  this.sourceId,
-            source_name: this.sourceName,
-            edit: "yes"
+          agent_id: this.agentId,
+          id: this.dbid,
+          source_id: this.sourceId,
+          source_name: this.$Base64.encode(this.sourceName),
+          edit: "yes"
         };
       } else {
         data = {
-          id:this.dbid,
+          id: this.dbid,
           source_id: this.sourceId,
-          source_name: this.sourceName
+          source_name: this.$Base64.encode(this.sourceName),
         };
       }
       this.$router.push({
@@ -1280,13 +1347,13 @@ export default {
         tableData.splice(index - 1, 1);
         tableData.splice(index, 0, upDate);
       } else {
-        alert("已经是第一条，不可上移");
+        // alert("已经是第一条，不可上移");
       }
     },
     //下移
     moveDown(index, row, tableData) {
       if (index + 1 === tableData.length) {
-        alert("已经是最后一条，不可下移");
+        // alert("已经是最后一条，不可下移");
       } else {
         let downDate = tableData[index + 1];
         tableData.splice(index + 1, 1);
@@ -1346,7 +1413,7 @@ export default {
   position: relative;
 }
 .rightSearch {
-  width: 32%;
+  /* width: 32%; */
   position: absolute;
   top: -49px;
   right: 0;
@@ -1423,6 +1490,12 @@ export default {
   position: absolute;
   left: -8px;
 }
+.steps2 >>> tr > td {
+  padding: 0;
+}
+.steps2 >>> tr > td > .cell {
+  padding: 22px 10px;
+}
 .alltabletitle {
   height: 36px;
   line-height: 36px;
@@ -1430,16 +1503,17 @@ export default {
   color: #d86b6b;
   padding-left: 8px;
 }
-.steps2>>>.el-form-item__error{
-    color: #F56C6C;
-    font-size: 12px;
-    line-height: 1;
-    padding-top: 6px;
-    position: absolute;
-    top: -18%;
-    left: 23%;
+.steps2 >>> .el-form-item__error {
+  color: #f56c6c;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0%;
 }
-.textclass>>>.el-form-item__content{
-line-height: 30px;
+
+.steps2 >>> .el-textarea > textarea {
+  line-height: 14px;
 }
 </style>

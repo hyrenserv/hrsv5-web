@@ -18,7 +18,9 @@ Vue.use(filterRule)
 //导入charts并使用
 import VCharts from 'v-charts'
 Vue.use(VCharts);
-
+// Base64
+import Base64 from '@/utils/base64.js' 
+Vue.prototype.$Base64 = Base64;
 Vue.config.productionTip = false
 
 new Vue({

@@ -14,6 +14,7 @@
         :header-cell-style="{background:'#e6e0e0'}"
         ref="filterTable"
         stripe
+         :empty-text="tableloadingInfo"
         :default-sort="{prop: 'date', order: 'descending'}"
         style="width: 100%"
         height="360"
@@ -320,6 +321,7 @@ export default {
   data() {
     return {
       active: 3,
+       tableloadingInfo: "数据加载中...",
       rule: validator.default,
       excheckAll: false,
       dialogAllTableSeparatorSettings: false,
@@ -377,7 +379,7 @@ export default {
     this.dbid = this.$route.query.id;
     this.aId = this.$route.query.agent_id;
     this.sourId = this.$route.query.source_id;
-    this.sName = this.$route.query.source_name;
+    this.sName = this.$Base64.decode(this.$route.query.source_name);
   },
   mounted() {
     this.IsExData1();
@@ -439,14 +441,14 @@ export default {
                 agent_id: this.aId,
                 id: this.dbid,
                 source_id: this.sourId,
-                source_name: this.sName,
+                source_name: this.$Base64.encode(this.sName),
                 edit: "yes"
               };
             } else {
               data = {
                 id: this.dbid,
               source_id:this.sourId,
-              source_name: this.sName,
+              source_name: this.$Base64.encode(this.sName),
               };
             }
             this.$router.push({
@@ -466,14 +468,14 @@ export default {
           agent_id: this.aId,
                 id: this.dbid,
                 source_id: this.sourId,
-                source_name: this.sName,
+                source_name: this.$Base64.encode(this.sName),
                 edit: "yes"
         };
       } else {
         data = {
            id: this.dbid,
               source_id:this.sourId,
-              source_name: this.sName,
+              source_name: this.$Base64.encode(this.sName),
         };
       }
       this.$router.push({
@@ -492,8 +494,12 @@ export default {
       this.databaseId = this.dbid;
       let params = {};
       params["colSetId"] = this.databaseId;
+       this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getInitInfo(params).then(res => {
-        let arr = res.data;
+         if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+  let arr = res.data;
         for (var i = 0; i < arr.length; i++) {
           if (arr[i].data_extract_type) {
             if (
@@ -532,6 +538,8 @@ export default {
           }
         }
         this.ruleForm.unloadingFileData = arr;
+}
+        
       });
     },
     IsExData1() {
@@ -714,6 +722,15 @@ export default {
 .steps4 >>> .el-form-item {
   margin-bottom: 0 !important;
 }
+.steps4>>>.el-form-item__error{
+    color: #F56C6C;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 6px;
+    position: absolute;
+    top: 100%;
+    left: 2%;
+}
 .steps4 >>> .el-form-item__content::before {
   content: "*";
   color: #f56c6c;
@@ -722,4 +739,6 @@ export default {
   position: absolute;
   left: -5px;
 }
+.steps4>>>tr>td{padding:0}
+.steps4>>>tr>td>.cell{padding: 22px 10px;}
 </style>

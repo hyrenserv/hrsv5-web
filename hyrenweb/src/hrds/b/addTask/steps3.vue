@@ -17,6 +17,7 @@
       :header-cell-style="{background:'#e6e0e0'}"
       ref="filterTable"
       stripe
+      :empty-text="tableloadingInfo"
       :default-sort="{prop: 'date', order: 'descending'}"
       style="width: 100%"
       height="360"
@@ -169,7 +170,7 @@
     </el-dialog>
     <!-- 全表清洗优先级 -->
     <el-dialog title="全表清洗优先级" :visible.sync="dialogtableClean" width="50%">
-      <el-table :data="tableCleanData" border size="medium" highlight-current-row>
+      <el-table :data="tableCleanData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
         <el-table-column property="SelectCol" type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column property="value" label="内容" align="center"></el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -313,6 +314,7 @@
         <el-table
           :data="colCleanData.slice((colClean_currentPage - 1) * colClean_pagesize, colClean_currentPage * colClean_pagesize)"
           border
+          :empty-text="tableloadingInfo"
           size="medium"
           highlight-current-row
           :default-sort="{prop: 'date', order: 'descending'}"
@@ -799,7 +801,7 @@
         @click="columnMerge_addRow(columnMerge)"
         class="addline"
       >新增行</el-button>
-      <el-table :data="columnMerge" border size="medium" highlight-current-row>
+      <el-table :data="columnMerge" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column label="选择" align="center">
           <template scope="scope">
@@ -876,6 +878,7 @@
       <el-table
         :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)"
         border
+        :empty-text="tableloadingInfo"
         size="medium"
         highlight-current-row
         ref="multipleTable"
@@ -936,6 +939,7 @@ export default {
   data() {
     return {
       active: 2,
+       tableloadingInfo: "数据加载中...",
       rule: validator.default,
       checkAll: false,
       colcheckAll: false,
@@ -1070,7 +1074,7 @@ export default {
     this.dbid = this.$route.query.id;
     this.aId = this.$route.query.agent_id;
     this.sourId = this.$route.query.source_id;
-    this.sName = this.$route.query.source_name;
+    this.sName = this.$Base64.decode(this.$route.query.source_name);
   },
   mounted() {
     // 获取进入页面的总数据
@@ -1096,21 +1100,21 @@ export default {
           agent_id: this.aId,
           id: this.dbid,
           source_id: this.sourId,
-          source_name: this.sName,
+          source_name: this.$Base64.encode(this.sName),
           edit: "yes"
         };
       } else {
         data = {
           id: this.dbid,
           source_id: this.sourId,
-          source_name: this.sName
+          source_name: this.$Base64.encode(this.sName),
         };
       }
       let params = {};
       params["tbCleanString"] = JSON.stringify(tbCleanString);
       params["colSetId"] = this.databaseId;
       addTaskAllFun.saveDataCleanConfig(params).then(res => {
-        this.dbid = res.data;
+        // this.dbid = res.data;
         this.$router.push({
           path: "/collection1_4",
           query: data
@@ -1124,14 +1128,14 @@ export default {
          agent_id: this.aId,
           id: this.dbid,
           source_id: this.sourId,
-          source_name: this.sName,
+          source_name: this.$Base64.encode(this.sName),
           edit: "yes"
         };
       } else {
         data = {
           id: this.dbid,
           source_id: this.sourId,
-          source_name: this.sName
+          source_name: this.$Base64.encode(this.sName),
         };
       }
       this.$router.push({
@@ -1209,8 +1213,13 @@ export default {
       this.databaseId = this.dbid;
       let params = {};
       params["colSetId"] = this.databaseId;
+       this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getCleanConfInfo(params).then(res => {
-        let arrdata = JSON.parse(JSON.stringify(res.data));
+        console.log(res)
+         if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+          let arrdata = JSON.parse(JSON.stringify(res.data));
         for (let i = 0; i < arrdata.length; i++) {
           if (arrdata[i].compflag != 0) {
             arrdata[i].compflag = true;
@@ -1229,6 +1238,8 @@ export default {
           }
         }
         this.cleantableData = arrdata;
+        }
+        
       });
     },
     //所有表清洗设置显示数据
@@ -1350,13 +1361,13 @@ this.characterCompletion = res.data[0];
         tableData.splice(index - 1, 1);
         tableData.splice(index, 0, upDate);
       } else {
-        alert("已经是第一条，不可上移");
+        // alert("已经是第一条，不可上移");
       }
     },
     //下移
     moveDown(index, row, tableData) {
       if (index + 1 === tableData.length) {
-        alert("已经是最后一条，不可下移");
+        // alert("已经是最后一条，不可下移");
       } else {
         let downDate = tableData[index + 1];
         tableData.splice(index + 1, 1);
@@ -1380,8 +1391,12 @@ this.characterCompletion = res.data[0];
       this.tableid = id;
       let params = {};
       params["tableId"] = id;
+      this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getColumnInfo(params).then(res => {
-        let arrdata = res.data;
+         if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+          let arrdata = res.data;
         for (let i = 0; i < arrdata.length; i++) {
           if (arrdata[i].codevalueflag == "1") {
             arrdata[i].codevalueflag = true;
@@ -1415,6 +1430,8 @@ this.characterCompletion = res.data[0];
           }
         }
         this.colCleanData = arrdata;
+        }
+        
       });
     },
     selectColCloseFun() {
@@ -1521,8 +1538,10 @@ this.characterCompletion = res.data[0];
     },
     // 点击表字符补齐提交确定按钮
     Table_zfbqsubmit(formName) {
+     
       this.$refs[formName].validate(valid => {
         if (valid) {
+            this.dialogTable_zfbq = false;
           let params = {};
           let index = this.index,that=this;
           params["character_filling"] = that.table_zfbq.character_filling;
@@ -1534,7 +1553,6 @@ this.characterCompletion = res.data[0];
             that.cleantableData[index].compflag=true;
             index = null;
             that.changecheck = null;
-            that.dialogTable_zfbq = false;
           });
         }
       });
@@ -1546,6 +1564,7 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["tableId"] = tableid;
         addTaskAllFun.getSingleTbReplaceInfo(params).then(res => {
+          console.log(res)
           this.table_zfth = res.data;
         });
       }
@@ -1576,6 +1595,7 @@ this.characterCompletion = res.data[0];
       addTaskAllFun.saveSingleTbReplaceInfo(params).then(res => {
         message.saveSuccess(res);
         this.cleantableData[index].replaceflag = true;
+        console.log(this.cleantableData[index].replaceflag)
         index = null;
         this.changecheck = null;
       });
@@ -1918,8 +1938,14 @@ this.characterCompletion = res.data[0];
       this.dialogcolumnMerge = true;
       let params = {};
       params["tableId"] = this.tableid;
+       this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getColMergeInfo(params).then(res => {
+         if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
         this.columnMerge = res.data;
+
+        }
       });
     },
     // 列清洗-列合并确定提交
@@ -1952,8 +1978,12 @@ this.characterCompletion = res.data[0];
     getColumnInfo(arr) {
       let params = {};
       params["tableId"] = this.tableid;
+       this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getColumnInfo(params).then(res => {
-        let arrdata=res.data
+         if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+  let arrdata=res.data
          for(let i=0;i<arrdata.length;i++){
            arrdata[i].selectionState=false
          }
@@ -1965,6 +1995,8 @@ this.characterCompletion = res.data[0];
           }
         }
         this.colSelectData = arrdata;
+}
+        
       });
     },
     // 列信息选择全选
