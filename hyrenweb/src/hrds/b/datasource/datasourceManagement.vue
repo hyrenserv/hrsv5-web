@@ -203,9 +203,11 @@ export default {
                 pageSize: this.pageSize
             }).then(res => {
                 if (res && res.success) {
-                    this.tableData = res.data;
-                    // 获取数据权限管理分页总数
-                    this.totalItems = res.data[0].totalSize;
+                    if (res.data.length > 0) {
+                        this.tableData = res.data;
+                        // 获取数据权限管理分页总数
+                        this.totalItems = res.data[0].totalSize;
+                    }
                 }
             })
         },
@@ -218,9 +220,11 @@ export default {
                 pageSize: this.pageSize
             }).then(res => {
                 if (res && res.success) {
-                    this.tableDatalist = res.data;
-                    // 获取数据管理列表分页总数
-                    this.totalItem = res.data[0].totalSize;
+                    if (res.data.length > 0) {
+                        this.tableDatalist = res.data;
+                        // 获取数据管理列表分页总数
+                        this.totalItems = res.data[0].totalSize;
+                    }
                 }
             })
         },

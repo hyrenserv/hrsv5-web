@@ -132,8 +132,7 @@ export default {
             this.$router.push({
                 name: "addScoure",
                 query: {
-                    source_id: this.data[index].source_id,
-                    datasource_name: this.data[index].datasource_name
+                    source_id: this.data[index].source_id
                 }
             });
         },

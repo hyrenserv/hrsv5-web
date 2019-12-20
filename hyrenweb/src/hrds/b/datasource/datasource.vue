@@ -56,7 +56,7 @@
         <!-- 数据类型标题 -->
         <h4>
             当前所属数据源为：
-            <strong>{{this.$route.query.datasource_name}}</strong>
+            <strong>{{this.datasource_name}}</strong>
         </h4>
         <!-- 数据表格标题 -->
         <div class="tableList">
@@ -153,10 +153,10 @@ export default {
             tableData: [],
             getAgentData: {},
             source_id: "",
-            datasource_name: "",
             agentId: "",
             agent_type: "",
             dataAll: {},
+             datasource_name:"",
             dialogName: "",
             sourceAgent: true,
             dataFile: false,
@@ -181,10 +181,10 @@ export default {
     created() {
         // 发送请求获取数据
         functionAll.searchDatasourceAndAgentInfo({
-            source_id: this.$route.query.source_id,
-            datasource_name: this.$route.query.datasource_name
+            source_id: this.$route.query.source_id
         }).then(res => {
             // 传参
+            this.datasource_name = res.data.datasource_name
             this.tableData = res.data.sjkAgent;
             this.dialogName = "添加数据库 Agent";
             this.agent_type = 1;
