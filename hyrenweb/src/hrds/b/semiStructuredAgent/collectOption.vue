@@ -2,7 +2,7 @@
 <div class="collectOption">
     <el-row class="partOne">
         <el-col :span="24">
-            <el-steps :active="active" finish-status="success" align-center style="margin: 10px 60px 20px 60px;">
+            <el-steps :active="active" finish-status="success" align-center style="margin: 10px 0 20px 0;">
                 <el-step title="步骤 1" description="采集设置"></el-step>
                 <el-step title="步骤 2" description="采集文件设置"></el-step>
                 <el-step title="步骤 3" description="采集结构化设置"></el-step>
@@ -84,9 +84,9 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="采集方式" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.object_collect_type">
-                        <el-radio v-for="item in collect_type" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                <el-form-item label="是否存在数据字典" :label-width="formLabelWidth">
+                    <el-radio-group v-model="form.is_sendok">
+                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-col>
@@ -101,22 +101,14 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="行分隔符" :label-width="formLabelWidth">
+                <el-form-item label="文件后缀名" :label-width="formLabelWidth">
                     <el-input v-model="form.row_remark"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="列分隔符" :label-width="formLabelWidth">
+                <el-form-item label="数据日期" :label-width="formLabelWidth">
                     <el-input v-model="form.remark"></el-input>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item label="是否为隐藏字符" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.is_sendok">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                    </el-radio-group>
                 </el-form-item>
             </el-col>
 
@@ -287,7 +279,7 @@ export default {
         },
         //3.首次获取操作系统，本地时间和系统时间的接口方法
 
-        // 取消选择目录并且关闭弹出框
+        // 取消取消选择目录并且关闭弹出框
         cancelSelect() {
             this.form.file_path = "";
             this.dialogSelectfolder = false;
@@ -307,7 +299,7 @@ export default {
                     message: '结束日期不能小于开始日期!',
                     duration: 0
                 })
-            } else{
+            } else {
                 this.form.file_path = "/";
                 this.$refs[formName].validate(valid => {
                     if (valid) {
@@ -428,5 +420,10 @@ export default {
 
 .collectOption .partFourDiv .el-button {
     margin-bottom: 20px;
+}
+
+.collectOption>>>.el-input-group__prepend button.el-button {
+    background-color: #D9534F;
+    color: white;
 }
 </style>

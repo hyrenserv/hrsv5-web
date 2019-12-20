@@ -209,7 +209,7 @@ export default {
                 } else if (e == 3) {
                     this.tableData = this.dataAll.ftpAgent;
                 } else if (e == 4) {
-                    this.tableData = this.dataAll.dxAgent;
+                    this.tableData = this.dataAll.dbFileAgent;
                 } else if (e == 5) {
                     this.tableData = this.dataAll.dxAgent;
                 }

@@ -2,7 +2,7 @@
 <div class="collectFileOption">
     <el-row class="partOne">
         <el-col :span="24">
-            <el-steps :active="active" finish-status="success" align-center style="margin: 10px 60px 20px 60px;">
+            <el-steps :active="active" finish-status="success" align-center style="margin: 10px 0 20px 0;">
                 <el-step title="步骤 1" description="采集设置"></el-step>
                 <el-step title="步骤 2" description="采集文件设置"></el-step>
                 <el-step title="步骤 3" description="采集结构化设置"></el-step>
@@ -14,11 +14,10 @@
     <el-row class="partTwo">
 
         <el-row class="spanCollect"><i class="fa fa-signal"></i>采集文件列表</el-row>
+        <el-row>
+            <el-button size="mini" type="success" @click="addOneRow">添加</el-button>
+        </el-row>
         <div class="partTwoContent">
-
-            <el-row>
-                <el-button size="mini" type="success" @click="addOneRow">添加</el-button>
-            </el-row>
 
             <el-table :data="tableData" border stripe size="mini">
                 <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
@@ -59,12 +58,20 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="操作" width="120" align="center">
+                <el-table-column label="采集列结构" width="120" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="deleteArry(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="success" size="mini" @click="dialogCollectStructure = true">采集列结构</el-button>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="操作码表" width="120" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="success" size="mini" @click="operationCodeTable = true">操作码表</el-button>
                     </template>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页信息 -->
             <el-row class="pagination">
                 <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next,jumper" :total="totalItem"></el-pagination>
             </el-row>
@@ -81,6 +88,96 @@
             </div>
         </el-col>
     </el-row>
+
+    <!-- 采集列结构弹出框 -->
+    <el-dialog title="采集列结构" :visible.sync="dialogCollectStructure" width="98%">
+        <el-row class="rowDioloag">
+            <el-col :span="7" class="colContent">
+                <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+                    <span class="custom-tree-node" slot-scope="{ node, data }">
+                        <span>{{ node.label }}</span>
+                        <span>
+                            <el-button class="netxNUM" type="text" @click="() => append(data)">
+                                点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                            </el-button>
+                        </span>
+                    </span>
+                </el-tree>
+            </el-col>
+
+            <el-col :span="1">
+                <span class="hiddenClass">占位</span>
+            </el-col>
+
+            <el-col :span="16" class="colTableContent">
+                <el-table :data="tableData" border stripe size="mini">
+                    <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+
+                    <el-table-column prop="datasource_name" label="是否为主键" width="90" align="center">
+                        <template slot-scope="scope">
+                            <el-checkbox name="nature"></el-checkbox>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="dep_name" label="是否为操作字段" width="120" align="center">
+                        <template slot-scope="scope">
+                            <el-checkbox name="nature"></el-checkbox>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="列名称" align="center">
+                        <template slot-scope="scope">
+                            <el-input placeholder="中文名" v-model="cnName"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="类型" align="center">
+                        <template slot-scope="scope">
+                            <el-input placeholder="中文名" v-model="cnName"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="字段位置" align="center">
+                        <template slot-scope="scope">
+                            <el-input placeholder="中文名" v-model="cnName"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="操作" width="134" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="mini" @click="dialogCollectStructure = true" class="buttonSpeical">上移</el-button>
+                            <el-button type="primary" size="mini" @click="dialogCollectStructure = true" class="buttonSpeical">下移</el-button>
+                            <el-button type="danger" size="mini" @click="dialogCollectStructure = true;deleteArry(scope.$index, scope.row)" class="buttonSpeical">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+            </el-col>
+        </el-row>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 操作码表弹出框 -->
+    <el-dialog title="操作码表" :visible.sync="operationCodeTable">
+        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+                <span>
+                    <el-button class="netxNUM" type="text" @click="() => append(data)">
+                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                    </el-button>
+                </span>
+            </span>
+        </el-tree>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="operationCodeTable = false" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -98,6 +195,8 @@ export default {
             dataTypeCode: "",
             upDateWayCode: "",
             optionsCode: "",
+            dialogCollectStructure: false,
+            operationCodeTable: false
 
         }
     },
@@ -148,12 +247,16 @@ export default {
                 })
             }
         },
+        // 取消弹出框
+        cancelSelect() {
+            this.operationCodeTable = false;
+            this.dialogCollectStructure = false;
+        },
         // 添加新的一行数据
         addOneRow() {
             this.tableData.push({});
             this.getCategoryItems("DataBaseCode");
             this.getCategoryItems("CollectDataType");
-
         },
         // 删除表格的当前行
         deleteArry(index, row) {
@@ -169,13 +272,14 @@ export default {
             }
 
         },
+
     }
 }
 </script>
 
 <style scoped>
 .collectFileOption {
-    padding: 0 2% 0 2%;
+    padding: 0 1% 0 1%;
 }
 
 .collectFileOption .partTwo {
@@ -185,7 +289,7 @@ export default {
 }
 
 .collectFileOption .partTwoContent {
-    padding: 0 2%;
+    padding: 0 1.5%;
 }
 
 /* 行设置 */
@@ -204,7 +308,7 @@ export default {
 
 /* 表格设置 */
 .collectFileOption .el-table {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 /* 按钮设置 */
@@ -216,6 +320,10 @@ export default {
     margin-bottom: 20px;
 }
 
+.collectFileOption .buttonSpeical {
+    padding: 7px 1px;
+}
+
 /* 分页 */
 .pagination {
     margin-top: 20px;
@@ -224,5 +332,28 @@ export default {
 
 .el-pagination {
     float: right;
+}
+
+/* 弹出框样式 */
+.collectFileOption .rowDioloag {
+    margin-top: 0px;
+    border: 1px solid #e6e6e6;
+    padding: 0 1% 2% 1%;
+}
+
+.collectFileOption .colContent {
+    padding: 0 1% 2% 1%;
+    margin-top: 1%;
+    border: 1px solid #e6e6e6;
+}
+
+.collectFileOption .colTableContent {
+    margin-top: 1%;
+    padding: 0 .5% 2% .5%;
+    border: 1px solid #e6e6e6;
+}
+
+.collectFileOption .hiddenClass {
+    color: transparent;
 }
 </style>

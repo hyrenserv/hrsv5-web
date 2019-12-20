@@ -2,7 +2,7 @@
 <div class="collectionStructureSet">
     <el-row class="partOne">
         <el-col :span="24">
-            <el-steps :active="active" finish-status="success" align-center style="margin: 10px 60px 20px 60px;">
+            <el-steps :active="active" finish-status="success" align-center style="margin: 10px 0 20px 0;">
                 <el-step title="步骤 1" description="采集设置"></el-step>
                 <el-step title="步骤 2" description="采集文件设置"></el-step>
                 <el-step title="步骤 3" description="采集结构化设置"></el-step>
