@@ -72,7 +72,7 @@
         <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
         <el-table-column property="agent_ip" label="Agent IP" align="center"></el-table-column>
         <el-table-column property="agent_port" label="Agent端口" width="100px" align="center"></el-table-column>
-        <el-table-column property="agent_type" label="采集类型" width="100px" align="center"></el-table-column>
+        <el-table-column property="agent_type" label="采集类型" width="110px" align="center"></el-table-column>
         <el-table-column property="agent_status" label="Agent连接状态" width="160px" align="center"></el-table-column>
         <el-table-column property="AgentOpt" label="操作" width="280px" align="center">
           <template scope="scope">
@@ -99,39 +99,39 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTableVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+        <el-button @click="dialogTableVisible = false" type="danger" size="medium">取 消</el-button>
+        <el-button type="primary" @click="dialogTableVisible = false" size="medium">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 点击任务管理出现弹层 -->
-    <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="50%" class="taskEx">
+    <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="60%" class="taskEx">
       <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
       <el-table :data="taskMang" border size="medium">
         <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
-        <el-table-column property label="启动方式" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="采集频率" width="100px" align="center"></el-table-column>
+        <el-table-column property="agent_type" label="采集类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property label="启动方式" width="110px" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="采集频率" width="120px" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" width="200px" align="center">
           <template scope="scope">
             <el-row>
               <el-col :span="5" class="edilt" style="text-align: center;">
-                <el-button type="text" @click="taskEditBtn(scope.row,sourceName)">编辑</el-button>
+                <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
               </el-col>
               <el-col :span="5" class="delbtn">
-                <el-button type="text" @click="taskDelBtn(agentType,scope.row)">删除</el-button>
+                <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
               </el-col>
               <el-col :span="5" class="sendmsg">
-                <el-button type="text">发送</el-button>
+                <el-button type="text" class="sendcolor">发送</el-button>
               </el-col>
               <el-col :span="9" class="sendmsg">
-                <el-button type="text">生成作业</el-button>
+                <el-button type="text" class="workcolor">生成作业</el-button>
               </el-col>
             </el-row>
           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTableTask = false">关闭</el-button>
+        <el-button @click="dialogTableTask = false" type="danger" size="medium">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -186,7 +186,6 @@ export default {
       params["sourceId"] = id;
       params["agentType"] = type;
       agentList.getAgentInfo(params).then(res => {
-        console.log(res);
         let arrdata = res.data;
         for (let i = 0; i < this.CollectType.length; i++) {
           if (this.CollectType[i].code == arrdata[0].agent_type) {
@@ -210,7 +209,6 @@ export default {
       });
     },
     taskManagement(row) {
-      console.log(row);
       this.dialogTableTask = true;
       let params = {};
       params["sourceId"] = row.source_id;
@@ -221,7 +219,6 @@ export default {
           arrdata[i].agent_type = row.agent_type;
         }
         this.taskMang = arrdata;
-        console.log(res);
       });
     },
     // 任务管理里面的编辑  根据不同类型跳转不同页面
@@ -235,45 +232,15 @@ export default {
               agent_id: row.agent_id,
               id: row.id,
               source_id: row.source_id,
-              source_name: sourceName,
+              source_name:this.$Base64.encode(sourceName),
               edit: "yes"
             }
           });
         }
       }
-      /*     if (row.agent_type == "数据库采集") {
-        this.$router.push({
-          path: "dbaddTasksteps01",
-          query: {
-            aId: row.agent_id,
-            id: row.id,
-            sourId: row.source_id,
-            sName: sourceName,
-            edit: "yes"
-          }
-        });
-      } else if (type == "Ftp采集Agent") {
-        this.$router.push({
-          path: "/ftpCollect",
-          query: {
-            agent_id: agentId,
-            ftp_id: databaseId
-          }
-        });
-      } else if (type == "非结构化采集") {
-        this.$router.push({
-          path: "/configureStartMode",
-          query: {
-            agent_id: agentId,
-            fcs_id: databaseId,
-            agent_name: type
-          }
-        });
-      } */
     },
     // 新增任务  根据不同类型跳转不同页面
     addtask(row, sourceName) {
-      console.log(row)
        for (let i = 0; i < this.CollectType.length; i++) {
         if (this.CollectType[i].value == row.agent_type) {
           this.agentType = this.CollectType[i].code;
@@ -282,7 +249,7 @@ export default {
             query: {
               agent_id: row.agent_id,
               source_id: row.source_id,
-              source_name: sourceName,
+              source_name: this.$Base64.encode(sourceName),
             }
           });
         }
@@ -391,5 +358,17 @@ export default {
 }
 .linking {
   color: #000;
+}
+.editcolor{
+  color: #2bc73e;
+}
+.delcolor{
+  color: #e83a3a;
+}
+.sendcolor{
+  color: #76b8f1;
+}
+.workcolor{
+  color: #4e9a2f
 }
 </style>

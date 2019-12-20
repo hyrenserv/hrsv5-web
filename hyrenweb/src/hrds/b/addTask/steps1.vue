@@ -189,7 +189,7 @@
                 @current-change="handleSelectionChange"
                 @row-click="chooseone"
               >
-                <el-table-column property label width="60px" type="index">
+                <el-table-column property label='选择' width="60px" type="index" align="center">
                   <template slot-scope="scope">
                     <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
                   </template>
@@ -374,18 +374,18 @@ export default {
     addTaskAllFun.getCategoryItems(params).then(res => {
       this.DatabaseType = res.data;
     });
-    this.sourceName = this.$route.query.source_name;
+    this.sourceName = this.$Base64.decode(this.$route.query.source_name);
     this.sourceId = this.$route.query.source_id;
-    this.agentId = this.$route.query.agent_id;
+    this.agentId =this.$route.query.agent_id;
       this.dbid = this.$route.query.id;
-
+      this.edit=this.$route.query.edit
   },
   mounted() {
 
-    if (this.$route.query.edit=='yes') {
+    if (this.edit=='yes') {
       this.show=true
       let params = {};
-      params["databaseId"] = this.$route.query.id;
+      params["databaseId"] = this.dbid;
       addTaskAllFun.getDBConfInfo(params).then(res => {
         this.ruleForm = res.data[0];
         this.radio=res.data[0].classify_id
@@ -425,26 +425,26 @@ export default {
         params["user_name"] = this.ruleForm.user_name;
         params["database_pad"] = this.ruleForm.database_pad;
         params["jdbc_url"] = this.ruleForm.jdbc_url;
-        if(this.$route.query.edit=='yes'){
-        params["database_id"] =  this.$route.query.id;
+        if(this.edit=='yes'){
+        params["database_id"] =  this.dbid;
         }
-        params["agent_id"] = this.$route.query.agent_id;
+        params["agent_id"] = this.agentId;
         addTaskAllFun.saveDbConf(params).then(res => {
           if(res.code=='200'){
              let data = {};
-          if (this.$route.query.edit == "yes") {
+          if (this.edit == "yes") {
             data = {
               agent_id: this.agentId,
-            id: res.data,
+            id: this.dbid,
             source_id:  this.sourceId,
-            source_name: this.sourceName,
+            source_name:this.$Base64.encode(this.sourceName),
             edit: "yes"
             };
           } else {
             data = {
-              id: res.data,
+              id: this.dbid,
               source_id: this.sourceId,
-              source_name: this.sourceName,
+              source_name:this.$Base64.encode(this.sourceName),
             };
           }
           this.$router.push({

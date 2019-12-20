@@ -24,7 +24,7 @@ export default {
     this.dbid = this.$route.query.id;
     this.aId = this.$route.query.agent_id;
     this.sourId = this.$route.query.source_id;
-    this.sName = this.$route.query.source_name;
+    this.sName = this.$Base64.decode(this.$route.query.source_name);
   },
   methods: {
     next() {
@@ -37,7 +37,7 @@ export default {
          agent_id: this.aId,
                 id: this.dbid,
                 source_id: this.sourId,
-                source_name: this.sName,
+                source_name: this.$Base64.encode(this.sName),
                 edit: "yes"
         }
       }
@@ -45,7 +45,7 @@ export default {
          data={
            id: this.dbid,
               source_id:this.sourId,
-              source_name: this.sName,
+              source_name: this.$Base64.encode(this.sName),
         }
       }
       this.$router.push({
