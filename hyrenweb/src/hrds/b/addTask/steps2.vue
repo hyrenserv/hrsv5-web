@@ -583,6 +583,7 @@ export default {
         }
       }
       this.allDataList = data;
+      console.log( this.allDataList)
     });
   },
   computed: {
@@ -659,15 +660,15 @@ export default {
     // 全表点击单个复选框
     evercheck(val, name) {
       if (val == true) {
-        for (let i = 0; i < this.allData.length; i++) {
-          if (this.allData[i].table_name == name) {
-            this.allData[i].selectionState = true;
+        for (let i = 0; i < this.allDataList.length; i++) {
+          if (this.allDataList[i].table_name == name) {
+            this.allDataList[i].selectionState = true;
           }
         }
       } else {
-        for (let i = 0; i < this.allData.length; i++) {
-          if (this.allData[i].table_name == name) {
-            this.allData[i].selectionState = false;
+        for (let i = 0; i < this.allDataList.length; i++) {
+          if (this.allDataList[i].table_name == name) {
+            this.allDataList[i].selectionState = false;
           }
         }
       }
@@ -744,10 +745,11 @@ export default {
         params = {};
       params["colSetId"] = this.dbid;
       addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
+        console.log(res.data)
         // 遍历拿到所有勾选的数据
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].selectionState == true) {
-            arrData.push(this.tableData[i]);
+        for (let i = 0; i < this.allDataList.length; i++) {
+          if (this.allDataList[i].selectionState == true) {
+            arrData.push(this.allDataList[i]);
           }
         }
         if (res.data.length > 0) {
@@ -1166,9 +1168,9 @@ export default {
         for (let j = 0; j < this.tableData.length; j++) {
           if (this.tableData[j].table_name == this.EXtable_name) {
             this.tableData[j].is_parallel = true;
-            for (let m = 0; m < this.allData.length; m++) {
-              if (this.allData[m].table_name == this.EXtable_name) {
-                this.allData[m].is_parallel = true;
+            for (let m = 0; m < this.allDataList.length; m++) {
+              if (this.allDataList[m].table_name == this.EXtable_name) {
+                this.allDataList[m].is_parallel = true;
               }
             }
             this.EXtable_name = "";
@@ -1189,17 +1191,17 @@ export default {
         if (this.tableData[j].table_name == this.EXtable_name) {
           if (this.is_parallel == false) {
             this.tableData[j].is_parallel = true;
-            for (let i = 0; i < this.allData.length; i++) {
-              if (this.allData[i].table_name == this.EXtable_name) {
-                this.allData[i].is_parallel = true;
+            for (let i = 0; i < this.allDataList.length; i++) {
+              if (this.allDataList[i].table_name == this.EXtable_name) {
+                this.allDataList[i].is_parallel = true;
               }
             }
             this.dialogTableVisible = false;
           } else {
             this.tableData[j].is_parallel = false;
-            for (let i = 0; i < this.allData.length; i++) {
-              if (this.allData[i].table_name == this.EXtable_name) {
-                this.allData[i].is_parallel = false;
+            for (let i = 0; i < this.allDataList.length; i++) {
+              if (this.allDataList[i].table_name == this.EXtable_name) {
+                this.allDataList[i].is_parallel = false;
               }
             }
             this.dialogTableVisible = false;
@@ -1308,7 +1310,7 @@ export default {
     SelectColumnCloseFun() {
       this.tablename = "";
     },
-    // 选择列的弹框复选框
+    // 选择列的弹框复选框全选
     Allis_SelectColumnFun(items, e) {
       items.forEach((item, i) => {
         if (e) {
@@ -1379,6 +1381,11 @@ export default {
           this.allData[m].table_ch_name = chname;
         }
       }
+      for (let m = 0; m < this.allDataList.length; m++) {
+        if (this.allDataList[m].table_name == name) {
+          this.allDataList[m].table_ch_name = chname;
+        }
+      }
     },
     // 使用SQL抽取数据
     handleClick(tab) {
@@ -1415,7 +1422,7 @@ export default {
 .rightSearch {
   /* width: 32%; */
   position: absolute;
-  top: -49px;
+  top: -50px;
   right: 0;
 }
 #singleTable >>> .el-pagination {
@@ -1438,6 +1445,9 @@ export default {
 } */
 .rightSearch >>> .el-input__inner {
   height: 30px;
+}
+.rightSearch>button{
+  padding-top:8px;
 }
 .locationcenter {
   text-align: center;

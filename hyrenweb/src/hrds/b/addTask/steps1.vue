@@ -381,7 +381,6 @@ export default {
       this.edit=this.$route.query.edit
   },
   mounted() {
-
     if (this.edit=='yes') {
       this.show=true
       let params = {};
