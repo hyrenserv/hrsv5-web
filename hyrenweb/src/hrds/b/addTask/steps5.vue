@@ -42,9 +42,7 @@
         <el-table-column label=" 选择目的地" width="150" align="center">
           <template slot="header">
             <el-tooltip class="item" effect="light" content placement="right">
-              <div slot="content">
-               请至少选择一个目的地
-              </div>
+              <div slot="content">请至少选择一个目的地</div>
               <i class="el-icon-question" aria-hidden="true">选择目的地</i>
             </el-tooltip>
           </template>
@@ -73,9 +71,18 @@
               v-if="scope.row.data_extract_type=='2'"
               @click="ChooseDestination(scope.row,scope.$index)"
             >
-             <el-button type="success" size="mini"  v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
-               <el-button type="warning" size="mini" v-else  @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
-             
+              <el-button
+                type="success"
+                size="mini"
+                v-if="scope.row.table_setting==true"
+                @click="ChooseDestination(scope.row,scope.$index)"
+              >已选择</el-button>
+              <el-button
+                type="warning"
+                size="mini"
+                v-else
+                @click="ChooseDestination(scope.row,scope.$index)"
+              >未选择</el-button>
             </span>
           </template>
         </el-table-column>
@@ -93,12 +100,12 @@
             <el-checkbox
               :checked="scope.row.is_zipper"
               v-model="scope.row.is_zipper"
-               v-if="scope.row.data_extract_type=='2'"
+              v-if="scope.row.data_extract_type=='2'"
               @change="is_zipperFun(scope.row)"
             ></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column label=" 存储方式" align="center" >
+        <el-table-column label=" 存储方式" align="center">
           <template slot="header">
             <el-checkbox v-if="Allis_zippercheck==false" disabled>
               <span class="allclickColor">存储方式</span>
@@ -132,28 +139,14 @@
             </el-popover>
           </template>
           <template slot-scope="scope">
-            <div  v-if="scope.row.data_extract_type=='2'">
-            <el-select
-              placeholder="存储方式"
-              v-model="scope.row.storage_type"
-              size="medium"
-              v-if="scope.row.is_zipper==false"
-              disabled
-            >
-              <el-option
-                v-for="(item,index) in StorageType"
-                :key="index"
-                :label="item.value"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-            <el-form-item
-              v-else
-              :prop="'ex_destinationData.'+scope.$index+'.storage_type'"
-              :rules="rule.selected"
-            >
-              <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
-                <!-- StorageType -->
+            <div v-if="scope.row.data_extract_type=='2'">
+              <el-select
+                placeholder="存储方式"
+                v-model="scope.row.storage_type"
+                size="medium"
+                v-if="scope.row.is_zipper==false"
+                disabled
+              >
                 <el-option
                   v-for="(item,index) in StorageType"
                   :key="index"
@@ -161,7 +154,21 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
-            </el-form-item>
+              <el-form-item
+                v-else
+                :prop="'ex_destinationData.'+scope.$index+'.storage_type'"
+                :rules="rule.selected"
+              >
+                <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
+                  <!-- StorageType -->
+                  <el-option
+                    v-for="(item,index) in StorageType"
+                    :key="index"
+                    :label="item.value"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
             </div>
           </template>
         </el-table-column>
@@ -190,9 +197,9 @@
             <el-form-item
               :prop="'ex_destinationData.'+scope.$index+'.storage_time'"
               :rules="rule.default"
-               v-if="scope.row.data_extract_type=='2'"
+              v-if="scope.row.data_extract_type=='2'"
             >
-              <el-input size="medium" v-model="scope.row.storage_time" ></el-input>
+              <el-input size="medium" v-model="scope.row.storage_time"></el-input>
             </el-form-item>
           </template>
         </el-table-column>
@@ -222,28 +229,38 @@
         :row-key="getRowKeys"
       >
         <el-table-column width="55" align="center" prop="selectionState">
-                <template slot="header" slot-scope="scope">
-                  <el-checkbox
-                    @change="Allis_destinationFun(destinationData,Allis_destination)"
-                    v-model="Allis_destination"
-                    :checked="Allis_destination"
-                  ></el-checkbox>
-                </template>
-                <template slot-scope="scope">
-                  <el-checkbox
-                    :checked="scope.row.usedflag"
-                    v-model="scope.row.usedflag"
-                    @change="destination_evercheck(scope.row.usedflag,scope.row.dsl_name)"
-                  ></el-checkbox>
-                </template>
-              </el-table-column>
+          <template slot="header" slot-scope="scope">
+            <el-checkbox
+              @change="Allis_destinationFun(destinationData,Allis_destination)"
+              v-model="Allis_destination"
+              :checked="Allis_destination"
+            ></el-checkbox>
+          </template>
+          <template slot-scope="scope">
+            <el-checkbox
+              :checked="scope.row.usedflag"
+              v-model="scope.row.usedflag"
+              @change="destination_evercheck(scope.row.usedflag,scope.row.dsl_name)"
+            ></el-checkbox>
+          </template>
+        </el-table-column>
         <el-table-column label="序号" align="center" width="60">
           <template slot-scope="scope">
             <span>{{scope.$index+(destination_currentPage - 1) * destination_pagesize + 1}}</span>
           </template>
         </el-table-column>
-        <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          property="dsl_name"
+          label="存储名称"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          property="store_type"
+          label="存储类型"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
         <el-table-column label="详情" width="160px" align="center">
           <template slot-scope="scope">
             <el-row>
@@ -327,7 +344,7 @@
             <span
               :key="scope.column.property"
               class="allclickColor"
-              v-if="item.id=='colume_name'||item.id=='colume_ch_name'"
+              v-if="item.id=='column_name'||item.id=='column_ch_name'"
             >{{item.value}}</span>
             <el-checkbox
               :key="scope.column.property"
@@ -340,9 +357,9 @@
             </el-checkbox>
           </template>
           <template slot-scope="scope">
-            <span v-if="scope.column.property=='colume_name'">{{ scope.row[scope.column.property] }}</span>
+            <span v-if="scope.column.property=='column_name'">{{ scope.row[scope.column.property] }}</span>
             <el-input
-              v-else-if="scope.column.property=='colume_ch_name'"
+              v-else-if="scope.column.property=='column_ch_name'"
               v-model="scope.row[scope.column.property]"
               :title="scope.row[scope.column.property]"
               placeholder="列中文名"
@@ -419,7 +436,7 @@ export default {
       allSaveDayActive: false,
       visible: false,
       saveDayvisible: false,
-      Allis_destination:false,
+      Allis_destination: false,
       ex_destinationcurrentPage: 1,
       ex_destinationpagesize: 100,
       destination_currentPage: 1,
@@ -492,47 +509,48 @@ export default {
   mounted() {
     let params = {};
     params["colSetId"] = this.dbid;
-    this.tableloadingInfo = "数据加载中...";
+    this.tableloadingInfo = "数据加载中...";
     addTaskAllFun.stodegetInitInfo(params).then(res => {
-       if (res.data.length == 0) {
-          this.tableloadingInfo = "暂无数据";
-        } else {
-   let arr = res.data;
-      let paramst = {};
-      paramst["colSetId"] = this.$route.query.id;
-      addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-        this.oldTbData = res.data;
-        for (var i = 0; i < arr.length; i++) {
-          for (let j = 0; j < this.oldTbData.length; j++) {
-            if (arr[i].table_id == this.oldTbData[j].tableId) {
-              if (this.oldTbData[j].dslIds.length > 0) {
-                arr[i].table_setting = true;
+      if (res.data) {
+        if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+          let arr = res.data;
+          let paramst = {};
+          paramst["colSetId"] = this.$route.query.id;
+          addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
+            this.oldTbData = res.data;
+            for (var i = 0; i < arr.length; i++) {
+              for (let j = 0; j < this.oldTbData.length; j++) {
+                if (arr[i].table_id == this.oldTbData[j].tableId) {
+                  if (this.oldTbData[j].dslIds.length > 0) {
+                    arr[i].table_setting = true;
+                  } else {
+                    arr[i].table_setting = false;
+                  }
+                }
+              }
+              if (arr[i].is_zipper == "1") {
+                arr[i].is_zipper = true;
               } else {
-                arr[i].table_setting = false;
+                arr[i].is_zipper = false;
+              }
+              if (!arr[i].storage_type) {
+                arr[i].storage_type = "";
+              }
+              if (!arr[i].storage_time) {
+                arr[i].storage_time = "";
               }
             }
-          }
-          if (arr[i].is_zipper=='1') {
-            arr[i].is_zipper = true;
-          }else{
-             arr[i].is_zipper = false;
-          }
-          if (!arr[i].storage_type) {
-            arr[i].storage_type = "";
-          }
-          if (!arr[i].storage_time) {
-            arr[i].storage_time = "";
-          }
+            this.ruleForm.ex_destinationData = arr;
+          });
         }
-        this.ruleForm.ex_destinationData = arr;
-      });
-}
-     
+      }
     });
     let params2 = {};
     params2["category"] = "StorageType";
     addTaskAllFun.getCategoryItems(params2).then(res => {
-      this.StorageType = res.data;
+      this.StorageType = res.data ? res.data : [];
     });
     this.storeTypeFun();
     this.specialfieldFun();
@@ -558,7 +576,7 @@ export default {
             } */
             if (arr[i].data_extract_type == "2") {
               tbStoInfoString.push({
-                is_zipper: arr[i].is_zipper?'1':'0',
+                is_zipper: arr[i].is_zipper ? "1" : "0",
                 storage_time: parseInt(arr[i].storage_time),
                 storage_type: arr[i].storage_type,
                 table_id: arr[i].table_id
@@ -583,33 +601,33 @@ export default {
           for (let m = 0; m < desDataArr.length; m++) {
             for (let n = 0; n < this.dslIdString.length; n++) {
               if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
-                desDataArr[m].dslIds =this.dslIdString[n].dslIds
+                desDataArr[m].dslIds = this.dslIdString[n].dslIds;
               }
             }
           }
           dslIdString = desDataArr;
-          if(tbStoInfoString.length>0){
-               let params = {};
-          params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
-          params["colSetId"] = parseInt(this.dbid);
-          params["dslIdString"] = JSON.stringify(dslIdString);
-          console.log(params)
-          addTaskAllFun.saveTbStoInfo(params).then(res => {
-            if (res.code == 200) {
-              this.submit_1 = true;
-              // this.dbid = res.data;
-            } else {
-              this.$message({
-                showClose: true,
-                message: res.message,
-                type: "error"
-              });
-            }
-          });
-          }else{
-             this.submit_1 = true;
+          if (tbStoInfoString.length > 0) {
+            let params = {};
+            params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
+            params["colSetId"] = parseInt(this.dbid);
+            params["dslIdString"] = JSON.stringify(dslIdString);
+            console.log(params);
+            addTaskAllFun.saveTbStoInfo(params).then(res => {
+              if (res.code == 200) {
+                this.submit_1 = true;
+                // this.dbid = res.data;
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.message,
+                  type: "error"
+                });
+              }
+            });
+          } else {
+            this.submit_1 = true;
           }
-       
+
           // 保存表名
           let params0 = {};
           params0["tableString"] = JSON.stringify(tableString);
@@ -633,16 +651,16 @@ export default {
       if (this.$route.query.edit == "yes") {
         data = {
           agent_id: this.aId,
-                id: this.$route.query.id,
-                source_id: this.sourId,
-                source_name: this.$Base64.encode(this.sName),
-                edit: "yes"
+          id: this.$route.query.id,
+          source_id: this.sourId,
+          source_name: this.$Base64.encode(this.sName),
+          edit: "yes"
         };
       } else {
         data = {
           id: this.$route.query.id,
-              source_id:this.sourId,
-              source_name: this.$Base64.encode(this.sName),
+          source_id: this.sourId,
+          source_name: this.$Base64.encode(this.sName)
         };
       }
       this.$router.push({
@@ -654,17 +672,17 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-         agent_id: this.aId,
-                id: this.dbid,
-                source_id: this.sourId,
-                source_name: this.$Base64.encode(this.sName),
-                edit: "yes"
+          agent_id: this.aId,
+          id: this.dbid,
+          source_id: this.sourId,
+          source_name: this.$Base64.encode(this.sName),
+          edit: "yes"
         };
       } else {
         data = {
-           id: this.dbid,
-              source_id:this.sourId,
-              source_name: this.$Base64.encode(this.sName),
+          id: this.dbid,
+          source_id: this.sourId,
+          source_name: this.$Base64.encode(this.sName)
         };
       }
       this.$router.push({
@@ -672,7 +690,7 @@ export default {
         query: data
       });
     },
-  /*   // 获取编辑状态下原有存储数据
+    /*   // 获取编辑状态下原有存储数据
     getSaveDataFun() {
       let paramst = {};
       paramst["colSetId"] = this.$route.query.id;
@@ -685,7 +703,9 @@ export default {
       let params = {};
       params["category"] = "store_type";
       addTaskAllFun.getCategoryItems(params).then(res => {
-        this.storeTypeData = res.data;
+        if (res.data) {
+          this.storeTypeData = res.data;
+        }
       });
     },
     ex_destination_handleSizeChange(size) {
@@ -715,8 +735,8 @@ export default {
       });
     }, */
     is_zipperFun(row) {
-      if(row.is_zipper==false){
-      row.storage_type=''
+      if (row.is_zipper == false) {
+        row.storage_type = "";
       }
     },
     Allis_zipperFun(items, e) {
@@ -732,67 +752,71 @@ export default {
     ChooseDestination(row, index) {
       this.dataExtractypeindex = index;
       this.tableId = row.table_id;
-       if (this.dslIdString.length>0) {
-          let aartrue = [],
-            aarfalse = [],
-            arrall = [];
+      if (this.dslIdString.length > 0) {
+        let aartrue = [],
+          aarfalse = [],
+          arrall = [];
+        for (let m = 0; m < this.dslIdString.length; m++) {
+          arrall.push(this.dslIdString[m].tableId);
+        }
+        if (arrall.indexOf(row.table_id) != -1) {
           for (let m = 0; m < this.dslIdString.length; m++) {
-            arrall.push(this.dslIdString[m].tableId);
-          }
-          if (arrall.indexOf(row.table_id) != -1) {
-            for (let m = 0; m < this.dslIdString.length; m++) {
-              if (this.dslIdString[m].tableId == row.table_id) {
-                if (this.dslIdString[m].dslIds.length>0) {
-                  for (let n = 0; n < this.dslIdString[m].dslIds.length; n++) {
-                    for (let yn = 0; yn < this.destinationData.length; yn++) {
-                      if (
-                        this.destinationData[yn].dsl_id ==
-                        this.dslIdString[m].dslIds[n]
-                      ) {
-                       this.destinationData[yn].usedflag=true
-                      } 
+            if (this.dslIdString[m].tableId == row.table_id) {
+              if (this.dslIdString[m].dslIds.length > 0) {
+                for (let n = 0; n < this.dslIdString[m].dslIds.length; n++) {
+                  for (let yn = 0; yn < this.destinationData.length; yn++) {
+                    if (
+                      this.destinationData[yn].dsl_id ==
+                      this.dslIdString[m].dslIds[n]
+                    ) {
+                      this.destinationData[yn].usedflag = true;
                     }
                   }
-                
-                } 
+                }
               }
             }
-          } else {
-             this.destinationOldDataFun(row.table_id)
           }
         } else {
-          this.destinationOldDataFun(row.table_id)
+          this.destinationOldDataFun(row.table_id);
         }
+      } else {
+        this.destinationOldDataFun(row.table_id);
+      }
       this.dialogChooseDestination = true;
     },
     //目的地弹框初始数据
-    destinationOldDataFun(id){
+    destinationOldDataFun(id) {
       let params = {};
       params["tableId"] = id;
       addTaskAllFun.getStoDestByTableId(params).then(res => {
-        let arr = JSON.parse(JSON.stringify(res.data));
-        let data = this.storeTypeData;
-        for (let i = 0; i < arr.length; i++) {
-          if(arr[i].usedflag=='1'){
-arr[i].usedflag=true
-          }else{
-arr[i].usedflag=false
-          }
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].code == arr[i].store_type) {
-              arr[i].store_type = data[j].value;
+        if (res.data) {
+          let arr = JSON.parse(JSON.stringify(res.data));
+          let data = this.storeTypeData;
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].usedflag == "1") {
+              arr[i].usedflag = true;
+            } else {
+              arr[i].usedflag = false;
+            }
+            for (let j = 0; j < data.length; j++) {
+              if (data[j].code == arr[i].store_type) {
+                arr[i].store_type = data[j].value;
+              }
             }
           }
+          this.destinationData = arr;
         }
-        this.destinationData = arr;
-    })},
+      });
+    },
     // 点击查看详情
     getStoDestDetailFun(row) {
       this.dialogViewDetails = true;
       let params = {};
       params["dslId"] = row.dsl_id;
       addTaskAllFun.getStoDestDetail(params).then(res => {
-        this.viewDatilsData = res.data;
+        if (res.data) {
+          this.viewDatilsData = res.data;
+        }
       });
     },
     // 点击配置属性按钮
@@ -812,9 +836,9 @@ arr[i].usedflag=false
         if (res.data) {
           let arr = [];
           for (var key in res.data) {
-            if (key == "colume_name") {
+            if (key == "column_name") {
               arr.push({ id: key, value: res.data[key] });
-            } else if (key == "colume_ch_name") {
+            } else if (key == "column_ch_name") {
               arr.push({ id: key, value: res.data[key] });
             } else {
               arr.push({
@@ -838,8 +862,8 @@ arr[i].usedflag=false
             for (let key in arr[i]) {
               if (
                 key == "column_id" ||
-                key == "colume_ch_name" ||
-                key == "colume_name" ||
+                key == "column_ch_name" ||
+                key == "column_name" ||
                 key == "csi_number"
               ) {
                 key = arr[i][key];
@@ -895,7 +919,9 @@ arr[i].usedflag=false
       let params = {};
       params["category"] = "StoreLayerAdded";
       addTaskAllFun.getCategoryItems(params).then(res => {
-        this.StoreData = res.data;
+        if (res.data) {
+          this.StoreData = res.data;
+        }
       });
     },
     // 配置字段属性
@@ -910,100 +936,102 @@ arr[i].usedflag=false
       let params0 = {};
       params0["dslId"] = this.dslid;
       addTaskAllFun.getDataStoreLayerAddedId(params0).then(res => {
-        let data = res.data,
-          arr2 = [];
-        // 将获得的id以固定形式给arr2
-        if (data) {
-          for (let item in data) {
-            arr2.push({ key: item, value: data[item] });
-          }
-          // 将特殊字段对应id组成新的数组给specialfield
-          for (let i = 0; i < this.StoreData.length; i++) {
-            for (let j = 0; j < arr2.length; j++) {
-              if (this.StoreData[i].code == arr2[j].key) {
-                specialfield.push({
-                  key: this.StoreData[i].value,
-                  value: arr2[j].value
-                });
+        if (res.data) {
+          let data = res.data,
+            arr2 = [];
+          // 将获得的id以固定形式给arr2
+          if (data) {
+            for (let item in data) {
+              arr2.push({ key: item, value: data[item] });
+            }
+            // 将特殊字段对应id组成新的数组给specialfield
+            for (let i = 0; i < this.StoreData.length; i++) {
+              for (let j = 0; j < arr2.length; j++) {
+                if (this.StoreData[i].code == arr2[j].key) {
+                  specialfield.push({
+                    key: this.StoreData[i].value,
+                    value: arr2[j].value
+                  });
+                }
               }
             }
           }
-        }
-        //columnString
-        for (let i = 0; i < arr.length; i++) {
-          columnString.push({
-            column_id: arr[i].column_id,
-            colume_ch_name: arr[i].colume_ch_name
+          //columnString
+          for (let i = 0; i < arr.length; i++) {
+            columnString.push({
+              column_id: arr[i].column_id,
+              column_ch_name: arr[i].column_ch_name
+            });
+            delete arr[i].column_name;
+            delete arr[i].column_ch_name;
+            arr[i].dsladIds = [];
+            // Hbase类型增加csiNumber字段
+            if (this.type == "Hbase") {
+              delete arr[i].csiNumber;
+              if (arr[i].rowkey) {
+                if (arr[i].rowkey == true) {
+                  count = count + 1;
+                  arr[i].csiNumber = count;
+                }
+              }
+            }
+            // 遍历得到dsladIds数组
+            for (let key in arr[i]) {
+              if (
+                key != "csiNumber" &&
+                key != "column_id" &&
+                key != "dsladIds" &&
+                key != "csi_number"
+              ) {
+                if (key) {
+                  if (arr[i][key] == true) {
+                    delete arr[i][key];
+                    arr[i].dsladIds.push(key);
+                  } else {
+                    delete arr[i][key];
+                  }
+                }
+              }
+              if (key == "column_id") {
+                arr[i].columnId = arr[i][key];
+                delete arr[i][key];
+              }
+              if (key == "csi_number") {
+                delete arr[i][key];
+              }
+            }
+          }
+          arrlist = JSON.parse(JSON.stringify(arr));
+          // dslIds空的删除，并替换对应特殊字段id
+          for (let j = 0; j < arrlist.length; j++) {
+            if (arrlist[j].dsladIds.length == "0") {
+              arrlist.splice(j, 1);
+              j--;
+            } else {
+              for (let n = 0; n < arrlist[j].dsladIds.length; n++) {
+                for (let m = 0; m < specialfield.length; m++) {
+                  if (specialfield[m].key == arrlist[j].dsladIds[n]) {
+                    arrlist[j].dsladIds[n] = specialfield[m].value;
+                  }
+                }
+              }
+            }
+          }
+          // 保存特殊字段
+          let params = {};
+          params["colStoInfoString"] = JSON.stringify(arrlist);
+          params["tableId"] = this.tableId;
+          addTaskAllFun.saveColStoInfo(params).then(res => {
+            message.saveSuccess(res);
           });
-          delete arr[i].colume_name;
-          delete arr[i].colume_ch_name;
-          arr[i].dsladIds = [];
-          // Hbase类型增加csiNumber字段
-          if (this.type == "Hbase") {
-            delete arr[i].csiNumber;
-            if (arr[i].rowkey) {
-              if (arr[i].rowkey == true) {
-                count = count + 1;
-                arr[i].csiNumber = count;
-              }
-            }
-          }
-          // 遍历得到dsladIds数组
-          for (let key in arr[i]) {
-            if (
-              key != "csiNumber" &&
-              key != "column_id" &&
-              key != "dsladIds" &&
-              key != "csi_number"
-            ) {
-              if (key) {
-                if (arr[i][key] == true) {
-                  delete arr[i][key];
-                  arr[i].dsladIds.push(key);
-                } else {
-                  delete arr[i][key];
-                }
-              }
-            }
-            if (key == "column_id") {
-              arr[i].columnId = arr[i][key];
-              delete arr[i][key];
-            }
-            if (key == "csi_number") {
-              delete arr[i][key];
-            }
-          }
+          // 保存修改的中文列名
+          let params1 = {};
+          params1["columnString"] = JSON.stringify(columnString);
+          addTaskAllFun.updateColumnZhName(params1).then(res => {
+            // message.saveSuccess(res);
+            this.dialogFieldProperty = false;
+          });
         }
-        arrlist = JSON.parse(JSON.stringify(arr));
-        // dslIds空的删除，并替换对应特殊字段id
-        for (let j = 0; j < arrlist.length; j++) {
-          if (arrlist[j].dsladIds.length == "0") {
-            arrlist.splice(j, 1);
-            j--;
-          } else {
-            for (let n = 0; n < arrlist[j].dsladIds.length; n++) {
-              for (let m = 0; m < specialfield.length; m++) {
-                if (specialfield[m].key == arrlist[j].dsladIds[n]) {
-                  arrlist[j].dsladIds[n] = specialfield[m].value;
-                }
-              }
-            }
-          }
-        }
-        // 保存特殊字段
-        let params = {};
-        params["colStoInfoString"] = JSON.stringify(arrlist);
-        params["tableId"] = this.tableId;
-        addTaskAllFun.saveColStoInfo(params).then(res => {
-          message.saveSuccess(res);
-        });
-        // 保存修改的中文列名
-        let params1 = {};
-        params1["columnString"] = JSON.stringify(columnString);
-        addTaskAllFun.updateColumnZhName(params1).then(res => {
-          // message.saveSuccess(res);
-          this.dialogFieldProperty = false;
-        });
       });
     },
     // 配置字段属性取消按钮
@@ -1059,14 +1087,16 @@ arr[i].usedflag=false
         }
       }
       for (let i = 0; i < data.length; i++) {
-        if(data[i].usedflag==true){
-        dslIds.push(data[i].dsl_id);
+        if (data[i].usedflag == true) {
+          dslIds.push(data[i].dsl_id);
         }
       }
       if (dslIds.length != 0) {
         this.dslIdString.push({ dslIds: dslIds, tableId: this.tableId });
         this.dialogChooseDestination = false;
-        this.ruleForm.ex_destinationData[this.dataExtractypeindex].table_setting=true
+        this.ruleForm.ex_destinationData[
+          this.dataExtractypeindex
+        ].table_setting = true;
       } else {
         this.open();
       }
@@ -1081,11 +1111,11 @@ arr[i].usedflag=false
     getRowKeys(row) {
       return row.dsl_id;
     },
-   
-    // 
-      //选择目的地弹框全选
-    Allis_destinationFun(items,e){
-        let that = this;
+
+    //
+    //选择目的地弹框全选
+    Allis_destinationFun(items, e) {
+      let that = this;
       items.forEach((item, j) => {
         if (e) {
           item.usedflag = true;
@@ -1095,8 +1125,8 @@ arr[i].usedflag=false
       });
     },
     // 选择目的地弹框选择某一个
-    destination_evercheck(val,name){
-       if (val == true) {
+    destination_evercheck(val, name) {
+      if (val == true) {
         for (let i = 0; i < this.destinationData.length; i++) {
           if (this.destinationData[i].dsl_name == name) {
             this.destinationData[i].usedflag = true;
@@ -1109,7 +1139,7 @@ arr[i].usedflag=false
           }
         }
       }
-    },
+    }
   }
 };
 </script>
@@ -1209,6 +1239,10 @@ arr[i].usedflag=false
   content: "\E7A4" !important;
   margin-left: 10px;
 }
-.steps5>>>tr>td{padding:0}
-.steps5>>>tr>td>.cell{padding: 22px 10px;}
+.steps5 >>> tr > td {
+  padding: 0;
+}
+.steps5 >>> tr > td > .cell {
+  padding: 22px 10px;
+}
 </style>
