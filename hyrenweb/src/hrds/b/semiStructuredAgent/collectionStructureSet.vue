@@ -27,7 +27,7 @@
                     <el-checkbox name="nature" v-model="c"></el-checkbox>&nbsp;Hbase
                 </template>
                 <template slot-scope="scope">
-                    <el-checkbox name="nature" v-model="scope.row.c" @change="showDiolag = true"></el-checkbox>
+                    <el-checkbox name="nature" v-model="scope.row.c" @change="showDiolag = true;showDiolagData()"></el-checkbox>
                 </template>
             </el-table-column>
 
@@ -64,24 +64,22 @@
     </el-row>
 
     <!-- Hbase弹出框 -->
-    <el-dialog title="Hbase" :visible.sync="showDiolag">
-        <el-table :data="tableData" border stripe size="mini">
-            <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+    <el-dialog title="Hbase" :visible.sync="showDiolag" width="40%">
+        <el-table :data="arry" border stripe size="mini">
+            <el-table-column label="多列作rowkey的顺序" align="center" prop="key"></el-table-column>
 
-            <el-table-column label="多列作rowkey的顺序" align="center"></el-table-column>
-
-            <el-table-column label="字段英文名" align="center">
+            <el-table-column label="字段英文名" align="center" prop="name">
                 <template slot-scope="scope">
-                      <el-checkbox name="nature" v-model="scope.row.d"></el-checkbox>
+                    <el-checkbox name="nature" v-model="scope.row.d"></el-checkbox><span style="margin-left: 10px">{{ scope.row.name }}</span>
                 </template>
             </el-table-column>
 
-            <!-- <el-table-column label="操作" width="134" align="center">
+            <el-table-column label="操作" width="134" align="center">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="moveUp(scope.$index,scope.row,tableData) " class="buttonSpeical">上移</el-button>
                     <el-button type="primary" size="mini" @click="moveDown(scope.$index, scope.row,tableData)" class="buttonSpeical">下移</el-button>
                 </template>
-            </el-table-column> -->
+            </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
@@ -120,7 +118,8 @@ export default {
                     d: true,
                     e: true
                 }
-            ]
+            ],
+            arry: []
         }
     },
     created() {
@@ -173,6 +172,26 @@ export default {
             console.log("1")
 
         },
+        // 弹出框表格信息
+        showDiolagData() {
+            this.arry = [{
+                key: 1,
+                name: "jame"
+            }, {
+                key: 2,
+                name: "kb"
+            }, {
+                key: 3,
+                name: "kg"
+            }, {
+                key: 4,
+                name: "allen"
+            }, {
+                key: 5,
+                name: "wade"
+            }]
+            console.log(this.arry)
+        }
     },
 }
 </script>

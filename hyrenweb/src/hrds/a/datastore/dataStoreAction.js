@@ -6,7 +6,6 @@ import request from '@/utils/request'
   export function addDataStore(data) {
     return request({
         url: '/A/datastore/addDataStore',
-        method: 'post',
         params: data
     })
 }
@@ -17,7 +16,6 @@ import request from '@/utils/request'
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params: data
     })
 }
@@ -28,7 +26,6 @@ export function getCategoryItems(data) {
 export function searchDataStore(data) {
     return request({
         url: '/A/datastore/searchDataStore',
-        method: 'post',
         params: data
     })
 }
@@ -39,7 +36,6 @@ export function searchDataStore(data) {
 export function deleteDataStore(data) {
     return request({
         url: '/A/datastore/deleteDataStore',
-        method: 'post',
         params: data
     })
 }
@@ -50,7 +46,6 @@ export function deleteDataStore(data) {
 export function searchDataStoreById(data) {
     return request({
         url: '/A/datastore/searchDataStoreById',
-        method: 'post',
         params: data
     })
 }
@@ -61,7 +56,6 @@ export function searchDataStoreById(data) {
 export function updateDataStore(data) {
     return request({
         url: '/A/datastore/updateDataStore',
-        method: 'post',
         params: data
     })
 }
@@ -72,7 +66,6 @@ export function updateDataStore(data) {
 export function getValue(data) {
     return request({
         url: '/A/codes/getValue',
-        method: 'post',
         params: data
     })
 }

@@ -7,7 +7,6 @@ import request from '@/utils/request'
   export function getSysUserInfo(data) {
     return request({
         url: '/A/sysuser/getSysUserInfo',
-        method: 'post',
         params: data
     })
 }
@@ -19,7 +18,6 @@ import request from '@/utils/request'
   export function getValue(data) {
     return request({
         url: '/A/codes/getValue',
-        method: 'post',
         params: data
     })
 }
@@ -30,7 +28,6 @@ import request from '@/utils/request'
   export function saveSysUser(data) {
     return request({
         url: '/A/sysuser/saveSysUser',
-        method: 'post',
         params: data
     })
 }
@@ -41,7 +38,6 @@ import request from '@/utils/request'
   export function deleteSysUser(data) {
     return request({
         url: '/A/sysuser/deleteSysUser',
-        method: 'post',
         params: data
     })
 }
@@ -52,7 +48,6 @@ import request from '@/utils/request'
   export function updateSysUser(data) {
     return request({
         url: '/A/sysuser/updateSysUser',
-        method: 'post',
         params: data
     })
 }
@@ -63,7 +58,6 @@ import request from '@/utils/request'
   export function getSysUserAll(data) {
     return request({
         url: '/A/sysuser/getSysUserAll',
-        method: 'post',
         params: data
     })
 }
@@ -75,7 +69,6 @@ import request from '@/utils/request'
   export function editSysUserFunction(data) {
     return request({
         url: '/A/sysuser/editSysUserFunction',
-        method: 'post',
         params: data
     })
 }
@@ -86,7 +79,6 @@ import request from '@/utils/request'
   export function getDepartmentInfoAndUserFunctionMenuInfo(data) {
     return request({
         url: '/A/sysuser/getDepartmentInfoAndUserFunctionMenuInfo',
-        method: 'post',
         params: data
     })
 }
@@ -97,7 +89,6 @@ import request from '@/utils/request'
   export function getSysUserByUserId(data) {
     return request({
         url: '/A/sysuser/getSysUserByUserId',
-        method: 'post',
         params: data
     })
 }
@@ -110,7 +101,6 @@ import request from '@/utils/request'
   export function getDepartmentInfo(data) {
     return request({
         url: '/A/department/getDepartmentInfo',
-        method: 'post',
         params: data
     })
 }
@@ -121,7 +111,6 @@ import request from '@/utils/request'
   export function getUserFunctionMenu(data) {
     return request({
         url: '/A/sysuser/getUserFunctionMenu',
-        method: 'post',
         params: data
     })
 }
@@ -132,7 +121,6 @@ import request from '@/utils/request'
   export function addDepartmentInfo(data) {
     return request({
         url: '/A/department/addDepartmentInfo',
-        method: 'post',
         params: data
     })
 }
@@ -143,7 +131,6 @@ import request from '@/utils/request'
   export function deleteDepartmentInfo(data) {
     return request({
         url: '/A/department/deleteDepartmentInfo',
-        method: 'post',
         params: data
     })
 }
@@ -154,7 +141,6 @@ import request from '@/utils/request'
   export function updateDepartmentInfo(data) {
     return request({
         url: '/A/department/updateDepartmentInfo',
-        method: 'post',
         params: data
     })
 }
@@ -166,7 +152,6 @@ import request from '@/utils/request'
   export function getSysPara(data) {
     return request({
         url: '/A/syspara/getSysPara',
-        method: 'post',
         params: data
     })
 }
@@ -177,7 +162,6 @@ import request from '@/utils/request'
   export function addSysPara(data) {
     return request({
         url: '/A/syspara/addSysPara',
-        method: 'post',
         params: data
     })
 }
@@ -188,7 +172,6 @@ import request from '@/utils/request'
   export function updateSysPara(data) {
     return request({
         url: '/A/syspara/updateSysPara',
-        method: 'post',
         params: data
     })
 }
@@ -199,7 +182,6 @@ import request from '@/utils/request'
   export function deleteSysPara(data) {
     return request({
         url: '/A/syspara/deleteSysPara',
-        method: 'post',
         params: data
     })
 }
