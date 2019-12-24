@@ -320,7 +320,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                property="colume_name"
+                property="column_name"
                 label="列名"
                 align="center"
                 width="150px"
@@ -334,18 +334,18 @@
                 :show-overflow-tooltip="true"
               ></el-table-column>
               <el-table-column
-                property="colume_ch_name"
+                property="column_ch_name"
                 label="列中文名"
                 align="center"
                 :show-overflow-tooltip="true"
               >
                 <template slot-scope="scope">
                   <el-input
-                    v-if="scope.row.colume_ch_name!=''"
-                    v-model="scope.row.colume_ch_name"
+                    v-if="scope.row.column_ch_name!=''"
+                    v-model="scope.row.column_ch_name"
                     placeholder="中文名"
                   ></el-input>
-                  <el-input v-else v-model="scope.row.colume_name" placeholder="中文名"></el-input>
+                  <el-input v-else v-model="scope.row.column_name" placeholder="中文名"></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="160px" align="center">
@@ -558,7 +558,7 @@ export default {
     this.dbid = parseInt(this.$route.query.id);
     this.agentId = this.$route.query.agent_id;
     this.sourceId = this.$route.query.source_id;
-    this.sourceName =this.$Base64.decode(this.$route.query.source_name);
+    this.sourceName = this.$Base64.decode(this.$route.query.source_name);
     this.edit = this.$route.query.edit;
   },
   mounted() {
@@ -569,7 +569,8 @@ export default {
     let params = {};
     params["colSetId"] = this.dbid;
     addTaskAllFun.getAllTableInfo(params).then(res => {
-      let data = res.data;
+      console.log(res.data)
+      let data = res.data
       for (let i = 0; i < data.length; i++) {
         if (data[i].table_id) {
           data[i].selectionState = true;
@@ -583,7 +584,6 @@ export default {
         }
       }
       this.allDataList = data;
-      console.log( this.allDataList)
     });
   },
   computed: {
@@ -612,7 +612,7 @@ export default {
         if (res.data.length == 0) {
           this.tableloadingInfo = "暂无数据";
         } else {
-          let data = res.data;
+          let data = res.data ? res.data : [];
           for (let i = 0; i < data.length; i++) {
             if (data[i].table_id) {
               data[i].selectionState = true;
@@ -625,7 +625,7 @@ export default {
           }
           this.tableData = data;
           this.callTable = data;
-          this.Allis_selectionState = true;
+          // this.Allis_selectionState = true;
         }
       });
     },
@@ -640,11 +640,21 @@ export default {
               that.allData[i].selectionState = true;
             }
           }
+          for (let i = 0; i < that.allDataList.length; i++) {
+            if (that.allDataList[i].table_name == item.table_name) {
+              that.allDataList[i].selectionState = true;
+            }
+          }
         } else {
           item.selectionState = false;
           for (let i = 0; i < that.allData.length; i++) {
             if (that.allData[i].table_name == item.table_name) {
               that.allData[i].selectionState = false;
+            }
+          }
+          for (let i = 0; i < that.allDataList.length; i++) {
+            if (that.allDataList[i].table_name == item.table_name) {
+              that.allDataList[i].selectionState = false;
             }
           }
         }
@@ -654,8 +664,8 @@ export default {
     getAllTableInfoFun() {
       this.Allis_selectionState = false;
       this.tableData.length = 0;
-      this.isdata = this.allDataList;
-      this.tableData = this.allDataList;
+      this.isdata = JSON.parse(JSON.stringify(this.allDataList));
+      this.tableData = JSON.parse(JSON.stringify(this.allDataList));
     },
     // 全表点击单个复选框
     evercheck(val, name) {
@@ -707,6 +717,7 @@ export default {
       addTaskAllFun.saveAllSQL(params1).then(res => {
         if (res.code == 200) {
           this.activeSec = true;
+          console.log(this.activeSec);
           // this.dbid = res.data;
         } else {
           this.$message({
@@ -731,7 +742,7 @@ export default {
         data = {
           id: this.dbid,
           source_id: this.sourceId,
-          source_name:this.$Base64.encode(this.sourceName),
+          source_name: this.$Base64.encode(this.sourceName)
         };
       }
       this.$router.push({
@@ -745,7 +756,6 @@ export default {
         params = {};
       params["colSetId"] = this.dbid;
       addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
-        console.log(res.data)
         // 遍历拿到所有勾选的数据
         for (let i = 0; i < this.allDataList.length; i++) {
           if (this.allDataList[i].selectionState == true) {
@@ -879,8 +889,8 @@ export default {
                 for (let k = 0; k < this.SelectColumn[n].data.length; k++) {
                   arrdataCol.push({
                     column_id: this.SelectColumn[n].data[k].column_id,
-                    colume_ch_name: this.SelectColumn[n].data[k].colume_ch_name,
-                    colume_name: this.SelectColumn[n].data[k].colume_name
+                    column_ch_name: this.SelectColumn[n].data[k].column_ch_name,
+                    column_name: this.SelectColumn[n].data[k].column_name
                   });
                 }
                 cola[j].data = arrdataCol;
@@ -896,7 +906,7 @@ export default {
             c = [];
           a = JSON.parse(JSON.stringify(cola[m].data));
           for (let mm = 0; mm < cola[m].data.length; mm++) {
-            b.push({ sort: mm + 1, columnName: cola[m].data[mm].colume_name });
+            b.push({ sort: mm + 1, columnName: cola[m].data[mm].column_name });
           }
           for (let i = 0; i < a.length; i++) {
             for (let key in a[i]) {
@@ -907,9 +917,9 @@ export default {
                   a[i][key] = "0";
                 }
               }
-              if (key == "colume_ch_name") {
+              if (key == "column_ch_name") {
                 if (a[i][key] == "") {
-                  a[i][key] = a[i].colume_name;
+                  a[i][key] = a[i].column_name;
                 }
               }
               if (key == "is_primary_key") {
@@ -961,7 +971,7 @@ export default {
         data = {
           id: this.dbid,
           source_id: this.sourceId,
-          source_name: this.$Base64.encode(this.sourceName),
+          source_name: this.$Base64.encode(this.sourceName)
         };
       }
       this.$router.push({
@@ -1005,7 +1015,7 @@ export default {
       addTaskAllFun.getSingleTableSQL(params).then(res => {
         this.sqlFiltSetData_tablename = this.tablename;
         if (res.data.length != 0) {
-          this.sqlFiltSetData_SQL = res.data[0].sql;
+          this.sqlFiltSetData_SQL = res.data[0].sql ? res.data[0].sql : "";
         }
       });
     },
@@ -1084,10 +1094,12 @@ export default {
       let params = {};
       params["tableId"] = id;
       addTaskAllFun.getPageSQL(params).then(res => {
-        this.ruleForm_ParallelEx.EXtable_sql = res.data[0].page_sql;
-        this.ruleForm_ParallelEx.pageExnum = res.data[0].pageparallels;
-        this.ruleForm_ParallelEx.db_allnum = res.data[0].table_count;
-        this.ruleForm_ParallelEx.everDay_addnum = res.data[0].dataincrement;
+        if (res.data) {
+          this.ruleForm_ParallelEx.EXtable_sql = res.data[0].page_sql;
+          this.ruleForm_ParallelEx.pageExnum = res.data[0].pageparallels;
+          this.ruleForm_ParallelEx.db_allnum = res.data[0].table_count;
+          this.ruleForm_ParallelEx.everDay_addnum = res.data[0].dataincrement;
+        }
       });
     },
     // 测试
@@ -1129,7 +1141,7 @@ export default {
       params["tableName"] = this.EXtable_name;
       params["colSetId"] = parseInt(this.dbid);
       addTaskAllFun.getTableDataCount(params).then(res => {
-        this.ruleForm_ParallelEx.db_allnum = res.data;
+        this.ruleForm_ParallelEx.db_allnum = res.data ? res.data : "";
       });
     },
     // 是否抽取sql弹框确定提交
@@ -1244,8 +1256,8 @@ export default {
       params["tableId"] = id;
       addTaskAllFun.getColumnsigleInfo(params).then(res => {
         this.coltable_name = "";
-        this.coltable_name = res.data.tableName;
-        let data = res.data.columnInfo,
+        this.coltable_name = res.data.tableName ? res.data.tableName : "";
+        let data = res.data.columnInfo ? res.data.columnInfo : [],
           count = 0,
           num = 0;
         for (let i = 0; i < data.length; i++) {
@@ -1396,7 +1408,7 @@ export default {
           let params = {};
           params["colSetId"] = this.dbid;
           addTaskAllFun.getAllSQLs(params).then(res => {
-            this.ruleForm.sqlExtractData = res.data;
+            this.ruleForm.sqlExtractData = res.data ? res.data : [];
           });
         }
       }
@@ -1446,8 +1458,8 @@ export default {
 .rightSearch >>> .el-input__inner {
   height: 30px;
 }
-.rightSearch>button{
-  padding-top:8px;
+.rightSearch > button {
+  padding-top: 8px;
 }
 .locationcenter {
   text-align: center;

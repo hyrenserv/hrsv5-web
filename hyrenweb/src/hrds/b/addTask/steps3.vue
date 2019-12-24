@@ -29,8 +29,20 @@
           <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column
+        prop="table_name"
+        label="表名"
+        width="180"
+        align="center"
+        :show-overflow-tooltip="true"
+      ></el-table-column>
+      <el-table-column
+        prop="table_ch_name"
+        label="表中文名"
+        width="180"
+        align="center"
+        :show-overflow-tooltip="true"
+      ></el-table-column>
       <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)" width="180" align="center">
         <template slot-scope="scope">
           <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag"></el-checkbox>
@@ -170,7 +182,13 @@
     </el-dialog>
     <!-- 全表清洗优先级 -->
     <el-dialog title="全表清洗优先级" :visible.sync="dialogtableClean" width="50%">
-      <el-table :data="tableCleanData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+      <el-table
+        :data="tableCleanData"
+        border
+        size="medium"
+        highlight-current-row
+        :empty-text="tableloadingInfo"
+      >
         <el-table-column property="SelectCol" type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column property="value" label="内容" align="center"></el-table-column>
         <el-table-column label="操作" width="160px" align="center">
@@ -324,8 +342,20 @@
               <span>{{scope.$index+(colClean_currentPage - 1) * colClean_pagesize + 1}}</span>
             </template>
           </el-table-column>
-          <el-table-column property="colume_name" label="列名" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column property="colume_ch_name" label="列中文名" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column
+            property="column_name"
+            label="列名"
+            width="100px"
+            align="center"
+            :show-overflow-tooltip="true"
+          ></el-table-column>
+          <el-table-column
+            property="column_ch_name"
+            label="列中文名"
+            width="100px"
+            align="center"
+            :show-overflow-tooltip="true"
+          ></el-table-column>
           <el-table-column property="compflag" label="字符补齐" width="80px" align="center">
             <template scope="scope">
               <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag"></el-checkbox>
@@ -801,7 +831,13 @@
         @click="columnMerge_addRow(columnMerge)"
         class="addline"
       >新增行</el-button>
-      <el-table :data="columnMerge" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+      <el-table
+        :data="columnMerge"
+        border
+        size="medium"
+        highlight-current-row
+        :empty-text="tableloadingInfo"
+      >
         <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
         <el-table-column label="选择" align="center">
           <template scope="scope">
@@ -840,11 +876,9 @@
           </template>
         </el-table-column>
         <el-table-column property="col_type" label="字段类型" align="center">
-           <template slot="header">
+          <template slot="header">
             <el-tooltip class="item" effect="light" content placement="right">
-              <div slot="content">
-               varchar需要填写长度.如 : varchar(10)
-              </div>
+              <div slot="content">varchar需要填写长度.如 : varchar(10)</div>
               <i class="el-icon-question" aria-hidden="true">字段类型</i>
             </el-tooltip>
           </template>
@@ -874,7 +908,13 @@
       </div>
     </el-dialog>
     <!-- 选择列 -->
-    <el-dialog title="列信息" :visible.sync="dialogcolSelectData" width="70%" class="alltable" @close="colSelectCloseFun()">
+    <el-dialog
+      title="列信息"
+      :visible.sync="dialogcolSelectData"
+      width="70%"
+      class="alltable"
+      @close="colSelectCloseFun()"
+    >
       <el-table
         :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)"
         border
@@ -885,23 +925,33 @@
         :row-key="getRowKey"
       >
         <el-table-column width="55" align="center" prop="selectionState">
-                <template slot="header" slot-scope="scope">
-                  <el-checkbox
-                    @change="Allis_colselectionStateFun(colSelectData,Allis_colselectionState)"
-                    v-model="Allis_colselectionState"
-                    :checked="Allis_colselectionState"
-                  ></el-checkbox>
-                </template>
-                <template slot-scope="scope">
-                  <el-checkbox
-                    :checked="scope.row.selectionState"
-                    v-model="scope.row.selectionState"
-                    @change="col_evercheck(scope.row.selectionState,scope.row.colume_name)"
-                  ></el-checkbox>
-                </template>
-              </el-table-column>
-        <el-table-column property="colume_name" label="列名称" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column property="colume_ch_name" label="中文名" align="center" :show-overflow-tooltip="true"></el-table-column>
+          <template slot="header" slot-scope="scope">
+            <el-checkbox
+              @change="Allis_colselectionStateFun(colSelectData,Allis_colselectionState)"
+              v-model="Allis_colselectionState"
+              :checked="Allis_colselectionState"
+            ></el-checkbox>
+          </template>
+          <template slot-scope="scope">
+            <el-checkbox
+              :checked="scope.row.selectionState"
+              v-model="scope.row.selectionState"
+              @change="col_evercheck(scope.row.selectionState,scope.row.column_name)"
+            ></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column
+          property="column_name"
+          label="列名称"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          property="column_ch_name"
+          label="中文名"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
       </el-table>
       <el-pagination
         @size-change="colSelect_handleSizeChange"
@@ -939,7 +989,7 @@ export default {
   data() {
     return {
       active: 2,
-       tableloadingInfo: "数据加载中...",
+      tableloadingInfo: "数据加载中...",
       rule: validator.default,
       checkAll: false,
       colcheckAll: false,
@@ -1067,7 +1117,7 @@ export default {
       aId: null,
       sourId: null,
       sName: null,
-      Allis_colselectionState:false,
+      Allis_colselectionState: false
     };
   },
   created() {
@@ -1084,7 +1134,7 @@ export default {
     let params = {};
     params["category"] = "FillingType";
     addTaskAllFun.getCategoryItems(params).then(res => {
-      this.FillingType = res.data;
+      this.FillingType = res.data ? res.data : [];
     });
     this.priorityDataFun();
   },
@@ -1107,7 +1157,7 @@ export default {
         data = {
           id: this.dbid,
           source_id: this.sourId,
-          source_name: this.$Base64.encode(this.sName),
+          source_name: this.$Base64.encode(this.sName)
         };
       }
       let params = {};
@@ -1125,7 +1175,7 @@ export default {
       let data = {};
       if (this.$route.query.edit == "yes") {
         data = {
-         agent_id: this.aId,
+          agent_id: this.aId,
           id: this.dbid,
           source_id: this.sourId,
           source_name: this.$Base64.encode(this.sName),
@@ -1135,7 +1185,7 @@ export default {
         data = {
           id: this.dbid,
           source_id: this.sourId,
-          source_name: this.$Base64.encode(this.sName),
+          source_name: this.$Base64.encode(this.sName)
         };
       }
       this.$router.push({
@@ -1213,33 +1263,32 @@ export default {
       this.databaseId = this.dbid;
       let params = {};
       params["colSetId"] = this.databaseId;
-       this.tableloadingInfo = "数据加载中...";
+      this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getCleanConfInfo(params).then(res => {
-        console.log(res)
-         if (res.data.length == 0) {
+        console.log(res);
+        if (res.data.length == 0) {
           this.tableloadingInfo = "暂无数据";
         } else {
           let arrdata = JSON.parse(JSON.stringify(res.data));
-        for (let i = 0; i < arrdata.length; i++) {
-          if (arrdata[i].compflag != 0) {
-            arrdata[i].compflag = true;
-          } else {
-            arrdata[i].compflag = false;
+          for (let i = 0; i < arrdata.length; i++) {
+            if (arrdata[i].compflag != 0) {
+              arrdata[i].compflag = true;
+            } else {
+              arrdata[i].compflag = false;
+            }
+            if (arrdata[i].replaceflag != 0) {
+              arrdata[i].replaceflag = true;
+            } else {
+              arrdata[i].replaceflag = false;
+            }
+            if (arrdata[i].trimflag != 0) {
+              arrdata[i].trimflag = true;
+            } else {
+              arrdata[i].trimflag = false;
+            }
           }
-          if (arrdata[i].replaceflag != 0) {
-            arrdata[i].replaceflag = true;
-          } else {
-            arrdata[i].replaceflag = false;
-          }
-          if (arrdata[i].trimflag != 0) {
-            arrdata[i].trimflag = true;
-          } else {
-            arrdata[i].trimflag = false;
-          }
+          this.cleantableData = arrdata;
         }
-        this.cleantableData = arrdata;
-        }
-        
       });
     },
     //所有表清洗设置显示数据
@@ -1249,13 +1298,12 @@ export default {
       params["colSetId"] = id;
       // 字符替换
       addTaskAllFun.getAllTbCleanReplaceInfo(params).then(res => {
-        console.log(res)
-        this.allTableCleanSettingData = res.data;
+        this.allTableCleanSettingData = res.data ? res.data : [];
       });
       // 字符补齐
       addTaskAllFun.getAllTbCleanCompInfo(params).then(res => {
-        if(res.data.length!=0){
-this.characterCompletion = res.data[0];
+        if (res.data) {
+          this.characterCompletion = res.data[0];
         }
       });
     },
@@ -1317,7 +1365,7 @@ this.characterCompletion = res.data[0];
       let params = {};
       params["category"] = "CleanType";
       addTaskAllFun.getCategoryItems(params).then(res => {
-        this.priorityData = res.data;
+        this.priorityData = res.data ? res.data : [];
       });
     },
     // 全表清洗优先级确定提交
@@ -1393,45 +1441,45 @@ this.characterCompletion = res.data[0];
       params["tableId"] = id;
       this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getColumnInfo(params).then(res => {
-         if (res.data.length == 0) {
+        if (res.data.length == 0) {
           this.tableloadingInfo = "暂无数据";
         } else {
           let arrdata = res.data;
-        for (let i = 0; i < arrdata.length; i++) {
-          if (arrdata[i].codevalueflag == "1") {
-            arrdata[i].codevalueflag = true;
-          } else {
-            arrdata[i].codevalueflag = false;
+          for (let i = 0; i < arrdata.length; i++) {
+            if (arrdata[i].codevalueflag == "1") {
+              arrdata[i].codevalueflag = true;
+            } else {
+              arrdata[i].codevalueflag = false;
+            }
+            if (arrdata[i].compflag == "1") {
+              arrdata[i].compflag = true;
+            } else {
+              arrdata[i].compflag = false;
+            }
+            if (arrdata[i].formatflag == "1") {
+              arrdata[i].formatflag = true;
+            } else {
+              arrdata[i].formatflag = false;
+            }
+            if (arrdata[i].replaceflag == "1") {
+              arrdata[i].replaceflag = true;
+            } else {
+              arrdata[i].replaceflag = false;
+            }
+            if (arrdata[i].splitflag == "1") {
+              arrdata[i].splitflag = true;
+            } else {
+              arrdata[i].splitflag = false;
+            }
+            if (arrdata[i].trimflag == "1") {
+              arrdata[i].trimflag = true;
+            } else {
+              arrdata[i].trimflag = false;
+            }
           }
-          if (arrdata[i].compflag == "1") {
-            arrdata[i].compflag = true;
-          } else {
-            arrdata[i].compflag = false;
-          }
-          if (arrdata[i].formatflag == "1") {
-            arrdata[i].formatflag = true;
-          } else {
-            arrdata[i].formatflag = false;
-          }
-          if (arrdata[i].replaceflag == "1") {
-            arrdata[i].replaceflag = true;
-          } else {
-            arrdata[i].replaceflag = false;
-          }
-          if (arrdata[i].splitflag == "1") {
-            arrdata[i].splitflag = true;
-          } else {
-            arrdata[i].splitflag = false;
-          }
-          if (arrdata[i].trimflag == "1") {
-            arrdata[i].trimflag = true;
-          } else {
-            arrdata[i].trimflag = false;
-          }
+          this.colCleanData = arrdata;
+          console.log(arrdata)
         }
-        this.colCleanData = arrdata;
-        }
-        
       });
     },
     selectColCloseFun() {
@@ -1443,15 +1491,16 @@ this.characterCompletion = res.data[0];
       this.dialogColClean = false;
       let colCleanString = this.getdata();
       let params = {};
-      params["colCleanString"] = colCleanString;
-      addTaskAllFun.saveCVConversionInfo(params).then(res => {
+      params["colCleanString"] = JSON.stringify(colCleanString);
+      console.log(params)
+      addTaskAllFun.saveColCleanConfig(params).then(res => {
         message.saveSuccess(res);
       });
     },
     getdata() {
       let arr = JSON.parse(JSON.stringify(this.colCleanData));
       let arr2 = [];
-      let json = {
+     /*  let json = {
         columnId: "",
         conversionFlag: "",
         complementFlag: "",
@@ -1459,8 +1508,9 @@ this.characterCompletion = res.data[0];
         replaceFlag: "",
         spiltFlag: "",
         trimFlag: ""
-      };
+      }; */
       for (let i = 0; i < arr.length; i++) {
+        let json={}
         for (let key in arr[i]) {
           if (key == "column_id") {
             if (arr[i][key] == "0") {
@@ -1538,19 +1588,19 @@ this.characterCompletion = res.data[0];
     },
     // 点击表字符补齐提交确定按钮
     Table_zfbqsubmit(formName) {
-     
       this.$refs[formName].validate(valid => {
         if (valid) {
-            this.dialogTable_zfbq = false;
+          this.dialogTable_zfbq = false;
           let params = {};
-          let index = this.index,that=this;
+          let index = this.index,
+            that = this;
           params["character_filling"] = that.table_zfbq.character_filling;
           params["filling_length"] = that.table_zfbq.filling_length;
           params["filling_type"] = that.table_zfbq.filling_type;
           params["table_id"] = that.cleantableData[index].table_id;
           addTaskAllFun.saveSingleTbCompletionInfo(params).then(res => {
             message.saveSuccess(res);
-            that.cleantableData[index].compflag=true;
+            that.cleantableData[index].compflag = true;
             index = null;
             that.changecheck = null;
           });
@@ -1564,7 +1614,7 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["tableId"] = tableid;
         addTaskAllFun.getSingleTbReplaceInfo(params).then(res => {
-          console.log(res)
+          console.log(res);
           this.table_zfth = res.data;
         });
       }
@@ -1595,7 +1645,6 @@ this.characterCompletion = res.data[0];
       addTaskAllFun.saveSingleTbReplaceInfo(params).then(res => {
         message.saveSuccess(res);
         this.cleantableData[index].replaceflag = true;
-        console.log(this.cleantableData[index].replaceflag)
         index = null;
         this.changecheck = null;
       });
@@ -1609,7 +1658,9 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["columnId"] = row.column_id;
         addTaskAllFun.getColCompletionInfo(params).then(res => {
-          this.Col_zfbq = res.data;
+          if (res.data) {
+            this.Col_zfbq = res.data;
+          }
         });
       }
     },
@@ -1652,12 +1703,14 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["columnId"] = row.column_id;
         addTaskAllFun.getColReplaceInfo(params).then(res => {
-          this.Col_zfth = res.data;
+          if (res.data) {
+            this.Col_zfth = res.data;
+          }
         });
       }
     },
-    Table_zfthaddRow(tableData){
-        tableData.push({
+    Table_zfthaddRow(tableData) {
+      tableData.push({
         field: "",
         replace_feild: ""
       });
@@ -1705,7 +1758,9 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["columnId"] = row.column_id;
         addTaskAllFun.getDateFormatInfo(params).then(res => {
-          this.Col_rqgsh = res.data[0];
+          if (res.data[0]) {
+            this.Col_rqgsh = res.data[0];
+          }
         });
       }
     },
@@ -1734,8 +1789,8 @@ this.characterCompletion = res.data[0];
     },
     //列清洗-列拆分方法
     colcfFun(index, row) {
-      this.columechname = row.colume_ch_name;
-      this.columename = row.colume_name;
+      this.columechname = row.column_ch_name;
+      this.columename = row.column_name;
       this.dialogCol_colcf = true;
       this.columnid = row.column_id;
       this.columnindex = index;
@@ -1743,13 +1798,17 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["columnId"] = row.column_id;
         addTaskAllFun.getColSplitInfo(params).then(res => {
-          this.Col_colcf = res.data;
+          if (res.data) {
+            this.Col_colcf = res.data;
+          }
         });
       }
       let params1 = {};
       params1["category"] = "CharSplitType";
       addTaskAllFun.getCategoryItems(params1).then(res => {
-        this.CharSplitType = res.data;
+        if (res.data) {
+          this.CharSplitType = res.data;
+        }
       });
     },
     Col_colcfCloseFun() {
@@ -1809,12 +1868,24 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["columnId"] = row.column_id;
         addTaskAllFun.getCVConversionInfo(params).then(res => {
-          this.Col_mzzh = res.data;
+          if (res.data) {
+            this.Col_mzzh = res.data;
+             let params = {};
+          params["codeClassify"] = res.data[0].code_classify;
+          params["origSysCode"] = res.data[0].orig_sys_code;
+          addTaskAllFun.getCVInfo(params).then(res => {
+            if (res.data) {
+              this.Col_mzzh2 = res.data;
+            }
+          });
+          }
         });
       }
       //获取所有码值转换系统名称下拉选
       addTaskAllFun.getAgentInfoList().then(res => {
-        this.CodeSysName = res.data;
+        if (res.data) {
+          this.CodeSysName = res.data;
+        }
       });
     },
     Col_mzzh_currentSel(v) {
@@ -1827,7 +1898,9 @@ this.characterCompletion = res.data[0];
         let params = {};
         params["origSysCode"] = opt;
         addTaskAllFun.getCVClassifyBySysCode(params).then(res => {
-          this.col_mzzhclass = res.data;
+          if (res.data) {
+            this.col_mzzhclass = res.data;
+          }
           this.Col_mzzh2 = [];
           this.Col_mzzh[0].code_classify = "";
         });
@@ -1844,7 +1917,9 @@ this.characterCompletion = res.data[0];
           params["codeClassify"] = opt2;
           params["origSysCode"] = opt1;
           addTaskAllFun.getCVInfo(params).then(res => {
-            this.Col_mzzh2 = res.data;
+            if (res.data) {
+              this.Col_mzzh2 = res.data;
+            }
           });
         }
       }
@@ -1864,6 +1939,7 @@ this.characterCompletion = res.data[0];
       params["codesys"] = this.Col_mzzh[0].orig_sys_name
         .split("(")[1]
         .split(")")[0];
+        console.log(params)
       addTaskAllFun.saveCVConversionInfo(params).then(res => {
         message.saveSuccess(res);
         this.colCleanData[a].codevalueflag = true;
@@ -1881,8 +1957,8 @@ this.characterCompletion = res.data[0];
     //列清洗-优先级调整
     yxjFun(index, row) {
       this.dialogtableCleanOrd = true;
-      this.columechname = row.colume_ch_name;
-      this.columename = row.colume_name;
+      this.columechname = row.column_ch_name;
+      this.columename = row.column_name;
       this.columnid = row.column_id;
       let params = {};
       params["columnId"] = this.columnid;
@@ -1917,8 +1993,10 @@ this.characterCompletion = res.data[0];
       params["tableId"] = this.tableid;
       params["colSetId"] = this.databaseId;
       addTaskAllFun.getSingleTbCleanOrder(params).then(res => {
-        let data = JSON.parse(JSON.stringify(res.data));
-        this.AlltableCleanOrdData = this.changeDataPriorFun(data);
+        if (res.data) {
+          let data = JSON.parse(JSON.stringify(res.data));
+          this.AlltableCleanOrdData = this.changeDataPriorFun(data);
+        }
       });
     },
     //列清洗-整表优先级提交
@@ -1938,13 +2016,14 @@ this.characterCompletion = res.data[0];
       this.dialogcolumnMerge = true;
       let params = {};
       params["tableId"] = this.tableid;
-       this.tableloadingInfo = "数据加载中...";
+      this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getColMergeInfo(params).then(res => {
-         if (res.data.length == 0) {
-          this.tableloadingInfo = "暂无数据";
-        } else {
-        this.columnMerge = res.data;
-
+        if (res.data) {
+          if (res.data.length == 0) {
+            this.tableloadingInfo = "暂无数据";
+          } else {
+            this.columnMerge = res.data;
+          }
         }
       });
     },
@@ -1967,8 +2046,8 @@ this.characterCompletion = res.data[0];
         message.deleteSuccess(res);
       });
     },
-    colSelectFun(index,row) {
-      let arrdata=row.col_name.split(',')
+    colSelectFun(index, row) {
+      let arrdata = row.col_name.split(",");
       this.dialogcolSelectData = true;
       // let page = this.colSelect_currentPage;
       this.getColumnInfo(arrdata);
@@ -1978,42 +2057,44 @@ this.characterCompletion = res.data[0];
     getColumnInfo(arr) {
       let params = {};
       params["tableId"] = this.tableid;
-       this.tableloadingInfo = "数据加载中...";
+      this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getColumnInfo(params).then(res => {
-         if (res.data.length == 0) {
-          this.tableloadingInfo = "暂无数据";
-        } else {
-  let arrdata=res.data
-         for(let i=0;i<arrdata.length;i++){
-           arrdata[i].selectionState=false
-         }
-          for(let j=0;j<arr.length;j++){
-        for(let i=0;i<arrdata.length;i++){
-            if(arr[j]==arrdata[i].colume_name){
-              arrdata[i].selectionState=true
+        if(res.data){
+           if (res.data.length == 0) {
+          this.tableloadingInfo = "暂无数据";
+        } else {
+          let arrdata = res.data;
+          for (let i = 0; i < arrdata.length; i++) {
+            arrdata[i].selectionState = false;
+          }
+          for (let j = 0; j < arr.length; j++) {
+            for (let i = 0; i < arrdata.length; i++) {
+              if (arr[j] == arrdata[i].column_name) {
+                arrdata[i].selectionState = true;
+              }
             }
           }
+          this.colSelectData = arrdata;
         }
-        this.colSelectData = arrdata;
-}
-        
+        }
+       
       });
     },
     // 列信息选择全选
-    Allis_colselectionStateFun(items,e){
-        let that = this;
+    Allis_colselectionStateFun(items, e) {
+      let that = this;
       items.forEach((item, j) => {
         if (e) {
           item.selectionState = true;
           for (let i = 0; i < that.colSelectData.length; i++) {
-            if (that.colSelectData[i].colume_name == item.colume_name) {
+            if (that.colSelectData[i].column_name == item.column_name) {
               that.colSelectData[i].selectionState = true;
             }
           }
         } else {
           item.selectionState = false;
           for (let i = 0; i < that.colSelectData.length; i++) {
-            if (that.colSelectData[i].colume_name == item.colume_name) {
+            if (that.colSelectData[i].column_name == item.column_name) {
               that.colSelectData[i].selectionState = false;
             }
           }
@@ -2021,16 +2102,16 @@ this.characterCompletion = res.data[0];
       });
     },
     // 列信息选择某一个
-    col_evercheck(val,name){
-       if (val == true) {
+    col_evercheck(val, name) {
+      if (val == true) {
         for (let i = 0; i < this.colSelectData.length; i++) {
-          if (this.colSelectData[i].colume_name == name) {
+          if (this.colSelectData[i].column_name == name) {
             this.colSelectData[i].selectionState = true;
           }
         }
       } else {
         for (let i = 0; i < this.colSelectData.length; i++) {
-          if (this.colSelectData[i].colume_name == name) {
+          if (this.colSelectData[i].column_name == name) {
             this.colSelectData[i].selectionState = false;
           }
         }
@@ -2043,28 +2124,31 @@ this.characterCompletion = res.data[0];
       this.colSelect_currentPage = currentPage;
       // this.getColumnInfo(currentPage);
     },
-  //  列信息选择后提交
+    //  列信息选择后提交
     colSelectSubmitFun() {
-      let index = this.colindex,arrdata=this.colSelectData,str = "",count=0;
-      for(let i=0;i<arrdata.length;i++){
-        if(arrdata[i].selectionState==true){
-          count++
-          if(count==1){
-str = arrdata[i].colume_name
-          }else{
-            str += "," + arrdata[i].colume_name;
+      let index = this.colindex,
+        arrdata = this.colSelectData,
+        str = "",
+        count = 0;
+      for (let i = 0; i < arrdata.length; i++) {
+        if (arrdata[i].selectionState == true) {
+          count++;
+          if (count == 1) {
+            str = arrdata[i].column_name;
+          } else {
+            str += "," + arrdata[i].column_name;
           }
         }
       }
       this.col_namstr = str;
       this.columnMerge[index].col_name = this.col_namstr;
       this.col_namstr = "";
-      this.Allis_colselectionState=false
+      this.Allis_colselectionState = false;
     },
-    // 
-    colSelectCloseFun(){
-       this.Allis_colselectionState=false
-       this.dialogcolSelectData= false
+    //
+    colSelectCloseFun() {
+      this.Allis_colselectionState = false;
+      this.dialogcolSelectData = false;
     },
     // 列合并-新增行
     columnMerge_addRow(tableData) {

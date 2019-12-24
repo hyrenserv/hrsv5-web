@@ -2,7 +2,7 @@
   <div id="agentList">
     <el-row>
       <span>数据源Agent列表</span>
-      <router-link to="/">
+      <router-link to="/home">
         <el-button type="primary" size="small" class="goIndex">
           <i class="fa fa-home fa-lg"></i>返回首页
         </el-button>
@@ -157,7 +157,7 @@ export default {
   },
   mounted() {
     agentList.getAgentInfoList().then(res => {
-      this.AgenttableData = res.data;
+      this.AgenttableData = res.data?res.data:[];
     });
     this.getType();
     this.getStatus();
@@ -169,7 +169,7 @@ export default {
       let params = {};
       params["category"] = "AgentType";
       agentList.getCategoryItems(params).then(res => {
-        this.CollectType = res.data;
+        this.CollectType =res.data?res.data:[];
       });
     },
     // 获取状态
@@ -177,7 +177,7 @@ export default {
       let params = {};
       params["category"] = "AgentStatus";
       agentList.getCategoryItems(params).then(res => {
-        this.AgentStatus = res.data;
+        this.AgentStatus = res.data?res.data:[];
       });
     },
     clickTaskflag(id, type) {
@@ -186,7 +186,7 @@ export default {
       params["sourceId"] = id;
       params["agentType"] = type;
       agentList.getAgentInfo(params).then(res => {
-        let arrdata = res.data;
+        let arrdata = res.data?res.data:[];
         for (let i = 0; i < this.CollectType.length; i++) {
           if (this.CollectType[i].code == arrdata[0].agent_type) {
             this.agentType = this.CollectType[i].value;
@@ -214,7 +214,7 @@ export default {
       params["sourceId"] = row.source_id;
       params["agentId"] = row.agent_id;
       agentList.getTaskInfo(params).then(res => {
-        let arrdata = res.data;
+        let arrdata = res.data?res.data:[];
         for (let i = 0; i < arrdata.length; i++) {
           arrdata[i].agent_type = row.agent_type;
         }

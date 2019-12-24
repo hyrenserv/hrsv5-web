@@ -14,7 +14,7 @@
         :header-cell-style="{background:'#e6e0e0'}"
         ref="filterTable"
         stripe
-         :empty-text="tableloadingInfo"
+        :empty-text="tableloadingInfo"
         :default-sort="{prop: 'date', order: 'descending'}"
         style="width: 100%"
         height="360"
@@ -27,8 +27,20 @@
             <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="table_name" label="表名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          prop="table_name"
+          label="表名"
+          width="110"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          prop="table_ch_name"
+          label="表中文名"
+          width="110"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
         <el-table-column label=" 是否仅抽取" width="115" align="center">
           <template slot="header">
             <el-checkbox
@@ -254,7 +266,7 @@
         <el-form-item
           label="数据列分隔符"
           v-if="separatorData.Extractformat=='非定长'"
-          key='3'
+          key="3"
           prop="Datacolumnseparator"
           :rules="rule.default"
         >
@@ -266,7 +278,7 @@
             size="medium"
           ></el-input>
         </el-form-item>
-        <el-form-item label="数据列分隔符" key='4' v-else>
+        <el-form-item label="数据列分隔符" key="4" v-else>
           <el-input
             :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'"
             v-model="separatorData.Datacolumnseparator"
@@ -321,7 +333,7 @@ export default {
   data() {
     return {
       active: 3,
-       tableloadingInfo: "数据加载中...",
+      tableloadingInfo: "数据加载中...",
       rule: validator.default,
       excheckAll: false,
       dialogAllTableSeparatorSettings: false,
@@ -384,7 +396,7 @@ export default {
   mounted() {
     this.IsExData1();
     this.IsExData2();
-      // 获取进入页面的总数据
+    // 获取进入页面的总数据
     // if (this.$route.query.edit == "yes") {
     this.getInitInfo();
     // }
@@ -392,13 +404,17 @@ export default {
     let params = {};
     params["category"] = "DataExtractType";
     addTaskAllFun.getCategoryItems(params).then(res => {
-      this.isExData = res.data;
+      if (res.data) {
+        this.isExData = res.data;
+      }
     });
     // 字符集下拉
     let params2 = {};
     params2["category"] = "DataBaseCode";
     addTaskAllFun.getCategoryItems(params2).then(res => {
-      this.DataBaseCode = res.data;
+      if (res.data) {
+        this.DataBaseCode = res.data;
+      }
     });
   },
   methods: {
@@ -447,8 +463,8 @@ export default {
             } else {
               data = {
                 id: this.dbid,
-              source_id:this.sourId,
-              source_name: this.$Base64.encode(this.sName),
+                source_id: this.sourId,
+                source_name: this.$Base64.encode(this.sName)
               };
             }
             this.$router.push({
@@ -466,16 +482,16 @@ export default {
       if (this.$route.query.edit == "yes") {
         data = {
           agent_id: this.aId,
-                id: this.dbid,
-                source_id: this.sourId,
-                source_name: this.$Base64.encode(this.sName),
-                edit: "yes"
+          id: this.dbid,
+          source_id: this.sourId,
+          source_name: this.$Base64.encode(this.sName),
+          edit: "yes"
         };
       } else {
         data = {
-           id: this.dbid,
-              source_id:this.sourId,
-              source_name: this.$Base64.encode(this.sName),
+          id: this.dbid,
+          source_id: this.sourId,
+          source_name: this.$Base64.encode(this.sName)
         };
       }
       this.$router.push({
@@ -494,52 +510,53 @@ export default {
       this.databaseId = this.dbid;
       let params = {};
       params["colSetId"] = this.databaseId;
-       this.tableloadingInfo = "数据加载中...";
+      this.tableloadingInfo = "数据加载中...";
       addTaskAllFun.getInitInfo(params).then(res => {
-         if (res.data.length == 0) {
-          this.tableloadingInfo = "暂无数据";
-        } else {
-  let arr = res.data;
-        for (var i = 0; i < arr.length; i++) {
-          if (arr[i].data_extract_type) {
-            if (
-              arr[i].data_extract_type == "1" ||
-              arr[i].data_extract_type == "true"
-            ) {
-              arr[i].data_extract_type = true;
-              IsExtypeData1.forEach(item => {
-                if (arr[i].dbfile_format == item.code) {
-                  arr[i].dbfile_format = item.value;
-                }
-              });
-            }
-            if (arr[i].data_extract_type == "2") {
-              arr[i].data_extract_type = "";
-              IsExtypeData2.forEach(items => {
-                if (items.code == arr[i].dbfile_format) {
-                  arr[i].dbfile_format = items.value;
-                }
-              });
-            }
+        if (res.data) {
+          if (res.data.length == 0) {
+            this.tableloadingInfo = "暂无数据";
           } else {
-            arr[i].data_extract_type = "";
-          }
-          if (!arr[i].database_code) {
-            arr[i].database_code = "";
-          }
-          if (!arr[i].database_separatorr) {
-            arr[i].database_separatorr = "";
-          }
-          if (!arr[i].dbfile_format) {
-            arr[i].dbfile_format = "";
-          }
-          if (!arr[i].row_separator) {
-            arr[i].row_separator = "";
+            let arr = res.data;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].data_extract_type) {
+                if (
+                  arr[i].data_extract_type == "1" ||
+                  arr[i].data_extract_type == "true"
+                ) {
+                  arr[i].data_extract_type = true;
+                  IsExtypeData1.forEach(item => {
+                    if (arr[i].dbfile_format == item.code) {
+                      arr[i].dbfile_format = item.value;
+                    }
+                  });
+                }
+                if (arr[i].data_extract_type == "2") {
+                  arr[i].data_extract_type = "";
+                  IsExtypeData2.forEach(items => {
+                    if (items.code == arr[i].dbfile_format) {
+                      arr[i].dbfile_format = items.value;
+                    }
+                  });
+                }
+              } else {
+                arr[i].data_extract_type = "";
+              }
+              if (!arr[i].database_code) {
+                arr[i].database_code = "";
+              }
+              if (!arr[i].database_separatorr) {
+                arr[i].database_separatorr = "";
+              }
+              if (!arr[i].dbfile_format) {
+                arr[i].dbfile_format = "";
+              }
+              if (!arr[i].row_separator) {
+                arr[i].row_separator = "";
+              }
+            }
+            this.ruleForm.unloadingFileData = arr;
           }
         }
-        this.ruleForm.unloadingFileData = arr;
-}
-        
       });
     },
     IsExData1() {
@@ -547,20 +564,24 @@ export default {
       var data_01 = [];
       params0["extractType"] = "1";
       addTaskAllFun.getFileFormatByExtractType(params0).then(res => {
-        let arr = res.data;
-        for (var key in arr) {
-          data_01.push({ value: key, code: arr[key] });
+        if (res.data) {
+          let arr = res.data;
+          for (var key in arr) {
+            data_01.push({ value: key, code: arr[key] });
+          }
+          IsExtypeData1 = data_01;
         }
-        IsExtypeData1 = data_01;
       });
     },
     IsExData2() {
       let params2 = {};
       params2["extractType"] = "2";
       addTaskAllFun.getFileFormatByExtractType(params2).then(res => {
-        let arr = res.data;
-        for (var key in arr) {
-          IsExtypeData2.push({ value: key, code: arr[key] });
+        if (res.data) {
+          let arr = res.data;
+          for (var key in arr) {
+            IsExtypeData2.push({ value: key, code: arr[key] });
+          }
         }
       });
     },
@@ -621,9 +642,9 @@ export default {
       items.forEach((item, i) => {
         if (e) {
           item.data_extract_type = true;
-            item.dbfile_format = "";
-            item.row_separator = "";
-            item.database_separatorr = "";
+          item.dbfile_format = "";
+          item.row_separator = "";
+          item.database_separatorr = "";
         } else {
           item.data_extract_type = false;
           item.dbfile_format = "";
@@ -643,9 +664,11 @@ export default {
       }
       params["extractType"] = type;
       addTaskAllFun.getFileFormatByExtractType(params).then(res => {
-        let arr = res.data;
-        for (var key in arr) {
-          this.ExtractDataType.push({ value: key, code: arr[key] });
+        if (res.data) {
+          let arr = res.data;
+          for (var key in arr) {
+            this.ExtractDataType.push({ value: key, code: arr[key] });
+          }
         }
       });
     },
@@ -654,9 +677,11 @@ export default {
       let params = {};
       params["extractType"] = num;
       addTaskAllFun.getFileFormatByExtractType(params).then(res => {
-        let arr = res.data;
-        for (var key in arr) {
-          this.ExtractDataType.push({ value: key, code: arr[key] });
+        if (res.data) {
+          let arr = res.data;
+          for (var key in arr) {
+            this.ExtractDataType.push({ value: key, code: arr[key] });
+          }
         }
       });
     },
@@ -722,14 +747,14 @@ export default {
 .steps4 >>> .el-form-item {
   margin-bottom: 0 !important;
 }
-.steps4>>>.el-form-item__error{
-    color: #F56C6C;
-    font-size: 12px;
-    line-height: 1;
-    padding-top: 6px;
-    position: absolute;
-    top: 100%;
-    left: 2%;
+.steps4 >>> .el-form-item__error {
+  color: #f56c6c;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 6px;
+  position: absolute;
+  top: 100%;
+  left: 2%;
 }
 .steps4 >>> .el-form-item__content::before {
   content: "*";
@@ -739,6 +764,10 @@ export default {
   position: absolute;
   left: -5px;
 }
-.steps4>>>tr>td{padding:0}
-.steps4>>>tr>td>.cell{padding: 22px 10px;}
+.steps4 >>> tr > td {
+  padding: 0;
+}
+.steps4 >>> tr > td > .cell {
+  padding: 22px 10px;
+}
 </style>
