@@ -9,7 +9,11 @@
             <span>数据管理列表</span>
             <div class="lines"></div>
             <el-table stripe :data="tableDatalist" size="medium" border>
-                <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
+                <el-table-column type="index" label="序号" width="62" align="center">
+                    <template slot-scope="scope">
+                        {{scope.$index+(currentPagelist - 1) * pageSize + 1}}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="original_name" label="文件名" align="center"></el-table-column>
                 <el-table-column prop="file_suffix" label="文件后缀名" align="center"></el-table-column>
                 <el-table-column prop="fileType_zh" label="文件类型" align="center"></el-table-column>
@@ -25,7 +29,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPagelist" :page-size="pageSize" layout=" total, prev, pager, next, jumper" :total="totalItem"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPagelist" @size-change="handleSizeChangelist" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total, sizes,prev, pager, next, jumper" :total="totalItemlist"></el-pagination>
         </el-row>
     </div>
     <!-- 数据管理列表完 -->
@@ -37,7 +41,11 @@
         <div class="lines"></div>
         <!-- 表格 -->
         <el-table :data="tableData" border stripe size="medium">
-            <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+            <el-table-column type="index" label="序号" width="64" align="center">
+                <template slot-scope="scope">
+                    {{scope.$index+(currentPage - 1) * pageSize + 1}}
+                </template>
+            </el-table-column>
             <el-table-column prop="datasource_name" label="数据源名称" align="center"></el-table-column>
             <el-table-column prop="dep_name" label="所属部门" align="center"></el-table-column>
 
@@ -68,7 +76,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" :page-size="pageSize" layout="total, prev, pager, next,jumper" :total="totalItems"></el-pagination>
+            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total, sizes,prev, pager, next, jumper" :total="totalItems"></el-pagination>
         </el-row>
     </div>
     <!-- 数据权限管理完 -->
@@ -99,7 +107,7 @@ export default {
             currentPagelist: 1,
             pageSize: 5,
             totalItems: 0,
-            totalItem: 0,
+            totalItemlist: 0,
             options: [],
             source_id: "",
             da_id: "",
@@ -112,15 +120,17 @@ export default {
     // 获取首页数据
     created() {
         this.getIndexData();
+    },
+    mounted() {
         this.handleCurrentChangeList(1);
         this.handleCurrentChange(1);
     },
     methods: {
         // 子触发父的事件
         addSucess() {
-            this.handleCurrentChangeList();
+            this.handleCurrentChangeList(1);
             this.getIndexData();
-            this.handleCurrentChange();
+            this.handleCurrentChange(1);
         },
         // 封装调用事件
         getIndexData() {
@@ -206,10 +216,10 @@ export default {
                 if (res && res.success) {
                     this.tableData = res.data;
                     // 获取数据权限管理分页总数
-                    if (this.tableData.length == 0) {
+                    if (this.tableData.length === 0) {
                         this.totalItems = 0;
                     } else {
-                        this.totalItems = res.data[0].totalSize;
+                        this.totalItems = this.tableData[0].totalSize;
                     }
                 }
             })
@@ -225,10 +235,10 @@ export default {
                 if (res && res.success) {
                     this.tableDatalist = res.data;
                     // 获取数据管理列表分页总数
-                    if (this.tableDatalist.length == 0) {
-                        this.totalItems = 0;
+                    if (this.tableDatalist.length === 0) {
+                        this.totalItemlist = 0;
                     } else {
-                        this.totalItems = res.data[0].totalSize;
+                        this.totalItemlist = res.data[0].totalSize;
                     }
                 }
             })
@@ -258,6 +268,18 @@ export default {
                     message: '已取消回收权限'
                 });
             });
+        },
+        // 改变数据管理列表每页显示条数
+        handleSizeChangelist(val) {
+            this.pageSize = val;
+            this.currentPagelist = 1;
+            this.handleCurrentChangeList(this.currentPagelist);
+        },
+        // 改变数据权限管理显示条数
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.currentPage = 1;
+            this.handleCurrentChange(this.currentPage);
         }
     },
 }

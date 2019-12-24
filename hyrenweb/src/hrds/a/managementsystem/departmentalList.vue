@@ -29,7 +29,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
@@ -78,7 +78,7 @@ export default {
             totalItem: 0,
             getAllCodeItems: [],
             currentPage: 1,
-            pageSize: 5,
+            pageSize: 10,
             options: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleUpdate: false,
