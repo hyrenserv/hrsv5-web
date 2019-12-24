@@ -79,18 +79,18 @@
     </el-row>
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary" @click="goBackQuit"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
         </el-col>
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:left" @click="backSteps"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="primary" style="float:right" @click="nextSteps"> 下一步<i class="el-icon-right"></i></el-button>
+                <el-button type="primary" style="float:left" @click="backSteps" size="medium"><i class="el-icon-back"></i>上一步</el-button>
+                <el-button type="primary" style="float:right" @click="nextSteps" size="medium"> 下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
 
     <!-- 采集列结构弹出框 -->
-    <el-dialog title="采集列结构" :visible.sync="dialogCollectStructure" width="98%">
+    <el-dialog title="采集列结构" :visible.sync="dialogCollectStructure" width="96%">
         <el-row class="rowDioloag">
             <el-col :span="7" class="colContent">
                 <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
@@ -105,11 +105,7 @@
                 </el-tree>
             </el-col>
 
-            <el-col :span="1">
-                <span class="hiddenClass">占位</span>
-            </el-col>
-
-            <el-col :span="16" class="colTableContent">
+            <el-col :span="16" class="colTableContent" :offset="1">
                 <el-table :data="tableData" border stripe size="mini">
                     <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
 
@@ -145,9 +141,9 @@
 
                     <el-table-column label="操作" width="134" align="center">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="dialogCollectStructure = true" class="buttonSpeical">上移</el-button>
-                            <el-button type="primary" size="mini" @click="dialogCollectStructure = true" class="buttonSpeical">下移</el-button>
-                            <el-button type="danger" size="mini" @click="dialogCollectStructure = true;deleteArry(scope.$index, scope.row)" class="buttonSpeical">删除</el-button>
+                            <el-button type="primary" size="mini" @click="moveUp(scope.$index,scope.row,tableData) " class="buttonSpeical">上移</el-button>
+                            <el-button type="primary" size="mini" @click="moveDown(scope.$index, scope.row,tableData)" class="buttonSpeical">下移</el-button>
+                            <el-button type="danger" size="mini" @click="deleteArry(scope.$index, scope.row)" class="buttonSpeical">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -163,19 +159,24 @@
 
     <!-- 操作码表弹出框 -->
     <el-dialog title="操作码表" :visible.sync="operationCodeTable">
-        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span>{{ node.label }}</span>
-                <span>
-                    <el-button class="netxNUM" type="text" @click="() => append(data)">
-                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
-                    </el-button>
-                </span>
-            </span>
-        </el-tree>
+        <el-table :data="tableData" border stripe size="mini">
+            <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+
+            <el-table-column label="KEY" align="center">
+                <template slot-scope="scope">
+                    <el-input placeholder="中文名" v-model="cnName"></el-input>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="VALUE" align="center">
+                <template slot-scope="scope">
+                    <el-input placeholder="中文名" v-model="cnName"></el-input>
+                </template>
+            </el-table-column>
+        </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="operationCodeTable = false" size="mini">保存</el-button>
+            <el-button type="primary" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -272,7 +273,32 @@ export default {
             }
 
         },
-
+        // 数据上移
+        moveUp(val, data, tableData) {
+            if (val > 0) {
+                let upDate = tableData[val - 1];
+                tableData.splice(val - 1, 1);
+                tableData.splice(val, 0, upDate);
+            } else {
+                this.$message({
+                    message: '已经是第一条，不可上移',
+                    type: 'warning',
+                });
+            }
+        },
+        // 数据下移
+        moveDown(val, data, tableData) {
+            if (val + 1 === tableData.length) {
+                this.$message({
+                    message: '已经是最后一条，不可下移',
+                    type: 'warning',
+                });
+            } else {
+                let downDate = tableData[val + 1];
+                tableData.splice(val + 1, 1);
+                tableData.splice(val, 0, downDate);
+            }
+        }
     }
 }
 </script>
@@ -353,7 +379,7 @@ export default {
     border: 1px solid #e6e6e6;
 }
 
-.collectFileOption .hiddenClass {
-    color: transparent;
+.collectFileOption .partFour .el-button {
+    margin-bottom: 20px;
 }
 </style>

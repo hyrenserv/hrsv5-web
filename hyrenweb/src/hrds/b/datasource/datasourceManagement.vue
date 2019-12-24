@@ -118,6 +118,7 @@ export default {
     methods: {
         // 子触发父的事件
         addSucess() {
+            this.handleCurrentChangeList();
             this.getIndexData();
             this.handleCurrentChange();
         },
@@ -203,9 +204,11 @@ export default {
                 pageSize: this.pageSize
             }).then(res => {
                 if (res && res.success) {
-                    if (res.data.length > 0) {
-                        this.tableData = res.data;
-                        // 获取数据权限管理分页总数
+                    this.tableData = res.data;
+                    // 获取数据权限管理分页总数
+                    if (this.tableData.length == 0) {
+                        this.totalItems = 0;
+                    } else {
                         this.totalItems = res.data[0].totalSize;
                     }
                 }
@@ -220,9 +223,11 @@ export default {
                 pageSize: this.pageSize
             }).then(res => {
                 if (res && res.success) {
-                    if (res.data.length > 0) {
-                        this.tableDatalist = res.data;
-                        // 获取数据管理列表分页总数
+                    this.tableDatalist = res.data;
+                    // 获取数据管理列表分页总数
+                    if (this.tableDatalist.length == 0) {
+                        this.totalItems = 0;
+                    } else {
                         this.totalItems = res.data[0].totalSize;
                     }
                 }

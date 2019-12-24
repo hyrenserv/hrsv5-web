@@ -20,7 +20,11 @@
     </el-col>
 
     <el-table stripe :data="systemParameters" size="medium" border>
-        <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
+        <el-table-column type="index" label="序号" width="62" align="center">
+            <template slot-scope="scope">
+                <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column prop="para_name" label="系统参数名称" width="130" align="center"></el-table-column>
         <el-table-column prop="para_value" label="系统参数值" align="center"></el-table-column>
         <el-table-column prop="para_type" label="系统参数类型 " width="150" align="center"></el-table-column>

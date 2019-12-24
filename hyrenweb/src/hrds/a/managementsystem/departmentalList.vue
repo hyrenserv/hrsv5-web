@@ -13,7 +13,11 @@
         </el-button>
     </el-row>
     <el-table stripe :data="departmentalList" border size="medium">
-        <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
+        <el-table-column type="index" label="序号" width="62" align="center">
+            <template slot-scope="scope">
+                <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column prop="dep_name" label="部门名称" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="160">
             <template slot-scope="scope">

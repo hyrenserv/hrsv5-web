@@ -13,7 +13,11 @@
         </el-button>
     </el-row>
     <el-table stripe :data="userTablelist" border size="medium">
-        <el-table-column type="index" label="序号" width="62" align="center"></el-table-column>
+        <el-table-column type="index" label="序号" width="62" align="center">
+            <template slot-scope="scope">
+                <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column prop="user_id" label="用户登录账号" align="center"></el-table-column>
         <el-table-column prop="user_name" label="创建用户名" align="center"></el-table-column>
         <el-table-column prop="usertype_group" label="用户功能类型" width="370" show-overflow-tooltip align="center"></el-table-column>
