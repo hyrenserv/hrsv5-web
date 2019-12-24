@@ -3,14 +3,12 @@ import request from '@/utils/request'
 export function getAgentInfoList() {
     return request({
         url: '/B/agent/getAgentInfoList',
-        method: 'post',
     })
 }
 //任务配置
 export function getAgentInfo(data) {
     return request({
         url: '/B/agent/getAgentInfo',
-        method: 'post',
         params:data
     })
 }
@@ -18,7 +16,6 @@ export function getAgentInfo(data) {
 export function getTaskInfo(data) {
     return request({
         url: '/B/agent/getTaskInfo',
-        method: 'post',
         params:data
     })
 }
@@ -26,7 +23,6 @@ export function getTaskInfo(data) {
 export function deleteDBTask(data) {
     return request({
         url: '/B/agent/deleteDBTask',
-        method: 'post',
         params:data
     })
 }
@@ -34,7 +30,6 @@ export function deleteDBTask(data) {
 export function viewTaskLog(data) {
     return request({
         url: '/B/agent/viewTaskLog',
-        method: 'post',
         params:data
     })
 }
@@ -42,7 +37,6 @@ export function viewTaskLog(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params:data
     })
 }

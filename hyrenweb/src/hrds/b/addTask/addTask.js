@@ -4,7 +4,6 @@ import Qs from 'qs'
 export function getDBConfInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/getDBConfInfo',
-        method: 'post',
         params:data
     })
 }
@@ -12,7 +11,6 @@ export function getDBConfInfo(data) {
 export function getClassifyInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/getClassifyInfo',
-        method: 'post',
         params:data
     })
 }
@@ -20,7 +18,6 @@ export function getClassifyInfo(data) {
 export function saveClassifyInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/saveClassifyInfo',
-        method: 'post',
         params:data
     })
 }
@@ -28,7 +25,6 @@ export function saveClassifyInfo(data) {
 export function updateClassifyInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/updateClassifyInfo',
-        method: 'post',
         params:data
     })
 }
@@ -36,7 +32,6 @@ export function updateClassifyInfo(data) {
 export function deleteClassifyInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/deleteClassifyInfo',
-        method: 'post',
         params:data
     })
 }
@@ -44,7 +39,6 @@ export function deleteClassifyInfo(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params:data
     })
 }
@@ -52,7 +46,6 @@ export function getCategoryItems(data) {
 export function getJDBCDriver(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/getJDBCDriver',
-        method: 'post',
         params:data
     })
 }
@@ -60,7 +53,6 @@ export function getJDBCDriver(data) {
 export function getDBConnectionProp(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/getDBConnectionProp',
-        method: 'post',
         params:data
     })
 }
@@ -68,7 +60,6 @@ export function getDBConnectionProp(data) {
 export function testConnection(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/testConnection',
-        method: 'post',
         params:data
     })
 }
@@ -76,7 +67,6 @@ export function testConnection(data) {
 export function saveDbConf(data) {
     return request({
         url: '/B/agent/dbagentconf/dbconf/saveDbConf',
-        method: 'post',
         params:data
     })
 }
@@ -85,7 +75,6 @@ export function saveDbConf(data) {
 export function steps_getInitInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getInitInfo',
-        method: 'post',
         params:data
     })
 }
@@ -93,7 +82,6 @@ export function steps_getInitInfo(data) {
 export function getAllTableInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getAllTableInfo',
-        method: 'post',
         params:data
     })
 }
@@ -101,7 +89,6 @@ export function getAllTableInfo(data) {
 export function getPageSQL(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getPageSQL',
-        method: 'post',
         params:data
     })
 }
@@ -109,7 +96,6 @@ export function getPageSQL(data) {
 export function testParallelExtraction(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/testParallelExtraction',
-        method: 'post',
         params:data
     })
 }
@@ -117,7 +103,6 @@ export function testParallelExtraction(data) {
 export function getTableDataCount(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getTableDataCount',
-        method: 'post',
         params:data
     })
 }
@@ -125,7 +110,6 @@ export function getTableDataCount(data) {
 export function getAllSQLs(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getAllSQLs',
-        method: 'post',
         params:data
     })
 }
@@ -133,7 +117,6 @@ export function getAllSQLs(data) {
 export function saveAllSQL(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveAllSQL',
-        method: 'post',
         params:data
     })
 }
@@ -141,7 +124,6 @@ export function saveAllSQL(data) {
 export function getSingleTableSQL(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getSingleTableSQL',
-        method: 'post',
         params:data
     })
 }
@@ -149,7 +131,6 @@ export function getSingleTableSQL(data) {
 export function getColumnsigleInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getColumnInfo',
-        method: 'post',
         params:data
     })
 }
@@ -166,7 +147,6 @@ export function getColumnsigleInfo(data) {
 export function saveCollTbInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
-        method: 'post',
         data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
@@ -175,7 +155,6 @@ export function saveCollTbInfo(data) {
 export function getSQLInfoByColSetId(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getSQLInfoByColSetId',
-        method: 'post',
         params:data
     })
 }
@@ -183,7 +162,6 @@ export function getSQLInfoByColSetId(data) {
 export function getColumnInfoByColSetId(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/getColumnInfoByColSetId',
-        method: 'post',
         params:data
     })
 }
@@ -192,7 +170,6 @@ export function getColumnInfoByColSetId(data) {
 export function getCleanConfInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getCleanConfInfo',
-        method: 'post',
         params:data
     })
 }
@@ -200,7 +177,6 @@ export function getCleanConfInfo(data) {
 export function getAllTbCleanReplaceInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanReplaceInfo',
-        method: 'post',
         params:data
     })
 }
@@ -208,7 +184,6 @@ export function getAllTbCleanReplaceInfo(data) {
 export function getAllTbCleanCompInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanCompInfo',
-        method: 'post',
         params:data
     })
 }
@@ -216,7 +191,6 @@ export function getAllTbCleanCompInfo(data) {
 export function saveAllTbCleanConfigInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanConfigInfo',
-        method: 'post',
         params:data
     })
 }
@@ -224,7 +198,6 @@ export function saveAllTbCleanConfigInfo(data) {
 export function getTbCompletionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getTbCompletionInfo',
-        method: 'post',
         params:data
     })
 }
@@ -232,7 +205,6 @@ export function getTbCompletionInfo(data) {
 export function saveSingleTbCompletionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveSingleTbCompletionInfo',
-        method: 'post',
         params:data
     })
 }
@@ -240,7 +212,6 @@ export function saveSingleTbCompletionInfo(data) {
 export function getSingleTbReplaceInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getSingleTbReplaceInfo',
-        method: 'post',
         params:data
     })
 }
@@ -248,7 +219,6 @@ export function getSingleTbReplaceInfo(data) {
 export function saveSingleTbReplaceInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveSingleTbReplaceInfo',
-        method: 'post',
         params:data
     })
 }
@@ -256,7 +226,6 @@ export function saveSingleTbReplaceInfo(data) {
 export function getAllTbCleanOrder(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getAllTbCleanOrder',
-        method: 'post',
         params:data
     })
 }
@@ -264,7 +233,6 @@ export function getAllTbCleanOrder(data) {
 export function saveAllTbCleanOrder(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveAllTbCleanOrder',
-        method: 'post',
         params:data
     })
 }
@@ -272,7 +240,6 @@ export function saveAllTbCleanOrder(data) {
 export function getColumnInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColumnInfo',
-        method: 'post',
         params:data
     })
 }
@@ -280,7 +247,6 @@ export function getColumnInfo(data) {
 export function getColCompletionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColCompletionInfo',
-        method: 'post',
         params:data
     })
 }
@@ -288,7 +254,6 @@ export function getColCompletionInfo(data) {
 export function saveColCompletionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveColCompletionInfo',
-        method: 'post',
         params:data
     })
 }
@@ -296,7 +261,6 @@ export function saveColCompletionInfo(data) {
 export function getColReplaceInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColReplaceInfo',
-        method: 'post',
         params:data
     })
 }
@@ -304,7 +268,6 @@ export function getColReplaceInfo(data) {
 export function saveColReplaceInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveColReplaceInfo',
-        method: 'post',
         params:data
     })
 }
@@ -312,7 +275,6 @@ export function saveColReplaceInfo(data) {
 export function getDateFormatInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getDateFormatInfo',
-        method: 'post',
         params:data
     })
 }
@@ -320,7 +282,6 @@ export function getDateFormatInfo(data) {
 export function saveDateFormatInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveDateFormatInfo',
-        method: 'post',
         params:data
     })
 }
@@ -328,7 +289,6 @@ export function saveDateFormatInfo(data) {
 export function getColSplitInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColSplitInfo',
-        method: 'post',
         params:data
     })
 }
@@ -336,7 +296,6 @@ export function getColSplitInfo(data) {
 export function saveColSplitInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveColSplitInfo',
-        method: 'post',
         params:data
     })
 }
@@ -344,7 +303,6 @@ export function saveColSplitInfo(data) {
 export function deleteColSplitInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/deleteColSplitInfo',
-        method: 'post',
         params:data
     })
 }
@@ -352,7 +310,6 @@ export function deleteColSplitInfo(data) {
 export function getColCleanOrder(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColCleanOrder',
-        method: 'post',
         params:data
     })
 }
@@ -360,7 +317,6 @@ export function getColCleanOrder(data) {
 export function saveColCleanOrder(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveColCleanOrder',
-        method: 'post',
         params:data
     })
 }
@@ -368,7 +324,6 @@ export function saveColCleanOrder(data) {
 export function getSingleTbCleanOrder(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getSingleTbCleanOrder',
-        method: 'post',
         params:data
     })
 }
@@ -376,7 +331,6 @@ export function getSingleTbCleanOrder(data) {
 export function saveSingleTbCleanOrder(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveSingleTbCleanOrder',
-        method: 'post',
         params:data
     })
 }
@@ -384,7 +338,6 @@ export function saveSingleTbCleanOrder(data) {
 export function getColMergeInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getColMergeInfo',
-        method: 'post',
         params:data
     })
 }
@@ -392,7 +345,6 @@ export function getColMergeInfo(data) {
 export function saveColMergeInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveColMergeInfo',
-        method: 'post',
         params:data
     })
 }
@@ -400,7 +352,6 @@ export function saveColMergeInfo(data) {
 export function deleteColMergeInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/deleteColMergeInfo',
-        method: 'post',
         params:data
     })
 }
@@ -408,7 +359,6 @@ export function deleteColMergeInfo(data) {
 export function getCVConversionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getCVConversionInfo',
-        method: 'post',
         params:data
     })
 }
@@ -416,14 +366,12 @@ export function getCVConversionInfo(data) {
 export function getAgentInfoList() {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getSysCVInfo',
-        method: 'post',
     })
 }
 //  根据码值系统编码获取编码分类
 export function getCVClassifyBySysCode(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getCVClassifyBySysCode',
-        method: 'post',
         params:data
     })
 }
@@ -431,7 +379,6 @@ export function getCVClassifyBySysCode(data) {
 export function getCVInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/getCVInfo',
-        method: 'post',
         params:data
     })
 }
@@ -439,7 +386,6 @@ export function getCVInfo(data) {
 export function saveCVConversionInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveCVConversionInfo',
-        method: 'post',
         params:data
     })
 }
@@ -447,7 +393,6 @@ export function saveCVConversionInfo(data) {
 export function saveColCleanConfig(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveColCleanConfig',
-        method: 'post',
         params:data
     })
 }
@@ -455,7 +400,6 @@ export function saveColCleanConfig(data) {
 export function saveDataCleanConfig(data) {
     return request({
         url: '/B/agent/dbagentconf/cleanconf/saveDataCleanConfig',
-        method: 'post',
         // params:data
          data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -465,7 +409,6 @@ export function saveDataCleanConfig(data) {
 export function getInitInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/fileconf/getInitInfo',
-        method: 'post',
         params:data
     })
 }
@@ -473,7 +416,6 @@ export function getInitInfo(data) {
 export function getFileFormatByExtractType(data) {
     return request({
         url: '/B/agent/dbagentconf/fileconf/getFileFormatByExtractType',
-        method: 'post',
         params:data
     })
 }
@@ -481,7 +423,6 @@ export function getFileFormatByExtractType(data) {
 export function saveFileConf(data) {
     return request({
         url: '/B/agent/dbagentconf/fileconf/saveFileConf',
-        method: 'post',
          data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
@@ -492,7 +433,6 @@ export function saveFileConf(data) {
 export function stodegetInitInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getInitInfo',
-        method: 'post',
         params:data
     })
 }
@@ -500,7 +440,6 @@ export function stodegetInitInfo(data) {
 export function getStoDestByTableId(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getStoDestByTableId',
-        method: 'post',
         params:data
     })
 }
@@ -508,7 +447,6 @@ export function getStoDestByTableId(data) {
 export function getStoDestDetail(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getStoDestDetail',
-        method: 'post',
         params:data
     })
 }
@@ -516,7 +454,6 @@ export function getStoDestDetail(data) {
 export function getColumnStoInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getColumnStoInfo',
-        method: 'post',
         params:data
     })
 }
@@ -524,7 +461,6 @@ export function getColumnStoInfo(data) {
 export function getColumnHeader(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getColumnHeader',
-        method: 'post',
         params:data
     })
 }
@@ -532,7 +468,6 @@ export function getColumnHeader(data) {
 export function getDataStoreLayerAddedId(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getDataStoreLayerAddedId',
-        method: 'post',
         params:data
     })
 }
@@ -540,7 +475,6 @@ export function getDataStoreLayerAddedId(data) {
 export function saveColStoInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/saveColStoInfo',
-        method: 'post',
         params:data
     })
 }
@@ -548,7 +482,6 @@ export function saveColStoInfo(data) {
 export function updateColumnZhName(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/updateColumnZhName',
-        method: 'post',
         params:data
     })
 }
@@ -556,7 +489,6 @@ export function updateColumnZhName(data) {
 export function saveTbStoInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/saveTbStoInfo',
-        method: 'post',
         data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
@@ -565,7 +497,6 @@ export function saveTbStoInfo(data) {
 export function updateTableName(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/updateTableName',
-        method: 'post',
         data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
@@ -574,7 +505,6 @@ export function updateTableName(data) {
 export function getTbStoDestByColSetId(data) {
     return request({
         url: '/B/agent/dbagentconf/stodestconf/getTbStoDestByColSetId',
-        method: 'post',
         params:data
     })
 }
