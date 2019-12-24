@@ -1302,9 +1302,14 @@ export default {
       });
       // 字符补齐
       addTaskAllFun.getAllTbCleanCompInfo(params).then(res => {
-        if (res.data) {
-          this.characterCompletion = res.data[0];
+        if(res.data){
+            if (res.data.length>0) {
+          this.characterCompletion.filling_type = res.data[0].filling_type;
+          this.characterCompletion.character_filling=res.data[0].character_filling
+          this.characterCompletion.filling_length=res.data[0].filling_length
         }
+        }
+      
       });
     },
     // 所有表清洗设置确定提交
