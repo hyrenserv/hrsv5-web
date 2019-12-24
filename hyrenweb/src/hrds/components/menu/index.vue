@@ -1,4 +1,3 @@
-
 <template>
 <div class="home">
     <el-container>
@@ -21,8 +20,8 @@
                 <el-menu router :default-active="deflink">
                     <div v-for="items in menus" :key="items.name">
                         <!-- <template v-if="items.children"> -->
-                            <!--二级菜单循环-->
-                           <!--  <el-submenu :index="items.children[0].path">
+                        <!--二级菜单循环-->
+                        <!--  <el-submenu :index="items.children[0].path">
                                 <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
                                 <div v-for="item in items.children" :key="item.name">
                                     <el-menu-item :index="item.path">
@@ -33,11 +32,11 @@
                             </el-submenu> -->
                         <!-- </template> -->
                         <!-- <template v-else> -->
-                            <!--一级菜单循环-->
-                            <el-menu-item :index="items.path">
-                                <i :class="items.icon"></i>
-                                <span>{{items.title}}</span>
-                            </el-menu-item>
+                        <!--一级菜单循环-->
+                        <el-menu-item :index="items.path">
+                            <i :class="items.icon"></i>
+                            <span>{{items.title}}</span>
+                        </el-menu-item>
                         <!-- </template> -->
                     </div>
                 </el-menu>
@@ -62,24 +61,28 @@ import * as addTaskAllFun from './menu'
 export default {
     data() {
         return {
-            menus:[],
-            deflink:''
+            menus: [],
+            deflink: ''
         }
     },
     mounted() {
         // 这里是菜单默认路径
         // this.$router.push('syspara');
-        addTaskAllFun.getMenu().then(res=>{
-            let Data=res.data;
-            let arr=[]
-            for(var i=0;i<Data.length;i++){              
-              arr.push({'icon':Data[i].menu_remark,'title':Data[i].menu_name,'path':Data[i].menu_path})
+        addTaskAllFun.getMenu().then(res => {
+            let Data = res.data;
+            let arr = []
+            for (var i = 0; i < Data.length; i++) {
+                arr.push({
+                    'icon': Data[i].menu_remark,
+                    'title': Data[i].menu_name,
+                    'path': Data[i].menu_path
+                })
             }
-             this.menus=JSON.parse(JSON.stringify(arr))
-              this.deflink=this.menus[0].path
+            this.menus = JSON.parse(JSON.stringify(arr))
+            this.deflink = this.menus[0].path
 
         })
-        
+
     },
     methods: {
         ...mapActions(['resetToken']),
@@ -99,29 +102,41 @@ export default {
     line-height: 50px;
     color: #fff;
 }
-.el-aside{background-color: #495179;}
-.el-header{
+
+.el-aside {
+    background-color: #495179;
+    margin-bottom: 30px;
+}
+
+.el-header {
     height: 50px !important;
 }
+
 .el-main {
     padding: 15px;
     margin-bottom: 15px;
 }
-.el-menu{
+
+.el-menu {
     border: none !important;
     background-color: #495179 !important;
-    color:#fff;
+    color: #fff;
 }
-.el-menu-item{
+
+.el-menu-item {
     color: #fff !important;
 }
-.el-menu-item:focus, .el-menu-item:hover {
+
+.el-menu-item:focus,
+.el-menu-item:hover {
     outline: 0;
     background-color: #aacaf0;
 }
+
 .el-container {
-    min-height: 556px;
+    min-height: 100vh;
 }
+
 .el-menu-item.is-active {
     color: #409EFF !important;
 }
