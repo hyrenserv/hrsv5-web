@@ -7,7 +7,6 @@ import request from '@/utils/request'
 export function searchFileCollect(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/searchFileCollect',
-        method: 'post',
         params: data
     })
 }
@@ -18,7 +17,6 @@ export function searchFileCollect(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params: data
     })
 }
@@ -29,7 +27,6 @@ export function getCategoryItems(data) {
 export function addFileCollect(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/addFileCollect',
-        method: 'post',
         params: data
     })
 }
@@ -42,7 +39,6 @@ export function addFileCollect(data) {
 export function searchFileSource(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/searchFileSource',
-        method: 'post',
         params: data
     })
 }
@@ -53,7 +49,6 @@ export function searchFileSource(data) {
 export function selectPath(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/selectPath',
-        method: 'post',
         params: data
     })
 }
@@ -64,7 +59,6 @@ export function selectPath(data) {
 export function saveFileSource(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/saveFileSource',
-        method: 'post',
         params: data
     })
 }
@@ -75,7 +69,6 @@ export function saveFileSource(data) {
 export function updateFileCollect(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/updateFileCollect',
-        method: 'post',
         params: data
     })
 }

@@ -6,7 +6,6 @@ import request from '@/utils/request'
 export function selectPath(data) {
     return request({
         url: '/B/agent/unstructuredfilecollect/selectPath',
-        method: 'post',
         params: data
     })
 }
@@ -17,7 +16,6 @@ export function selectPath(data) {
 export function addFtp_collect(data) {
     return request({
         url: '/B/agent/ftpcollect/addFtp_collect',
-        method: 'post',
         params: data
     })
 }
@@ -28,7 +26,6 @@ export function addFtp_collect(data) {
 export function updateFtp_collect(data) {
     return request({
         url: '/B/agent/ftpcollect/updateFtp_collect',
-        method: 'post',
         params: data
     })
 }
@@ -39,7 +36,6 @@ export function updateFtp_collect(data) {
 export function searchFtp_collect(data) {
     return request({
         url: '/B/agent/ftpcollect/searchFtp_collect',
-        method: 'post',
         params: data
     })
 }
@@ -50,7 +46,6 @@ export function searchFtp_collect(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params: data
     })
 }

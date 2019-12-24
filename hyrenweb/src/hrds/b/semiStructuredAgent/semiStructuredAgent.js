@@ -8,7 +8,6 @@ import request from '@/utils/request'
 export function searchObjectCollect(data) {
     return request({
         url: '/B/agent/objectcollect/searchObjectCollect',
-        method: 'post',
         params: data
     })
 }
@@ -19,7 +18,6 @@ export function searchObjectCollect(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params: data
     })
 }
@@ -30,7 +28,6 @@ export function getCategoryItems(data) {
 export function addObjectCollect(data) {
     return request({
         url: '/B/agent/objectcollect/addObjectCollect',
-        method: 'post',
         params: data
     })
 }

@@ -248,9 +248,7 @@ export default {
                             this.getAgentAllData(this.agent_type);
                             // 表单清空
                             this.formAdd = {};
-                        } else {
-                            this.$message.error("添加失败！");
-                        }
+                        } 
                     });
                 } else {
                     return false;
@@ -346,9 +344,6 @@ export default {
                             // 表单清空
                             this.form = {};
                              // 重新渲染页面
-                            // this.tableData = response.data;
-                        } else {
-                            this.$message.error("更新失败！");
                         }
                     });
                 } else {

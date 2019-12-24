@@ -7,8 +7,7 @@ import request from '@/utils/request'
  */
 export function searchDataSourceInfo() {
     return request({
-        url: '/B/datasource/searchDataSourceAndAgentCount',
-        method: 'post'
+        url: '/B/datasource/searchDataSourceAndAgentCount'
     })
 }
 
@@ -17,8 +16,7 @@ export function searchDataSourceInfo() {
  */
 export function searchDataCollectUser() {
     return request({
-        url: '/B/datasource/searchDataCollectUser',
-        method: 'post',
+        url: '/B/datasource/searchDataCollectUser'
     })
 }
 
@@ -29,7 +27,6 @@ export function searchDataCollectUser() {
 export function uploadFile(data) {
     return request({
         url: '/B/datasource/uploadFile',
-        method: 'post',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
     })
@@ -41,7 +38,6 @@ export function uploadFile(data) {
 export function searchDataSourceOrDepartment(data) {
     return request({
         url: '/B/datasource/searchDepartmentInfo',
-        method: 'post',
         params:data
     })
 }
@@ -52,7 +48,6 @@ export function searchDataSourceOrDepartment(data) {
 export function saveDataSource(data) {
     return request({
         url: '/B/datasource/saveDataSource',
-        method: 'post',
         params: data
     })
 }
@@ -63,7 +58,6 @@ export function saveDataSource(data) {
 export function downloadFile(data) {
     return request({
         url: '/B/datasource/downloadFile',
-        method: 'post',
         params: data,
         responseType: 'blob',
         headers: {
@@ -78,7 +72,6 @@ export function downloadFile(data) {
 export function updateDataSource(data) {
     return request({
         url: '/B/datasource/updateDataSource',
-        method: 'post',
         params: data
     })
 }
@@ -90,7 +83,6 @@ export function updateDataSource(data) {
   export function deleteDataSource(data) {
     return request({
         url: '/B/datasource/deleteDataSource',
-        method: 'post',
         params:data
     })
 }
@@ -101,7 +93,6 @@ export function updateDataSource(data) {
   export function deleteAudit(data) {
     return request({
         url: '/B/datasource/deleteAudit',
-        method: 'post',
         params:data
     })
 }
@@ -113,7 +104,6 @@ export function updateDataSource(data) {
   export function getDataAuditInfoForPage(data) {
     return request({
         url: '/B/datasource/getDataAuditInfoForPage',
-        method: 'post',
         params:data
     })
 }
@@ -126,7 +116,6 @@ export function updateDataSource(data) {
 export function updateAuditSourceRelationDep(data) {
     return request({
         url: '/B/datasource/updateAuditSourceRelationDep',
-        method: 'post',
         params: data
     })
 }
@@ -138,7 +127,6 @@ export function updateAuditSourceRelationDep(data) {
   export function searchSourceRelationDepForPage(data) {
     return request({
         url: '/B/datasource/searchSourceRelationDepForPage',
-        method: 'post',
         params:data
     })
 }
@@ -149,7 +137,6 @@ export function updateAuditSourceRelationDep(data) {
 export function searchDataSourceById(data) {
     return request({
         url: '/B/datasource/searchDataSourceById',
-        method: 'post',
         params:data
     })
 }
@@ -161,7 +148,6 @@ export function searchDataSourceById(data) {
   export function searchDatasourceAndAgentInfo(data) {
     return request({
         url: '/B/agentinfo/searchDatasourceAndAgentInfo',
-        method: 'post',
         params: data
     })
 }
@@ -173,7 +159,6 @@ export function searchDataSourceById(data) {
 export function saveAgent(data) {
     return request({
         url: '/B/agentinfo/saveAgent',
-        method: 'post',
         params:data
     })
 }
@@ -184,7 +169,6 @@ export function saveAgent(data) {
 export function updateAgent(data) {
     return request({
         url: '/B/agentinfo/updateAgent',
-        method: 'post',
         params:data
     })
 }
@@ -195,7 +179,6 @@ export function updateAgent(data) {
 export function deleteAgent(data) {
     return request({
         url: '/B/agentinfo/deleteAgent',
-        method: 'post',
         params:data
     })
 }
