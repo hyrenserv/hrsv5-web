@@ -109,3 +109,12 @@ export function myApplyRecord(data) {
         params: data
     })
 }
+
+//获取WEB SQL控制台树菜单数据
+export function getTreeDataInfo(data) {
+    return request({
+        url: '/B/websqlquery/getTreeDataInfo',
+        method: 'post',
+        params: data
+    })
+}

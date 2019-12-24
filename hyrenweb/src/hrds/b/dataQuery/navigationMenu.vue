@@ -1,6 +1,6 @@
 <template>
     <div class="navigationMenu">
-        <el-menu default-active="2" :collapse="true">
+        <el-menu :collapse="true">
             <router-link to="dataQuery">
                 <el-menu-item index="1">
                     <i class="el-icon-files"></i>
@@ -16,7 +16,7 @@
             <router-link to="webSqlConsole">
                 <el-menu-item index="3">
                     <i class="el-icon-monitor"></i>
-                    <span slot="title">WEB SQL操作台</span>
+                    <span slot="title">WEB SQL 操作台</span>
                 </el-menu-item>
             </router-link>
         </el-menu>

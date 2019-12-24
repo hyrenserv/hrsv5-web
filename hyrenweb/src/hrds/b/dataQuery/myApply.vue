@@ -102,7 +102,7 @@
                 'apply_type': this.$route.params.apply_type,
             }).then((res) => {
                 if (res.success) {
-                    res = fileOperations.getResTestData();
+                    // res = fileOperations.getResTestData();
                     this.applyData = res.data.file_rs;
                     this.apply_type = this.$route.params.apply_type;
                 } else this.$message({type: 'error', message: res.message,})
