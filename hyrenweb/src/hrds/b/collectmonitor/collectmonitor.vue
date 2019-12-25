@@ -5,14 +5,18 @@
             <el-col :span="10" :offset="2">
                 <el-badge :value="agentnum" class="item">
                     <el-button type="success" size="medium">
-                        <router-link to="/agentdeploy"><i class="el-icon-download" style="color: white;">部署Agent</i></router-link>
+                        <router-link to="/agentdeploy">
+                            <i class="el-icon-download" style="color: white;">部署Agent</i>
+                        </router-link>
                     </el-button>
                 </el-badge>
             </el-col>
             <el-col :span="10" :offset="2">
                 <el-badge :value="sourcenum" class="item">
                     <el-button type="success" size="medium">
-                        <router-link to="/agentList"><i class="el-icon-setting" style="color: white;">设置采集任务</i></router-link>
+                        <router-link to="/agentList">
+                            <i class="el-icon-setting" style="color: white;">设置采集任务</i>
+                        </router-link>
                     </el-button>
                 </el-badge>
             </el-col>
@@ -60,25 +64,25 @@
 </template>
 
 <script>
-import * as collect from './collectmonitor'
-import collectTable from './collectTable'
+import * as collect from "./collectmonitor";
+import collectTable from "./collectTable";
 export default {
     components: {
         collectTable
     },
     data() {
         this.chartSettings = {
-            showLine: ['file'],
+            showLine: ["file"],
             labelMap: {
-                date: '采集日期',
-                data: '数据采集',
-                file: '文件采集'
+                date: "采集日期",
+                data: "数据采集",
+                file: "文件采集"
             }
-        }
+        };
         return {
             agentnum: 0,
             sourcenum: 0,
-            database_id: '',
+            database_id: "",
             suceess: 0,
             failure: 0,
             running: 0,
@@ -89,51 +93,51 @@ export default {
                 rows: []
             },
             jobTableData: []
-        }
+        };
     },
     mounted() {
+        collect.getAgentNumAndSourceNum().then(res => {
+            this.agentnum = res.data.agentnum;
+            this.sourcenum = res.data.sourcenum;
+        });
 
-        collect.getAgentNumAndSourceNum().then((res) => {
-            if (res.success) {
-                this.agentnum = res.data.agentnum;
-                this.sourcenum = res.data.sourcenum;
-            }
-        })
-
-        collect.getDatabaseSet().then((res) => {
+        collect.getDatabaseSet().then(res => {
             this.dataBaseSet = res.data;
-        })
+        });
 
         collect.getDataCollectInfo().then(res => {
             this.dataCollectInfo = res.data[0];
-        })
+        });
 
         collect.getHostoryCollect().then(res => {
-            this.chartData.columns = Object.keys(res.data[0]);
-            this.chartData.rows = res.data.reverse();
-        })
+            if (typeof res.data[0] != "undefined") {
+                this.chartData.columns = Object.keys(res.data[0]);
+                this.chartData.rows = res.data.reverse();
+            }
+        });
     },
     watch: {
         database_id(newVal, oldVal) {
-
             if (newVal) {
-                collect.getCurrentTaskJob({
-                    'database_id': newVal
-                }).then(res => {
-                    this.jobTableData = res.data;
-                    // console.log(this.jobTableData)
-                    // let params = {
-                    //     'name': 'collectTable',
-                    //     'params': {
-                    //         'jobTableData': this.jobTableData
-                    //     }
-                    // }
-                    // this.$router.push(params)
-                })
+                collect
+                    .getCurrentTaskJob({
+                        database_id: newVal
+                    })
+                    .then(res => {
+                        this.jobTableData = res.data;
+                        // console.log(this.jobTableData)
+                        // let params = {
+                        //     'name': 'collectTable',
+                        //     'params': {
+                        //         'jobTableData': this.jobTableData
+                        //     }
+                        // }
+                        // this.$router.push(params)
+                    });
             }
         }
     }
-}
+};
 </script>
 
 <style scoped>
@@ -147,15 +151,15 @@ export default {
 }
 
 .cccc>>>.el-badge__content--success {
-    background-color: #19D4AE;
+    background-color: #19d4ae;
 }
 
 .cccc>>>.el-badge__content--warning {
-    background-color: #5AB1EF !important;
+    background-color: #5ab1ef !important;
 }
 
 .cccc>>>.el-badge__content--primary {
-    background-color: #EFCA69;
+    background-color: #efca69;
 }
 
 .items>span {
