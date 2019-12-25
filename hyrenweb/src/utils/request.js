@@ -21,29 +21,16 @@ service.interceptors.request.use(
     config.method = 'POST'
     if (token) {
       //config.headers.Authorization = getToken();
-        // config.data = true;
-        config.headers['Hyren_userCookie'] = getToken();
+      // config.data = true;
+      config.headers['Hyren_userCookie'] = getToken();
     }
     return config;
-   
+
   },
   error => {
     return Promise.error(error);
   })
 
-  // service.interceptors.response.use(
-  //   response => {
-  //     // 导出
-  //     const headers = response.headers
-  //     if (headers['content-type'] === 'application/octet-stream;charset=utf-8') {
-  //       return response
-  //     }
-      
-  //   },
-  //   error => {
-  //     return Promise.reject(error)
-  //   }
-  // )
 
 // response interceptor
 service.interceptors.response.use(
@@ -59,7 +46,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-   
+
     // console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
@@ -85,35 +72,21 @@ service.interceptors.response.use(
           duration: 5 * 1000
         })
       }
-      else if(headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8'){
-        return  response.data
-       
-      }else if (res.code == 220) {//如果返回的状态是 500表示服务器异常
-         Message({
+      else if (headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8') {
+        return response.data
+
+      } else if (res.code == 220) {//如果返回的状态是 500表示服务器异常
+        Message({
           message: res.message,
           type: 'error',
           duration: 5 * 1000
-        }) 
-       return response.data
-      }else{
-         /* Message({
-          message: res.message,
-          type: 'error',
-          duration: 5 * 1000
-        }) */
+        })
       }
-      // return null;
-      // return Promise.reject(new Error(res.message || 'Error'))
-      // TODO: 这里的代码需要重构 end
     } else {
-      
-      return res
+      return res;
     }
-   
-       
   },
   error => {
-    // console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',
