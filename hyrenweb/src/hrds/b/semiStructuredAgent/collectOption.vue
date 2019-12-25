@@ -336,33 +336,25 @@ export default {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.collect_type = res.data;
-                    }
+                    this.collect_type = res.data;
                 })
             } else if (e == "DataBaseCode") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.dataBaseCode = res.data;
-                    }
+                    this.dataBaseCode = res.data;
                 })
             } else if (e == "ExecuteWay") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.runWay = res.data;
-                    }
+                    this.runWay = res.data;
                 })
             } else if (e == "IsFlag") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.YesNo = res.data;
-                    }
+                    this.YesNo = res.data;
                 })
             }
 

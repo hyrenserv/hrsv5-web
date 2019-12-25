@@ -156,7 +156,7 @@ export default {
             agentId: "",
             agent_type: "",
             dataAll: {},
-             datasource_name:"",
+            datasource_name: "",
             dialogName: "",
             sourceAgent: true,
             dataFile: false,
@@ -188,7 +188,7 @@ export default {
             this.tableData = res.data.sjkAgent;
             this.dialogName = "添加数据库 Agent";
             this.agent_type = 1;
-            agentTupe =1;
+            agentTupe = 1;
             this.dataAll = res.data;
         });
     },
@@ -248,7 +248,7 @@ export default {
                             this.getAgentAllData(this.agent_type);
                             // 表单清空
                             this.formAdd = {};
-                        } 
+                        }
                     });
                 } else {
                     return false;
@@ -343,7 +343,7 @@ export default {
                             this.dialogFormVisibleview = false;
                             // 表单清空
                             this.form = {};
-                             // 重新渲染页面
+                            // 重新渲染页面
                         }
                     });
                 } else {
@@ -354,7 +354,7 @@ export default {
         },
         // 点击删除数据
         delteThisData() {
-          this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
@@ -365,18 +365,16 @@ export default {
                         source_id: this.$route.query.source_id
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            });
-                           // 隐藏对话框
-                            this.dialogFormVisibleDelte = false;
-                            // 表单清空
-                            this.form = {};
-                            // // 重新渲染页面
-                            this.getAgentAllData(agentTupe);
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        // 隐藏对话框
+                        this.dialogFormVisibleDelte = false;
+                        // 表单清空
+                        this.form = {};
+                        // // 重新渲染页面
+                        this.getAgentAllData(agentTupe);
                     })
             }).catch(() => {
                 this.$message({

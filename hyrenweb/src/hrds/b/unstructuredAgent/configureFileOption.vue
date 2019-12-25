@@ -199,16 +199,14 @@ export default {
             functionAll.searchFileSource({
                 fcs_id: this.$route.query.fcs_id
             }).then((res) => {
-                if (res && res.success) {
-                    res.data.forEach((item) => {
-                        delete item["agent_id"];
-                        delete item["fcs_id"];
-                        delete item["file_source_id"]
-                    })
-                    let ArrJson = JSON.stringify(res.data).replace(/1/g, "true").replace(/0/g, "false").replace(/"true"/g, true).replace(/"false"/g, false);
-                    let jsonArr = JSON.parse(ArrJson)
-                    this.tableData = jsonArr
-                }
+                res.data.forEach((item) => {
+                    delete item["agent_id"];
+                    delete item["fcs_id"];
+                    delete item["file_source_id"]
+                })
+                let ArrJson = JSON.stringify(res.data).replace(/1/g, "true").replace(/0/g, "false").replace(/"true"/g, true).replace(/"false"/g, false);
+                let jsonArr = JSON.parse(ArrJson)
+                this.tableData = jsonArr
             })
         },
         // 添加行数据
@@ -286,16 +284,14 @@ export default {
             functionAll.saveFileSource({
                 file_sources_array: ArrJson
             }).then((res) => {
-                if (res && res.success) {
-                    this.$message({
-                        type: 'success',
-                        message: '添加成功!'
-                    })
-                    this.dialogSelectOk = false;
-                    this.$router.push({
-                        name: "agentList"
-                    })
-                }
+                this.$message({
+                    type: 'success',
+                    message: '添加成功!'
+                })
+                this.dialogSelectOk = false;
+                this.$router.push({
+                    name: "agentList"
+                })
             })
         },
         // 检查必填项是否填写

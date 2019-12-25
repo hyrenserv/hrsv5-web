@@ -71,9 +71,9 @@
                 </el-table-column>
             </el-table>
 
-            <!-- 分页信息 -->
+            <!-- 分页内容 -->
             <el-row class="pagination">
-                <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" :page-size="pageSize" layout=" total,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+                <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
             </el-row>
         </div>
     </el-row>
@@ -226,25 +226,19 @@ export default {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.dataType = res.data;
-                    }
+                    this.dataType = res.data;
                 })
             } else if (e == "DataBaseCode") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.options = res.data;
-                    }
+                    this.options = res.data;
                 })
             } else if (e == "ExecuteWay") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    if (res && res.success) {
-                        this.upDateWay = res.data;
-                    }
+                    this.upDateWay = res.data;
                 })
             }
         },

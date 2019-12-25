@@ -113,9 +113,7 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.storeType = res.data;
-                        }
+                        this.storeType = res.data;
                     });
             } else if (e == "StoreLayerAdded") {
                 functionAll
@@ -123,9 +121,7 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.checkboxType = res.data;
-                        }
+                        this.checkboxType = res.data;
                     });
             }
         },
@@ -185,15 +181,13 @@ export default {
                         functionAll.addDataStore(
                             this.form
                         ).then((res) => {
-                            if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '添加成功!'
-                                })
-                                this.$router.push({
-                                    name: "dataStoreActionIndex"
-                                })
-                            }
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            })
+                            this.$router.push({
+                                name: "dataStoreActionIndex"
+                            })
                         })
                     } else {
                         return false;

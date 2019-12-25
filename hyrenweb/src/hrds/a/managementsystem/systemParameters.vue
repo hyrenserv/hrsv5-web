@@ -39,7 +39,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
@@ -133,10 +133,8 @@ export default {
                 currPage: e,
                 pageSize: this.pageSize
             }).then((res) => {
-                if (res && res.success) {
-                    this.systemParameters = res.data.sysParas;
-                    this.totalItem = res.data.totalSize;
-                }
+                this.systemParameters = res.data.sysParas;
+                this.totalItem = res.data.totalSize;
             })
         },
         // 添加新的部门信息
@@ -144,16 +142,14 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     functionAll.addSysPara(this.formAdd).then((res) => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '添加成功!'
-                            })
-                            this.getSysPara("1");
-                            this.currentPage = 1;
-                            this.dialogFormVisibleAdd = false;
-                            this.formAdd = {};
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '添加成功!'
+                        })
+                        this.getSysPara("1");
+                        this.currentPage = 1;
+                        this.dialogFormVisibleAdd = false;
+                        this.formAdd = {};
                     })
                 } else {
                     return false;
@@ -182,17 +178,15 @@ export default {
                 if (valid) {
                     this.formUpdate["para_id"] = this.para_id;
                     functionAll.updateSysPara(this.formUpdate).then((res) => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '更新成功!'
-                            })
-                            // 渲染页面
-                            this.currentPage = savecurrentPage
-                            this.getSysPara(savecurrentPage);
-                            this.dialogFormVisibleUpdate = false;
-                            this.formUpdate = {};
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '更新成功!'
+                        })
+                        // 渲染页面
+                        this.currentPage = savecurrentPage
+                        this.getSysPara(savecurrentPage);
+                        this.dialogFormVisibleUpdate = false;
+                        this.formUpdate = {};
                     })
                 } else {
                     return false;
@@ -217,15 +211,13 @@ export default {
                         para_name: this.para_name
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
-                            // 从新渲染表格
-                            this.currentPage = savecurrentPage
-                            this.getSysPara(savecurrentPage);
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        })
+                        // 从新渲染表格
+                        this.currentPage = savecurrentPage
+                        this.getSysPara(savecurrentPage);
                     })
             }).catch(() => {
                 this.$message({
@@ -254,10 +246,8 @@ export default {
                 pageSize: this.pageSize,
                 paraName: this.search
             }).then((res) => {
-                if (res && res.success) {
-                    this.systemParameters = res.data.sysParas;
-                    this.totalItem = res.data.totalSize;
-                }
+                this.systemParameters = res.data.sysParas;
+                this.totalItem = res.data.totalSize;
             })
         }
     }

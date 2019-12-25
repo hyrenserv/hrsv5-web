@@ -135,11 +135,9 @@ export default {
         // 封装调用事件
         getIndexData() {
             functionAll.searchDataSourceInfo().then(res => {
-                if (res && res.success) {
-                    // 获取所有数据
-                    this.dataIndexAll = res.data;
+                // 获取所有数据
+                this.dataIndexAll = res.data;
 
-                }
             });
         },
         // 获取表格当前行数据
@@ -154,21 +152,17 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更改成功!"
-                            });
-                            // 传入当前页数和当前需要的条数渲染
-                            this.handleCurrentChange(this.currentPage);
-                            // 隐藏对话框
-                            this.dialogFormVisibleAdd = false;
-                            // 表单清空
-                            this.depIds = [];
-                            this.formAdd = {};
-                        } else {
-                        
-                        }
+                        this.$message({
+                            type: "success",
+                            message: "更改成功!"
+                        });
+                        // 传入当前页数和当前需要的条数渲染
+                        this.handleCurrentChange(this.currentPage);
+                        // 隐藏对话框
+                        this.dialogFormVisibleAdd = false;
+                        // 表单清空
+                        this.depIds = [];
+                        this.formAdd = {};
                     });
                 } else {
                     return false;
@@ -180,21 +174,17 @@ export default {
         departmentInfo() {
             this.depIds = [];
             functionAll.searchDataSourceOrDepartment().then(res => {
-                if (res && res.success) {
-                    this.options = res.data;
-                    arrData = res.data;
-                }
+                this.options = res.data;
+                arrData = res.data;
             });
             // 数据回显
             functionAll.searchDataSourceById({
                 source_id: this.source_id
             }).then((res) => {
-                if (res && res.success) {
-                    this.formAdd = res.data;
-                    res.data.depNameAndId.forEach((item) => {
-                        this.depIds.push(item.dep_id);
-                    })
-                }
+                this.formAdd = res.data;
+                res.data.depNameAndId.forEach((item) => {
+                    this.depIds.push(item.dep_id);
+                })
             })
         },
         // 点击取消按钮
@@ -213,14 +203,12 @@ export default {
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then(res => {
-                if (res && res.success) {
-                    this.tableData = res.data;
-                    // 获取数据权限管理分页总数
-                    if (this.tableData.length === 0) {
-                        this.totalItems = 0;
-                    } else {
-                        this.totalItems = this.tableData[0].totalSize;
-                    }
+                this.tableData = res.data;
+                // 获取数据权限管理分页总数
+                if (this.tableData.length === 0) {
+                    this.totalItems = 0;
+                } else {
+                    this.totalItems = this.tableData[0].totalSize;
                 }
             })
         },
@@ -232,14 +220,12 @@ export default {
                 currPage: this.currentPagelist,
                 pageSize: this.pageSize
             }).then(res => {
-                if (res && res.success) {
-                    this.tableDatalist = res.data;
-                    // 获取数据管理列表分页总数
-                    if (this.tableDatalist.length === 0) {
-                        this.totalItemlist = 0;
-                    } else {
-                        this.totalItemlist = res.data[0].totalSize;
-                    }
+                this.tableDatalist = res.data;
+                // 获取数据管理列表分页总数
+                if (this.tableDatalist.length === 0) {
+                    this.totalItemlist = 0;
+                } else {
+                    this.totalItemlist = res.data[0].totalSize;
                 }
             })
         },
@@ -254,13 +240,11 @@ export default {
                         da_id: this.da_id,
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '回收权限成功!'
-                            });
-                            this.tableDatalist = res.data;
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '回收权限成功!'
+                        });
+                        this.tableDatalist = res.data;
                     })
             }).catch(() => {
                 this.$message({
