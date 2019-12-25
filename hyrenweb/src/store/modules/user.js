@@ -18,6 +18,9 @@ const actions = {
     const { user_id, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ user_id: user_id.trim(), password: password }).then((response) => {
+        if(typeof response == 'undefined') {
+          return;
+        }
         const { data } = response
         commit('SET_TOKEN', data)
         setToken(data)
