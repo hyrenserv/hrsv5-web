@@ -32,7 +32,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮增加新的用户信息-->
     <!-- 新增用户弹出框 -->
@@ -204,26 +204,24 @@ export default {
                 currPage: e,
                 pageSize: this.pageSize
             }).then(async (res) => {
-                if (res && res.success) {
-                    arryCode = [];
-                    for (let i = 0; i < res.data.sysUsers.length; i++) {
-                        arryCode.push(res.data.sysUsers[i].usertype_group);
-                    }
-                    for (let index = 0; index < res.data.sysUsers.length; index++) {
-                        // 更改日期格式
-                        let year = res.data.sysUsers[index].create_date.substring(0, 4);
-                        let month = res.data.sysUsers[index].create_date.substring(4, 6);
-                        let day = res.data.sysUsers[index].create_date.substring(6, 9);
-                        let date = year + "-" + month + "-" + day;
-                        res.data.sysUsers[index].create_date = date;
-                        // getvalue代码项
-                        let typeArr = res.data.sysUsers[index].usertype_group.split(",");
-                        let dataType = this.getValueWithcode(typeArr);
-                        res.data.sysUsers[index].usertype_group = JSON.stringify(dataType).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "")
-                    }
-                    this.userTablelist = res.data.sysUsers;
-                    this.totalItem = res.data.totalSize;
+                arryCode = [];
+                for (let i = 0; i < res.data.sysUsers.length; i++) {
+                    arryCode.push(res.data.sysUsers[i].usertype_group);
                 }
+                for (let index = 0; index < res.data.sysUsers.length; index++) {
+                    // 更改日期格式
+                    let year = res.data.sysUsers[index].create_date.substring(0, 4);
+                    let month = res.data.sysUsers[index].create_date.substring(4, 6);
+                    let day = res.data.sysUsers[index].create_date.substring(6, 9);
+                    let date = year + "-" + month + "-" + day;
+                    res.data.sysUsers[index].create_date = date;
+                    // getvalue代码项
+                    let typeArr = res.data.sysUsers[index].usertype_group.split(",");
+                    let dataType = this.getValueWithcode(typeArr);
+                    res.data.sysUsers[index].usertype_group = JSON.stringify(dataType).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "")
+                }
+                this.userTablelist = res.data.sysUsers;
+                this.totalItem = res.data.totalSize;
             })
         },
         // 点击新增用户按钮获取部门信息和用户默认菜单
@@ -262,29 +260,27 @@ export default {
             functionAll.getUserFunctionMenu({
                 userIsAdmin: val
             }).then((res) => {
-                if (res && res.success) {
-                    // 获取的参数处理
-                    for (let i = 0; i < res.data.length; i++) {
-                        arrJsonData.push({
-                            user_type: res.data[i]
-                        })
-                    }
-                    let getValueWithcode = this.getValueWithcode(res.data);
-                    for (let i = 0; i < getValueWithcode.length; i++) {
-                        arrJson.push({
-                            user_name: getValueWithcode[i]
-                        })
-                    }
-                    var arrJsonDatas = arrJsonData.map((item, index) => {
-                        return {
-                            ...item,
-                            ...arrJson[index]
-                        };
-                    });
-                    // 下拉框赋值
-                    this.functionalTypes = arrJsonDatas;
-                    this.defaultFunction = arrJsonDatas;
+                // 获取的参数处理
+                for (let i = 0; i < res.data.length; i++) {
+                    arrJsonData.push({
+                        user_type: res.data[i]
+                    })
                 }
+                let getValueWithcode = this.getValueWithcode(res.data);
+                for (let i = 0; i < getValueWithcode.length; i++) {
+                    arrJson.push({
+                        user_name: getValueWithcode[i]
+                    })
+                }
+                var arrJsonDatas = arrJsonData.map((item, index) => {
+                    return {
+                        ...item,
+                        ...arrJson[index]
+                    };
+                });
+                // 下拉框赋值
+                this.functionalTypes = arrJsonDatas;
+                this.defaultFunction = arrJsonDatas;
             })
         },
         // 添加部门信息
@@ -389,14 +385,12 @@ export default {
                         user_id: this.user_id,
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
-                            // 从新渲染表格
-                            this.getSysUserInfoAll(pageNow);
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        })
+                        // 从新渲染表格
+                        this.getSysUserInfoAll(pageNow);
                     })
             }).catch(() => {
                 // 未删除时数据回显

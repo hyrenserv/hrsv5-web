@@ -173,17 +173,15 @@ export default {
         // 查询首页信息
         searchDataStore() {
             functionAll.searchDataStore().then((res) => {
-                if (res && res.success) {
-                    res.data.forEach((item) => {
-                        functionAll.getValue({
-                            category: "store_type",
-                            code: item.store_type
-                        }).then((res) => {
-                            item.store_type = res.data;
-                        })
+                res.data.forEach((item) => {
+                    functionAll.getValue({
+                        category: "store_type",
+                        code: item.store_type
+                    }).then((res) => {
+                        item.store_type = res.data;
                     })
-                    this.tableData = res.data;
-                }
+                })
+                this.tableData = res.data;
             })
         },
         // 获取表格当前行数据
@@ -226,14 +224,12 @@ export default {
                         dsl_id: e,
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
-                            // 重新渲染页面
-                            this.searchDataStore();
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        })
+                        // 重新渲染页面
+                        this.searchDataStore();
                     })
             }).catch(() => {
                 this.$message({
@@ -262,13 +258,11 @@ export default {
                                 category: "StoreLayerAdded",
                                 code: item.dsla_storelayer
                             }).then((res) => {
-                                if (res && res.success) {
-                                    arr.push({
-                                        value: res.data,
-                                        code: item.dsla_storelayer
-                                    })
-                                    this.fixedError2(arr);
-                                }
+                                arr.push({
+                                    value: res.data,
+                                    code: item.dsla_storelayer
+                                })
+                                this.fixedError2(arr);
                             })
                         }
                     });
@@ -351,16 +345,14 @@ export default {
                         functionAll.updateDataStore(
                             this.form
                         ).then((res) => {
-                            if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '更新成功!'
-                                });
-                                // 重新渲染页面
-                                this.searchDataStore();
-                                // 关闭弹出层
-                                this.dialogFormVisibleUpdate = false;
-                            }
+                            this.$message({
+                                type: 'success',
+                                message: '更新成功!'
+                            });
+                            // 重新渲染页面
+                            this.searchDataStore();
+                            // 关闭弹出层
+                            this.dialogFormVisibleUpdate = false;
                         })
                     } else {
                         return false;
@@ -387,9 +379,7 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.storeType = res.data;
-                        }
+                        this.storeType = res.data;
                     });
             } else if (e == "StoreLayerAdded") {
                 functionAll
@@ -397,17 +387,7 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        if (res && res.success) {
-                            this.checkboxType = res.data;
-                        }
-                    });
-            } else {
-                functionAll
-                    .getCategoryItems({
-                        category: e
-                    })
-                    .then(res => {
-                        if (res && res.success) {}
+                        this.checkboxType = res.data;
                     });
             }
         },

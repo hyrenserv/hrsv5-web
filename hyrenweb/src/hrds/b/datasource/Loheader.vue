@@ -129,7 +129,7 @@ export default {
                             this.formAdd = {};
                             this.depIds = [];
                         } else {
-                          
+
                         }
                     });
                 } else {
@@ -140,9 +140,7 @@ export default {
         // 点击导入按钮获取数据采集信息
         DataCathInfo() {
             functionAll.searchDataCollectUser().then(res => {
-                if (res && res.success) {
-                    this.options = res.data;
-                }
+                this.options = res.data;
             });
         },
         // 获取上传的文件详情

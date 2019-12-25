@@ -76,20 +76,16 @@ export default {
             functionAll
                 .searchDataSourceOrDepartment()
                 .then(res => {
-                    if (res && res.success) {
-                        this.options = res.data;
-                    }
+                    this.options = res.data;
                 });
             // 数据回显
             functionAll.searchDataSourceById({
                 source_id: this.data[index].source_id
             }).then((res) => {
-                if (res && res.success) {
-                    this.formUpdate = res.data;
-                    res.data.depNameAndId.forEach((item)=>{
-                        this.depIds.push(item.dep_id);
-                    })
-                }
+                this.formUpdate = res.data;
+                res.data.depNameAndId.forEach((item) => {
+                    this.depIds.push(item.dep_id);
+                })
             })
         },
 
@@ -100,18 +96,14 @@ export default {
                     this.formUpdate["dep_id"] = this.depIds;
                     this.formUpdate["source_id"] = this.source_id;
                     functionAll.updateDataSource(this.formUpdate).then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功!"
-                            });
-                            this.$emit("addEvent");
-                            this.dialogFormVisibleAdd = false;
-                            this.formUpdate = {};
-                            this.depIds = [];
-                        } else {
-                         
-                        }
+                        this.$message({
+                            type: "success",
+                            message: "更新成功!"
+                        });
+                        this.$emit("addEvent");
+                        this.dialogFormVisibleAdd = false;
+                        this.formUpdate = {};
+                        this.depIds = [];
                     });
                 } else {
                     return false;
@@ -158,13 +150,11 @@ export default {
                         source_id: this.source_id
                     })
                     .then((res) => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
-                            this.$emit("addEvent");
-                        }
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        })
+                        this.$emit("addEvent");
                     })
             }).catch(() => {
                 this.$message({
