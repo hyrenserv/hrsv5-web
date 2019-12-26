@@ -23,7 +23,7 @@
                     <el-checkbox :checked="scope.row.data_extract_type=='true'" v-model="scope.row.data_extract_type" @change="singleChangeFun(scope.row,scope.row.data_extract_type,ruleForm.unloadingFileData)"></el-checkbox>
                 </template>
             </el-table-column>
-            <el-table-column label=" 抽取数据存储方式" width="180" align="center">
+            <el-table-column label=" 抽取数据存储方式" align="center">
                 <template slot-scope="scope">
                     <el-form-item :prop="'unloadingFileData.'+scope.$index+'.dbfile_format'" :rules="rule.selected">
                         <el-select placeholder="抽取数据存储方式" v-model="scope.row.dbfile_format" style="width:150px" size="medium" @focus="IsExDataFun(scope.row.data_extract_type)" @change="IsExChangeDataFun(scope.row)">
@@ -32,7 +32,7 @@
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column label=" 换行符" width="180" align="center">
+            <el-table-column label=" 换行符" align="center">
                 <template slot-scope="scope">
                     <el-form-item v-if="scope.row.dbfile_format=='非定长'" :prop="'unloadingFileData.'+scope.$index+'.row_separator'" :rules="rule.selected">
                         <el-select placeholder="换行符" v-model="scope.row.row_separator" style="width:150px" size="medium" :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'">
@@ -44,7 +44,7 @@
                     </el-select>
                 </template>
             </el-table-column>
-            <el-table-column label width="180" align="center">
+            <el-table-column label  align="center">
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">
