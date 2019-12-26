@@ -35,12 +35,12 @@
                                 <el-input v-model="scope.row.table_ch_name" placeholder="中文名" @change="changetablechnameFun(scope.row.table_ch_name,scope.row.table_name)"></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="is_parallel" label=" 是否并行抽取" width="180" align="center">
+                        <el-table-column prop="is_parallel" label=" 是否并行抽取"  align="center">
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="sqlFiltering" label="SQL过滤" width="180" align="center">
+                        <el-table-column prop="sqlFiltering" label="SQL过滤"  align="center">
                             <template slot-scope="scope">
                                 <el-button size="mini" @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
                             </template>
@@ -150,7 +150,7 @@
                         </span>
                     </div>
                     <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
-                        <el-table-column label="选择列" align="center" width="150px">
+                        <el-table-column label="选择列" align="center" >
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
                                 <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn"></el-checkbox>&nbsp;选择列
@@ -161,7 +161,7 @@
                                 <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                             </template>
                         </el-table-column>
-                        <el-table-column label="主键定义" align="center" width="150px">
+                        <el-table-column label="主键定义" align="center" >
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
                                 <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn"></el-checkbox> 主键定义
@@ -173,10 +173,10 @@
                             </template>
                         </el-table-column>
                         <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column property="column_type" label="字段类型" width="150px" align="center" :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column property="column_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
+                        <el-table-column property="column_type" label="字段类型"  align="center" :show-overflow-tooltip="true"></el-table-column>
+                        <el-table-column property="column_ch_name" label="列中文名"  align="center" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
-                                <el-input v-model="scope.row.column_ch_name" placeholder="中文名"></el-input>
+                                <el-input v-model="scope.row.column_ch_name" placeholder="中文名" size="medium"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" width="160px" align="center">
@@ -216,21 +216,21 @@
                     <el-table-column property="table_name" label="表名" width="150px" align="center">
                         <template scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.table_name'" :rules="rule.default">
-                                <el-input v-model="scope.row.table_name" placeholder="表名"></el-input>
+                                <el-input v-model="scope.row.table_name" placeholder="表名" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column property="table_ch_name" label="表中文名" width="150px" align="center">
                         <template scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
-                                <el-input v-model="scope.row.table_ch_name" placeholder="表中文名"></el-input>
+                                <el-input v-model="scope.row.table_ch_name" placeholder="表中文名" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column property="sql" label="查询SQL语句" align="center" style="line-height: 30px;" class="textlinght">
                         <template scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default" class="textclass">
-                                <el-input v-model="scope.row.sql" type="textarea" placeholder="查询SQL语句" style="line-height: 14px;"></el-input>
+                                <el-input v-model="scope.row.sql" type="textarea" placeholder="查询SQL语句" style="line-height: 14px;" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>

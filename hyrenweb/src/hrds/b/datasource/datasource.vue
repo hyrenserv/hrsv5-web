@@ -95,10 +95,10 @@
                 <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
                     <el-input v-model="formAdd.agent_ip" autocomplete="off" placeholder="例如 127.9.08.7" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
                     <el-input v-model="formAdd.agent_port" autocomplete="off" placeholder="端口范围1204-65535" style="width:284px"></el-input>
                 </el-form-item>
                 <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
@@ -118,10 +118,10 @@
                 <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
                     <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true}])">
+                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
                     <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
                 </el-form-item>
                 <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
@@ -156,7 +156,7 @@ export default {
             agentId: "",
             agent_type: "",
             dataAll: {},
-             datasource_name:"",
+            datasource_name: "",
             dialogName: "",
             sourceAgent: true,
             dataFile: false,
@@ -188,7 +188,7 @@ export default {
             this.tableData = res.data.sjkAgent;
             this.dialogName = "添加数据库 Agent";
             this.agent_type = 1;
-            agentTupe =1;
+            agentTupe = 1;
             this.dataAll = res.data;
         });
     },
@@ -248,7 +248,7 @@ export default {
                             this.getAgentAllData(this.agent_type);
                             // 表单清空
                             this.formAdd = {};
-                        } 
+                        }
                     });
                 } else {
                     return false;
@@ -343,7 +343,7 @@ export default {
                             this.dialogFormVisibleview = false;
                             // 表单清空
                             this.form = {};
-                             // 重新渲染页面
+                            // 重新渲染页面
                         }
                     });
                 } else {
@@ -354,7 +354,7 @@ export default {
         },
         // 点击删除数据
         delteThisData() {
-          this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
@@ -370,7 +370,7 @@ export default {
                                 type: 'success',
                                 message: '删除成功!'
                             });
-                           // 隐藏对话框
+                            // 隐藏对话框
                             this.dialogFormVisibleDelte = false;
                             // 表单清空
                             this.form = {};
