@@ -32,7 +32,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮增加新的用户信息-->
     <!-- 新增用户弹出框 -->
@@ -156,6 +156,12 @@ import regular from "@/utils/js/regular";
 import {
     watch
 } from 'fs';
+let saveData0;
+let saveNum0;
+let saveData1;
+let saveNum1;
+let saveType0;
+let saveType1;
 //保存后台传过来未处理的usertype_group
 let arryCode = [];
 // 保存当前为第几页
@@ -247,12 +253,22 @@ export default {
                 this.formUpdate.user_type = '';
                 this.formUpdate.usertype_group = [];
                 this.getUserFunctionMenuAll(0);
+                if (saveData0 != undefined) {
+                    saveData0['usertype_group'] = arryCode[saveNum0].split(",");
+                    this.formUpdate.user_type = saveType0;
+                }
+
             } else if (e == 1) {
                 this.formAdd.user_type = '';
                 this.formAdd.usertype_group = [];
                 this.formUpdate.user_type = '';
                 this.formUpdate.usertype_group = [];
                 this.getUserFunctionMenuAll(1);
+                if (saveData1 != undefined) {
+                    saveData1['usertype_group'] = arryCode[saveNum1].split(",");
+                    this.formUpdate.user_type = saveType1;
+                }
+
             }
         },
         // 获取新增时对应数据
@@ -327,6 +343,21 @@ export default {
         // 获取表格当前行数据
         handleEdit(index, row) {
             // 先让表单为空在赋值
+            saveType0 = '';
+            saveData0 = {};
+            saveNum0 = '';
+            saveType1 = '';
+            saveData1 = {};
+            saveNum1 = '';
+            if (row.useris_admin == 0) {
+                saveType0 = row.user_type;
+                saveData0 = row;
+                saveNum0 = index
+            } else if (row.useris_admin == 1) {
+                saveType1 = row.user_type;
+                saveData1 = row;
+                saveNum1 = index;
+            }
             this.formUpdate = {};
             this.user_id = row.user_id;
             this.getUserFunctionMenu(row.useris_admin);
@@ -371,12 +402,13 @@ export default {
             // 隐藏对话框
             this.dialogFormVisibleUpdate = false;
             this.getSysUserInfoAll(pageNow);
+            this.$refs.formUpdate.resetFields();
         },
         // 关闭弹出框之前触发事件
         beforeClose() {
             this.getSysUserInfoAll(pageNow);
             this.dialogFormVisibleUpdate = false;
-
+            this.$refs.formUpdate.resetFields();
         },
         // 删除部门信息
         delteThisData() {
