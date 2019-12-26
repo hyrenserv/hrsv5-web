@@ -2,7 +2,7 @@
 <div id="tasklog">
     <el-row>
         <span>日志查看</span>
-        <router-link to="/">
+        <router-link to="/home">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
             </el-button>
@@ -10,17 +10,17 @@
     </el-row>
     <div class="lines"></div>
     <div class="logcontent">
-        <div>请填写查看日志行数 : 默认显示最后100行,最多显示最后1000行.</div>
+        <div class="redcolor">请填写查看日志行数 : 默认显示最后100行,最多显示最后1000行.</div>
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
             <el-row class="middline">
                 <el-col :span="3">
-                    <el-form-item label="主机:">
+                    <el-form-item label="主机 :">
                         <p class="tasklog_p">{{formInline.Host}}</p>
                         <!-- <el-input  v-model="formInline.Host" placeholder="主机" style="width:100px" size="medium"></el-input> -->
                     </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                    <el-form-item label="日志位置:">
+                    <el-form-item label="日志位置 :">
                         <p class="tasklog_p">{{formInline.Loglocation}}</p>
                         <!-- <el-input v-model="formInline.Loglocation" placeholder="日志位置" style="width:100px" size="medium"></el-input> -->
                     </el-form-item>
@@ -33,22 +33,18 @@
                     </el-select>
                     <!-- </el-form-item> -->
                 </el-col>
-                <el-col :span="3">
+                <el-col :span="2">
                     <!-- <el-form-item label> -->
                     <el-input v-model="formInline.lognum" placeholder="日志行数" size="mini">
-                        <el-button type="primary" @click="onSubmit()" size="mini" slot="append">查看</el-button>
+                        <!-- <el-button type="primary" @click="onSubmit()" size="mini" slot="append">查看</el-button> -->
                     </el-input>
                     <!-- </el-form-item> -->
                 </el-col>
-                <!-- <el-col :span="1">
-            <el-form-item>
-              <el-button type="primary" @click="onSubmit()" size="mini">查看</el-button>
-            </el-form-item>
-          </el-col> -->
+                <el-col :span="2">
+                    <el-button type="primary" @click="onSubmit()" size="mini">查看</el-button>
+                </el-col>
                 <el-col :span="1">
-                    <el-form-item>
-                        <el-button type="primary" size="mini">下载</el-button>
-                    </el-form-item>
+                    <el-button type="primary" size="mini" icon="el-icon-download"></el-button>
                 </el-col>
             </el-row>
         </el-form>
@@ -132,5 +128,10 @@ export default {
 
 .tasklog_p {
     font-size: 12px
+}
+
+.redcolor {
+    color: #ec0b35;
+    font-size: 12px;
 }
 </style>

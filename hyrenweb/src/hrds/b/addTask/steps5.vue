@@ -22,7 +22,7 @@
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column label=" 选择目的地" width="150" align="center">
+            <el-table-column label=" 选择目的地" align="center">
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">请至少选择一个目的地</div>
@@ -55,7 +55,7 @@
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column label=" 是否拉链存储" width="160" align="center">
+            <el-table-column label=" 是否拉链存储"  align="center">
                 <template slot="header">
                     <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
                         <span class="allclickColor">是否拉链存储</span>
@@ -97,7 +97,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label=" 数据保留天数" width="180" align="center">
+            <el-table-column label=" 数据保留天数" align="center">
                 <template slot="header">
                     <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
                         <div class="alldays">
