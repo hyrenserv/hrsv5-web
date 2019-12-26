@@ -236,7 +236,7 @@ export default {
         },
         //删除
         taskDelBtn(type, row) {
-            if (type == "数据库采集") {
+            if (type == "数据库Agent") {
                 let params = {};
                 params["collectSetId"] = row.id;
                 agentList.deleteDBTask(params).then(res => {

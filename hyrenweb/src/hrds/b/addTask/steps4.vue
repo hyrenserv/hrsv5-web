@@ -495,11 +495,11 @@ export default {
                 }
             });
         },
-        singleChangeFun(row,val,alldata) {
+        singleChangeFun(row, val, alldata) {
             row.dbfile_format = "";
             row.row_separator = "";
             row.database_separatorr = "";
-               let count = 0
+            let count = 0
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].data_extract_type == true) {

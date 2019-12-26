@@ -376,7 +376,7 @@ export default {
                             };
                         } else {
                             data = {
-                                id: this.dbid,
+                                id: res.data,
                                 source_id: this.sourceId,
                                 source_name: this.$Base64.encode(this.sourceName)
                             };

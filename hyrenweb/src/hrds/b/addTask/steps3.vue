@@ -809,8 +809,8 @@ export default {
             });
         },
         //表-首尾去空单个点击
-        every_trimselectfun(val, alldata){
-               let count = 0
+        every_trimselectfun(val, alldata) {
+            let count = 0
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].trimflag == true) {
@@ -831,8 +831,8 @@ export default {
                 }
             }
         },
-        col_everySelectfun(val, alldata){
-               let count = 0
+        col_everySelectfun(val, alldata) {
+            let count = 0
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].trimflag == true) {
@@ -873,7 +873,6 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getCleanConfInfo(params).then(res => {
-                console.log(res);
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -1091,7 +1090,6 @@ export default {
                         }
                     }
                     this.colCleanData = arrdata;
-                    console.log(arrdata)
                 }
             });
         },
@@ -1105,7 +1103,6 @@ export default {
             let colCleanString = this.getdata();
             let params = {};
             params["colCleanString"] = JSON.stringify(colCleanString);
-            console.log(params)
             addTaskAllFun.saveColCleanConfig(params).then(res => {
                 message.saveSuccess(res);
             });
@@ -1227,7 +1224,6 @@ export default {
                 let params = {};
                 params["tableId"] = tableid;
                 addTaskAllFun.getSingleTbReplaceInfo(params).then(res => {
-                    console.log(res);
                     this.table_zfth = res.data;
                 });
             }
@@ -1555,7 +1551,6 @@ export default {
             params["codesys"] = this.Col_mzzh[0].orig_sys_name
                 .split("(")[1]
                 .split(")")[0];
-            console.log(params)
             addTaskAllFun.saveCVConversionInfo(params).then(res => {
                 message.saveSuccess(res);
                 this.colCleanData[a].codevalueflag = true;
@@ -1718,15 +1713,15 @@ export default {
             });
         },
         // 列信息选择某一个
-        col_evercheck(val, name,alldata) {
-            let count=0;
+        col_evercheck(val, name, alldata) {
+            let count = 0;
             if (val == true) {
                 for (let i = 0; i < this.colSelectData.length; i++) {
                     if (this.colSelectData[i].column_name == name) {
                         this.colSelectData[i].selectionState = true;
                     }
                 }
-                 for (let i = 0; i < alldata.length; i++) {
+                for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].selectionState == true) {
                         count++
                         if (count == alldata.length - 1) {
@@ -1740,10 +1735,10 @@ export default {
                         this.colSelectData[i].selectionState = false;
                     }
                 }
-                 for (let i = 0; i < alldata.length; i++) {
+                for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].selectionState == false) {
                         count++
-                        if (count<alldata.length - 1) {
+                        if (count < alldata.length - 1) {
                             this.Allis_colselectionState = false
                         }
                     }

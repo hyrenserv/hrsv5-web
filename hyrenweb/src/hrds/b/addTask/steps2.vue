@@ -342,6 +342,8 @@ export default {
         // 获取进入页面的总数据
         if (this.$route.query.edit == "yes") {
             this.steps_getInitInfo();
+        } else {
+            this.tableloadingInfo = '暂无数据'
         }
         let params = {};
         params["colSetId"] = this.dbid;
@@ -482,7 +484,6 @@ export default {
         //选择列
         every_SelectColumnfun(val, alldata) {
             let count = 0
-            console.log(val, 1)
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_get == true) {
