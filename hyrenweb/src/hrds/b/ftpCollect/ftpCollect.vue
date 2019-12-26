@@ -75,7 +75,7 @@
 
             <el-col :span="18">
                 <el-form-item label="agent机器目录" :label-width="formLabelWidth" prop="local_path" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.local_path" placeholder="agent机器目录" :disabled="disabled" :size="size">
+                    <el-input v-model="form.local_path" placeholder="agent机器目录"  :disabled="disabled" :size="size">
                         <template slot="prepend">
                             <el-button @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
                         </template>
@@ -305,7 +305,9 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        this.FtpRule = res.data;
+                        if (res && res.success) {
+                            this.FtpRule = res.data;
+                        }
                     });
             } else if (e == "ReduceType") {
                 functionAll
@@ -313,7 +315,9 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        this.reduceType = res.data;
+                        if (res && res.success) {
+                            this.reduceType = res.data;
+                        }
                     });
             } else if (e == "ExecuteWay") {
                 functionAll
@@ -321,7 +325,9 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        this.runWay = res.data;
+                        if (res && res.success) {
+                            this.runWay = res.data;
+                        }
                     });
             } else if (e == "IsFlag") {
                 functionAll
@@ -329,7 +335,9 @@ export default {
                         category: e
                     })
                     .then(res => {
-                        this.YesNo = res.data;
+                        if (res && res.success) {
+                            this.YesNo = res.data;
+                        }
                     });
             }
         },
@@ -506,12 +514,10 @@ export default {
 .ftpCollect .partThreeDiv .el-button {
     margin-bottom: 20px;
 }
-
-.ftpCollect>>>.el-input-group__prepend button.el-button {
+.ftpCollect >>> .el-input-group__prepend button.el-button{
     background-color: #D9534F;
     color: white;
 }
-
 /* 提示信息 */
 .ftpCollect .item {
     float: right;

@@ -151,50 +151,63 @@ export default {
                     agent_id: this.$route.query.agent_id,
                     fcs_id: fcs_id
                 }).then((res) => {
-                    // 数据回显
-                    this.form.fcs_name = res.data.file_collect_set_info.fcs_name
-                    this.form.system_type = res.data.file_collect_set_info.system_type;
-                    this.form.agent_name = this.$route.query.agent_name;
-                    this.form.host_name = res.data.file_collect_set_info.host_name;
-                    this.form.is_solr = res.data.file_collect_set_info.is_solr;
-                    let date = new Date();
-                    this.form.systemtime = date.toLocaleString('chinese', {
-                        hour12: false
-                    }).replace(/\//g, '-');
-                    // 处理传来的年月日
-                    let year = res.data.agentdate.substring(0, 4);
-                    let month = res.data.agentdate.substring(4, 6);
-                    let day = res.data.agentdate.substring(6, 9);
-                    let dateChange = year + "-" + month + "-" + day;
-                    // 处理传来的时分秒
-                    let hour = res.data.agenttime.substring(0, 2);
-                    let minutes = res.data.agenttime.substring(2, 4);
-                    let seconds = res.data.agenttime.substring(4, 6);
-                    let hourChange = hour + ":" + minutes + ":" + seconds;
-                    this.form.agent_time = dateChange + " " + hourChange;
+                    if (res && res.success) {
+                        // 数据回显
+                        this.form.fcs_name = res.data.file_collect_set_info.fcs_name
+                        this.form.system_type = res.data.file_collect_set_info.system_type;
+                        this.form.agent_name = this.$route.query.agent_name;
+                        this.form.host_name = res.data.file_collect_set_info.host_name;
+                        // // 做个判断
+                        // if (res.data.file_collect_set_info.is_sendok == "1") {
+                        //     this.form.run_way = "按时启动"
+                        // } else if (res.data.file_collect_set_info.is_sendok == "2") {
+                        //     this.form.run_way = "命令触发"
+                        // } else if (res.data.file_collect_set_info.is_sendok == "3") {
+                        //     this.form.run_way = " 信号文件触发"
+                        // }
+                        this.form.is_solr = res.data.file_collect_set_info.is_solr;
+                        let date = new Date();
+                        this.form.systemtime = date.toLocaleString('chinese', {
+                            hour12: false
+                        }).replace(/\//g, '-');
+                        // 处理传来的年月日
+                        let year = res.data.agentdate.substring(0, 4);
+                        let month = res.data.agentdate.substring(4, 6);
+                        let day = res.data.agentdate.substring(6, 9);
+                        let dateChange = year + "-" + month + "-" + day;
+                        // 处理传来的时分秒
+                        let hour = res.data.agenttime.substring(0, 2);
+                        let minutes = res.data.agenttime.substring(2, 4);
+                        let seconds = res.data.agenttime.substring(4, 6);
+                        let hourChange = hour + ":" + minutes + ":" + seconds;
+                        this.form.agent_time = dateChange + " " + hourChange;
+
+                    }
                 });
             } else {
                 functionAll.searchFileCollect({
                     agent_id: this.$route.query.agent_id
                 }).then((res) => {
-                    this.form.system_type = res.data.osName;
-                    this.form.agent_name = this.$route.query.agent_name;
-                    this.form.host_name = res.data.userName;
-                    let date = new Date();
-                    this.form.systemtime = date.toLocaleString('chinese', {
-                        hour12: false
-                    }).replace(/\//g, '-');
-                    // 处理传来的年月日
-                    let year = res.data.agentdate.substring(0, 4);
-                    let month = res.data.agentdate.substring(4, 6);
-                    let day = res.data.agentdate.substring(6, 9);
-                    let dateChange = year + "-" + month + "-" + day;
-                    // 处理传来的时分秒
-                    let hour = res.data.agenttime.substring(0, 2);
-                    let minutes = res.data.agenttime.substring(2, 4);
-                    let seconds = res.data.agenttime.substring(4, 6);
-                    let hourChange = hour + ":" + minutes + ":" + seconds;
-                    this.form.agent_time = dateChange + " " + hourChange;
+                    if (res && res.success) {
+                        this.form.system_type = res.data.osName;
+                        this.form.agent_name = this.$route.query.agent_name;
+                        this.form.host_name = res.data.userName;
+                        let date = new Date();
+                        this.form.systemtime = date.toLocaleString('chinese', {
+                            hour12: false
+                        }).replace(/\//g, '-');
+                        // 处理传来的年月日
+                        let year = res.data.agentdate.substring(0, 4);
+                        let month = res.data.agentdate.substring(4, 6);
+                        let day = res.data.agentdate.substring(6, 9);
+                        let dateChange = year + "-" + month + "-" + day;
+                        // 处理传来的时分秒
+                        let hour = res.data.agenttime.substring(0, 2);
+                        let minutes = res.data.agenttime.substring(2, 4);
+                        let seconds = res.data.agenttime.substring(4, 6);
+                        let hourChange = hour + ":" + minutes + ":" + seconds;
+                        this.form.agent_time = dateChange + " " + hourChange;
+                    }
                 });
             }
 
@@ -205,13 +218,17 @@ export default {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    this.runWay = res.data;
+                    if (res && res.success) {
+                        this.runWay = res.data;
+                    }
                 })
             } else if (e == "IsFlag") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    this.YesNo = res.data;
+                    if (res && res.success) {
+                        this.YesNo = res.data;
+                    }
                 })
             }
         },
