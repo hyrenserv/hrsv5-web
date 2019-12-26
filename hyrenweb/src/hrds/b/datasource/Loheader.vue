@@ -175,6 +175,7 @@ export default {
             this.depIds = [];
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
+            this.$refs.formAdd.resetFields();
         },
         // 关闭弹框之前
         beforeClose() {
@@ -182,6 +183,7 @@ export default {
             this.dialogFormVisibleAdd = false;
             this.formImport = {};
             this.dialogFormVisibleImport = false;
+            this.$refs.formAdd.resetFields();
         }
     }
 };
