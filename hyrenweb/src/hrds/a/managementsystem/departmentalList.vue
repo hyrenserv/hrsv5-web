@@ -29,7 +29,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
@@ -104,8 +104,11 @@ export default {
                 currPage: this.currentPage,
                 pageSize: this.pageSize
             }).then((res) => {
-                this.departmentalList = res.data.departmentInfos;
-                this.totalItem = res.data.totalSize;
+                if (res && res.success) {
+                    this.departmentalList = res.data.departmentInfos;
+                    this.totalItem = res.data.totalSize;
+
+                }
             })
         },
         // 添加新的部门信息
@@ -113,13 +116,15 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     functionAll.addDepartmentInfo(this.formAdd).then((res) => {
-                        this.$message({
-                            type: 'success',
-                            message: '添加成功!'
-                        })
-                        this.getDepartmentInfoAll();
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功!'
+                            })
+                            this.getDepartmentInfoAll();
+                            this.dialogFormVisibleAdd = false;
+                            this.formAdd = {};
+                        }
                     })
                 } else {
                     return false;
@@ -148,13 +153,15 @@ export default {
                 if (valid) {
                     this.formUpdate["dep_id"] = this.dep_id;
                     functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
-                        this.$message({
-                            type: 'success',
-                            message: '更新成功!'
-                        })
-                        this.getDepartmentInfoAll();
-                        this.dialogFormVisibleUpdate = false;
-                        this.formUpdate = {};
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '更新成功!'
+                            })
+                            this.getDepartmentInfoAll();
+                            this.dialogFormVisibleUpdate = false;
+                            this.formUpdate = {};
+                        }
                     })
                 } else {
                     return false;
@@ -173,12 +180,14 @@ export default {
                         dep_id: this.dep_id,
                     })
                     .then(res => {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        })
-                        // 从新渲染表格
-                        this.getDepartmentInfoAll();
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                            // 从新渲染表格
+                            this.getDepartmentInfoAll();
+                        }
                     })
             }).catch(() => {
                 this.$message({

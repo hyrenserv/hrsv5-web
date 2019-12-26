@@ -20,11 +20,11 @@
     <!-- 编辑的弹出表单 -->
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formUpdate" ref="formUpdate">
-            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px" :disabled="true"></el-input>
-            </el-form-item>
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
-                <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
+                <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formUpdate.datasource_name " autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 所属部门" :label-width="formLabelWidth">
                 <el-select v-model="depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
@@ -76,16 +76,20 @@ export default {
             functionAll
                 .searchDataSourceOrDepartment()
                 .then(res => {
-                    this.options = res.data;
+                    if (res && res.success) {
+                        this.options = res.data;
+                    }
                 });
             // 数据回显
             functionAll.searchDataSourceById({
                 source_id: this.data[index].source_id
             }).then((res) => {
-                this.formUpdate = res.data;
-                res.data.depNameAndId.forEach((item) => {
-                    this.depIds.push(item.dep_id);
-                })
+                if (res && res.success) {
+                    this.formUpdate = res.data;
+                    res.data.depNameAndId.forEach((item) => {
+                        this.depIds.push(item.dep_id);
+                    })
+                }
             })
         },
 
@@ -96,14 +100,18 @@ export default {
                     this.formUpdate["dep_id"] = this.depIds;
                     this.formUpdate["source_id"] = this.source_id;
                     functionAll.updateDataSource(this.formUpdate).then(res => {
-                        this.$message({
-                            type: "success",
-                            message: "更新成功!"
-                        });
-                        this.$emit("addEvent");
-                        this.dialogFormVisibleAdd = false;
-                        this.formUpdate = {};
-                        this.depIds = [];
+                        if (res && res.success) {
+                            this.$message({
+                                type: "success",
+                                message: "更新成功!"
+                            });
+                            this.$emit("addEvent");
+                            this.dialogFormVisibleAdd = false;
+                            this.formUpdate = {};
+                            this.depIds = [];
+                        } else {
+
+                        }
                     });
                 } else {
                     return false;
@@ -150,11 +158,13 @@ export default {
                         source_id: this.source_id
                     })
                     .then((res) => {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        })
-                        this.$emit("addEvent");
+                        if (res && res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                            this.$emit("addEvent");
+                        }
                     })
             }).catch(() => {
                 this.$message({

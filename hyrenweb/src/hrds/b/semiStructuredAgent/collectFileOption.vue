@@ -226,19 +226,25 @@ export default {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    this.dataType = res.data;
+                    if (res && res.success) {
+                        this.dataType = res.data;
+                    }
                 })
             } else if (e == "DataBaseCode") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    this.options = res.data;
+                    if (res && res.success) {
+                        this.options = res.data;
+                    }
                 })
             } else if (e == "ExecuteWay") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
-                    this.upDateWay = res.data;
+                    if (res && res.success) {
+                        this.upDateWay = res.data;
+                    }
                 })
             }
         },
