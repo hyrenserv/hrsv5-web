@@ -25,21 +25,20 @@
                 <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
             </template>
         </el-table-column>
-        <el-table-column prop="para_name" label="系统参数名称" width="130" align="center"></el-table-column>
-        <el-table-column prop="para_value" label="系统参数值" align="center"></el-table-column>
-        <el-table-column prop="para_type" label="系统参数类型 " width="150" align="center"></el-table-column>
-        <el-table-column prop="remark" label="系统参数备注" align="center"></el-table-column>
+        <el-table-column prop="para_name" label="系统参数名称" width="140" align="left" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="para_value" label="系统参数值" align="left" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="para_type" label="系统参数类型 " width="150" align="left" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="remark" label="系统参数备注" align="left" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" align="center" width="160">
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
-                <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
@@ -204,35 +203,6 @@ export default {
             this.getSysPara(savecurrentPage);
             this.dialogFormVisibleUpdate = false;
 
-        },
-        // 删除部门信息
-        delteThisData() {
-            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning',
-            }).then(() => {
-                functionAll.deleteSysPara({
-                        para_id: this.para_id,
-                        para_name: this.para_name
-                    })
-                    .then(res => {
-                        if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
-                            // 从新渲染表格
-                            this.currentPage = savecurrentPage
-                            this.getSysPara(savecurrentPage);
-                        }
-                    })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
         },
         // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {

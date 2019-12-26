@@ -109,9 +109,7 @@ export default {
                             this.dialogFormVisibleAdd = false;
                             this.formUpdate = {};
                             this.depIds = [];
-                        } else {
-
-                        }
+                        } 
                     });
                 } else {
                     return false;

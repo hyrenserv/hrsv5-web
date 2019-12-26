@@ -51,13 +51,13 @@
     <!-- 添加的弹出表单 -->
     <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
         <el-form :model="formAdd" ref="formAdd">
-            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
-            </el-form-item>
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
                 <el-input v-model="formAdd.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="rule.selected">
+            <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="rule.default ">
                 <el-select v-model="formAdd.depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
@@ -129,7 +129,7 @@ export default {
                             this.formAdd = {};
                             this.depIds = [];
                         } else {
-                          
+
                         }
                     });
                 } else {
