@@ -1,4 +1,4 @@
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 
 /**
  * 
@@ -26,6 +26,9 @@ export function deleteSuccess(data) {
             duration: 5 * 1000
         })
     }
+    else {
+        return false;
+    }
 }
 /**
  * 
@@ -39,4 +42,17 @@ export function saveSuccess(data) {
             duration: 5 * 1000
         })
     }
+}
+
+/**
+ * 
+ * @param {String} titleMsg : 提示的消息 
+ */
+export function confirmMsg(titleMsg) {
+
+    return MessageBox.confirm(titleMsg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    })
 }

@@ -21,8 +21,11 @@ Vue.use(VCharts);
 // Base64
 import Base64 from '@/utils/base64.js' 
 Vue.prototype.$Base64 = Base64;
-Vue.config.productionTip = false
 
+import * as message from '@/utils/js/message.js'
+Vue.prototype.$Msg = message
+
+Vue.config.productionTip = false
 new Vue({
     el: '#app',
     router,
