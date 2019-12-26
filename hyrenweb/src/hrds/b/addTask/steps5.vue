@@ -437,7 +437,6 @@ export default {
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
                         params["colSetId"] = parseInt(this.dbid);
                         params["dslIdString"] = JSON.stringify(dslIdString);
-                        console.log(params);
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
                                 this.submit_1 = true;
