@@ -44,7 +44,7 @@
                     </el-select>
                 </template>
             </el-table-column>
-            <el-table-column label  align="center">
+            <el-table-column label align="center">
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">
@@ -480,20 +480,23 @@ export default {
             });
         },
         AllTableIsExDataFun(num) {
-            this.ExtractDataType = [];
-            let params = {};
-            params["extractType"] = num;
-            addTaskAllFun.getFileFormatByExtractType(params).then(res => {
-                if (res.data) {
-                    let arr = res.data;
-                    for (var key in arr) {
-                        this.ExtractDataType.push({
-                            value: key,
-                            code: arr[key]
-                        });
+            if (num) {
+                this.ExtractDataType = [];
+                let params = {};
+                params["extractType"] = num;
+                addTaskAllFun.getFileFormatByExtractType(params).then(res => {
+                    if (res.data) {
+                        let arr = res.data;
+                        for (var key in arr) {
+                            this.ExtractDataType.push({
+                                value: key,
+                                code: arr[key]
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
+
         },
         singleChangeFun(row, val, alldata) {
             row.dbfile_format = "";

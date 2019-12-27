@@ -61,6 +61,19 @@ export function viewTaskLog(data) {
         params:data
     })
 }
+// 任务日志下载downloadTaskLog
+export function downloadTaskLog(data) {
+    return request({
+        url: '/B/agent/downloadTaskLog',
+        params:data
+    })
+}
+// getProjectInfo
+/* export function getProjectInfo() {
+    return request({
+        url: '/B/agent/getProjectInfo',
+    })
+} */
 // 获取编码项
 export function getCategoryItems(data) {
     return request({
