@@ -13,21 +13,21 @@
         </el-table-column>
         <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)"  align="center">
+        <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)" align="center">
             <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag"></el-checkbox>
                 <span class="settingbtn" v-if="scope.row.compflag==true" @click="table_zfbqFun(scope.$index,scope.row.table_id,scope.row.compflag)">查看</span>
                 <span class="settingbtn" v-else @click="table_zfbqFun(scope.$index,scope.row.table_id,scope.row.compflag)">设置</span>
             </template>
         </el-table-column>
-        <el-table-column prop="replaceflag" label=" 字符替换(整表清洗设置)"  align="center">
+        <el-table-column prop="replaceflag" label=" 字符替换(整表清洗设置)" align="center">
             <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag"></el-checkbox>
                 <span class="settingbtn" v-if="scope.row.replaceflag==true" @click="table_zfthFun(scope.$index,scope.row.table_id,scope.row.replaceflag)">查看</span>
                 <span class="settingbtn" v-else @click="table_zfthFun(scope.$index,scope.row.table_id,scope.row.replaceflag)">设置</span>
             </template>
         </el-table-column>
-        <el-table-column prop="trimflag" label=" 首尾去空"  align="center">
+        <el-table-column prop="trimflag" label=" 首尾去空" align="center">
             <template slot="header">
                 <el-checkbox @change="handleCheckAllChange(cleantableData,checkAll)" v-model="checkAll" :checked="checkAll">
                     <span class="allclickColor">首尾去空</span>
@@ -83,7 +83,7 @@
                 <template scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
-                            <el-button style="color:red" type="text" circle @click="DelRowFun(scope.$index, table_zfth)">删除</el-button>
+                            <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, table_zfth)">删除</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -146,7 +146,7 @@
                         <template scope="scope">
                             <el-row>
                                 <el-col :span="24" class="delbtn">
-                                    <el-button style="color:red" type="text" circle @click="DelRowFun(scope.$index, allTableCleanSettingData)">删除</el-button>
+                                    <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, allTableCleanSettingData)">删除</el-button>
                                 </el-col>
                             </el-row>
                         </template>
@@ -198,28 +198,28 @@
                         <span class="settingbtn" v-else @click="zfbqFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
                     </template>
                 </el-table-column>
-                <el-table-column property="replaceflag" label="字符替换"  align="center" :reserve-selection="true">
+                <el-table-column property="replaceflag" label="字符替换" align="center" :reserve-selection="true">
                     <template scope="scope">
                         <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.replaceflag==true" @click="zfthFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="zfthFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
                     </template>
                 </el-table-column>
-                <el-table-column property="formatflag" label="日期格式化"  align="center">
+                <el-table-column property="formatflag" label="日期格式化" align="center">
                     <template scope="scope">
                         <el-checkbox v-model="scope.row.formatflag" :checked="scope.row.formatflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.formatflag==true" @click="rqgshFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="rqgshFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
                     </template>
                 </el-table-column>
-                <el-table-column property="splitflag" label="列拆分"  align="center">
+                <el-table-column property="splitflag" label="列拆分" align="center">
                     <template scope="scope">
                         <el-checkbox v-model="scope.row.splitflag" :checked="scope.row.splitflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.splitflag==true" @click="colcfFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="colcfFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
                     </template>
                 </el-table-column>
-                <el-table-column property="codevalueflag" label="码值转换"  align="center">
+                <el-table-column property="codevalueflag" label="码值转换" align="center">
                     <template scope="scope">
                         <el-checkbox v-model="scope.row.codevalueflag" :value="scope.row.codevalueflag" :checked="scope.row.codevalueflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.codevalueflag==true" @click="mzzhFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
@@ -286,7 +286,7 @@
                 <template scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
-                            <el-button style="color:red" type="text" circle @click="DelRowFun(scope.$index, Col_zfth)">删除</el-button>
+                            <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, Col_zfth)">删除</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -363,7 +363,7 @@
                 <template scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
-                            <el-button style="color:red" type="text" circle @click="Col_colcfDelFun(scope.$index, Col_colcf)">删除</el-button>
+                            <el-button class='delcolor' type="text" circle @click="Col_colcfDelFun(scope.$index, Col_colcf)">删除</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -511,7 +511,7 @@
                 <template scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
-                            <el-button style="color:red" size="medium" type="text" circle @click="columnMergeDelFun(scope.$index,columnMerge)">删除</el-button>
+                            <el-button class='delcolor' size="medium" type="text" circle @click="columnMergeDelFun(scope.$index,columnMerge)">删除</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -1036,7 +1036,9 @@ export default {
         },
         //删除
         DelRowFun(index, rows) {
-            rows.splice(index, 1);
+            message.confirmMsg('确定删除吗').then(res => {
+                rows.splice(index, 1);
+            }).catch(()=>{})
         },
         // 表选择列点击
         selectCol(index, row) {

@@ -460,39 +460,16 @@
     /* background-color: chartreuse;
     color: coral; */
 }
-
-/* 增加行按钮 */
-.addlinebtn {
-    margin: 0px 0px 8px 0 !important;
-    background: #de6f2f !important;
-    border: 0 !important;
-    color: #fff !important;
+/*编辑文本按钮颜色*/
+.editcolor{
+    color: #2bc73e !important;
+}
+/*删除文本按钮颜色 */
+.delcolor {
+    color: #e83a3a !important;
+}
+/* 发送文本按钮颜色 */
+.sendcolor {
+    color: #76b8f1 !important;
 }
 
-/* 取消按钮 */
-.cancelbtn {
-    background: #8e8c8b !important;
-    border: 0 !important;
-    color: #fff !important;
-}
-
-/* 新增按钮 */
-.addbtn {
-    background: #0c580b !important;
-    border: 0 !important;
-    color: #fff !important;
-}
-
-/* 确定按钮 */
-.okbtn {
-    background: #1d2a69 !important;
-    border: 0 !important;
-    color: #fff !important;
-}
-
-/* 删除按钮 */
-delbtn {
-    background: #970e09 !important;
-    border: 0 !important;
-    color: #fff !important;
-}
