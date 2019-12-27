@@ -11,12 +11,16 @@
     <div class="lines"></div>
     <el-table :data="AgenttableData" border style="width: 100%">
         <el-table-column prop="datasource_name" label="数据源" width="180" align="center"></el-table-column>
-        <el-table-column label="数据库 Agent"  align="center">
+
+        <el-table-column label="数据库 Agent" align="center">
+
             <template scope="scope">
                 <el-button v-if="scope.row.dbflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)">任务配置</el-button>
             </template>
         </el-table-column>
-        <el-table-column label="非结构化 Agent"  align="center">
+
+        <el-table-column label="非结构化 Agent" align="center">
+
             <template scope="scope">
                 <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
             </template>
@@ -46,9 +50,11 @@
         <el-table :data="gridData2" border>
             <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
             <el-table-column property="agent_ip" label="Agent IP" align="center"></el-table-column>
-            <el-table-column property="agent_port" label="Agent端口"  align="center"></el-table-column>
-            <el-table-column property="agent_type" label="采集类型"  align="center"></el-table-column>
-            <el-table-column property="agent_status" label="Agent连接状态"  align="center"></el-table-column>
+
+            <el-table-column property="agent_port" label="Agent端口" align="center"></el-table-column>
+            <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
+            <el-table-column property="agent_status" label="Agent连接状态" align="center"></el-table-column>
+
             <el-table-column property="AgentOpt" label="操作" width="280px" align="center">
                 <template scope="scope">
                     <el-row>
@@ -76,8 +82,10 @@
         <el-table :data="taskMang" border size="medium">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column property label="启动方式"  align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="采集频率"  align="center" :show-overflow-tooltip="true"></el-table-column>
+
+            <el-table-column property label="启动方式" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column label="采集频率" align="center" :show-overflow-tooltip="true"></el-table-column>
+
             <el-table-column label="操作" width="200px" align="center">
                 <template scope="scope">
                     <el-row>
@@ -232,17 +240,21 @@ export default {
                         }
                     });
                 }
+
             }
         },
         //删除
         taskDelBtn(type, row) {
             if (type == "数据库Agent") {
-                let params = {};
-                params["collectSetId"] = row.id;
-                agentList.deleteDBTask(params).then(res => {
-                    this.taskManagement(row);
-                    message.deleteSuccess(res);
-                });
+                message.confirmMsg('确定删除吗').then(res => {
+                    let params = {};
+                    params["collectSetId"] = row.id;
+                    agentList.deleteDBTask(params).then(res => {
+                        this.taskManagement(row);
+                        message.deleteSuccess(res);
+                    });
+                }).catch(()=>{})
+
             }
         }
     }
