@@ -45,13 +45,13 @@ export default new Router({routes: [
         // 系统参数列表
         {path: '/systemParameters',name: 'systemParameters',title: '系统列表',component: () => import('@/hrds/a/managementsystem/systemParameters.vue')},
         // 半结构化agent采集
-        {path: '/collection2_1',name: 'collectOption',title: '采集设置',component: () => import('@/hrds/b/semiStructuredAgent/collectOption.vue')},
+        {path: '/collection5_1',name: 'collectOption',title: '采集设置',component: () => import('@/hrds/b/semiStructuredAgent/collectOption.vue')},
         {path: '/collectFileOption',name: 'collectFileOption',title: '采集文件设置',component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')},
         {path: '/collectionStructureSet',name: 'collectionStructureSet',title: '采集文件设置',component: () => import('@/hrds/b/semiStructuredAgent/collectionStructureSet.vue')},
         //ftp agent采集
         {path: '/collection3_1',name: 'ftpCollect',title: '采集ftp agent',component: () => import('@/hrds/b/ftpCollect/ftpCollect.vue')},
         // 非结构化 Agent采集
-        {path: '/collection5_1',name: 'configureStartMode',title: '配置启动方式',component: () => import('@/hrds/b/unstructuredAgent/configureStartMode.vue')},
+        {path: '/collection2_1',name: 'configureStartMode',title: '配置启动方式',component: () => import('@/hrds/b/unstructuredAgent/configureStartMode.vue')},
         {path: '/configureFileOption',name: 'configureFileOption',title: '配置连接属性',component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue')},
         // dataStoreAction
         {path: '/dataStoreLayer',name: 'dataStoreActionIndex',title: 'dataStoreActionIndex',component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')},

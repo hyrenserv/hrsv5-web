@@ -19,13 +19,13 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="非结构化 Agent" align="center">
+        <el-table-column label="半结构化 Agent" align="center">
 
             <template scope="scope">
                 <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
             </template>
         </el-table-column>
-        <el-table-column label="半结构化 Agent" align="center">
+        <el-table-column label="非结构化 Agent" align="center">
             <template scope="scope">
                 <el-button v-if="scope.row.nonstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)">任务配置</el-button>
             </template>
@@ -41,7 +41,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <!-- 点击部署显示弹框-->
+    <!-- 点击任务配置显示弹框-->
     <el-dialog title :visible.sync="dialogTableVisible" width="80%">
         <div slot="title" class="header-title">
             <span class="title-sourceName">数据源名称:{{ sourceName }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -53,19 +53,25 @@
 
             <el-table-column property="agent_port" label="Agent端口" align="center"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
-            <el-table-column property="agent_status" label="Agent连接状态" align="center"></el-table-column>
+            <el-table-column  label="Agent连接状态" align="center">
+                <template scope="scope">
+                      <span v-if="scope.row.agent_status=='未连接'" class='unlink'>{{scope.row.agent_status}}</span>
+                      <span v-else-if="scope.row.agent_status=='已连接'" class='successlink'>{{scope.row.agent_status}}</span>
+                      <span v-else class='linking'>{{scope.row.agent_status}}</span>
+                </template>
+            </el-table-column>
 
-            <el-table-column property="AgentOpt" label="操作" width="280px" align="center">
+            <el-table-column property="AgentOpt" label="操作" width="350px" align="center">
                 <template scope="scope">
                     <el-row>
-                        <el-col :span="8">
-                            <el-button type="success" size="mini" @click="addtask(scope.row,sourceName)">新增任务</el-button>
+                        <el-col :span="8" >
+                            <el-button type="success" size="mini" @click="addtask(scope.row,sourceName)" icon='el-icon-plus'>新增任务</el-button>
                         </el-col>
                         <el-col :span="8">
-                            <el-button type="primary" size="mini" @click="taskManagement(scope.row)">任务管理</el-button>
+                            <el-button type="primary" size="mini" @click="taskManagement(scope.row)" icon='el-icon-s-cooperation'>任务管理</el-button>
                         </el-col>
                         <el-col :span="8">
-                            <el-button type="warning" size="mini" @click="tasklogFun(scope.row)">日志查看</el-button>
+                            <el-button type="warning" size="mini" @click="tasklogFun(scope.row)" icon="el-icon-search">日志查看</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -99,7 +105,7 @@
                             <el-button type="text" class="sendcolor">发送</el-button>
                         </el-col>
                         <el-col :span="9" class="sendmsg">
-                            <el-button type="text" class="workcolor">生成作业</el-button>
+                            <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button>
                         </el-col>
                     </el-row>
                 </template>
@@ -109,10 +115,31 @@
             <el-button @click="dialogTableTask = false" type="danger" size="medium">关闭</el-button>
         </div>
     </el-dialog>
+    <!--生成作业  -->
+     <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
+        <el-form ref="separatorData" :model="ProdeceJobsData" label-width="240px" text-align="center">
+            <el-form-item label="选择工程" prop="project" :rules="rule.selected">
+                <el-select placeholder="选择工程" v-model="ProdeceJobsData.project" style="width: 190px;" size="medium" >
+                    <el-option v-for="(item,index) in Allproject" :key="index" :label="item.value" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="选择任务"  prop="task" :rules="rule.selected">
+                <el-select placeholder="选择任务" v-model="ProdeceJobsData.task" style="width: 190px;" size="medium" >
+                    <el-option v-for="(item,index) in Alltask" :key="index" :label="item.value" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button  type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" size="mini">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
 <script>
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 import * as agentList from "./agentList";
 import * as message from "@/utils/js/message";
 export default {
@@ -121,13 +148,29 @@ export default {
             AgenttableData: [],
             gridData2: [],
             taskMang: [],
+            rule: validator.default,
             dialogTableVisible: false,
+            dialogProdeceJobs:false,
             agentType: "",
             sourceName: "",
             agentStatus: "",
             dialogTableTask: false,
             CollectType: [],
-            AgentStatus: []
+            AgentStatus: [],
+            ProdeceJobsData:{
+                  project:'',
+                  task:''
+            },
+            Allproject:[
+                {
+                    value:'1'
+                }
+            ],
+            Alltask:[
+                 {
+                    value:'2'
+                }
+            ]
         };
     },
     mounted() {
@@ -257,11 +300,11 @@ export default {
                         });
                     }).catch(() => {})
                     }else if(this.CollectType[i].code=='2'){
-                    //文件系统agent--半结构化
+                    //文件系统agent--非结构化deleteNonStructTask
                        message.confirmMsg('确定删除吗').then(res => {
                         let params = {};
                         params["collectSetId"] = row.id;
-                        agentList.deleteHalfStructTask(params).then(res => {
+                        agentList.deleteNonStructTask(params).then(res => {
                             this.taskManagement(row);
                             message.deleteSuccess(res);
                         });
@@ -287,11 +330,11 @@ export default {
                         });
                     }).catch(() => {})
                     }else if(this.CollectType[i].code=='5'){
-                    //对象agent--非结构化
+                    //对象agent--半结构化deleteHalfStructTask
                        message.confirmMsg('确定删除吗').then(res => {
                         let params = {};
                         params["collectSetId"] = row.id;
-                        agentList.deleteNonStructTask(params).then(res => {
+                        agentList.deleteHalfStructTask(params).then(res => {
                             this.taskManagement(row);
                             message.deleteSuccess(res);
                         });
@@ -300,6 +343,9 @@ export default {
                   
                 }
             }
+        },
+        ProdeceJobsFun(){
+            this.dialogProdeceJobs=true
         }
     }
 };

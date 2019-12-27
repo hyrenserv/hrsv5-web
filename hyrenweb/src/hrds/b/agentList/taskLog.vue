@@ -2,7 +2,7 @@
 <div id="tasklog">
     <el-row>
         <span>日志查看</span>
-        <router-link to="/home">
+        <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
             </el-button>
@@ -26,12 +26,12 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
-                    <!-- <el-form-item label="日志类型"> -->
+                    <el-form-item label="日志类型 :">
                     <el-select v-model="formInline.LogType" placeholder="日志类型" style="width:100px" size="mini">
                         <el-option label="错误日志" value="Wrong"></el-option>
                         <el-option label="完整日志" value="All"></el-option>
                     </el-select>
-                    <!-- </el-form-item> -->
+                    </el-form-item>
                 </el-col>
                 <el-col :span="2">
                     <!-- <el-form-item label> -->
@@ -44,7 +44,7 @@
                     <el-button type="primary" @click="onSubmit()" size="mini">查看</el-button>
                 </el-col>
                 <el-col :span="1">
-                    <el-button type="primary" size="mini" icon="el-icon-download"></el-button>
+                    <el-button type="primary" size="mini" icon="el-icon-download" @click="downloadTaskLog()"></el-button>
                 </el-col>
             </el-row>
         </el-form>
@@ -71,12 +71,23 @@ export default {
         this.agentid = this.$route.query.agenId;
     },
     methods: {
+        // 日志查看
         onSubmit() {
             let params = {};
             params["agentId"] = this.agentid;
             params["logType"] = this.formInline.LogType;
             params["readNum"] = this.formInline.lognum;
             agentList.viewTaskLog(params).then(res => {
+                console.log(res);
+            });
+        },
+        // 任务日志下载
+        downloadTaskLog(){
+              let params = {};
+            params["agentId"] = this.agentid;
+            params["logType"] = this.formInline.LogType;
+            params["readNum"] = this.formInline.lognum;
+            agentList.downloadTaskLog(params).then(res => {
                 console.log(res);
             });
         }
@@ -133,5 +144,8 @@ export default {
 .redcolor {
     color: #ec0b35;
     font-size: 12px;
+}
+.el-select-dropdown{
+    top:204px !important;
 }
 </style>
