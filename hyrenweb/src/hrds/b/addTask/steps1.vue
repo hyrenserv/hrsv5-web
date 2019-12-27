@@ -164,6 +164,10 @@
                             <el-table-column label="操作" width="150px" align="center">
                                 <template scope="scope">
                                     <el-row>
+
+                                 
+                                   
+
                                         <el-col :span="12" style="text-align: center;">
                                             <el-button type="text" circle @click="colltaskEditBtn(scope.row)" class='editcolor'>编辑</el-button>
                                         </el-col>
@@ -178,7 +182,10 @@
                         <div class="btntop">
                             <el-button @click="cancelClassNumBtn()" type="danger" size="mini">取 消</el-button>
                             <el-button @click="addClassNumBtn();innerVisible = true" type="success" size="mini">新增</el-button>
+
+                          
                             <el-button @click="updataClassNumBtn(CollTaskData)" type="primary" size="mini">确定</el-button>
+
                         </div>
                     </div>
                 </el-dialog>
@@ -208,9 +215,13 @@
                     </div>
                 </el-dialog>
                 <!-- 查看日志弹层 -->
+
+               
+
                 <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%" >
                     <div class="logseach">
                         <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select" size="mini">
+
                             <el-button slot="append" icon="el-icon-search"></el-button>
                         </el-input>
                     </div>
@@ -412,6 +423,8 @@ export default {
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
         },
+
+
         // 采集任务分类单选选择时
         handleSelectionChange(row) {
             if (row) {
@@ -424,6 +437,7 @@ export default {
             this.radio = row.classify_id;
         },
         // 采集任务分类确定提交时
+
         updataClassNumBtn(row) {
             if (row.length > 0) {
                 if (this.radio != '') {
@@ -446,6 +460,7 @@ export default {
                 this.$message({
                     showClose: true,
                     message: "请新增任务并选择",
+
                     type: "error"
                 });
             }
@@ -499,6 +514,7 @@ export default {
         },
         // 点击任务采集-删除
         colltaskDeleBtn(row) {
+
             message.confirmMsg('确定删除吗').then(res => {
                 let params = {};
                 params["classifyId"] = row.classify_id;
@@ -507,6 +523,7 @@ export default {
                     this.collTaskClassFun();
                 });
             }).catch(() => {})
+
 
         },
         // 点击新增
@@ -634,7 +651,9 @@ export default {
 .logseach {
     width: 25%;
     position: absolute;
+
     top: 18px;
+
     left: 160px;
 }
 
