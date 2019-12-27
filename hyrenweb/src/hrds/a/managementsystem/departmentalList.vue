@@ -22,7 +22,7 @@
         <el-table-column label="操作" align="center" width="160">
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
-                <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
+                <el-button size="mini" type="danger" @click="delteThisData(scope.row.dep_id)">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -174,14 +174,14 @@ export default {
 
         },
         // 删除部门信息
-        delteThisData() {
-            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        delteThisData(val) {
+            this.$confirm('确认删除吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
                 functionAll.deleteDepartmentInfo({
-                        dep_id: this.dep_id,
+                        dep_id: val,
                     })
                     .then(res => {
                         if (res && res.success) {
