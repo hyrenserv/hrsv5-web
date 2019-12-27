@@ -36,7 +36,7 @@
     </el-row>
     <!-- 实现点击添加按钮增加新的用户信息-->
     <!-- 新增用户弹出框 -->
-    <el-dialog title="新增用户" :visible.sync="dialogFormVisibleAdd">
+    <el-dialog title="新增用户" :visible.sync="dialogFormVisibleAdd" :before-close="beforeClose">
         <el-form :model="formAdd" ref="formAdd">
 
             <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="rule.selected">
@@ -93,7 +93,7 @@
 
     <!-- 实现点击编辑按钮更新用户信息-->
     <!-- 编辑用户弹出框 -->
-    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeClose">
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeClosechange">
         <el-form :model="formUpdate" ref="formUpdate">
 
             <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="dep_id" :rules="rule.selected">
@@ -183,7 +183,7 @@ export default {
             // 添加新增用户表单
             formAdd: {
                 useris_admin: "0",
-                depIds: [],
+                depIds: '',
                 usertype_group: [],
                 user_type: ''
             },
@@ -305,11 +305,11 @@ export default {
         },
         // 添加部门信息
         add(formName) {
-            // 处理参数
-            this.formAdd['usertype_group'] = JSON.stringify(this.formAdd.usertype_group).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "");
-            this.formAdd['dep_id'] = this.formAdd.depIds;
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    // 处理参数
+                    this.formAdd['usertype_group'] = JSON.stringify(this.formAdd.usertype_group).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "");
+                    this.formAdd['dep_id'] = this.formAdd.depIds;
                     functionAll.saveSysUser(this.formAdd).then((res) => {
                         if (res && res.success) {
                             this.$message({
@@ -337,6 +337,12 @@ export default {
             // 表单清空
             this.formAdd = {};
             // 隐藏对话框
+            this.dialogFormVisibleAdd = false;
+            this.$refs.formAdd.resetFields();
+        },
+        // 关闭弹出框之前触发事件
+        beforeClose() {
+            this.$refs.formAdd.resetFields();
             this.dialogFormVisibleAdd = false;
         },
         // 点击编辑按钮回显数据和更新用户信息
@@ -368,10 +374,10 @@ export default {
         },
         // 更新用户信息
         update(formName) {
-            this.formUpdate['create_date'] = this.formUpdate.create_date.replace(/-/g, "");
-            this.formUpdate['usertype_group'] = JSON.stringify(this.formUpdate.usertype_group).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "");
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    this.formUpdate['create_date'] = this.formUpdate.create_date.replace(/-/g, "");
+                    this.formUpdate['usertype_group'] = JSON.stringify(this.formUpdate.usertype_group).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "");
                     functionAll.updateSysUser(this.formUpdate).then((res) => {
                         if (res && res.success) {
                             this.$message({
@@ -405,7 +411,7 @@ export default {
             this.$refs.formUpdate.resetFields();
         },
         // 关闭弹出框之前触发事件
-        beforeClose() {
+        beforeClosechange() {
             this.getSysUserInfoAll(pageNow);
             this.dialogFormVisibleUpdate = false;
             this.$refs.formUpdate.resetFields();
