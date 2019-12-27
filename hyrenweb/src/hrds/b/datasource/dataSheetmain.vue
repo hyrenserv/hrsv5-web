@@ -146,7 +146,7 @@ export default {
 
         // 点击删除删除数据源
         delteThisData(index) {
-            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            this.$confirm('确认删除吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
