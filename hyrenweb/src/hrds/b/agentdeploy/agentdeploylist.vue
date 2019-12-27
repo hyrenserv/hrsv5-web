@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="agentdeploy">
     <!-- <div>Agent信息列表</div> -->
     <!-- <svg-icon icon-class="add" /> -->
     <!-- <el-divider></el-divider> -->
@@ -196,4 +196,9 @@ export default {
     }
 }
 </script>
-
+<style  scoped>
+/* 搜索框样式 */
+ .agentdeploy >>> .el-table th  {
+    padding: 0 ;
+}
+</style>
