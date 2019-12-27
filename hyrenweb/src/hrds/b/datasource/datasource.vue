@@ -90,7 +90,7 @@
             <div class="lines"></div>
         </div>
         <!-- 点击新增数据库按钮弹出框 -->
-        <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%">
+        <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%" :before-close="beforeClose">
             <el-form :model="formAdd" ref="formAdd">
                 <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
@@ -262,6 +262,12 @@ export default {
             // 隐藏对话框
             this.dialogFormVisible = false;
             this.dialogFormVisibleview = false;
+            this.$refs.formAdd.resetFields();
+        },
+        // 关闭弹出框之前触发事件
+        beforeClose() {
+            this.$refs.formAdd.resetFields();
+            this.dialogFormVisible = false;
         },
         // 点击不同的数据类型获取不同的数据
         tapDifferentType(e) {

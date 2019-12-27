@@ -42,7 +42,7 @@
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeCloseAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.para_name" autocomplete="off" placeholder="请输入系统参数名称" style="width:284px"></el-input>
@@ -168,6 +168,13 @@ export default {
             this.getSysPara(savecurrentPage);
             this.dialogFormVisibleAdd = false;
             this.dialogFormVisibleUpdate = false;
+            this.$refs.formAdd.resetFields();
+        },
+        // 清空表单验证
+        beforeCloseAdd() {
+            this.formAdd = {};
+            this.dialogFormVisibleAdd = false;
+            this.$refs.formAdd.resetFields();
         },
         // 获取表格当前行数据
         handleEdit(index, row) {

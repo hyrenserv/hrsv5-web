@@ -29,11 +29,11 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size = "pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="新增部门" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog title="新增部门" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeCloseAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
@@ -60,7 +60,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+            <el-button @click="cancleUpdate" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="updateDepartmentInfo('formUpdate')" size="mini">保存</el-button>
         </div>
     </el-dialog>
@@ -136,11 +136,15 @@ export default {
         cancleAdd() {
             // 表单清空
             this.formAdd = {};
-            this.formUpdate = {};
             // 隐藏对话框
             this.getDepartmentInfoAll();
             this.dialogFormVisibleAdd = false;
-            this.dialogFormVisibleUpdate = false;
+            this.$refs.formAdd.resetFields();
+        },
+        // 弹出框关闭之前清空表单验证
+        beforeCloseAdd() {
+            this.dialogFormVisibleAdd = false;
+            this.$refs.formAdd.resetFields();
         },
         // 获取表格当前行数据
         handleEdit(index, row) {
@@ -200,9 +204,17 @@ export default {
         beforeClose() {
             this.getDepartmentInfoAll();
             this.dialogFormVisibleUpdate = false;
-
+            this.$refs.formUpdate.resetFields();
         },
-
+        // 取消编辑
+        cancleUpdate() {
+            // 表单清空
+            this.formUpdate = {};
+            // 隐藏对话框
+            this.getDepartmentInfoAll();
+            this.dialogFormVisibleUpdate = false;
+            this.$refs.formUpdate.resetFields();
+        },
         // 获取数据管理列表数据实现分页功能
         handleCurrentChangeList(val) {
             //把val赋给当前页面
