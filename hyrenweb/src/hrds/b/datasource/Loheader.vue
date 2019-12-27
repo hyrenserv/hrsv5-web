@@ -14,20 +14,20 @@
     <!-- 实现点击导入按钮进行页面数据导入-->
     <!-- 弹出表单 -->
     <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%" :before-close="beforeClose">
-        <el-form :model="formImport">
-            <el-form-item label="Agent IP地址 :" :label-width="formLabelWidth">
+        <el-form :model="formImport" ref="formImport">
+            <el-form-item label="Agent IP地址 :" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
                 <el-input v-model="formImport.agent_ip" autocomplete="off" style="width:284px" placeholder=" Ip"></el-input>
                 <el-tooltip class="item" effect="dark" content="要上传的数据源下Agent的IP地址" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
             </el-form-item>
-            <el-form-item label="Agent 端口 :" :label-width="formLabelWidth">
+            <el-form-item label="Agent 端口 :" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
                 <el-input v-model="formImport.agent_port" autocomplete="off" style="width:284px" placeholder="Port"></el-input>
                 <el-tooltip class="item" effect="dark" content="要上传的数据源下Agent的端口" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
             </el-form-item>
-            <el-form-item label="数据采集用户：" :label-width="formLabelWidth">
+            <el-form-item label="数据采集用户：" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
                 <el-select v-model="formImport.user_id" placeholder="请选择" style="width:284px">
                     <el-option v-for="item in options" :key="item.dep_id" :label="item.user_name" :value="item.user_id"></el-option>
                 </el-select>
@@ -57,7 +57,7 @@
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.datasource_name" autocomplete="off" placeholder="数据源名称" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="rule.default ">
+            <el-form-item label=" 所属部门" :label-width="formLabelWidth" prop="depIds" :rules="rule.selected ">
                 <el-select v-model="formAdd.depIds" filterable placeholder="请选择（可多选）" multiple style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.dep_name" :value="item.dep_id"></el-option>
                 </el-select>
@@ -82,7 +82,6 @@ export default {
     data() {
         return {
             options: [],
-            depIds: [],
             fileList: [],
             dialogFormVisibleImport: false,
             dialogFormVisibleAdd: false,
@@ -92,6 +91,7 @@ export default {
                 datasource_number: "",
                 datasource_name: "",
                 source_remark: "",
+                depIds: [],
             },
             formImport: {
                 agent_ip: "",
@@ -127,7 +127,6 @@ export default {
                             this.dialogFormVisibleAdd = false;
                             // 表单清空
                             this.formAdd = {};
-                            this.depIds = [];
                         } else {
 
                         }
@@ -150,29 +149,34 @@ export default {
             if (fileList.length > 0) {
                 this.fileList = [fileList[fileList.length - 1]]
             }
-
         },
         // 点击上传数据
-        upload() {
-            let param = new FormData() // 创建form对象
-            param.append('file', this.fileList[0].raw);
-            param.append('agent_ip', this.formImport.agent_ip);
-            param.append('agent_port', this.formImport.agent_port);
-            param.append('user_id', this.formImport.user_id);
-            functionAll.uploadFile(param).then(res => {
-
-            });
+        upload(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let param = new FormData() // 创建form对象
+                    param.append('file', this.fileList[0].raw);
+                    param.append('agent_ip', this.formImport.agent_ip);
+                    param.append('agent_port', this.formImport.agent_port);
+                    param.append('user_id', this.formImport.user_id);
+                    functionAll.uploadFile(param).then(res => {
+                        this.$emit("addEvent");
+                        this.dialogFormVisibleImport = false;
+                        this.formImport = {};
+                    });
+                }
+            })
         },
         // 点击导入弹出框的取消按钮
         cancleImport() {
             this.formImport = {};
             this.dialogFormVisibleImport = false;
+            this.$refs.formImport.resetFields();
         },
         // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
             this.formAdd = {};
-            this.depIds = [];
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
             this.$refs.formAdd.resetFields();
