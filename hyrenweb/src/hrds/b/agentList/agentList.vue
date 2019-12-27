@@ -2,7 +2,7 @@
 <div id="agentList">
     <el-row>
         <span>数据源Agent列表</span>
-        <router-link to="/home">
+        <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
             </el-button>
@@ -245,16 +245,60 @@ export default {
         },
         //删除
         taskDelBtn(type, row) {
-            if (type == "数据库Agent") {
-                message.confirmMsg('确定删除吗').then(res => {
-                    let params = {};
-                    params["collectSetId"] = row.id;
-                    agentList.deleteDBTask(params).then(res => {
-                        this.taskManagement(row);
-                        message.deleteSuccess(res);
-                    });
-                }).catch(()=>{})
-
+            for (let i = 0; i < this.CollectType.length; i++) {
+                if (this.CollectType[i].value == type) {
+                    if(this.CollectType[i].code=='1'){
+                        message.confirmMsg('确定删除吗').then(res => {
+                        let params = {};
+                        params["collectSetId"] = row.id;
+                        agentList.deleteDBTask(params).then(res => {
+                            this.taskManagement(row);
+                            message.deleteSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='2'){
+                    //文件系统agent--半结构化
+                       message.confirmMsg('确定删除吗').then(res => {
+                        let params = {};
+                        params["collectSetId"] = row.id;
+                        agentList.deleteHalfStructTask(params).then(res => {
+                            this.taskManagement(row);
+                            message.deleteSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='3'){
+                    //ftpagent
+                      message.confirmMsg('确定删除吗').then(res => {
+                        let params = {};
+                        params["collectSetId"] = row.id;
+                        agentList.deleteFTPTask(params).then(res => {
+                            this.taskManagement(row);
+                            message.deleteSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='4'){
+                    //数据文件agent
+                       message.confirmMsg('确定删除吗').then(res => {
+                        let params = {};
+                        params["collectSetId"] = row.id;
+                        agentList.deleteDFTask(params).then(res => {
+                            this.taskManagement(row);
+                            message.deleteSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='5'){
+                    //对象agent--非结构化
+                       message.confirmMsg('确定删除吗').then(res => {
+                        let params = {};
+                        params["collectSetId"] = row.id;
+                        agentList.deleteNonStructTask(params).then(res => {
+                            this.taskManagement(row);
+                            message.deleteSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }
+                  
+                }
             }
         }
     }
