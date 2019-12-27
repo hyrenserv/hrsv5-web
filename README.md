@@ -16,10 +16,10 @@
   - 如果你重写了错误消息,会导致后台返回的具体错误信息看不到
 
 ### 5、对于删除,更新,删除,保存成功的操作请使用 utils/js/message.js,里面封装的方法
-  - 后续使用方式 : 
-        删除成功 : this.$Msg.deleteSuccess(res);
-        更新成功 : this.$Msg.updateSuccess(res);
-        保存成功 : this.$Msg.saveSuccess(res);
-        删除确认 : this.$Msg.confirmMsg(titleMsg);
+  * 后续使用方式 : 
+    * 删除成功 : this.$Msg.deleteSuccess(res);
+    * 更新成功 : this.$Msg.updateSuccess(res);
+    * 保存成功 : this.$Msg.saveSuccess(res);
+    * 删除确认 : this.$Msg.confirmMsg(titleMsg);
         
 ### 6、代码请注意格式化,保证代码格式的统一, 请统一使用vue-format格式化插件
