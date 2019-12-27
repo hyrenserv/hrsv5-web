@@ -164,11 +164,11 @@
                             <el-table-column label="操作" width="150px" align="center">
                                 <template scope="scope">
                                     <el-row>
-                                        <el-col :span="12" class="edilt" style="text-align: center;">
-                                            <el-button type="text" circle @click="colltaskEditBtn(scope.row)">编辑</el-button>
+                                        <el-col :span="12" style="text-align: center;">
+                                            <el-button type="text" circle @click="colltaskEditBtn(scope.row)" class='editcolor'>编辑</el-button>
                                         </el-col>
-                                        <el-col :span="12" class="delbtn">
-                                            <el-button class="delbtn" type="text" circle @click="colltaskDeleBtn(scope.row)" @row-click="chooseone">删除</el-button>
+                                        <el-col :span="12">
+                                            <el-button class='delcolor' type="text" circle @click="colltaskDeleBtn(scope.row)" @row-click="chooseone">删除</el-button>
                                         </el-col>
                                     </el-row>
                                 </template>
@@ -178,7 +178,7 @@
                         <div class="btntop">
                             <el-button @click="cancelClassNumBtn()" type="danger" size="mini">取 消</el-button>
                             <el-button @click="addClassNumBtn();innerVisible = true" type="success" size="mini">新增</el-button>
-                            <el-button @click="updataClassNumBtn()" type="primary" size="mini">确定</el-button>
+                            <el-button @click="updataClassNumBtn(CollTaskData)" type="primary" size="mini">确定</el-button>
                         </div>
                     </div>
                 </el-dialog>
@@ -208,9 +208,9 @@
                     </div>
                 </el-dialog>
                 <!-- 查看日志弹层 -->
-                <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%" :before-close="handleClose">
+                <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%" >
                     <div class="logseach">
-                        <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select">
+                        <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select" size="mini">
                             <el-button slot="append" icon="el-icon-search"></el-button>
                         </el-input>
                     </div>
@@ -412,13 +412,6 @@ export default {
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
         },
-        handleClose(done) {
-            this.$confirm("确认关闭？")
-                .then(_ => {
-                    done();
-                })
-                .catch(_ => {});
-        },
         // 采集任务分类单选选择时
         handleSelectionChange(row) {
             if (row) {
@@ -431,16 +424,28 @@ export default {
             this.radio = row.classify_id;
         },
         // 采集任务分类确定提交时
-        updataClassNumBtn() {
-            if (this.classifyName) {
-                this.outerVisible = false;
-                this.ruleForm.classify_name = this.classifyName;
-                this.ruleForm.classify_num = this.classifyNum;
-                // this.radio=null
+        updataClassNumBtn(row) {
+            if (row.length > 0) {
+                if (this.radio != '') {
+                    for (let i = 0; i < row.length; i++) {
+                        if (row[i].classify_id == this.radio) {
+                            this.outerVisible = false;
+                            this.ruleForm.classify_name = row[i].classify_name;
+                            this.ruleForm.classify_num = row[i].classify_num;
+                        }
+                    }
+                } else {
+                    this.$message({
+                        showClose: true,
+                        message: "请至少选择一项",
+                        type: "error"
+                    });
+                }
+
             } else {
                 this.$message({
                     showClose: true,
-                    message: "至少选择一项",
+                    message: "请新增任务并选择",
                     type: "error"
                 });
             }
@@ -494,12 +499,15 @@ export default {
         },
         // 点击任务采集-删除
         colltaskDeleBtn(row) {
-            let params = {};
-            params["classifyId"] = row.classify_id;
-            addTaskAllFun.deleteClassifyInfo(params).then(res => {
-                message.deleteSuccess(res);
-                this.collTaskClassFun();
-            });
+            message.confirmMsg('确定删除吗').then(res => {
+                let params = {};
+                params["classifyId"] = row.classify_id;
+                addTaskAllFun.deleteClassifyInfo(params).then(res => {
+                    message.deleteSuccess(res);
+                    this.collTaskClassFun();
+                });
+            }).catch(() => {})
+
         },
         // 点击新增
         addClassNumBtn() {
@@ -626,7 +634,7 @@ export default {
 .logseach {
     width: 25%;
     position: absolute;
-    top: 10px;
+    top: 18px;
     left: 160px;
 }
 
