@@ -26,9 +26,6 @@ export function deleteSuccess(data) {
             duration: 5 * 1000
         })
     }
-    else {
-        return false;
-    }
 }
 /**
  * 
