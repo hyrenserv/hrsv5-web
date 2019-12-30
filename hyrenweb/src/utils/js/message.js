@@ -52,7 +52,7 @@ export function saveSuccess(data) {
 export function customizTitle(message, type) {
     Message({
         message: message,
-        type: type,
+        type: typeof type != 'undefined' ? type : 'success',
         duration: 5 * 1000
     })
 }
