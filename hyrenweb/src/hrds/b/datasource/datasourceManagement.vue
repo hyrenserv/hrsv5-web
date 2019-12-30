@@ -14,11 +14,11 @@
                         {{scope.$index+(currentPagelist - 1) * pageSize + 1}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="original_name" label="文件名" align="center"></el-table-column>
-                <el-table-column prop="file_suffix" label="文件后缀名" align="center"></el-table-column>
-                <el-table-column prop="fileType_zh" label="文件类型" align="center"></el-table-column>
+                <el-table-column prop="original_name" label="文件名" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="file_suffix" label="文件后缀名" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="fileType_zh" label="文件类型" align="center" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="user_name" label="提交人" align="center"></el-table-column>
-                <el-table-column prop="applyDataTime" label="提交时间" width="192" align="center"></el-table-column>
+                <el-table-column prop="applyDataTime" label="提交时间" width="192" align="center" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="applyType_zh" label="申请类型" align="center"></el-table-column>
                 <el-table-column prop="agent_id" label="操作" align="center">
                     <template slot-scope="scope">
@@ -47,7 +47,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="datasource_name" label="数据源名称" align="center"></el-table-column>
-            <el-table-column prop="dep_name" label="所属部门" align="center"></el-table-column>
+            <el-table-column prop="dep_name" label="所属部门" align="center" show-overflow-tooltip></el-table-column>
 
             <el-table-column label="操作" width="196" align="center">
                 <template slot-scope="scope">
@@ -167,7 +167,7 @@ export default {
                             this.depIds = [];
                             this.formAdd = {};
                         } else {
-                        
+
                         }
                     });
                 } else {
