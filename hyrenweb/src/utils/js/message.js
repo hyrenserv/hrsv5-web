@@ -46,6 +46,19 @@ export function saveSuccess(data) {
 
 /**
  * 
+ * @param {String} message : 操作完成提示的消息
+ * @param {String} type : 提示消息的类型(success,warning,error)
+ */
+export function customizTitle(message, type) {
+    Message({
+        message: message,
+        type: type,
+        duration: 5 * 1000
+    })
+}
+
+/**
+ * 
  * @param {String} titleMsg : 提示的消息 
  */
 export function confirmMsg(titleMsg) {
