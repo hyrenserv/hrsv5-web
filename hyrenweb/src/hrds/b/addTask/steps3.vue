@@ -14,7 +14,6 @@
         <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="table_ch_name" label="表中文名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
 
-
         <el-table-column prop="compflag" label=" 字符补齐(整表清洗设置)" align="center">
 
             <template slot-scope="scope">
@@ -23,7 +22,6 @@
                 <span class="settingbtn" v-else @click="table_zfbqFun(scope.$index,scope.row.table_id,scope.row.compflag)">设置</span>
             </template>
         </el-table-column>
-
 
         <el-table-column prop="replaceflag" label=" 字符替换(整表清洗设置)" align="center">
 
@@ -335,7 +333,7 @@
         </div>
     </el-dialog>
     <!--选择列-列拆分弹框  -->
-    <el-dialog title :visible.sync="dialogCol_colcf" width="70%" class="alltable" @close="Col_colcfCloseFun()">
+    <el-dialog title :visible.sync="dialogCol_colcf" width="70%" class="alltable quest" @close="Col_colcfCloseFun()">
         <div slot="title" class="header-title">
             <span class="title">列拆分(拆分的是最后的数据)&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <span class="title">
@@ -363,7 +361,15 @@
                     </el-select>
                 </template>
             </el-table-column>
-            <el-table-column property="pyl" label="偏移量/字符拆分" align="center" width="160px">
+            <el-table-column property="pyl" label align="center" width="160px">
+                <template slot="header">
+                    <el-tooltip class="item" effect="light" content placement="right">
+                        <div slot="content">
+                            偏移量格式如 : 0,3
+                        </div>
+                        <i class="el-icon-question" aria-hidden="true">偏移量/字符拆分</i>
+                    </el-tooltip>
+                </template>
                 <template scope="scope">
                     <el-input v-if="scope.row.split_type==1" v-model="scope.row.col_offset" placeholder="偏移量" size="medium"></el-input>
                     <div class="demo-input-suffix" v-if="scope.row.split_type==2">
@@ -376,7 +382,15 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column property="col_type" label="类型" align="center" width="140px">
+            <el-table-column property="col_type" label align="center" width="140px">
+                <template slot="header">
+                    <el-tooltip class="item" effect="light" content placement="right">
+                        <div slot="content">
+                            varchar需要填写长度.如 : varchar(10)
+                        </div>
+                        <i class="el-icon-question" aria-hidden="true">类型</i>
+                    </el-tooltip>
+                </template>
                 <template scope="scope">
                     <el-input v-model="scope.row.col_type" placeholder="varchar(80)" size="medium"></el-input>
                 </template>
@@ -749,16 +763,24 @@ export default {
                     source_name: this.$Base64.encode(this.sName)
                 };
             }
-            let params = {};
-            params["tbCleanString"] = JSON.stringify(tbCleanString);
-            params["colSetId"] = this.databaseId;
-            addTaskAllFun.saveDataCleanConfig(params).then(res => {
-                // this.dbid = res.data;
+            if (tbCleanString.length > 0) {
+                let params = {};
+                params["tbCleanString"] = JSON.stringify(tbCleanString);
+                params["colSetId"] = this.databaseId;
+                addTaskAllFun.saveDataCleanConfig(params).then(res => {
+                    // this.dbid = res.data;
+                    this.$router.push({
+                        path: "/collection1_4",
+                        query: data
+                    });
+                });
+            } else {
                 this.$router.push({
                     path: "/collection1_4",
                     query: data
                 });
-            });
+            }
+
         },
         pre() {
             let data = {};
@@ -841,15 +863,16 @@ export default {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].trimflag == true) {
                         count++
-                        if (count == alldata.length - 1) {
-                            this.checkAll = true
-                        }
                     }
+                }
+                if (count == alldata.length) {
+                    this.checkAll = true
+                } else {
+                    this.checkAll = false
                 }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].trimflag == false) {
-                        count++
                         if (count < alldata.length) {
                             this.checkAll = false
                         }
@@ -863,15 +886,16 @@ export default {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].trimflag == true) {
                         count++
-                        if (count == alldata.length - 1) {
-                            this.colcheckAll = true
-                        }
                     }
+                }
+                if (count == alldata.length) {
+                    this.colcheckAll = true
+                } else {
+                    this.colcheckAll = false
                 }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].trimflag == false) {
-                        count++
                         if (count < alldata.length) {
                             this.colcheckAll = false
                         }
@@ -1065,7 +1089,7 @@ export default {
 
             message.confirmMsg('确定删除吗').then(res => {
                 rows.splice(index, 1);
-            }).catch(()=>{})
+            }).catch(() => {})
 
         },
         // 表选择列点击
@@ -1754,10 +1778,13 @@ export default {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].selectionState == true) {
                         count++
-                        if (count == alldata.length - 1) {
-                            this.Allis_colselectionState = true
-                        }
+
                     }
+                }
+                if (count == alldata.length) {
+                    this.Allis_colselectionState = true
+                } else {
+                    this.Allis_colselectionState = false
                 }
             } else {
                 for (let i = 0; i < this.colSelectData.length; i++) {
@@ -1767,8 +1794,7 @@ export default {
                 }
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].selectionState == false) {
-                        count++
-                        if (count < alldata.length - 1) {
+                        if (count < alldata.length) {
                             this.Allis_colselectionState = false
                         }
                     }
@@ -1961,6 +1987,15 @@ export default {
 }
 
 #colmerg>>>.el-icon-question:after {
+    content: "\E7A4" !important;
+    margin-left: 10px;
+}
+
+.quest>>>.el-icon-question:before {
+    content: "" !important;
+}
+
+.quest>>>.el-icon-question:after {
     content: "\E7A4" !important;
     margin-left: 10px;
 }
