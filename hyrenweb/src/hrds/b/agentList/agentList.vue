@@ -47,7 +47,7 @@
             <span class="title-sourceName">数据源名称:{{ sourceName }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <span class="title-agentType">采集类型:{{agentType }}</span>
         </div>
-        <el-table :data="gridData2" border>
+        <el-table :data="gridData2" border size="medium">
             <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
             <el-table-column property="agent_ip" label="Agent IP" align="center"></el-table-column>
 
@@ -63,7 +63,7 @@
 
             <el-table-column property="AgentOpt" label="操作" width="350px" align="center">
                 <template scope="scope">
-                    <el-row>
+                    <el-row class='optheight'>
                         <el-col :span="8" >
                             <el-button type="success" size="mini" @click="addtask(scope.row,sourceName)" icon='el-icon-plus'>新增任务</el-button>
                         </el-col>
@@ -94,7 +94,7 @@
 
             <el-table-column label="操作" width="200px" align="center">
                 <template scope="scope">
-                    <el-row>
+                    <el-row class='optheight'>
                         <el-col :span="5" class="edilt" style="text-align: center;">
                             <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
                         </el-col>
@@ -448,5 +448,9 @@ export default {
 
 .workcolor {
     color: #8c8b8b
+}
+.optheight{
+    height: 20px;
+    line-height: 20px;
 }
 </style>

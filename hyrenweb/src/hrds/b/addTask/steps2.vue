@@ -36,15 +36,12 @@
                             </template>
                         </el-table-column>
 
-                 
                         <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
 
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
-
-                     
 
                         <el-table-column prop="sqlFiltering" label="SQL过滤" align="center">
 
@@ -158,8 +155,6 @@
                     </div>
                     <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
 
-                    
-
                         <el-table-column label="选择列" align="center">
 
                             <template slot="header" slot-scope="scope">
@@ -172,7 +167,6 @@
                                 <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                             </template>
                         </el-table-column>
-                  
 
                         <el-table-column label="主键定义" align="center">
 
@@ -221,7 +215,7 @@
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
-            <span class="alltabletitle">填写信息后请记得点击保存</span>
+            <span class="alltabletitle">操作后请记得点击保存</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
                 <el-table :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
@@ -254,7 +248,6 @@
                         <template scope="scope">
                             <el-row>
                                 <el-col :span="24" class="delbtn">
-     
 
                                     <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
 
@@ -347,7 +340,8 @@ export default {
             activeFirst: false,
             activeSec: false,
             edit: false,
-            disShow: false
+            disShow: false,
+            sqlSubmit:true
         };
     },
     created() {
@@ -474,11 +468,14 @@ export default {
                 for (let i = 0; i < this.tableData.length; i++) {
                     if (this.tableData[i].selectionState == true) {
                         count++
-                        if (count == this.tableData.length - 1) {
-                            this.Allis_selectionState = true
-                        }
+                        
                     }
                 }
+                if (count == this.tableData.length) {
+                            this.Allis_selectionState = true
+                        }else{
+                            this.Allis_selectionState = false
+                        }
                 for (let i = 0; i < this.allDataList.length; i++) {
                     if (this.allDataList[i].table_name == name) {
                         this.allDataList[i].selectionState = true;
@@ -487,7 +484,6 @@ export default {
             } else {
                 for (let i = 0; i < this.tableData.length; i++) {
                     if (this.tableData[i].selectionState == false) {
-                        count++
                         if (count < this.tableData.length) {
                             this.Allis_selectionState = false
                         }
@@ -502,20 +498,22 @@ export default {
         },
         //选择列
         every_SelectColumnfun(val, alldata) {
-            let count = 0
+            let count = 0;
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_get == true) {
                         count++
-                        if (count == alldata.length - 1) {
-                            this.Allis_SelectColumn = true
-                        }
                     }
+                    
                 }
+                if (count == alldata.length) {
+                        this.Allis_SelectColumn = true
+                    } else {
+                        this.Allis_SelectColumn = false
+                    }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_get == false) {
-                        count++
                         if (count < alldata.length) {
                             this.Allis_SelectColumn = false
                         }
@@ -530,15 +528,16 @@ export default {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_primary_key == true) {
                         count++
-                        if (count == alldata.length - 1) {
-                            this.Alliskey_SelectColumn = true
-                        }
                     }
                 }
+                 if (count == alldata.length) {
+                            this.Alliskey_SelectColumn = true
+                        }else{
+                           this.Alliskey_SelectColumn = false 
+                        }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_primary_key == false) {
-                        count++
                         if (count < alldata.length) {
                             this.Alliskey_SelectColumn = false
                         }
@@ -575,7 +574,7 @@ export default {
         next() {
             this.saveTableConfFun();
             let arrsql = []
-            if (this.tableInfoArray.length > 0) {
+            if (this.sqlSubmit==true) {
                 arrsql = this.tableInfoArray
                 this.sqlFun(arrsql)
             } else {
@@ -1283,7 +1282,7 @@ export default {
 
             message.confirmMsg('确定删除吗').then(res => {
                 rows.splice(index, 1);
-            }).catch(()=>{})
+            }).catch(() => {})
 
         },
         //新增行
@@ -1326,6 +1325,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.tableInfoArray = this.ruleForm.sqlExtractData;
+                    this.sqlSubmit=true
                 }
             });
         }

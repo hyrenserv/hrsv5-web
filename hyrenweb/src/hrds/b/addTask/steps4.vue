@@ -244,11 +244,34 @@ export default {
                             }
                         }
                     }
-                    let params = {};
-                    params["colSetId"] = this.databaseId;
-                    params["extractionDefString"] = JSON.stringify(dataAll);
-                    addTaskAllFun.saveFileConf(params).then(res => {
-                        this.getInitInfo();
+                    if (dataAll.length > 0) {
+                        let params = {};
+                        params["colSetId"] = this.databaseId;
+                        params["extractionDefString"] = JSON.stringify(dataAll);
+                        addTaskAllFun.saveFileConf(params).then(res => {
+                            this.getInitInfo();
+                            let data = {};
+                            if (this.$route.query.edit == "yes") {
+                                data = {
+                                    agent_id: this.aId,
+                                    id: this.dbid,
+                                    source_id: this.sourId,
+                                    source_name: this.$Base64.encode(this.sName),
+                                    edit: "yes"
+                                };
+                            } else {
+                                data = {
+                                    id: this.dbid,
+                                    source_id: this.sourId,
+                                    source_name: this.$Base64.encode(this.sName)
+                                };
+                            }
+                            this.$router.push({
+                                path: "/collection1_5",
+                                query: data
+                            });
+                        });
+                    } else {
                         let data = {};
                         if (this.$route.query.edit == "yes") {
                             data = {
@@ -269,7 +292,8 @@ export default {
                             path: "/collection1_5",
                             query: data
                         });
-                    });
+                    }
+
                 } else {
                     return false;
                 }
@@ -310,7 +334,7 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getInitInfo(params).then(res => {
-                if (res.data) {
+                if (res) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
                     } else {
@@ -507,15 +531,16 @@ export default {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].data_extract_type == true) {
                         count++
-                        if (count == alldata.length - 1) {
-                            this.excheckAll = true
-                        }
                     }
+                }
+                if (count == alldata.length) {
+                    this.excheckAll = true
+                } else {
+                    this.excheckAll = false
                 }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].data_extract_type == false) {
-                        count++
                         if (count < alldata.length) {
                             this.excheckAll = false
                         }

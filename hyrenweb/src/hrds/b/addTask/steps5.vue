@@ -334,7 +334,7 @@ export default {
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
-            if (res.data) {
+            if (res){
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -342,7 +342,7 @@ export default {
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-                        this.oldTbData = res.data;
+                               this.oldTbData = res?res.data:[];
                         for (var i = 0; i < arr.length; i++) {
                             for (let j = 0; j < this.oldTbData.length; j++) {
                                 if (arr[i].table_id == this.oldTbData[j].tableId) {
@@ -366,8 +366,11 @@ export default {
                             }
                         }
                         this.ruleForm.ex_destinationData = arr;
+                       
                     });
                 }
+            }else{
+              this.tableloadingInfo = "暂无数据";  
             }
         });
         let params2 = {};
@@ -454,7 +457,8 @@ export default {
                     }
 
                     // 保存表名
-                    let params0 = {};
+                    if(tableString.length>0){
+                            let params0 = {};
                     params0["tableString"] = JSON.stringify(tableString);
                     addTaskAllFun.updateTableName(params0).then(res => {
                         if (res.code == 200) {
@@ -468,6 +472,10 @@ export default {
                             });
                         }
                     });
+                    }else{
+this.submit_0 = true;
+                    }
+                
                 }
             });
         },
