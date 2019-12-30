@@ -372,12 +372,13 @@ export default {
         cancelUpdate() {
             this.searchDataStore();
             this.dialogFormVisibleUpdate = false;
+            this.$refs.form.resetFields();
         },
         // 关闭弹出框之前触发事件
         beforeClose() {
             this.searchDataStore();
             this.dialogFormVisibleUpdate = false;
-
+            this.$refs.form.resetFields();
         },
         // 获取代码项对应的值
         getCategoryItems(e) {

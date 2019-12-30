@@ -253,7 +253,7 @@ export default {
                 this.formUpdate.user_type = '';
                 this.formUpdate.usertype_group = [];
                 this.getUserFunctionMenuAll(0);
-                if (saveData0 != undefined) {
+                if (JSON.stringify(saveData0) != "{}") {
                     saveData0['usertype_group'] = arryCode[saveNum0].split(",");
                     this.formUpdate.user_type = saveType0;
                 }
@@ -264,7 +264,7 @@ export default {
                 this.formUpdate.user_type = '';
                 this.formUpdate.usertype_group = [];
                 this.getUserFunctionMenuAll(1);
-                if (saveData1 != undefined) {
+                if (JSON.stringify(saveData1) != "{}") {
                     saveData1['usertype_group'] = arryCode[saveNum1].split(",");
                     this.formUpdate.user_type = saveType1;
                 }
