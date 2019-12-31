@@ -79,14 +79,14 @@
                     </el-row>
                     <el-row type="flex" justify="center">
                         <el-col :span="10">
-                            <el-form-item label="数据库服务器IP" prop="database_ip" :rules="rule.default">
+                            <el-form-item label="数据库服务器IP" prop="database_ip" :rules="filter_rules([{required: true,dataType:'ip_verification'}])">
                                 <el-col :span="16">
                                     <el-input v-model="ruleForm.database_ip" size="medium" @input="jdbcChangeFun()"></el-input>
                                 </el-col>
                             </el-form-item>
                         </el-col>
                         <el-col :span="10">
-                            <el-form-item label="数据库端口" prop="database_port" :rules="filter_rules([{required: true,dataType:'number'}])">
+                            <el-form-item label="数据库端口" prop="database_port" :rules="filter_rules([{required: true,dataType:'port_verification'}])">
                                 <el-col :span="16">
                                     <el-input v-model="ruleForm.database_port" size="medium" @input="jdbcChangeFun()"></el-input>
                                 </el-col>
