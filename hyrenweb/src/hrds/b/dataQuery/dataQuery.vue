@@ -292,61 +292,45 @@
         mounted() {
             /* 初始化显示数据 */
             dataQuery.getConditionalQuery(this.conditionalQueryForm).then((res) => {
-                if (res.success) {
-                    res = fileOperations.getResTestData();
-                    this.recentData = res.data;
-                    this.recentFiles = res.data.file_rs;
-                    this.myDownloadRequest = res.data.down;
-                    this.myPostApplication = res.data.release;
-                    this.myApplicationRecord = res.data.sum;
-                    this.myViewRequest = res.data.look;
-                    this.myRenameRequest = res.data.rename;
-                } else this.$message({type: 'error', message: res.message,})
+                res = fileOperations.getResTestData();
+                this.recentData = res.data;
+                this.recentFiles = res.data.file_rs;
+                this.myDownloadRequest = res.data.down;
+                this.myPostApplication = res.data.release;
+                this.myApplicationRecord = res.data.sum;
+                this.myViewRequest = res.data.look;
+                this.myRenameRequest = res.data.rename;
             });
             /* 初始化数据源数据 */
             dataQuery.getFileDataSource().then((res) => {
-                if (res.success) {
-                    this.dataSourceList = res.data
-                } else this.$message({type: 'error', message: res.message,})
+                this.dataSourceList = res.data
             });
             /* 初始化文件分类统计数据 */
             dataQuery.getFileClassifySum().then((res) => {
-                if (res.success) {
-                    res = fileOperations.getFilesClassifyInfoData();
-                    this.fileClassifySum = res.data;
-                    // 初始化图表显示样式
-                    this.fcsChartSettings = {
-                        offsetY: '150',
-                        radius: 80,
-                        selectedMode: 'single',
-                    };
-                    // 初始化 v-charts 图表数据
-                    this.fcsChartData.columns = ['file_type', 'sum_num'];
-                    this.fcsChartData.rows = this.fileClassifySum;
-                } else this.$message({type: 'error', message: res.message,})
+                res = fileOperations.getFilesClassifyInfoData();
+                this.fileClassifySum = res.data;
+                // 初始化图表显示样式
+                this.fcsChartSettings = {radius: 80, offsetY: '150', selectedMode: 'single',};
+                // 初始化 v-charts 图表数据
+                this.fcsChartData.columns = ['file_type', 'sum_num'];
+                this.fcsChartData.rows = this.fileClassifySum;
             });
             /* 初始化最近七天采集统计数据 */
             dataQuery.getSevenDayCollectFileSum().then((res) => {
-                if (res.success) {
-                    res = fileOperations.getSevenDayCollectFileSum();
-                    this.sevenDayCollectFileSum = res.data;
-                    // 初始化图表显示样式
-                    this.sdcChartSettings = {
-                        legendName: {'collectSum': '采集计数'},
-                        yAxisType: ['KMB'],
-                        yAxisName: ['(单位/个)'],
-                    };
-                    // 初始化 v-charts 图表数据
-                    this.sdcChartData.columns = ['collectDate', 'collectSum'];
-                    this.sdcChartData.rows = this.sevenDayCollectFileSum;
-                } else this.$message({type: 'error', message: res.message,})
+                res = fileOperations.getSevenDayCollectFileSum();
+                this.sevenDayCollectFileSum = res.data;
+                // 初始化图表显示样式
+                this.sdcChartSettings = {
+                    legendName: {'collectSum': '采集计数'}, yAxisType: ['KMB'], yAxisName: ['(单位/个)'],
+                };
+                // 初始化 v-charts 图表数据
+                this.sdcChartData.columns = ['collectDate', 'collectSum'];
+                this.sdcChartData.rows = this.sevenDayCollectFileSum;
             });
             /* 初始化最近三次采集任务信息数据 */
             dataQuery.getLast3FileCollections().then((res) => {
-                if (res.success) {
-                    res = fileOperations.getLast3FileCollections();
-                    this.last3FileCollections = res.data
-                } else this.$message({type: 'error', message: res.message,})
+                res = fileOperations.getLast3FileCollections();
+                this.last3FileCollections = res.data
             });
         },
         methods: {
@@ -373,9 +357,7 @@
             /* 自定义查询条件查询 */
             conditionalQueryOnSubmit() {
                 dataQuery.getConditionalQuery(this.conditionalQueryForm).then((res) => {
-                    if (res.success) {
-                        this.recentFiles = res.data.fileRs;
-                    } else this.$message({type: 'error', message: res.message,})
+                    this.recentFiles = res.data.fileRs;
                 })
             },
             /* 根据数据源id获取任务id */
@@ -385,9 +367,7 @@
                     this.conditionalQueryForm.fcsId = '';
                 } else {
                     dataQuery.getFileCollectionTask({'sourceId': dataSourceId}).then((res) => {
-                        if (res.success) {
-                            this.taskList = res.data
-                        } else this.$message({type: 'error', message: res.message,})
+                        this.taskList = res.data
                     })
                 }
             },
@@ -399,13 +379,9 @@
                     type: 'warning',
                 }).then(() => {
                     dataQuery.applicationProcessing({"fileId": fileId, "applyType": apply_type}).then((res) => {
-                        if (res.success) {
-                            dataQuery.getConditionalQuery(this.conditionalQueryForm).then((res) => {
-                                if (res.success) {
-                                    this.recentFiles = res.data.fileRs
-                                }
-                            })
-                        } else this.$message({type: 'error', message: res.message,})
+                        dataQuery.getConditionalQuery(this.conditionalQueryForm).then((res) => {
+                            this.recentFiles = res.data.fileRs
+                        })
                     })
                 }).catch(() => {
                     this.$message({type: 'info', message: '已取消' + type_zh + '申请!'});
@@ -414,18 +390,14 @@
             /* 查看文件 */
             viewFile(fileId, fileType) {
                 dataQuery.viewFile({"fileId": fileId, "fileType": fileType,}).then((res) => {
-                    if (res.success) {
-                        console.log(res.data)
-                    } else this.$message({type: 'error', message: res.message,})
+                    console.log(res.data)
                 })
             },
             /* 下载文件 */
             downloadFile(file_id, original_name) {
                 dataQuery.downloadFile({'fileId': file_id, 'fileName': original_name}).then((res) => {
-                    if (res.success) {
-                        // 转换数据流为文件
-                        fileOperations.fileDownload(file_id, original_name)
-                    } else this.$message({type: 'error', message: res.message,})
+                    // 转换数据流为文件
+                    fileOperations.fileDownload(file_id, original_name)
                 })
             },
             /* 用户数据申请信息页面跳转 */

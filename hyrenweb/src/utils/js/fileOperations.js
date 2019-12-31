@@ -26,9 +26,94 @@ export function fileDownload(res, fileName) {
     }
 }
 
-/*
-* 我的申请记录
-* */
+/**
+ * 树菜单数据
+ */
+export function getTreeDataInfo() {
+    let res;
+    return res = {
+        "code": 200,
+        "data": {
+            "tree_sources": [{
+                "agent_layer": "DCL",
+                "isParent": true,
+                "rootName": "DCL",
+                "name": "贴源层",
+                "description": "贴源层",
+                "pId": "~0",
+                "id": "DCL"
+            }, {
+                "agent_layer": "DPL",
+                "isParent": true,
+                "rootName": "DPL",
+                "name": "加工层",
+                "description": "加工层",
+                "pId": "~1",
+                "id": "DPL"
+            }, {
+                "agent_layer": "DML",
+                "isParent": true,
+                "rootName": "DML",
+                "name": "集市层",
+                "description": "集市层",
+                "pId": "~2",
+                "id": "DML"
+            }, {
+                "agent_layer": "SFL",
+                "isParent": true,
+                "rootName": "SFL",
+                "name": "系统层",
+                "description": "系统层",
+                "pId": "~3",
+                "id": "SFL"
+            }, {
+                "agent_layer": "DQC",
+                "isParent": true,
+                "rootName": "DQC",
+                "name": "管控层",
+                "description": "管控层",
+                "pId": "~4",
+                "id": "DQC"
+            }, {
+                "agent_layer": "UDL",
+                "isParent": true,
+                "rootName": "UDL",
+                "name": "自定义层",
+                "description": "自定义层",
+                "pId": "~5",
+                "id": "UDL"
+            }]
+        },
+        "data1": {
+            "tree_sources": [{
+                    "isParent": false,
+                    "batch_id": "DCL_BATCH",
+                    "rootName": "DCL",
+                    "name": "批量数据",
+                    "description": "批量数据管理",
+                    "pId": "DCL",
+                    "source": "DCL_BATCH",
+                    "id": "DCL_BATCH"
+                }, {
+                    "isParent": false,
+                    "rootName": "DCL",
+                    "name": "实时数据",
+                    "description": "实时数据管理",
+                    "pId": "DCL",
+                "source": "DCL_KFK",
+                "id": "kafka",
+                "kafka_id": "kafka"
+            }]
+        },
+        "message": "OK",
+        "success": true
+    }
+}
+
+
+/**
+ * 我的申请记录
+ */
 export function getMyApplyRecord() {
     let res;
     return res = {

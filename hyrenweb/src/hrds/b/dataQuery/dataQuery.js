@@ -4,7 +4,6 @@ import request from '@/utils/request'
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        method: 'post',
         params: data
     })
 }
@@ -41,7 +40,6 @@ export function getFileDataSource() {
 export function getFileCollectionTask(data) {
     return request({
         url: '/B/dataquery/getFileCollectionTask',
-        method: 'post',
         params: data
     })
 }
@@ -50,7 +48,6 @@ export function getFileCollectionTask(data) {
 export function getConditionalQuery(data) {
     return request({
         url: '/B/dataquery/getConditionalQuery',
-        method: 'post',
         params: data
     })
 }
@@ -59,7 +56,6 @@ export function getConditionalQuery(data) {
 export function downloadFile(data) {
     return request({
         url: '/B/dataquery/downloadFile',
-        method: 'post',
         params: data
     })
 }
@@ -68,7 +64,6 @@ export function downloadFile(data) {
 export function applicationProcessing(data) {
     return request({
         url: '/B/dataquery/applicationProcessing',
-        method: 'post',
         params: data
     })
 }
@@ -77,7 +72,6 @@ export function applicationProcessing(data) {
 export function viewFile(data) {
     return request({
         url: '/B/dataquery/viewFile',
-        method: 'post',
         params: data
     })
 }
@@ -87,7 +81,6 @@ export function viewFile(data) {
 export function getApplyData(data) {
     return request({
         url: '/B/dataquery/getApplyData',
-        method: 'post',
         params: data
     })
 }
@@ -96,7 +89,6 @@ export function getApplyData(data) {
 export function cancelApply(data) {
     return request({
         url: '/B/dataquery/cancelApply',
-        method: 'post',
         params: data
     })
 }
@@ -105,7 +97,6 @@ export function cancelApply(data) {
 export function myApplyRecord(data) {
     return request({
         url: '/B/dataquery/myApplyRecord',
-        method: 'post',
         params: data
     })
 }
@@ -114,7 +105,22 @@ export function myApplyRecord(data) {
 export function getTreeDataInfo(data) {
     return request({
         url: '/B/websqlquery/getTreeDataInfo',
-        method: 'post',
+        params: data
+    })
+}
+
+//根据表名获取采集数据，默认显示10条
+export function queryDataBasedOnTableName(data) {
+    return request({
+        url: '/B/websqlquery/queryDataBasedOnTableName',
+        params: data
+    })
+}
+
+//根据SQL获取采集数据，默认显示10条
+export function queryDataBasedOnSql(data) {
+    return request({
+        url: '/B/websqlquery/queryDataBasedOnSql',
         params: data
     })
 }
