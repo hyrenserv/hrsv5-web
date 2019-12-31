@@ -61,6 +61,7 @@
                 <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
                     <div slot="title" class="header-title">
                         <span class="title">定义分页抽取SQL&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
                         <span class="title">
                             表名:
                             <p class="topcolumename">{{EXtable_name}}</p>
@@ -116,6 +117,13 @@
                 </el-dialog>
                 <!-- 定义过滤弹层 -->
                 <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%" @close="SqlfiltCloseFun()">
+                    <div slot="title" class="header-title">
+                        <span class="title">自定义SQL过滤设置&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <el-tooltip class="item" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
+                            <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: -13px;
+    margin-right: 10px;"></i>
+                        </el-tooltip>
+                    </div>
                     <el-form ref="addClassTask">
                         <el-row type="flex">
                             <el-col :span="10">
@@ -341,7 +349,7 @@ export default {
             activeSec: false,
             edit: false,
             disShow: false,
-            sqlSubmit:true
+            sqlSubmit: true
         };
     },
     created() {
@@ -468,14 +476,14 @@ export default {
                 for (let i = 0; i < this.tableData.length; i++) {
                     if (this.tableData[i].selectionState == true) {
                         count++
-                        
+
                     }
                 }
                 if (count == this.tableData.length) {
-                            this.Allis_selectionState = true
-                        }else{
-                            this.Allis_selectionState = false
-                        }
+                    this.Allis_selectionState = true
+                } else {
+                    this.Allis_selectionState = false
+                }
                 for (let i = 0; i < this.allDataList.length; i++) {
                     if (this.allDataList[i].table_name == name) {
                         this.allDataList[i].selectionState = true;
@@ -504,13 +512,13 @@ export default {
                     if (alldata[i].is_get == true) {
                         count++
                     }
-                    
+
                 }
                 if (count == alldata.length) {
-                        this.Allis_SelectColumn = true
-                    } else {
-                        this.Allis_SelectColumn = false
-                    }
+                    this.Allis_SelectColumn = true
+                } else {
+                    this.Allis_SelectColumn = false
+                }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_get == false) {
@@ -530,11 +538,11 @@ export default {
                         count++
                     }
                 }
-                 if (count == alldata.length) {
-                            this.Alliskey_SelectColumn = true
-                        }else{
-                           this.Alliskey_SelectColumn = false 
-                        }
+                if (count == alldata.length) {
+                    this.Alliskey_SelectColumn = true
+                } else {
+                    this.Alliskey_SelectColumn = false
+                }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_primary_key == false) {
@@ -574,7 +582,7 @@ export default {
         next() {
             this.saveTableConfFun();
             let arrsql = []
-            if (this.sqlSubmit==true) {
+            if (this.sqlSubmit == true) {
                 arrsql = this.tableInfoArray
                 this.sqlFun(arrsql)
             } else {
@@ -1325,7 +1333,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.tableInfoArray = this.ruleForm.sqlExtractData;
-                    this.sqlSubmit=true
+                    this.sqlSubmit = true
                 }
             });
         }
