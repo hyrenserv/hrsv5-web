@@ -477,6 +477,7 @@ export default {
         collTaskClassFun() {
             this.ruleForm.classify_name = "";
             this.ruleForm.classify_num = "";
+            this.radio=''
             let params = {};
             params["sourceId"] = this.sourceId;
             addTaskAllFun.getClassifyInfo(params).then(res => {
