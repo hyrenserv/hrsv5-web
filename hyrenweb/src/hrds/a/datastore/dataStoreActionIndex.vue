@@ -2,7 +2,7 @@
 <div class="dataStoreAction">
     <el-row class="dataSave">
         <span>数据存储层定义</span>
-        <el-button size="medium" class="dataSaveBtn" type="primary" @click="addTableData"><i class="el-icon-circle-plus-outline"></i>新增数据存储层</el-button>
+        <el-button size="mini" class="dataSaveBtn" type="primary" @click="addTableData"><i class="el-icon-circle-plus-outline"></i>新增数据存储层</el-button>
     </el-row>
 
     <el-row class="partTwo">

@@ -534,9 +534,9 @@ this.submit_0 = true;
         // store_type
         storeTypeFun() {
             let params = {};
-            params["category"] = "store_type";
+            params["category"] = "Store_type";
             addTaskAllFun.getCategoryItems(params).then(res => {
-                if (res.data) {
+                if (res) {
                     this.storeTypeData = res.data;
                 }
             });

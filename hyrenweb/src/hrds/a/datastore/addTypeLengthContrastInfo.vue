@@ -1,94 +1,68 @@
 <template>
-<div class="dataStoreAction">
+<div class="typeLengthContrastInfo">
     <el-row class="dataSave">
-        <span>数据存储层配置定义</span>
+        <el-col :span="12">
+            <span>添加存储层数据类型长度对照表</span>
+        </el-col>
     </el-row>
     <el-row class="partOne">
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="form" label-width="140px">
             <el-col :span="12">
-                <el-col :span="16">
-                    <el-form-item label="名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
-                        <el-input v-model="form.dsl_name" placeholder="请输入名称"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item label="存储类型" prop="store_type" :rules="rule.selected">
-                    <el-select v-model="form.store_type" placeholder="请选择存储类型" @change="changedata">
-                        <el-option v-for="item in storeType" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                    </el-select>
+                <el-form-item label="字段类型" prop="lengthInfo" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.lengthInfo" placeholder="字段类型"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="是否为Hadoop客户端" label-width="160px">
-                    <el-radio-group v-model="form.is_unzip" @change="handerChange_unzip">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                    </el-radio-group>
+
+            </el-col>
+
+            <el-col :span="12">
+                <el-form-item label="长度对照表备注" prop="dlc_remark">
+                    <el-input v-model="form.dlc_remark" placeholder="长度对照表备注"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="是否为Hadoop客户端" label-width="160px">
-                    <el-radio-group v-model="form.is_unzip" @change="handerChange_unzip">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                    </el-radio-group>
+                <el-form-item label="长度对照表ID" prop="dlcs_id">
+                    <el-input v-model="form.dlcs_id" placeholder="长度对照表ID"></el-input>
                 </el-form-item>
             </el-col>
 
-            <el-col :span="24">
-                <el-col :span="10">
-                    <el-form-item label="附加信息">
-                        <el-checkbox-group v-model="form.dsla_storelayer">
-                            <el-checkbox v-for="item in checkboxType" :key="item.value" :label="item.value" :value="item.code"></el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item>
-                </el-col>
-
+            <el-col :span="12">
+                <el-form-item label="长度对照名称" prop="dlcs_name" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.dlcs_name" placeholder="长度对照名称"></el-input>
+                </el-form-item>
             </el-col>
 
+            <el-col :span="12">
+                <el-form-item label="备注" prop="dlcs_remark">
+                    <el-input v-model="form.dlcs_remark" placeholder="备注"></el-input>
+                </el-form-item>
+            </el-col>
             <span class="saveDataSpan">数据存储层配置属性</span>
             <el-button size="medium" class="partTwoBtn" type="success" @click="addTableData">增加行</el-button>
-            <el-table :data="form.tableData" border stripe size="medium">
-                <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+            <el-table :data="arry" border stripe size="mini">
+                <el-table-column label="多列作rowkey的顺序" align="center" prop="key"></el-table-column>
 
-                <el-table-column label="key" align="center">
+                <el-table-column label="字段英文名" align="center" prop="name">
                     <template slot-scope="scope">
-                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
-                            <el-input size="meduim" v-model="scope.row.storage_property_key"></el-input>
-                        </el-form-item>
+                        <el-checkbox name="nature" v-model="scope.row.d"></el-checkbox> &nbsp;<span class="spanName">{{scope.row.name}}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column label="value" align="center">
+                <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
-                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
-                            <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
-                        </el-form-item>
-                    </template>
-                </el-table-column>
-
-                <el-table-column prop="dsla_remark" label="描述" align="center">
-                    <template slot-scope="scope">
-                        <el-form-item>
-                            <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
-                        </el-form-item>
-                    </template>
-                </el-table-column>
-
-                <el-table-column label="操作" width="80" align="center">
-                    <template slot-scope="scope">
-                        <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                        <el-button type="primary" size="mini" @click="moveUp(scope.$index,scope.row,arry) ">上移</el-button>
+                        <el-button type="primary" size="mini" @click="moveDown(scope.$index, scope.row,arry)">下移</el-button>
                     </template>
                 </el-table-column>
             </el-table>
+
         </el-form>
-    </el-row>
-    <el-row class="partFour">
-        <div class="elButton">
-            <el-button type="primary" size="medium" @click="cancelSave">取消</el-button>
-            <el-button type="primary" size="medium" @click="saveData('form')">保存</el-button>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelAdd" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="add('form')" size="mini">保存</el-button>
         </div>
     </el-row>
 </div>
@@ -97,34 +71,55 @@
 <script>
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
+import * as message from "@/utils/js/message";
 import regular from "@/utils/js/regular";
 let tableDataLength;
 export default {
     data() {
         return {
             form: {
-                dsl_name: '',
-                store_type: '',
-                dsla_storelayer: [],
-                tableData: [{
-                    storage_property_key: "",
-                    storage_property_val: "",
-                    dsla_remark: ""
-                }],
+
             },
             change_storelayer: [],
             storeType: [],
             checkboxType: [],
             YesNo: [],
+            addTypeLengthContrastInfo: false,
             rule: validator.default
         }
     },
     created() {
-        this.getCategoryItems("Store_type");
-        this.getCategoryItems("StoreLayerAdded");
-        this.getCategoryItems("IsFlag");
+        this.searchDataTypeMasterTableInfo()
     },
     methods: {
+
+        searchDataTypeMasterTableInfo() {
+            functionAll.searchDataTypeMasterTableInfo().then((res) => {
+                console.log(res.data)
+            })
+        },
+        // 新增存储层数据类型长度对照表
+        add(formName) {
+            console.log(this.form)
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    functionAll.addTypeLengthContrastInfo(this.form).then((res) => {
+                        console.log(res)
+                    })
+                }
+            })
+
+        },
+        // 关闭弹出框之前触发事件
+        beforeClose() {
+            this.addTypeLengthContrastInfo = false;
+            this.$refs.form.resetFields();
+        },
+        // 取消添加触发事件
+        cancelAdd() {
+            this.addTypeLengthContrastInfo = false;
+            this.$refs.form.resetFields();
+        },
         // 获取代码项对应的值
         getCategoryItems(e) {
             if (e == "Store_type") {
@@ -288,48 +283,48 @@ export default {
 </script>
 
 <style scoped>
-.dataStoreAction {
+.typeLengthContrastInfo {
     padding: 0 2% 0 2%;
 }
 
 /* form边框 */
-.dataStoreAction .partOne {
+.typeLengthContrastInfo .partOne {
     border: 1px solid #e6e6e6;
     padding: 2%;
     width: 100%;
 }
 
-.dataStoreAction .dataSave {
+.typeLengthContrastInfo .dataSave {
     margin: 20px 0;
     color: #2196f3;
     font-size: 18px;
 }
 
+.typeLengthContrastInfo .dataSave .el-button {
+    float: right;
+}
+
 /* 按钮样式 */
-.dataStoreAction .elButton {
+.typeLengthContrastInfo .elButton {
     float: right;
     margin-top: 20px;
 }
 
-.dataStoreAction .partTwoBtn {
+.typeLengthContrastInfo .partTwoBtn {
     float: right;
     margin-top: 20px;
 }
 
 /* span字体样式 */
-.dataStoreAction .saveDataSpan {
+.typeLengthContrastInfo .saveDataSpan {
     display: inline-block;
     margin-top: 20px;
     color: #2196f3;
     font-size: 18px;
 }
 
-/* table的input样式 */
-.dataStoreAction .el-table>>>.el-form-item {
-    margin-bottom: 17px !important;
-}
-
-.dataStoreAction .el-table>>>.el-form-item__content {
-    margin-left: 0 !important;
+/* dialog的input样式 */
+.typeLengthContrastInfo>>>.el-dialog .el-input {
+    width: 284px;
 }
 </style>

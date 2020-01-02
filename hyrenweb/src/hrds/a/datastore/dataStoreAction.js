@@ -60,12 +60,32 @@ export function updateDataStore(data) {
     })
 }
 
-/**(5)
+/**(6)
  * 根据代码项分组编号和代码项值，获取中文名称
  */
 export function getValue(data) {
     return request({
         url: '/A/codes/getValue',
+        params: data
+    })
+}
+
+// 存储层数据类型长度接口
+/**(7)
+ * 查询数据存储层数据类型对照以及长度对照主表信息
+ */
+export function searchDataTypeMasterTableInfo() {
+    return request({
+        url: '/A/datastore/searchDataTypeMasterTableInfo'
+    })
+}
+
+/**(8)
+ * 添加存储层数据类型长度对照信息
+ */
+export function addTypeLengthContrastInfo(data) {
+    return request({
+        url: '/A/datastore/addTypeLengthContrastInfo',
         params: data
     })
 }
