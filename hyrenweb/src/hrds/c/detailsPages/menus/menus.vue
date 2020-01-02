@@ -104,7 +104,7 @@ export default {
     methods: {
         //返回首页按钮
         goBack(){
-            this.$router.push({path:'/jobScheduling'})
+            this.$router.push({path:'/etlMage'})
         },
         //导航栏路由跳转
         handleSelect(key, keyPath,title) {
