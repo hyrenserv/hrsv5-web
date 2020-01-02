@@ -28,7 +28,15 @@ module.exports = {
 	        pathRewrite: {
 	          '^/B': '/B/action/hrds/b/biz'
 	        }
-	      }
+		  },
+		  '/C': {
+		  	target: process.env.VUE_APP_HRDS_C_API, // 目标 API 地址
+		  	changeOrigin: true, // 允许websockets跨域
+		  	ws: true,
+		  	pathRewrite: {
+		  		'^/C': '/C/action/hrds/c/biz'
+		  	}
+		  }
 	    }
 	  }
 }

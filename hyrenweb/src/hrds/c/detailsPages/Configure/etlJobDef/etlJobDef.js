@@ -1,0 +1,91 @@
+import request from '@/utils/request'
+
+//分页查询作业定义信息
+export function searchEtlJobDefByPage(data) {
+    return request({
+        url: '/C/jobschedule/searchEtlJobDefByPage',
+        method: 'post',
+        params: data
+    })
+}
+
+//查询任务信息
+export function searchEtlSubSys(data) {
+    return request({
+        url: '/C/jobschedule/searchEtlSubSys',
+        method: 'post',
+        params: data
+    })
+}
+
+//根据代码项分组编号，获取该代码项所
+export function getCategoryItems(data) {
+    return request({
+        url: '/A/codes/getCategoryItems',
+        method: 'post',
+        params: data
+    })
+}
+
+//新增保存作业信息
+export function saveEtlJobDef(data) {
+    return request({
+        url: '/C/jobschedule/saveEtlJobDef',
+        method: 'post',
+        params: data
+    })
+}
+
+//删除Etl作业定义信息
+export function deleteEtlJobDef(data) {
+    return request({
+        url: '/C/jobschedule/deleteEtlJobDef',
+        method: 'post',
+        params: data
+    })
+}
+
+//批量删除Etl作业定义信息
+export function batchDeleteEtlJobDef(data) {
+    return request({
+        url: '/C/jobschedule/batchDeleteEtlJobDef',
+        method: 'post',
+        params: data
+    })
+}
+
+//更新作业定义信息并返回更新后的最
+export function updateEtlJobDef(data) {
+    return request({
+        url: '/C/jobschedule/updateEtlJobDef',
+        method: 'post',
+        params: data
+    })
+}
+
+//根据代码项分组编号和代码项值，获取中文名称
+export function getValue(data) {
+    return request({
+        url: '/A/codes/getValue',
+        method: 'post',
+        params: data
+    })
+}
+
+//查询作业名称信息
+export function searchEtlJob(data) {
+    return request({
+        url: '/C/jobschedule/searchEtlJob',
+        method: 'post',
+        params: data
+    })
+}
+
+//根据工程编号、作业名称查询作业定义
+export function searchEtlJobDefById(data) {
+    return request({
+        url: '/C/jobschedule/searchEtlJobDefById',
+        method: 'post',
+        params: data
+    })
+}
