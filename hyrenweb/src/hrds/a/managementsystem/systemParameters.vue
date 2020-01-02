@@ -168,7 +168,7 @@ export default {
             this.getSysPara(savecurrentPage);
             this.dialogFormVisibleAdd = false;
             this.dialogFormVisibleUpdate = false;
-            this.$refs.formAdd.resetFields();
+            this.$refs.formUpdate.resetFields();
         },
         // 清空表单验证
         beforeCloseAdd() {
