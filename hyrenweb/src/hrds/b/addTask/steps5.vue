@@ -674,12 +674,18 @@ this.submit_0 = true;
                                 id: key,
                                 value: res.data[key]
                             });
-                        } else if (key == "column_ch_name") {
+                        } 
+                    }
+                     for (var key in res.data) {
+                        if (key == "column_ch_name") {
                             arr.push({
                                 id: key,
                                 value: res.data[key]
                             });
-                        } else {
+                        } 
+                    }
+                     for (var key in res.data) {
+                        if (key != "column_name"&&key!="column_ch_name") {
                             arr.push({
                                 id: key,
                                 value: "是否" + res.data[key],
@@ -687,7 +693,7 @@ this.submit_0 = true;
                             });
                         }
                     }
-                    this.selectedColumnList = arr.reverse();
+                    this.selectedColumnList = arr;
                 }
             });
             // 获取数据
@@ -1108,6 +1114,16 @@ this.submit_0 = true;
 }
 
 .steps5>>>tr>td>.cell {
-    padding: 22px 10px;
+    padding: 11px 10px;
 }
+.steps5>>>.el-form-item__error {
+    color: #f56c6c;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 6px;
+    position: absolute;
+    top: 86%;
+    left: 1%;
+}
+
 </style>
