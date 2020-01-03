@@ -621,8 +621,8 @@ export default {
     line-height: 1;
     padding-top: 6px;
     position: absolute;
-    top: 100%;
-    left: 2%;
+    top: 86%;
+    left: 4%;
 }
 
 .steps4>>>.el-form-item__content::before {
@@ -639,6 +639,6 @@ export default {
 }
 
 .steps4>>>tr>td>.cell {
-    padding: 22px 10px;
+    padding: 12px 10px;
 }
 </style>
