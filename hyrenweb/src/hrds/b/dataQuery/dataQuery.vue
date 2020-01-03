@@ -1,93 +1,86 @@
 <template>
     <div>
         <el-row>
-            <span class="el-icon-menu" style="color: #3a8ee6"> 文件资源管理器 </span>
+            <span class="el-icon-files" style="color: #3a8ee6"> 文件资源管理器 </span>
         </el-row>
         <el-row>
             <hr>
         </el-row>
         <el-row>
             <el-col style="width: 70%;">
-                <el-row>
-                    <el-col style="width: 8%;">
-                        <navigation-menu></navigation-menu>
+                <el-row class="bottomMargin">
+                    <el-col :span="5" :offset="1">
+                        <el-button type="primary"
+                                   @click="routeToMyApply(recentData.xiazai,recentData.xiazai_zh)">
+                            <el-row><span><el-badge :value="myDownloadRequest"></el-badge>次</span></el-row>
+                            <el-row><i class="el-icon-download" style="color: white;">我的下载申请</i></el-row>
+                        </el-button>
                     </el-col>
-                    <el-col style="width: 90%">
-                        <el-row class="bottomMargin">
-                            <el-col :span="5" :offset="1">
-                                <el-button type="primary"
-                                           @click="routeToMyApply(recentData.xiazai,recentData.xiazai_zh)">
-                                    <el-row><span><el-badge :value="myDownloadRequest"></el-badge>次</span></el-row>
-                                    <el-row><i class="el-icon-download" style="color: white;">我的下载申请</i></el-row>
-                                </el-button>
-                            </el-col>
-                            <el-col :span="5" :offset="1">
-                                <el-button type="warning" @click="routeToMyApply(recentData.fabu,recentData.fabu_zh)">
-                                    <el-row><span><el-badge :value="myPostApplication"></el-badge>次</span></el-row>
-                                    <el-row><i class="el-icon-upload" style="color: white;">我的发布申请</i></el-row>
-                                </el-button>
-                            </el-col>
-                            <el-col :span="5" :offset="1">
-                                <router-link to="myRequestRecord">
-                                    <el-button type="success" size="medium">
-                                        <el-row><span><el-badge :value="myApplicationRecord"></el-badge>次</span>
-                                        </el-row>
-                                        <el-row><i class="el-icon-reading" style="color: white;">我的申请记录</i></el-row>
-                                    </el-button>
-                                </router-link>
-                            </el-col>
-                            <el-col :span="5" :offset="1">
-                                <el-button type="info" @click="routeToMyApply(recentData.chakan,recentData.chakan_zh)">
-                                    <el-row><span><el-badge :value="myViewRequest"></el-badge>次</span></el-row>
-                                    <el-row><i class="el-icon-search" style="color: white;">我的查看申请</i></el-row>
-                                </el-button>
-                            </el-col>
-                        </el-row>
-                        <el-row style="margin-right: -2%">
-                            <hr>
-                        </el-row>
-                        <el-row class="borderStyle bottomMargin">
-                            <el-form :inline="true" ref="form" :model="conditionalQueryForm" label-width="100px"
-                                     size="medium">
-                                <el-form-item label="数据源列表">
-                                    <el-select v-model="conditionalQueryForm.sourceId" clearable placeholder="选择数据源"
-                                               @change="getTaskIdByDataSourceId(conditionalQueryForm.sourceId)"
-                                               value="sourceId">
-                                        <el-option v-for="item in dataSourceList" :label="item.datasource_name"
-                                                   :value="item.source_id">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="任务列表">
-                                    <el-select v-model="conditionalQueryForm.fcsId" clearable placeholder="选择任务"
-                                               value="fcs_name">
-                                        <el-option v-for="item in taskList" :label="item.fcs_name" :value="item.fcs_id">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="采集日期">
-                                    <el-col :span="11">
-                                        <el-date-picker v-model="conditionalQueryForm.startDate" type="date"
-                                                        placeholder="开始日期"
-                                                        value-format="yyyyMMdd" style="width: 100%;">
-                                        </el-date-picker>
-                                    </el-col>
-                                    <el-col class="line" :span="1" style="margin-left: 2%">--</el-col>
-                                    <el-col :span="11">
-                                        <el-date-picker v-model="conditionalQueryForm.endDate" type="date"
-                                                        placeholder="结束日期"
-                                                        value-format="yyyyMMdd" style="width: 100%;">
-                                        </el-date-picker>
-                                    </el-col>
-                                </el-form-item>
-                                <el-form-item>
-                                    <el-button type="primary" class="el-icon-search"
-                                               @click="conditionalQueryOnSubmit()">查询
-                                    </el-button>
-                                </el-form-item>
-                            </el-form>
-                        </el-row>
+                    <el-col :span="5" :offset="1">
+                        <el-button type="warning" @click="routeToMyApply(recentData.fabu,recentData.fabu_zh)">
+                            <el-row><span><el-badge :value="myPostApplication"></el-badge>次</span></el-row>
+                            <el-row><i class="el-icon-upload" style="color: white;">我的发布申请</i></el-row>
+                        </el-button>
                     </el-col>
+                    <el-col :span="5" :offset="1">
+                        <router-link to="myRequestRecord">
+                            <el-button type="success" size="medium">
+                                <el-row><span><el-badge :value="myApplicationRecord"></el-badge>次</span>
+                                </el-row>
+                                <el-row><i class="el-icon-reading" style="color: white;">我的申请记录</i></el-row>
+                            </el-button>
+                        </router-link>
+                    </el-col>
+                    <el-col :span="5" :offset="1">
+                        <el-button type="info" @click="routeToMyApply(recentData.chakan,recentData.chakan_zh)">
+                            <el-row><span><el-badge :value="myViewRequest"></el-badge>次</span></el-row>
+                            <el-row><i class="el-icon-search" style="color: white;">我的查看申请</i></el-row>
+                        </el-button>
+                    </el-col>
+                </el-row>
+                <el-row style="margin-right: -2%">
+                    <hr>
+                </el-row>
+                <el-row class="borderStyle bottomMargin">
+                    <el-form :inline="true" ref="form" :model="conditionalQueryForm" label-width="100px"
+                             size="medium">
+                        <el-form-item label="数据源列表">
+                            <el-select v-model="conditionalQueryForm.sourceId" clearable placeholder="选择数据源"
+                                       @change="getTaskIdByDataSourceId(conditionalQueryForm.sourceId)"
+                                       value="sourceId">
+                                <el-option v-for="item in dataSourceList" :label="item.datasource_name"
+                                           :value="item.source_id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="任务列表">
+                            <el-select v-model="conditionalQueryForm.fcsId" clearable placeholder="选择任务"
+                                       value="fcs_name">
+                                <el-option v-for="item in taskList" :label="item.fcs_name" :value="item.fcs_id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="采集日期">
+                            <el-col :span="11">
+                                <el-date-picker v-model="conditionalQueryForm.startDate" type="date"
+                                                placeholder="开始日期"
+                                                value-format="yyyyMMdd" style="width: 100%;">
+                                </el-date-picker>
+                            </el-col>
+                            <el-col class="line" :span="1" style="margin-left: 2%">--</el-col>
+                            <el-col :span="11">
+                                <el-date-picker v-model="conditionalQueryForm.endDate" type="date"
+                                                placeholder="结束日期"
+                                                value-format="yyyyMMdd" style="width: 100%;">
+                                </el-date-picker>
+                            </el-col>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" class="el-icon-search"
+                                       @click="conditionalQueryOnSubmit()">查询
+                            </el-button>
+                        </el-form-item>
+                    </el-form>
                 </el-row>
                 <el-row class="borderStyle bottomMargin">
                     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
@@ -257,13 +250,9 @@
 <script>
     import * as dataQuery from './dataQuery'
     import * as fileOperations from '../../../utils/js/fileOperations'
-    import navigationMenu from "./navigationMenu";
 
     export default {
         name: "dataQuery",
-        components: {
-            "navigation-menu": navigationMenu,
-        },
         data() {
             return {
                 fcsChartSettings: {},

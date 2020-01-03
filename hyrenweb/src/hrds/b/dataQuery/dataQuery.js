@@ -109,6 +109,14 @@ export function getTreeDataInfo(data) {
     })
 }
 
+//检索树菜单数据
+export function getTreeNodeSearchInfo(data) {
+    return request({
+        url: '/B/websqlquery/getTreeNodeSearchInfo',
+        params: data
+    })
+}
+
 //根据表名获取采集数据，默认显示10条
 export function queryDataBasedOnTableName(data) {
     return request({

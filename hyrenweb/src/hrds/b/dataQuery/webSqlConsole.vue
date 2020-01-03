@@ -7,16 +7,14 @@
             <hr>
         </el-row>
         <el-row>
-            <el-col :span="2">
-                <navigation-menu></navigation-menu>
-            </el-col>
             <el-col class="borderStyle" :span="5" style="margin-right: 10px;">
+                <!--树菜单-->
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
                 <el-tree empty-text="暂无数据" :expand-on-click-node="true" :props="treeProps" :load="loadNode" lazy
-                         node-key="id" :filter-node-method="filterNode" ref="tree">
+                         node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
                 </el-tree>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="18">
                 <el-tabs v-model="activeName" type="card">
                     <el-tab-pane label="表查询" name="tableQuery">
                         <el-table :data="dataByTableName" border size="mini">
@@ -53,58 +51,82 @@
     </div>
 </template>
 <script>
-    import navigationMenu from "./navigationMenu";
     import * as dataQuery from "./dataQuery";
+    import * as fileOperations from '../../../utils/js/fileOperations'
 
     export default {
-        components: {
-            "navigation-menu": navigationMenu,
-        },
+        name: "webSqlConsole",
         data() {
             return {
                 querySQL: '',
-                activeIndex: 1,
                 filterText: '',
                 activeName: 'tableQuery',
-                treeNode: [],
+                filterNodeData: [],
                 dataByTableName: [],
                 dataBySQL: [],
                 treeDataInfo: {
-                    agent_layer: '', source_id: '', classify_id: '', data_mart_id: '', category_id: '',
-                    systemDataType: '', kafka_id: '', batch_id: '', groupid: '', sdm_consum_id: '', type_id: '',
-                    parent_id: '', spaceTable: '', database_type: '', isFileCo: 'false', tree_menu_from: 'webSQL',
-                    isPublicLayer: '1', isRootNode: '1', isIntoHBase: '', isParent: ''
+                    isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
+                    isRootNode: '1', tableName: ''
                 },
-                treeProps: {
-                    id: 'id',
-                    label: 'name',
-                    children: 'children',
-                },
+                treeProps: {id: 'id', label: 'name', children: 'children',},
             };
         },
         watch: {
-            filterText(val) {
-                this.$refs.tree.filter(val);
+            //设置检索内容
+            filterText() {
+                this.$refs.tree.filter(this.filterText);
+                // this.treeDataInfo.tableName = this.filterText;
+                // dataQuery.getTreeNodeSearchInfo(this.treeDataInfo).then((res) => {
+                //     res = fileOperations.getTreeNodeSearchInfo();
+                //     console.log(res.data.search_nodes);
+                //     this.searchResolve(res.data.search_nodes);
+                // });
             }
         },
         mounted() {
         },
         methods: {
             // 节点搜索
-            filterNode(value, data) {
+            filterNode(value, data, node) {
+                // 如果检索内容为空,直接返回
                 if (!value) return true;
+                // 如果传入的value和data中的name相同说明是匹配到了
                 return data.name.indexOf(value) !== -1;
+                // 否则要去判断它是不是选中节点的子节点
+                // return this.checkBelongToChooseNode(value, data, node);
             },
-            // 加载树结点
+            // 判断传入的节点是不是选中节点的子节点
+            // checkBelongToChooseNode(value, data, node) {
+            //     const level = node.level;
+            //     // 如果传入的节点本身就是一级节点就不用校验了
+            //     if (level === 1) {
+            //         return false;
+            //     }
+            //     // 先取当前节点的父节点
+            //     let parentData = node.parent;
+            //     // 遍历当前节点的父节点
+            //     let index = 0;
+            //     while (index < level - 1) {
+            //         // 如果匹配到直接返回
+            //         if (parentData.data.name.indexOf(value) !== -1) {
+            //             return true;
+            //         }
+            //         // 否则的话再往上一层做匹配
+            //         parentData = parentData.parent;
+            //         index++;
+            //     }
+            //     // 没匹配到返回false
+            //     return false;
+            // },
+            // 加载树节点
             loadNode(node, resolve) {
-                // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据
+                // this.searchResolve = resolve;
+                // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
                 if (node.level === 0) {
                     dataQuery.getTreeDataInfo(this.treeDataInfo).then((res) => {
-                        this.treeNode = res.data.tree_sources;
-                        return resolve(this.treeNode);
+                        return resolve(res.data.tree_sources);
                     }).catch(() => {
-                        this.treeNode = [];
-                        return resolve(this.treeNode)
+                        return resolve([]);
                     });
                 } else {
                     // 如果当前节点是父节点,则根据当前节点数据获取下一级的所有节点,否则根据节点信息查询数据
@@ -114,12 +136,12 @@
                         });
                     } else {
                         // 查询数据
-                        dataQuery.queryDataBasedOnTableName({'tableName': 'sys_para', 'queryNum': 8}).then((res) => {
+                        dataQuery.queryDataBasedOnTableName({'tableName': 'sys_para', 'queryNum': 10}).then((res) => {
                             this.dataByTableName = res.data;
-                            return resolve([]);
                         });
                     }
                 }
+
             },
             // 根据SQL查询数据
             getDataBySQL(querySQL) {
@@ -127,11 +149,11 @@
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
                 } else {
                     querySQL = "select * from sys_user";
-                    dataQuery.queryDataBasedOnSql({'querySQL': querySQL, 'queryNum': 8}).then((res) => {
+                    dataQuery.queryDataBasedOnSql({'querySQL': querySQL, 'queryNum': 10}).then((res) => {
                         this.dataBySQL = res.data;
                     });
                 }
-            }
+            },
         }
     }
 </script>
