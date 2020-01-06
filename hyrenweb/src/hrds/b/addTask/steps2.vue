@@ -132,9 +132,9 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
-                                <el-form-item label=" 变量名" prop="Variable_name">
+                                <el-form-item label=" 变量名: " prop="Variable_name">
                                     <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
-                                        <el-option label="ad" value="1"></el-option>
+                                        <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
                                     </el-select>
                                 </el-form-item>
                             </el-col>
@@ -349,7 +349,21 @@ export default {
             activeSec: false,
             edit: false,
             disShow: false,
-            sqlSubmit: true
+            sqlSubmit: true,
+            sqlfiltVar:[
+                {
+                    value:'当前跑批日',
+                    code:'1'
+                },
+                {
+                    value:'后一跑批日',
+                    code:'2'
+                },
+                {
+                    value:'前一跑批日',
+                    code:'3'
+                }
+            ]
         };
     },
     created() {
@@ -922,11 +936,13 @@ export default {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
                     sql: this.sqlFiltSetData_SQL
+                    // sqlFiltvar:this.sqlFiltSetData_var 接收变量名
                 });
             } else {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
-                    sql: this.sqlFiltSetData_SQL
+                    sql: this.sqlFiltSetData_SQL,
+                     // sqlFiltvar:this.sqlFiltSetData_var
                 });
             }
             this.tablename = "";
