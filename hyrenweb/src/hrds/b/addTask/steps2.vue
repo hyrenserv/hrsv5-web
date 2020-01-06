@@ -1119,7 +1119,7 @@ export default {
             this.dialogSelectColumn = true;
             this.tablename = row.table_name;
             this.tableloadingInfo = "数据加载中...";
-            this.disShow = false
+            // this.disShow = false
             if (this.SelectColumn.length != 0) {
                 let arrid = [];
                 for (let i = 0; i < this.SelectColumn.length; i++) {
