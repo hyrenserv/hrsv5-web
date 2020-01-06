@@ -1129,8 +1129,8 @@ export default {
                     arrid.length = 0;
                     let params = {};
                     params["colSetId"] = this.dbid;
-                    params["tableName"] = name;
-                    params["tableId"] = id;
+                    params["tableName"] = row.table_name;
+                    params["tableId"] =row.table_id;
                     addTaskAllFun.getColumnsigleInfo(params).then(res => {
                         this.disShow = res.data.editFlag == '1' ? true : false;
                         for (let i = 0; i < this.SelectColumn.length; i++) {
