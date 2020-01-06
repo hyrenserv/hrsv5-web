@@ -4,9 +4,9 @@
         <span>数据存储层配置定义</span>
     </el-row>
     <el-row class="partOne">
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="form" label-width="150px">
             <el-col :span="12">
-                <el-col :span="16">
+                <el-col :span="17">
                     <el-form-item label="名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
                         <el-input v-model="form.dsl_name" placeholder="请输入名称"></el-input>
                     </el-form-item>
@@ -17,6 +17,22 @@
                 <el-form-item label="存储类型" prop="store_type" :rules="rule.selected">
                     <el-select v-model="form.store_type" placeholder="请选择存储类型" @change="changedata">
                         <el-option v-for="item in storeType" :key="item.value" :label="item.value" :value="item.code"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+                <el-form-item label="数据类型对比信息" prop="dtcs_id" :rules="rule.selected">
+                    <el-select v-model="form.dtcs_id" placeholder="数据类型对比信息">
+                        <el-option v-for="item in dataTypeinfo" :key="item.dtcs_id" :label="item.dtcs_name" :value="item.dtcs_id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+                <el-form-item label="类型长度对比信息" prop="dlcs_id" :rules="rule.selected">
+                    <el-select v-model="form.dlcs_id" placeholder="类型长度对比信息">
+                        <el-option v-for="item in typeLengthinfo" :key="item.dlcs_id" :label="item.dlcs_name" :value="item.dlcs_id"></el-option>
                     </el-select>
                 </el-form-item>
             </el-col>
@@ -38,7 +54,7 @@
             </el-col>
 
             <el-col :span="24">
-                <el-col :span="10">
+                <el-col>
                     <el-form-item label="附加信息">
                         <el-checkbox-group v-model="form.dsla_storelayer">
                             <el-checkbox v-for="item in checkboxType" :key="item.value" :label="item.value" :value="item.code"></el-checkbox>
@@ -115,6 +131,8 @@ export default {
             change_storelayer: [],
             storeType: [],
             checkboxType: [],
+            dataTypeinfo: [],
+            typeLengthinfo: [],
             YesNo: [],
             rule: validator.default
         }
@@ -123,6 +141,8 @@ export default {
         this.getCategoryItems("Store_type");
         this.getCategoryItems("StoreLayerAdded");
         this.getCategoryItems("IsFlag");
+        this.searchDataLayerDataTypeLengthInfo();
+        this.searchDataLayerDataTypeInfo();
     },
     methods: {
         // 获取代码项对应的值
@@ -163,7 +183,6 @@ export default {
         },
         // 删除表格的当前行
         deleteArry(index, row) {
-            console.log(index + 1)
             if (this.form.tableData.length > tableDataLength && index + 1 > tableDataLength) {
                 this.form.tableData.splice(index, 1)
             } else if (this.form.tableData.length <= tableDataLength && index + 1 <= tableDataLength) {
@@ -283,6 +302,48 @@ export default {
             }
 
         },
+        // 获取数据类型长度信息
+        searchDataLayerDataTypeLengthInfo() {
+            functionAll.searchDataLayerDataTypeLengthInfo().then((res) => {
+                let arr = res.data;
+                res.data.forEach((item, index) => {
+                    delete item.dlc_id;
+                    delete item.dlc_type;
+                    delete item.dlc_length;
+                    delete item.dlcs_remark;
+                    delete item.dlc_remark;
+                })
+                for (var i = 0; i < arr.length; i++) {
+                    for (var j = i + 1; j < arr.length;) {
+                        if (arr[i].dlcs_id == arr[j].dlcs_id && arr[i].dlcs_name == arr[j].dlcs_name) {
+                            arr.splice(j, 1);
+                        } else j++;
+                    }
+                }
+                this.typeLengthinfo = arr;
+            })
+        },
+        // 获取数据类型信息
+        searchDataLayerDataTypeInfo() {
+            functionAll.searchDataLayerDataTypeInfo().then((res) => {
+                let arr = res.data;
+                arr.forEach((item, index) => {
+                    delete item.dtc_id;
+                    delete item.target_type;
+                    delete item.source_type;
+                    delete item.dtcs_remark;
+                    delete item.dtc_remark;
+                })
+                for (var i = 0; i < arr.length; i++) {
+                    for (var j = i + 1; j < arr.length;) {
+                        if (arr[i].dtcs_id == arr[j].dtcs_id && arr[i].dtcs_name == arr[j].dtcs_name) {
+                            arr.splice(j, 1);
+                        } else j++;
+                    }
+                }
+                this.dataTypeinfo = arr;
+            })
+        }
     }
 }
 </script>
