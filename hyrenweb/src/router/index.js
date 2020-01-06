@@ -58,6 +58,8 @@ export default new Router({routes: [
         {path: '/dataStoreAction',name: 'dataStoreAction',title: 'dataStoreAction',component: () => import('@/hrds/a/datastore/dataStoreAction.vue')},
         {path: '/typeLengthContrastInfo',name: 'typeLengthContrastInfo',title: 'typeLengthContrastInfo',component: () => import('@/hrds/a/datastore/typeLengthContrastInfo.vue')},
         {path: '/addTypeLengthContrastInfo',name: 'addTypeLengthContrastInfo',title: 'addTypeLengthContrastInfo',component: () => import('@/hrds/a/datastore/addTypeLengthContrastInfo.vue')},
+        {path: '/addDataTypeContrastInfo',name: 'addDataTypeContrastInfo',title: 'addDataTypeContrastInfo',component: () => import('@/hrds/a/datastore/addDataTypeContrastInfo.vue')},
+        {path: '/dataTypeContrastInfo',name: 'dataTypeContrastInfo',title: 'dataTypeContrastInfo',component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')},
         // 数据查询
         {path: '/dataQuery',name: 'dataQuery',title: 'dataQuery',component: () => import('@/hrds/b/dataQuery/dataQuery.vue')},
         {path: '/myApply',name: 'myApply',title: 'myApply',component: () => import('@/hrds/b/dataQuery/myApply.vue')},

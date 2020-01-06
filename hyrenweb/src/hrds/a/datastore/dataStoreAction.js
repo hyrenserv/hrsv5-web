@@ -89,3 +89,74 @@ export function addTypeLengthContrastInfo(data) {
         params: data
     })
 }
+
+/**(8)
+ * 删除存储层数据类型长度对照信息
+ */
+export function deleteTypeLengthContrastInfo(data) {
+    return request({
+        url: '/A/datastore/deleteTypeLengthContrastInfo',
+        params: data
+    })
+}
+
+/**(9)
+ * 查询存储层数据类型对照信息
+ */
+export function searchDataLayerDataTypeLengthInfo(data) {
+    return request({
+        url: '/A/datastore/searchDataLayerDataTypeLengthInfo',
+        params: data
+    })
+}
+
+/**(10)
+ * 更新存储层数据类型对照信息
+ */
+export function updateTypeLengthContrastInfo(data) {
+    return request({
+        url: '/A/datastore/updateTypeLengthContrastInfo',
+        params: data
+    })
+}
+
+// dataTypeContrastInfo
+/**(10)
+ * 新增存储层数据类型对照信息
+ */
+export function addDataTypeContrastInfo(data) {
+    return request({
+        url: '/A/datastore/addDataTypeContrastInfo',
+        params: data
+    })
+}
+
+/**(11)
+ * 查询存储层数据类型对照信息
+ */
+export function searchDataLayerDataTypeInfo(data) {
+    return request({
+        url: '/A/datastore/searchDataLayerDataTypeInfo',
+        params: data
+    })
+}
+
+/**(12)
+ * 更新存储层数据类型对比信息
+ */
+export function updateDataTypeContrastInfo(data) {
+    return request({
+        url: '/A/datastore/updateDataTypeContrastInfo',
+        params: data
+    })
+}
+
+/**(13)
+ * 删除数据类型对照信息
+ */
+export function deleteDataTypeContrastInfo(data) {
+    return request({
+        url: '/A/datastore/deleteDataTypeContrastInfo',
+        params: data
+    })
+}
