@@ -31,7 +31,7 @@
             </template>
         </el-table-column>
         <el-table-column align="right">
-            <template scope="scope" slot="header">
+            <template slot-scope="scope" slot="header">
                 <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
             </template>
         </el-table-column>
@@ -50,7 +50,7 @@
                 </template>
             </el-table-column>
             <el-table-column align="left">
-                <template slot="header" slot-scope="scope">
+                <template slot-scope="scope" slot="header">
                     <el-input v-model="agentSearch" size="mini" placeholder="输入关键字搜索" />
                 </template>
             </el-table-column>
@@ -62,62 +62,68 @@
 
     <!--部署Agent模态框 agentDeploy-->
     <el-dialog title="Agent部署" :visible.sync="dialogFormVisible" width="75%">
-        <el-row type="flex" justify="space-around">
-            <el-form :model="agentDeploy" status-icon ref="agentDeploy" label-width="120px" autocomplete="off">
+        <el-form :model="agentDeploy" status-icon ref="agentDeploy" label-width="120px">
+            <el-row>
                 <el-col :span="8">
-                    <el-form-item label="Agent名称:">
-                        <el-input v-model="agentDeploy.agent_name" placeholder="Agent名称" readonly autocomplete="off"></el-input>
+                    <el-form-item label="Agent名称">
+                        <el-input v-model="agentDeploy.agent_name" placeholder="Agent名称" readonly></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="Agent IP:">
-                        <el-input v-model="agentDeploy.agent_ip" placeholder="Agent IP" readonly autocomplete="off"></el-input>
+                    <el-form-item label="Agent IP">
+                        <el-input v-model="agentDeploy.agent_ip" placeholder="Agent IP" readonly></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="Agent端口:">
-                        <el-input v-model="agentDeploy.agent_port" placeholder="Agent端口" readonly autocomplete="off"></el-input>
+                    <el-form-item label="Agent端口">
+                        <el-input v-model="agentDeploy.agent_port" placeholder="Agent端口" readonly></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="8">
+                    <el-form-item label="用户名" prop="user_name" :rules="rule.default">
+                        <el-input v-model="agentDeploy.user_name" placeholder="用户名" style="z-index:9999"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="用户名:" prop="user_name" :rules="rule.default">
-                        <el-input v-model="agentDeploy.user_name" placeholder="用户名" autocomplete="off"></el-input>
+                    <el-form-item label="密码" prop="passwd" :rules="rule.default">
+                        <el-input v-model="agentDeploy.passwd" show-password placeholder="密码"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="密码:" prop="passwd" :rules="rule.default">
-                        <el-input v-model="agentDeploy.passwd" show-password placeholder="密码" autocomplete="off"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-form-item label="是否自动部署:">
-                    <el-switch active-value="0" inactive-value="1" v-model="agentDeploy.deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否">
-                    </el-switch>
-                </el-form-item>
-                <el-col :span="8">
-                    <el-form-item label="存放目录:">
-                        <el-switch active-value="0" inactive-value="1" v-model="deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="系统默认" inactive-text="自定义">
+                    <el-form-item label="是否自动部署">
+                        <el-switch active-value="0" inactive-value="1" v-model="agentDeploy.deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否">
                         </el-switch>
                     </el-form-item>
                 </el-col>
-                <template v-if="deploy==0">
-                    <el-col :span="8">
-                        <el-form-item label="安装目录:" prop="save_dir" :rules="rule.default">
-                            <el-input v-model="agentDeploy.save_dir" hide-required-asterisk="true" placeholder="Agent安装目录" autocomplete="off"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="日志文件:" prop="log_dir" :rules="rule.default">
-                            <el-input v-model="agentDeploy.log_dir" hide-required-asterisk="true" placeholder="日志文件" autocomplete="off"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </template>
+            </el-row>
+            <el-row>
                 <el-col :span="8">
-                    <el-form-item label="描述:">
-                        <el-input type="textarea" v-model="agentDeploy.name" placeholder="描述" autocomplete="off"></el-input>
+                    <el-form-item label="存放目录">
+                        <el-switch active-value="1" inactive-value="0" v-model="deploy" active-color="#13ce66" inactive-color="#ff4949" active-text="自定义" inactive-text="系统默认">
+                        </el-switch>
                     </el-form-item>
                 </el-col>
-            </el-form>
-        </el-row>
+                <el-col :span="8" v-if="(deploy==1)">
+                    <el-form-item label="安装目录" prop="save_dir" :rules="rule.default">
+                        <el-input v-model="agentDeploy.save_dir" hide-required-asterisk="true" placeholder="Agent安装目录"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8" v-if="(deploy==1)">
+                    <el-form-item label="日志文件" prop="log_dir" :rules="rule.default">
+                        <el-input v-model="agentDeploy.log_dir" hide-required-asterisk="true" placeholder="日志文件"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="描述">
+                        <el-input type="textarea" v-model="agentDeploy.name" placeholder="描述"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button type="danger" size="mini" @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" size="mini" @click="dialogFormVisible = false">确 定</el-button>
@@ -150,7 +156,7 @@ export default {
                 agent_type: '',
                 source_id: ''
             },
-            deploy: '1'
+            deploy: '0'
         }
     },
     mounted() {
@@ -185,6 +191,7 @@ export default {
             agentDeployFun.getAgentDownInfo(row).then(res => {
                 this.dialogFormVisible = true;
                 this.agentDeploy = res.data;
+                console.log(res.data)
                 if (typeof this.agentDeploy.down_id == 'undefined') {
                     this.agentDeploy.agent_name = row.agent_name;
                     this.agentDeploy.agent_ip = row.agent_ip;
@@ -196,9 +203,10 @@ export default {
     }
 }
 </script>
-<style  scoped>
+
+<style scoped>
 /* 搜索框样式 */
- .agentdeploy >>> .el-table th  {
-    padding: 0 ;
+.agentdeploy>>>.el-table th {
+    padding: 0;
 }
 </style>
