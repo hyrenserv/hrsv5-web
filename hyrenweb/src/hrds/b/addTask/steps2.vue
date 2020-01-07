@@ -223,7 +223,7 @@
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
-            <span class="alltabletitle">操作后请记得点击保存</span>
+            <!-- <span class="alltabletitle">操作后请记得点击保存</span> -->
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
                 <el-table :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
@@ -266,10 +266,10 @@
                 </el-table>
             </el-form>
             <el-pagination @size-change="sqlex_handleSizeChange" @current-change="sqlex_handleCurrentChange" :current-page.sync="sqlexcurrentPage" :page-size="sqlexpagesize" layout="total, prev, pager, next" :total="ruleForm.sqlExtractData.length" class="locationcenter"></el-pagination>
-            <div class="locationright">
-                <!-- <el-button size="medium" type="danger">取 消</el-button> -->
-                <el-button size="mini" type="danger" @click="sqlExtractDataSubmitFun('ruleForm')">保存</el-button>
-            </div>
+            <!-- <div class="locationright"> -->
+            <!-- <el-button size="medium" type="danger">取 消</el-button> -->
+            <!-- <el-button size="mini" type="danger" @click="sqlExtractDataSubmitFun('ruleForm')">保存</el-button> -->
+            <!-- </div> -->
         </el-tab-pane>
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
@@ -350,20 +350,20 @@ export default {
             edit: false,
             disShow: false,
             sqlSubmit: true,
-            sqlfiltVar:[
-                {
-                    value:'当前跑批日',
-                    code:'1'
+            sqlfiltVar: [{
+                    value: '当前跑批日',
+                    code: '1'
                 },
                 {
-                    value:'后一跑批日',
-                    code:'2'
+                    value: '后一跑批日',
+                    code: '2'
                 },
                 {
-                    value:'前一跑批日',
-                    code:'3'
+                    value: '前一跑批日',
+                    code: '3'
                 }
-            ]
+            ],
+            handleactive: false,
         };
     },
     created() {
@@ -596,9 +596,15 @@ export default {
         next() {
             this.saveTableConfFun();
             let arrsql = []
-            if (this.sqlSubmit == true) {
-                arrsql = this.tableInfoArray
-                this.sqlFun(arrsql)
+            if (this.handleactive == true) {
+                this.$refs['ruleForm'].validate(valid => {
+                    if (valid) {
+                        this.tableInfoArray = this.ruleForm.sqlExtractData;
+                        this.sqlSubmit = true
+                        arrsql = this.tableInfoArray
+                        this.sqlFun(arrsql)
+                    }
+                });
             } else {
                 let params0 = {};
                 params0["colSetId"] = this.dbid;
@@ -942,7 +948,7 @@ export default {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
                     sql: this.sqlFiltSetData_SQL,
-                     // sqlFiltvar:this.sqlFiltSetData_var
+                    // sqlFiltvar:this.sqlFiltSetData_var
                 });
             }
             this.tablename = "";
@@ -1146,7 +1152,7 @@ export default {
                     let params = {};
                     params["colSetId"] = this.dbid;
                     params["tableName"] = row.table_name;
-                    params["tableId"] =row.table_id;
+                    params["tableId"] = row.table_id;
                     addTaskAllFun.getColumnsigleInfo(params).then(res => {
                         this.disShow = res.data.editFlag == '1' ? true : false;
                         for (let i = 0; i < this.SelectColumn.length; i++) {
@@ -1332,7 +1338,10 @@ export default {
         },
         // 使用SQL抽取数据
         handleClick(tab) {
+            console.log(this.ruleForm.sqlExtractData)
+            this.sqlExtractDataSubmitFun('ruleForm')
             if (tab.name == "second") {
+                this.handleactive = true
                 if (this.tableInfoArray.length > 0) {
                     this.ruleForm.sqlExtractData = this.tableInfoArray;
                 } else {
