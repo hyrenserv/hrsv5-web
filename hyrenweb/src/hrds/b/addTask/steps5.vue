@@ -55,7 +55,7 @@
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column label=" 是否拉链存储"  align="center">
+            <el-table-column label=" 是否拉链存储" align="center">
                 <template slot="header">
                     <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
                         <span class="allclickColor">是否拉链存储</span>
@@ -334,7 +334,7 @@ export default {
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
-            if (res){
+            if (res) {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -342,7 +342,7 @@ export default {
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-                               this.oldTbData = res?res.data:[];
+                        this.oldTbData = res ? res.data : [];
                         for (var i = 0; i < arr.length; i++) {
                             for (let j = 0; j < this.oldTbData.length; j++) {
                                 if (arr[i].table_id == this.oldTbData[j].tableId) {
@@ -366,11 +366,11 @@ export default {
                             }
                         }
                         this.ruleForm.ex_destinationData = arr;
-                       
+
                     });
                 }
-            }else{
-              this.tableloadingInfo = "暂无数据";  
+            } else {
+                this.tableloadingInfo = "暂无数据";
             }
         });
         let params2 = {};
@@ -457,25 +457,25 @@ export default {
                     }
 
                     // 保存表名
-                    if(tableString.length>0){
-                            let params0 = {};
-                    params0["tableString"] = JSON.stringify(tableString);
-                    addTaskAllFun.updateTableName(params0).then(res => {
-                        if (res.code == 200) {
-                            this.submit_0 = true;
-                            // this.dbid = res.data;
-                        } else {
-                            this.$message({
-                                showClose: true,
-                                message: res.message,
-                                type: "error"
-                            });
-                        }
-                    });
-                    }else{
-this.submit_0 = true;
+                    if (tableString.length > 0) {
+                        let params0 = {};
+                        params0["tableString"] = JSON.stringify(tableString);
+                        addTaskAllFun.updateTableName(params0).then(res => {
+                            if (res.code == 200) {
+                                this.submit_0 = true;
+                                // this.dbid = res.data;
+                            } else {
+                                this.$message({
+                                    showClose: true,
+                                    message: res.message,
+                                    type: "error"
+                                });
+                            }
+                        });
+                    } else {
+                        this.submit_0 = true;
                     }
-                
+
                 }
             });
         },
@@ -674,18 +674,18 @@ this.submit_0 = true;
                                 id: key,
                                 value: res.data[key]
                             });
-                        } 
+                        }
                     }
-                     for (var key in res.data) {
+                    for (var key in res.data) {
                         if (key == "column_ch_name") {
                             arr.push({
                                 id: key,
                                 value: res.data[key]
                             });
-                        } 
+                        }
                     }
-                     for (var key in res.data) {
-                        if (key != "column_name"&&key!="column_ch_name") {
+                    for (var key in res.data) {
+                        if (key != "column_name" && key != "column_ch_name") {
                             arr.push({
                                 id: key,
                                 value: "是否" + res.data[key],
@@ -1116,6 +1116,7 @@ this.submit_0 = true;
 .steps5>>>tr>td>.cell {
     padding: 11px 10px;
 }
+
 .steps5>>>.el-form-item__error {
     color: #f56c6c;
     font-size: 12px;
@@ -1125,5 +1126,4 @@ this.submit_0 = true;
     top: 86%;
     left: 1%;
 }
-
 </style>
