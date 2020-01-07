@@ -165,9 +165,6 @@
                                 <template scope="scope">
                                     <el-row>
 
-                                 
-                                   
-
                                         <el-col :span="12" style="text-align: center;">
                                             <el-button type="text" circle @click="colltaskEditBtn(scope.row)" class='editcolor'>编辑</el-button>
                                         </el-col>
@@ -183,7 +180,6 @@
                             <el-button @click="cancelClassNumBtn()" type="danger" size="mini">取 消</el-button>
                             <el-button @click="addClassNumBtn();innerVisible = true" type="success" size="mini">新增</el-button>
 
-                          
                             <el-button @click="updataClassNumBtn(CollTaskData)" type="primary" size="mini">确定</el-button>
 
                         </div>
@@ -216,9 +212,7 @@
                 </el-dialog>
                 <!-- 查看日志弹层 -->
 
-               
-
-                <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%" >
+                <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%">
                     <div class="logseach">
                         <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select" size="mini">
 
@@ -424,7 +418,6 @@ export default {
             this.currentPage = currentPage;
         },
 
-
         // 采集任务分类单选选择时
         handleSelectionChange(row) {
             if (row) {
@@ -477,7 +470,7 @@ export default {
         collTaskClassFun() {
             this.ruleForm.classify_name = "";
             this.ruleForm.classify_num = "";
-            this.radio=''
+            this.radio = ''
             let params = {};
             params["sourceId"] = this.sourceId;
             addTaskAllFun.getClassifyInfo(params).then(res => {
@@ -524,7 +517,6 @@ export default {
                     this.collTaskClassFun();
                 });
             }).catch(() => {})
-
 
         },
         // 点击新增
