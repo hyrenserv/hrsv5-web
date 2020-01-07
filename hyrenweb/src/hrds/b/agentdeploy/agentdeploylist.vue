@@ -191,14 +191,12 @@ export default {
             agentDeployFun.getAgentDownInfo(row).then(res => {
                 this.dialogFormVisible = true;
                 this.agentDeploy = res.data;
-                console.log(res.data)
                 if (typeof this.agentDeploy.down_id == 'undefined') {
                     this.agentDeploy.agent_name = row.agent_name;
                     this.agentDeploy.agent_ip = row.agent_ip;
                     this.agentDeploy.agent_port = row.agent_port;
                 }
             })
-
         }
     }
 }
