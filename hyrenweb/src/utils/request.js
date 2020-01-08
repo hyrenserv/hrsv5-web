@@ -76,7 +76,11 @@ service.interceptors.response.use(
         return response.data
 
       } else if (res.code == 220) {//如果返回的状态是 500表示服务器异常
-        return response.data
+        Message({
+          message: res.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
       }
     } else {
       return res;
