@@ -1338,7 +1338,6 @@ export default {
         },
         // 使用SQL抽取数据
         handleClick(tab) {
-            console.log(this.ruleForm.sqlExtractData)
             this.sqlExtractDataSubmitFun('ruleForm')
             if (tab.name == "second") {
                 this.handleactive = true
