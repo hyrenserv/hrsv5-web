@@ -15,15 +15,22 @@ Vue.use(ElementUI);
 /**验证引入 */
 import filterRule from '@/utils/js/filter_Rules'
 Vue.use(filterRule)
+
 //导入charts并使用
 import VCharts from 'v-charts'
 Vue.use(VCharts);
+
 // Base64
 import Base64 from '@/utils/base64.js' 
 Vue.prototype.$Base64 = Base64;
 
+/**公用的提示消息框 */
 import * as message from '@/utils/js/message.js'
-Vue.prototype.$Msg = message
+Vue.prototype.$Msg = message;
+
+/** 获取代码项类型 */
+import * as codeitems from '@/utils/js/codeitems.js'
+Vue.prototype.$Code = codeitems;
 
 Vue.config.productionTip = false
 new Vue({
