@@ -27,6 +27,148 @@ export function fileDownload(res, fileName) {
 }
 
 /**
+ * 树搜索测试数据
+ */
+export function getTreeNodeSearchInfo() {
+    let res;
+    return res = {
+        "code": 200,
+        "data": {
+            "search_nodes": [{
+                "agent_layer": "贴源层",
+                "isParent": true,
+                "rootName": "贴源层",
+                "name": "贴源层",
+                "description": "贴源层",
+                "pId": "~0",
+                "id": "贴源层",
+                children: [{
+                    "isParent": true,
+                    "batch_id": "DCL_BATCH",
+                    "rootName": "贴源层",
+                    "name": "批量数据",
+                    "description": "批量数据管理",
+                    "pId": "DCL",
+                    "source": "DCL_BATCH",
+                    "id": "DCL_BATCH",
+                    children: [{
+                        "isParent": true,
+                        "rootName": "贴源层",
+                        "name": "lqcs",
+                        "description": "lqcs",
+                        "pId": "DCL_BATCH",
+                        "source_id": "1000032545",
+                        "source": "DCL_BATCH",
+                        "id": "1000032545",
+                        children: [{
+                            "agent_type": "1",
+                            "isParent": true,
+                            "agent_id": "1000036215",
+                            "rootName": "贴源层",
+                            "classify_id": "1000036629",
+                            "name": "斯蒂芬【S001】",
+                            "show": true,
+                            "description": "ceshi",
+                            "pId": "1000036214",
+                            "id": "1000036629",
+                            "source": "贴源层"
+                        },]
+                    }, {
+                        "isParent": true,
+                        "rootName": "贴源层",
+                        "name": "ceshi",
+                        "description": "ceshi",
+                        "pId": "DCL_BATCH",
+                        "source_id": "1000036214",
+                        "source": "DCL_BATCH",
+                        "id": "1000036214",
+                        children: [{
+                            "agent_type": "1",
+                            "isParent": true,
+                            "agent_id": "1000036631",
+                            "rootName": "贴源层",
+                            "classify_id": "1000036633",
+                            "name": "aaa【aaa】",
+                            "show": true,
+                            "description": "ceshi",
+                            "pId": "1000036214",
+                            "id": "1000036633",
+                            "source": "贴源层"
+                        }],
+                    },]
+                },]
+            }, {
+                "agent_layer": "加工层",
+                "isParent": true,
+                "rootName": "加工层",
+                "name": "加工层",
+                "description": "加工层",
+                "pId": "~1",
+                "id": "加工层",
+                children: [{
+                    "isParent": true,
+                    "batch_id": "DCL_BATCH",
+                    "rootName": "贴源层",
+                    "name": "批量数据",
+                    "description": "批量数据管理",
+                    "pId": "DCL",
+                    "source": "DCL_BATCH",
+                    "id": "DCL_BATCH",
+                    children: [{
+                        "isParent": true,
+                        "rootName": "贴源层",
+                        "name": "lqcs",
+                        "description": "lqcs",
+                        "pId": "DCL_BATCH",
+                        "source_id": "1000032545",
+                        "source": "DCL_BATCH",
+                        "id": "1000032545",
+                        children: [{
+                            "agent_type": "1",
+                            "isParent": true,
+                            "agent_id": "1000036215",
+                            "rootName": "贴源层",
+                            "classify_id": "1000036629",
+                            "name": "斯蒂芬【S001】",
+                            "show": true,
+                            "description": "ceshi",
+                            "pId": "1000036214",
+                            "id": "1000036629",
+                            "source": "贴源层"
+                        },]
+                    }, {
+                        "isParent": true,
+                        "rootName": "贴源层",
+                        "name": "ceshi",
+                        "description": "ceshi",
+                        "pId": "DCL_BATCH",
+                        "source_id": "1000036214",
+                        "source": "DCL_BATCH",
+                        "id": "1000036214",
+                        children: [{
+                            "agent_type": "1",
+                            "isParent": true,
+                            "agent_id": "1000036631",
+                            "rootName": "贴源层",
+                            "classify_id": "1000036633",
+                            "name": "aaa【aaa】",
+                            "show": true,
+                            "description": "ceshi",
+                            "pId": "1000036214",
+                            "id": "1000036633",
+                            "source": "贴源层"
+                        }],
+                    },]
+                },]
+            },]
+        },
+        "message": "OK",
+        "success": true
+    }
+
+}
+
+/**
  * 树菜单数据
  */
 export function getTreeDataInfo() {
@@ -86,20 +228,20 @@ export function getTreeDataInfo() {
         },
         "data1": {
             "tree_sources": [{
-                    "isParent": false,
-                    "batch_id": "DCL_BATCH",
-                    "rootName": "DCL",
-                    "name": "批量数据",
-                    "description": "批量数据管理",
-                    "pId": "DCL",
-                    "source": "DCL_BATCH",
-                    "id": "DCL_BATCH"
-                }, {
-                    "isParent": false,
-                    "rootName": "DCL",
-                    "name": "实时数据",
-                    "description": "实时数据管理",
-                    "pId": "DCL",
+                "isParent": false,
+                "batch_id": "DCL_BATCH",
+                "rootName": "DCL",
+                "name": "批量数据",
+                "description": "批量数据管理",
+                "pId": "DCL",
+                "source": "DCL_BATCH",
+                "id": "DCL_BATCH"
+            }, {
+                "isParent": false,
+                "rootName": "DCL",
+                "name": "实时数据",
+                "description": "实时数据管理",
+                "pId": "DCL",
                 "source": "DCL_KFK",
                 "id": "kafka",
                 "kafka_id": "kafka"

@@ -79,7 +79,7 @@ export default {
                 })
             }
             this.menus = JSON.parse(JSON.stringify(arr))
-            this.deflink = this.menus[0].path
+            this.deflink = this.menus[0]?this.menus[0].path:''
 
         })
 

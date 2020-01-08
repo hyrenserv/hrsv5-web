@@ -22,4 +22,7 @@
     * 保存成功 : `this.$Msg.saveSuccess(res);`
     * 删除确认 : `this.$Msg.confirmMsg(titleMsg);`
     * 自定义   : `this.$Msg.customizTitle(titleMsg,type);`,type有(success,warning,error)三种,或不填写使用默认
-### 6、代码请注意格式化,保证代码格式的统一, 请统一使用vue-format格式化插件
+### 6、获取代码项功能的公共方法..后续添加请在 utils/js/codeitems.js 中添加
+  * 使用方式 :
+    * `this.$Code.方法名称`
+### 7、代码请注意格式化,保证代码格式的统一, 请统一使用vue-format格式化插件
