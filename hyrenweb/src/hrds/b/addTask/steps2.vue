@@ -132,9 +132,9 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="8">
-                                <el-form-item label=" 变量名" prop="Variable_name">
+                                <el-form-item label=" 变量名: " prop="Variable_name">
                                     <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
-                                        <el-option label="ad" value="1"></el-option>
+                                        <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
                                     </el-select>
                                 </el-form-item>
                             </el-col>
@@ -223,7 +223,7 @@
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
-            <span class="alltabletitle">操作后请记得点击保存</span>
+            <!-- <span class="alltabletitle">操作后请记得点击保存</span> -->
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
                 <el-table :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
@@ -266,10 +266,10 @@
                 </el-table>
             </el-form>
             <el-pagination @size-change="sqlex_handleSizeChange" @current-change="sqlex_handleCurrentChange" :current-page.sync="sqlexcurrentPage" :page-size="sqlexpagesize" layout="total, prev, pager, next" :total="ruleForm.sqlExtractData.length" class="locationcenter"></el-pagination>
-            <div class="locationright">
-                <!-- <el-button size="medium" type="danger">取 消</el-button> -->
-                <el-button size="mini" type="danger" @click="sqlExtractDataSubmitFun('ruleForm')">保存</el-button>
-            </div>
+            <!-- <div class="locationright"> -->
+            <!-- <el-button size="medium" type="danger">取 消</el-button> -->
+            <!-- <el-button size="mini" type="danger" @click="sqlExtractDataSubmitFun('ruleForm')">保存</el-button> -->
+            <!-- </div> -->
         </el-tab-pane>
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
@@ -349,7 +349,21 @@ export default {
             activeSec: false,
             edit: false,
             disShow: false,
-            sqlSubmit: true
+            sqlSubmit: true,
+            sqlfiltVar: [{
+                    value: '当前跑批日',
+                    code: '1'
+                },
+                {
+                    value: '后一跑批日',
+                    code: '2'
+                },
+                {
+                    value: '前一跑批日',
+                    code: '3'
+                }
+            ],
+            handleactive: false,
         };
     },
     created() {
@@ -582,9 +596,15 @@ export default {
         next() {
             this.saveTableConfFun();
             let arrsql = []
-            if (this.sqlSubmit == true) {
-                arrsql = this.tableInfoArray
-                this.sqlFun(arrsql)
+            if (this.handleactive == true) {
+                this.$refs['ruleForm'].validate(valid => {
+                    if (valid) {
+                        this.tableInfoArray = this.ruleForm.sqlExtractData;
+                        this.sqlSubmit = true
+                        arrsql = this.tableInfoArray
+                        this.sqlFun(arrsql)
+                    }
+                });
             } else {
                 let params0 = {};
                 params0["colSetId"] = this.dbid;
@@ -922,11 +942,13 @@ export default {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
                     sql: this.sqlFiltSetData_SQL
+                    // sqlFiltvar:this.sqlFiltSetData_var 接收变量名
                 });
             } else {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
-                    sql: this.sqlFiltSetData_SQL
+                    sql: this.sqlFiltSetData_SQL,
+                    // sqlFiltvar:this.sqlFiltSetData_var
                 });
             }
             this.tablename = "";
@@ -1119,7 +1141,7 @@ export default {
             this.dialogSelectColumn = true;
             this.tablename = row.table_name;
             this.tableloadingInfo = "数据加载中...";
-            this.disShow = false
+            // this.disShow = false
             if (this.SelectColumn.length != 0) {
                 let arrid = [];
                 for (let i = 0; i < this.SelectColumn.length; i++) {
@@ -1129,8 +1151,8 @@ export default {
                     arrid.length = 0;
                     let params = {};
                     params["colSetId"] = this.dbid;
-                    params["tableName"] = name;
-                    params["tableId"] = id;
+                    params["tableName"] = row.table_name;
+                    params["tableId"] = row.table_id;
                     addTaskAllFun.getColumnsigleInfo(params).then(res => {
                         this.disShow = res.data.editFlag == '1' ? true : false;
                         for (let i = 0; i < this.SelectColumn.length; i++) {
@@ -1316,7 +1338,10 @@ export default {
         },
         // 使用SQL抽取数据
         handleClick(tab) {
+            console.log(this.ruleForm.sqlExtractData)
+            this.sqlExtractDataSubmitFun('ruleForm')
             if (tab.name == "second") {
+                this.handleactive = true
                 if (this.tableInfoArray.length > 0) {
                     this.ruleForm.sqlExtractData = this.tableInfoArray;
                 } else {

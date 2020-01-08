@@ -2,52 +2,52 @@
 <div class="addTypeLengthContrastInfo">
     <el-row class="dataSave">
         <el-col :span="12">
-            <span>存储层数据类型长度对照主表</span>
+            <span>存储层数据类型对照主表</span>
         </el-col>
     </el-row>
     <el-row class="partOne">
         <el-form ref="form" :model="form" label-width="140px">
             <el-col :span="12">
                 <el-col :span="20">
-                    <el-form-item label="长度对照名称" prop="dlcs_name" :rules="filter_rules([{required: true}])">
-                        <el-input v-model="form.dlcs_name" placeholder="长度对照名称"></el-input>
+                    <el-form-item label="类型对照名称" prop="dtcs_name" :rules="filter_rules([{required: true}])">
+                        <el-input v-model="form.dtcs_name" placeholder="长度对照名称"></el-input>
                     </el-form-item>
                 </el-col>
             </el-col>
 
             <el-col :span="12">
                 <el-col :span="20">
-                    <el-form-item label="长度对照表备注" prop="dlcs_remark">
-                        <el-input v-model="form.dlcs_remark" placeholder="长度对照表备注"></el-input>
+                    <el-form-item label="类型对照表备注" prop="dtcs_remark">
+                        <el-input v-model="form.dtcs_remark" placeholder="长度对照表备注"></el-input>
                     </el-form-item>
                 </el-col>
             </el-col>
 
-            <span class="saveDataSpan">存储层数据类型长度对照详细信息</span>
+            <span class="saveDataSpan">存储层数据类型对照详细信息</span>
             <el-button size="medium" class="partTwoBtn" type="success" @click="addTableData">增加行</el-button>
             <el-table :data="form.tableData" border stripe size="medium">
                 <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
 
-                <el-table-column label="字段类型" align="center">
+                <el-table-column label="源表数据类型" align="center">
                     <template slot-scope="scope">
-                        <el-form-item :prop="`tableData.${scope.$index}.dlc_type`" :rules="filter_rules([{required: true}])">
-                            <el-input size="meduim" v-model="scope.row.dlc_type"></el-input>
+                        <el-form-item :prop="`tableData.${scope.$index}.source_type`" :rules="filter_rules([{required: true}])">
+                            <el-input size="meduim" v-model="scope.row.source_type"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
 
-                <el-table-column label="字段长度" align="center">
+                <el-table-column label="目标表数据类型" align="center">
                     <template slot-scope="scope">
-                        <el-form-item :prop="`tableData.${scope.$index}.dlc_length`" :rules="filter_rules([{required: true,dataType: 'number'}])">
-                            <el-input size="meduim" v-model="scope.row.dlc_length"></el-input>
+                        <el-form-item :prop="`tableData.${scope.$index}.target_type`" :rules="filter_rules([{required: true}])">
+                            <el-input size="meduim" v-model="scope.row.target_type"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="dlc_remark" label="备注" align="center">
+                <el-table-column prop="dtc_remark" label="备注" align="center">
                     <template slot-scope="scope">
                         <el-form-item>
-                            <el-input type="textarea" v-model="scope.row.dlc_remark" autosize></el-input>
+                            <el-input type="textarea" v-model="scope.row.dtc_remark" autosize></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
@@ -90,16 +90,16 @@ export default {
                     if (this.form.tableData.length == 0) {
                         message.customizTitle('字段类型为必填项,至少选择一项', 'warning')
                     } else if (this.form.tableData.length > 0) {
-                        this.form['lengthInfo'] = JSON.stringify(this.form.tableData);
+                        this.form['typeContrast'] = JSON.stringify(this.form.tableData);
                         delete this.form.tableData;
-                        functionAll.addTypeLengthContrastInfo(this.form).then((res) => {
+                        functionAll.addDataTypeContrastInfo(this.form).then((res) => {
                             if (res && res.success) {
                                 message.saveSuccess(res);
                                 this.$router.push({
-                                    name: 'typeLengthContrastInfo'
+                                    name: 'dataTypeContrastInfo'
                                 })
                             } else {
-                                this.form.tableData = JSON.parse(this.form.lengthInfo);
+                                this.form.tableData = JSON.parse(this.form.typeContrast);
                             }
                         })
                     }
@@ -119,15 +119,15 @@ export default {
         // 添加行数据
         addTableData() {
             this.form.tableData.push({
-                dlc_type: "",
-                dlc_length: "",
-                dlc_remark: ""
+                source_type: "",
+                target_type: "",
+                dtc_remark:""
             })
         },
         // 点击取消返回展示页面        
         cancelSave() {
             this.$router.push({
-                name: "typeLengthContrastInfo"
+                name: "dataTypeContrastInfo"
             })
         },
     }
