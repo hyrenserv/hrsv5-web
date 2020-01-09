@@ -3,7 +3,20 @@
     <Step :active="active"></Step>6
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">完成</el-button>
+<!--完成  -->
+
+    <el-dialog
+  title="提示信息"
+  :visible.sync="finishDialogVisible"
+  width="30%">
+  <span>设置完成！请等待Agent运行...不运行请点击取消或按下Esc键</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
+    <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
+  </span>
+</el-dialog>
 </div>
+
 </template>
 
 <script>
@@ -18,7 +31,8 @@ export default {
             dbid: null,
             aId: null,
             sourId: null,
-            sName: null
+            sName: null,
+            finishDialogVisible:false,
         };
     },
     created() {
@@ -30,6 +44,7 @@ export default {
     methods: {
         next() {
             this.active = 6;
+             this.finishDialogVisible=true
         },
         pre() {
             let data = {}
@@ -51,6 +66,12 @@ export default {
             this.$router.push({
                 path: "/collection1_5",
                 query: data
+            });
+        },
+        finishSubmit(){
+            this.finishDialogVisible=false
+             this.$router.push({
+                path: "/agentList"
             });
         }
     }
