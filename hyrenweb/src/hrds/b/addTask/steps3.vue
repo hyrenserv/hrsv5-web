@@ -736,7 +736,7 @@ export default {
         // }
         let params = {};
         params["category"] = "FillingType";
-        addTaskAllFun.getCategoryItems(params).then(res => {
+        this.$Code.getCategoryItems(params).then(res => {
             this.FillingType = res.data ? res.data : [];
         });
         this.priorityDataFun();
@@ -1026,7 +1026,7 @@ export default {
         priorityDataFun() {
             let params = {};
             params["category"] = "CleanType";
-            addTaskAllFun.getCategoryItems(params).then(res => {
+             this.$Code.getCategoryItems(params).then(res => {
                 this.priorityData = res.data ? res.data : [];
             });
         },
@@ -1471,7 +1471,7 @@ export default {
             }
             let params1 = {};
             params1["category"] = "CharSplitType";
-            addTaskAllFun.getCategoryItems(params1).then(res => {
+            this.$Code.getCategoryItems(params1).then(res => {
                 if (res.data) {
                     this.CharSplitType = res.data;
                 }
