@@ -186,7 +186,7 @@ export default {
             // CollectType
             let params = {};
             params["category"] = "AgentType";
-            agentList.getCategoryItems(params).then(res => {
+            this.$Code.getCategoryItems(params).then(res => {
                 this.CollectType = res.data ? res.data : [];
             });
         },
@@ -194,7 +194,7 @@ export default {
         getStatus() {
             let params = {};
             params["category"] = "AgentStatus";
-            agentList.getCategoryItems(params).then(res => {
+             this.$Code.getCategoryItems(params).then(res => {
                 this.AgentStatus = res.data ? res.data : [];
             });
         },

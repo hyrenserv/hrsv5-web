@@ -375,7 +375,7 @@ export default {
         });
         let params2 = {};
         params2["category"] = "StorageType";
-        addTaskAllFun.getCategoryItems(params2).then(res => {
+         this.$Code.getCategoryItems(params2).then(res => {
             this.StorageType = res.data ? res.data : [];
         });
         this.storeTypeFun();
@@ -444,13 +444,7 @@ export default {
                             if (res.code == 200) {
                                 this.submit_1 = true;
                                 // this.dbid = res.data;
-                            } else {
-                                this.$message({
-                                    showClose: true,
-                                    message: res.message,
-                                    type: "error"
-                                });
-                            }
+                            } 
                         });
                     } else {
                         this.submit_1 = true;
@@ -535,7 +529,7 @@ export default {
         storeTypeFun() {
             let params = {};
             params["category"] = "Store_type";
-            addTaskAllFun.getCategoryItems(params).then(res => {
+             this.$Code.getCategoryItems(params).then(res => {
                 if (res) {
                     this.storeTypeData = res.data;
                 }
@@ -763,7 +757,7 @@ export default {
         specialfieldFun() {
             let params = {};
             params["category"] = "StoreLayerAdded";
-            addTaskAllFun.getCategoryItems(params).then(res => {
+             this.$Code.getCategoryItems(params).then(res => {
                 if (res.data) {
                     this.StoreData = res.data;
                 }

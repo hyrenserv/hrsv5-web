@@ -307,7 +307,7 @@ export default {
     created() {
         let params = {};
         params["category"] = "DatabaseType";
-        addTaskAllFun.getCategoryItems(params).then(res => {
+        this.$Code.getCategoryItems(params).then(res => {
             this.DatabaseType = res.data ? res.data : [];
         });
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
