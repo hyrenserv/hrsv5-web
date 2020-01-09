@@ -623,13 +623,7 @@ export default {
                 if (res.code == 200) {
                     this.activeSec = true;
                     // this.dbid = res.data;
-                } else {
-                    this.$message({
-                        showClose: true,
-                        message: res.message,
-                        type: "error"
-                    });
-                }
+                } 
             });
         },
         nextlinkFun() {
@@ -858,13 +852,7 @@ export default {
                     if (res.code == 200) {
                         this.activeFirst = true;
                         // this.dbid = res.data;
-                    } else {
-                        this.$message({
-                            showClose: true,
-                            message: res.message,
-                            type: "error"
-                        });
-                    }
+                    } 
                 });
             });
         },

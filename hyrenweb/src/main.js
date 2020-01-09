@@ -11,7 +11,7 @@ import store from './store'
 import App from './App.vue';
 import '@/assets/font-awesome-4.7.0/css/font-awesome.min.css'
 Vue.use(ElementUI);
-
+ElementUI.Dialog.props.closeOnClickModal.default = false; //默认点击遮照为不关闭
 /**验证引入 */
 import filterRule from '@/utils/js/filter_Rules'
 Vue.use(filterRule)

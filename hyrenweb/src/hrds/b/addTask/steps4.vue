@@ -201,7 +201,7 @@ export default {
         // 是否仅抽取
         let params = {};
         params["category"] = "DataExtractType";
-        addTaskAllFun.getCategoryItems(params).then(res => {
+         this.$Code.getCategoryItems(params).then(res => {
             if (res.data) {
                 this.isExData = res.data;
             }
@@ -209,7 +209,7 @@ export default {
         // 字符集下拉
         let params2 = {};
         params2["category"] = "DataBaseCode";
-        addTaskAllFun.getCategoryItems(params2).then(res => {
+         this.$Code.getCategoryItems(params2).then(res => {
             if (res.data) {
                 this.DataBaseCode = res.data;
             }
