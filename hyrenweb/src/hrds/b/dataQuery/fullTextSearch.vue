@@ -11,10 +11,10 @@
             <el-form :inline="true" ref="form" :model="searchForm">
                 <el-form-item>
                     <el-select v-model="searchForm.searchType">
-                        <el-option label="全文检索" value="fullTextSearch"></el-option>
-                        <el-option label="以图搜图" value="searchByMap"></el-option>
-                        <el-option label="文章相似" value="articleSimilarityQuery"></el-option>
-                        <el-option label="文件名搜索" value="fileNameSearch"></el-option>
+                        <el-option label="全文检索" value="fullTextSearch"/>
+                        <el-option label="以图搜图" value="searchByMap"/>
+                        <el-option label="文章相似" value="articleSimilarityQuery"/>
+                        <el-option label="文件名搜索" value="fileNameSearch"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -49,8 +49,8 @@
                                 上传文件
                             </el-button>
                             <el-select style="margin-left: 10px" v-model="searchForm.search_way">
-                                <el-option label="全文检索" value="fullText"></el-option>
-                                <el-option label="逐文档匹配" value="documentMatching"></el-option>
+                                <el-option label="全文检索" value="fullText"/>
+                                <el-option label="逐文档匹配" value="documentMatching"/>
                             </el-select>
                             <el-button style="margin-left: 10px" type="primary" class="el-icon-search"
                                        @click="searchOnSubmit()">搜索
@@ -82,7 +82,7 @@
                     !searchByMap
                     <template v-if="searchFileInfos.length === 0"><h4>抱歉，没有符合的结果！</h4></template>
                     <template v-for="data in searchFileInfos">
-                        <p v-if="data.collect_type === searchFileInfos.collectType"></p>
+                        <p v-if="data.collect_type === searchFileInfos.collectType"/>
                         <p v-else><span>源表名：{{data.original_name}}</span></p>
                     </template>
                 </template>
@@ -97,6 +97,8 @@
     </div>
 </template>
 <script>
+    import * as dataQuery from './dataQuery'
+    import * as fileOperations from '../../../utils/js/fileOperations'
 
     export default {
         name: "fullTextSearch",
@@ -114,6 +116,9 @@
         methods: {
             searchOnSubmit() {
                 console.log(this.searchForm.searchType);
+                dataQuery.fullTextSearch(this.searchForm).then((res) => {
+                    console.log(res);
+                });
             },
         }
     }

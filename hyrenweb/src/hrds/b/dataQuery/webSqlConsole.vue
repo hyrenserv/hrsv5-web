@@ -9,7 +9,7 @@
         <el-row>
             <el-col class="borderStyle" :span="5" style="margin-right: 10px;">
                 <!--树菜单-->
-                <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+                <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                 <el-tree empty-text="暂无数据" :expand-on-click-node="true" :props="treeProps" :load="loadNode" lazy
                          node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
                 </el-tree>
@@ -26,16 +26,14 @@
                         </el-table>
                     </el-tab-pane>
                     <el-tab-pane label="Sql查询" name="sqlQuery">
-                        <template class="sql-search">
-                            <el-col :span="20">
-                                <el-input type="textarea" autosize placeholder="请输入查询SQL" v-model="querySQL"></el-input>
-                            </el-col>
-                            <el-col :span="4">
-                                <el-button class="query-sql-btn" type="primary" @click="getDataBySQL(querySQL)"
-                                           size="small">查询
-                                </el-button>
-                            </el-col>
-                        </template>
+                        <el-col :span="20">
+                            <el-input type="textarea" autosize placeholder="请输入查询SQL" v-model="querySQL"/>
+                        </el-col>
+                        <el-col :span="4">
+                            <el-button class="query-sql-btn" type="primary" @click="getDataBySQL(querySQL)"
+                                       size="small">查询
+                            </el-button>
+                        </el-col>
                         <el-table :data="dataBySQL" border size="mini">
                             <el-table-column v-for="(index, item) in dataBySQL[0]" :key="dataBySQL.$index" :label="item"
                                              :prop="item">
