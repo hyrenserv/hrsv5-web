@@ -106,6 +106,7 @@ export default {
 .el-aside {
     background-color: #495179;
     margin-bottom: 30px;
+    min-height: 100vh;
 }
 
 .el-header {
