@@ -12,20 +12,20 @@
                     <el-col :span="5" :offset="1">
                         <el-button type="primary"
                                    @click="routeToMyApply(recentData.xiazai,recentData.xiazai_zh)">
-                            <el-row><span><el-badge :value="myDownloadRequest"></el-badge>次</span></el-row>
+                            <el-row><span><el-badge :value="myDownloadRequest"/>次</span></el-row>
                             <el-row><i class="el-icon-download" style="color: white;">我的下载申请</i></el-row>
                         </el-button>
                     </el-col>
                     <el-col :span="5" :offset="1">
                         <el-button type="warning" @click="routeToMyApply(recentData.fabu,recentData.fabu_zh)">
-                            <el-row><span><el-badge :value="myPostApplication"></el-badge>次</span></el-row>
+                            <el-row><span><el-badge :value="myPostApplication"/>次</span></el-row>
                             <el-row><i class="el-icon-upload" style="color: white;">我的发布申请</i></el-row>
                         </el-button>
                     </el-col>
                     <el-col :span="5" :offset="1">
                         <router-link to="myRequestRecord">
                             <el-button type="success" size="medium">
-                                <el-row><span><el-badge :value="myApplicationRecord"></el-badge>次</span>
+                                <el-row><span><el-badge :value="myApplicationRecord"/>次</span>
                                 </el-row>
                                 <el-row><i class="el-icon-reading" style="color: white;">我的申请记录</i></el-row>
                             </el-button>
@@ -33,7 +33,7 @@
                     </el-col>
                     <el-col :span="5" :offset="1">
                         <el-button type="info" @click="routeToMyApply(recentData.chakan,recentData.chakan_zh)">
-                            <el-row><span><el-badge :value="myViewRequest"></el-badge>次</span></el-row>
+                            <el-row><span><el-badge :value="myViewRequest"/>次</span></el-row>
                             <el-row><i class="el-icon-search" style="color: white;">我的查看申请</i></el-row>
                         </el-button>
                     </el-col>
@@ -86,14 +86,14 @@
                     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
                         <el-menu-item index="1"
                                       @click="fileClassificationQuery(recentData.all)">
-                            <i class="el-icon-menu"></i>{{recentData.all_zh}}
+                            <i class="el-icon-menu"/>{{recentData.all_zh}}
                         </el-menu-item>
                         <el-menu-item index="2"
                                       @click="fileClassificationQuery(recentData.tupian)">
-                            <i class="el-icon-picture"></i>{{recentData.tupian_zh}}
+                            <i class="el-icon-picture"/>{{recentData.tupian_zh}}
                         </el-menu-item>
                         <el-submenu index="3">
-                            <template slot="title"><i class="el-icon-document"></i>{{recentData.wendang_zh}}</template>
+                            <template slot="title"><i class="el-icon-document"/>{{recentData.wendang_zh}}</template>
                             <el-menu-item index="3-1"
                                           @click="fileClassificationQuery(recentData.pdffile)">
                                 {{recentData.pdffile_zh}}
@@ -121,15 +121,15 @@
                         </el-submenu>
                         <el-menu-item index="4"
                                       @click="fileClassificationQuery(recentData.shipin)">
-                            <i class="el-icon-video-camera"></i>{{recentData.shipin_zh}}
+                            <i class="el-icon-video-camera"/>{{recentData.shipin_zh}}
                         </el-menu-item>
                         <el-menu-item index="5"
                                       @click="fileClassificationQuery(recentData.yinpin)">
-                            <i class="el-icon-service"></i>{{recentData.yinpin_zh}}
+                            <i class="el-icon-service"/>{{recentData.yinpin_zh}}
                         </el-menu-item>
                         <el-menu-item index="6"
                                       @click="fileClassificationQuery(recentData.other)">
-                            <i class="el-icon-plus"></i>{{recentData.other_zh}}
+                            <i class="el-icon-plus"/>{{recentData.other_zh}}
                         </el-menu-item>
                     </el-menu>
                     <el-table :data="recentFiles.slice((currentPage - 1) * pageSize, currentPage * pageSize)" border
@@ -224,13 +224,13 @@
                 <el-row class="borderStyle bottomMargin" style="height: 310px;">
                     <el-col><span style="color: #909399">文件分类统计</span></el-col>
                     <el-col class="generalChart" style="margin-top: 10px">
-                        <ve-pie :data="fcsChartData" :settings="fcsChartSettings"></ve-pie>
+                        <ve-pie :data="fcsChartData" :settings="fcsChartSettings"/>
                     </el-col>
                 </el-row>
                 <el-row class="borderStyle bottomMargin" style="height: 380px;">
                     <el-col><span style="color: #909399">最近七天采集数</span></el-col>
                     <el-col class="generalChart">
-                        <ve-histogram :data="sdcChartData" :settings="sdcChartSettings"></ve-histogram>
+                        <ve-histogram :data="sdcChartData" :settings="sdcChartSettings"/>
                     </el-col>
                 </el-row>
                 <el-row class="borderStyle bottomMargin">
@@ -373,7 +373,7 @@
                         })
                     })
                 }).catch(() => {
-                    this.$message({type: 'info', message: '已取消' + type_zh + '申请!'});
+                    this.$message({type: 'info', message: '已取消' + apply_type_zh + '申请!'});
                 });
             },
             /* 查看文件 */

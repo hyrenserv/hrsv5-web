@@ -20,7 +20,7 @@
                 <template slot-scope="scope">
                     <el-form ref="form" :model="scope.row">
                         <el-form-item class="ruleFormItem" prop="file_source_path" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="scope.row.file_source_path" size="mini" placeholder="点击按钮选择"></el-input>
+                            <el-input v-model="scope.row.file_source_path" disabled size="mini" placeholder="按钮选择"></el-input>
                         </el-form-item>
                     </el-form>
 

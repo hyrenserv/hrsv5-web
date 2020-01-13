@@ -6,18 +6,42 @@
     <el-row class="partOne">
         <el-form ref="form" :model="form" label-width="150px">
             <el-col :span="12">
-                <el-col :span="17">
-                    <el-form-item label="名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
+                <el-col :span="20">
+                    <el-form-item label="存储层配置名称" prop="dsl_name" :rules="filter_rules([{required: true}])">
                         <el-input v-model="form.dsl_name" placeholder="请输入名称"></el-input>
                     </el-form-item>
                 </el-col>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="存储类型" prop="store_type" :rules="rule.selected">
+                <el-form-item label="存储层配置存储类型" prop="store_type" :rules="rule.selected">
                     <el-select v-model="form.store_type" placeholder="请选择存储类型" @change="changedata">
                         <el-option v-for="item in storeType" :key="item.value" :label="item.value" :value="item.code"></el-option>
                     </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+                <el-col :span="20">
+                    <el-form-item label="存储层配置表备注">
+                        <el-input v-model="form.dsl_remark" placeholder="存储层配置表备注"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-col>
+
+            <el-col :span="12">
+                <el-form-item label="类型长度对比信息" prop="dlcs_id" :rules="rule.selected">
+                    <el-select v-model="form.dlcs_id" placeholder="类型长度对比信息">
+                        <el-option v-for="item in typeLengthinfo" :key="item.dlcs_id" :label="item.dlcs_name" :value="item.dlcs_id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+                <el-form-item label="是否为Hadoop客户端" prop="is_hadoopclient" :rules="rule.selected" label-width="180px">
+                    <el-radio-group v-model="form.is_hadoopclient">
+                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    </el-radio-group>
                 </el-form-item>
             </el-col>
 
@@ -30,30 +54,14 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="类型长度对比信息" prop="dlcs_id" :rules="rule.selected">
-                    <el-select v-model="form.dlcs_id" placeholder="类型长度对比信息">
-                        <el-option v-for="item in typeLengthinfo" :key="item.dlcs_id" :label="item.dlcs_name" :value="item.dlcs_id"></el-option>
-                    </el-select>
-                </el-form-item>
+                <el-col :span="20">
+                    <el-form-item label="附加信息表备注">
+                        <el-input v-model="form.dslad_remark" placeholder="附加信息表备注"></el-input>
+                    </el-form-item>
+                </el-col>
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="是否为Hadoop客户端" label-width="160px">
-                    <el-radio-group v-model="form.is_unzip" @change="handerChange_unzip">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item label="是否为Hadoop客户端" label-width="160px">
-                    <el-radio-group v-model="form.is_unzip" @change="handerChange_unzip">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="24">
                 <el-col>
                     <el-form-item label="附加信息">
                         <el-checkbox-group v-model="form.dsla_storelayer">
@@ -61,23 +69,21 @@
                         </el-checkbox-group>
                     </el-form-item>
                 </el-col>
-
             </el-col>
-
             <span class="saveDataSpan">数据存储层配置属性</span>
-            <el-button size="medium" class="partTwoBtn" type="success" @click="addTableData">增加行</el-button>
             <el-table :data="form.tableData" border stripe size="medium">
-                <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+                <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
 
-                <el-table-column label="key" align="center">
+                <el-table-column label="key" align="center" :key="2">
                     <template slot-scope="scope">
                         <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
-                            <el-input size="meduim" v-model="scope.row.storage_property_key"></el-input>
+                            <el-input size="meduim" disabled v-if="scope.$index < lengthdata " v-model="scope.row.storage_property_key"></el-input>
+                            <el-input size="meduim" v-else v-model="scope.row.storage_property_key"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
 
-                <el-table-column label="value" align="center">
+                <el-table-column label="value" align="center" v-if="showValue" :key="3">
                     <template slot-scope="scope">
                         <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
                             <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
@@ -93,11 +99,21 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="操作" width="80" align="center">
+                <el-table-column prop="dsla_remark" label="value" align="center" :key="4" v-if="selectVlueOrUpload">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                        <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                            <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
+                        </el-upload>
+                        <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
                     </template>
                 </el-table-column>
+
+                <!-- <el-table-column label="操作" width="80" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                        <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                    </template>
+                </el-table-column> -->
             </el-table>
         </el-form>
     </el-row>
@@ -113,8 +129,15 @@
 <script>
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
+import * as message from "@/utils/js/message";
 import regular from "@/utils/js/regular";
 let tableDataLength;
+let tableDatas = [];
+let fileArry = [];
+let dataKey;
+let index;
+let uploadindex;
+let valueIndex;
 export default {
     data() {
         return {
@@ -122,18 +145,30 @@ export default {
                 dsl_name: '',
                 store_type: '',
                 dsla_storelayer: [],
-                tableData: [{
-                    storage_property_key: "",
-                    storage_property_val: "",
-                    dsla_remark: ""
-                }],
+                tableData: [],
             },
+            showValue: true,
+            selectVlueOrUpload: false,
+            lengthdata: '',
+            deleteLength: '',
+            uploadindexmore: '',
+            uploadindexless: '',
+            inputindex: '',
+            selectedValueTabledata: [],
             change_storelayer: [],
             storeType: [],
             checkboxType: [],
             dataTypeinfo: [],
             typeLengthinfo: [],
+            fileList: [],
             YesNo: [],
+            YesNos: [{
+                value: "上传文件",
+                code: "1"
+            }, {
+                value: 'input',
+                code: "2"
+            }],
             rule: validator.default
         }
     },
@@ -173,34 +208,9 @@ export default {
                     });
             }
         },
-        // 添加行数据
-        addTableData() {
-            this.form.tableData.push({
-                storage_property_key: "",
-                storage_property_val: "",
-                dsla_remark: ""
-            })
-        },
         // 删除表格的当前行
         deleteArry(index, row) {
-            if (this.form.tableData.length > tableDataLength && index + 1 > tableDataLength) {
-                this.form.tableData.splice(index, 1)
-            } else if (this.form.tableData.length <= tableDataLength && index + 1 <= tableDataLength) {
-                this.$message({
-                    showClose: true,
-                    message: "剩余项为必填项",
-                    type: 'warning',
-                    duration: 0
-                });
-            } else {
-                this.$message({
-                    showClose: true,
-                    message: "该项为必填项",
-                    type: 'warning',
-                    duration: 0
-                });
-            }
-
+            this.form.tableData.splice(index, 1);
         },
         // 点击保存添加
         saveData(formName) {
@@ -231,10 +241,57 @@ export default {
                                 this.change_storelayer.push("06");
                             }
                         })
-                        this.form['dsla_storelayer'] = JSON.parse(JSON.stringify(this.change_storelayer))
-                        this.form['dataStoreLayerAttr'] = JSON.stringify(this.form.tableData);
+                        if (fileArry.length != 0) {
+                            this.form['files'] = fileArry;
+                        }
+
+                        let param = new FormData() // 创建form对象
+                        param.append('dsl_name', this.form.dsl_name);
+                        param.append('store_type', this.form.store_type);
+                        param.append('is_hadoopclient', this.form.is_hadoopclient);
+                        param.append('dsl_remark', this.form.dsl_remark);
+                        param.append('dslad_remark', this.form.dslad_remark);
+                        this.form.tableData.forEach((item) => {
+                            item['is_file'] = 0;
+                        });
+                        // 处理参数dataStoreLayerAttr
+                        // 如果是hbase
+                        if (valueIndex == 3) {
+                            let arrtable = [];
+                            arrtable.push(this.form.tableData[0]);
+                            param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
+                        } else if (valueIndex == 2) {
+                            let arrtable = [];
+                            for (let i = 0; i < 5; i++) {
+                                arrtable.push(this.form.tableData[i]);
+                            }
+                            param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
+                        } else {
+                            if (tableDatas.length > 0) {
+                                tableDatas.forEach((item) => {
+                                    if (item.radio) {
+                                        delete item.radio
+                                    }
+                                })
+                                param.append('dataStoreLayerAttr', JSON.stringify(tableDatas));
+                            } else {
+                                param.append('dataStoreLayerAttr', JSON.stringify(this.form.tableData));
+                            };
+                        }
+
+                        //    处理参数dsla_storelayer
+                        for (let index = 0; index < this.change_storelayer.length; index++) {
+                            param.append('dsla_storelayer', this.change_storelayer[index])
+                        }
+                        param.append('dtcs_id', this.form.dtcs_id);
+                        param.append('dlcs_id', this.form.dlcs_id);
+                        if (fileArry.length > 0) {
+                            for (let index = 0; index < fileArry.length; index++) {
+                                param.append('files', fileArry[index]);
+                            };
+                        }
                         functionAll.addDataStore(
-                            this.form
+                            param
                         ).then((res) => {
                             if (res && res.success) {
                                 this.$message({
@@ -244,6 +301,8 @@ export default {
                                 this.$router.push({
                                     name: "dataStoreActionIndex"
                                 })
+                            } else {
+
                             }
                         })
                     } else {
@@ -260,9 +319,11 @@ export default {
         },
         // 根据存储类型动态显示key
         changedata(val) {
+            valueIndex = val;
             this.$refs.form.clearValidate();
-            console.log(val)
             if (val === "1") {
+                this.showValue = true;
+                this.selectVlueOrUpload = false;
                 this.form.tableData = [{
                     storage_property_key: "database_drive"
                 }, {
@@ -274,33 +335,88 @@ export default {
                 }, {
                     storage_property_key: "database_type"
                 }];
+                this.deleteLength = 5;
+                this.lengthdata = 5;
                 tableDataLength = this.form.tableData.length;
             } else if (val === "2") {
                 this.form.tableData = [{
-                    storage_property_key: "hbase-site.xml"
+                        storage_property_key: "database_drive"
+                    }, {
+                        storage_property_key: "jdbc_url"
+                    }, {
+                        storage_property_key: "user_name"
+                    }, {
+                        storage_property_key: "database_pad"
+                    }, {
+                        storage_property_key: "database_type"
+                    },
+                    {
+                        storage_property_key: "hbase-site.xml",
+                    }, {
+                        storage_property_key: "hdfs-site.xml"
+                    }, {
+                        storage_property_key: "core-site.xml"
+                    },
+                    {
+                        storage_property_key: "yarn-site.xml"
+                    },
+                    {
+                        storage_property_key: "mapreduce-site.xml"
+                    }, {
+                        storage_property_key: "keytab"
+                    }, {
+                        storage_property_key: "krb5"
+                    }
+                ];
+                tableDataLength = this.form.tableData.length;
+                this.lengthdata = 12;
+                this.deleteLength = 10;
+                this.showValue = false;
+                this.selectVlueOrUpload = true;
+                this.uploadindexless = 4;
+                this.uploadindexmore = 11;
+                this.inputindex = 4;
+            } else if (val === "3") {
+                this.form.tableData = [{
+                    storage_property_key: "zkhost"
+                }, {
+                    storage_property_key: "hbase-site.xml",
                 }, {
                     storage_property_key: "hdfs-site.xml"
                 }, {
                     storage_property_key: "core-site.xml"
                 }, {
-                    storage_property_key: "yarn-site.xml"
+                    storage_property_key: "keytab"
                 }, {
-                    storage_property_key: "mapreduce-site.xml"
+                    storage_property_key: "krb5"
                 }]
                 tableDataLength = this.form.tableData.length;
-            } else if (val === "3") {
+                this.lengthdata = 6;
+                this.showValue = false;
+                this.selectVlueOrUpload = true;
+                this.deleteLength = 4;
+                this.uploadindexless = 0;
+                this.uploadindexmore = 5;
+                this.inputindex = 0;
+            } else if (val === "4") {
+                this.showValue = true;
                 this.form.tableData = [{
                     storage_property_key: "solr_url"
                 }]
                 tableDataLength = this.form.tableData.length;
-            } else if (val === "4") {
-                this.form.tableData = []
-                tableDataLength = this.form.tableData.length;
+                this.lengthdata = 1;
+                this.deleteLength = 1;
             } else if (val === "5") {
-                this.form.tableData = []
+                this.showValue = true;
+                this.form.tableData = [];
                 tableDataLength = this.form.tableData.length;
+                this.lengthdata = this.form.tableData.length
+            } else if (val === "6") {
+                this.showValue = true;
+                this.form.tableData = [];
+                tableDataLength = this.form.tableData.length;
+                this.lengthdata = this.form.tableData.length
             }
-
         },
         // 获取数据类型长度信息
         searchDataLayerDataTypeLengthInfo() {
@@ -343,7 +459,38 @@ export default {
                 }
                 this.dataTypeinfo = arr;
             })
-        }
+        },
+        // 保存上传文件
+        handleChange(file, fileList) {
+            if (fileList.length > 1) {
+                message.customizTitle("最多上传一条,请删除多余项", "warning");
+            } else {
+                if (dataKey == file.name) {
+                    fileArry.push(file.raw);
+                } else {
+                    message.customizTitle("请选择与key命名相同的文件", "warning");
+                }
+            }
+        },
+        handleEdit(index, row) {
+            uploadindex = index;
+            this.selectedValueTabledata = [];
+            dataKey = row.storage_property_key;
+            this.selectedValueTabledata.push(row)
+        },
+        // 删除上传文件
+        removeFile(file, fileList) {
+            if (fileArry.length != 0) {
+                if (JSON.stringify(fileArry).indexOf(JSON.stringify(file)) != -1) {
+                    fileArry.splice(file, 1);
+                }
+                fileList.forEach((item) => {
+                    if (item.name != dataKey) {
+                        message.customizTitle("请保留与key命名相同的文件", "warning");
+                    }
+                })
+            }
+        },
     }
 }
 </script>
@@ -375,6 +522,10 @@ export default {
 .dataStoreAction .partTwoBtn {
     float: right;
     margin-top: 20px;
+}
+
+.dataStoreAction .partTwoBtn:last-child {
+    margin-right: 10px;
 }
 
 /* span字体样式 */

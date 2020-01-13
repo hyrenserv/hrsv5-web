@@ -6,7 +6,8 @@ import request from '@/utils/request'
   export function addDataStore(data) {
     return request({
         url: '/A/datastore/addDataStore',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 
@@ -37,6 +38,20 @@ export function deleteDataStore(data) {
     return request({
         url: '/A/datastore/deleteDataStore',
         params: data
+    })
+}
+
+/**(3.5)
+ * 下载配置文件
+ */
+export function downloadConfFile(data) {
+    return request({
+        url: '/A/datastore/downloadConfFile',
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
 

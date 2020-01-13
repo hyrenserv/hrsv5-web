@@ -132,3 +132,12 @@ export function queryDataBasedOnSql(data) {
         params: data
     })
 }
+
+//全文检索
+export function fullTextSearch(data) {
+    return request({
+        url: '/B/fulltextsearch/fullTextSearch',
+        params: data
+    })
+
+}
