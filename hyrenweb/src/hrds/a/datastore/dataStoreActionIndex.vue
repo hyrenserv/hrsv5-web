@@ -29,7 +29,7 @@
 
             <el-table-column label="操作" width="160" align="center">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="dialogFormVisibleUpdate = true;updateData(scope.row.dsl_id)">编辑</el-button>
+                    <el-button type="primary" size="mini" @click="dialogFormVisibleUpdate = true;updateData(scope.row.dsl_id,scope.row)">编辑</el-button>
                     <el-button type="danger" size="mini" @click="deleteArry(scope.row.dsl_id);">删除</el-button>
                 </template>
             </el-table-column>
@@ -153,26 +153,26 @@
 
                     <el-table-column label="key" align="center" :key="2">
                         <template slot-scope="scope">
-                            <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
+                            <!-- <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])"> -->
                                 <el-input size="meduim" disabled v-if="scope.$index < lengthdata " v-model="scope.row.storage_property_key"></el-input>
                                 <el-input size="meduim" v-else v-model="scope.row.storage_property_key"></el-input>
-                            </el-form-item>
+                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
 
                     <el-table-column label="value" align="center" v-if="showValue" :key="3">
                         <template slot-scope="scope">
-                            <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
+                            <!-- <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])"> -->
                                 <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
-                            </el-form-item>
+                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="dsla_remark" label="描述" align="center">
                         <template slot-scope="scope">
-                            <el-form-item>
+                            <!-- <el-form-item> -->
                                 <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
-                            </el-form-item>
+                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
 
@@ -185,12 +185,26 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="操作" width="80" align="center">
+                    <el-table-column label="选择文件" width="200" align="center" v-if="showDownloadButton">
+                        <template slot-scope="scope">
+                            <el-upload disabled v-if=" scope.$index < showNumberDisabled " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                                <el-button size="mini" disabled type="info" v-if="scope.$index < showNumberDisabled ">选择文件</el-button>
+                                <el-button size="mini" type="info" v-else>选择文件</el-button>
+                            </el-upload>
+
+                            <el-upload  v-else class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                                <el-button size="mini" disabled type="info" v-if="scope.$index < showNumberDisabled ">选择文件</el-button>
+                                <el-button size="mini" type="info" v-else>选择文件</el-button>
+                            </el-upload>
+                        </template>
+                    </el-table-column>
+
+                    <!-- <el-table-column label="操作" width="80" align="center">
                         <template slot-scope="scope">
                             <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                             <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                 </el-table>
             </el-form>
         </el-row>
@@ -413,13 +427,25 @@ export default {
             })
         },
         // 根据dsl_id更新对应的数据回显和更新
-        updateData(e) {
+        updateData(e, row) {
             this.dsl_id = e;
             this.fixedError(e);
             this.getCategoryItems("Store_type");
             this.getCategoryItems("IsFlag");
             this.searchDataLayerDataTypeLengthInfo();
             this.searchDataLayerDataTypeInfo();
+            // 编辑显示选择文件
+            if (row.store_type == "hive" || row.store_type == "Hbase") {
+                this.showDownloadButton = true;
+                if (row.store_type == "hive") {
+                    this.showNumberDisabled = 5;
+                } else if (row.store_type == "Hbase") {
+                    this.showNumberDisabled = 1;
+                }
+
+            } else {
+                this.showDownloadButton = false;
+            }
         },
         //  添加一条新的数据
         addTableData() {

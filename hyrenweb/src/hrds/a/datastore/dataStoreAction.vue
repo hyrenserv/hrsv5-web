@@ -108,12 +108,12 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="操作" width="80" align="center">
+                <!-- <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                         <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
         </el-form>
     </el-row>
