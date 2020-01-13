@@ -9,7 +9,11 @@ export function getMenu() {
         url: '/A/login/getMenu',
     })
 }
-
+export function getDefaultPage() {
+    return request({
+        url: '/A/login/getDefaultPage',
+    })
+  }
 /* const Menu = [
     // { icon: 'el-icon-setting', title: '系统参数', path: '/syspara' },
     // { icon: 'el-icon-document', title: 'Agent部署', path: '/agentdeploy' },
