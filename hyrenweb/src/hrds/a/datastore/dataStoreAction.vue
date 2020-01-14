@@ -99,7 +99,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="dsla_remark" label="value" align="center" :key="4" v-if="selectVlueOrUpload">
+                <el-table-column prop="dsla_remark" label="value" width="300" align="center" :key="4" v-if="selectVlueOrUpload">
                     <template slot-scope="scope">
                         <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
                             <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
@@ -178,6 +178,7 @@ export default {
         this.getCategoryItems("IsFlag");
         this.searchDataLayerDataTypeLengthInfo();
         this.searchDataLayerDataTypeInfo();
+        fileArry = [];
     },
     methods: {
         // 获取代码项对应的值
@@ -249,8 +250,13 @@ export default {
                         param.append('dsl_name', this.form.dsl_name);
                         param.append('store_type', this.form.store_type);
                         param.append('is_hadoopclient', this.form.is_hadoopclient);
-                        param.append('dsl_remark', this.form.dsl_remark);
-                        param.append('dslad_remark', this.form.dslad_remark);
+                        if (this.form.dsl_remark != undefined) {
+                            param.append('dsl_remark', this.form.dsl_remark);
+                        }
+
+                        if (this.form.dslad_remark != undefined) {
+                            param.append('dslad_remark', this.form.dslad_remark);
+                        }
                         this.form.tableData.forEach((item) => {
                             item['is_file'] = 0;
                         });
