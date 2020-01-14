@@ -72,8 +72,8 @@ service.interceptors.response.use(
           duration: 5 * 1000
         })
       }
-      else if (headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8') {
-        return response.data
+      else if (headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8'||headers['content-type'] === 'APPLICATION/OCTET-STREAM') {
+        return res
 
       } else if (res.code == 220) {//如果返回的状态是 500表示服务器异常
         

@@ -71,7 +71,8 @@ export function searchDataStoreById(data) {
 export function updateDataStore(data) {
     return request({
         url: '/A/datastore/updateDataStore',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 
