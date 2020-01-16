@@ -15,11 +15,7 @@
 
             <el-table-column prop="dsl_remark" label="备注" show-overflow-tooltip align="center"></el-table-column>
 
-            <el-table-column prop="is_hadoopclient" width="140" label="hadoop客户端" align="center">
-                <!-- <template slot-scope="scope">
-                    <el-checkbox disabled  v-model="scope.row.is_hadoopclient"></el-checkbox>
-                </template> -->
-            </el-table-column>
+            <el-table-column prop="is_hadoopclient" width="140" label="hadoop客户端" align="center"></el-table-column>
 
             <el-table-column prop="store_type" width="202" label="数据存储层配置属性" align="center">
                 <template slot-scope="scope">
@@ -66,7 +62,7 @@
         </div>
     </el-dialog>
 
-    <!-- 编辑数据存储层配置属性弹出框 -->
+    <!-- 编辑数据存储层配置弹出框 -->
     <el-dialog title="更新数据存储层" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeClose" width="80%">
         <el-row class="partOne">
             <el-form ref="form" :model="form" label-width="150px">
@@ -136,63 +132,48 @@
                     </el-col>
                 </el-col>
                 <span class="saveDataSpan">数据存储层配置属性</span>
-                <el-table :data="form.tableDataConfigure" border stripe size="medium">
+                <el-button size="medium" class="partTwoBtn" type="success" @click="addTableDataRow">增加行</el-button>
+                <el-table :data="form.tableDataConfigure" border stripe size="medium" height="300">
                     <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
 
                     <el-table-column label="key" align="center" :key="2">
                         <template slot-scope="scope">
-                            <!-- <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])"> -->
                             <el-input size="meduim" disabled v-if="scope.$index < lengthdata " v-model="scope.row.storage_property_key"></el-input>
                             <el-input size="meduim" v-else v-model="scope.row.storage_property_key"></el-input>
-                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
 
                     <el-table-column label="value" align="center" v-if="showValue" :key="3">
                         <template slot-scope="scope">
-                            <!-- <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])"> -->
                             <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
-                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="dsla_remark" label="描述" align="center">
                         <template slot-scope="scope">
-                            <!-- <el-form-item> -->
                             <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
-                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
 
                     <el-table-column label="value" align="center" :key="4" v-if="selectVlueOrUpload">
                         <template slot-scope="scope">
-                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
-                                <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
+                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index < uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                                <el-button size="small" type="info" @click="handleEditchange(scope.$index, scope.row)">选择文件</el-button>
                             </el-upload>
                             <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
+                            <el-radio-group v-model="scope.row.radio" v-if="scope.$index >= uploadindexmore">
+                                <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>
+                                <el-radio @change="selectedUploadValue=true;handleEditValue(scope.$index, scope.row)" label="1">选择文件</el-radio>
+                            </el-radio-group>
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="选择文件" width="200" align="center" v-if="showDownloadButton">
+                    <el-table-column label="操作" width="80" align="center">
                         <template slot-scope="scope">
-                            <el-upload disabled v-if=" scope.$index < showNumberDisabled " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
-                                <el-button size="mini" disabled type="info" v-if="scope.$index < showNumberDisabled ">选择文件</el-button>
-                                <el-button size="mini" type="info" @click="handleEditchange(scope.$index, scope.row)" v-else>选择文件</el-button>
-                            </el-upload>
-
-                            <el-upload v-else class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
-                                <el-button size="mini" disabled type="info" v-if="scope.$index < showNumberDisabled ">选择文件</el-button>
-                                <el-button size="mini" type="info" @click="handleEditchange(scope.$index, scope.row)" v-else>选择文件</el-button>
-                            </el-upload>
+                            <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteTableDataRow(scope.$index, scope.row);">删除</el-button>
+                            <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteTableDataRow(scope.$index, scope.row);">删除</el-button>
                         </template>
                     </el-table-column>
-
-                    <!-- <el-table-column label="操作" width="80" align="center">
-                        <template slot-scope="scope">
-                            <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
-                            <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
-                        </template>
-                    </el-table-column> -->
                 </el-table>
             </el-form>
         </el-row>
@@ -202,6 +183,46 @@
         </div>
     </el-dialog>
     <!-- 编辑弹出框完 -->
+    <!-- 填写value弹出框 -->
+    <el-dialog title="value" :visible.sync="selectedValue">
+        <el-form>
+            <el-table :data="selectedValueTabledata" border stripe size="medium">
+                <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
+
+                <el-table-column label="key" prop="storage_property_key" align="center" :key="2">
+                    <template slot-scope="scope">
+                        <el-input size="meduim" disabled v-model="scope.row.storage_property_key"></el-input>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="value" align="center" :key="3">
+                    <template slot-scope="scope">
+                        <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSaveselectedValue" size="mini" type="danger">取消</el-button>
+            <el-button @click="SaveselectedValue" size="mini" type="primary">确认</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 上传导入文件弹出框 -->
+    <el-dialog title="上传导入的文件 " :visible.sync="selectedUploadValue" width="30%">
+        <el-form>
+            <el-form-item label="上传要导入的文件 :">
+                <el-upload class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                    <el-button size="small" type="info">选择上传文件</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSaveselectedUploadValue" size="mini" type="danger">取消</el-button>
+            <el-button @click="SaveselectedUploadValue" size="mini" type="primary">确认</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -223,6 +244,7 @@ let index;
 let uploadindex;
 let valueIndex;
 let storetype;
+let uploadIndex;
 export default {
     data() {
         return {
@@ -240,6 +262,8 @@ export default {
             showValue: true,
             selectVlueOrUpload: false,
             showDownloadButton: false,
+            selectedUploadValue: false,
+            selectedValue: false,
             showNumberDisabled: '',
             showNumberDisabledLess: '',
             lengthdata: '',
@@ -303,10 +327,16 @@ export default {
                 // 是否显示下载按钮
                 if (res.data.store_type == 2 || res.data.store_type == 3) {
                     this.showDownloadButton = true;
+                    let i = 0;
+                    res.data.layerAndAttr.forEach((item) => {
+                        if (item.is_file == 0) {
+                            i++;
+                        }
+                    });
                     if (res.data.store_type == 2) {
-                        this.showNumberDisabled = 5;
+                        this.showNumberDisabled = i;
                     } else if (res.data.store_type == 3) {
-                        this.showNumberDisabled = 1;
+                        this.showNumberDisabled = i;
                     }
 
                 } else {
@@ -327,7 +357,7 @@ export default {
                             })
                             this.form.dsla_storelayer = true;
                         })
-                    } else {}
+                    }
                 })
             })
         },
@@ -358,13 +388,23 @@ export default {
                 });
             });
         },
+        // 根据dsl_id更新对应的数据回显和更新
+        updateData(e, row) {
+            this.dsl_id = e;
+            this.fixedError(e, row);
+            this.getCategoryItems("Store_type");
+            this.getCategoryItems("IsFlag");
+            this.searchDataLayerDataTypeLengthInfo();
+            this.searchDataLayerDataTypeInfo();
+        },
         // 处理编辑附加信息冲突问题的方法
-        fixedError(e) {
+        fixedError(e, row) {
             this.checkboxType = [];
             functionAll.searchDataStoreById({
                 dsl_id: e
             }).then((res) => {
                 // 获取编辑参数
+                storetype = res.data.store_type;
                 let arry = [];
                 let arr2 = [];
                 // 处理tableData格式正确性
@@ -376,7 +416,22 @@ export default {
                     }
 
                 })
+
+                let j = arry.length - 1;
+                let i = res.data.layerAndAttr.length;
                 arry.push(...arr2);
+                // 编辑显示选择文件
+                if (row.store_type == "hive" || row.store_type == "Hbase") {
+                    this.inputindex = j;
+                    this.uploadindexmore = i;
+                    this.uploadindexless = j;
+                    this.showValue = false;
+                    this.selectVlueOrUpload = true;
+                } else {
+                    this.showValue = true;
+                    this.selectVlueOrUpload = false;
+                    fileArry = [];
+                }
                 this.form.tableDataConfigure = arry;
                 this.form.dsl_name = res.data.dsl_name;
                 this.form.dtcs_id = res.data.dtcs_id;
@@ -387,11 +442,14 @@ export default {
                 }
                 this.form.store_type = res.data.store_type;
                 if (res.data.layerAndAdded.length > 0) {
-                    this.form.dslad_remark = res.data.layerAndAdded[0].dslad_remark;
+                    if (res.data.layerAndAdded[0].dslad_remark != "undefined") {
+                        this.form.dslad_remark = res.data.layerAndAdded[0].dslad_remark;
+                    } else {
+                        this.form.dslad_remark = '';
+                    }
                 }
                 this.form.is_hadoopclient = res.data.is_hadoopclient;
                 this.form.dsla_storelayer = [];
-                this.deleteLength = res.data.layerAndAttr.length;
                 arr = [];
                 if (res.data.layerAndAdded.length == 0) {
                     this.getCategoryItems("StoreLayerAdded");
@@ -432,27 +490,7 @@ export default {
                 })
             })
         },
-        // 根据dsl_id更新对应的数据回显和更新
-        updateData(e, row) {
-            this.dsl_id = e;
-            this.fixedError(e);
-            this.getCategoryItems("Store_type");
-            this.getCategoryItems("IsFlag");
-            this.searchDataLayerDataTypeLengthInfo();
-            this.searchDataLayerDataTypeInfo();
-            // 编辑显示选择文件
-            if (row.store_type == "hive" || row.store_type == "Hbase") {
-                this.showDownloadButton = true;
-                if (row.store_type == "hive") {
-                    this.showNumberDisabled = 5;
-                } else if (row.store_type == "Hbase") {
-                    this.showNumberDisabled = 1;
-                }
-            } else {
-                this.showDownloadButton = false;
-                fileArry = [];
-            }
-        },
+
         //  添加一条新的数据
         addTableData() {
             this.$router.push({
@@ -512,15 +550,30 @@ export default {
                         param.append('dsl_remark', this.form.dsl_remark);
                         param.append('dslad_remark', this.form.dslad_remark);
                         param.append('dsl_id', this.dsl_id);
-                        this.form.tableDataConfigure.forEach((item) => {
-                            item['is_file'] = 0;
-                        });
 
                         // 处理参数dataStoreLayerAttr
+                        let valueArr =[];
+                        this.form.tableDataConfigure.forEach((item) => {
+                            if (item.is_file != 1 || JSON.stringify(item).indexOf("is_file") == -1) {
+                                valueArr.push(item);
+                            }
+                        });
+                        valueArr.forEach((item) => {
+                            item['is_file'] = 0;
+                        });
                         // 如果是hbase
                         if (valueIndex == 3) {
                             let arrtable = [];
-                            arrtable.push(this.form.tableDataConfigure[0]);
+                            valueArr.forEach(item => {
+                                if (item.storage_property_val) {
+                                    arrtable.push(item);
+                                }
+                            });
+                            arrtable.forEach((item) => {
+                                if (item.radio) {
+                                    delete item.radio
+                                }
+                            })
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else if (valueIndex == 2) {
                             let arrtable = [];
@@ -568,6 +621,7 @@ export default {
                                 // 关闭弹出层
                                 this.dialogFormVisibleUpdate = false;
                                 fileArry = [];
+                                this.fileList = [];
                             }
                         })
                     } else {
@@ -669,6 +723,7 @@ export default {
             if (val === "1") {
                 this.showValue = true;
                 this.selectVlueOrUpload = false;
+                this.showDownloadButton = false;
                 this.form.tableDataConfigure = [{
                     storage_property_key: "database_drive"
                 }, {
@@ -714,8 +769,9 @@ export default {
                     }
                 ];
                 tableDataLength = this.form.tableDataConfigure.length;
+                this.showDownloadButton = false;
                 this.lengthdata = 12;
-                this.deleteLength = 10;
+                this.deleteLength = 12;
                 this.showValue = false;
                 this.selectVlueOrUpload = true;
                 this.uploadindexless = 4;
@@ -739,28 +795,37 @@ export default {
                 this.lengthdata = 6;
                 this.showValue = false;
                 this.selectVlueOrUpload = true;
-                this.deleteLength = 4;
+                this.showDownloadButton = false;
+                this.deleteLength = 6;
                 this.uploadindexless = 0;
                 this.uploadindexmore = 5;
                 this.inputindex = 0;
             } else if (val === "4") {
                 this.showValue = true;
+                this.selectVlueOrUpload = false;
                 this.form.tableDataConfigure = [{
                     storage_property_key: "solr_url"
                 }]
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.lengthdata = 1;
                 this.deleteLength = 1;
+                this.showDownloadButton = false;
             } else if (val === "5") {
+                this.deleteLength = 0;
                 this.showValue = true;
                 this.form.tableDataConfigure = [];
                 tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = this.form.tableDataConfigure.length
+                this.lengthdata = this.form.tableDataConfigure.length;
+                this.showDownloadButton = false;
+                this.selectVlueOrUpload = false;
             } else if (val === "6") {
+                this.deleteLength = 0;
                 this.showValue = true;
                 this.form.tableDataConfigure = [];
                 tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = this.form.tableDataConfigure.length
+                this.lengthdata = this.form.tableDataConfigure.length;
+                this.showDownloadButton = false;
+                this.selectVlueOrUpload = false;
             }
         },
         // 保存上传文件
@@ -816,6 +881,56 @@ export default {
                 }
             })
         },
+        // 编辑的新增
+        addTableDataRow() {
+            this.form.tableDataConfigure.push({
+                storage_property_key: "",
+                storage_property_val: "",
+                dsla_remark: ""
+            });
+        },
+        // 删除一行信息
+        deleteTableDataRow(index, row) {
+            this.form.tableDataConfigure.splice(index, 1);
+        },
+        // 确定填写value
+        SaveselectedValue() {
+            this.selectedValue = false;
+        },
+        // 取消填写value
+        cancelSaveselectedValue() {
+            this.selectedValueTabledata.forEach((item) => {
+                delete item.radio;
+            });
+            this.selectedValue = false;
+        },
+        // 确定选择好要上传的文件
+        SaveselectedUploadValue() {
+            if (fileArry.length > 0) {
+                this.fileList = [];
+                this.selectedUploadValue = false;
+            } else {
+                message.customizTitle("请选择上传文件保存", "warning");
+            }
+        },
+        // 取消选择上传文件
+        cancelSaveselectedUploadValue() {
+            this.form.tableDataConfigure.forEach((item, index) => {
+                if (index == uploadindex) {
+                    if (item.radio) {
+                        delete item.radio;
+                    }
+                }
+            });
+            this.selectedUploadValue = false;
+            this.fileList = [];
+        },
+        // 获取对应的key值
+        handleEditValue(index, row) {
+            this.selectedValueTabledata = [];
+            dataKey = row.storage_property_key;
+            this.selectedValueTabledata.push(row)
+        },
     }
 }
 </script>
@@ -851,13 +966,13 @@ export default {
 
 .dataStoreAction .partTwoBtn {
     margin: 20px 0 2px;
+    float: right;
 }
 
 /* span字体样式 */
-.dataStoreAction .partTwo span {
+.dataStoreAction .saveDataSpan {
     display: inline-block;
-    margin-top: 26px;
-    color: #2196f3;
+    margin-top: 20px;
     font-size: 18px;
 }
 
