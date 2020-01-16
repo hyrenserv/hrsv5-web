@@ -71,10 +71,11 @@
                 </el-col>
             </el-col>
             <span class="saveDataSpan">数据存储层配置属性</span>
-            <el-table :data="form.tableData" border stripe size="medium">
+            <el-button size="medium" class="partTwoBtn" v-if="showAddbutton" type="success" @click="addTableData">增加行</el-button>
+            <el-table :data="form.tableData" border stripe size="medium" height="300">
                 <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
 
-                <el-table-column label="key" align="center" :key="2">
+                <el-table-column prop="storage_property_key" label="key" align="center" :key="2">
                     <template slot-scope="scope">
                         <el-form-item :prop="`tableData.${scope.$index}.storage_property_key`" :rules="filter_rules([{required: true}])">
                             <el-input size="meduim" disabled v-if="scope.$index < lengthdata " v-model="scope.row.storage_property_key"></el-input>
@@ -83,7 +84,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="value" align="center" v-if="showValue" :key="3">
+                <el-table-column label="value" prop="storage_property_val" align="center" v-if="showValue" :key="3">
                     <template slot-scope="scope">
                         <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
                             <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
@@ -99,21 +100,29 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="dsla_remark" label="value" width="300" align="center" :key="4" v-if="selectVlueOrUpload">
+                <el-table-column label="value" width="300" prop="storage_property_val" align="center" :key="3" v-if="selectVlueOrUpload">
                     <template slot-scope="scope">
                         <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
                             <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
                         </el-upload>
-                        <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
+                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])" v-if="scope.$index <= inputindex ">
+                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
+                        </el-form-item>
+
+                        <el-radio-group v-model="scope.row.radio" v-if="scope.$index > uploadindexmore">
+                            <el-radio @change="selectedValue=true;handleEdit(scope.$index, scope.row)" label="0">填写value</el-radio>
+                            <el-radio @change="selectedUploadValue=true;handleEdit(scope.$index, scope.row)" label="1">选择文件</el-radio>
+                        </el-radio-group>
+
                     </template>
                 </el-table-column>
 
-                <!-- <el-table-column label="操作" width="80" align="center">
+                <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                         <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
             </el-table>
         </el-form>
     </el-row>
@@ -123,6 +132,47 @@
             <el-button type="primary" size="medium" @click="saveData('form')">保存</el-button>
         </div>
     </el-row>
+
+    <!-- 填写value弹出框 -->
+    <el-dialog title="value" :visible.sync="selectedValue">
+        <el-form ref="formDialog" :model="formDialog">
+            <el-table :data="selectedValueTabledata" border stripe size="medium">
+                <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
+
+                <el-table-column label="key" prop="storage_property_key" align="center" :key="2">
+                    <template slot-scope="scope">
+                        <el-input size="meduim" disabled v-model="scope.row.storage_property_key"></el-input>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="value" align="center" :key="3">
+                    <template slot-scope="scope">
+                        <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSaveselectedValue" size="mini" type="danger">取消</el-button>
+            <el-button @click="SaveselectedValue" size="mini" type="primary">确认</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 上传导入文件弹出框 -->
+    <el-dialog title="上传导入的文件 " :visible.sync="selectedUploadValue" width="30%">
+        <el-form>
+            <el-form-item label="上传要导入的文件 :">
+                <el-upload class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                    <el-button size="small" type="info">选择上传文件</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSaveselectedUploadValue" size="mini" type="danger">取消</el-button>
+            <el-button @click="SaveselectedUploadValue" size="mini" type="primary">确认</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -147,8 +197,12 @@ export default {
                 dsla_storelayer: [],
                 tableData: [],
             },
+            formDialog: {},
             showValue: true,
             selectVlueOrUpload: false,
+            showAddbutton: false,
+            selectedUploadValue: false,
+            selectedValue: false,
             lengthdata: '',
             deleteLength: '',
             uploadindexmore: '',
@@ -209,6 +263,14 @@ export default {
                     });
             }
         },
+        // 添加行数据
+        addTableData() {
+            this.form.tableData.push({
+                storage_property_key: "",
+                storage_property_val: "",
+                dsla_remark: ""
+            });
+        },
         // 删除表格的当前行
         deleteArry(index, row) {
             this.form.tableData.splice(index, 1);
@@ -217,14 +279,7 @@ export default {
         saveData(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    if (this.form.tableData.length == 0) {
-                        this.$message({
-                            showClose: true,
-                            type: 'warning',
-                            message: '数据存储层配置属性为必填项',
-                            duration: 0
-                        })
-                    } else if (this.form.tableData.length > 0) {
+                    if (this.form.tableData.length > 0) {
                         // 处理参数
                         this.change_storelayer = [];
                         this.form.dsla_storelayer.forEach((item) => {
@@ -252,10 +307,13 @@ export default {
                         param.append('is_hadoopclient', this.form.is_hadoopclient);
                         if (this.form.dsl_remark != undefined) {
                             param.append('dsl_remark', this.form.dsl_remark);
+                        } else {
+                            param.append('dsl_remark', '');
                         }
-
                         if (this.form.dslad_remark != undefined) {
                             param.append('dslad_remark', this.form.dslad_remark);
+                        } else {
+                            param.append('dslad_remark', '');
                         }
                         this.form.tableData.forEach((item) => {
                             item['is_file'] = 0;
@@ -264,7 +322,16 @@ export default {
                         // 如果是hbase
                         if (valueIndex == 3) {
                             let arrtable = [];
-                            arrtable.push(this.form.tableData[0]);
+                            this.form.tableData.forEach(item => {
+                                if (item.storage_property_val) {
+                                    arrtable.push(item);
+                                }
+                            })
+                            arrtable.forEach((item) => {
+                                if (item.radio) {
+                                    delete item.radio
+                                }
+                            })
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else if (valueIndex == 2) {
                             let arrtable = [];
@@ -330,6 +397,7 @@ export default {
             if (val === "1") {
                 this.showValue = true;
                 this.selectVlueOrUpload = false;
+                this.showAddbutton = true;
                 this.form.tableData = [{
                     storage_property_key: "database_drive"
                 }, {
@@ -376,9 +444,10 @@ export default {
                 ];
                 tableDataLength = this.form.tableData.length;
                 this.lengthdata = 12;
-                this.deleteLength = 10;
+                this.deleteLength = 12;
                 this.showValue = false;
                 this.selectVlueOrUpload = true;
+                this.showAddbutton = true;
                 this.uploadindexless = 4;
                 this.uploadindexmore = 11;
                 this.inputindex = 4;
@@ -400,12 +469,15 @@ export default {
                 this.lengthdata = 6;
                 this.showValue = false;
                 this.selectVlueOrUpload = true;
-                this.deleteLength = 4;
+                this.showAddbutton = true;
+                this.deleteLength = 6;
                 this.uploadindexless = 0;
                 this.uploadindexmore = 5;
                 this.inputindex = 0;
             } else if (val === "4") {
+                this.selectVlueOrUpload = false;
                 this.showValue = true;
+                this.showAddbutton = true;
                 this.form.tableData = [{
                     storage_property_key: "solr_url"
                 }]
@@ -413,15 +485,21 @@ export default {
                 this.lengthdata = 1;
                 this.deleteLength = 1;
             } else if (val === "5") {
+                this.selectVlueOrUpload = false;
+                this.showAddbutton = true;
                 this.showValue = true;
                 this.form.tableData = [];
                 tableDataLength = this.form.tableData.length;
-                this.lengthdata = this.form.tableData.length
+                this.lengthdata = this.form.tableData.length;
+                this.deleteLength = 0;
             } else if (val === "6") {
+                this.selectVlueOrUpload = false;
+                this.showAddbutton = true;
                 this.showValue = true;
                 this.form.tableData = [];
                 tableDataLength = this.form.tableData.length;
-                this.lengthdata = this.form.tableData.length
+                this.lengthdata = this.form.tableData.length;
+                this.deleteLength = 0;
             }
         },
         // 获取数据类型长度信息
@@ -497,6 +575,38 @@ export default {
                 })
             }
         },
+        // 确定填写value
+        SaveselectedValue() {
+            this.selectedValue = false;
+        },
+        // 取消填写value
+        cancelSaveselectedValue() {
+            this.selectedValueTabledata.forEach((item) => {
+                delete item.radio;
+            });
+            this.selectedValue = false;
+        },
+        // 确定选择好要上传的文件
+        SaveselectedUploadValue() {
+            if (fileArry.length > 0) {
+                this.fileList = [];
+                this.selectedUploadValue = false;
+            } else {
+                message.customizTitle("请选择上传文件保存", "warning");
+            }
+        },
+        // 取消选择上传文件
+        cancelSaveselectedUploadValue() {
+            this.form.tableData.forEach((item, index) => {
+                if (index == uploadindex) {
+                    if (item.radio) {
+                        delete item.radio;
+                    }
+                }
+            });
+            this.selectedUploadValue = false;
+            this.fileList = [];
+        }
     }
 }
 </script>
