@@ -649,7 +649,7 @@ export default {
 .zdtitle {
     font-size: 15px;
     // font-weight: bold;
-    color: #6982ca;
+    color: #2196f3;
 }
 
 .mytree /deep/ {
