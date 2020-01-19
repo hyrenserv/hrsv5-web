@@ -848,6 +848,7 @@ export default {
                 params2["tableInfoString"] = JSON.stringify(this.tablein);
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
                 params2["delTbString"] = delJson.length > 0 ? JSON.stringify(delJson) : '';
+                console.log(params2)
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
                     if (res.code == 200) {
                         this.activeFirst = true;
