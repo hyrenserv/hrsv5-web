@@ -13,7 +13,7 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size='medium' style="min-height: 400px;">
+                <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size='medium' style="min-height: 400px;" class='outtable' >
                     <el-table-column width="55" align="center" prop="selectionState">
                         <template slot="header" slot-scope="scope">
                             <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -27,15 +27,17 @@
                             <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="Categoryparent" label="上级分类" align="center">
+                    <el-table-column prop="Categoryparent" label="上级分类名" align="center">
                     </el-table-column>
-                    <el-table-column prop="Standardnumber" label="标准编号" align="center">
+                    <el-table-column prop="Standardnumber" label="分类层级数" align="center">
                     </el-table-column>
-                    <el-table-column prop="ch_name" label="中文名称" align="center">
+                    <el-table-column prop="ch_name" label="分类名称" align="center">
                     </el-table-column>
-                    <el-table-column prop="Standardalias" label="标准别名" align="center">
+                    <el-table-column prop="Standardalias" label="分类描述" align="center">
                     </el-table-column>
-                    <el-table-column prop="datatype" label="数据类型" align="center">
+                    <el-table-column prop="datatype" label="创建人" align="center">
+                    </el-table-column>
+                     <el-table-column prop="datatime" label="创建时间" align="center">
                     </el-table-column>
                     <el-table-column prop="Releasestatus" label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
                     </el-table-column>
@@ -102,6 +104,7 @@ export default {
                 ch_name: '报表日期',
                 Standardalias: '报表日期123',
                 datatype: '代码类',
+                datatime:'2019-09-01',
                 Releasestatus: '未发布',
                 selectionState: false,
             }, ],
