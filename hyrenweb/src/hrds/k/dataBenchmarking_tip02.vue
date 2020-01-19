@@ -8,9 +8,9 @@
         </el-col>
         <el-col :span='13'>&nbsp;</el-col>
         <el-col :span='6' style="text-align:right" class='allbutton'>
-            <el-button size="mini" type="success" class="el-icon-upload">发布</el-button>
-            <el-button size="mini" type="success" class='el-icon-circle-plus-outline'>新增代码类</el-button>
-            <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除所有代码类</el-button>
+            <el-button size="mini" type="success" class="el-icon-upload">发布所有</el-button>
+            <el-button size="mini" type="primary" class='el-icon-circle-plus-outline'>新增代码类</el-button>
+            <!-- <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除所有代码类</el-button> -->
         </el-col>
     </el-row>
     <!--  -->
@@ -25,8 +25,7 @@
                     </el-col>
                     <el-col :span='13'>&nbsp;</el-col>
                     <el-col :span='6' style="text-align:right" class='allbutton'>
-                        <el-button size="mini" type="success" >新增代码项</el-button>
-                        <el-button size="mini" type="danger" >删除代码项</el-button>
+                        <el-button size="mini" type="primary" >新增代码项</el-button>
                     </el-col>
                 </el-row>
                 <el-table :data="dataList" align="center" stripe size='mini' class='in_tableColor'>
@@ -52,6 +51,11 @@
                     <el-table-column align="center" prop="base" label="层级">
                     </el-table-column>
                     <el-table-column align="center" prop="import" label="代码描述">
+                    </el-table-column>
+                      <el-table-column label="操作" width="100" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small" class='delcolor'>删除</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
                 <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total,prev, pager, next" :total="tableData.length" class='pagerigth'></el-pagination>
@@ -81,6 +85,7 @@
          <el-table-column label="操作" width="100" align="center">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class='delcolor'>删除</el-button>
+                            <el-button type="text" size="small" >发布</el-button>
                         </template>
                     </el-table-column>
     </el-table>

@@ -20,7 +20,7 @@
                 <el-col :span='10' style="text-align:right" class='allbutton'>
                     <el-button size="mini"  type="primary" plain>批量导入</el-button>
                     <el-button size="mini" type="success" class="el-icon-upload">发布标准</el-button>
-                    <el-button size="mini" type="success" class='el-icon-circle-plus-outline'>新增标准</el-button>
+                    <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="dialogEditTableVisible=true">新增标准</el-button>
                     <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除标准</el-button>
                 </el-col>
             </el-row>
