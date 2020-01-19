@@ -25,7 +25,7 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size='medium' style="min-height: 400px;">
+                <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size='medium' style="min-height: 400px;" class='outtable'>
                     <el-table-column width="55" align="center" prop="selectionState">
                         <template slot="header" slot-scope="scope">
                             <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -265,7 +265,7 @@
             <el-button type="success" size="mini" class="el-icon-upload">发布</el-button>
         </div>
     </el-dialog>
-
+    
 </div>
 </template>
 
@@ -448,7 +448,20 @@ export default {
                     label: '设计原则',
                     children: [{
                         value: 'yizhi',
+                        label: '一致',
+                          children: [{
+                        value: 'yizhi',
                         label: '一致'
+                    }, {
+                        value: 'fankui',
+                        label: '反馈'
+                    }, {
+                        value: 'xiaolv',
+                        label: '效率'
+                    }, {
+                        value: 'kekong',
+                        label: '可控'
+                    }]
                     }, {
                         value: 'fankui',
                         label: '反馈'
