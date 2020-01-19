@@ -9,7 +9,7 @@
                 </el-col>
                 <el-col :span='4' style="text-align:right" class='allbutton'>
                     <el-button size="mini" type="success" class="el-icon-upload">发布分类</el-button>
-                    <el-button size="mini"  type="success" class='el-icon-circle-plus-outline' @click="dialogaddclassableVisible=true">新增分类</el-button>
+                    <el-button size="mini"  type="primary" class='el-icon-circle-plus-outline' @click="dialogaddclassableVisible=true">新增分类</el-button>
                 </el-col>
             </el-row>
             <el-row>
@@ -53,19 +53,19 @@
         <el-row>
                 <el-form ref="form"  label-width="80px">
                      <el-row :gutter="20">
-                            <el-col :span="12">
+                            <el-col :span="16">
                                 <el-row>
                                 <el-form-item label="归属分类 : ">
-                                    <el-cascader :options="options" clearable size='mini'></el-cascader>
+                                    <el-cascader :options="options" clearable ></el-cascader>
                                 </el-form-item>
                                 </el-row>
                             </el-col>
                         </el-row>
                         <el-row :gutter="20">
-                            <el-col :span='12'>
+                            <el-col :span='16'>
                                 <el-row>
                                     <el-form-item label="中文名称 : ">
-                                        <el-input placeholder="中文名称" size='mini'>
+                                        <el-input placeholder="中文名称" >
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
