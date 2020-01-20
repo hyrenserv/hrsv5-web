@@ -58,7 +58,7 @@
                             <el-col :span="16">
                                 <el-row>
                                 <el-form-item label="归属分类 : ">
-                                    <el-cascader :options="options" clearable ></el-cascader>
+                                    <el-cascader :options="options" clearable   :props="{ checkStrictly: true }"></el-cascader>
                                 </el-form-item>
                                 </el-row>
                             </el-col>
