@@ -94,6 +94,7 @@ import * as message from "@/utils/js/message";
 import regular from "@/utils/js/regular";
 let data;
 let arry;
+let dtcsId;
 export default {
     data() {
         return {
@@ -143,6 +144,7 @@ export default {
         },
         // 获取编辑表格信息
         updateData(val) {
+            dtcsId = val;
             functionAll.searchDataLayerDataTypeInfo({
                 dtcs_id: val
             }).then((res) => {
@@ -191,8 +193,8 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 处理参数
-                    data = this.form.dialogTableData
-                    this.form['dtcs_id'] = data[0].dtcs_id;
+                    data = this.form.dialogTableData;
+                    this.form['dtcs_id'] = dtcsId;
                     this.form.dialogTableData.forEach((item) => {
                         delete item.dtcs_name;
                         delete item.dtcs_id;
@@ -214,9 +216,7 @@ export default {
                             this.form.dialogTableData = data;
                         }
                     })
-                } else {
-
-                }
+                } 
             });
         },
         dataRosolve(tableData) {

@@ -150,7 +150,6 @@
                         <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
                     </template>
                 </el-table-column>
-
             </el-table>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -216,13 +215,6 @@ export default {
             typeLengthinfo: [],
             fileList: [],
             YesNo: [],
-            YesNos: [{
-                value: "上传文件",
-                code: "1"
-            }, {
-                value: 'input',
-                code: "2"
-            }],
             rule: validator.default
         }
     },
@@ -279,107 +271,147 @@ export default {
         saveData(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    if (this.form.tableData.length > 0) {
-                        // 处理参数
-                        this.change_storelayer = [];
-                        this.form.dsla_storelayer.forEach((item) => {
-                            if (item == "主键") {
-                                this.change_storelayer.push("01");
-                            } else if (item == "rowkey") {
-                                this.change_storelayer.push("02");
-                            } else if (item == "索引列") {
-                                this.change_storelayer.push("03");
-                            } else if (item == "预聚合列") {
-                                this.change_storelayer.push("04");
-                            } else if (item == "排序列") {
-                                this.change_storelayer.push("05");
-                            } else if (item == "分区列") {
-                                this.change_storelayer.push("06");
-                            }
-                        })
-                        if (fileArry.length != 0) {
-                            this.form['files'] = fileArry;
-                        }
-
-                        let param = new FormData() // 创建form对象
-                        param.append('dsl_name', this.form.dsl_name);
-                        param.append('store_type', this.form.store_type);
-                        param.append('is_hadoopclient', this.form.is_hadoopclient);
-                        if (this.form.dsl_remark != undefined) {
-                            param.append('dsl_remark', this.form.dsl_remark);
+                    if (valueIndex == 3 || valueIndex == 2) {
+                        if (fileArry.length == 0) {
+                            message.customizTitle("上传的文件不能为空！", "warning")
                         } else {
-                            param.append('dsl_remark', '');
-                        }
-                        if (this.form.dslad_remark != undefined) {
-                            param.append('dslad_remark', this.form.dslad_remark);
-                        } else {
-                            param.append('dslad_remark', '');
-                        }
-                        this.form.tableData.forEach((item) => {
-                            item['is_file'] = 0;
-                        });
-                        // 处理参数dataStoreLayerAttr
-                        // 如果是hbase
-                        if (valueIndex == 3) {
-                            let arrtable = [];
-                            this.form.tableData.forEach(item => {
-                                if (item.storage_property_val) {
-                                    arrtable.push(item);
-                                }
-                            })
-                            arrtable.forEach((item) => {
-                                if (item.radio) {
-                                    delete item.radio
-                                }
-                            })
-                            param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
-                        } else if (valueIndex == 2) {
-                            let arrtable = [];
-                            for (let i = 0; i < 5; i++) {
-                                arrtable.push(this.form.tableData[i]);
-                            }
-                            param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
-                        } else {
-                            if (tableDatas.length > 0) {
-                                tableDatas.forEach((item) => {
-                                    if (item.radio) {
-                                        delete item.radio
+                            if (this.form.tableData.length > 0) {
+                                // 处理参数
+                                this.change_storelayer = [];
+                                this.form.dsla_storelayer.forEach((item) => {
+                                    if (item == "主键") {
+                                        this.change_storelayer.push("01");
+                                    } else if (item == "rowkey") {
+                                        this.change_storelayer.push("02");
+                                    } else if (item == "索引列") {
+                                        this.change_storelayer.push("03");
+                                    } else if (item == "预聚合列") {
+                                        this.change_storelayer.push("04");
+                                    } else if (item == "排序列") {
+                                        this.change_storelayer.push("05");
+                                    } else if (item == "分区列") {
+                                        this.change_storelayer.push("06");
                                     }
                                 })
-                                param.append('dataStoreLayerAttr', JSON.stringify(tableDatas));
-                            } else {
-                                param.append('dataStoreLayerAttr', JSON.stringify(this.form.tableData));
-                            };
-                        }
 
-                        //    处理参数dsla_storelayer
-                        for (let index = 0; index < this.change_storelayer.length; index++) {
-                            param.append('dsla_storelayer', this.change_storelayer[index])
-                        }
-                        param.append('dtcs_id', this.form.dtcs_id);
-                        param.append('dlcs_id', this.form.dlcs_id);
-                        if (fileArry.length > 0) {
-                            for (let index = 0; index < fileArry.length; index++) {
-                                param.append('files', fileArry[index]);
-                            };
-                        }
-                        functionAll.addDataStore(
-                            param
-                        ).then((res) => {
-                            if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '添加成功!'
-                                })
-                                this.$router.push({
-                                    name: "dataStoreActionIndex"
-                                })
-                            } else {
+                                let param = new FormData() // 创建form对象
+                                param.append('dsl_name', this.form.dsl_name);
+                                param.append('store_type', this.form.store_type);
+                                param.append('is_hadoopclient', this.form.is_hadoopclient);
+                                if (this.form.dsl_remark != undefined) {
+                                    param.append('dsl_remark', this.form.dsl_remark);
+                                } else {
+                                    param.append('dsl_remark', '');
+                                }
+                                if (this.form.dslad_remark != undefined) {
+                                    param.append('dslad_remark', this.form.dslad_remark);
+                                } else {
+                                    param.append('dslad_remark', '');
+                                }
+                                this.form.tableData.forEach((item) => {
+                                    item['is_file'] = 0;
+                                });
+                                // 处理参数dataStoreLayerAttr
+                                // 如果是hbase
+                                if (valueIndex == 3) {
+                                    let arrtable = [];
+                                    this.form.tableData.forEach(item => {
+                                        if (item.storage_property_val) {
+                                            arrtable.push(item);
+                                        }
+                                    })
+                                    arrtable.forEach((item) => {
+                                        if (item.radio) {
+                                            delete item.radio
+                                        }
+                                    })
+                                    param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
+                                } else if (valueIndex == 2) {
+                                    let arrtable = [];
+                                    for (let i = 0; i < 5; i++) {
+                                        arrtable.push(this.form.tableData[i]);
+                                    }
+                                    param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
+                                }
 
+                                //    处理参数dsla_storelayer
+                                for (let index = 0; index < this.change_storelayer.length; index++) {
+                                    param.append('dsla_storelayer', this.change_storelayer[index])
+                                }
+                                param.append('dtcs_id', this.form.dtcs_id);
+                                param.append('dlcs_id', this.form.dlcs_id);
+                                if (fileArry.length > 0) {
+                                    for (let index = 0; index < fileArry.length; index++) {
+                                        param.append('files', fileArry[index]);
+                                    };
+                                }
+                                functionAll.addDataStore(
+                                    param
+                                ).then((res) => {
+                                    if (res && res.success) {
+                                        message.saveSuccess(res);
+                                        this.$router.push({
+                                            name: "dataStoreActionIndex"
+                                        })
+                                    }
+                                })
                             }
-                        })
+                        }
                     } else {
-                        return false;
+                        if (this.form.tableData.length > 0) {
+                            // 处理参数
+                            this.change_storelayer = [];
+                            this.form.dsla_storelayer.forEach((item) => {
+                                if (item == "主键") {
+                                    this.change_storelayer.push("01");
+                                } else if (item == "rowkey") {
+                                    this.change_storelayer.push("02");
+                                } else if (item == "索引列") {
+                                    this.change_storelayer.push("03");
+                                } else if (item == "预聚合列") {
+                                    this.change_storelayer.push("04");
+                                } else if (item == "排序列") {
+                                    this.change_storelayer.push("05");
+                                } else if (item == "分区列") {
+                                    this.change_storelayer.push("06");
+                                }
+                            });
+                            let param = new FormData() // 创建form对象
+                            param.append('dsl_name', this.form.dsl_name);
+                            param.append('store_type', this.form.store_type);
+                            param.append('is_hadoopclient', this.form.is_hadoopclient);
+                            if (this.form.dsl_remark != undefined) {
+                                param.append('dsl_remark', this.form.dsl_remark);
+                            } else {
+                                param.append('dsl_remark', '');
+                            }
+                            if (this.form.dslad_remark != undefined) {
+                                param.append('dslad_remark', this.form.dslad_remark);
+                            } else {
+                                param.append('dslad_remark', '');
+                            }
+                            this.form.tableData.forEach((item) => {
+                                item['is_file'] = 0;
+                            });
+                            param.append('dataStoreLayerAttr', JSON.stringify(this.form.tableData));
+                            //    处理参数dsla_storelayer
+                            for (let index = 0; index < this.change_storelayer.length; index++) {
+                                param.append('dsla_storelayer', this.change_storelayer[index])
+                            }
+                            param.append('dtcs_id', this.form.dtcs_id);
+                            param.append('dlcs_id', this.form.dlcs_id);
+                            param.append('files', '');
+                            functionAll.addDataStore(
+                                param
+                            ).then((res) => {
+                                if (res && res.success) {
+                                    message.saveSuccess(res);
+                                    this.$router.push({
+                                        name: "dataStoreActionIndex"
+                                    })
+                                }
+                            })
+                        }
                     }
                 }
             });
@@ -560,7 +592,7 @@ export default {
             uploadindex = index;
             this.selectedValueTabledata = [];
             dataKey = row.storage_property_key;
-            this.selectedValueTabledata.push(row)
+            this.selectedValueTabledata.push(row);
         },
         // 删除上传文件
         removeFile(file, fileList) {
@@ -633,6 +665,7 @@ export default {
 .dataStoreAction .elButton {
     float: right;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .dataStoreAction .partTwoBtn {
