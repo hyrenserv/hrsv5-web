@@ -42,7 +42,7 @@
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeCloseAdd">
+    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd"  :before-close="beforeCloseAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.para_name" autocomplete="off" placeholder="请输入系统参数名称" style="width:284px"></el-input>
@@ -65,7 +65,7 @@
 
     <!-- 实现点击编辑按钮进行页面部门更新-->
     <!-- 编辑的弹出表单 -->
-    <el-dialog title="更新系统参数信息" :visible.sync="dialogFormVisibleUpdate" width="40%" :before-close="beforeClose">
+    <el-dialog title="更新系统参数信息" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeClose">
         <el-form :model="formUpdate" ref="formUpdate">
             <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formUpdate.para_name" autocomplete="off" placeholder="请输入系统参数名称" :disabled="true" style="width:284px"></el-input>
