@@ -11,7 +11,7 @@
   <el-tab-pane label="代码配置">
       <CodeConfiguration></CodeConfiguration>
   </el-tab-pane>
-  <el-tab-pane label="标准分类配置">
+  <el-tab-pane label="标准分类配置">1111
       <StandardClassConfiguration></StandardClassConfiguration>
   </el-tab-pane>
 </el-tabs>
