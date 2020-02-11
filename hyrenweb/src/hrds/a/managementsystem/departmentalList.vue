@@ -3,11 +3,6 @@
     <el-row>
         <i class="el-icon-s-check"></i>
         <span>部门列表</span>
-        <router-link to="managementsystem">
-            <el-button type="primary" class="el1 els" size="small">
-                <i class="block_icon fa fa-cubes"></i>返回首页
-            </el-button>
-        </router-link>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
             <i class="el-icon-circle-plus-outline"></i>新增部门
         </el-button>
