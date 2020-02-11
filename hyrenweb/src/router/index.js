@@ -37,7 +37,6 @@ export default new Router({routes: [
         {path: '/agentList',name: 'agentList',title: 'agent列表',component: () => import('@/hrds/b/agentList/agentList.vue')},
         {path: '/taskLog1',name: 'taskLog',title: 'taskLog日志查看',component: () => import('@/hrds/b/agentList/taskLog.vue')},
         // 系统管理
-        {path: '/managementsystem',name: 'managementsystem',title: '系统管理',component: () => import('@/hrds/a/managementsystem/managementsystem.vue')},
         // 用户列表
         {path: '/userManagement',name: 'userManagement',title: '用户列表',component: () => import('@/hrds/a/managementsystem/userManagement.vue')},
         // 部门列表
