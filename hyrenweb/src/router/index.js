@@ -66,7 +66,7 @@ export default new Router({routes: [
         {path: '/fullTextSearch',name: 'fullTextSearch',title: 'fullTextSearch',component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue')},
         {path: '/webSqlConsole',name: 'webSqlConsole',title: 'webSqlConsole',component: () => import('@/hrds/b/dataQuery/webSqlConsole.vue')},
         {path: '/etlMage',name: 'etlMage',title: 'etlMage',component: () => import('@/hrds/c/etlMage/etlMage.vue')},
-        {path: '/dataBenchmarking',name: 'dataBenchmarking',title: 'dataBenchmarking',component: () => import('@/hrds/k/dataBenchmarking_tip.vue')},
+        {path: '/dataBenchmarking',name: 'dataBenchmarking',title: 'dataBenchmarking',component: () => import('@/hrds/k/dataBenchmarks/dataBenchmarking_tip.vue')},
     ]},
     //详情首页
     {
