@@ -2,26 +2,27 @@
 <div class="home">
     <el-container>
         <el-header>
-            <el-row type="flex" :gutter="29">
-                <el-col :span="6">
-                    <span><i class="el-icon-menu"></i>菜单列表</span>
+            <el-row type="flex">
+                <el-col :span="6" style='text-align:left'>
+                    <span><i class="el-icon-menu" ></i>菜单列表</span>
                 </el-col>
-                <el-col :span="2" :offset="19">
+                <el-col :span="12">
                     <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" style='text-align:right'>
                     <el-link :underline="false" @click="goback"><i class="el-icon-s-custom" style="color:#fff">退出登录</i></el-link>
                 </el-col>
             </el-row>
         </el-header>
         <el-container>
-            <el-aside width="15%">
+            <div class='side-bar'>
                 <!-- 导航 -->
-                <el-menu router :default-active="deflink">
-                    <div v-for="items in menus" :key="items.name">
-                        <!-- <template v-if="items.children"> -->
-                        <!--二级菜单循环-->
-                        <!--  <el-submenu :index="items.children[0].path">
+                <Scrollbar>
+                    <el-menu router :default-active="$route.path"  :unique-opened="false" :collapse="isCollapse">
+                        <div v-for="items in menus" :key="items.name">
+                            <!-- <template v-if="items.children"> -->
+                            <!--二级菜单循环-->
+                            <!--  <el-submenu :index="items.children[0].path">
                                 <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
                                 <div v-for="item in items.children" :key="item.name">
                                     <el-menu-item :index="item.path">
@@ -30,23 +31,23 @@
                                     </el-menu-item>
                                 </div>
                             </el-submenu> -->
-                        <!-- </template> -->
-                        <!-- <template v-else> -->
-                        <!--一级菜单循环-->
-                        <el-menu-item :index="items.path">
-                            <i :class="items.icon"></i>
-                            <span>{{items.title}}</span>
-                        </el-menu-item>
-                        <!-- </template> -->
-                    </div>
-                </el-menu>
-            </el-aside>
-            <el-container>
+                            <!-- </template> -->
+                            <!-- <template v-else> -->
+                            <!--一级菜单循环-->
+                            <el-menu-item :index="items.path">
+                                <i :class="items.icon"></i>
+                                <span>{{items.title}}</span>
+                            </el-menu-item>
+                            <!-- </template> -->
+                        </div>
+                    </el-menu>
+                </Scrollbar>
+            </div>
+            <!-- <el-container> -->
                 <el-main>
                     <router-view></router-view>
                 </el-main>
-                <!-- <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer> -->
-            </el-container>
+            <!-- </el-container> -->
         </el-container>
         <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
     </el-container>
@@ -57,12 +58,18 @@
 import {
     mapActions
 } from 'vuex'
+import Scrollbar from '../scrollbar';
+
 import * as addTaskAllFun from './menu'
 export default {
+    components: {
+        Scrollbar
+    },
     data() {
         return {
             menus: [],
-            deflink: ''
+            deflink: '',
+            isCollapse:false
         }
     },
     mounted() {
@@ -82,9 +89,9 @@ export default {
             // this.deflink = this.menus[0]?this.menus[0].path:''
 
         })
-         addTaskAllFun.getDefaultPage().then(res => {
-                            this.deflink=res.data;
-                        });
+        addTaskAllFun.getDefaultPage().then(res => {
+            this.deflink = res.data;
+        });
 
     },
     methods: {
@@ -92,12 +99,16 @@ export default {
         goback() {
             this.resetToken();
             this.$router.push('/');
-        }
+        },
+      /*   isCollapseFun(){
+          this.isCollapse=!this.isCollapse
+        }, */
+        
     }
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .el-header,
 .el-footer {
     background-color: #495179;
@@ -119,6 +130,7 @@ export default {
 .el-main {
     padding: 15px;
     margin-bottom: 15px;
+    height: 530px;
 }
 
 .el-menu {
@@ -138,7 +150,7 @@ export default {
 }
 
 .el-container {
-    min-height: 100vh;
+    min-height: 90vh;
 }
 
 .el-menu-item.is-active {
@@ -157,5 +169,23 @@ export default {
     bottom: 0%;
     width: 100%;
     z-index: 10;
+}
+
+.side-bar {
+    background-color: #545c64;
+    min-width: 200px;
+
+    .scrollbar-wrap {
+        // height: calc(100% - 68px);
+    }
+
+   /*  .el-menu {
+        height: 100%;
+        border-right: none;
+
+        &:not(.el-menu--collapse) {
+            width: 200px;
+        }
+    } */
 }
 </style>
