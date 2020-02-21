@@ -19,9 +19,9 @@
                 </el-col>
                 <el-col :span='10' style="text-align:right" class='allbutton'>
                     <el-button size="mini" type="primary" plain>批量导入</el-button>
-                    <el-button size="mini" type="success" class="el-icon-upload">发布标准</el-button>
-                    <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="dialogEditTableVisible=true">新增标准</el-button>
-                    <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除标准</el-button>
+                    <el-button size="mini" type="success" class="el-icon-upload">发布所有标准</el-button>
+                    <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addBascicFun()">新增标准</el-button>
+                    <!-- <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除标准</el-button> -->
                 </el-col>
             </el-row>
             <el-row>
@@ -39,26 +39,27 @@
                             <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="Categoryparent" label="上级分类" align="center">
+                    <el-table-column prop="sort_id" label="上级分类" align="center">
                     </el-table-column>
-                    <el-table-column prop="Standardnumber" label="标准编号" align="center">
+                    <el-table-column prop="norm_code" label="标准编号" align="center">
                     </el-table-column>
-                    <el-table-column prop="ch_name" label="中文名称" align="center">
+                    <el-table-column prop="norm_cname" label="中文名称" align="center">
                     </el-table-column>
-                    <el-table-column prop="Standardalias" label="标准别名" align="center">
+                    <el-table-column prop="norm_aname" label="标准别名" align="center">
                     </el-table-column>
-                    <el-table-column prop="datatype" label="数据类型" align="center">
+                    <el-table-column prop="data_type" label="数据类型" align="center">
                     </el-table-column>
-                    <el-table-column prop="Releasestatus" label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
+                    <el-table-column prop="norm_status" label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
                     </el-table-column>
                     <el-table-column label="操作" width="100" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" @click="dialogEditTableVisible=true">编辑</el-button>
-                            <el-button type="text" size="small" >删除</el-button>
+                            <el-button type="text" size="small" @click="editbasicByIdFun(scope.row)">编辑</el-button>
+                            <el-button type="text" size="small">发布</el-button>
+                            <el-button type="text" size="small" @click="deleteDbbasicInfo(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class='locationcenter'></el-pagination>
+                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
             </el-row>
         </el-col>
     </el-row>
@@ -83,7 +84,7 @@
                             <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="中文名称 : " prop="cnName">
-                                        <el-input placeholder="中文名称" size='mini'  v-model="ruleForm_Info.cnName">
+                                        <el-input placeholder="中文名称" size='mini' v-model="ruleForm_Info.cnName">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
@@ -139,7 +140,7 @@
                                 <el-row>
                                     <el-form-item label="数据类型 : " prop="data_types">
                                         <el-select placeholder="请选择" size="mini" v-model="ruleForm_Info.data_types">
-                                            <el-option size="mini" v-for="item in dataType" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled">
+                                            <el-option size="mini" v-for="item in dataType" :key="item.code" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -167,8 +168,8 @@
                             <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="所属代码 : " prop="belongsCode">
-                                        <el-select  placeholder="请选择" size="mini" v-model="ruleForm_Info.belongsCode">
-                                            <el-option v-for="item in dataType" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled">
+                                        <el-select placeholder="请选择" size="mini" v-model="ruleForm_Info.belongsCode">
+                                            <el-option v-for="item in dbmCodeTypeInfos" :key="item.code_type_id" :label="item.code_type_name" :value="item.code_type_id" :disabled="item.disabled">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -198,8 +199,16 @@
                         </el-row>
                         <el-row :gutter="20" style="margin-left:0">
                             <el-col>
-                                <el-form-item label="标准定义 : " prop="sdefinition"> 
+                                <el-form-item label="标准定义 : " prop="sdefinition">
                                     <el-input type="textarea" :rows="2" v-model="ruleForm_Info.sdefinition" placeholder="请输入内容" style='width:86%'>
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20" style="margin-left:0">
+                            <el-col>
+                                <el-form-item label="值域 : " prop="dbm_domain">
+                                    <el-input type="textarea" :rows="2" v-model="ruleForm_Info.dbm_domain" placeholder="请输入内容" style='width:86%'>
                                     </el-input>
                                 </el-form-item>
                             </el-col>
@@ -213,12 +222,12 @@
                             <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="管理部门 : " prop="department">
-                                        <el-input placeholder="管理部门" size='mini'  v-model="ruleForm_Info.department">
+                                        <el-input placeholder="管理部门" size='mini' v-model="ruleForm_Info.department">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
                             </el-col>
-                            <el-col :span='14'>
+                            <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="相关部门 : " prop="relevantDepartments">
                                         <el-input placeholder="相关部门" size='mini' v-model="ruleForm_Info.relevantDepartments">
@@ -226,7 +235,16 @@
                                     </el-form-item>
                                 </el-row>
                             </el-col>
-
+                            <el-col :span='7'>
+                                <el-row>
+                                    <el-form-item label="发布状态 : " prop="relatedStandards">
+                                        <el-select placeholder="请选择" size='mini' v-model="ruleForm_Info.norm_status">
+                                            <el-option v-for="item in Releasestatus" :key="item.value" :label="item.text" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-row>
+                            </el-col>
                         </el-row>
                         <el-row :gutter="20">
                             <el-col :span='7'>
@@ -250,7 +268,7 @@
                             <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="制定人 : " prop="enactingPerson">
-                                        <el-input placeholder="制定人" size='mini' v-model="ruleForm_Info.enactingPerson">   
+                                        <el-input placeholder="制定人" size='mini' v-model="ruleForm_Info.enactingPerson">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
@@ -261,13 +279,14 @@
             </el-collapse>
         </el-row>
         <div slot="footer" class="dialog-footer">
-            <el-button type="danger" size="mini">取 消</el-button>
+            <el-button type="danger" size="mini" @click="dialogEditTableVisible=false">取 消</el-button>
             <el-button type="primary" size="mini" @click="saveAddDbmNormbasicInfo('ruleForm_Info')">保存</el-button>
             <el-button type="success" size="mini" class="el-icon-upload">发布</el-button>
         </div>
     </el-dialog>
 </div>
 </template>
+
 <script>
 import * as dataBenchmarkingAllFun from './dataBenchmarking'
 export default {
@@ -275,77 +294,85 @@ export default {
         return {
             currentPage: 1,
             pagesize: 10,
+            totalSize:0,
             Allis_selectionState: false,
             dialogEditTableVisible: false,
             activeNames: ['1', '2', '3', '4'],
+            Releasestatus: [{
+                text: '未发布',
+                value: '0'
+            }, {
+                text: '已发布',
+                value: '1'
+            }, ],
             filterText: '',
             textarea: '',
             value: '',
-            ruleForm_Info:{
-                standardNum:'',
-                cnName:'',
-                enName:'',
-                standardAlias:'',
-                belongsClass:'',
-                standardDescription:'',
-                fieldName:'',
-                data_types:'',
-                fieldLength:'',
-                decimalLen:'',
-                belongsCode:'',
-                worksDefin:'',
-                workRule:'',
-                sdefinition:'',
-                department:'',
-                relevantDepartments:'',
-                trustedSystem:'',
-                relatedStandards:'',
-                enactingPerson:''
+            basicStaus: '',
+            basic_id: '',
+            ruleForm_Info: {
+                standardNum: '',
+                cnName: '',
+                enName: '',
+                standardAlias: '',
+                belongsClass: '',
+                standardDescription: '',
+                fieldName: '',
+                data_types: '',
+                fieldLength: null,
+                decimalLen: null,
+                belongsCode: '',
+                worksDefin: '',
+                workRule: '',
+                sdefinition: '',
+                department: '',
+                relevantDepartments: '',
+                trustedSystem: '',
+                relatedStandards: '',
+                enactingPerson: '',
+                dbm_domain: '', //值域
+                norm_status: '', //发布状态
             },
             Releasestatus: [{
                 text: '未发布',
-                value: '01'
+                value: '0'
             }, {
                 text: '已发布',
-                value: '02'
+                value: '1'
             }, ],
-            dataType: [{
-                value: '代码类',
-                label: '代码类'
-            }, ],
+            dataType: [],
+            dbmCodeTypeInfos: [],
             data: [{
-                id: 1,
-                label: '一级 1',
+                id: '100000',
+                label: '廊坊银行总行',
                 children: [{
-                    id: 4,
-                    label: '二级 1-1',
+                    id: '110000',
+                    label: '廊坊分行',
                     children: [{
-                        id: 9,
-                        label: '三级 1-1-1'
+                        id: '111000',
+                        label: '廊坊银行金光道支行',
+                        children: [{
+                            id: '999999',
+                            label: '阿萨德看见爱上',
+                            leaf: true
+                        }]
                     }, {
-                        id: 10,
-                        label: '三级 1-1-2'
+                        id: '112000',
+                        label: '廊坊银行解放道支行',
+                        children: [{
+                            id: '112100',
+                            label: '廊坊银行广阳道支行',
+                            leaf: true
+                        }, {
+                            id: '112200',
+                            label: '廊坊银行三大街支行',
+                            leaf: true
+                        }]
+                    }, {
+                        id: '113000',
+                        label: '廊坊银行开发区支行',
+                        leaf: true
                     }]
-                }]
-            }, {
-                id: 2,
-                label: '一级 2',
-                children: [{
-                    id: 5,
-                    label: '二级 2-1'
-                }, {
-                    id: 6,
-                    label: '二级 2-2'
-                }]
-            }, {
-                id: 3,
-                label: '一级 3',
-                children: [{
-                    id: 7,
-                    label: '二级 3-1'
-                }, {
-                    id: 8,
-                    label: '二级 3-2'
                 }]
             }],
             defaultProps: {
@@ -572,8 +599,17 @@ export default {
             }]
         };
     },
-    mounted(){
-       this.getDbmNormbasicInfo()
+    mounted() {
+        this.getDbmNormbasicInfo(1, 10)
+        // 获取数据类型下拉框
+        this.$Code.getCategoryItems({
+            'category': 'DbmDataType'
+        }).then(res => {
+            console.log(res.data)
+            this.dataType = res.data
+        })
+        // 获取代码类
+        this.getDbmCodeTypeIdAndNameInfo()
     },
     watch: {
         filterText(val) {
@@ -581,6 +617,14 @@ export default {
         }
     },
     methods: {
+        // 获取代码类下拉
+        getDbmCodeTypeIdAndNameInfo() {
+            dataBenchmarkingAllFun.getDbmCodeTypeIdAndNameInfo().then(res => {
+                console.log(res)
+                this.dbmCodeTypeInfos = res.data.dbmCodeTypeInfos
+            });
+        },
+
         // 表第一列的全选
         /*  Allis_selectionStateFun(items, e) {
              let that = this;
@@ -672,40 +716,97 @@ export default {
 
         },
         // 获取初始数据
-        getDbmNormbasicInfo(){
-             let params = {};
-            params["currPage"] =1;
-            params["pageSize"] =10;
+        getDbmNormbasicInfo(curr, size) {
+            let params = {};
+            params["currPage"] = curr;
+            params["pageSize"] = size;
             console.log(params)
-            dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res=>{
+            dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res => {
+                this.totalSize=res.data.totalSize
+                this.tableData=res.data.dbmNormbasicInfos
+            });
+
+        },
+        // 新增打开
+        addBascicFun() {
+            this.dialogEditTableVisible = true
+            this.basicStaus = 'add'
+            this.ruleForm_Info.standardNum = ''
+            this.ruleForm_Info.cnName = ''
+            this.ruleForm_Info.enName = ''
+            this.ruleForm_Info.standardAlias = ''
+            this.ruleForm_Info.belongsClass = ''
+            this.ruleForm_Info.data_types = '' //数据类型
+            this.ruleForm_Info.fieldLength = ''; //字段长度
+            this.ruleForm_Info.decimalLen = '' //小数长度
+            this.ruleForm_Info.belongsCode = '' //所属代码--
+            this.ruleForm_Info.worksDefin = ''; //业务定义
+            this.ruleForm_Info.workRule = ''; //业务规则
+            this.ruleForm_Info.sdefinition = ''; //标准定义
+            this.ruleForm_Info.dbm_domain = ''; //值域
+            this.ruleForm_Info.department = ''; //管理部门
+            this.ruleForm_Info.relevantDepartments = ''; //相关部门
+            this.ruleForm_Info.norm_status = ''; //发布状态
+            this.ruleForm_Info.trustedSystem = ''; //可信系统
+            this.ruleForm_Info.relatedStandards = ''; //相关标准
+            this.ruleForm_Info.enactingPerson = ''; //制定人
+        },
+
+        // 编辑打开
+        editbasicByIdFun(row) {
+            this.dialogEditTableVisible = true;
+            this.basic_id = row.basic_id
+            this.basicStaus = 'edit'
+            let params = {}
+            params["basic_id"] = row.basic_id;
+            dataBenchmarkingAllFun.getDbmNormbasicInfoById(params).then(res => {
                 console.log(res)
             });
-          
         },
         // 新增标准分类
-        saveAddDbmNormbasicInfo(ruleform){
-          console.log(this.ruleForm_Info)
-          let params={}
-          params["norm_code"] = this.ruleForm_Info.standardNum;
-          params["norm_cname"] = this.ruleForm_Info.cnName;
-          params["norm_ename"] = this.ruleForm_Info.enName;
-          params["norm_aname"] = this.ruleForm_Info.standardAlias;
-          params[""] = this.ruleForm_Info.belongsClass;//归属分类--
-          params[""] = this.ruleForm_Info.standardDescription;//标准描述--
-          params[""] = this.ruleForm_Info.fieldName;//字段名称--
-          params["data_type"] = this.ruleForm_Info.data_types;//数据类型
-          params["col_len"] = this.ruleForm_Info.fieldLength;//字段长度
-          params["decimal_point"] = this.ruleForm_Info.decimalLen;//小数长度
-          params[""] = this.ruleForm_Info.belongsCode;//所属代码--
-          params["business_def"] = this.ruleForm_Info.worksDefin;//业务定义
-          params["business_rule"] = this.ruleForm_Info.workRule;//业务规则
-          params["norm_basis"] = this.ruleForm_Info.sdefinition;//标准定义
-          params["manage_department"] = this.ruleForm_Info.department;//管理部门
-          params["relevant_department"] = this.ruleForm_Info.relevantDepartments;//相关部门
-          params["origin_system"] = this.ruleForm_Info.trustedSystem;//可信系统
-          params["related_system"] = this.ruleForm_Info.relatedStandards;//相关标准
-          params["formulator"] = this.ruleForm_Info.enactingPerson;//制定人
+        saveAddDbmNormbasicInfo(ruleform) {
+            let params = {}
+            params["norm_code"] = this.ruleForm_Info.standardNum;
+            params["norm_cname"] = this.ruleForm_Info.cnName;
+            params["norm_ename"] = this.ruleForm_Info.enName;
+            params["norm_aname"] = this.ruleForm_Info.standardAlias;
+            params["code_type_id"] = 100000 // this.ruleForm_Info.belongsClass;//归属分类--
+            //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
+            //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
+            params["data_type"] = this.ruleForm_Info.data_types; //数据类型
+            params["col_len"] = parseInt(this.ruleForm_Info.fieldLength); //字段长度
+            params["decimal_point"] = parseInt(this.ruleForm_Info.decimalLen); //小数长度
+            params["sort_id"] = parseInt(this.ruleForm_Info.belongsCode); //所属代码--
+            params["business_def"] = this.ruleForm_Info.worksDefin; //业务定义
+            params["business_rule"] = this.ruleForm_Info.workRule; //业务规则
+            params["norm_basis"] = this.ruleForm_Info.sdefinition; //标准定义
+            params["dbm_domain"] = this.ruleForm_Info.dbm_domain; //值域
+            params["manage_department"] = this.ruleForm_Info.department; //管理部门
+            params["relevant_department"] = this.ruleForm_Info.relevantDepartments; //相关部门
+            params["norm_status"] = this.ruleForm_Info.norm_status; //发布状态
+            params["origin_system"] = this.ruleForm_Info.trustedSystem; //可信系统
+            params["related_system"] = this.ruleForm_Info.relatedStandards; //相关标准
+            params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
+            console.log(params)
+            if (this.basic_id == 'edit') {
+                params["basic_id"] = this.basic_id;
+                dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
+                    console.log(res)
+                });
+            } else {
+                dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
+                    console.log(res)
+                });
+            }
 
+        },
+        // 
+        deleteDbbasicInfo(row) {
+            let params = {}
+            params["basic_id"] = row.basic_id;
+            dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
+                console.log(res)
+            });
         }
     }
 };

@@ -37,9 +37,16 @@
             </el-table-column>
             <el-table-column prop="create_user" label="创建人" align="center">
             </el-table-column>
-            <el-table-column prop="create_date" label="创建时间" align="center">
+            <el-table-column label="创建时间" align="center">
+                <template slot-scope="scope">
+                    <span>{{scope.row.create_date.substring(0,4)}}-{{scope.row.create_date.substring(4,6)}}-{{scope.row.create_date.substring(6,8)}} {{scope.row.create_time.substring(0,2)}}:{{scope.row.create_time.substring(2,4)}}:{{scope.row.create_time.substring(4,6)}}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="sort_status" label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.sort_status=='1'">已发布</span>
+                    <span v-else>未发布</span>
+                </template>
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
                 <template slot-scope="scope">
@@ -115,6 +122,7 @@ export default {
             Allis_selectionState: false,
             dialogaddclassableVisible: false,
             status: '',
+            edit_sortId: '',
             standardClassifiFormRule: {
                 belongsClass: '',
                 chNmae: '',
@@ -339,7 +347,8 @@ export default {
         // 编辑和新增点击保存方法
         standardClassifiSave(form) {
             // 新增
-            let params = {},that=this;
+            let params = {},
+                that = this;
             params["parent_id"] = 0;
             params["sort_level_num"] = 0;
             params["sort_name"] = this.standardClassifiFormRule.chNmae;
@@ -347,6 +356,7 @@ export default {
             params["sort_status"] = this.standardClassifiFormRule.code_status;
             console.log(params)
             if (this.status == 'edit') {
+                params["sort_id"] = this.edit_sortId;
                 dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
                     console.log(res)
                     that.dialogaddclassableVisible = false;
@@ -354,7 +364,7 @@ export default {
                 });
             } else {
                 dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
-                    console.log(res,1)
+                    console.log(res, 1)
                     that.dialogaddclassableVisible = false;
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 });
@@ -385,6 +395,7 @@ export default {
         EditFun(row) {
             this.dialogaddclassableVisible = true;
             this.status = 'edit'
+            this.edit_sortId = row.sort_id
             let params = {}
             params["sort_id"] = row.sort_id;
             dataBenchmarkingAllFun.getclassDbmSortInfoById(params).then(res => {
@@ -397,7 +408,7 @@ export default {
         },
         // 删除分类方法
         delectClassFun(row) {
-            let that=this
+            let that = this
             message.confirmMsg('确定删除吗').then(res => {
                 let params = {}
                 params["sort_id"] = row.sort_id;

@@ -7,6 +7,12 @@ export function getDbmNormbasicInfo(data) {
         params:data,
     })
 }
+// 获取代码类下拉框
+export function getDbmCodeTypeIdAndNameInfo() {
+    return request({
+        url: 'K/dbmcodetypeinfo/getDbmCodeTypeIdAndNameInfo',
+    })
+}
 //添加标准分类
 export function addDbmNormbasicInfo(data) {
     return request({
@@ -14,13 +20,27 @@ export function addDbmNormbasicInfo(data) {
         params:data,
     })
 }
+// 编辑打开
+export function getDbmNormbasicInfoById(data) {
+    return request({
+        url: 'K/dbmnormbasic/getDbmNormbasicInfoById',
+        params:data,
+    })
+}
+// 编辑保存
+export function updateDbmNormbasicInfo(data) {
+    return request({
+        url: 'K/dbmnormbasic/updateDbmNormbasicInfo',
+        params:data,
+    })
+}
 // 删除方法
-/* export function deleteDbmNormbasicInfo(data) {
+export function deleteDbmNormbasicInfo(data) {
     return request({
         url: 'K/dbmnormbasic/deleteDbmNormbasicInfo',
         params:data,
     })
-} */
+}
 //2:代码配置
 // 代码类新增
 export function addDbmCodeTypeInfo(data) {
@@ -36,6 +56,7 @@ export function getDbmCodeTypeInfo(data) {
         params:data,
     })
 }
+// 
 //代码类-编辑
 export function getDbmSortInfoById(data) {
     return request({
