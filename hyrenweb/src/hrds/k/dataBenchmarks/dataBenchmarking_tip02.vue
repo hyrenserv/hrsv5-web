@@ -28,7 +28,7 @@
                         <el-button size="mini" type="primary" @click="addCodeItemFun()">新增代码项</el-button>
                     </el-col>
                 </el-row>
-                <el-table :data="dataList" align="center" stripe size='mini' class='in_tableColor'>
+                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" stripe size='mini' class='in_tableColor'>
                     <el-table-column width="55" align="center" prop="selectionState">
                         <template slot="header" slot-scope="scope">
                             <el-checkbox></el-checkbox>
@@ -39,8 +39,8 @@
                     </el-table-column>
                     <el-table-column label="序号" align="center" width="60">
                         <template scope="scope">
-                            <span>{{scope.$index}}</span>
-                        </template>
+                            <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
+                        </template>item
                     </el-table-column>
                     <el-table-column align="center" prop="code_encode" label="代码编号">
                     </el-table-column>
@@ -59,7 +59,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total,prev, pager, next" :total="tableData.length" class='pagerigth'></el-pagination>
+                <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="itemcurrentPage" :page-sizes="[10, 50, 100, 200]" :page-size="itempagesize" layout="total,prev, pager, next" :total="dataList.length" class='pagerigth'></el-pagination>
             </template>
         </el-table-column>
         <!-- <el-table-column width="55" align="center" prop="selectionState">
@@ -72,7 +72,7 @@
         </el-table-column> -->
         <el-table-column label="序号" align="center" width="60">
             <template scope="scope">
-                <span>{{scope.$index}}</span>
+                <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
             </template>
         </el-table-column>
         <el-table-column label="代码编码" prop="code_encode" align="center">
@@ -81,7 +81,11 @@
         </el-table-column>
         <el-table-column label="代码描述" prop="code_remark" align="center">
         </el-table-column>
-        <el-table-column label="状态" prop="code_status" :filters="Releasestatus" :filter-multiple="false" align="center">
+        <el-table-column label="状态"  :filters="Releasestatus" :filter-multiple="false" align="center">
+         <template slot-scope="scope">
+                    <span v-if="scope.row.code_status=='1'">已发布</span>
+                    <span v-else>未发布</span>
+                </template>
         </el-table-column>
         <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
@@ -217,6 +221,8 @@ export default {
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
+             itemcurrentPage: 1,
+            itempagesize: 10,
             dialogaddCodeclassableVisible: false,
             dialogaddCodeXableVisible: false,
             expands: [],
@@ -228,20 +234,7 @@ export default {
                 codeleav: '',
                 codeDesc: ''
             },
-            dataList: [{
-                    duty: '004',
-                    guard: '阿富汗',
-                    accident: 'AFG',
-                    base: 'AF',
-                    import: '阿富汗伊斯兰国'
-                },
-                {
-                    duty: '004',
-                    guard: '阿富汗',
-                    accident: 'AFG',
-                    base: 'AF',
-                    import: '阿富汗伊斯兰国s'
-                }
+            dataList: [
             ],
             Releasestatus: [{
                 text: '未发布',
@@ -256,7 +249,9 @@ export default {
                 code_remark: '',
                 code_status: ''
             },
-            status: ''
+            status: '',
+            code_type_id:'',
+            code_item_id:''
         }
     },
     mounted() {
@@ -275,6 +270,7 @@ export default {
             if (event.cellIndex != 0 && event.cellIndex != 6) {
 
                 this.$refs.multipleTable.toggleRowExpansion(row)
+                this.code_type_id=row.code_type_id
                 this.getAllCodeItemFun(row.code_type_id)
             }
 
@@ -285,7 +281,7 @@ export default {
             params["code_type_id"] = id;
             console.log(params)
             dataBenchmarkingAllFun.getDbmCodeItemInfoByCodeTypeId(params).then(res => {
-                console.log(res)
+                this.dataList=res.data.dbmCodeItemInfos
             });
         },
         // 新增代码类
@@ -306,6 +302,8 @@ export default {
             params["code_status"] = this.codeClassData.code_status;
             console.log(params, this.status)
             if (this.status == 'edit') {
+            params["code_type_id"] = this.code_type_id;
+
                 dataBenchmarkingAllFun.updateDbmCodeTypeInfo(params).then(res => {
                     console.log(res, 11)
                     this.dialogaddCodeclassableVisible = false;
@@ -336,6 +334,7 @@ export default {
         EditCodeClassFun(row) {
             this.dialogaddCodeclassableVisible = true;
             this.status = 'edit'
+            this.code_type_id=row.code_type_id
             let params = {}
             params["code_type_id"] = row.code_type_id;
             dataBenchmarkingAllFun.getDbmSortInfoById(params).then(res => {
@@ -374,15 +373,17 @@ export default {
         editCodeItemFun(row) {
             this.dialogaddCodeXableVisible = true;
             this.codeItemStatus = 'edit'
-            //   getItemDbmSortInfoById
+            this.code_item_id=row.code_item_id
             let params = {},
                 that = this;
             params['code_item_id'] = row.code_item_id
             dataBenchmarkingAllFun.getItemDbmSortInfoById(params).then(res => {
-                message.save(res);
-                that.dialogaddCodeXableVisible = false
-                that.getAllCodeItemFun(row.code_item_id)
-
+                console.log(res,11)
+                 this.codeItemData.codeNum=res.data.code_encode
+            this.codeItemData.codeName=res.data.code_item_name
+            this.codeItemData.codeValue=res.data.code_value
+            this.codeItemData.codeleav=res.data.dbm_level
+            this.codeItemData.codeDesc=res.data.code_remark
             });
         },
         codeItemSaveFun() {
@@ -394,18 +395,20 @@ export default {
             params['code_value'] = this.codeItemData.codeValue
             params['dbm_level'] = this.codeItemData.codeleav
             params['code_remark'] = this.codeItemData.codeDesc
+            params['code_type_id'] = this.code_type_id	
             if (this.codeItemStatus == 'add') {
                 dataBenchmarkingAllFun.addDbmCodeItemInfo(params).then(res => {
                     message.saveSuccess(res);
                     that.dialogaddCodeXableVisible = false
-                    // that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                    that.getDbmCodeTypeInfo(that.itemcurrentPage, that.itempagesize)
 
                 });
             } else {
+            params['code_item_id'] = that.code_item_id	
                 dataBenchmarkingAllFun.updateDbmCodeItemInfo(params).then(res => {
                     message.updateSuccess(res);
                     that.dialogaddCodeXableVisible = false
-                    // that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                    that.getDbmCodeTypeInfo(that.itemcurrentPage, that.itempagesize)
 
                 });
             }
@@ -413,15 +416,18 @@ export default {
         },
         delCodeItemFun(row) {
             // deleteDbmCodeItemInfo
-            let params = {},
-                that = this;
+            let that = this
+            message.confirmMsg('确定删除吗').then(res => {
+               let params = {}
             params['code_item_id'] = row.code_item_id
             dataBenchmarkingAllFun.deleteDbmCodeItemInfo(params).then(res => {
                 message.deleteSuccess(res);
                 that.dialogaddCodeXableVisible = false
-                // that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                that.getDbmCodeTypeInfo(that.itemcurrentPage, that.itempagesize)
 
             });
+            }).catch(() => {})
+           
         }
     }
 }
