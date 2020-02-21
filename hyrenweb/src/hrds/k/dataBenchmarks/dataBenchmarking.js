@@ -149,3 +149,16 @@ export function deleteDbmSortInfo(data) {
         params:data,
     })
 }
+//获取分类树信息
+export function getDbmSortInfoTreeData() {
+    return request({
+        url: 'K/dbmtree/getDbmSortInfoTreeData',
+    })
+}
+// 3--标准分类管理
+///getDbmRootSortInfo
+// getDbmSubSortInfo
+
+// 1---标准管理类
+// getDbmNormbasicInfoBySortId
+// getDbmNormbasicIdAndNameInfo

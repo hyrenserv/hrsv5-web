@@ -49,7 +49,11 @@
                     </el-table-column>
                     <el-table-column prop="data_type" label="数据类型" align="center">
                     </el-table-column>
-                    <el-table-column prop="norm_status" label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
+                    <el-table-column  label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.norm_status=='0'">未发布</span>
+                        <span v-else>已发布</span>
+                    </template>
                     </el-table-column>
                     <el-table-column label="操作" width="100" align="center">
                         <template slot-scope="scope">
@@ -294,7 +298,7 @@ export default {
         return {
             currentPage: 1,
             pagesize: 10,
-            totalSize:0,
+            totalSize: 0,
             Allis_selectionState: false,
             dialogEditTableVisible: false,
             activeNames: ['1', '2', '3', '4'],
@@ -342,53 +346,13 @@ export default {
             }, ],
             dataType: [],
             dbmCodeTypeInfos: [],
-            data: [{
-                id: '100000',
-                label: '廊坊银行总行',
-                children: [{
-                    id: '110000',
-                    label: '廊坊分行',
-                    children: [{
-                        id: '111000',
-                        label: '廊坊银行金光道支行',
-                        children: [{
-                            id: '999999',
-                            label: '阿萨德看见爱上',
-                            leaf: true
-                        }]
-                    }, {
-                        id: '112000',
-                        label: '廊坊银行解放道支行',
-                        children: [{
-                            id: '112100',
-                            label: '廊坊银行广阳道支行',
-                            leaf: true
-                        }, {
-                            id: '112200',
-                            label: '廊坊银行三大街支行',
-                            leaf: true
-                        }]
-                    }, {
-                        id: '113000',
-                        label: '廊坊银行开发区支行',
-                        leaf: true
-                    }]
-                }]
-            }],
+            data: [],
             defaultProps: {
                 children: 'children',
                 label: 'label'
             },
             // tableData:[],
-            tableData: [{
-                Categoryparent: '3级分类',
-                Standardnumber: 'IP500004',
-                ch_name: '报表日期',
-                Standardalias: '报表日期123',
-                datatype: '代码类',
-                Releasestatus: '未发布',
-                selectionState: false,
-            }, ],
+            tableData: [],
             options: [{
                 value: 'zhinan',
                 label: '指南',
@@ -601,6 +565,7 @@ export default {
     },
     mounted() {
         this.getDbmNormbasicInfo(1, 10)
+        this.getDbmSortTreeInfo();
         // 获取数据类型下拉框
         this.$Code.getCategoryItems({
             'category': 'DbmDataType'
@@ -624,7 +589,12 @@ export default {
                 this.dbmCodeTypeInfos = res.data.dbmCodeTypeInfos
             });
         },
-
+        getDbmSortTreeInfo() {
+            dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
+                console.log(res.data.dbmSortInfoTreeDataList);
+                this.data = res.data.dbmSortInfoTreeDataList
+            });
+        },
         // 表第一列的全选
         /*  Allis_selectionStateFun(items, e) {
              let that = this;
@@ -656,6 +626,7 @@ export default {
                  }
              });
          }, */
+
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
         },
@@ -670,6 +641,7 @@ export default {
             console.log(row);
         },
         handleNodeClick(data) {
+            console.log(data)
             if (!data.children) {
                 this.tableData = [{
                     Categoryparent: '3级分类',
@@ -722,8 +694,9 @@ export default {
             params["pageSize"] = size;
             console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res => {
-                this.totalSize=res.data.totalSize
-                this.tableData=res.data.dbmNormbasicInfos
+                console.log(res.data)
+                this.totalSize = res.data.totalSize
+                this.tableData = res.data.dbmNormbasicInfos
             });
 
         },
@@ -759,8 +732,30 @@ export default {
             this.basicStaus = 'edit'
             let params = {}
             params["basic_id"] = row.basic_id;
+            console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfoById(params).then(res => {
-                console.log(res)
+                console.log(res.data)
+                 this.ruleForm_Info.standardNum=res.data.norm_code
+            this.ruleForm_Info.cnName=res.data.norm_cname
+            this.ruleForm_Info.enName=res.data.norm_ename
+            this.ruleForm_Info.standardAlias=res.data.norm_aname
+            this.ruleForm_Info.belongsClass=res.data.code_type_id
+            //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
+            //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
+            this.ruleForm_Info.data_types=res.data.data_type
+            this.ruleForm_Info.fieldLength=res.data.col_len
+            this.ruleForm_Info.decimalLen=res.data.decimal_point
+            this.ruleForm_Info.belongsCode=res.data.sort_id
+            this.ruleForm_Info.worksDefin=res.data.business_def
+            this.ruleForm_Info.workRule=res.data.business_rule
+            this.ruleForm_Info.sdefinition=res.data.norm_basis
+            this.ruleForm_Info.dbm_domain=res.data.dbm_domain
+           this.ruleForm_Info.department=res.data.manage_department
+            this.ruleForm_Info.relevantDepartments=res.data.relevant_department
+            this.ruleForm_Info.norm_status=res.data.norm_status
+             this.ruleForm_Info.trustedSystem=res.data.origin_system
+            this.ruleForm_Info.relatedStandards=res.data.related_system
+            this.ruleForm_Info.enactingPerson=res.data.formulator
             });
         },
         // 新增标准分类
@@ -770,7 +765,7 @@ export default {
             params["norm_cname"] = this.ruleForm_Info.cnName;
             params["norm_ename"] = this.ruleForm_Info.enName;
             params["norm_aname"] = this.ruleForm_Info.standardAlias;
-            params["code_type_id"] = 100000 // this.ruleForm_Info.belongsClass;//归属分类--
+            params["code_type_id"] = 100001// this.ruleForm_Info.belongsClass;//归属分类--
             //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
             //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
             params["data_type"] = this.ruleForm_Info.data_types; //数据类型
