@@ -31,9 +31,9 @@
             </el-table-column>
             <el-table-column prop="sort_level_num" label="分类层级数" align="center">
             </el-table-column>
-            <el-table-column prop="sort_name" label="分类名称" align="center">
+            <el-table-column prop="sort_name" label="分类名称" align="center" width="100" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column prop="sort_remark" label="分类描述" align="center">
+            <el-table-column prop="sort_remark" label="分类描述" align="center" width="160" :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column prop="create_user" label="创建人" align="center">
             </el-table-column>
@@ -65,7 +65,7 @@
                     <el-col :span="16">
                         <el-row>
                             <el-form-item label="归属分类 : " prop="belongsClass">
-                                <el-cascader :options="options" v-model="standardClassifiFormRule.belongsClass" clearable :props="{ checkStrictly: true }"></el-cascader>
+                                <el-cascader :options="options" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept"></el-cascader>
                             </el-form-item>
                         </el-row>
                     </el-col>
@@ -121,10 +121,16 @@ export default {
             totalSize: 0,
             Allis_selectionState: false,
             dialogaddclassableVisible: false,
+             SetKesDept: {
+                checkStrictly: true,
+                value: 'id',
+                label: 'label',
+                children: 'children'
+            },
             status: '',
             edit_sortId: '',
             standardClassifiFormRule: {
-                belongsClass: '',
+                belongsClass:[],
                 chNmae: '',
                 standardMark: '',
                 code_status: ''
@@ -137,220 +143,36 @@ export default {
                 text: '已发布',
                 value: '1'
             }, ],
-            options: [{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则',
-                    children: [{
-                        value: 'yizhi',
-                        label: '一致'
-                    }, {
-                        value: 'fankui',
-                        label: '反馈'
-                    }, {
-                        value: 'xiaolv',
-                        label: '效率'
-                    }, {
-                        value: 'kekong',
-                        label: '可控'
-                    }]
-                }, {
-                    value: 'daohang',
-                    label: '导航',
-                    children: [{
-                        value: 'cexiangdaohang',
-                        label: '侧向导航'
-                    }, {
-                        value: 'dingbudaohang',
-                        label: '顶部导航'
-                    }]
-                }]
-            }, {
-                value: 'zujian',
-                label: '组件',
-                children: [{
-                    value: 'basic',
-                    label: 'Basic',
-                    children: [{
-                        value: 'layout',
-                        label: 'Layout 布局'
-                    }, {
-                        value: 'color',
-                        label: 'Color 色彩'
-                    }, {
-                        value: 'typography',
-                        label: 'Typography 字体'
-                    }, {
-                        value: 'icon',
-                        label: 'Icon 图标'
-                    }, {
-                        value: 'button',
-                        label: 'Button 按钮'
-                    }]
-                }, {
-                    value: 'form',
-                    label: 'Form',
-                    children: [{
-                        value: 'radio',
-                        label: 'Radio 单选框'
-                    }, {
-                        value: 'checkbox',
-                        label: 'Checkbox 多选框'
-                    }, {
-                        value: 'input',
-                        label: 'Input 输入框'
-                    }, {
-                        value: 'input-number',
-                        label: 'InputNumber 计数器'
-                    }, {
-                        value: 'select',
-                        label: 'Select 选择器'
-                    }, {
-                        value: 'cascader',
-                        label: 'Cascader 级联选择器'
-                    }, {
-                        value: 'switch',
-                        label: 'Switch 开关'
-                    }, {
-                        value: 'slider',
-                        label: 'Slider 滑块'
-                    }, {
-                        value: 'time-picker',
-                        label: 'TimePicker 时间选择器'
-                    }, {
-                        value: 'date-picker',
-                        label: 'DatePicker 日期选择器'
-                    }, {
-                        value: 'datetime-picker',
-                        label: 'DateTimePicker 日期时间选择器'
-                    }, {
-                        value: 'upload',
-                        label: 'Upload 上传'
-                    }, {
-                        value: 'rate',
-                        label: 'Rate 评分'
-                    }, {
-                        value: 'form',
-                        label: 'Form 表单'
-                    }]
-                }, {
-                    value: 'data',
-                    label: 'Data',
-                    children: [{
-                        value: 'table',
-                        label: 'Table 表格'
-                    }, {
-                        value: 'tag',
-                        label: 'Tag 标签'
-                    }, {
-                        value: 'progress',
-                        label: 'Progress 进度条'
-                    }, {
-                        value: 'tree',
-                        label: 'Tree 树形控件'
-                    }, {
-                        value: 'pagination',
-                        label: 'Pagination 分页'
-                    }, {
-                        value: 'badge',
-                        label: 'Badge 标记'
-                    }]
-                }, {
-                    value: 'notice',
-                    label: 'Notice',
-                    children: [{
-                        value: 'alert',
-                        label: 'Alert 警告'
-                    }, {
-                        value: 'loading',
-                        label: 'Loading 加载'
-                    }, {
-                        value: 'message',
-                        label: 'Message 消息提示'
-                    }, {
-                        value: 'message-box',
-                        label: 'MessageBox 弹框'
-                    }, {
-                        value: 'notification',
-                        label: 'Notification 通知'
-                    }]
-                }, {
-                    value: 'navigation',
-                    label: 'Navigation',
-                    children: [{
-                        value: 'menu',
-                        label: 'NavMenu 导航菜单'
-                    }, {
-                        value: 'tabs',
-                        label: 'Tabs 标签页'
-                    }, {
-                        value: 'breadcrumb',
-                        label: 'Breadcrumb 面包屑'
-                    }, {
-                        value: 'dropdown',
-                        label: 'Dropdown 下拉菜单'
-                    }, {
-                        value: 'steps',
-                        label: 'Steps 步骤条'
-                    }]
-                }, {
-                    value: 'others',
-                    label: 'Others',
-                    children: [{
-                        value: 'dialog',
-                        label: 'Dialog 对话框'
-                    }, {
-                        value: 'tooltip',
-                        label: 'Tooltip 文字提示'
-                    }, {
-                        value: 'popover',
-                        label: 'Popover 弹出框'
-                    }, {
-                        value: 'card',
-                        label: 'Card 卡片'
-                    }, {
-                        value: 'carousel',
-                        label: 'Carousel 走马灯'
-                    }, {
-                        value: 'collapse',
-                        label: 'Collapse 折叠面板'
-                    }]
-                }]
-            }, {
-                value: 'ziyuan',
-                label: '资源',
-                children: [{
-                    value: 'axure',
-                    label: 'Axure Components'
-                }, {
-                    value: 'sketch',
-                    label: 'Sketch Templates'
-                }, {
-                    value: 'jiaohu',
-                    label: '组件交互文档'
-                }]
-            }]
+            options: []
         }
     },
     mounted() {
         this.getDbmCodeTypeInfo(1, 10)
+        this.getDbmSortTreeInfo()
     },
     methods: {
         sig_handleSizeChange(size) {
             this.pagesize = size;
+            console.log(1)
         },
         sig_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
+            console.log(2)
+        },
+        //归属分类
+         getDbmSortTreeInfo() {
+            dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
+                this.options=res.data.dbmSortInfoTreeDataList
+            });
         },
         // 编辑和新增点击保存方法
         standardClassifiSave(form) {
             // 新增
+            console.log(this.standardClassifiFormRule.belongsClass)
             let params = {},
                 that = this;
-            params["parent_id"] = 0;
-            params["sort_level_num"] = 0;
+            params["parent_id"] =parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length-1]) ;
+            params["sort_level_num"] =this.standardClassifiFormRule.belongsClass.length+1;
             params["sort_name"] = this.standardClassifiFormRule.chNmae;
             params["sort_remark"] = this.standardClassifiFormRule.standardMark;
             params["sort_status"] = this.standardClassifiFormRule.code_status;
@@ -359,11 +181,14 @@ export default {
                 params["sort_id"] = this.edit_sortId;
                 dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
                     console.log(res)
+                    message.updateSuccess(res);
+
                     that.dialogaddclassableVisible = false;
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 });
             } else {
                 dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
+                    message.saveSuccess(res);
                     console.log(res, 1)
                     that.dialogaddclassableVisible = false;
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)

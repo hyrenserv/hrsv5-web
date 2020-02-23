@@ -49,11 +49,11 @@
                     </el-table-column>
                     <el-table-column prop="data_type" label="数据类型" align="center">
                     </el-table-column>
-                    <el-table-column  label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.norm_status=='0'">未发布</span>
-                        <span v-else>已发布</span>
-                    </template>
+                    <el-table-column label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.norm_status=='0'">未发布</span>
+                            <span v-else>已发布</span>
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作" width="100" align="center">
                         <template slot-scope="scope">
@@ -113,7 +113,7 @@
                             </el-col>
                             <el-col :span="7">
                                 <el-form-item label="归属分类 : " prop="belongsClass">
-                                    <el-cascader :options="options" clearable size='mini' v-model="ruleForm_Info.belongsClass"></el-cascader>
+                                    <el-cascader :options="options" clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
                                 </el-form-item>
                             </el-col>
 
@@ -263,7 +263,7 @@
                                 <el-row>
                                     <el-form-item label="相关标准 : " prop="relatedStandards">
                                         <el-select placeholder="请选择" size='mini' v-model="ruleForm_Info.relatedStandards">
-                                            <el-option v-for="item in dataType" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled">
+                                            <el-option v-for="item in dbmNormbasicInfos" :key="item.value" :label="item.norm_cname" :value="item.norm_cname">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -293,6 +293,8 @@
 
 <script>
 import * as dataBenchmarkingAllFun from './dataBenchmarking'
+import * as message from "@/utils/js/message";
+
 export default {
     data() {
         return {
@@ -301,6 +303,12 @@ export default {
             totalSize: 0,
             Allis_selectionState: false,
             dialogEditTableVisible: false,
+            SetKesDept: {
+                checkStrictly: true,
+                value: 'id',
+                label: 'label',
+                children: 'children'
+            },
             activeNames: ['1', '2', '3', '4'],
             Releasestatus: [{
                 text: '未发布',
@@ -319,7 +327,7 @@ export default {
                 cnName: '',
                 enName: '',
                 standardAlias: '',
-                belongsClass: '',
+                belongsClass: [],
                 standardDescription: '',
                 fieldName: '',
                 data_types: '',
@@ -346,6 +354,7 @@ export default {
             }, ],
             dataType: [],
             dbmCodeTypeInfos: [],
+            dbmNormbasicInfos: [],
             data: [],
             defaultProps: {
                 children: 'children',
@@ -353,234 +362,36 @@ export default {
             },
             // tableData:[],
             tableData: [],
-            options: [{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则',
-                    children: [{
-                        value: 'yizhi',
-                        label: '一致',
-                        children: [{
-                            value: 'yizhi',
-                            label: '一致'
-                        }, {
-                            value: 'fankui',
-                            label: '反馈'
-                        }, {
-                            value: 'xiaolv',
-                            label: '效率'
-                        }, {
-                            value: 'kekong',
-                            label: '可控'
-                        }]
-                    }, {
-                        value: 'fankui',
-                        label: '反馈'
-                    }, {
-                        value: 'xiaolv',
-                        label: '效率'
-                    }, {
-                        value: 'kekong',
-                        label: '可控'
-                    }]
-                }, {
-                    value: 'daohang',
-                    label: '导航',
-                    children: [{
-                        value: 'cexiangdaohang',
-                        label: '侧向导航'
-                    }, {
-                        value: 'dingbudaohang',
-                        label: '顶部导航'
-                    }]
-                }]
-            }, {
-                value: 'zujian',
-                label: '组件',
-                children: [{
-                    value: 'basic',
-                    label: 'Basic',
-                    children: [{
-                        value: 'layout',
-                        label: 'Layout 布局'
-                    }, {
-                        value: 'color',
-                        label: 'Color 色彩'
-                    }, {
-                        value: 'typography',
-                        label: 'Typography 字体'
-                    }, {
-                        value: 'icon',
-                        label: 'Icon 图标'
-                    }, {
-                        value: 'button',
-                        label: 'Button 按钮'
-                    }]
-                }, {
-                    value: 'form',
-                    label: 'Form',
-                    children: [{
-                        value: 'radio',
-                        label: 'Radio 单选框'
-                    }, {
-                        value: 'checkbox',
-                        label: 'Checkbox 多选框'
-                    }, {
-                        value: 'input',
-                        label: 'Input 输入框'
-                    }, {
-                        value: 'input-number',
-                        label: 'InputNumber 计数器'
-                    }, {
-                        value: 'select',
-                        label: 'Select 选择器'
-                    }, {
-                        value: 'cascader',
-                        label: 'Cascader 级联选择器'
-                    }, {
-                        value: 'switch',
-                        label: 'Switch 开关'
-                    }, {
-                        value: 'slider',
-                        label: 'Slider 滑块'
-                    }, {
-                        value: 'time-picker',
-                        label: 'TimePicker 时间选择器'
-                    }, {
-                        value: 'date-picker',
-                        label: 'DatePicker 日期选择器'
-                    }, {
-                        value: 'datetime-picker',
-                        label: 'DateTimePicker 日期时间选择器'
-                    }, {
-                        value: 'upload',
-                        label: 'Upload 上传'
-                    }, {
-                        value: 'rate',
-                        label: 'Rate 评分'
-                    }, {
-                        value: 'form',
-                        label: 'Form 表单'
-                    }]
-                }, {
-                    value: 'data',
-                    label: 'Data',
-                    children: [{
-                        value: 'table',
-                        label: 'Table 表格'
-                    }, {
-                        value: 'tag',
-                        label: 'Tag 标签'
-                    }, {
-                        value: 'progress',
-                        label: 'Progress 进度条'
-                    }, {
-                        value: 'tree',
-                        label: 'Tree 树形控件'
-                    }, {
-                        value: 'pagination',
-                        label: 'Pagination 分页'
-                    }, {
-                        value: 'badge',
-                        label: 'Badge 标记'
-                    }]
-                }, {
-                    value: 'notice',
-                    label: 'Notice',
-                    children: [{
-                        value: 'alert',
-                        label: 'Alert 警告'
-                    }, {
-                        value: 'loading',
-                        label: 'Loading 加载'
-                    }, {
-                        value: 'message',
-                        label: 'Message 消息提示'
-                    }, {
-                        value: 'message-box',
-                        label: 'MessageBox 弹框'
-                    }, {
-                        value: 'notification',
-                        label: 'Notification 通知'
-                    }]
-                }, {
-                    value: 'navigation',
-                    label: 'Navigation',
-                    children: [{
-                        value: 'menu',
-                        label: 'NavMenu 导航菜单'
-                    }, {
-                        value: 'tabs',
-                        label: 'Tabs 标签页'
-                    }, {
-                        value: 'breadcrumb',
-                        label: 'Breadcrumb 面包屑'
-                    }, {
-                        value: 'dropdown',
-                        label: 'Dropdown 下拉菜单'
-                    }, {
-                        value: 'steps',
-                        label: 'Steps 步骤条'
-                    }]
-                }, {
-                    value: 'others',
-                    label: 'Others',
-                    children: [{
-                        value: 'dialog',
-                        label: 'Dialog 对话框'
-                    }, {
-                        value: 'tooltip',
-                        label: 'Tooltip 文字提示'
-                    }, {
-                        value: 'popover',
-                        label: 'Popover 弹出框'
-                    }, {
-                        value: 'card',
-                        label: 'Card 卡片'
-                    }, {
-                        value: 'carousel',
-                        label: 'Carousel 走马灯'
-                    }, {
-                        value: 'collapse',
-                        label: 'Collapse 折叠面板'
-                    }]
-                }]
-            }, {
-                value: 'ziyuan',
-                label: '资源',
-                children: [{
-                    value: 'axure',
-                    label: 'Axure Components'
-                }, {
-                    value: 'sketch',
-                    label: 'Sketch Templates'
-                }, {
-                    value: 'jiaohu',
-                    label: '组件交互文档'
-                }]
-            }]
+            options: []
         };
     },
-    mounted() {
-        this.getDbmNormbasicInfo(1, 10)
-        this.getDbmSortTreeInfo();
+    created() {
         // 获取数据类型下拉框
         this.$Code.getCategoryItems({
             'category': 'DbmDataType'
         }).then(res => {
-            console.log(res.data)
             this.dataType = res.data
         })
+    },
+    mounted() {
+        this.getDbmNormbasicInfo(1, 10)
+        this.getDbmSortTreeInfo();
+        this.getDbmNormbasicIdAndNameInfo() //相关标准
+
         // 获取代码类
         this.getDbmCodeTypeIdAndNameInfo()
     },
     watch: {
         filterText(val) {
             this.$refs.tree.filter(val);
-        }
+        },
+        handlerValue() {
+      if (this.$refs.refHandle) {
+        this.$refs.refHandle.dropDownVisible = false; //监听值发生变化就关闭它
+      }
+    }
     },
+   
     methods: {
         // 获取代码类下拉
         getDbmCodeTypeIdAndNameInfo() {
@@ -589,10 +400,18 @@ export default {
                 this.dbmCodeTypeInfos = res.data.dbmCodeTypeInfos
             });
         },
+        // 左侧树菜单
         getDbmSortTreeInfo() {
             dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
-                console.log(res.data.dbmSortInfoTreeDataList);
+                console.log(res.data)
                 this.data = res.data.dbmSortInfoTreeDataList
+                this.options = res.data.dbmSortInfoTreeDataList
+            });
+        },
+        //相关标准信息
+        getDbmNormbasicIdAndNameInfo() {
+            dataBenchmarkingAllFun.getDbmNormbasicIdAndNameInfo().then(res => {
+                this.dbmNormbasicInfos = res.data.dbmNormbasicInfos
             });
         },
         // 表第一列的全选
@@ -643,60 +462,36 @@ export default {
         handleNodeClick(data) {
             console.log(data)
             if (!data.children) {
-                this.tableData = [{
-                    Categoryparent: '3级分类',
-                    Standardnumber: 'IP500004',
-                    ch_name: '报表日期',
-                    Standardalias: '报表日期123',
-                    datatype: '代码类',
-                    Releasestatus: '未发布',
-                    selectionState: false,
-                }, {
-                    Categoryparent: '3级分类',
-                    Standardnumber: 'IP500004',
-                    ch_name: '报表日期',
-                    Standardalias: '报表日期123',
-                    datatype: '代码类',
-                    Releasestatus: '未发布',
-                    selectionState: false,
-                }, {
-                    Categoryparent: '3级分类',
-                    Standardnumber: 'IP500004',
-                    ch_name: '报表日期',
-                    Standardalias: '报表日期123',
-                    datatype: '代码类',
-                    Releasestatus: '未发布',
-                    selectionState: false,
-                }, {
-                    Categoryparent: '3级分类',
-                    Standardnumber: 'IP500004',
-                    ch_name: '报表日期',
-                    Standardalias: '报表日期123',
-                    datatype: '代码类',
-                    Releasestatus: '未发布',
-                    selectionState: false,
-                }, {
-                    Categoryparent: '3级分类',
-                    Standardnumber: 'IP500004',
-                    ch_name: '报表日期',
-                    Standardalias: '报表日期123',
-                    datatype: '代码类',
-                    Releasestatus: '未发布',
-                    selectionState: false,
-                }, ]
+                let params = {};
+                params["sort_id"] =parseInt(data.id);
+                console.log(params)
+                dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {
+                    console.log(res)
+                    // this.tableData=res.data
+                });
+
             }
 
         },
         // 获取初始数据
         getDbmNormbasicInfo(curr, size) {
-            let params = {};
+            let params = {},
+                that = this;
             params["currPage"] = curr;
             params["pageSize"] = size;
             console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res => {
-                console.log(res.data)
+                let arr = res.data.dbmNormbasicInfos
+                for (let i = 0; i < arr.length; i++) {
+                    for (let k = 0; k < that.dataType.length; k++) {
+                        if (arr[i].data_type == that.dataType[k].code) {
+                            arr[i].data_type = that.dataType[k].value
+                        }
+                    }
+                }
+
                 this.totalSize = res.data.totalSize
-                this.tableData = res.data.dbmNormbasicInfos
+                this.tableData = arr
             });
 
         },
@@ -735,43 +530,45 @@ export default {
             console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfoById(params).then(res => {
                 console.log(res.data)
-                 this.ruleForm_Info.standardNum=res.data.norm_code
-            this.ruleForm_Info.cnName=res.data.norm_cname
-            this.ruleForm_Info.enName=res.data.norm_ename
-            this.ruleForm_Info.standardAlias=res.data.norm_aname
-            this.ruleForm_Info.belongsClass=res.data.code_type_id
-            //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
-            //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
-            this.ruleForm_Info.data_types=res.data.data_type
-            this.ruleForm_Info.fieldLength=res.data.col_len
-            this.ruleForm_Info.decimalLen=res.data.decimal_point
-            this.ruleForm_Info.belongsCode=res.data.sort_id
-            this.ruleForm_Info.worksDefin=res.data.business_def
-            this.ruleForm_Info.workRule=res.data.business_rule
-            this.ruleForm_Info.sdefinition=res.data.norm_basis
-            this.ruleForm_Info.dbm_domain=res.data.dbm_domain
-           this.ruleForm_Info.department=res.data.manage_department
-            this.ruleForm_Info.relevantDepartments=res.data.relevant_department
-            this.ruleForm_Info.norm_status=res.data.norm_status
-             this.ruleForm_Info.trustedSystem=res.data.origin_system
-            this.ruleForm_Info.relatedStandards=res.data.related_system
-            this.ruleForm_Info.enactingPerson=res.data.formulator
+               
+                this.ruleForm_Info.standardNum = res.data.norm_code
+                this.ruleForm_Info.cnName = res.data.norm_cname
+                this.ruleForm_Info.enName = res.data.norm_ename
+                this.ruleForm_Info.standardAlias = res.data.norm_aname
+                this.ruleForm_Info.belongsClass = res.data.sort_id
+                //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
+                //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
+                this.ruleForm_Info.data_types = res.data.data_type
+                this.ruleForm_Info.fieldLength = res.data.col_len
+                this.ruleForm_Info.decimalLen = res.data.decimal_point
+                this.ruleForm_Info.belongsCode = res.data.code_type_id
+                this.ruleForm_Info.worksDefin = res.data.business_def
+                this.ruleForm_Info.workRule = res.data.business_rule
+                this.ruleForm_Info.sdefinition = res.data.norm_basis
+                this.ruleForm_Info.dbm_domain = res.data.dbm_domain
+                this.ruleForm_Info.department = res.data.manage_department
+                this.ruleForm_Info.relevantDepartments = res.data.relevant_department
+                this.ruleForm_Info.norm_status = res.data.norm_status
+                this.ruleForm_Info.trustedSystem = res.data.origin_system
+                this.ruleForm_Info.relatedStandards = res.data.related_system
+                this.ruleForm_Info.enactingPerson = res.data.formulator
             });
         },
         // 新增标准分类
         saveAddDbmNormbasicInfo(ruleform) {
-            let params = {}
+            let params = {},
+                that = this;
             params["norm_code"] = this.ruleForm_Info.standardNum;
             params["norm_cname"] = this.ruleForm_Info.cnName;
             params["norm_ename"] = this.ruleForm_Info.enName;
             params["norm_aname"] = this.ruleForm_Info.standardAlias;
-            params["code_type_id"] = 100001// this.ruleForm_Info.belongsClass;//归属分类--
+            params["sort_id"] = this.ruleForm_Info.belongsClass; //归属分类--
             //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
             //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
             params["data_type"] = this.ruleForm_Info.data_types; //数据类型
             params["col_len"] = parseInt(this.ruleForm_Info.fieldLength); //字段长度
             params["decimal_point"] = parseInt(this.ruleForm_Info.decimalLen); //小数长度
-            params["sort_id"] = parseInt(this.ruleForm_Info.belongsCode); //所属代码--
+            params["code_type_id"] = parseInt(this.ruleForm_Info.belongsCode); //所属代码--
             params["business_def"] = this.ruleForm_Info.worksDefin; //业务定义
             params["business_rule"] = this.ruleForm_Info.workRule; //业务规则
             params["norm_basis"] = this.ruleForm_Info.sdefinition; //标准定义
@@ -783,25 +580,35 @@ export default {
             params["related_system"] = this.ruleForm_Info.relatedStandards; //相关标准
             params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
             console.log(params)
-            if (this.basic_id == 'edit') {
+            if (this.basicStaus == 'edit') {
                 params["basic_id"] = this.basic_id;
                 dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
                     console.log(res)
+                    message.updateSuccess(res);
+                    that.dialogEditTableVisible = false
+                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                 });
             } else {
                 dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
                     console.log(res)
+                    message.saveSuccess(res);
+                    that.dialogEditTableVisible = false
+                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                 });
             }
 
         },
         // 
         deleteDbbasicInfo(row) {
-            let params = {}
-            params["basic_id"] = row.basic_id;
-            dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
-                console.log(res)
-            });
+            let that = this
+            message.confirmMsg('确定删除吗').then(res => {
+                let params = {}
+                params["basic_id"] = row.basic_id;
+                dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
+                    message.deleteSuccess(res);
+                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                });
+            }).catch(() => {})
         }
     }
 };

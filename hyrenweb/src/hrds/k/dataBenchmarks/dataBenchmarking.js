@@ -41,6 +41,19 @@ export function deleteDbmNormbasicInfo(data) {
         params:data,
     })
 }
+//获取所有标准信息
+export function getDbmNormbasicIdAndNameInfo() {
+    return request({
+        url: 'K/dbmnormbasic/getDbmNormbasicIdAndNameInfo',
+    })
+}
+//左侧树点击后显示数据
+export function getDbmNormbasicInfoBySortId(data) {
+    return request({
+        url: 'K/dbmnormbasic/getDbmNormbasicInfoBySortId',
+        params:data,
+    })
+}
 //2:代码配置
 // 代码类新增
 export function addDbmCodeTypeInfo(data) {
