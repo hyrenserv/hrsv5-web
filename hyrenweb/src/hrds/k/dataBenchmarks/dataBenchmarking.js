@@ -69,7 +69,7 @@ export function getDbmCodeTypeInfo(data) {
         params:data,
     })
 }
-// 
+//
 //代码类-编辑
 export function getDbmSortInfoById(data) {
     return request({
@@ -175,3 +175,12 @@ export function getDbmSortInfoTreeData() {
 // 1---标准管理类
 // getDbmNormbasicInfoBySortId
 // getDbmNormbasicIdAndNameInfo
+
+//导入excel数据
+export function importExcelData(data) {
+    return request({
+        url: 'K/dbmdataimport/importExcelData',
+        params: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}

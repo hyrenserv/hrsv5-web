@@ -18,7 +18,7 @@
                     </el-input>
                 </el-col>
                 <el-col :span='10' style="text-align:right" class='allbutton'>
-                    <el-button size="mini" type="primary" plain>批量导入</el-button>
+                    <el-button size="mini" type="primary" plain @click="importExcelData">批量导入</el-button>
                     <el-button size="mini" type="success" class="el-icon-upload">发布所有标准</el-button>
                     <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addBascicFun()">新增标准</el-button>
                     <!-- <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除标准</el-button> -->
@@ -391,7 +391,7 @@ export default {
       }
     }
     },
-   
+
     methods: {
         // 获取代码类下拉
         getDbmCodeTypeIdAndNameInfo() {
@@ -530,7 +530,7 @@ export default {
             console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfoById(params).then(res => {
                 console.log(res.data)
-               
+
                 this.ruleForm_Info.standardNum = res.data.norm_code
                 this.ruleForm_Info.cnName = res.data.norm_cname
                 this.ruleForm_Info.enName = res.data.norm_ename
@@ -598,7 +598,7 @@ export default {
             }
 
         },
-        // 
+        //
         deleteDbbasicInfo(row) {
             let that = this
             message.confirmMsg('确定删除吗').then(res => {
@@ -609,6 +609,15 @@ export default {
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                 });
             }).catch(() => {})
+        },
+        // 导入数据
+        importExcelData() {
+            let params = {}
+            params["pathName"] =
+                "E:/hyren/hyrenserv/hrsv5/hrds_K/src/test/java/hrds/k/biz/dbmdataimport/upload/dbm_import_test.xlsx";
+            dataBenchmarkingAllFun.importExcelData(params).then(res => {
+                console.log("111" + res);
+            });
         }
     }
 };
