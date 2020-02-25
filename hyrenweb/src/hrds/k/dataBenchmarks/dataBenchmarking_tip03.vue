@@ -27,7 +27,7 @@
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="code_encode" label="上级分类名" align="center">
+            <el-table-column prop="parentName" label="上级分类名" align="center" width="100" :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column prop="sort_level_num" label="分类层级数" align="center">
             </el-table-column>
@@ -50,8 +50,8 @@
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small"  @click="EditFun(scope.row)">编辑</el-button>
-                    <el-button type="text" size="small" class='deltext' @click="delectClassFun(scope.row)">删除</el-button>
+                    <el-button type="text" size="small" @click="EditFun(scope.row)">编辑</el-button>
+                    <el-button type="text" size="small" class='delcolor' @click="delectClassFun(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -65,7 +65,7 @@
                     <el-col :span="16">
                         <el-row>
                             <el-form-item label="归属分类 : " prop="belongsClass">
-                                <el-cascader :options="options" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept"></el-cascader>
+                                <el-cascader :options="options" :show-all-levels="false" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept"></el-cascader>
                             </el-form-item>
                         </el-row>
                     </el-col>
@@ -121,7 +121,7 @@ export default {
             totalSize: 0,
             Allis_selectionState: false,
             dialogaddclassableVisible: false,
-             SetKesDept: {
+            SetKesDept: {
                 checkStrictly: true,
                 value: 'id',
                 label: 'label',
@@ -130,7 +130,7 @@ export default {
             status: '',
             edit_sortId: '',
             standardClassifiFormRule: {
-                belongsClass:[],
+                belongsClass: [],
                 chNmae: '',
                 standardMark: '',
                 code_status: ''
@@ -146,50 +146,48 @@ export default {
             options: []
         }
     },
+    created() {
+        this.getDbmSortTreeInfo()
+
+    },
     mounted() {
         this.getDbmCodeTypeInfo(1, 10)
-        this.getDbmSortTreeInfo()
     },
     methods: {
         sig_handleSizeChange(size) {
             this.pagesize = size;
-            this.getDbmCodeTypeInfo(this.currentPage,size)
+            this.getDbmCodeTypeInfo(this.currentPage, size)
         },
         sig_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            this.getDbmCodeTypeInfo(currentPage,this.pagesize)
+            this.getDbmCodeTypeInfo(currentPage, this.pagesize)
         },
         //归属分类
-         getDbmSortTreeInfo() {
+        getDbmSortTreeInfo() {
             dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
-                this.options=res.data.dbmSortInfoTreeDataList
+                this.options = res.data.dbmSortInfoTreeDataList
             });
         },
         // 编辑和新增点击保存方法
         standardClassifiSave(form) {
             // 新增
-            console.log(this.standardClassifiFormRule.belongsClass)
             let params = {},
                 that = this;
-            params["parent_id"] =parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length-1]) ;
-            params["sort_level_num"] =this.standardClassifiFormRule.belongsClass.length+1;
+            params["parent_id"] = parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]);
+            params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length + 1;
             params["sort_name"] = this.standardClassifiFormRule.chNmae;
             params["sort_remark"] = this.standardClassifiFormRule.standardMark;
             params["sort_status"] = this.standardClassifiFormRule.code_status;
-            console.log(params)
             if (this.status == 'edit') {
                 params["sort_id"] = this.edit_sortId;
                 dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
-                    console.log(res)
                     message.updateSuccess(res);
-
                     that.dialogaddclassableVisible = false;
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 });
             } else {
                 dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
                     message.saveSuccess(res);
-                    console.log(res, 1)
                     that.dialogaddclassableVisible = false;
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 });
@@ -202,10 +200,32 @@ export default {
             params["currPage"] = page;
             params["pageSize"] = size;
             dataBenchmarkingAllFun.getClassDbmSortInfo(params).then(res => {
-                console.log(res)
-                this.tableData = res.data.dbmSortInfos
+                let arr = res.data.dbmSortInfos
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
+                }
+                this.tableData = arr
                 this.totalSize = res.data.totalSize
             });
+        },
+        //通过id递归遍历树得到中文名
+        getparentClassNmae(key, treeData) {
+            let returnname = '';
+
+            function childrenEach(childrenData) {
+                for (var j = 0; j < childrenData.length; j++) {
+                    if (childrenData[j].id == key) {
+                        returnname = childrenData[j].label;
+                        break
+                    } else {
+                        if (childrenData[j].children) {
+                            childrenEach(childrenData[j].children);
+                        }
+                    }
+                }
+                return returnname;
+            }
+            return childrenEach(treeData);
         },
         //新增分类打开方法
         addClass() {
@@ -224,12 +244,36 @@ export default {
             let params = {}
             params["sort_id"] = row.sort_id;
             dataBenchmarkingAllFun.getclassDbmSortInfoById(params).then(res => {
-                console.log(res)
-                this.standardClassifiFormRule.belongsClass = res.data.parent_id
                 this.standardClassifiFormRule.chNmae = res.data.sort_name
                 this.standardClassifiFormRule.standardMark = res.data.sort_remark
                 this.standardClassifiFormRule.code_status = res.data.sort_status
+                this.standardClassifiFormRule.belongsClass = this.changeDetSelect(res.data.sort_id, this.options)
+
             });
+        },
+        // 级联获取数组
+        changeDetSelect(key, treeData) {
+            let arr = []; // 在递归时操作的数组
+            let returnArr = []; // 存放结果的数组
+            let depth = 0; // 定义全局层级
+            // 定义递归函数
+            function childrenEach(childrenData, depthN) {
+                for (var j = 0; j < childrenData.length; j++) {
+                    depth = depthN; // 将执行的层级赋值 到 全局层级
+                    arr[depthN] = (childrenData[j].id);
+                    if (childrenData[j].id == key) {
+                        returnArr = arr.slice(0, depthN + 1); //将目前匹配的数组，截断并保存到结果数组，
+                        break
+                    } else {
+                        if (childrenData[j].children) {
+                            depth++;
+                            childrenEach(childrenData[j].children, depth);
+                        }
+                    }
+                }
+                return returnArr;
+            }
+            return childrenEach(treeData, depth);
         },
         // 删除分类方法
         delectClassFun(row) {
@@ -238,7 +282,6 @@ export default {
                 let params = {}
                 params["sort_id"] = row.sort_id;
                 dataBenchmarkingAllFun.deleteDbmSortInfo(params).then(res => {
-                    console.log(res)
                     message.deleteSuccess(res);
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
 
@@ -250,8 +293,8 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
-.deltext{
+<style lang="less" scoped>
+.deltext {
     // color:@delBtnBackgroundColor;
 }
 </style>

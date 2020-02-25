@@ -462,7 +462,7 @@
 }
 /*编辑文本按钮颜色*/
 .editcolor{
-    color: #2bc73e !important;
+    color: #409eff !important;
 }
 /*删除文本按钮颜色 */
 .delcolor {
@@ -472,4 +472,7 @@
 .sendcolor {
     color: #76b8f1 !important;
 }
-
+/* 发布文本按钮颜色 */
+.issuecolor{
+   color:#67c23a !important;
+}

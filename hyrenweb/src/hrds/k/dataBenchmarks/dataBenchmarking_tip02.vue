@@ -44,18 +44,18 @@
                     </el-table-column>
                     <el-table-column align="center" prop="code_encode" label="代码编号">
                     </el-table-column>
-                    <el-table-column align="center" prop="code_item_name" label="代码名称">
+                    <el-table-column align="center" prop="code_item_name" label="代码名称" width="100" :show-overflow-tooltip="true">
                     </el-table-column>
                     <el-table-column align="center" prop="code_value" label="代码值">
                     </el-table-column>
                     <el-table-column align="center" prop="dbm_level" label="层级">
                     </el-table-column>
-                    <el-table-column align="center" prop="code_remark" label="代码描述">
+                    <el-table-column align="center" prop="code_remark" label="代码描述" width="150" :show-overflow-tooltip="true">
                     </el-table-column>
-                    <el-table-column label="操作" width="100" align="center">
+                    <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class='delcolor' @click="delCodeItemFun(scope.row)">删除</el-button>
-                            <el-button type="text" size="small" class='delcolor' @click="editCodeItemFun(scope.row)">编辑</el-button>
+                            <el-button type="text" size="small" class='editcolor' @click="editCodeItemFun(scope.row)">编辑</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -79,19 +79,19 @@
         </el-table-column>
         <el-table-column label="代码类名" prop="code_type_name" align="center">
         </el-table-column>
-        <el-table-column label="代码描述" prop="code_remark" align="center">
+        <el-table-column label="代码描述" prop="code_remark" align="center" width="150" :show-overflow-tooltip="true">
         </el-table-column>
-        <el-table-column label="状态"  :filters="Releasestatus" :filter-multiple="false" align="center">
-         <template slot-scope="scope">
-                    <span v-if="scope.row.code_status=='1'">已发布</span>
-                    <span v-else>未发布</span>
-                </template>
-        </el-table-column>
-        <el-table-column label="操作" width="100" align="center">
+        <el-table-column label="状态" :filters="Releasestatus" :filter-multiple="false" align="center">
             <template slot-scope="scope">
-                <el-button type="text" size="small" @click="EditCodeClassFun(scope.row)">编辑</el-button>
+                <span v-if="scope.row.code_status=='1'">已发布</span>
+                <span v-else>未发布</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+                <el-button type="text" size="small" class='editcolor' @click="EditCodeClassFun(scope.row)">编辑</el-button>
                 <el-button type="text" size="small" class='delcolor' @click="delectCodeClassFun(scope.row)">删除</el-button>
-                <el-button type="text" size="small">发布</el-button>
+                <el-button type="text" size="small" class='issuecolor'>发布</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -221,7 +221,7 @@ export default {
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
-             itemcurrentPage: 1,
+            itemcurrentPage: 1,
             itempagesize: 10,
             dialogaddCodeclassableVisible: false,
             dialogaddCodeXableVisible: false,
@@ -234,8 +234,7 @@ export default {
                 codeleav: '',
                 codeDesc: ''
             },
-            dataList: [
-            ],
+            dataList: [],
             Releasestatus: [{
                 text: '未发布',
                 value: '01'
@@ -250,8 +249,8 @@ export default {
                 code_status: ''
             },
             status: '',
-            code_type_id:'',
-            code_item_id:''
+            code_type_id: '',
+            code_item_id: ''
         }
     },
     mounted() {
@@ -260,17 +259,20 @@ export default {
     methods: {
         sig_handleSizeChange(size) {
             this.pagesize = size;
+            this.getDbmCodeTypeInfo(this.currentPage, size)
         },
         sig_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
+            this.getDbmCodeTypeInfo(currentPage, this.pagesize)
         },
         cellClick(row, column, event) {
-            console.log(row)
-
+            let $table = this.$refs.multipleTable;
+            this.tableData.map((item) => {
+                $table.toggleRowExpansion(item, false)
+            })
             if (event.cellIndex != 0 && event.cellIndex != 6) {
-
                 this.$refs.multipleTable.toggleRowExpansion(row)
-                this.code_type_id=row.code_type_id
+                this.code_type_id = row.code_type_id
                 this.getAllCodeItemFun(row.code_type_id)
             }
 
@@ -279,9 +281,8 @@ export default {
         getAllCodeItemFun(id) {
             let params = {}
             params["code_type_id"] = id;
-            console.log(params)
             dataBenchmarkingAllFun.getDbmCodeItemInfoByCodeTypeId(params).then(res => {
-                this.dataList=res.data.dbmCodeItemInfos
+                this.dataList = res.data.dbmCodeItemInfos
             });
         },
         // 新增代码类
@@ -300,20 +301,16 @@ export default {
             params["code_type_name"] = this.codeClassData.code_type_name;
             params["code_remark"] = this.codeClassData.code_remark;
             params["code_status"] = this.codeClassData.code_status;
-            console.log(params, this.status)
             if (this.status == 'edit') {
-            params["code_type_id"] = this.code_type_id;
-
+                params["code_type_id"] = this.code_type_id;
                 dataBenchmarkingAllFun.updateDbmCodeTypeInfo(params).then(res => {
-                    console.log(res, 11)
                     this.dialogaddCodeclassableVisible = false;
                     this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
                 });
             } else {
                 dataBenchmarkingAllFun.addDbmCodeTypeInfo(params).then(res => {
-                    console.log(res)
                     this.dialogaddCodeclassableVisible = false;
-                    this.getDbmCodeTypeInfo(1, 10)
+                    this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
                 });
             }
 
@@ -323,9 +320,7 @@ export default {
             let params = {}
             params["currPage"] = page;
             params["pageSize"] = size;
-            console.log(params)
             dataBenchmarkingAllFun.getDbmCodeTypeInfo(params).then(res => {
-                console.log(res)
                 this.tableData = res.data.dbmCodeTypeInfos
                 this.totalSize = res.data.totalSize
             });
@@ -334,11 +329,10 @@ export default {
         EditCodeClassFun(row) {
             this.dialogaddCodeclassableVisible = true;
             this.status = 'edit'
-            this.code_type_id=row.code_type_id
+            this.code_type_id = row.code_type_id
             let params = {}
             params["code_type_id"] = row.code_type_id;
             dataBenchmarkingAllFun.getDbmSortInfoById(params).then(res => {
-                console.log(res)
                 this.codeClassData.code_encode = res.data.code_encode
                 this.codeClassData.code_type_name = res.data.code_type_name
                 this.codeClassData.code_remark = res.data.code_remark
@@ -373,21 +367,20 @@ export default {
         editCodeItemFun(row) {
             this.dialogaddCodeXableVisible = true;
             this.codeItemStatus = 'edit'
-            this.code_item_id=row.code_item_id
+            this.code_item_id = row.code_item_id
             let params = {},
                 that = this;
             params['code_item_id'] = row.code_item_id
             dataBenchmarkingAllFun.getItemDbmSortInfoById(params).then(res => {
-                console.log(res,11)
-                 this.codeItemData.codeNum=res.data.code_encode
-            this.codeItemData.codeName=res.data.code_item_name
-            this.codeItemData.codeValue=res.data.code_value
-            this.codeItemData.codeleav=res.data.dbm_level
-            this.codeItemData.codeDesc=res.data.code_remark
+                this.codeItemData.codeNum = res.data.code_encode
+                this.codeItemData.codeName = res.data.code_item_name
+                this.codeItemData.codeValue = res.data.code_value
+                this.codeItemData.codeleav = res.data.dbm_level
+                this.codeItemData.codeDesc = res.data.code_remark
             });
         },
+        //代码项 编辑和新增保存
         codeItemSaveFun() {
-            console.log(this.codeItemData)
             let params = {},
                 that = this;
             params['code_encode'] = this.codeItemData.codeNum
@@ -395,39 +388,39 @@ export default {
             params['code_value'] = this.codeItemData.codeValue
             params['dbm_level'] = this.codeItemData.codeleav
             params['code_remark'] = this.codeItemData.codeDesc
-            params['code_type_id'] = this.code_type_id	
+            params['code_type_id'] = this.code_type_id
             if (this.codeItemStatus == 'add') {
                 dataBenchmarkingAllFun.addDbmCodeItemInfo(params).then(res => {
                     message.saveSuccess(res);
                     that.dialogaddCodeXableVisible = false
-                    that.getDbmCodeTypeInfo(that.itemcurrentPage, that.itempagesize)
-
+                    that.getAllCodeItemFun(that.code_type_id)
                 });
             } else {
-            params['code_item_id'] = that.code_item_id	
+                params['code_item_id'] = that.code_item_id
                 dataBenchmarkingAllFun.updateDbmCodeItemInfo(params).then(res => {
                     message.updateSuccess(res);
                     that.dialogaddCodeXableVisible = false
-                    that.getDbmCodeTypeInfo(that.itemcurrentPage, that.itempagesize)
+                    that.getAllCodeItemFun(that.code_type_id)
 
                 });
             }
 
         },
+        // 删除代码项
         delCodeItemFun(row) {
             // deleteDbmCodeItemInfo
             let that = this
             message.confirmMsg('确定删除吗').then(res => {
-               let params = {}
-            params['code_item_id'] = row.code_item_id
-            dataBenchmarkingAllFun.deleteDbmCodeItemInfo(params).then(res => {
-                message.deleteSuccess(res);
-                that.dialogaddCodeXableVisible = false
-                that.getDbmCodeTypeInfo(that.itemcurrentPage, that.itempagesize)
+                let params = {}
+                params['code_item_id'] = row.code_item_id
+                dataBenchmarkingAllFun.deleteDbmCodeItemInfo(params).then(res => {
+                    message.deleteSuccess(res);
+                    that.dialogaddCodeXableVisible = false
+                    that.getAllCodeItemFun(row.code_type_id)
 
-            });
+                });
             }).catch(() => {})
-           
+
         }
     }
 }
