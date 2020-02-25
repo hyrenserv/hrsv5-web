@@ -1,7 +1,7 @@
 <template>
 <div id='nameTable'>
     <el-row :gutter='20'>
-        <el-col :span='4'>
+        <el-col :span='6'>
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini">
             </el-input>
             <div class="mytree">
@@ -9,7 +9,7 @@
                 </el-tree>
             </div>
         </el-col>
-        <el-col :span='20' style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
+        <el-col :span='18' style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
             <el-row style="margin-bottom:10px">
                 <el-col :span='9'>&nbsp;</el-col>
                 <el-col :span='5' style="text-align:right">
@@ -25,7 +25,7 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size='medium' style="min-height: 400px;" class='outtable'>
+                <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable'>
                     <el-table-column width="55" align="center" prop="selectionState">
                         <template slot="header" slot-scope="scope">
                             <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -39,7 +39,7 @@
                             <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="sort_id" label="上级分类" align="center">
+                    <el-table-column prop="sortName" label="上级分类" align="center">
                     </el-table-column>
                     <el-table-column prop="norm_code" label="标准编号" align="center">
                     </el-table-column>
@@ -49,17 +49,17 @@
                     </el-table-column>
                     <el-table-column prop="data_type" label="数据类型" align="center">
                     </el-table-column>
-                    <el-table-column label="发布状态" align="center" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
+                    <el-table-column label="发布状态" align="center" width="100" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
                         <template slot-scope="scope">
                             <span v-if="scope.row.norm_status=='0'">未发布</span>
                             <span v-else>已发布</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="100" align="center">
+                    <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" @click="editbasicByIdFun(scope.row)">编辑</el-button>
-                            <el-button type="text" size="small">发布</el-button>
-                            <el-button type="text" size="small" @click="deleteDbbasicInfo(scope.row)">删除</el-button>
+                            <el-button type="text" size="small" class='editcolor' @click="editbasicByIdFun(scope.row)">编辑</el-button>
+                            <el-button type="text" size="small" class='issuecolor'>发布</el-button>
+                            <el-button type="text" size="small" class='delcolor' @click="deleteDbbasicInfo(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -304,7 +304,7 @@ export default {
             Allis_selectionState: false,
             dialogEditTableVisible: false,
             SetKesDept: {
-                checkStrictly: true,
+                // checkStrictly: true,
                 value: 'id',
                 label: 'label',
                 children: 'children'
@@ -372,10 +372,11 @@ export default {
         }).then(res => {
             this.dataType = res.data
         })
+        this.getDbmSortTreeInfo();
+
     },
     mounted() {
         this.getDbmNormbasicInfo(1, 10)
-        this.getDbmSortTreeInfo();
         this.getDbmNormbasicIdAndNameInfo() //相关标准
 
         // 获取代码类
@@ -386,24 +387,22 @@ export default {
             this.$refs.tree.filter(val);
         },
         handlerValue() {
-      if (this.$refs.refHandle) {
-        this.$refs.refHandle.dropDownVisible = false; //监听值发生变化就关闭它
-      }
-    }
+            if (this.$refs.refHandle) {
+                this.$refs.refHandle.dropDownVisible = false; //监听值发生变化就关闭它
+            }
+        }
     },
 
     methods: {
         // 获取代码类下拉
         getDbmCodeTypeIdAndNameInfo() {
             dataBenchmarkingAllFun.getDbmCodeTypeIdAndNameInfo().then(res => {
-                console.log(res)
                 this.dbmCodeTypeInfos = res.data.dbmCodeTypeInfos
             });
         },
         // 左侧树菜单
         getDbmSortTreeInfo() {
             dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
-                console.log(res.data)
                 this.data = res.data.dbmSortInfoTreeDataList
                 this.options = res.data.dbmSortInfoTreeDataList
             });
@@ -448,26 +447,37 @@ export default {
 
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
+            this.getDbmNormbasicInfo(this.currentPage, size)
+
         },
         dbMark_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
+            this.getDbmNormbasicInfo(currentPage, this.pagesize)
+
         },
         filterNode(value, data) {
             if (!value) return true;
             return data.label.indexOf(value) !== -1;
         },
-        handleClick(row) {
-            console.log(row);
-        },
+        handleClick(row) {},
         handleNodeClick(data) {
-            console.log(data)
             if (!data.children) {
-                let params = {};
-                params["sort_id"] =parseInt(data.id);
-                console.log(params)
+                let params = {},
+                    that = this;
+                params["sort_id"] = parseInt(data.id);
                 dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {
-                    console.log(res)
-                    // this.tableData=res.data
+                    let arr = res.data.dbmNormbasicInfos
+                    for (let i = 0; i < arr.length; i++) {
+                        arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
+                        for (let k = 0; k < that.dataType.length; k++) {
+                            if (arr[i].data_type == that.dataType[k].code) {
+                                arr[i].data_type = that.dataType[k].value
+                            }
+                        }
+                    }
+
+                    this.tableData = arr
+                    this.totalSize = res.data.totalSize
                 });
 
             }
@@ -479,10 +489,10 @@ export default {
                 that = this;
             params["currPage"] = curr;
             params["pageSize"] = size;
-            console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res => {
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {
+                    arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
                     for (let k = 0; k < that.dataType.length; k++) {
                         if (arr[i].data_type == that.dataType[k].code) {
                             arr[i].data_type = that.dataType[k].value
@@ -494,6 +504,25 @@ export default {
                 this.tableData = arr
             });
 
+        },
+        //通过id递归遍历树得到中文名
+        getparentClassNmae(key, treeData) {
+            let returnname = '';
+
+            function childrenEach(childrenData) {
+                for (var j = 0; j < childrenData.length; j++) {
+                    if (childrenData[j].id == key) {
+                        returnname = childrenData[j].label;
+                        break
+                    } else {
+                        if (childrenData[j].children) {
+                            childrenEach(childrenData[j].children);
+                        }
+                    }
+                }
+                return returnname;
+            }
+            return childrenEach(treeData);
         },
         // 新增打开
         addBascicFun() {
@@ -527,15 +556,12 @@ export default {
             this.basicStaus = 'edit'
             let params = {}
             params["basic_id"] = row.basic_id;
-            console.log(params)
             dataBenchmarkingAllFun.getDbmNormbasicInfoById(params).then(res => {
-                console.log(res.data)
-
                 this.ruleForm_Info.standardNum = res.data.norm_code
                 this.ruleForm_Info.cnName = res.data.norm_cname
                 this.ruleForm_Info.enName = res.data.norm_ename
                 this.ruleForm_Info.standardAlias = res.data.norm_aname
-                this.ruleForm_Info.belongsClass = res.data.sort_id
+                this.ruleForm_Info.belongsClass = this.changeDetSelect(res.data.sort_id, this.options)
                 //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
                 //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
                 this.ruleForm_Info.data_types = res.data.data_type
@@ -554,6 +580,30 @@ export default {
                 this.ruleForm_Info.enactingPerson = res.data.formulator
             });
         },
+        // 级联获取数组
+        changeDetSelect(key, treeData) {
+            let arr = []; // 在递归时操作的数组
+            let returnArr = []; // 存放结果的数组
+            let depth = 0; // 定义全局层级
+            // 定义递归函数
+            function childrenEach(childrenData, depthN) {
+                for (var j = 0; j < childrenData.length; j++) {
+                    depth = depthN; // 将执行的层级赋值 到 全局层级
+                    arr[depthN] = (childrenData[j].id);
+                    if (childrenData[j].id == key) {
+                        returnArr = arr.slice(0, depthN + 1); //将目前匹配的数组，截断并保存到结果数组，
+                        break
+                    } else {
+                        if (childrenData[j].children) {
+                            depth++;
+                            childrenEach(childrenData[j].children, depth);
+                        }
+                    }
+                }
+                return returnArr;
+            }
+            return childrenEach(treeData, depth);
+        },
         // 新增标准分类
         saveAddDbmNormbasicInfo(ruleform) {
             let params = {},
@@ -562,7 +612,7 @@ export default {
             params["norm_cname"] = this.ruleForm_Info.cnName;
             params["norm_ename"] = this.ruleForm_Info.enName;
             params["norm_aname"] = this.ruleForm_Info.standardAlias;
-            params["sort_id"] = this.ruleForm_Info.belongsClass; //归属分类--
+            params["sort_id"] = parseInt(this.ruleForm_Info.belongsClass[this.ruleForm_Info.belongsClass.length - 1]); //归属分类--
             //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
             //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
             params["data_type"] = this.ruleForm_Info.data_types; //数据类型
@@ -577,20 +627,18 @@ export default {
             params["relevant_department"] = this.ruleForm_Info.relevantDepartments; //相关部门
             params["norm_status"] = this.ruleForm_Info.norm_status; //发布状态
             params["origin_system"] = this.ruleForm_Info.trustedSystem; //可信系统
-            params["related_system"] = this.ruleForm_Info.relatedStandards; //相关标准
+            params["related_system"] = '相关标准' //this.ruleForm_Info.relatedStandards; //相关标准
             params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
             console.log(params)
             if (this.basicStaus == 'edit') {
                 params["basic_id"] = this.basic_id;
                 dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
-                    console.log(res)
                     message.updateSuccess(res);
                     that.dialogEditTableVisible = false
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                 });
             } else {
                 dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
-                    console.log(res)
                     message.saveSuccess(res);
                     that.dialogEditTableVisible = false
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
