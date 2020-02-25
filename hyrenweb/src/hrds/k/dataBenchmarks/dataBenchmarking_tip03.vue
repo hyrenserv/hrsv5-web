@@ -50,8 +50,8 @@
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" @click="EditFun(scope.row)">编辑</el-button>
-                    <el-button type="text" size="small" @click="delectClassFun(scope.row)">删除</el-button>
+                    <el-button type="text" size="small"  @click="EditFun(scope.row)">编辑</el-button>
+                    <el-button type="text" size="small" class='deltext' @click="delectClassFun(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -153,11 +153,11 @@ export default {
     methods: {
         sig_handleSizeChange(size) {
             this.pagesize = size;
-            console.log(1)
+            this.getDbmCodeTypeInfo(this.currentPage,size)
         },
         sig_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            console.log(2)
+            this.getDbmCodeTypeInfo(currentPage,this.pagesize)
         },
         //归属分类
          getDbmSortTreeInfo() {
@@ -250,6 +250,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+.deltext{
+    // color:@delBtnBackgroundColor;
+}
 </style>
