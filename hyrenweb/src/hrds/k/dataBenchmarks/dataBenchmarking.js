@@ -3,54 +3,54 @@ import request from '@/utils/request'
 // 获取初始表信息
 export function getDbmNormbasicInfo(data) {
     return request({
-        url: 'K/dbmnormbasic/getDbmNormbasicInfo',
+        url: '/K/dbmnormbasic/getDbmNormbasicInfo',
         params:data,
     })
 }
 // 获取代码类下拉框
 export function getDbmCodeTypeIdAndNameInfo() {
     return request({
-        url: 'K/dbmcodetypeinfo/getDbmCodeTypeIdAndNameInfo',
+        url: '/K/dbmcodetypeinfo/getDbmCodeTypeIdAndNameInfo',
     })
 }
 //添加标准分类
 export function addDbmNormbasicInfo(data) {
     return request({
-        url: 'K/dbmnormbasic/addDbmNormbasicInfo',
+        url: '/K/dbmnormbasic/addDbmNormbasicInfo',
         params:data,
     })
 }
 // 编辑打开
 export function getDbmNormbasicInfoById(data) {
     return request({
-        url: 'K/dbmnormbasic/getDbmNormbasicInfoById',
+        url: '/K/dbmnormbasic/getDbmNormbasicInfoById',
         params:data,
     })
 }
 // 编辑保存
 export function updateDbmNormbasicInfo(data) {
     return request({
-        url: 'K/dbmnormbasic/updateDbmNormbasicInfo',
+        url: '/K/dbmnormbasic/updateDbmNormbasicInfo',
         params:data,
     })
 }
 // 删除方法
 export function deleteDbmNormbasicInfo(data) {
     return request({
-        url: 'K/dbmnormbasic/deleteDbmNormbasicInfo',
+        url: '/K/dbmnormbasic/deleteDbmNormbasicInfo',
         params:data,
     })
 }
 //获取所有标准信息
 export function getDbmNormbasicIdAndNameInfo() {
     return request({
-        url: 'K/dbmnormbasic/getDbmNormbasicIdAndNameInfo',
+        url: '/K/dbmnormbasic/getDbmNormbasicIdAndNameInfo',
     })
 }
 //左侧树点击后显示数据
 export function getDbmNormbasicInfoBySortId(data) {
     return request({
-        url: 'K/dbmnormbasic/getDbmNormbasicInfoBySortId',
+        url: '/K/dbmnormbasic/getDbmNormbasicInfoBySortId',
         params:data,
     })
 }
@@ -58,14 +58,14 @@ export function getDbmNormbasicInfoBySortId(data) {
 // 代码类新增
 export function addDbmCodeTypeInfo(data) {
     return request({
-        url: 'K/dbmcodetypeinfo/addDbmCodeTypeInfo',
+        url: '/K/dbmcodetypeinfo/addDbmCodeTypeInfo',
         params:data,
     })
 }
 // 代码类-分页获取数据
 export function getDbmCodeTypeInfo(data) {
     return request({
-        url: 'K/dbmcodetypeinfo/getDbmCodeTypeInfo',
+        url: '/K/dbmcodetypeinfo/getDbmCodeTypeInfo',
         params:data,
     })
 }
@@ -73,56 +73,56 @@ export function getDbmCodeTypeInfo(data) {
 //代码类-编辑
 export function getDbmSortInfoById(data) {
     return request({
-        url: 'K/dbmcodetypeinfo/getDbmSortInfoById',
+        url: '/K/dbmcodetypeinfo/getDbmSortInfoById',
         params:data,
     })
 }
 //代码类-编辑保存
 export function updateDbmCodeTypeInfo(data) {
     return request({
-        url: 'K/dbmcodetypeinfo/updateDbmCodeTypeInfo',
+        url: '/K/dbmcodetypeinfo/updateDbmCodeTypeInfo',
         params:data,
     })
 }
 //代码类-删除分类方法
 export function deleteDbmCodeTypeInfo(data) {
     return request({
-        url: 'K/dbmcodetypeinfo/deleteDbmCodeTypeInfo',
+        url: '/K/dbmcodetypeinfo/deleteDbmCodeTypeInfo',
         params:data,
     })
 }
 //根据类id获取所有代码项
 export function getDbmCodeItemInfoByCodeTypeId(data) {
     return request({
-        url: 'K/dbmcodeiteminfo/getDbmCodeItemInfoByCodeTypeId',
+        url: '/K/dbmcodeiteminfo/getDbmCodeItemInfoByCodeTypeId',
         params:data,
     })
 }
 // 新增代码项
 export function addDbmCodeItemInfo(data) {
     return request({
-        url: 'K/dbmcodeiteminfo/addDbmCodeItemInfo',
+        url: '/K/dbmcodeiteminfo/addDbmCodeItemInfo',
         params:data,
     })
 }
 // 编辑代码项
 export function updateDbmCodeItemInfo(data) {
     return request({
-        url: 'K/dbmcodeiteminfo/updateDbmCodeItemInfo',
+        url: '/K/dbmcodeiteminfo/updateDbmCodeItemInfo',
         params:data,
     })
 }
 // 编辑代码项打开
 export function getItemDbmSortInfoById(data) {
     return request({
-        url: 'K/dbmcodeiteminfo/getDbmSortInfoById',
+        url: '/K/dbmcodeiteminfo/getDbmSortInfoById',
         params:data,
     })
 }
 // 删除代码项
 export function deleteDbmCodeItemInfo(data) {
     return request({
-        url: 'K/dbmcodeiteminfo/deleteDbmCodeItemInfo',
+        url: '/K/dbmcodeiteminfo/deleteDbmCodeItemInfo',
         params:data,
     })
 }
@@ -130,42 +130,42 @@ export function deleteDbmCodeItemInfo(data) {
 // 添加
 export function addDbmSortInfo(data) {
     return request({
-        url: 'K/dbmsortinfo/addDbmSortInfo',
+        url: '/K/dbmsortinfo/addDbmSortInfo',
         params:data,
     })
 }
 //编辑保存
 export function updateDbmSortInfo(data) {
     return request({
-        url: 'K/dbmsortinfo/updateDbmSortInfo',
+        url: '/K/dbmsortinfo/updateDbmSortInfo',
         params:data,
     })
 }
 //获取
 export function getClassDbmSortInfo(data) {
     return request({
-        url: 'K/dbmsortinfo/getDbmSortInfo',
+        url: '/K/dbmsortinfo/getDbmSortInfo',
         params:data,
     })
 }
 //编辑打开
 export function getclassDbmSortInfoById(data) {
     return request({
-        url: 'K/dbmsortinfo/getDbmSortInfoById',
+        url: '/K/dbmsortinfo/getDbmSortInfoById',
         params:data,
     })
 }
 //删除
 export function deleteDbmSortInfo(data) {
     return request({
-        url: 'K/dbmsortinfo/deleteDbmSortInfo',
+        url: '/K/dbmsortinfo/deleteDbmSortInfo',
         params:data,
     })
 }
 //获取分类树信息
 export function getDbmSortInfoTreeData() {
     return request({
-        url: 'K/dbmtree/getDbmSortInfoTreeData',
+        url: '/K/dbmtree/getDbmSortInfoTreeData',
     })
 }
 // 3--标准分类管理
@@ -179,7 +179,7 @@ export function getDbmSortInfoTreeData() {
 //导入excel数据
 export function importExcelData(data) {
     return request({
-        url: 'K/dbmdataimport/importExcelData',
+        url: '/K/dbmdataimport/importExcelData',
         params: data,
         headers: { 'Content-Type': 'multipart/form-data' }
     })
