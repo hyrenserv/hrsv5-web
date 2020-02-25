@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 
-///////////////////////////这里的地址目前是写死的(一个这里存在跨域问题,暂时未找到解决办法)////////////////////////////////
-
 /**
  * 返回部署Agent首页所需的数据信息(数据源列表)
  */
@@ -11,14 +9,6 @@ export function getCollectData() {
     })
 }
 
-/**
- * 获取Agent类型的列表信息
- */
-export function getAgentTypeData() {
-    return request({
-        url: '/B/agentdepoly/getAgentType',
-    })
-}
 
 /**
  * 当前数据源需要部署的Agent列表信息
@@ -38,7 +28,19 @@ export function deployAgentList(data) {
 export function getAgentDownInfo(data) {
 
     return request({
-        url : '/B/agentdepoly/getAgentDownInfo',
-        params : data
+        url: '/B/agentdepoly/getAgentDownInfo',
+        params: data
+    })
+}
+
+
+/**
+ * 
+ * @param {JSON} data : agent部署信息
+ */
+export function saveAgentDownInfo(data) {
+    return request({
+        url: '/B/agentdepoly/saveAgentDownInfo',
+        params: data
     })
 }
