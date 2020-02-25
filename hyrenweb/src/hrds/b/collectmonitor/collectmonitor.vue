@@ -110,7 +110,7 @@ export default {
         });
 
         collect.getHostoryCollect().then(res => {
-            if (typeof res.data[0] != "undefined") {
+            if (typeof res != 'undefined' && res.data != "" ) {
                 this.chartData.columns = Object.keys(res.data[0]);
                 this.chartData.rows = res.data.reverse();
             }
