@@ -3,24 +3,21 @@
     <Step :active="active"></Step>6
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">完成</el-button>
-<!--完成  -->
+    <!--完成  -->
 
-    <el-dialog
-  title="提示信息"
-  :visible.sync="finishDialogVisible"
-  width="30%">
-  <span>设置完成！请等待Agent运行...不运行请点击取消或按下Esc键</span>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
-    <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
-  </span>
-</el-dialog>
+    <el-dialog title="提示信息" :visible.sync="finishDialogVisible" width="30%">
+        <span>设置完成！请等待Agent运行...不运行请点击取消或按下Esc键</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
-
 </template>
 
 <script>
 import Step from "./step";
+import * as sendTask from "./addTask"
 export default {
     components: {
         Step
@@ -32,7 +29,7 @@ export default {
             aId: null,
             sourId: null,
             sName: null,
-            finishDialogVisible:false,
+            finishDialogVisible: false,
         };
     },
     created() {
@@ -44,7 +41,7 @@ export default {
     methods: {
         next() {
             this.active = 6;
-             this.finishDialogVisible=true
+            this.finishDialogVisible = true
         },
         pre() {
             let data = {}
@@ -68,11 +65,17 @@ export default {
                 query: data
             });
         },
-        finishSubmit(){
-            this.finishDialogVisible=false
-             this.$router.push({
-                path: "/agentList"
-            });
+        finishSubmit() {
+            this.finishDialogVisible = false
+            sendTask.sendDBCollctTaskById({
+                colSetId: this.dbid
+            }).then(res => {
+                if (res.success) {
+                    this.$router.push({
+                        path: "/agentList"
+                    });
+                }
+            })
         }
     }
 };

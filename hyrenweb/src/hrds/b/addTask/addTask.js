@@ -508,3 +508,11 @@ export function getTbStoDestByColSetId(data) {
         params:data
     })
 }
+
+//发送此次任务
+export function sendDBCollctTaskById(data) {
+    return request({
+        url: '/B/agent/sendDBCollctTaskById',
+        params:data
+    })
+}
