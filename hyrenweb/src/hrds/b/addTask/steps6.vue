@@ -1,6 +1,6 @@
 <template>
 <div>
-    <Step :active="active"></Step>6
+    <Step :active="active"></Step>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">完成</el-button>
     <!--完成  -->
