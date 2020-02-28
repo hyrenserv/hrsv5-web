@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id='dui_two'>
     <el-row style="margin-bottom:10px">
         <el-col :span='5'>
             <el-input placeholder="请输入内容" class="input-with-select" size="mini">
@@ -8,13 +8,13 @@
         </el-col>
         <el-col :span='13'>&nbsp;</el-col>
         <el-col :span='6' style="text-align:right" class='allbutton'>
-            <el-button size="mini" type="success" class="el-icon-upload">发布所有</el-button>
+            <el-button size="mini" type="success" class="el-icon-upload">发布所选代码类</el-button>
             <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addCodeClass()">新增代码类</el-button>
             <!-- <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除所有代码类</el-button> -->
         </el-col>
     </el-row>
     <!--  -->
-    <el-table :data="tableData" style="width: 100%" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick">
+    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" @selection-change="handleSelectionChange" style="width: 100%" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick">
         <el-table-column type="expand">
             <template slot-scope="props">
                 <el-row style="margin-bottom:10px">
@@ -25,17 +25,12 @@
                     </el-col>
                     <el-col :span='13'>&nbsp;</el-col>
                     <el-col :span='6' style="text-align:right" class='allbutton'>
+                        <el-button size="mini" type="success" class="el-icon-upload">发布所选代码项</el-button>
                         <el-button size="mini" type="primary" @click="addCodeItemFun()">新增代码项</el-button>
                     </el-col>
                 </el-row>
-                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" stripe size='mini' class='in_tableColor'>
-                    <el-table-column width="55" align="center" prop="selectionState">
-                        <template slot="header" slot-scope="scope">
-                            <el-checkbox></el-checkbox>
-                        </template>
-                        <template slot-scope="scope">
-                            <el-checkbox></el-checkbox>
-                        </template>
+                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}" @selection-change="item_handleSelectionChange">
+                    <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
                     <el-table-column label="序号" align="center" width="60">
                         <template scope="scope">
@@ -54,22 +49,16 @@
                     </el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" class='delcolor' @click="delCodeItemFun(scope.row)">删除</el-button>
                             <el-button type="text" size="small" class='editcolor' @click="editCodeItemFun(scope.row)">编辑</el-button>
+                            <el-button type="text" size="small" class='delcolor' @click="delCodeItemFun(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="itemcurrentPage" :page-sizes="[10, 50, 100, 200]" :page-size="itempagesize" layout="total,prev, pager, next" :total="dataList.length" class='pagerigth'></el-pagination>
             </template>
         </el-table-column>
-        <!-- <el-table-column width="55" align="center" prop="selectionState">
-            <template slot="header" slot-scope="scope">
-                <el-checkbox></el-checkbox>
-            </template>
-            <template slot-scope="scope">
-                <el-checkbox></el-checkbox>
-            </template>
-        </el-table-column> -->
+        <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
+        </el-table-column>
         <el-table-column label="序号" align="center" width="60">
             <template scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -91,19 +80,19 @@
             <template slot-scope="scope">
                 <el-button type="text" size="small" class='editcolor' @click="EditCodeClassFun(scope.row)">编辑</el-button>
                 <el-button type="text" size="small" class='delcolor' @click="delectCodeClassFun(scope.row)">删除</el-button>
-                <el-button type="text" size="small" class='issuecolor'>发布</el-button>
+                <!-- <el-button type="text" size="small" class='issuecolor'>发布</el-button> -->
             </template>
         </el-table-column>
     </el-table>
     <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
     <!-- 新增代码类弹框 -->
-    <el-dialog title="代码类" :visible.sync="dialogaddCodeclassableVisible" width="50%" class='data_edit'>
+    <el-dialog title="新增代码类" :visible.sync="dialogaddCodeclassableVisible" width="40%" class='data_edit'>
         <el-row>
-            <el-form ref="codeClassData" label-width="80px" :model="codeClassData">
+            <el-form ref="codeClassData" label-width="86px" :model="codeClassData">
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码编码 : " prop="code_encode">
+                            <el-form-item label="代码编码 : " prop="code_encode" >
                                 <el-input placeholder="代码编码" v-model="codeClassData.code_encode">
                                 </el-input>
                             </el-form-item>
@@ -111,9 +100,9 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码类名 : " prop="code_type_name">
+                            <el-form-item label="代码类名 : " prop="code_type_name" :rules="filter_rules([{required: true}])">
                                 <el-input placeholder="代码类名" v-model="codeClassData.code_type_name">
                                 </el-input>
                             </el-form-item>
@@ -121,19 +110,19 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
                             <el-form-item label="代码描述 : " prop="code_remark">
-                                <el-input placeholder="代码描述" v-model="codeClassData.code_remark">>
+                                <el-input placeholder="代码描述" v-model="codeClassData.code_remark" type="textarea">
                                 </el-input>
                             </el-form-item>
                         </el-row>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="16">
+                    <el-col :span="20">
                         <el-row>
-                            <el-form-item label="发布状态 : " prop="code_status">
+                            <el-form-item label="发布状态 : " prop="code_status" :rules="rule.selected">
                                 <el-select placeholder="发布状态" v-model="codeClassData.code_status" size="medium">
                                     <el-option v-for="(item,index) in Releasestatus" :key="index" :label="item.text" :value="item.value"></el-option>
                                 </el-select>
@@ -149,13 +138,13 @@
         </div>
     </el-dialog>
     <!-- 新增代码项弹框 -->
-    <el-dialog title="代码项" :visible.sync="dialogaddCodeXableVisible" width="50%" class='data_edit'>
+    <el-dialog title="新增代码项" :visible.sync="dialogaddCodeXableVisible" width="40%" class='data_edit'>
         <el-row>
-            <el-form ref="codeItemData" label-width="80px" :model="codeItemData">
+            <el-form ref="codeItemData" label-width="86px" :model="codeItemData">
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码编码 : " prop="codeNum">
+                            <el-form-item label="代码编码 : " prop="codeNum" :rules="filter_rules([{required: true}])">
                                 <el-input placeholder="代码编码" v-model="codeItemData.codeNum">
                                 </el-input>
                             </el-form-item>
@@ -163,9 +152,9 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码名称 : " prop="codeName">
+                            <el-form-item label="代码名称 : " prop="codeName" :rules="filter_rules([{required: true}])">
                                 <el-input placeholder="代码名称" v-model="codeItemData.codeName">
                                 </el-input>
                             </el-form-item>
@@ -173,9 +162,9 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码值 : " prop="codeValue">
+                            <el-form-item label="代码值 : " prop="codeValue" >
                                 <el-input placeholder="代码值" v-model="codeItemData.codeValue">
                                 </el-input>
                             </el-form-item>
@@ -183,9 +172,9 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="层级 : " prop="codeleav">
+                            <el-form-item label="层级 : " prop="codeleav" :rules="filter_rules([{required: true}])">
                                 <el-input placeholder="层级" v-model="codeItemData.codeleav">
                                 </el-input>
                             </el-form-item>
@@ -193,9 +182,9 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码描述 : " prop="codeDesc">
+                            <el-form-item label="代码描述 : " prop="codeDesc" :rules="filter_rules([{required: true}])">
                                 <el-input placeholder="代码描述" type="textarea" v-model="codeItemData.codeDesc">
                                 </el-input>
                             </el-form-item>
@@ -206,7 +195,7 @@
         </el-row>
         <div slot="footer" class="dialog-footer">
             <el-button type="danger" size="mini" @click="dialogaddCodeXableVisible=false">取 消</el-button>
-            <el-button type="primary" size="mini" @click="codeItemSaveFun()">保存</el-button>
+            <el-button type="primary" size="mini" @click="codeItemSaveFun('codeItemData')">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -215,9 +204,12 @@
 <script>
 import * as dataBenchmarkingAllFun from './dataBenchmarking'
 import * as message from "@/utils/js/message";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
+            rule: validator.default,
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
@@ -237,10 +229,10 @@ export default {
             dataList: [],
             Releasestatus: [{
                 text: '未发布',
-                value: '01'
+                value: '0'
             }, {
                 text: '已发布',
-                value: '02'
+                value: '1'
             }, ],
             codeClassData: {
                 code_encode: '',
@@ -250,7 +242,8 @@ export default {
             },
             status: '',
             code_type_id: '',
-            code_item_id: ''
+            code_item_id: '',
+            open: 'false'
         }
     },
     mounted() {
@@ -265,17 +258,31 @@ export default {
             this.currentPage = currentPage;
             this.getDbmCodeTypeInfo(currentPage, this.pagesize)
         },
+        //
+        // 复选框选中
+        handleSelectionChange(selectTrue) {
+            console.log(selectTrue)
+        },
+        // 复选框选中
+        item_handleSelectionChange(selectTrue) {
+            console.log(selectTrue)
+        },
         cellClick(row, column, event) {
             let $table = this.$refs.multipleTable;
             this.tableData.map((item) => {
                 $table.toggleRowExpansion(item, false)
             })
-            if (event.cellIndex != 0 && event.cellIndex != 6) {
-                this.$refs.multipleTable.toggleRowExpansion(row)
-                this.code_type_id = row.code_type_id
-                this.getAllCodeItemFun(row.code_type_id)
+            if (this.open == 'false') {
+                if (event.cellIndex != 1 && event.cellIndex != 7) {
+                    this.open ='true'
+                    this.$refs.multipleTable.toggleRowExpansion(row)
+                    this.code_type_id = row.code_type_id
+                    this.getAllCodeItemFun(row.code_type_id)
+                }
+            } else {
+                 this.open ='false'
+                this.$refs.multipleTable.toggleRowExpansion(row,false)
             }
-
         },
         //获取所有代码项方法
         getAllCodeItemFun(id) {
@@ -295,25 +302,28 @@ export default {
             this.codeClassData.code_status = ''
         },
         codeClassSaveFun(form) {
-            // 新增
-            let params = {}
-            params["code_encode"] = this.codeClassData.code_encode;;
-            params["code_type_name"] = this.codeClassData.code_type_name;
-            params["code_remark"] = this.codeClassData.code_remark;
-            params["code_status"] = this.codeClassData.code_status;
-            if (this.status == 'edit') {
-                params["code_type_id"] = this.code_type_id;
-                dataBenchmarkingAllFun.updateDbmCodeTypeInfo(params).then(res => {
-                    this.dialogaddCodeclassableVisible = false;
-                    this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
-                });
-            } else {
-                dataBenchmarkingAllFun.addDbmCodeTypeInfo(params).then(res => {
-                    this.dialogaddCodeclassableVisible = false;
-                    this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
-                });
-            }
-
+            this.$refs[form].validate(valid => {
+                if (valid) {
+                    // 新增
+                    let params = {}
+                    params["code_encode"] = this.codeClassData.code_encode;;
+                    params["code_type_name"] = this.codeClassData.code_type_name;
+                    params["code_remark"] = this.codeClassData.code_remark;
+                    params["code_status"] = this.codeClassData.code_status;
+                    if (this.status == 'edit') {
+                        params["code_type_id"] = this.code_type_id;
+                        dataBenchmarkingAllFun.updateDbmCodeTypeInfo(params).then(res => {
+                            this.dialogaddCodeclassableVisible = false;
+                            this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
+                        });
+                    } else {
+                        dataBenchmarkingAllFun.addDbmCodeTypeInfo(params).then(res => {
+                            this.dialogaddCodeclassableVisible = false;
+                            this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
+                        });
+                    }
+                }
+            })
         },
         // 获取分页数据
         getDbmCodeTypeInfo(page, size) {
@@ -380,31 +390,34 @@ export default {
             });
         },
         //代码项 编辑和新增保存
-        codeItemSaveFun() {
-            let params = {},
-                that = this;
-            params['code_encode'] = this.codeItemData.codeNum
-            params['code_item_name'] = this.codeItemData.codeName
-            params['code_value'] = this.codeItemData.codeValue
-            params['dbm_level'] = this.codeItemData.codeleav
-            params['code_remark'] = this.codeItemData.codeDesc
-            params['code_type_id'] = this.code_type_id
-            if (this.codeItemStatus == 'add') {
-                dataBenchmarkingAllFun.addDbmCodeItemInfo(params).then(res => {
-                    message.saveSuccess(res);
-                    that.dialogaddCodeXableVisible = false
-                    that.getAllCodeItemFun(that.code_type_id)
-                });
-            } else {
-                params['code_item_id'] = that.code_item_id
-                dataBenchmarkingAllFun.updateDbmCodeItemInfo(params).then(res => {
-                    message.updateSuccess(res);
-                    that.dialogaddCodeXableVisible = false
-                    that.getAllCodeItemFun(that.code_type_id)
+        codeItemSaveFun(form) {
+            this.$refs[form].validate(valid => {
+                if (valid) {
+                    let params = {},
+                        that = this;
+                    params['code_encode'] = this.codeItemData.codeNum
+                    params['code_item_name'] = this.codeItemData.codeName
+                    params['code_value'] = this.codeItemData.codeValue
+                    params['dbm_level'] = this.codeItemData.codeleav
+                    params['code_remark'] = this.codeItemData.codeDesc
+                    params['code_type_id'] = this.code_type_id
+                    if (this.codeItemStatus == 'add') {
+                        dataBenchmarkingAllFun.addDbmCodeItemInfo(params).then(res => {
+                            message.saveSuccess(res);
+                            that.dialogaddCodeXableVisible = false
+                            that.getAllCodeItemFun(that.code_type_id)
+                        });
+                    } else {
+                        params['code_item_id'] = that.code_item_id
+                        dataBenchmarkingAllFun.updateDbmCodeItemInfo(params).then(res => {
+                            message.updateSuccess(res);
+                            that.dialogaddCodeXableVisible = false
+                            that.getAllCodeItemFun(that.code_type_id)
 
-                });
-            }
-
+                        });
+                    }
+                }
+            })
         },
         // 删除代码项
         delCodeItemFun(row) {
@@ -427,11 +440,15 @@ export default {
 </script>
 
 <style lang="less">
+#dui_two{
 .pagerigth {
     text-align: right;
     margin-top: 10px;
 }
-
+.locationcenter{
+    text-align: center;
+    margin-top: 10px;
+}
 .outtable /deep/ {
 
     .el-icon-arrow-down,
@@ -446,5 +463,6 @@ export default {
             background-color: #829cfb !important
         }
     }
+}
 }
 </style>
