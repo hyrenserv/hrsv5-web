@@ -4,10 +4,17 @@
         <el-col :span='6'>
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini">
             </el-input>
-            <div class="mytree">
-                <el-tree class="filter-tree" :data="data" :indent='0' :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
-                </el-tree>
-            </div>
+            <Scrollbar>
+
+                <div class="mytree" hight='200'>
+                    <el-tree class="filter-tree" :data="data" :indent='0' :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+		<span :title="node.label">{{ node.label }}</span>
+	</span>
+                    </el-tree>
+                </div>
+            </Scrollbar>
+
         </el-col>
         <el-col :span='18' style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
             <el-row style="margin-bottom:10px">
@@ -18,21 +25,17 @@
                     </el-input>
                 </el-col>
                 <el-col :span='10' style="text-align:right" class='allbutton'>
-                    <el-button size="mini" type="primary" plain @click="importExcelData">批量导入</el-button>
-                    <el-button size="mini" type="success" class="el-icon-upload">发布所有标准</el-button>
+                    <el-upload style="display: inline-block;margin-right:10px" :action="uploadUrl()" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :limit="1" :show-file-list="false" :file-list="fileList" ref="upload" :on-exceed="exceedHander" :before-upload="beforeAvatarUpload" :auto-upload="false" :on-change="testOnchange" :on-success="handleSuccess">
+                        <el-button size="mini" type="primary" plain @click="importExcelData">批量导入</el-button>
+                    </el-upload>
+                    <el-button size="mini" type="success" class="el-icon-upload">发布标准</el-button>
                     <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addBascicFun()">新增标准</el-button>
                     <!-- <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除标准</el-button> -->
                 </el-col>
             </el-row>
             <el-row>
-                <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable'>
-                    <el-table-column width="55" align="center" prop="selectionState">
-                        <template slot="header" slot-scope="scope">
-                            <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
-                        </template>
-                        <template slot-scope="scope">
-                            <el-checkbox :checked="scope.row.selectionState" v-model="scope.row.selectionState" @change="evercheck(scope.row.selectionState,scope.row.table_name)"></el-checkbox>
-                        </template>
+                <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable' ref="multipleTable" :row-key="(row)=>{ return row.basic_id}" @selection-change="handleSelectionChange">
+                    <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
                     <el-table-column label="序号" align="center" width="60">
                         <template scope="scope">
@@ -58,7 +61,7 @@
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class='editcolor' @click="editbasicByIdFun(scope.row)">编辑</el-button>
-                            <el-button type="text" size="small" class='issuecolor'>发布</el-button>
+                            <!-- <el-button type="text" size="small" class='issuecolor'>发布</el-button> -->
                             <el-button type="text" size="small" class='delcolor' @click="deleteDbbasicInfo(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -68,10 +71,10 @@
         </el-col>
     </el-row>
     <!-- 编辑的弹框 -->
-    <el-dialog title="报表日期" :visible.sync="dialogEditTableVisible" width="70%" class='data_edit'>
+    <el-dialog title="新增标准元" :visible.sync="dialogEditTableVisible" width="60%" class='data_edit'>
         <el-row>
             <el-collapse v-model="activeNames">
-                <el-form ref="ruleForm_Info" :model="ruleForm_Info" label-width="80px">
+                <el-form ref="ruleForm_Info" :model="ruleForm_Info" label-width="86px">
                     <el-collapse-item title="基本信息" name="1">
                         <div slot="title">
                             <span class="el-icon-edit zdtitle">基本信息</span>
@@ -87,8 +90,16 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="中文名称 : " prop="cnName">
+                                    <el-form-item label="中文名称 : " prop="cnName" :rules="filter_rules([{required: true}])">
                                         <el-input placeholder="中文名称" size='mini' v-model="ruleForm_Info.cnName">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-row>
+                            </el-col>
+                            <el-col :span='7'>
+                                <el-row>
+                                    <el-form-item label="英文名称 : " prop="enName" :rules="filter_rules([{required: true}])">
+                                        <el-input placeholder="英文名称" size='mini' v-model="ruleForm_Info.enName">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
@@ -97,49 +108,42 @@
                         <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="英文名称 : " prop="enName">
-                                        <el-input placeholder="英文名称" size='mini' v-model="ruleForm_Info.enName">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-row>
-                            </el-col>
-                            <el-col :span='7'>
-                                <el-row>
-                                    <el-form-item label="标准别名 : " prop="standardAlias">
+                                    <el-form-item label="标准别名 : " prop="standardAlias" :rules="filter_rules([{required: true}])">
                                         <el-input placeholder="标准别名" size='mini' v-model="ruleForm_Info.standardAlias">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
                             </el-col>
                             <el-col :span="7">
-                                <el-form-item label="归属分类 : " prop="belongsClass">
-                                    <el-cascader :options="options" clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
-                                </el-form-item>
+                                <el-row>
+                                    <el-form-item label="归属分类 : " prop="belongsClass" :rules="rule.selected">
+                                        <el-cascader :options="options" clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
+                                    </el-form-item>
+                                </el-row>
                             </el-col>
-
                         </el-row>
-                        <el-row :gutter="20" style="margin-left: 0;">
+                        <!--  <el-row :gutter="20" style="margin-left: 0;">
                             <el-col>
                                 <el-form-item label="标准描述 : " prop="standardDescription">
                                     <el-input type="textarea" :rows="2" placeholder="请输入内容" style='width:86%' v-model="ruleForm_Info.standardDescription">
                                     </el-input>
                                 </el-form-item>
                             </el-col>
-                        </el-row>
+                        </el-row> -->
                     </el-collapse-item>
                     <el-collapse-item title="技术属性" name="2">
                         <div slot="title">
                             <span class="el-icon-edit zdtitle">技术属性</span>
                         </div>
                         <el-row :gutter="20">
-                            <el-col :span='7'>
+                            <!--  <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="字段名称 : " prop="fieldName">
                                         <el-input placeholder="字段名称" size='mini' v-model="ruleForm_Info.fieldName">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
-                            </el-col>
+                            </el-col> -->
                             <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="数据类型 : " prop="data_types">
@@ -150,12 +154,9 @@
                                     </el-form-item>
                                 </el-row>
                             </el-col>
-
-                        </el-row>
-                        <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="字段长度 : " prop="fieldLength">
+                                    <el-form-item label="字段长度 : " prop="fieldLength" :rules="filter_rules([{required: true,dataType:'number'}])">
                                         <el-input placeholder="字段长度" size='mini' v-model="ruleForm_Info.fieldLength">
                                         </el-input>
                                     </el-form-item>
@@ -163,12 +164,14 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="小数长度 : " prop="decimalLen">
+                                    <el-form-item label="小数长度 : " prop="decimalLen" :rules="filter_rules([{required: true,dataType:'number'}])">
                                         <el-input placeholder="小数长度" size='mini' v-model="ruleForm_Info.decimalLen">
                                         </el-input>
                                     </el-form-item>
                                 </el-row>
                             </el-col>
+                        </el-row>
+                        <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
                                     <el-form-item label="所属代码 : " prop="belongsCode">
@@ -185,7 +188,7 @@
                         <div slot="title">
                             <span class="el-icon-edit zdtitle">业务属性</span>
                         </div>
-                        <el-row :gutter="20" style="margin-left:0">
+                        <el-row :gutter="20" style="margin-left:0;margin-bottom:18px">
                             <el-col>
                                 <el-form-item label="业务定义 : " prop="worksDefin">
                                     <el-input type="textarea" :rows="2" v-model="ruleForm_Info.worksDefin" placeholder="请输入内容" style='width:86%'>
@@ -193,7 +196,7 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-row :gutter="20" style="margin-left:0">
+                        <el-row :gutter="20" style="margin-left:0;margin-bottom:18px">
                             <el-col>
                                 <el-form-item label="业务规则 : " prop="workRule">
                                     <el-input type="textarea" :rows="2" v-model="ruleForm_Info.workRule" placeholder="请输入内容" style='width:86%'>
@@ -201,7 +204,7 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-row :gutter="20" style="margin-left:0">
+                        <el-row :gutter="20" style="margin-left:0;margin-bottom:18px">
                             <el-col>
                                 <el-form-item label="标准定义 : " prop="sdefinition">
                                     <el-input type="textarea" :rows="2" v-model="ruleForm_Info.sdefinition" placeholder="请输入内容" style='width:86%'>
@@ -209,9 +212,9 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-row :gutter="20" style="margin-left:0">
+                        <el-row :gutter="20" style="margin-left:0;margin-bottom:18px">
                             <el-col>
-                                <el-form-item label="值域 : " prop="dbm_domain">
+                                <el-form-item label="值域 : " prop="dbm_domain" :rules="filter_rules([{required: true}])">
                                     <el-input type="textarea" :rows="2" v-model="ruleForm_Info.dbm_domain" placeholder="请输入内容" style='width:86%'>
                                     </el-input>
                                 </el-form-item>
@@ -241,7 +244,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="发布状态 : " prop="relatedStandards">
+                                    <el-form-item label="发布状态 : " prop="relatedStandards" :rules="rule.selected">
                                         <el-select placeholder="请选择" size='mini' v-model="ruleForm_Info.norm_status">
                                             <el-option v-for="item in Releasestatus" :key="item.value" :label="item.text" :value="item.value">
                                             </el-option>
@@ -271,7 +274,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="制定人 : " prop="enactingPerson">
+                                    <el-form-item label="制定人 : " prop="enactingPerson" :rules="filter_rules([{required: true}])">
                                         <el-input placeholder="制定人" size='mini' v-model="ruleForm_Info.enactingPerson">
                                         </el-input>
                                     </el-form-item>
@@ -288,16 +291,30 @@
             <el-button type="success" size="mini" class="el-icon-upload">发布</el-button>
         </div>
     </el-dialog>
+    <!-- 导入用户 弹窗二次确认 -->
+    <el-dialog title="导入Excel" :visible.sync="importUserDialog" width="550px" :close-on-click-modal="false" :before-close="handleFirst1">
+        <span v-if="fileList != ''" class="info-message">确认导入 “ {{fileList[0].name}} ” </span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="handleFirst1">取 消</el-button>
+            <el-button type="primary" @click="handleConfimr">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 </template>
 
 <script>
 import * as dataBenchmarkingAllFun from './dataBenchmarking'
 import * as message from "@/utils/js/message";
-
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
+import Scrollbar from '../../components/scrollbar';
 export default {
+    components: {
+        Scrollbar
+    },
     data() {
         return {
+            rule: validator.default,
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
@@ -362,7 +379,10 @@ export default {
             },
             // tableData:[],
             tableData: [],
-            options: []
+            options: [],
+            fileList: [],
+            importUserDialog: false,
+            listId: '',
         };
     },
     created() {
@@ -394,6 +414,10 @@ export default {
     },
 
     methods: {
+        // 复选框选中
+        handleSelectionChange(selectTrue) {
+            console.log(selectTrue)
+        },
         // 获取代码类下拉
         getDbmCodeTypeIdAndNameInfo() {
             dataBenchmarkingAllFun.getDbmCodeTypeIdAndNameInfo().then(res => {
@@ -413,37 +437,6 @@ export default {
                 this.dbmNormbasicInfos = res.data.dbmNormbasicInfos
             });
         },
-        // 表第一列的全选
-        /*  Allis_selectionStateFun(items, e) {
-             let that = this;
-             items.forEach((item, j) => {
-                 if (e) {
-                     item.selectionState = true;
-                     for (let i = 0; i < that.allData.length; i++) {
-                         if (that.allData[i].table_name == item.table_name) {
-                             that.allData[i].selectionState = true;
-                         }
-                     }
-                     for (let i = 0; i < that.allDataList.length; i++) {
-                         if (that.allDataList[i].table_name == item.table_name) {
-                             that.allDataList[i].selectionState = true;
-                         }
-                     }
-                 } else {
-                     item.selectionState = false;
-                     for (let i = 0; i < that.allData.length; i++) {
-                         if (that.allData[i].table_name == item.table_name) {
-                             that.allData[i].selectionState = false;
-                         }
-                     }
-                     for (let i = 0; i < that.allDataList.length; i++) {
-                         if (that.allDataList[i].table_name == item.table_name) {
-                             that.allDataList[i].selectionState = false;
-                         }
-                     }
-                 }
-             });
-         }, */
 
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
@@ -490,6 +483,7 @@ export default {
             params["currPage"] = curr;
             params["pageSize"] = size;
             dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res => {
+                console.log(res.data)
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
@@ -606,44 +600,48 @@ export default {
         },
         // 新增标准分类
         saveAddDbmNormbasicInfo(ruleform) {
-            let params = {},
-                that = this;
-            params["norm_code"] = this.ruleForm_Info.standardNum;
-            params["norm_cname"] = this.ruleForm_Info.cnName;
-            params["norm_ename"] = this.ruleForm_Info.enName;
-            params["norm_aname"] = this.ruleForm_Info.standardAlias;
-            params["sort_id"] = parseInt(this.ruleForm_Info.belongsClass[this.ruleForm_Info.belongsClass.length - 1]); //归属分类--
-            //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
-            //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
-            params["data_type"] = this.ruleForm_Info.data_types; //数据类型
-            params["col_len"] = parseInt(this.ruleForm_Info.fieldLength); //字段长度
-            params["decimal_point"] = parseInt(this.ruleForm_Info.decimalLen); //小数长度
-            params["code_type_id"] = parseInt(this.ruleForm_Info.belongsCode); //所属代码--
-            params["business_def"] = this.ruleForm_Info.worksDefin; //业务定义
-            params["business_rule"] = this.ruleForm_Info.workRule; //业务规则
-            params["norm_basis"] = this.ruleForm_Info.sdefinition; //标准定义
-            params["dbm_domain"] = this.ruleForm_Info.dbm_domain; //值域
-            params["manage_department"] = this.ruleForm_Info.department; //管理部门
-            params["relevant_department"] = this.ruleForm_Info.relevantDepartments; //相关部门
-            params["norm_status"] = this.ruleForm_Info.norm_status; //发布状态
-            params["origin_system"] = this.ruleForm_Info.trustedSystem; //可信系统
-            params["related_system"] = '相关标准' //this.ruleForm_Info.relatedStandards; //相关标准
-            params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
-            console.log(params)
-            if (this.basicStaus == 'edit') {
-                params["basic_id"] = this.basic_id;
-                dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
-                    message.updateSuccess(res);
-                    that.dialogEditTableVisible = false
-                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                });
-            } else {
-                dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
-                    message.saveSuccess(res);
-                    that.dialogEditTableVisible = false
-                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                });
-            }
+            this.$refs[ruleform].validate(valid => {
+                if (valid) {
+                    let params = {},
+                        that = this;
+                    params["norm_code"] = this.ruleForm_Info.standardNum;
+                    params["norm_cname"] = this.ruleForm_Info.cnName;
+                    params["norm_ename"] = this.ruleForm_Info.enName;
+                    params["norm_aname"] = this.ruleForm_Info.standardAlias;
+                    params["sort_id"] = parseInt(this.ruleForm_Info.belongsClass[this.ruleForm_Info.belongsClass.length - 1]); //归属分类--
+                    //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
+                    //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
+                    params["data_type"] = this.ruleForm_Info.data_types; //数据类型
+                    params["col_len"] = parseInt(this.ruleForm_Info.fieldLength); //字段长度
+                    params["decimal_point"] = parseInt(this.ruleForm_Info.decimalLen); //小数长度
+                    params["code_type_id"] = parseInt(this.ruleForm_Info.belongsCode); //所属代码--
+                    params["business_def"] = this.ruleForm_Info.worksDefin; //业务定义
+                    params["business_rule"] = this.ruleForm_Info.workRule; //业务规则
+                    params["norm_basis"] = this.ruleForm_Info.sdefinition; //标准定义
+                    params["dbm_domain"] = this.ruleForm_Info.dbm_domain; //值域
+                    params["manage_department"] = this.ruleForm_Info.department; //管理部门
+                    params["relevant_department"] = this.ruleForm_Info.relevantDepartments; //相关部门
+                    params["norm_status"] = this.ruleForm_Info.norm_status; //发布状态
+                    params["origin_system"] = this.ruleForm_Info.trustedSystem; //可信系统
+                    params["related_system"] = '相关标准' //this.ruleForm_Info.relatedStandards; //相关标准
+                    params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
+                    console.log(params)
+                    if (this.basicStaus == 'edit') {
+                        params["basic_id"] = this.basic_id;
+                        dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
+                            message.updateSuccess(res);
+                            that.dialogEditTableVisible = false
+                            that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                        });
+                    } else {
+                        dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
+                            message.saveSuccess(res);
+                            that.dialogEditTableVisible = false
+                            that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                        });
+                    }
+                }
+            });
 
         },
         //
@@ -660,29 +658,75 @@ export default {
         },
         // 导入数据
         importExcelData() {
-            let params = {}
-            params["pathName"] =
-                "E:/hyren/hyrenserv/hrsv5/hrds_K/src/test/java/hrds/k/biz/dbmdataimport/upload/dbm_import_test.xlsx";
+            console.log(this.fileList)
+            let params = new FormData() // 创建form对象
+            params.append('pathName', this.fileList[0].raw);
             dataBenchmarkingAllFun.importExcelData(params).then(res => {
                 console.log("111" + res);
             });
-        }
+        },
+        uploadUrl() { //动态改变上传地址
+            return ''
+        },
+        exceedHander() {
+            this.$message.warning('请勿上传多个文件')
+        },
+        beforeAvatarUpload(file) {
+            console.log('上传前', file);
+            const Xls = file.name.split('.');
+            const isLt2M = file.size / 1024 / 1024 < 10;
+            console.log(Xls[Xls.length - 1]);
+            if (Xls[Xls.length - 1] === 'xls' || Xls[Xls.length - 1] === 'xlsx') {
+                return file;
+            } else {
+                this.$message.error('上传文件只能是 xls/xlsx 格式')
+                return false
+            }
+            if (!isLt2M) {
+                this.$message.error('上传模板大小不能超过 10MB')
+                return false;
+            }
+        },
+        // 文件状态改变
+        testOnchange(file, fileList) {
+            this.fileList = fileList
+            this.importExcelData();
+            if (this.fileList.length != 0) {
+                this.importUserDialog = true;
+            } else {
+                this.importUserDialog = false;
+            }
+        },
+        handleConfimr() {
+            console.log(111)
+            // this.$refs.upload.submit();
+            this.importUserDialog = false;
+            this.importExcelData();
+        },
+        handleSuccess(response, file, fileList) {
+            console.log('上传成功');
+            /*  if(response.code == 200){
+                 setTimeout(() =>{
+                     this.$message.success('文件上传成功');
+                     console.log(file,fileList)
+                     // this.importExcelData();
+                 },2000);
+                // fileList.splice(0);//上传成功后将fileList清空，不影响下一次上传
+             }else{
+                 this.$message.error(response.message)
+             } */
+        },
+        handleFirst1() {
+            this.fileList.splice(0);
+            this.importUserDialog = false;
+            this.$message.info('已取消上传');
+        },
     }
 };
 </script>
 
-<style lang="less">
-.locationcenter {
-    text-align: center;
-    margin-top: 5px;
-}
-
-.zdtitle {
-    font-size: 15px;
-    // font-weight: bold;
-    color: #2196f3;
-}
-
+<style lang="less" >
+#nameTable{
 .mytree /deep/ {
     .el-tree>.el-tree-node:after {
         border-top: none;
@@ -789,4 +833,33 @@ export default {
         padding: 0 16px
     }
 }
+}
+#nameTable {
+    .locationcenter {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.zdtitle {
+    font-size: 15px;
+    // font-weight: bold;
+    color: #2196f3;
+}
+    .scrollbar-wrap {
+        width: 24% !important;
+        position: absolute;
+    }
+    .scrollbar__track {
+        width: 4px;
+    }
+}
+.span-ellipsis {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  font-size: 14px;
+}
 </style>
+

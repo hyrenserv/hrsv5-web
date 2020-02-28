@@ -13,14 +13,8 @@
         </el-col>
     </el-row>
     <el-row>
-        <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable'>
-            <el-table-column width="55" align="center" prop="selectionState">
-                <template slot="header" slot-scope="scope">
-                    <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
-                </template>
-                <template slot-scope="scope">
-                    <el-checkbox :checked="scope.row.selectionState" v-model="scope.row.selectionState" @change="evercheck(scope.row.selectionState,scope.row.table_name)"></el-checkbox>
-                </template>
+        <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable' :row-key="(row)=>{ return row.sort_id}" @selection-change="handleSelectionChange">
+            <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
             </el-table-column>
             <el-table-column label="序号" align="center" width="60">
                 <template scope="scope">
@@ -58,40 +52,42 @@
         <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
     </el-row>
     <!-- 新增分类 -->
-    <el-dialog title="报表日期" :visible.sync="dialogaddclassableVisible" width="50%" class='data_edit'>
+    <el-dialog title="新增标准分类" :visible.sync="dialogaddclassableVisible" width="40%" class='data_edit'>
         <el-row>
-            <el-form ref="standardClassifiFormRule" label-width="80px" :model="standardClassifiFormRule">
+            <el-form ref="standardClassifiFormRule" label-width="86px" :model="standardClassifiFormRule">
                 <el-row :gutter="20">
-                    <el-col :span="16">
+                    <el-col :span="20">
                         <el-row>
-                            <el-form-item label="归属分类 : " prop="belongsClass">
+                            <el-form-item label="归属分类 : " prop="belongsClass" :rules="rule.selected">
                                 <el-cascader :options="options" :show-all-levels="false" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept"></el-cascader>
                             </el-form-item>
                         </el-row>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span='16'>
+                    <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="中文名称 : " prop="chNmae">
+                            <el-form-item label="中文名称 : " prop="chNmae" :rules="filter_rules([{required: true}])">
                                 <el-input placeholder="中文名称" v-model="standardClassifiFormRule.chNmae">
                                 </el-input>
                             </el-form-item>
                         </el-row>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20" style="margin-left: 0;">
-                    <el-col>
-                        <el-form-item label="标准描述 : " prop="standardMark">
-                            <el-input type="textarea" :rows="2" v-model="standardClassifiFormRule.standardMark" placeholder="请输入内容" style='width:86%'>
-                            </el-input>
-                        </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="20">
+                        <el-row>
+                            <el-form-item label="标准描述 : " prop="standardMark" :rules="filter_rules([{required: true}])">
+                                <el-input type="textarea" v-model="standardClassifiFormRule.standardMark" placeholder="请输入内容">
+                                </el-input>
+                            </el-form-item>
+                        </el-row>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="16">
+                    <el-col :span="20">
                         <el-row>
-                            <el-form-item label="发布状态 : " prop="code_status">
+                            <el-form-item label="发布状态 : " prop="code_status" :rules="rule.selected">
                                 <el-select placeholder="发布状态" v-model="standardClassifiFormRule.code_status" size="medium">
                                     <el-option v-for="(item,index) in Releasestatus" :key="index" :label="item.text" :value="item.value"></el-option>
                                 </el-select>
@@ -112,10 +108,12 @@
 <script>
 import * as dataBenchmarkingAllFun from './dataBenchmarking'
 import * as message from "@/utils/js/message";
-
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
+            rule: validator.default,
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
@@ -162,6 +160,10 @@ export default {
             this.currentPage = currentPage;
             this.getDbmCodeTypeInfo(currentPage, this.pagesize)
         },
+        // 复选框选中
+        handleSelectionChange(selectTrue) {
+            console.log(selectTrue)
+        },
         //归属分类
         getDbmSortTreeInfo() {
             dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
@@ -170,29 +172,32 @@ export default {
         },
         // 编辑和新增点击保存方法
         standardClassifiSave(form) {
-            // 新增
-            let params = {},
-                that = this;
-            params["parent_id"] = parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]);
-            params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length + 1;
-            params["sort_name"] = this.standardClassifiFormRule.chNmae;
-            params["sort_remark"] = this.standardClassifiFormRule.standardMark;
-            params["sort_status"] = this.standardClassifiFormRule.code_status;
-            if (this.status == 'edit') {
-                params["sort_id"] = this.edit_sortId;
-                dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
-                    message.updateSuccess(res);
-                    that.dialogaddclassableVisible = false;
-                    that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                });
-            } else {
-                dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
-                    message.saveSuccess(res);
-                    that.dialogaddclassableVisible = false;
-                    that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                });
-            }
-
+            this.$refs[form].validate(valid => {
+                if (valid) {
+                    // 新增
+                    let params = {},
+                        that = this;
+                    params["parent_id"] = parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]);
+                    params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length + 1;
+                    params["sort_name"] = this.standardClassifiFormRule.chNmae;
+                    params["sort_remark"] = this.standardClassifiFormRule.standardMark;
+                    params["sort_status"] = this.standardClassifiFormRule.code_status;
+                    if (this.status == 'edit') {
+                        params["sort_id"] = this.edit_sortId;
+                        dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
+                            message.updateSuccess(res);
+                            that.dialogaddclassableVisible = false;
+                            that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                        });
+                    } else {
+                        dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
+                            message.saveSuccess(res);
+                            that.dialogaddclassableVisible = false;
+                            that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                        });
+                    }
+                }
+            })
         },
         // 获取分页数据
         getDbmCodeTypeInfo(page, size) {
@@ -294,7 +299,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.deltext {
-    // color:@delBtnBackgroundColor;
+.locationcenter {
+    text-align: center;
+    margin-top: 10px;
 }
 </style>
