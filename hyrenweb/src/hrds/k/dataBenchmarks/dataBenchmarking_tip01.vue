@@ -25,8 +25,8 @@
                     </el-input>
                 </el-col>
                 <el-col :span='10' style="text-align:right" class='allbutton'>
-                    <el-upload style="display: inline-block;margin-right:10px" :action="uploadUrl()" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :limit="1" :show-file-list="false" :file-list="fileList" ref="upload" :on-exceed="exceedHander" :before-upload="beforeAvatarUpload" :auto-upload="false" :on-change="testOnchange" :on-success="handleSuccess">
-                        <el-button size="mini" type="primary" plain @click="importExcelData">批量导入</el-button>
+                    <el-upload style="display: inline-block;margin-right:10px" :action="uploadUrl()" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :limit="1" :show-file-list="false" :file-list="fileList" ref="uploaded" :on-exceed="exceedHander" :before-upload="beforeAvatarUpload" :auto-upload="false" :on-change="testOnchange" :on-success="handleSuccess">
+                        <el-button size="mini" type="primary" plain>批量导入</el-button>
                     </el-upload>
                     <el-button size="mini" type="success" class="el-icon-upload">发布标准</el-button>
                     <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addBascicFun()">新增标准</el-button>
@@ -690,7 +690,7 @@ export default {
         // 文件状态改变
         testOnchange(file, fileList) {
             this.fileList = fileList
-            this.importExcelData();
+            // this.importExcelData();
             if (this.fileList.length != 0) {
                 this.importUserDialog = true;
             } else {
@@ -699,22 +699,22 @@ export default {
         },
         handleConfimr() {
             console.log(111)
-            // this.$refs.upload.submit();
+            this.$refs.uploaded.submit();
             this.importUserDialog = false;
-            this.importExcelData();
+            // this.importExcelData();
         },
         handleSuccess(response, file, fileList) {
             console.log('上传成功');
-            /*  if(response.code == 200){
+             if(response.code == 200){
                  setTimeout(() =>{
                      this.$message.success('文件上传成功');
                      console.log(file,fileList)
-                     // this.importExcelData();
+                     this.importExcelData();
                  },2000);
-                // fileList.splice(0);//上传成功后将fileList清空，不影响下一次上传
+                fileList.splice(0);//上传成功后将fileList清空，不影响下一次上传
              }else{
                  this.$message.error(response.message)
-             } */
+             }
         },
         handleFirst1() {
             this.fileList.splice(0);

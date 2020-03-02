@@ -1,13 +1,13 @@
 <template>
 <div>
     <el-row style="margin-bottom:10px">
-        <el-col :span='15'>&nbsp;</el-col>
+        <el-col :span='13'>&nbsp;</el-col>
         <el-col :span='5' style="text-align:right">
             <el-input placeholder="请输入内容" class="input-with-select" size="mini">
                 <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
         </el-col>
-        <el-col :span='4' style="text-align:right" class='allbutton'>
+        <el-col :span='6' style="text-align:right" class='allbutton'>
             <el-button size="mini" type="success" class="el-icon-upload">发布分类</el-button>
             <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addClass()">新增分类</el-button>
         </el-col>
