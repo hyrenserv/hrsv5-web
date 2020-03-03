@@ -142,6 +142,7 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as agentList from "./agentList";
 import * as message from "@/utils/js/message";
+let rowName;
 export default {
     data() {
         return {
@@ -227,6 +228,7 @@ export default {
             });
         },
         taskManagement(row) {
+            rowName = row.agent_name;
             this.dialogTableTask = true;
             let params = {};
             params["sourceId"] = row.source_id;
@@ -250,6 +252,7 @@ export default {
                             agent_id: row.agent_id,
                             id: row.id,
                             source_id: row.source_id,
+                            rowName:this.$Base64.encode(rowName),
                             source_name: this.$Base64.encode(sourceName),
                             edit: "yes"
                         }
@@ -265,6 +268,7 @@ export default {
                     this.$router.push({
                         path: "collection" + this.CollectType[i].code + "_1",
                         query: {
+                            agent_name:this.$Base64.encode(row.agent_name),
                             agent_id: row.agent_id,
                             source_id: row.source_id,
                             source_name: this.$Base64.encode(sourceName),
