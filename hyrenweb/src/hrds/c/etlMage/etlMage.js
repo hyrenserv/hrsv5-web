@@ -5,7 +5,7 @@ export function searchEtlSys(data) {
     return request({
         url: '/C/etlsys/searchEtlSys',
         method: 'post',
-        params: data
+        params: data 
     })
 }
 

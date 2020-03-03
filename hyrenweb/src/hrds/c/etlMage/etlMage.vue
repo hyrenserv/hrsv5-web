@@ -247,6 +247,7 @@ export default {
         getTable(){
             let params = {};
             etlMageAllFun.searchEtlSys(params).then(res=>{
+                console.log(res.data)
                 this.tableData = res.data;
             });
         },

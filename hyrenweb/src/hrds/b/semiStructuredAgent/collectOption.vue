@@ -129,12 +129,12 @@
 
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit" size="small"> 返回</el-button>
         </el-col>
 
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:right" size="medium" @click="nextSteps('form')"> 下一步<i class="el-icon-right"></i></el-button>
+                <el-button type="primary" style="float:right" size="small" @click="nextSteps('form')"> 下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -425,5 +425,11 @@ export default {
 .collectOption>>>.el-input-group__prepend button.el-button {
     background-color: #D9534F;
     color: white;
+}
+
+.collectOption>>>.el-radio-group {
+    display: inline-block;
+    vertical-align: inherit;
+    line-height: inherit;
 }
 </style>
