@@ -78,7 +78,7 @@
             <el-col :span="12">
                 <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
-                        <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code">
+                        <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.run_way">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -114,7 +114,7 @@ export default {
     data() {
         return {
             form: {
-                is_solr: "1",
+                is_solr: "",
                 fcs_name: "",
                 run_way: ""
             },
@@ -129,9 +129,9 @@ export default {
             formLabelWidth: "150px"
         }
     },
-    async created() {
+    created() {
         // 获取首页数据
-        await this.searchFileCollect();
+        this.searchFileCollect();
         // 获取代码项对应值
         this.getCategoryItems("IsFlag");
         this.getCategoryItems("ExecuteWay");
@@ -155,16 +155,9 @@ export default {
                         // 数据回显
                         this.form.fcs_name = res.data.file_collect_set_info.fcs_name
                         this.form.system_type = res.data.file_collect_set_info.system_type;
-                        this.form.agent_name = this.$route.query.agent_name;
+                        this.form.agent_name = this.$Base64.decode(this.$route.query.rowName);
                         this.form.host_name = res.data.file_collect_set_info.host_name;
-                        // // 做个判断
-                        // if (res.data.file_collect_set_info.is_sendok == "1") {
-                        //     this.form.run_way = "按时启动"
-                        // } else if (res.data.file_collect_set_info.is_sendok == "2") {
-                        //     this.form.run_way = "命令触发"
-                        // } else if (res.data.file_collect_set_info.is_sendok == "3") {
-                        //     this.form.run_way = " 信号文件触发"
-                        // }
+                        // this.form.run_way =res.data.file_collect_set_info.is_sendok;
                         this.form.is_solr = res.data.file_collect_set_info.is_solr;
                         let date = new Date();
                         this.form.systemtime = date.toLocaleString('chinese', {
@@ -190,7 +183,7 @@ export default {
                 }).then((res) => {
                     if (res && res.success) {
                         this.form.system_type = res.data.osName;
-                        this.form.agent_name = this.$route.query.agent_name;
+                        this.form.agent_name = this.$Base64.decode(this.$route.query.agent_name);
                         this.form.host_name = res.data.userName;
                         let date = new Date();
                         this.form.systemtime = date.toLocaleString('chinese', {
@@ -219,6 +212,10 @@ export default {
                     category: e
                 }).then((res) => {
                     if (res && res.success) {
+                        res.data.forEach((item => {
+                            item['run_way'] = item.code;
+                        }))
+                        console.log(res.data)
                         this.runWay = res.data;
                     }
                 })
