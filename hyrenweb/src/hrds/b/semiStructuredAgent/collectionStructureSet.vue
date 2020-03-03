@@ -53,12 +53,12 @@
     </el-row>
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit" size="small"> 返回</el-button>
         </el-col>
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:left" @click="backSteps" size="medium"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="primary" style="float:right" @click="nextSteps" size="medium"> 下一步<i class="el-icon-right"></i></el-button>
+                <el-button type="primary" style="float:left" @click="backSteps" size="small"><i class="el-icon-back"></i>上一步</el-button>
+                <el-button type="primary" style="float:right" @click="nextSteps" size="small"> 下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -230,23 +230,53 @@ export default {
         },
         selectAllHbase(val) {
             if (val == false) {
-                this.c = false;
+                this.selectAllTrue('Hbase');
             } else if (val == true) {
                 this.showDiolag = true;
                 this.showDiolagData();
+                this.selectAllTrue('Hbase');
             }
+        },
+        // 控制表头checkBox true or false
+        selectAllTrue(val) {
+            this.tableData.every(item => {
+                if (val == 'Hbase') {
+                    if (item.c == true) {
+                        return this.c = true;
+                    } else {
+                        return this.c = false;
+                    }
+                } else if (val == 'Solr') {
+                    if (item.d == true) {
+                        return this.d = true;
+                    } else {
+                        return this.d = false;
+                    }
+
+                } else if (val == 'HDFS') {
+                    if (item.e == true) {
+                        return this.e = true;
+                    } else {
+                        return this.e = false;
+                    }
+                }
+
+            })
         },
         selectAllSolr(val) {
             if (val == false) {
-                this.d = false;
+                this.selectAllTrue('Solr');
             } else if (val == true) {
                 this.solrDiolag = true;
                 this.showDiolagData();
+                this.selectAllTrue('Solr');
             }
         },
         selectAllHDFS(val) {
             if (val == false) {
-                this.e = false;
+                this.selectAllTrue('HDFS');
+            } else if (val == true) {
+                this.selectAllTrue('HDFS');
             }
         },
         // 弹出框表格信息

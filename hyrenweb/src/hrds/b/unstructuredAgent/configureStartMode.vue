@@ -145,7 +145,7 @@ export default {
         },
         // 获取首页数据（同时判断是新加任务还是编辑任务)
         searchFileCollect() {
-            let fcs_id = this.$route.query.fcs_id;
+            let fcs_id = this.$route.query.id;
             if (fcs_id || '') {
                 functionAll.searchFileCollect({
                     agent_id: this.$route.query.agent_id,
