@@ -69,3 +69,17 @@ export function confirmMsg(titleMsg) {
         type: 'warning'
     })
 }
+
+/**
+ * 
+ * @param {Object} data 发布请求处理后的信息
+ */
+export function issueSuccess(data) {
+    if (data && data.success) {
+        Message({
+            message: '发布成功',
+            type: 'success',
+            duration: 5 * 1000
+        })
+    }
+}

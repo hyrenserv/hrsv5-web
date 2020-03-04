@@ -460,6 +460,22 @@
     /* background-color: chartreuse;
     color: coral; */
 }
+/*表头筛选 */
+.el-table th>.cell.highlight{
+    color: #91c9f1 !important;
+}
+.el-table__column-filter-trigger i{
+    color: #fff !important;
+}
+/* loaging过度动画*/
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
 /*编辑文本按钮颜色*/
 .editcolor{
     color: #409eff !important;
