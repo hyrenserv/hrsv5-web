@@ -1,49 +1,49 @@
 <template>
-  <div>
+<div>
+    <el-container>
+        <el-header>
+            <el-row>
+                <div class="el-header">
+                    <span class="titles">工程名称 : {{sys_name}}</span>
+                    <el-button type="primary" class="el1 els" @click="goBack" size="small">
+                        <i class="block_icon fa fa-home"></i>返回首页
+                    </el-button>
+                    <div class="lines"></div>
+                </div>
+            </el-row>
+        </el-header>
         <el-container>
-            <el-header>
-                <el-row>
-                    <div class="el-header">
-                        <span class="titles">工程名称 : {{sys_name}}</span>
-                        <el-button type="primary" class="el1 els" @click="goBack" size="small">
-                            <i class="block_icon fa fa-home"></i>返回首页
-                        </el-button>
-                        <div class="lines"></div>
+            <el-aside width="16%">
+                <!-- 导航 -->
+                <el-menu :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
+                    <div v-for="items in menus" :key="items.name">
+                        <template v-if="items.children">
+                            <!--二级菜单循环-->
+                            <el-submenu :index="items.children[0].path">
+                                <template slot="title">{{items.title}}</template>
+                                <div v-for="item in items.children" :key="item.name">
+                                    <el-menu-item :index="item.path">
+                                        <i :class="item.icon"></i>
+                                        <span>{{item.title}}</span>
+                                    </el-menu-item>
+                                </div>
+                            </el-submenu>
+                        </template>
+                        <template v-else>
+                            <!--一级菜单循环-->
+                            <el-menu-item :index="items.path">
+                                <i :class="items.icon"></i>
+                                <span>{{items.title}}</span>
+                            </el-menu-item>
+                        </template>
                     </div>
-                </el-row>
-            </el-header>
+                </el-menu>
+            </el-aside>
             <el-container>
-                <el-aside width="16%">
-                    <!-- 导航 -->
-                    <el-menu router :default-active="menus[0].path" class="el-menu-vertical-demo" @select="handleSelect">
-                        <div v-for="items in menus" :key="items.name">
-                            <template v-if="items.children">
-                                <!--二级菜单循环-->
-                                <el-submenu :index="items.children[0].path">
-                                    <template slot="title">{{items.title}}</template>
-                                    <div v-for="item in items.children" :key="item.name">
-                                        <el-menu-item :index="item.path">
-                                            <i :class="item.icon"></i>
-                                            <span>{{item.title}}</span>
-                                        </el-menu-item>
-                                    </div>
-                                </el-submenu>
-                            </template>
-                            <template v-else>
-                                <!--一级菜单循环-->
-                                <el-menu-item :index="items.path">
-                                    <i :class="items.icon"></i>
-                                    <span>{{items.title}}</span>
-                                </el-menu-item>
-                            </template>
-                        </div>
-                    </el-menu>
-                </el-aside>
-                <el-container>
-                    <div class="pcontain">
-                        <div class="ptitle">
-                            <el-col :span="8">{{pTitle}}</el-col>
-                            <el-col :span="12" :offset="4" v-if="this.$route.path == '/historyBatch'" class="tops">
+                <div class="pcontain">
+                    <div class="ptitle">
+                        <el-col :span="8">{{pTitle}}</el-col>
+                        <!-- <el-col :span="12" :offset="4" v-if="this.$route.path == '/historyBatch'" class="tops">
                                 <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
                                     <el-form-item label="批量日期">
                                         <el-date-picker v-model="form.runDate" type="date" placeholder="跑批日期" size="mini">
@@ -64,35 +64,40 @@
                                         <el-button type="primary" @click="allSearch" size="mini">全作业搜索</el-button>
                                     </el-form-item>
                                 </el-form>
-                            </el-col>
-                        </div>
-                        <el-main class="pbody">
-                            <router-view></router-view>
-                        </el-main>
+                            </el-col> -->
                     </div>
-                </el-container>
+                    <el-main class="pbody">
+                        <router-view></router-view>
+                    </el-main>
+                </div>
             </el-container>
         </el-container>
-  </div>
+    </el-container>
+</div>
 </template>
+
 <script>
 import menus from './menus'
 import * as menusAllFun from "./menus";
 export default {
     data() {
         return {
-            sys_cd:'',
-            job:'',
+            sys_cd: '',
+            defaultActive: menus[2].children[0].path,
+            job: '',
             menus: menus,
-            sys_name:'',
-            pTitle:'任务',
-            form:{
-              runDate:''  
+            sys_name: '',
+            pTitle: '任务',
+            form: {
+                runDate: ''
             },
-            forms:{
-                etl_job:''
+            forms: {
+                etl_job: ''
             },
         }
+    },
+    created() {
+        
     },
     mounted() {
         // 这里是菜单默认路径
@@ -103,30 +108,40 @@ export default {
     },
     methods: {
         //返回首页按钮
-        goBack(){
-            this.$router.push({path:'/etlMage'})
+        goBack() {
+            this.$router.push({
+                path: '/etlMage'
+            })
         },
         //导航栏路由跳转
-        handleSelect(key, keyPath,title) {
+        handleSelect(key, keyPath, title) {
+            let path = key.replace(/\//g, "");
+            this.$router.push({
+                name: path,
+                query: {
+                    etl_sys_name: this.$route.query.etl_sys_name,
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                }
+            });
             this.pTitle = title.$slots.default[1].children[0].text;
         },
         //历史批量页面搜索按钮
-        search(){
+        search() {
 
         },
         //依赖作业页面单作业搜索按钮
-        singleSearch(){
+        singleSearch() {
             this.job = this.$route.query.etl_job;
             this.forms.etl_job = this.job;
             let params = {};
             params["etl_sys_cd"] = this.sys_cd;
             params["etl_job"] = this.forms.etl_job;
-            menusAllFun.monitorJobDependencyInfo(params).then(res=>{
+            menusAllFun.monitorJobDependencyInfo(params).then(res => {
                 console.log(res.data);
             });
         },
         //依赖作业页面全作业搜索按钮
-        allSearch(){
+        allSearch() {
 
         },
     }
@@ -142,15 +157,18 @@ export default {
     background: #dddddd;
     margin-bottom: 15px;
 }
-.el-header{
+
+.el-header {
     height: 50px;
     line-height: 50px;
 }
-.el-aside{
+
+.el-aside {
     background-color: #e5e5e5;
     margin-top: 25px;
     margin-left: 190px;
 }
+
 /* .el-header{
     height: 50px !important;
 } */
@@ -158,28 +176,36 @@ export default {
     padding: 15px;
     margin-bottom: 15px;
 }
-.el-menu{
+
+.el-menu {
     border: none !important;
     background-color: #e5e5e5;
-    color:#000;
+    color: #000;
 }
-.el-menu-item{
+
+.el-menu-item {
     color: #000 !important;
 }
-.el-menu-item:focus, .el-menu-item:hover {
+
+.el-menu-item:focus,
+.el-menu-item:hover {
     outline: 0;
     background-color: #e9f0aa;
 }
+
 .el-container {
     min-height: 550px;
     overflow: hidden;
 }
+
 .el-menu-item.is-active {
     background-color: #337ab7 !important;
 }
+
 i {
     margin-right: 5px;
 }
+
 .els {
     float: right;
     /* margin-top: 18px; */
@@ -189,33 +215,36 @@ i {
     margin-right: 120px;
     margin-top: 15px;
 }
+
 .titles {
     color: #2196f3;
     font-size: 18px;
     padding-left: 150px;
 }
-.pcontain{
-    width: 920px;
+
+.pcontain {
+    width: 96%;
     height: 550px;
-    overflow-x:hidden;
-    overflow-y:auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     border: 1px solid #d5d5d5;
     margin-left: 15px;
     margin-top: 25px;
     border-radius: 5px;
 }
-.ptitle{
+
+.ptitle {
     background-color: #e5e5e5;
     line-height: 30px;
     padding: 10px;
-    width: 900px;
+    width: 100%;
     height: 30px;
     border-bottom: 1px solid #d5d5d5;
     color: #000;
 }
-.tops{
-    height: 30px;
-    margin-bottom:0;
-}
 
+.tops {
+    height: 30px;
+    margin-bottom: 0;
+}
 </style>
