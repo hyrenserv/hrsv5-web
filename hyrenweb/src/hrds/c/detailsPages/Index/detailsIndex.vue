@@ -16,12 +16,6 @@
                             <span>监控</span>
                         </template>
                         <el-menu-item-group>
-                            <!-- <el-menu-item index="1-1">当前批量</el-menu-item>
-                            <el-menu-item index="1-2">历史批量</el-menu-item>
-                            <el-menu-item index="1-3">当前作业</el-menu-item>
-                            <el-menu-item index="1-4">历史作业</el-menu-item>
-                            <el-menu-item index="1-5">依赖作业</el-menu-item>
-                            <el-menu-item index="1-6">系统资源</el-menu-item> -->
                             <el-menu :default-active="this.$router.path" router background-color="#e5e5e5">
                                 <el-menu-item v-for="(item,i) in navList1" :key="i" :index="item.name">
                                     <i class="el-icon-location-outline"></i>
@@ -36,8 +30,6 @@
                             <span>干预</span>
                         </template>
                         <el-menu-item-group>
-                            <!-- <el-menu-item index="2-1">系统级干预</el-menu-item>
-                            <el-menu-item index="2-2">作业级干预</el-menu-item> -->
                             <el-menu :default-active="this.$router.path" router background-color="#e5e5e5">
                                 <el-menu-item v-for="(item,i) in navList2" :key="i" :index="item.name">
                                     <i class="el-icon-location-outline"></i>
@@ -52,13 +44,6 @@
                             <span>配置</span>
                         </template>
                         <el-menu-item-group>
-                            <!-- <el-menu-item index="3-1">任务</el-menu-item>
-                            <el-menu-item index="3-2">作业模板</el-menu-item>
-                            <el-menu-item index="3-3">作业</el-menu-item>
-                            <el-menu-item index="3-4">资源定义</el-menu-item>
-                            <el-menu-item index="3-5">资源分配</el-menu-item>
-                            <el-menu-item index="3-6">系统参数</el-menu-item>
-                            <el-menu-item index="3-7">作业依赖</el-menu-item> -->
                             <el-menu :default-active="this.$router.path" router background-color="#e5e5e5">
                                 <el-menu-item v-for="(item,i) in navList3" :key="i" :index="item.name">
                                     <i class="el-icon-location-outline"></i>

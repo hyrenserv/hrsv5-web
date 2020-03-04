@@ -133,11 +133,6 @@ export default {
       pageLength: 100,
     };
   },
-  /* computed:{
-    sys_cd(){
-      return this.$store.getters.sys_cd
-    }
-  }, */
   methods: {
     //刷新表格
     getTable(){
