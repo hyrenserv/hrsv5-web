@@ -177,9 +177,9 @@ export function updateDbmCodeItemInfo(data) {
 }
 
 // 编辑代码项打开
-export function getItemDbmSortInfoById(data) {
+export function getItemDbmCodeItemById(data) {
     return request({
-        url: '/K/dbmcodeiteminfo/getDbmSortInfoById',
+        url: '/K/dbmcodeiteminfo/getDbmCodeItemById',
         params: data,
     })
 }

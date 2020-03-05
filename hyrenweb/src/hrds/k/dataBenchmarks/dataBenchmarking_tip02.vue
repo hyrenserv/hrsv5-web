@@ -467,7 +467,7 @@ export default {
             let params = {},
                 that = this;
             params['code_item_id'] = row.code_item_id
-            dataBenchmarkingAllFun.getItemDbmSortInfoById(params).then(res => {
+            dataBenchmarkingAllFun.getItemDbmCodeItemById(params).then(res => {
                 this.codeItemData.codeNum = res.data.code_encode
                 this.codeItemData.codeName = res.data.code_item_name
                 this.codeItemData.codeValue = res.data.code_value

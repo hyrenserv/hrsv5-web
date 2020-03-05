@@ -326,6 +326,7 @@ export default {
             rule: validator.default,
             title:'',
             search_Value: '',
+            searchValue:'',
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
