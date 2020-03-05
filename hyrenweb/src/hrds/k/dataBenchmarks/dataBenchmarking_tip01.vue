@@ -247,7 +247,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="发布状态 : " prop="relatedStandards" :rules="rule.selected">
+                                    <el-form-item label="发布状态 : " prop="norm_status" :rules="rule.selected">
                                         <el-select placeholder="请选择" size='mini' v-model="ruleForm_Info.norm_status">
                                             <el-option v-for="item in Releasestatus" :key="item.value" :label="item.text" :value="item.value">
                                             </el-option>

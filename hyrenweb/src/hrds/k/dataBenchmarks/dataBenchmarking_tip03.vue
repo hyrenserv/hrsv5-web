@@ -219,8 +219,8 @@ export default {
                     // 新增
                     let params = {},
                         that = this;
-                    params["parent_id"] = parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]);
-                    params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length + 1;
+                    params["parent_id"] =this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]? parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]):0;
+                    params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length;
                     params["sort_name"] = this.standardClassifiFormRule.chNmae;
                     params["sort_remark"] = this.standardClassifiFormRule.standardMark;
                     params["sort_status"] = this.standardClassifiFormRule.code_status;
