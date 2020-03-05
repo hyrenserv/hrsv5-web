@@ -602,16 +602,32 @@ export default {
                         this.tableInfoArray = this.ruleForm.sqlExtractData;
                         this.sqlSubmit = true
                         arrsql = this.tableInfoArray
-                        this.sqlFun(arrsql)
+                        let params0 = {};
+                        params0["colSetId"] = this.dbid;
+                        addTaskAllFun.getAllSQLs(params0).then(res => {
+                            for (let i = 0; i < arrsql.length; i++) {
+                                for (let j = 0; j < res.data.length; j++) {
+                                    if (arrsql[i].table_id == res.data[j].table_id) {
+                                        if (arrsql[i].table_ch_name == res.data[j].table_ch_name && arrsql[i].sql == res.data[j].sql && arrsql[i].table_name == res.data[j].table_name) {
+                                            arrsql.splice(i, 1)
+                                        }
+                                    }
+                                }
+                            }
+                            if (arrsql.length > 0) {
+                                this.sqlFun(arrsql)
+                            }
+                        });
                     }
                 });
             } else {
-                let params0 = {};
-                params0["colSetId"] = this.dbid;
-                addTaskAllFun.getAllSQLs(params0).then(res => {
-                    arrsql = res.data ? res.data : [];
-                    this.sqlFun(arrsql)
-                });
+                this.activeSec = true;
+                /*   let params0 = {};
+                  params0["colSetId"] = this.dbid;
+                  addTaskAllFun.getAllSQLs(params0).then(res => {
+                      arrsql = res.data ? res.data : [];
+                      this.sqlFun(arrsql)
+                  }); */
             }
 
         },
@@ -619,11 +635,12 @@ export default {
             let params1 = {};
             params1["tableInfoArray"] = arrsql.length > 0 ? JSON.stringify(arrsql) : '';
             params1["colSetId"] = parseInt(this.dbid);
+            console.log(params1)
             addTaskAllFun.saveAllSQL(params1).then(res => {
                 if (res.code == 200) {
                     this.activeSec = true;
                     // this.dbid = res.data;
-                } 
+                }
             });
         },
         nextlinkFun() {
@@ -853,7 +870,7 @@ export default {
                     if (res.code == 200) {
                         this.activeFirst = true;
                         // this.dbid = res.data;
-                    } 
+                    }
                 });
             });
         },

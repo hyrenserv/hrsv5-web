@@ -1,10 +1,10 @@
 <template>
-<div >
+<div>
     <el-row style="margin-bottom:10px">
         <el-col :span='11'>&nbsp;</el-col>
         <el-col :span='5' style="text-align:right">
-            <el-input placeholder="请输入内容" class="input-with-select" size="mini">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeClass_Value">
+                <el-button slot="append" icon="el-icon-search" @click="searchDbmSortInfo"></el-button>
             </el-input>
         </el-col>
         <el-col :span='8' style="text-align:right" class='allbutton'>
@@ -55,12 +55,15 @@
     </el-row>
     <!-- 新增分类 -->
     <el-dialog title="新增标准分类" :visible.sync="dialogaddclassableVisible" width="40%" class='data_edit'>
+         <div slot="title" class="header-title">
+                        <span class="title">{{title}}标准分类</span>
+                    </div>
         <el-row>
             <el-form ref="standardClassifiFormRule" label-width="86px" :model="standardClassifiFormRule">
                 <el-row :gutter="20">
                     <el-col :span="20">
                         <el-row>
-                            <el-form-item label="归属分类 : " prop="belongsClass" >
+                            <el-form-item label="归属分类 : " prop="belongsClass">
                                 <el-cascader :options="options" :show-all-levels="false" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept"></el-cascader>
                             </el-form-item>
                         </el-row>
@@ -79,7 +82,7 @@
                 <el-row :gutter="20">
                     <el-col :span="20">
                         <el-row>
-                            <el-form-item label="标准描述 : " prop="standardMark" >
+                            <el-form-item label="标准描述 : " prop="standardMark">
                                 <el-input type="textarea" v-model="standardClassifiFormRule.standardMark" placeholder="请输入内容">
                                 </el-input>
                             </el-form-item>
@@ -146,7 +149,10 @@ export default {
             options: [],
             sort_id_s: [],
             selectRow: [],
-            sort_status: 'all'
+            sort_status: '',
+            codeClass_Value: '',
+            searchCodeClass_status: '',
+            title:''
         }
     },
     created() {
@@ -159,28 +165,35 @@ export default {
     methods: {
         sig_handleSizeChange(size) {
             this.pagesize = size;
-            if (this.sort_status == '1') {
-                this.filterFun(this.currentPage, this.pagesize, '1')
-            } else if (this.sort_status == '0') {
-                this.filterFun(this.currentPage, this.pagesize, '0')
+            if (this.sort_status == '1' || this.sort_status == '0') {
+                if (this.codeClassValue != '') {
+                    this.searchCodeClassInfo(this.codeTypeValue, this.currentPage, this.pagesize, this.sort_status)
+                } else {
+                    this.filterFun(this.currentPage, this.pagesize, this.sort_status)
+                }
+            } else if (this.searchCodeClass_status == 'search' && this.codeClassValue != '') {
+                this.searchCodeClassInfo(this.codeClassValue, this.currentPage, this.pagesize, this.sort_status)
             } else {
-                this.getDbmCodeTypeInfo(this.currentPage, size)
+                this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
         },
         sig_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            if (this.sort_status == '1') {
-                this.filterFun(this.currentPage, this.pagesize, '1')
-            } else if (this.sort_status == '0') {
-                this.filterFun(this.currentPage, this.pagesize, '0')
+            if (this.sort_status == '1' || this.sort_status == '0') {
+                if (this.codeClassValue != '') {
+                    this.searchCodeClassInfo(this.codeClassValue, this.currentPage, this.pagesize, this.sort_status)
+                } else {
+                    this.filterFun(this.currentPage, this.pagesize, this.sort_status)
+                }
+            } else if (this.searchCodeClass_status == 'search' && this.codeClassValue != '') {
+                this.searchCodeClassInfo(this.codeClassValue, this.currentPage, this.pagesize, this.sort_status)
             } else {
-                this.getDbmCodeTypeInfo(this.currentPage, size)
+                this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
         },
         // 复选框选中
         handleSelectionChange(selectTrue) {
             this.selectRow = selectTrue
-
         },
         //单个发布
         issuFun(row) {
@@ -277,6 +290,7 @@ export default {
         },
         //新增分类打开方法
         addClass() {
+            this.title='新增'
             this.dialogaddclassableVisible = true;
             this.status = 'add'
             this.standardClassifiFormRule.belongsClass = ''
@@ -286,6 +300,7 @@ export default {
         },
         //编辑打开方法
         EditFun(row) {
+            this.title='编辑'
             this.dialogaddclassableVisible = true;
             this.status = 'edit'
             this.edit_sortId = row.sort_id
@@ -339,11 +354,22 @@ export default {
         },
         //过滤发布状态
         Class_fulterChangeFun(filter) {
-            this.sort_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : 'all'
+            this.sort_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
             if (this.sort_status == '1' || this.sort_status == '0') {
-                this.filterFun(1, this.pagesize, this.sort_status)
+                if (this.codeClassValue != '') {
+                    this.searchCodeClassInfo(this.codeClassValue, 1, this.pagesize, this.sort_status)
+                } else {
+                    this.filterFun(1, this.pagesize, this.sort_status)
+                }
+
             } else {
-                this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
+                if (this.codeClassValue != '') {
+                    this.searchCodeClassInfo(this.codeClassValue, 1, this.pagesize, this.sort_status)
+
+                } else {
+                    this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
+
+                }
             }
         },
         //状态过滤
@@ -381,7 +407,33 @@ export default {
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 });
             }).catch(() => {})
-        }
+        },
+        // 
+        searchDbmSortInfo() {
+            this.codeClassValue = this.codeClass_Value
+            if (this.codeClassValue != '') {
+                this.searchCodeClass_status = 'search'
+                this.searchCodeClassInfo(this.codeClassValue, '1', this.pagesize, this.sort_status)
+            } else {
+                this.searchCodeClass_status = ''
+            }
+        },
+        searchCodeClassInfo(codeClassValue, currentpage, pagesize, sort_status) {
+            // let that = this;
+            dataBenchmarkingAllFun.searchDbmCodeTypeInfo({
+                "search_cond": codeClassValue,
+                'currPage': currentpage,
+                'pageSize': pagesize,
+                'status': sort_status
+            }).then(res => {
+                let arr = res.data.dbmCodeTypeInfos
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
+                }
+                this.tableData = arr
+                this.totalSize = res.data.totalSize
+            })
+        },
     }
 }
 </script>
@@ -391,11 +443,12 @@ export default {
     text-align: center;
     margin-top: 10px;
 }
+
 .allbutton /deep/ {
 
-        .el-button--mini,
-        .el-button--mini.is-round {
-            padding: 4px 5px;
-        }
+    .el-button--mini,
+    .el-button--mini.is-round {
+        padding: 4px 5px;
     }
+}
 </style>
