@@ -151,6 +151,7 @@ export default {
             selectRow: [],
             sort_status: '',
             codeClass_Value: '',
+            codeClassValue:'',
             searchCodeClass_status: '',
             title:''
         }
@@ -355,6 +356,7 @@ export default {
         //过滤发布状态
         Class_fulterChangeFun(filter) {
             this.sort_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
+            console.log(this.sort_status,this.codeClassValue)
             if (this.sort_status == '1' || this.sort_status == '0') {
                 if (this.codeClassValue != '') {
                     this.searchCodeClassInfo(this.codeClassValue, 1, this.pagesize, this.sort_status)
