@@ -212,6 +212,13 @@ export function getDbmCodeTypeInfoByStatus(data) {
         params: data,
     })
 }
+//代码类搜索
+export function searchDbmCodeTypeInfo(data) {
+    return request({
+        url: '/K/dbmcodetypeinfo/searchDbmCodeTypeInfo',
+        params: data,
+    })
+}
 // 3：标准分类配置
 // 添加
 export function addDbmSortInfo(data) {
@@ -304,10 +311,17 @@ export function batchDeleteDbmSortInfo(data) {
         params: data,
     })
 }
-// 搜索
+//代码类搜索
 export function searchDbmSortInfo(data) {
     return request({
         url: '/K/dbmsortinfo/searchDbmSortInfo',
+        params: data,
+    })
+}
+// 代码项搜索
+export function searchDbmCodeItemInfo(data) {
+    return request({
+        url: '/K/dbmcodeiteminfo/searchDbmCodeItemInfo',
         params: data,
     })
 }

@@ -20,7 +20,7 @@
             <el-row style="margin-bottom:10px">
                 <el-col :span='9'>&nbsp;</el-col>
                 <el-col :span='5' style="text-align:right">
-                    <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="searchValue">
+                    <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="search_Value">
                         <el-button slot="append" icon="el-icon-search" @click="searchDbmSortInfoFun"></el-button>
                     </el-input>
                 </el-col>
@@ -72,6 +72,9 @@
     </el-row>
     <!-- 编辑的弹框 -->
     <el-dialog title="新增标准元" :visible.sync="dialogEditTableVisible" width="60%" class='data_edit'>
+         <div slot="title" class="header-title">
+                        <span class="title">{{title}}标准元</span>
+                    </div>
         <el-row>
             <el-collapse v-model="activeNames">
                 <el-form ref="ruleForm_Info" :model="ruleForm_Info" label-width="86px">
@@ -108,7 +111,7 @@
                         <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="标准别名 : " prop="standardAlias" >
+                                    <el-form-item label="标准别名 : " prop="standardAlias">
                                         <el-input placeholder="标准别名" size='mini' v-model="ruleForm_Info.standardAlias">
                                         </el-input>
                                     </el-form-item>
@@ -164,7 +167,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="小数长度 : " prop="decimalLen" >
+                                    <el-form-item label="小数长度 : " prop="decimalLen">
                                         <el-input placeholder="小数长度" size='mini' v-model="ruleForm_Info.decimalLen">
                                         </el-input>
                                     </el-form-item>
@@ -321,7 +324,8 @@ export default {
     data() {
         return {
             rule: validator.default,
-            searchValue: '',
+            title:'',
+            search_Value: '',
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
@@ -394,7 +398,8 @@ export default {
             loading: true,
             basic_id_s: [],
             selectrow: [],
-            norm_status: 'all',
+            norm_status: '',
+            search_status: ''
         };
     },
     created() {
@@ -478,9 +483,13 @@ export default {
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
             if (this.norm_status == '1' || this.norm_status == '0') {
-                this.classfilterFun(this.currentPage, this.pagesize, '1')
-            } else if (this.norm_status == 'search') {
-                this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, )
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
+                }
+            } else if (this.search_status == 'search' && this.searchValue != '') {
+                this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
             } else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
@@ -488,10 +497,14 @@ export default {
         },
         dbMark_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            if (this.norm_status == '1') {
-                this.classfilterFun(this.currentPage, this.pagesize, '1')
-            } else if (this.norm_status == '0') {
-                this.classfilterFun(this.currentPage, this.pagesize, '0')
+            if (this.norm_status == '1' || this.norm_status == '0') {
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
+                }
+            } else if (this.search_status == 'search' && this.searchValue != '') {
+                this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
             } else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
@@ -568,6 +581,7 @@ export default {
         },
         // 新增打开
         addBascicFun() {
+            this.title='新增'
             this.dialogEditTableVisible = true
             this.basicStaus = 'add'
             this.ruleForm_Info.standardNum = ''
@@ -593,6 +607,7 @@ export default {
 
         // 编辑打开
         editbasicByIdFun(row) {
+            this.title='编辑'
             this.dialogEditTableVisible = true;
             this.basic_id = row.basic_id
             this.basicStaus = 'edit'
@@ -749,19 +764,7 @@ export default {
             this.importUserDialog = false;
             this.importExcelData();
         },
-        handleSuccess(response, file, fileList) {
-            // console.log('上传成功');
-            /*  if (response.code == 200) {
-                 setTimeout(() => {
-                     this.$message.success('文件上传成功');
-                     console.log(file, fileList)
-                     this.importExcelData();
-                 }, 2000);
-                 fileList.splice(0); //上传成功后将fileList清空，不影响下一次上传
-             } else {
-                 this.$message.error(response.message)
-             } */
-        },
+        handleSuccess(response, file, fileList) {},
         //导入数据的取消
         handleFirst1() {
             this.fileList.splice(0);
@@ -770,11 +773,21 @@ export default {
         },
         //过滤发布状态
         fulterChangeFun(filter) {
-            this.norm_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : 'all'
+            this.norm_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
             if (this.norm_status == '1' || this.norm_status == '0') {
-                this.classfilterFun(1, this.pagesize, this.norm_status)
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.classfilterFun(1, this.pagesize, this.norm_status)
+                }
+
             } else {
-                this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
+                }
+
             }
 
         },
@@ -821,15 +834,19 @@ export default {
         },
         //检索标准分类信息
         searchDbmSortInfoFun() {
-            this.norm_status = 'search'
-            this.searchDbmSortInfo(this.searchValue, '1', this.pagesize)
+            this.searchValue = this.search_Value
+            if (this.searchValue != '') {
+                this.search_status = 'search'
+                this.searchDbmSortInfo(this.searchValue, '1', this.pagesize, this.norm_status)
+            } else {}
         },
-        searchDbmSortInfo(searchValue, currentpage, pagesize) {
+        searchDbmSortInfo(searchValue, currentpage, pagesize, norm_status) {
             let that = this;
             dataBenchmarkingAllFun.searchDbmNormbasic({
                 "search_cond": searchValue,
                 'currPage': currentpage,
-                'pageSize': pagesize
+                'pageSize': pagesize,
+                'status': norm_status
             }).then(res => {
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {

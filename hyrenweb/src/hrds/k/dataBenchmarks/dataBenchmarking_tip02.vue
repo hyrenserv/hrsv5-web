@@ -2,8 +2,8 @@
 <div id='dui_two'>
     <el-row style="margin-bottom:10px">
         <el-col :span='5'>
-            <el-input placeholder="请输入内容" class="input-with-select" size="mini">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeValue">
+                <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeTypeInfo"></el-button>
             </el-input>
         </el-col>
         <el-col :span='11'>&nbsp;</el-col>
@@ -19,8 +19,8 @@
             <template slot-scope="props">
                 <el-row style="margin-bottom:10px">
                     <el-col :span='5'>
-                        <el-input placeholder="请输入内容" class="input-with-select" size="mini">
-                            <el-button slot="append" icon="el-icon-search"></el-button>
+                        <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeItem_Value">
+                            <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeItemInfo"></el-button>
                         </el-input>
                     </el-col>
                     <el-col :span='13'>&nbsp;</el-col>
@@ -87,6 +87,9 @@
     <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
     <!-- 新增代码类弹框 -->
     <el-dialog title="新增代码类" :visible.sync="dialogaddCodeclassableVisible" width="40%" class='data_edit'>
+        <div slot="title" class="header-title">
+                        <span class="title">{{title}}代码类</span>
+                    </div>
         <el-row>
             <el-form ref="codeClassData" label-width="86px" :model="codeClassData">
                 <el-row :gutter="20">
@@ -139,12 +142,15 @@
     </el-dialog>
     <!-- 新增代码项弹框 -->
     <el-dialog title="新增代码项" :visible.sync="dialogaddCodeXableVisible" width="40%" class='data_edit'>
+         <div slot="title" class="header-title">
+                        <span class="title">{{title}}代码项</span>
+                    </div>
         <el-row>
             <el-form ref="codeItemData" label-width="86px" :model="codeItemData">
                 <el-row :gutter="20">
                     <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码编码 : " prop="codeNum" >
+                            <el-form-item label="代码编码 : " prop="codeNum">
                                 <el-input placeholder="代码编码" v-model="codeItemData.codeNum">
                                 </el-input>
                             </el-form-item>
@@ -174,7 +180,7 @@
                 <el-row :gutter="20">
                     <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="层级 : " prop="codeleav" >
+                            <el-form-item label="层级 : " prop="codeleav">
                                 <el-input placeholder="层级" v-model="codeItemData.codeleav">
                                 </el-input>
                             </el-form-item>
@@ -184,7 +190,7 @@
                 <el-row :gutter="20">
                     <el-col :span='20'>
                         <el-row>
-                            <el-form-item label="代码描述 : " prop="codeDesc" >
+                            <el-form-item label="代码描述 : " prop="codeDesc">
                                 <el-input placeholder="代码描述" type="textarea" v-model="codeItemData.codeDesc">
                                 </el-input>
                             </el-form-item>
@@ -211,6 +217,7 @@ export default {
         return {
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
+            codeTypeValue: '',
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
@@ -247,8 +254,14 @@ export default {
             open: 'false',
             selectrow: [],
             code_type_id_s: [],
-            code_status: 'all',
-            item_selectrow: []
+            code_status: '',
+            item_selectrow: [],
+            searchCodeTyp_status: '',
+            codeValue: '',
+            codeItem_Value: '',
+            codeItemValue: '',
+            codeItem_Status: '',
+            title:''
         }
     },
     mounted() {
@@ -284,27 +297,39 @@ export default {
         },
         sig_handleSizeChange(size) {
             this.pagesize = size;
-            if (this.code_status == '1') {
-                this.codefilterFun(this.currentPage, this.pagesize, '1')
-            } else if (this.code_status == '0') {
-                this.codefilterFun(this.currentPage, this.pagesize, '0')
+            if (this.code_status == '1' || this.code_status == '0') {
+                if (this.codeTypeValue != '') {
+                    this.searchCodeTypeInfo(this.codeTypeValue, this.currentPage, this.pagesize, this.code_status)
+                } else {
+                    this.codefilterFun(this.currentPage, this.pagesize, this.code_status)
+                }
+            } else if (this.searchCodeTyp_status == 'search' && this.codeTypeValue != '') {
+                this.searchCodeTypeInfo(this.codeTypeValue, this.currentPage, this.pagesize, this.code_status)
             } else {
-                this.getDbmCodeTypeInfo(this.currentPage, size)
+                this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
-
         },
         sig_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            if (this.code_status == '1') {
-                this.codefilterFun(this.currentPage, this.pagesize, '1')
-            } else if (this.code_status == '0') {
-                this.codefilterFun(this.currentPage, this.pagesize, '0')
+            if (this.code_status == '1' || this.code_status == '0') {
+                if (this.codeTypeValue != '') {
+                    this.searchCodeTypeInfo(this.codeTypeValue, this.currentPage, this.pagesize, this.code_status)
+                } else {
+                    this.codefilterFun(this.currentPage, this.pagesize, this.code_status)
+                }
+            } else if (this.searchCodeTyp_status == 'search' && this.codeTypeValue != '') {
+                this.searchCodeTypeInfo(this.codeTypeValue, this.currentPage, this.pagesize, this.code_status)
             } else {
                 this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
         },
         item_handleSizeChange(size) {
             this.itempagesize = size;
+            /* if (this.searchCodeTyp_status == 'search' && this.codeItemValue != '') {
+                this.searchDbmCodeItemInfoFun(this.codeItemValue, this.itemcurrentPage, this.itempagesize, this.code_type_id)
+            } else {
+                this.getAllCodeItemFun(this.currentPage, this.pagesize)
+            } */
         },
         item_handleCurrentChange(currentPage) {
             this.itemcurrentPage = currentPage;
@@ -350,6 +375,7 @@ export default {
         },
         // 新增代码类
         addCodeClass() {
+            this.title='新增'
             this.dialogaddCodeclassableVisible = true
             this.status = 'add'
             this.codeClassData.code_encode = ''
@@ -394,6 +420,7 @@ export default {
         },
         //编辑打开方法
         EditCodeClassFun(row) {
+            this.title='编辑'
             this.dialogaddCodeclassableVisible = true;
             this.status = 'edit'
             this.code_type_id = row.code_type_id
@@ -422,6 +449,7 @@ export default {
         },
         // 新增代码项
         addCodeItemFun() {
+            this.title='新增'
             this.dialogaddCodeXableVisible = true;
             this.codeItemStatus = 'add'
             this.codeItemData.codeNum = ''
@@ -432,6 +460,7 @@ export default {
         },
         //编辑代码项
         editCodeItemFun(row) {
+            this.title='编辑'
             this.dialogaddCodeXableVisible = true;
             this.codeItemStatus = 'edit'
             this.code_item_id = row.code_item_id
@@ -478,7 +507,6 @@ export default {
         },
         // 删除代码项
         delCodeItemFun(row) {
-            // deleteDbmCodeItemInfo
             let that = this
             message.confirmMsg('确定删除吗').then(res => {
                 let params = {}
@@ -487,18 +515,26 @@ export default {
                     message.deleteSuccess(res);
                     that.dialogaddCodeXableVisible = false
                     that.getAllCodeItemFun(row.code_type_id)
-
                 });
             }).catch(() => {})
 
         },
         //过滤发布状态
         codeClass_fulterChangeFun(filter) {
-            this.code_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : 'all'
+            this.code_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
             if (this.code_status == '1' || this.code_status == '0') {
-                this.codefilterFun(1, this.pagesize, this.code_status)
+                if (this.codeTypeValue != '') {
+                    this.searchCodeTypeInfo(this.codeTypeValue, 1, this.pagesize, this.code_status)
+                } else {
+                    this.codefilterFun(1, this.pagesize, this.code_status)
+                }
             } else {
-                this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
+                if (this.codeTypeValue != '') {
+                    this.searchCodeTypeInfo(this.codeTypeValue, 1, this.pagesize, this.code_status)
+                } else {
+                    this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
+
+                }
             }
 
         },
@@ -553,6 +589,45 @@ export default {
                 that.code_item_id_s = []
                 this.getAllCodeItemFun(that.code_type_id)
             });
+        },
+        //代码类搜索
+        searchDbmCodeTypeInfo() {
+            this.codeTypeValue = this.codeValue
+            if (this.codeTypeValue != '') {
+                this.searchCodeTyp_status = 'search'
+                this.searchCodeTypeInfo(this.codeTypeValue, '1', this.pagesize, this.code_status)
+            } else {
+                this.searchCodeTyp_status = ''
+            }
+        },
+        searchCodeTypeInfo(codeTypeValue, currentpage, pagesize, code_status) {
+            dataBenchmarkingAllFun.searchDbmCodeTypeInfo({
+                "search_cond": codeTypeValue,
+                'currPage': currentpage,
+                'pageSize': pagesize,
+                'status': code_status
+            }).then(res => {
+                this.tableData = res.data.dbmCodeTypeInfos
+                this.totalSize = res.data.totalSize
+            })
+        },
+        //代码项搜索
+        searchDbmCodeItemInfo() {
+            this.codeItemValue = this.codeItem_Value
+            if (this.codeItemValue != '') {
+                this.codeItem_Status = 'seach'
+                this.searchDbmCodeItemInfoFun(this.codeItemValue, this.itemcurrentPage, this.itempagesize, this.code_type_id)
+            }
+        },
+        searchDbmCodeItemInfoFun(codeItemValue, currentpage, pagesize, code_type_id) {
+            dataBenchmarkingAllFun.searchDbmCodeItemInfo({
+                "search_cond": codeItemValue,
+                'currPage': currentpage,
+                'pageSize': pagesize,
+                'code_type_id': code_type_id
+            }).then(res => {
+                this.dataList = res.data.dbmCodeItemInfos
+            })
         }
     }
 }
@@ -569,6 +644,7 @@ export default {
         text-align: center;
         margin-top: 10px;
     }
+
     .allbutton /deep/ {
 
         .el-button--mini,
@@ -576,6 +652,7 @@ export default {
             padding: 4px 5px;
         }
     }
+
     .outtable /deep/ {
 
         .el-icon-arrow-down,
