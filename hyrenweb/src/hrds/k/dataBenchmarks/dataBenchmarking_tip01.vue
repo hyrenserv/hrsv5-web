@@ -9,8 +9,8 @@
                 <div class="mytree" hight='200'>
                     <el-tree class="filter-tree" :data="data" :indent='0' :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
-		<span :title="node.label">{{ node.label }}</span>
-	</span>
+                            <span :title="node.label">{{ node.label }}</span>
+                        </span>
                     </el-tree>
                 </div>
             </Scrollbar>
@@ -20,21 +20,21 @@
             <el-row style="margin-bottom:10px">
                 <el-col :span='9'>&nbsp;</el-col>
                 <el-col :span='5' style="text-align:right">
-                    <el-input placeholder="请输入内容" class="input-with-select" size="mini">
-                        <el-button slot="append" icon="el-icon-search"></el-button>
+                    <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="search_Value">
+                        <el-button slot="append" icon="el-icon-search" @click="searchDbmSortInfoFun"></el-button>
                     </el-input>
                 </el-col>
                 <el-col :span='10' style="text-align:right" class='allbutton'>
-                    <el-upload style="display: inline-block;margin-right:10px" :action="uploadUrl()" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :limit="1" :show-file-list="false" :file-list="fileList" ref="upload" :on-exceed="exceedHander" :before-upload="beforeAvatarUpload" :auto-upload="false" :on-change="testOnchange" :on-success="handleSuccess">
-                        <el-button size="mini" type="primary" plain @click="importExcelData">批量导入</el-button>
+                    <el-upload style="display: inline-block;margin-right:10px" :action="uploadUrl()" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :limit="1" :show-file-list="false" :file-list="fileList" ref="uploaded" :on-exceed="exceedHander" :before-upload="beforeAvatarUpload" :auto-upload="false" :on-change="testOnchange" :on-success="handleSuccess">
+                        <el-button size="mini" type="primary" plain>批量导入</el-button>
                     </el-upload>
-                    <el-button size="mini" type="success" class="el-icon-upload">发布标准</el-button>
+                    <el-button size="mini" type="success" class="el-icon-upload" @click="batchReleaseDbmNormbasic">发布标准</el-button>
                     <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addBascicFun()">新增标准</el-button>
-                    <!-- <el-button size="mini" type="danger" class='el-icon-remove-outline'>删除标准</el-button> -->
+                    <el-button size="mini" type="danger" class='el-icon-remove-outline' @click="delectALLFun()">删除标准</el-button>
                 </el-col>
             </el-row>
             <el-row>
-                <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable' ref="multipleTable" :row-key="(row)=>{ return row.basic_id}" @selection-change="handleSelectionChange">
+                <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable' ref="multipleTable" :row-key="(row)=>{ return row.basic_id}" @selection-change="handleSelectionChange" @filter-change="fulterChangeFun" @select-all='allselect'>
                     <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
                     <el-table-column label="序号" align="center" width="60">
@@ -42,7 +42,7 @@
                             <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="sortName" label="上级分类" align="center">
+                    <el-table-column prop="sortName" label="上级分类" align="center" width="150" :show-overflow-tooltip="true">
                     </el-table-column>
                     <el-table-column prop="norm_code" label="标准编号" align="center">
                     </el-table-column>
@@ -55,13 +55,13 @@
                     <el-table-column label="发布状态" align="center" width="100" column-key='Releasestatus' :filters="Releasestatus" :filter-multiple="false">
                         <template slot-scope="scope">
                             <span v-if="scope.row.norm_status=='0'">未发布</span>
-                            <span v-else>已发布</span>
+                            <span v-else class='issuecolor'>已发布</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" class='editcolor' @click="editbasicByIdFun(scope.row)">编辑</el-button>
-                            <!-- <el-button type="text" size="small" class='issuecolor'>发布</el-button> -->
+                            <el-button type="text" size="small" class='issuecolor' @click="issueFun(scope.row)">发布</el-button>
                             <el-button type="text" size="small" class='delcolor' @click="deleteDbbasicInfo(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -72,6 +72,9 @@
     </el-row>
     <!-- 编辑的弹框 -->
     <el-dialog title="新增标准元" :visible.sync="dialogEditTableVisible" width="60%" class='data_edit'>
+         <div slot="title" class="header-title">
+                        <span class="title">{{title}}标准元</span>
+                    </div>
         <el-row>
             <el-collapse v-model="activeNames">
                 <el-form ref="ruleForm_Info" :model="ruleForm_Info" label-width="86px">
@@ -108,7 +111,7 @@
                         <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="标准别名 : " prop="standardAlias" :rules="filter_rules([{required: true}])">
+                                    <el-form-item label="标准别名 : " prop="standardAlias">
                                         <el-input placeholder="标准别名" size='mini' v-model="ruleForm_Info.standardAlias">
                                         </el-input>
                                     </el-form-item>
@@ -164,7 +167,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="小数长度 : " prop="decimalLen" :rules="filter_rules([{required: true,dataType:'number'}])">
+                                    <el-form-item label="小数长度 : " prop="decimalLen">
                                         <el-input placeholder="小数长度" size='mini' v-model="ruleForm_Info.decimalLen">
                                         </el-input>
                                     </el-form-item>
@@ -244,7 +247,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="发布状态 : " prop="relatedStandards" :rules="rule.selected">
+                                    <el-form-item label="发布状态 : " prop="norm_status" :rules="rule.selected">
                                         <el-select placeholder="请选择" size='mini' v-model="ruleForm_Info.norm_status">
                                             <el-option v-for="item in Releasestatus" :key="item.value" :label="item.text" :value="item.value">
                                             </el-option>
@@ -295,10 +298,14 @@
     <el-dialog title="导入Excel" :visible.sync="importUserDialog" width="550px" :close-on-click-modal="false" :before-close="handleFirst1">
         <span v-if="fileList != ''" class="info-message">确认导入 “ {{fileList[0].name}} ” </span>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="handleFirst1">取 消</el-button>
-            <el-button type="primary" @click="handleConfimr">确 定</el-button>
+            <el-button @click="handleFirst1" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" size="mini" @click="handleConfimr">确 定</el-button>
         </span>
     </el-dialog>
+    <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading"></loading>
+    </transition>
 </div>
 </template>
 
@@ -308,16 +315,22 @@ import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import Scrollbar from '../../components/scrollbar';
+import Loading from '../../components/loading'
 export default {
     components: {
-        Scrollbar
+        Scrollbar,
+        Loading
     },
     data() {
         return {
             rule: validator.default,
+            title:'',
+            search_Value: '',
+            searchValue:'',
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
+            isLoading: false,
             Allis_selectionState: false,
             dialogEditTableVisible: false,
             SetKesDept: {
@@ -383,6 +396,11 @@ export default {
             fileList: [],
             importUserDialog: false,
             listId: '',
+            loading: true,
+            basic_id_s: [],
+            selectrow: [],
+            norm_status: '',
+            search_status: ''
         };
     },
     created() {
@@ -414,9 +432,34 @@ export default {
     },
 
     methods: {
+        // 批量发布
+        batchReleaseDbmNormbasic() {
+            this.basic_id_s = [];
+            this.selectrow.forEach(o => {
+                this.basic_id_s.push(o.basic_id);
+            });
+            let that = this
+            dataBenchmarkingAllFun.batchReleaseDbmNormbasic({
+                "basic_id_s": this.basic_id_s
+            }).then(res => {
+                message.issueSuccess(res)
+                that.basic_id_s = []
+                that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+            });
+        },
         // 复选框选中
         handleSelectionChange(selectTrue) {
-            console.log(selectTrue)
+            this.selectrow = selectTrue
+        },
+        //单个发布
+        issueFun(row) {
+            let that = this
+            dataBenchmarkingAllFun.releaseDbmNormbasicById({
+                "basic_id": row.basic_id
+            }).then(res => {
+                message.issueSuccess(res)
+                that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+            });
         },
         // 获取代码类下拉
         getDbmCodeTypeIdAndNameInfo() {
@@ -440,12 +483,32 @@ export default {
 
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
-            this.getDbmNormbasicInfo(this.currentPage, size)
+            if (this.norm_status == '1' || this.norm_status == '0') {
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
+                }
+            } else if (this.search_status == 'search' && this.searchValue != '') {
+                this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+            } else {
+                this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
+            }
 
         },
         dbMark_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            this.getDbmNormbasicInfo(currentPage, this.pagesize)
+            if (this.norm_status == '1' || this.norm_status == '0') {
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
+                }
+            } else if (this.search_status == 'search' && this.searchValue != '') {
+                this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+            } else {
+                this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
+            }
 
         },
         filterNode(value, data) {
@@ -454,26 +517,26 @@ export default {
         },
         handleClick(row) {},
         handleNodeClick(data) {
-            if (!data.children) {
-                let params = {},
-                    that = this;
-                params["sort_id"] = parseInt(data.id);
-                dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {
-                    let arr = res.data.dbmNormbasicInfos
-                    for (let i = 0; i < arr.length; i++) {
-                        arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
-                        for (let k = 0; k < that.dataType.length; k++) {
-                            if (arr[i].data_type == that.dataType[k].code) {
-                                arr[i].data_type = that.dataType[k].value
-                            }
+            // if (!data.children) {
+            let params = {},
+                that = this;
+            params["sort_id"] = parseInt(data.id);
+            dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {
+                let arr = res.data.dbmNormbasicInfos
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
+                    for (let k = 0; k < that.dataType.length; k++) {
+                        if (arr[i].data_type == that.dataType[k].code) {
+                            arr[i].data_type = that.dataType[k].value
                         }
                     }
+                }
 
-                    this.tableData = arr
-                    this.totalSize = res.data.totalSize
-                });
+                this.tableData = arr
+                this.totalSize = res.data.totalSize
+            });
 
-            }
+            // }
 
         },
         // 获取初始数据
@@ -483,7 +546,6 @@ export default {
             params["currPage"] = curr;
             params["pageSize"] = size;
             dataBenchmarkingAllFun.getDbmNormbasicInfo(params).then(res => {
-                console.log(res.data)
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
@@ -520,6 +582,7 @@ export default {
         },
         // 新增打开
         addBascicFun() {
+            this.title='新增'
             this.dialogEditTableVisible = true
             this.basicStaus = 'add'
             this.ruleForm_Info.standardNum = ''
@@ -545,6 +608,7 @@ export default {
 
         // 编辑打开
         editbasicByIdFun(row) {
+            this.title='编辑'
             this.dialogEditTableVisible = true;
             this.basic_id = row.basic_id
             this.basicStaus = 'edit'
@@ -625,7 +689,6 @@ export default {
                     params["origin_system"] = this.ruleForm_Info.trustedSystem; //可信系统
                     params["related_system"] = '相关标准' //this.ruleForm_Info.relatedStandards; //相关标准
                     params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
-                    console.log(params)
                     if (this.basicStaus == 'edit') {
                         params["basic_id"] = this.basic_id;
                         dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
@@ -658,11 +721,14 @@ export default {
         },
         // 导入数据
         importExcelData() {
-            console.log(this.fileList)
+            this.isLoading = true
             let params = new FormData() // 创建form对象
             params.append('pathName', this.fileList[0].raw);
             dataBenchmarkingAllFun.importExcelData(params).then(res => {
-                console.log("111" + res);
+                this.fileList.splice(0);
+                if (res.code == '200') {
+                    this.isLoading = false
+                }
             });
         },
         uploadUrl() { //动态改变上传地址
@@ -672,10 +738,8 @@ export default {
             this.$message.warning('请勿上传多个文件')
         },
         beforeAvatarUpload(file) {
-            console.log('上传前', file);
             const Xls = file.name.split('.');
             const isLt2M = file.size / 1024 / 1024 < 10;
-            console.log(Xls[Xls.length - 1]);
             if (Xls[Xls.length - 1] === 'xls' || Xls[Xls.length - 1] === 'xlsx') {
                 return file;
             } else {
@@ -690,7 +754,7 @@ export default {
         // 文件状态改变
         testOnchange(file, fileList) {
             this.fileList = fileList
-            this.importExcelData();
+            // this.importExcelData();
             if (this.fileList.length != 0) {
                 this.importUserDialog = true;
             } else {
@@ -698,168 +762,249 @@ export default {
             }
         },
         handleConfimr() {
-            console.log(111)
-            // this.$refs.upload.submit();
             this.importUserDialog = false;
             this.importExcelData();
         },
-        handleSuccess(response, file, fileList) {
-            console.log('上传成功');
-            /*  if(response.code == 200){
-                 setTimeout(() =>{
-                     this.$message.success('文件上传成功');
-                     console.log(file,fileList)
-                     // this.importExcelData();
-                 },2000);
-                // fileList.splice(0);//上传成功后将fileList清空，不影响下一次上传
-             }else{
-                 this.$message.error(response.message)
-             } */
-        },
+        handleSuccess(response, file, fileList) {},
+        //导入数据的取消
         handleFirst1() {
             this.fileList.splice(0);
             this.importUserDialog = false;
             this.$message.info('已取消上传');
         },
+        //过滤发布状态
+        fulterChangeFun(filter) {
+            this.norm_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
+            if (this.norm_status == '1' || this.norm_status == '0') {
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.classfilterFun(1, this.pagesize, this.norm_status)
+                }
+
+            } else {
+                if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                } else {
+                    this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
+                }
+
+            }
+
+        },
+        classfilterFun(curr, pagesize, code_status) {
+            dataBenchmarkingAllFun.getDbmNormbasicByStatus({
+                'norm_status': code_status,
+                'currPage': curr,
+                'pageSize': pagesize
+            }).then(res => {
+                let arr = res.data.dbmNormbasicInfos,
+                    that = this;
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
+                    for (let k = 0; k < that.dataType.length; k++) {
+                        if (arr[i].data_type == that.dataType[k].code) {
+                            arr[i].data_type = that.dataType[k].value
+                        }
+                    }
+                }
+                this.totalSize = res.data.totalSize
+                this.tableData = arr
+            });
+        },
+        // 全选
+        allselect(all) {
+            this.selectrow = all
+        },
+        //批量删除
+        delectALLFun() {
+            this.basic_id_s = [];
+            this.selectrow.forEach(o => {
+                this.basic_id_s.push(o.basic_id);
+            });
+            let that = this
+            message.confirmMsg('确定删除吗').then(res => {
+                dataBenchmarkingAllFun.batchDeleteDbmNormbasic({
+                    "basic_id_s": this.basic_id_s
+                }).then(res => {
+                    message.deleteSuccess(res)
+                    that.basic_id_s = []
+                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                });
+            }).catch(() => {})
+        },
+        //检索标准分类信息
+        searchDbmSortInfoFun() {
+            this.searchValue = this.search_Value
+            if (this.searchValue != '') {
+                this.search_status = 'search'
+                this.searchDbmSortInfo(this.searchValue, '1', this.pagesize, this.norm_status)
+            } else {}
+        },
+        searchDbmSortInfo(searchValue, currentpage, pagesize, norm_status) {
+            let that = this;
+            dataBenchmarkingAllFun.searchDbmNormbasic({
+                "search_cond": searchValue,
+                'currPage': currentpage,
+                'pageSize': pagesize,
+                'status': norm_status
+            }).then(res => {
+                let arr = res.data.dbmNormbasicInfos
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
+                    for (let k = 0; k < that.dataType.length; k++) {
+                        if (arr[i].data_type == that.dataType[k].code) {
+                            arr[i].data_type = that.dataType[k].value
+                        }
+                    }
+                }
+                this.tableData = arr;
+                this.totalSize = res.data.totalSize
+            })
+        },
+
     }
 };
 </script>
 
-<style lang="less" >
-#nameTable{
-.mytree /deep/ {
-    .el-tree>.el-tree-node:after {
-        border-top: none;
-    }
+<style lang="less">
+#nameTable {
+    .mytree /deep/ {
+        .el-tree>.el-tree-node:after {
+            border-top: none;
+        }
 
-    .el-tree-node {
-        position: relative;
-        padding-left: 16px;
-    }
+        .el-tree-node {
+            position: relative;
+            padding-left: 16px;
+        }
 
-    //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
-    .el-tree-node__expand-icon.is-leaf {
-        display: none;
-    }
-
-    .el-tree-node__children {
-        padding-left: 16px;
-    }
-
-    .el-tree-node :last-child:before {
-        height: 38px;
-    }
-
-    .el-tree>.el-tree-node:before {
-        border-left: none;
-    }
-
-    .el-tree>.el-tree-node:after {
-        border-top: none;
-    }
-
-    .el-tree-node:before {
-        content: "";
-        left: -4px;
-        position: absolute;
-        right: auto;
-        border-width: 1px;
-    }
-
-    .el-tree-node:after {
-        content: "";
-        left: -4px;
-        position: absolute;
-        right: auto;
-        border-width: 1px;
-    }
-
-    .el-tree-node:before {
-        border-left: 1px dashed #4386c6;
-        bottom: 0px;
-        height: 100%;
-        top: -26px;
-        width: 1px;
-    }
-
-    .el-tree-node:after {
-        border-top: 1px dashed #4386c6;
-        height: 20px;
-        top: 12px;
-        width: 24px;
-    }
-}
-
-.allbutton /deep/ {
-
-    .el-button--mini,
-    .el-button--mini.is-round {
-        padding: 4px 5px;
-    }
-}
-
-.data_edit /deep/ {
-    .el-row {
-        margin-bottom: 10px;
-        padding-left: 10px;
-    }
-
-    .el-dialog__body {
-        padding: 15px 20px;
-    }
-
-    .el-collapse {
-        border: 0;
-    }
-
-    .el-collapse-item__header {
-        border: 0;
-
-        .el-collapse-item__arrow {
+        //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
+        .el-tree-node__expand-icon.is-leaf {
             display: none;
         }
-    }
 
-    .el-collapse-item__content {
-        padding: 0;
+        .el-tree-node__children {
+            padding-left: 16px;
+        }
 
-        .el-form-item {
-            margin-bottom: 0;
+        .el-tree-node :last-child:before {
+            height: 38px;
+        }
+
+        .el-tree>.el-tree-node:before {
+            border-left: none;
+        }
+
+        .el-tree>.el-tree-node:after {
+            border-top: none;
+        }
+
+        .el-tree-node:before {
+            content: "";
+            left: -4px;
+            position: absolute;
+            right: auto;
+            border-width: 1px;
+        }
+
+        .el-tree-node:after {
+            content: "";
+            left: -4px;
+            position: absolute;
+            right: auto;
+            border-width: 1px;
+        }
+
+        .el-tree-node:before {
+            border-left: 1px dashed #4386c6;
+            bottom: 0px;
+            height: 100%;
+            top: -26px;
+            width: 1px;
+        }
+
+        .el-tree-node:after {
+            border-top: 1px dashed #4386c6;
+            height: 20px;
+            top: 12px;
+            width: 24px;
         }
     }
 
-    .el-collapse-item__wrap {
-        border: 0;
-        padding: 0 16px
+    .allbutton /deep/ {
+
+        .el-button--mini,
+        .el-button--mini.is-round {
+            padding: 4px 5px;
+        }
+    }
+
+    .data_edit /deep/ {
+        .el-row {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        .el-dialog__body {
+            padding: 15px 20px;
+        }
+
+        .el-collapse {
+            border: 0;
+        }
+
+        .el-collapse-item__header {
+            border: 0;
+
+            .el-collapse-item__arrow {
+                display: none;
+            }
+        }
+
+        .el-collapse-item__content {
+            padding: 0;
+
+            .el-form-item {
+                margin-bottom: 0;
+            }
+        }
+
+        .el-collapse-item__wrap {
+            border: 0;
+            padding: 0 16px
+        }
     }
 }
-}
+
 #nameTable {
     .locationcenter {
-    text-align: center;
-    margin-top: 5px;
-}
+        text-align: center;
+        margin-top: 5px;
+    }
 
-.zdtitle {
-    font-size: 15px;
-    // font-weight: bold;
-    color: #2196f3;
-}
+    .zdtitle {
+        font-size: 15px;
+        // font-weight: bold;
+        color: #2196f3;
+    }
+
     .scrollbar-wrap {
         width: 24% !important;
         position: absolute;
     }
+
     .scrollbar__track {
         width: 4px;
     }
 }
+
 .span-ellipsis {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  font-size: 14px;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 14px;
 }
 </style>
-

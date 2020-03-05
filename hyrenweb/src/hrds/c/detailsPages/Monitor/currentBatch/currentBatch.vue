@@ -95,6 +95,7 @@ export default {
 
             })
         },
+       
     }
 };
 </script>
@@ -112,4 +113,6 @@ export default {
 .currentBatch .span10:nth-child(2) {
     font-size: 12px;
 }
+
+
 </style>

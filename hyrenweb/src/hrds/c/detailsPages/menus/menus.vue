@@ -1,21 +1,27 @@
 <template>
+
 <div class="menus">
+
     <el-container>
         <el-header>
             <el-row>
                 <div class="el-header">
                     <span class="titles">工程名称 : {{sys_name}}</span>
+
                     <el-button type="primary" class="el1" @click="goBack" size="small">
                         <i class="block_icon fa fa-home"></i>返回首页
                     </el-button>
                     <!-- <div class="lines"></div> -->
+
                 </div>
             </el-row>
         </el-header>
         <el-container>
             <el-aside width="16%">
                 <!-- 导航 -->
+
                 <el-menu :unique-opened="true" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
+
                     <div v-for="items in menus" :key="items.name">
                         <template v-if="items.children">
                             <!--二级菜单循环-->
@@ -43,6 +49,7 @@
                 <div class="pcontain">
                     <div class="ptitle">
                         <el-col :span="8">{{pTitle}}</el-col>
+
                     </div>
                     <el-main class="pbody">
                         <router-view></router-view>
@@ -127,6 +134,7 @@ export default {
 .menus{
     padding: 0 4% 0 3%;
 }
+
 .el-header {
     height: 50px;
     line-height: 50px;
@@ -176,6 +184,9 @@ i {
     margin-right: 5px;
 }
 
+
+
+
 .el1 {
     margin-top: 15px;
     float: right;
@@ -187,8 +198,11 @@ i {
 }
 
 .pcontain {
+
     width: 100%;
     min-height: 550px;
+
+
     overflow-x: hidden;
     overflow-y: auto;
     border: 1px solid #d5d5d5;
