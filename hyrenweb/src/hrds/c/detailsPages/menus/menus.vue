@@ -1,21 +1,21 @@
 <template>
-<div>
+<div class="menus">
     <el-container>
         <el-header>
             <el-row>
                 <div class="el-header">
                     <span class="titles">工程名称 : {{sys_name}}</span>
-                    <el-button type="primary" class="el1 els" @click="goBack" size="small">
+                    <el-button type="primary" class="el1" @click="goBack" size="small">
                         <i class="block_icon fa fa-home"></i>返回首页
                     </el-button>
-                    <div class="lines"></div>
+                    <!-- <div class="lines"></div> -->
                 </div>
             </el-row>
         </el-header>
         <el-container>
             <el-aside width="16%">
                 <!-- 导航 -->
-                <el-menu :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
+                <el-menu :unique-opened="true" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
                     <div v-for="items in menus" :key="items.name">
                         <template v-if="items.children">
                             <!--二级菜单循环-->
@@ -43,28 +43,6 @@
                 <div class="pcontain">
                     <div class="ptitle">
                         <el-col :span="8">{{pTitle}}</el-col>
-                        <!-- <el-col :span="12" :offset="4" v-if="this.$route.path == '/historyBatch'" class="tops">
-                                <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
-                                    <el-form-item label="批量日期">
-                                        <el-date-picker v-model="form.runDate" type="date" placeholder="跑批日期" size="mini">
-                                        </el-date-picker>
-                                    </el-form-item>
-                                    <el-form-item>
-                                        <el-button type="primary" @click="search" size="mini">搜索</el-button>
-                                    </el-form-item>
-                                </el-form>
-                            </el-col>
-                            <el-col :span="14" :offset="2" v-if="this.$route.path == '/relyJob'" class="tops">
-                                <el-form :model="forms" ref="forms" class="demo-form-inline tops" :inline="true">
-                                    <el-form-item label="作业名称" class="tops">
-                                        <el-input v-model="forms.etl_job" placeholder="作业名称" size="mini"></el-input>
-                                    </el-form-item>
-                                    <el-form-item>
-                                        <el-button type="primary" @click="singleSearch" size="mini">单作业搜索</el-button>
-                                        <el-button type="primary" @click="allSearch" size="mini">全作业搜索</el-button>
-                                    </el-form-item>
-                                </el-form>
-                            </el-col> -->
                     </div>
                     <el-main class="pbody">
                         <router-view></router-view>
@@ -97,12 +75,9 @@ export default {
         }
     },
     created() {
-        
+
     },
     mounted() {
-        // 这里是菜单默认路径
-        // this.$router.push('subSystem');
-        // this.sys_name = this.$route.query.etl_sys_name;
         this.sys_name = sessionStorage.getItem('sys_name');
         this.sys_cd = sessionStorage.getItem('sys_cd');
     },
@@ -149,24 +124,19 @@ export default {
 </script>
 
 <style scoped>
-.lines {
-    margin-top: 10px;
-    margin-left: 150px;
-    width: 81%;
-    min-height: 1px;
-    background: #dddddd;
-    margin-bottom: 15px;
+.menus{
+    padding: 0 4% 0 3%;
 }
-
 .el-header {
     height: 50px;
     line-height: 50px;
+    padding: 0;
 }
 
 .el-aside {
     background-color: #e5e5e5;
     margin-top: 25px;
-    margin-left: 190px;
+    min-height: 550px;
 }
 
 /* .el-header{
@@ -206,25 +176,19 @@ i {
     margin-right: 5px;
 }
 
-.els {
-    float: right;
-    /* margin-top: 18px; */
-}
-
 .el1 {
-    margin-right: 120px;
     margin-top: 15px;
+    float: right;
 }
 
 .titles {
     color: #2196f3;
     font-size: 18px;
-    padding-left: 150px;
 }
 
 .pcontain {
-    width: 96%;
-    height: 550px;
+    width: 100%;
+    min-height: 550px;
     overflow-x: hidden;
     overflow-y: auto;
     border: 1px solid #d5d5d5;

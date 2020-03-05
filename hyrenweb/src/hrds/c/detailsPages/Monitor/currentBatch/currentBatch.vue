@@ -1,73 +1,115 @@
 <template>
 <div class="currentBatch">
     <el-row>
-        <el-col :span="8">
-            <VeLine :data="chartdata" :extend="chartExtend"></VeLine>
+        <el-col :span="10">
+            <el-row class="span10">批量运行状态</el-row>
+            <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
+            <VeLine :data="chartdataChartOne" :extend="chartExtendChartOne"></VeLine>
         </el-col>
-        <el-col :span="16">dwe</el-col>
+        <el-col :span="14">
+            <el-row class="span10">系统运行状态</el-row>
+            <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
+            <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings" :events="chartEvents"></VeLine>
+        </el-col>
+    </el-row>
+    <el-row v-if="false">
+         <el-row class="span10">系统运行状态</el-row>
+            <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
+            <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings" :events="chartEvents"></VeLine>
+        </el-col>
     </el-row>
 </div>
 </template>
 
 <script>
-import VeLine from 'v-charts/lib/histogram.common'
+import VeLine from 'v-charts/lib/histogram.common';
+import * as functionAll from "./currentBatch";
 export default {
     components: {
         VeLine
     },
     data() {
+        this.chartSettings = {
+            stack: {
+                '任务': ['挂起', '等待', '运行', '暂停', '错误', '完成']
+            }
+        }
+        let self = this
+        this.chartEvents = {
+            click: function (e) {
+
+            }
+        }
         return {
-            chartdata: {
-                columns: ['日期', '访问用户', '下单用户', '下单率'],
-                rows: [{
-                        '日期': '挂起',
-                        '访问用户': 1393,
-                        '下单用户': 1093,
-                        '下单率': 0.32
-                    },
-                    {
-                        '日期': '等待',
-                        '访问用户': 3530,
-                        '下单用户': 3230,
-                        '下单率': 0.26
-                    },
-                    {
-                        '日期': '运行',
-                        '访问用户': 2923,
-                        '下单用户': 2623,
-                        '下单率': 0.76
-                    },
-                    {
-                        '日期': '暂停',
-                        '访问用户': 1723,
-                        '下单用户': 1423,
-                        '下单率': 0.49
-                    },
-                    {
-                        '日期': '错误',
-                        '访问用户': 3792,
-                        '下单用户': 3492,
-                        '下单率': 0.323
-                    },
-                    {
-                        '日期': '完成',
-                        '访问用户': 4593,
-                        '下单用户': 4293,
-                        '下单率': 0.78
-                    }
-                ]
+            chartdataChartOne: {
+                columns: ['sub_sys_desc', '挂起', '等待', '运行', '暂停', '错误', '完成'],
+                rows: []
             },
+            chartdataChartTwo: {
+                columns: ['sub_sys_desc', '挂起', '等待', '运行', '暂停', '错误', '完成'],
+                rows: []
+            },
+            dayDate: '',
             valueTime: '',
-            chartExtend: {
+            chartExtendChartOne: {
                 series: {
                     //柱子宽度
-                    barWidth: 10
+                    barWidth: 15
+                }
+            },
+            chartExtendChartTwo: {
+                series: {
+                    //柱子宽度
+                    barWidth: 80
                 }
             }
         };
+    },
+    mounted() {
+        this.monitorCurrentBatchInfo();
+    },
+    methods: {
+        // 当前批量情况获取
+        monitorCurrentBatchInfo() {
+            functionAll.monitorCurrentBatchInfo({
+                etl_sys_cd: this.$route.query.etl_sys_cd
+            }).then((res) => {
+                res.data.systemOperationStatus.forEach(item => {
+                    item['挂起'] = item.suspension;
+                    item['等待'] = item.waiting;
+                    item['运行'] = item.runing;
+                    item['暂停'] = item.pending;
+                    item['错误'] = item.error;
+                    item['完成'] = item.done;
+                })
+                this.dayDate = res.data.curr_bath_date;
+                // 系统运行状态
+                this.chartdataChartTwo.rows = res.data.systemOperationStatus;
+                // 批量运行状态
+                this.chartdataChartOne.rows = res.data.systemOperationStatus;
+            })
+        },
+        // 所有的图标信息
+        monitorAllProjectChartsData() {
+            functionAll.monitorAllProjectChartsData().then((res) => {
+
+            })
+        },
     }
 };
 </script>
 
 <style scoped>
+.currentBatch .span10 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.currentBatch .span10:first-child {
+    font-size: 20px;
+}
+
+.currentBatch .span10:nth-child(2) {
+    font-size: 12px;
+}
 </style>
