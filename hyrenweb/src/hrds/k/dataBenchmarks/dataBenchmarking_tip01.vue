@@ -7,7 +7,7 @@
             <Scrollbar>
 
                 <div class="mytree" hight='200'>
-                    <el-tree class="filter-tree" :data="data" :indent='0' :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
+                    <el-tree class="filter-tree" :empty-text='tip'   :data="data" :indent='0'   :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
                         </span>
@@ -120,7 +120,7 @@
                             <el-col :span="7">
                                 <el-row>
                                     <el-form-item label="归属分类 : " prop="belongsClass" :rules="rule.selected">
-                                        <el-cascader :options="options" clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
+                                        <el-cascader :options="options"  filterable clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
                                     </el-form-item>
                                 </el-row>
                             </el-col>
@@ -321,6 +321,7 @@ export default {
         Scrollbar,
         Loading
     },
+    props:['data','options','tip'],
     data() {
         return {
             rule: validator.default,
@@ -385,14 +386,14 @@ export default {
             dataType: [],
             dbmCodeTypeInfos: [],
             dbmNormbasicInfos: [],
-            data: [],
+            // data: [],
             defaultProps: {
                 children: 'children',
                 label: 'label'
             },
             // tableData:[],
             tableData: [],
-            options: [],
+            // options: [],
             fileList: [],
             importUserDialog: false,
             listId: '',
@@ -410,8 +411,6 @@ export default {
         }).then(res => {
             this.dataType = res.data
         })
-        this.getDbmSortTreeInfo();
-
     },
     mounted() {
         this.getDbmNormbasicInfo(1, 10)
@@ -459,6 +458,7 @@ export default {
             }).then(res => {
                 message.issueSuccess(res)
                 that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                  that.getDbmSortTreeInfo()
             });
         },
         // 获取代码类下拉
@@ -695,14 +695,17 @@ export default {
                             message.updateSuccess(res);
                             that.dialogEditTableVisible = false
                             that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                             that.getDbmSortTreeInfo()
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
                             message.saveSuccess(res);
                             that.dialogEditTableVisible = false
                             that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                             that.getDbmSortTreeInfo()
                         });
                     }
+                   
                 }
             });
 
@@ -716,6 +719,7 @@ export default {
                 dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
                     message.deleteSuccess(res);
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                      that.getDbmSortTreeInfo()
                 });
             }).catch(() => {})
         },
@@ -728,6 +732,7 @@ export default {
                 this.fileList.splice(0);
                 if (res.code == '200') {
                     this.isLoading = false
+                      this.getDbmSortTreeInfo()
                 }
             });
         },
@@ -830,6 +835,7 @@ export default {
                     message.deleteSuccess(res)
                     that.basic_id_s = []
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                      that.getDbmSortTreeInfo()
                 });
             }).catch(() => {})
         },
@@ -880,9 +886,9 @@ export default {
         }
 
         //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
-        .el-tree-node__expand-icon.is-leaf {
+       /*  .el-tree-node__expand-icon.is-leaf {
             display: none;
-        }
+        } */
 
         .el-tree-node__children {
             padding-left: 16px;
@@ -923,7 +929,9 @@ export default {
             top: -26px;
             width: 1px;
         }
-
+        .el-tree-node__content>.el-tree-node__expand-icon {
+    padding: 0px; 
+}
         .el-tree-node:after {
             border-top: 1px dashed #4386c6;
             height: 20px;
