@@ -7,7 +7,7 @@
             <Scrollbar>
 
                 <div class="mytree" hight='200'>
-                    <el-tree class="filter-tree" :empty-text='tip'   :data="data" :indent='0'   :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
+                    <el-tree class="filter-tree" :empty-text='tip' :data="data" :indent='0' :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
                         </span>
@@ -34,7 +34,7 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable' ref="multipleTable" :row-key="(row)=>{ return row.basic_id}" @selection-change="handleSelectionChange" @filter-change="fulterChangeFun" @select-all='allselect'>
+                <el-table :data="tableData" border size='medium' style="min-height: 200px;" class='outtable' ref="multipleTable" :row-key="(row)=>{ return row.basic_id}" @selection-change="handleSelectionChange" @filter-change="fulterChangeFun" @select-all='allselect'>
                     <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
                     <el-table-column label="序号" align="center" width="60">
@@ -72,9 +72,9 @@
     </el-row>
     <!-- 编辑的弹框 -->
     <el-dialog title="新增标准元" :visible.sync="dialogEditTableVisible" width="60%" class='data_edit'>
-         <div slot="title" class="header-title">
-                        <span class="title">{{title}}标准元</span>
-                    </div>
+        <div slot="title" class="header-title">
+            <span class="title">{{title}}标准元</span>
+        </div>
         <el-row>
             <el-collapse v-model="activeNames">
                 <el-form ref="ruleForm_Info" :model="ruleForm_Info" label-width="86px">
@@ -120,7 +120,7 @@
                             <el-col :span="7">
                                 <el-row>
                                     <el-form-item label="归属分类 : " prop="belongsClass" :rules="rule.selected">
-                                        <el-cascader :options="options"  filterable clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
+                                        <el-cascader :options="options" filterable clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
                                     </el-form-item>
                                 </el-row>
                             </el-col>
@@ -291,7 +291,7 @@
         <div slot="footer" class="dialog-footer">
             <el-button type="danger" size="mini" @click="dialogEditTableVisible=false">取 消</el-button>
             <el-button type="primary" size="mini" @click="saveAddDbmNormbasicInfo('ruleForm_Info')">保存</el-button>
-            <el-button type="success" size="mini" class="el-icon-upload">发布</el-button>
+            <!-- <el-button type="success" size="mini" class="el-icon-upload">发布</el-button> -->
         </div>
     </el-dialog>
     <!-- 导入用户 弹窗二次确认 -->
@@ -321,13 +321,13 @@ export default {
         Scrollbar,
         Loading
     },
-    props:['data','options','tip'],
+    props: ['data', 'options', 'tip'],
     data() {
         return {
             rule: validator.default,
-            title:'',
+            title: '',
             search_Value: '',
-            searchValue:'',
+            searchValue: '',
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
@@ -375,6 +375,8 @@ export default {
                 enactingPerson: '',
                 dbm_domain: '', //值域
                 norm_status: '', //发布状态
+                // options:[],
+                // data:[]
             },
             Releasestatus: [{
                 text: '未发布',
@@ -401,7 +403,9 @@ export default {
             basic_id_s: [],
             selectrow: [],
             norm_status: '',
-            search_status: ''
+            search_status: '',
+            NodeClick:'',
+            nodeId:''
         };
     },
     created() {
@@ -458,7 +462,7 @@ export default {
             }).then(res => {
                 message.issueSuccess(res)
                 that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                  that.getDbmSortTreeInfo()
+                that.$emit('handleClick');
             });
         },
         // 获取代码类下拉
@@ -467,13 +471,13 @@ export default {
                 this.dbmCodeTypeInfos = res.data.dbmCodeTypeInfos
             });
         },
-        // 左侧树菜单
-        getDbmSortTreeInfo() {
-            dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
-                this.data = res.data.dbmSortInfoTreeDataList
-                this.options = res.data.dbmSortInfoTreeDataList
-            });
-        },
+        /*   // 左侧树菜单
+          getDbmSortTreeInfo() {
+              dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
+                  this.data = res.data.dbmSortInfoTreeDataList
+                  this.options = res.data.dbmSortInfoTreeDataList
+              });
+          }, */
         //相关标准信息
         getDbmNormbasicIdAndNameInfo() {
             dataBenchmarkingAllFun.getDbmNormbasicIdAndNameInfo().then(res => {
@@ -483,30 +487,30 @@ export default {
 
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
-            if (this.norm_status == '1' || this.norm_status == '0') {
-                if (this.searchValue != '') {
-                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
-                } else {
+            if (this.norm_status == '1' || this.norm_status == '0'||this.search_status == 'search'||this.nodeId!='') {
+                // if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status,this.nodeId)
+               /*  } else {
                     this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
-                }
-            } else if (this.search_status == 'search' && this.searchValue != '') {
+                } */
+            /* } else if (this.search_status == 'search' && this.searchValue != '') {
                 this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
-            } else {
+             */ }else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
 
         },
         dbMark_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            if (this.norm_status == '1' || this.norm_status == '0') {
-                if (this.searchValue != '') {
-                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
-                } else {
+            if (this.norm_status == '1' || this.norm_status == '0'||this.search_status == 'search'||this.nodeId!='') {
+                // if (this.searchValue != '') {
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status,this.nodeId)
+              /*   } else {
                     this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
                 }
             } else if (this.search_status == 'search' && this.searchValue != '') {
                 this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
-            } else {
+            */ } else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
 
@@ -517,10 +521,24 @@ export default {
         },
         handleClick(row) {},
         handleNodeClick(data) {
+            this.NodeClick='true'
+            this.norm_status=''
+            this.search_status=''
+            this.searchValue=''
+            this.search_Value=''
             // if (!data.children) {
-            let params = {},
+              this.nodeId=data.id
+              this.getDbmNormbasicInfoBySortId(data.id,1,10)
+            // }
+
+        },
+        // 侧边树点击获取信息接口方法
+        getDbmNormbasicInfoBySortId(id,currentPage,pagesize){
+              let params = {},
                 that = this;
-            params["sort_id"] = parseInt(data.id);
+            params["sort_id"] = parseInt(id);
+            params["currPage"] = currentPage;
+            params["pageSize"] = pagesize
             dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {
@@ -531,13 +549,10 @@ export default {
                         }
                     }
                 }
-
+                console.log(res.data)
                 this.tableData = arr
                 this.totalSize = res.data.totalSize
             });
-
-            // }
-
         },
         // 获取初始数据
         getDbmNormbasicInfo(curr, size) {
@@ -582,7 +597,7 @@ export default {
         },
         // 新增打开
         addBascicFun() {
-            this.title='新增'
+            this.title = '新增'
             this.dialogEditTableVisible = true
             this.basicStaus = 'add'
             this.ruleForm_Info.standardNum = ''
@@ -608,7 +623,7 @@ export default {
 
         // 编辑打开
         editbasicByIdFun(row) {
-            this.title='编辑'
+            this.title = '编辑'
             this.dialogEditTableVisible = true;
             this.basic_id = row.basic_id
             this.basicStaus = 'edit'
@@ -695,17 +710,17 @@ export default {
                             message.updateSuccess(res);
                             that.dialogEditTableVisible = false
                             that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                             that.getDbmSortTreeInfo()
+                            that.$emit('handleClick');
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
                             message.saveSuccess(res);
                             that.dialogEditTableVisible = false
                             that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                             that.getDbmSortTreeInfo()
+                            that.$emit('handleClick');
                         });
                     }
-                   
+
                 }
             });
 
@@ -719,20 +734,28 @@ export default {
                 dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
                     message.deleteSuccess(res);
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                      that.getDbmSortTreeInfo()
+                    that.$emit('handleClick');
                 });
             }).catch(() => {})
         },
         // 导入数据
         importExcelData() {
             this.isLoading = true
-            let params = new FormData() // 创建form对象
+            let params = new FormData(),
+                that = this; // 创建form对象
             params.append('pathName', this.fileList[0].raw);
             dataBenchmarkingAllFun.importExcelData(params).then(res => {
                 this.fileList.splice(0);
                 if (res.code == '200') {
-                    this.isLoading = false
-                      this.getDbmSortTreeInfo()
+                    that.isLoading = false
+                    that.$emit('handleClick');
+                } else {
+                    that.isLoading = false
+                    this.$message({
+                        showClose: true,
+                        message: "导入失败",
+                        type: "error"
+                    });
                 }
             });
         },
@@ -780,9 +803,10 @@ export default {
         //过滤发布状态
         fulterChangeFun(filter) {
             this.norm_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
-            if (this.norm_status == '1' || this.norm_status == '0') {
+            this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status,this.nodeId)
+           /*  if (this.norm_status == '1' || this.norm_status == '0') {
                 if (this.searchValue != '') {
-                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
+                    this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status,this.nodeId)
                 } else {
                     this.classfilterFun(1, this.pagesize, this.norm_status)
                 }
@@ -794,7 +818,7 @@ export default {
                     this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
                 }
 
-            }
+            } */
 
         },
         classfilterFun(curr, pagesize, code_status) {
@@ -835,7 +859,7 @@ export default {
                     message.deleteSuccess(res)
                     that.basic_id_s = []
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                      that.getDbmSortTreeInfo()
+                    that.$emit('handleClick');
                 });
             }).catch(() => {})
         },
@@ -844,17 +868,19 @@ export default {
             this.searchValue = this.search_Value
             if (this.searchValue != '') {
                 this.search_status = 'search'
-                this.searchDbmSortInfo(this.searchValue, '1', this.pagesize, this.norm_status)
+                this.searchDbmSortInfo(this.searchValue, '1', this.pagesize, this.norm_status,this.nodeId)
             } else {}
         },
-        searchDbmSortInfo(searchValue, currentpage, pagesize, norm_status) {
+        searchDbmSortInfo(searchValue, currentpage, pagesize, norm_status,nodeId) {
             let that = this;
             dataBenchmarkingAllFun.searchDbmNormbasic({
                 "search_cond": searchValue,
                 'currPage': currentpage,
                 'pageSize': pagesize,
-                'status': norm_status
+                'status': norm_status,
+                'sort_id':nodeId
             }).then(res => {
+                console.log(res.data)
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
@@ -886,7 +912,7 @@ export default {
         }
 
         //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
-       /*  .el-tree-node__expand-icon.is-leaf {
+        /*  .el-tree-node__expand-icon.is-leaf {
             display: none;
         } */
 
@@ -929,9 +955,11 @@ export default {
             top: -26px;
             width: 1px;
         }
+
         .el-tree-node__content>.el-tree-node__expand-icon {
-    padding: 0px; 
-}
+            padding: 0px;
+        }
+
         .el-tree-node:after {
             border-top: 1px dashed #4386c6;
             height: 20px;

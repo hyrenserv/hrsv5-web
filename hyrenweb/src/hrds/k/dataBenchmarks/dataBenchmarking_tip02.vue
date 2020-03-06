@@ -14,7 +14,7 @@
         </el-col>
     </el-row>
     <!--  -->
-    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" @select-all='allselect' @selection-change="handleSelectionChange" style="width: 100%" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick" @filter-change="codeClass_fulterChangeFun">
+    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" @select-all='allselect' @selection-change="handleSelectionChange" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick" @filter-change="codeClass_fulterChangeFun">
         <el-table-column type="expand">
             <template slot-scope="props">
                 <el-row style="margin-bottom:10px">

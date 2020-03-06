@@ -14,7 +14,7 @@
         </el-col>
     </el-row>
     <el-row>
-        <el-table :data="tableData" border size='medium' style="min-height: 400px;" class='outtable' @filter-change="Class_fulterChangeFun" :row-key="(row)=>{ return row.sort_id}" @selection-change="handleSelectionChange" @select-all='allselect'>
+        <el-table :data="tableData" border size='medium' style="min-height: 200px;" class='outtable' @filter-change="Class_fulterChangeFun" :row-key="(row)=>{ return row.sort_id}" @selection-change="handleSelectionChange" @select-all='allselect'>
             <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
             </el-table-column>
             <el-table-column label="序号" align="center" width="60">
@@ -205,15 +205,15 @@ export default {
             }).then(res => {
                 message.issueSuccess(res)
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                 that.getDbmSortTreeInfo()
+                 that.$emit('handleClick');
             });
         },
-        //归属分类
+        /* //归属分类
         getDbmSortTreeInfo() {
             dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
                 this.options = res.data.dbmSortInfoTreeDataList
             });
-        },
+        }, */
         // 编辑和新增点击保存方法
         standardClassifiSave(form) {
             this.$refs[form].validate(valid => {
@@ -233,14 +233,14 @@ export default {
                             message.updateSuccess(res);
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                             that.getDbmSortTreeInfo()
+                            that.$emit('handleClick');
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
                             message.saveSuccess(res);
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                             that.getDbmSortTreeInfo()
+                              that.$emit('handleClick');
                         });
                     }
                      
@@ -293,7 +293,7 @@ export default {
                 message.issueSuccess(res)
                 that.sort_id_s = []
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                that.getDbmSortTreeInfo()
+                that.$emit('handleClick');
             });
         },
         //新增分类打开方法
@@ -305,10 +305,12 @@ export default {
             this.standardClassifiFormRule.chNmae = ''
             this.standardClassifiFormRule.standardMark = ''
             this.standardClassifiFormRule.code_status = ''
+              this.$emit('handleClick');
         },
         //编辑打开方法
         EditFun(row) {
             this.title='编辑'
+              this.$emit('handleClick');
             this.dialogaddclassableVisible = true;
             this.status = 'edit'
             this.edit_sortId = row.sort_id
@@ -355,7 +357,7 @@ export default {
                 dataBenchmarkingAllFun.deleteDbmSortInfo(params).then(res => {
                     message.deleteSuccess(res);
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                    that.getDbmSortTreeInfo()
+                     that.$emit('handleClick');
                 });
             }).catch(() => {})
 
@@ -414,7 +416,7 @@ export default {
                     message.deleteSuccess(res)
                     that.sort_id_s = []
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                      that.getDbmSortTreeInfo()
+                     that.$emit('handleClick');
                 });
             }).catch(() => {})
         },
