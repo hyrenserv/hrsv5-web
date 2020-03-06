@@ -130,7 +130,7 @@ export default {
 .el-main {
     padding: 15px;
     margin-bottom: 15px;
-    height: 585px;
+    // height: 585px;
 }
 
 .el-menu {

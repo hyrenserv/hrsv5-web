@@ -6,13 +6,13 @@
     padding-bottom: 10px;font-size: 18px;'>标准元管理</h4></el-row>
     <el-tabs type="border-card" @tab-click="handleClick">
   <el-tab-pane label="基础信息">
-      <BasicInformation :data='data' :options='options' :tip='tip'></BasicInformation>
+      <BasicInformation @handleClick="handleClick" :data='data' :options='options' :tip='tip'></BasicInformation>
   </el-tab-pane>
   <el-tab-pane label="代码配置">
       <CodeConfiguration></CodeConfiguration>
   </el-tab-pane>
   <el-tab-pane label="标准分类配置">
-      <StandardClassConfiguration :data='data' :options='options'></StandardClassConfiguration>
+      <StandardClassConfiguration @handleClick="handleClick" :data='data' :options='options'></StandardClassConfiguration>
   </el-tab-pane>
 </el-tabs>
 </div>
@@ -44,6 +44,7 @@ export default {
         handleClick(){
             this.tip='数据加载中...'
             dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
+                console.log(111)
                 this.data = res.data.dbmSortInfoTreeDataList
                 if(this.data.length>0){
                   this.tip=''
