@@ -64,7 +64,7 @@
                     <el-col :span="20">
                         <el-row>
                             <el-form-item label="归属分类 : " prop="belongsClass">
-                                <el-cascader :options="options" :show-all-levels="false" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept"></el-cascader>
+                                <el-cascader :options="options" :show-all-levels="false" v-model="standardClassifiFormRule.belongsClass" clearable :props="SetKesDept" filterable></el-cascader>
                             </el-form-item>
                         </el-row>
                     </el-col>
@@ -116,6 +116,7 @@ import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 export default {
+     props:['options'],
     data() {
         return {
             rule: validator.default,
@@ -146,7 +147,7 @@ export default {
                 text: '已发布',
                 value: '1'
             }, ],
-            options: [],
+            // options: [],
             sort_id_s: [],
             selectRow: [],
             sort_status: '',
@@ -157,7 +158,7 @@ export default {
         }
     },
     created() {
-        this.getDbmSortTreeInfo()
+        // this.getDbmSortTreeInfo()
 
     },
     mounted() {
@@ -203,7 +204,8 @@ export default {
                 "sort_id": row.sort_id
             }).then(res => {
                 message.issueSuccess(res)
-                this.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                 that.getDbmSortTreeInfo()
             });
         },
         //归属分类
@@ -224,20 +226,24 @@ export default {
                     params["sort_name"] = this.standardClassifiFormRule.chNmae;
                     params["sort_remark"] = this.standardClassifiFormRule.standardMark;
                     params["sort_status"] = this.standardClassifiFormRule.code_status;
+                    console.log(params,this.standardClassifiFormRule.belongsClass)
                     if (this.status == 'edit') {
                         params["sort_id"] = this.edit_sortId;
                         dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
                             message.updateSuccess(res);
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                             that.getDbmSortTreeInfo()
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
                             message.saveSuccess(res);
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                             that.getDbmSortTreeInfo()
                         });
                     }
+                     
                 }
             })
         },
@@ -287,6 +293,7 @@ export default {
                 message.issueSuccess(res)
                 that.sort_id_s = []
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                that.getDbmSortTreeInfo()
             });
         },
         //新增分类打开方法
@@ -348,7 +355,7 @@ export default {
                 dataBenchmarkingAllFun.deleteDbmSortInfo(params).then(res => {
                     message.deleteSuccess(res);
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-
+                    that.getDbmSortTreeInfo()
                 });
             }).catch(() => {})
 
@@ -407,6 +414,7 @@ export default {
                     message.deleteSuccess(res)
                     that.sort_id_s = []
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                      that.getDbmSortTreeInfo()
                 });
             }).catch(() => {})
         },
@@ -422,7 +430,7 @@ export default {
         },
         searchCodeClassInfo(codeClassValue, currentpage, pagesize, sort_status) {
             // let that = this;
-            dataBenchmarkingAllFun.searchDbmCodeTypeInfo({
+            dataBenchmarkingAllFun.searchDbmSortInfo({
                 "search_cond": codeClassValue,
                 'currPage': currentpage,
                 'pageSize': pagesize,
