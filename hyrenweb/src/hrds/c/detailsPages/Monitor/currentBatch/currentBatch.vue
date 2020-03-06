@@ -12,10 +12,10 @@
             <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings" :events="chartEvents"></VeLine>
         </el-col>
     </el-row>
-    <el-row v-if="false">
-         <el-row class="span10">系统运行状态</el-row>
-            <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
-            <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings" :events="chartEvents"></VeLine>
+    <el-row v-if="showOrhidden">
+        <el-row class="span10">任务:{{this.task}}</el-row>
+        <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
+        <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings"></VeLine>
         </el-col>
     </el-row>
 </div>
@@ -37,7 +37,12 @@ export default {
         let self = this
         this.chartEvents = {
             click: function (e) {
-
+                self.task = e.name;
+                self.showOrhidden = true;
+                if(e.componentIndex == 5){
+                      console.log(e)
+                }
+              
             }
         }
         return {
@@ -50,6 +55,8 @@ export default {
                 rows: []
             },
             dayDate: '',
+            task: '',
+            showOrhidden: false,
             valueTime: '',
             chartExtendChartOne: {
                 series: {
@@ -95,7 +102,7 @@ export default {
 
             })
         },
-       
+
     }
 };
 </script>
@@ -113,6 +120,4 @@ export default {
 .currentBatch .span10:nth-child(2) {
     font-size: 12px;
 }
-
-
 </style>
