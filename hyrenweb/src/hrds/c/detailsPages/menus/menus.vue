@@ -1,5 +1,4 @@
 <template>
-
 <div class="menus">
 
     <el-container>
@@ -48,11 +47,10 @@
             <el-container>
                 <div class="pcontain">
                     <div class="ptitle">
-                        <el-col :span="8">{{pTitle}}</el-col>
-
+                        <el-col :span="14">{{pTitle}}</el-col>
                     </div>
                     <el-main class="pbody">
-                        <router-view></router-view>
+                        <router-view v-on:viewIn="changeTitle"></router-view>
                     </el-main>
                 </div>
             </el-container>
@@ -68,7 +66,7 @@ export default {
     data() {
         return {
             sys_cd: '',
-            defaultActive: menus[2].children[0].path,
+            defaultActive: 'menus[2].children[0].path',
             job: '',
             menus: menus,
             sys_name: '',
@@ -81,9 +79,6 @@ export default {
             },
         }
     },
-    created() {
-
-    },
     mounted() {
         this.sys_name = sessionStorage.getItem('sys_name');
         this.sys_cd = sessionStorage.getItem('sys_cd');
@@ -95,14 +90,20 @@ export default {
                 path: '/etlMage'
             })
         },
+        // 改变菜单栏的路径显示
+        changeTitle(val) {
+            console.log(val)
+            this.defaultActive = val;
+        },
         //导航栏路由跳转
         handleSelect(key, keyPath, title) {
+            this.defaultActive = key;
             let path = key.replace(/\//g, "");
             this.$router.push({
                 name: path,
                 query: {
                     etl_sys_name: this.$route.query.etl_sys_name,
-                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    etl_sys_cd: this.$route.query.etl_sys_cd
                 }
             });
             this.pTitle = title.$slots.default[1].children[0].text;
@@ -131,7 +132,7 @@ export default {
 </script>
 
 <style scoped>
-.menus{
+.menus {
     padding: 0 4% 0 3%;
 }
 
@@ -144,7 +145,7 @@ export default {
 .el-aside {
     background-color: #e5e5e5;
     margin-top: 25px;
-    min-height: 550px;
+    height: 550px;
 }
 
 /* .el-header{
@@ -184,9 +185,6 @@ i {
     margin-right: 5px;
 }
 
-
-
-
 .el1 {
     margin-top: 15px;
     float: right;
@@ -201,7 +199,6 @@ i {
 
     width: 100%;
     min-height: 550px;
-
 
     overflow-x: hidden;
     overflow-y: auto;
