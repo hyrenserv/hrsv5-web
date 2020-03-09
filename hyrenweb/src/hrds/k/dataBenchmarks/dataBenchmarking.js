@@ -129,9 +129,9 @@ export function getDbmCodeTypeInfo(data) {
 
 //
 //代码类-编辑
-export function getDbmSortInfoById(data) {
+export function getDbmCodeTypeInfoById(data) {
     return request({
-        url: '/K/dbmcodetypeinfo/getDbmSortInfoById',
+        url: '/K/dbmcodetypeinfo/getDbmCodeTypeInfoById',
         params: data,
     })
 }
@@ -179,7 +179,7 @@ export function updateDbmCodeItemInfo(data) {
 // 编辑代码项打开
 export function getItemDbmCodeItemById(data) {
     return request({
-        url: '/K/dbmcodeiteminfo/getDbmCodeItemById',
+        url: '/K/dbmcodeiteminfo/getDbmCodeItemInfoById',
         params: data,
     })
 }
