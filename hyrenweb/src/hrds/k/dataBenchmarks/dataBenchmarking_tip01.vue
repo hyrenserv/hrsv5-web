@@ -35,20 +35,20 @@
             </el-row>
             <el-row>
                 <el-table :data="tableData" border size='medium' style="min-height: 200px;" class='outtable' ref="multipleTable" :row-key="(row)=>{ return row.basic_id}" @selection-change="handleSelectionChange" @filter-change="fulterChangeFun" @select-all='allselect'>
-                    <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
+                    <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
-                    <el-table-column label="序号" align="center" width="60">
+                    <el-table-column label="序号" align="center" >
                         <template scope="scope">
                             <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="sortName" label="上级分类" align="center" width="150" :show-overflow-tooltip="true">
+                    <el-table-column prop="sortName" label="上级分类" align="center" width="100" :show-overflow-tooltip="true">
                     </el-table-column>
                     <el-table-column prop="norm_code" label="标准编号" align="center">
                     </el-table-column>
-                    <el-table-column prop="norm_cname" label="中文名称" align="center">
+                    <el-table-column prop="norm_cname" label="中文名称" align="center" width="100" :show-overflow-tooltip="true">
                     </el-table-column>
-                    <el-table-column prop="norm_aname" label="标准别名" align="center">
+                    <el-table-column prop="norm_aname" label="标准别名" align="center" width="100" :show-overflow-tooltip="true">
                     </el-table-column>
                     <el-table-column prop="data_type" label="数据类型" align="center">
                     </el-table-column>
@@ -448,6 +448,7 @@ export default {
                 message.issueSuccess(res)
                 that.basic_id_s = []
                 that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                that.$emit('handleClick');
             });
         },
         // 复选框选中
@@ -549,7 +550,6 @@ export default {
                         }
                     }
                 }
-                console.log(res.data)
                 this.tableData = arr
                 this.totalSize = res.data.totalSize
             });
@@ -570,7 +570,6 @@ export default {
                         }
                     }
                 }
-
                 this.totalSize = res.data.totalSize
                 this.tableData = arr
             });
@@ -749,11 +748,12 @@ export default {
                 if (res.code == '200') {
                     that.isLoading = false
                     that.$emit('handleClick');
+                    that.getDbmNormbasicInfo(1, that.pagesize)
                 } else {
                     that.isLoading = false
                     this.$message({
                         showClose: true,
-                        message: "导入失败",
+                        message: res.message,
                         type: "error"
                     });
                 }
@@ -866,10 +866,8 @@ export default {
         //检索标准分类信息
         searchDbmSortInfoFun() {
             this.searchValue = this.search_Value
-            if (this.searchValue != '') {
                 this.search_status = 'search'
                 this.searchDbmSortInfo(this.searchValue, '1', this.pagesize, this.norm_status,this.nodeId)
-            } else {}
         },
         searchDbmSortInfo(searchValue, currentpage, pagesize, norm_status,nodeId) {
             let that = this;
@@ -880,7 +878,6 @@ export default {
                 'status': norm_status,
                 'sort_id':nodeId
             }).then(res => {
-                console.log(res.data)
                 let arr = res.data.dbmNormbasicInfos
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)

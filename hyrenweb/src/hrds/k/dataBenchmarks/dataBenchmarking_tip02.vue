@@ -426,7 +426,7 @@ export default {
             this.code_type_id = row.code_type_id
             let params = {}
             params["code_type_id"] = row.code_type_id;
-            dataBenchmarkingAllFun.getDbmSortInfoById(params).then(res => {
+            dataBenchmarkingAllFun.getDbmCodeTypeInfoById(params).then(res => {
                 this.codeClassData.code_encode = res.data.code_encode
                 this.codeClassData.code_type_name = res.data.code_type_name
                 this.codeClassData.code_remark = res.data.code_remark
@@ -582,6 +582,7 @@ export default {
                 this.code_item_id_s.push(o.code_item_id);
             });
             let that = this
+            message.confirmMsg('确定删除吗').then(res => {
             dataBenchmarkingAllFun.batchDeleteDbmCodeItemInfo({
                 "code_item_id_s": that.code_item_id_s
             }).then(res => {
@@ -589,6 +590,7 @@ export default {
                 that.code_item_id_s = []
                 this.getAllCodeItemFun(that.code_type_id)
             });
+            }).catch(() => {})
         },
         //代码类搜索
         searchDbmCodeTypeInfo() {

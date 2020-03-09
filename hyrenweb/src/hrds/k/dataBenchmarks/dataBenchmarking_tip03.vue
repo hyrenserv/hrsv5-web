@@ -24,13 +24,13 @@
             </el-table-column>
             <el-table-column prop="parentName" label="上级分类名" align="center" width="100" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column prop="sort_level_num" label="分类层级数" align="center">
+            <el-table-column prop="sort_level_num" label="分类层级数" align="center" width="80">
             </el-table-column>
-            <el-table-column prop="sort_name" label="分类名称" align="center" width="100" :show-overflow-tooltip="true">
+            <el-table-column prop="sort_name" label="分类名称" align="center"  :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column prop="sort_remark" label="分类描述" align="center" width="160" :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column prop="create_user" label="创建人" align="center">
+            <el-table-column prop="create_user" label="创建人" align="center" width="100" :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column label="创建时间" align="center">
                 <template slot-scope="scope">
@@ -226,7 +226,6 @@ export default {
                     params["sort_name"] = this.standardClassifiFormRule.chNmae;
                     params["sort_remark"] = this.standardClassifiFormRule.standardMark;
                     params["sort_status"] = this.standardClassifiFormRule.code_status;
-                    console.log(params,this.standardClassifiFormRule.belongsClass)
                     if (this.status == 'edit') {
                         params["sort_id"] = this.edit_sortId;
                         dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
@@ -365,7 +364,6 @@ export default {
         //过滤发布状态
         Class_fulterChangeFun(filter) {
             this.sort_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
-            console.log(this.sort_status,this.codeClassValue)
             if (this.sort_status == '1' || this.sort_status == '0') {
                 if (this.codeClassValue != '') {
                     this.searchCodeClassInfo(this.codeClassValue, 1, this.pagesize, this.sort_status)
@@ -391,9 +389,11 @@ export default {
                 'pageSize': pagesize
             }).then(res => {
                 let arr = res.data.dbmSortInfos
+                if(arr.length>0){
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
                 }
+            }
                 this.tableData = arr
                 this.totalSize = res.data.totalSize
             });
@@ -438,10 +438,11 @@ export default {
                 'pageSize': pagesize,
                 'status': sort_status
             }).then(res => {
-                let arr = res.data.dbmCodeTypeInfos
+                let arr = res.data.dbmSortInfos
+                if(arr.length>0){
                 for (let i = 0; i < arr.length; i++) {
                     arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
-                }
+                }}
                 this.tableData = arr
                 this.totalSize = res.data.totalSize
             })
