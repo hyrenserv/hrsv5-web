@@ -137,7 +137,7 @@
     overflow: hidden;
 
     .scrollbar__content {
-      margin-bottom: 2px !important;
+      // margin-bottom: 2px !important;
       position: absolute;
       top: 0px;
       left: 0px;

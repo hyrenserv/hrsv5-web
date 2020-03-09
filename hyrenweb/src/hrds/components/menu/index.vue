@@ -2,11 +2,11 @@
 <div class="home">
     <el-container>
         <el-header>
-            <el-row type="flex">
+            <el-row >
                 <el-col :span="6" style='text-align:left'>
                     <span><i class="el-icon-menu" ></i>菜单列表</span>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="12">&nbsp;
                     <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
                 </el-col>
                 <el-col :span="6" style='text-align:right'>
@@ -14,8 +14,8 @@
                 </el-col>
             </el-row>
         </el-header>
-        <el-container>
-            <div class='side-bar'>
+        <el-container style="margin-top:50px;margin-bottom:30px">
+                 <el-aside width="200px">
                 <!-- 导航 -->
                 <Scrollbar>
                     <el-menu router :default-active="$route.path"  :unique-opened="false" :collapse="isCollapse">
@@ -42,12 +42,10 @@
                         </div>
                     </el-menu>
                 </Scrollbar>
-            </div>
-            <!-- <el-container> -->
+            </el-aside>
                 <el-main>
                     <router-view></router-view>
                 </el-main>
-            <!-- </el-container> -->
         </el-container>
         <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
     </el-container>
@@ -119,18 +117,21 @@ export default {
 
 .el-aside {
     background-color: #495179;
-    margin-bottom: 30px;
-    min-height: 100vh;
+    min-height: 92.1vh;
 }
 
 .el-header {
+     position: fixed;
+    top: 0%;
+    width: 100%;
+    z-index: 10; left: 0;
     height: 50px !important;
+    line-height: 50px;
 }
 
 .el-main {
     padding: 15px;
     margin-bottom: 15px;
-    // height: 585px;
 }
 
 .el-menu {
@@ -157,10 +158,6 @@ export default {
     color: #409EFF !important;
 }
 
-/* .home .el-header i {
-    color: white;
-} */
-
 .el-footer {
     height: 30px !important;
     line-height: 30px;
@@ -169,23 +166,5 @@ export default {
     bottom: 0%;
     width: 100%;
     z-index: 10;
-}
-
-.side-bar {
-    background-color: #545c64;
-    min-width: 200px;
-
-    .scrollbar-wrap {
-        // height: calc(100% - 68px);
-    }
-
-   /*  .el-menu {
-        height: 100%;
-        border-right: none;
-
-        &:not(.el-menu--collapse) {
-            width: 200px;
-        }
-    } */
 }
 </style>
