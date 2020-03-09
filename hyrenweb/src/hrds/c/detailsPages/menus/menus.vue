@@ -66,7 +66,7 @@ export default {
     data() {
         return {
             sys_cd: '',
-            defaultActive: 'menus[2].children[0].path',
+            defaultActive: menus[2].children[0].path,
             job: '',
             menus: menus,
             sys_name: '',
@@ -91,9 +91,9 @@ export default {
             })
         },
         // 改变菜单栏的路径显示
-        changeTitle(val) {
-            console.log(val)
+        changeTitle(val,val2) {
             this.defaultActive = val;
+            this.pTitle = val2;
         },
         //导航栏路由跳转
         handleSelect(key, keyPath, title) {

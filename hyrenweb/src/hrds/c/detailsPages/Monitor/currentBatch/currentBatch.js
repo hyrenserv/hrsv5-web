@@ -7,3 +7,18 @@ export function monitorCurrentBatchInfo(data) {
         params: data
     })
 }
+// 监控作业依赖信息（单作业搜索）
+export function searchMonitorJobStateBySubCd(data) {
+    return request({
+        url: '/C/etlmonitor/searchMonitorJobStateBySubCd',
+        method: 'post',
+        params: data
+    })
+}
+// 获取代码项信息
+export function getCategoryItems(data) {
+    return request({
+        url: '/A/codes/getCategoryItems',
+        params: data
+    })
+}

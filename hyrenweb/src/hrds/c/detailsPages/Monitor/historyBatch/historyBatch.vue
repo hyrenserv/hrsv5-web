@@ -19,15 +19,15 @@ export default {
         return {
             datePickerValue: "",
             chartData: {
-                columns: ['任务名称', '开始时间', '结束时间'],
+                columns: ['任务名称', 'count'],
                 rows: []
             }
         };
     },
-    // mounted(){
-    //     this.monitorHistoryBatchInfo();
+    mounted(){
+        this.monitorHistoryBatchInfo();
 
-    // },
+    },
     methods: {
         // 获取历史批量详情
         monitorHistoryBatchInfo(val) {
@@ -36,6 +36,7 @@ export default {
                 curr_bath_date: val
             }).then((res) => {
                 res.data.forEach(item => {
+                    item['count'] = 1;
                     item['任务名称'] = item.desc_sys;
                     item['开始时间'] = item.curr_st_time;
                     item['结束时间'] = item.curr_end_time;

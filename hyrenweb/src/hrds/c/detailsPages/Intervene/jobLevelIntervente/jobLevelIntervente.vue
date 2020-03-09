@@ -1,854 +1,864 @@
 <template>
-  <div>
+<div>
     <el-row>
-      <el-form :model="form" ref="form" class="demo-form-inline" :inline="true">
-        <el-col :span="6" :offset="1">
-          <el-form-item label="作业名称">
-            <div style="width:120px">
-              <el-input v-model="form.etl_job" placeholder="作业名称"></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="任务名称">
-            <div style="width:120px">
-              <el-input v-model="form.sub_sys_desc" placeholder="任务名称"></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="状态">
-            <div style="width:150px">
-              <el-select v-model="form.job_status" placeholder="--请选择--" clearable>
-                <el-option v-for="item in jobStatus" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="2">
-          <el-button type="primary" @click="searchBtn">搜索
-          </el-button>
-        </el-col>
-      </el-form>
+        <el-form :model="form" ref="form" class="demo-form-inline" :inline="true">
+            <el-col :span="6" :offset="1">
+                <el-form-item label="作业名称">
+                    <div style="width:120px">
+                        <el-input v-model="form.etl_job" placeholder="作业名称"></el-input>
+                    </div>
+                </el-form-item>
+            </el-col>
+            <el-col :span="6">
+                <el-form-item label="任务名称">
+                    <div style="width:120px">
+                        <el-input v-model="form.sub_sys_desc" placeholder="任务名称"></el-input>
+                    </div>
+                </el-form-item>
+            </el-col>
+            <el-col :span="6">
+                <el-form-item label="状态">
+                    <div style="width:150px">
+                        <el-select v-model="form.job_status" placeholder="--请选择--" clearable>
+                            <el-option v-for="item in jobStatus" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </el-form-item>
+            </el-col>
+            <el-col :span="2">
+                <el-button type="primary" @click="searchBtn">搜索
+                </el-button>
+            </el-col>
+        </el-form>
     </el-row>
     <el-divider class="lines"></el-divider>
     <div class="title">作业情况</div>
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" align='center'>
-      </el-table-column>
-      <el-table-column prop="etl_sys_cd" label="工程编号" align='center' width="120">
-      </el-table-column>
-      <el-table-column prop="subsysname" label="任务名称" align='center' width="150">
-      </el-table-column>
-      <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
-        <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="jobBtn(scope.$index, scope.row)">
-                {{scope.row.etl_job}}
-            </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="curr_bath_date" label="批量日期" align='center' width="150">
-      </el-table-column>
-      <el-table-column prop="status" label="状态" align='center' width="100">
-      </el-table-column>
-      <el-table-column prop="relyJob" label="依赖作业" align='center' width="100">
-        <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="relyBtn(scope.$index, scope.row)">
-                {{scope.row.relyJob}}
-            </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="configure" label="配置" align='center' width="100">
-        <template slot-scope="scope">
-            <i class="el-icon-setting" title="配置" @click="setting(scope.$index, scope.row)"></i>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align='center' width="150">
-        <template slot-scope="scope">
-          <i class="el-icon-circle-close ls" title="停止" @click="handleStop(scope.$index, scope.row)"></i>
-          <i class="el-icon-finished ls" title="跳过" @click="handlePass(scope.$index, scope.row)"></i>
-          <i class="el-icon-refresh ls" title="重跑" @click="handleRefresh(scope.$index, scope.row)"></i>
-          <i class="el-icon-right ls" title="强制执行" @click="handleForce(scope.$index, scope.row)"></i>
-          <i class="el-icon-sort ls" title="临时调整优先级" @click="handleAdjust(scope.$index, scope.row)"></i>
-        </template>
-      </el-table-column>
+        <el-table-column type="selection" align='center'>
+        </el-table-column>
+        <el-table-column prop="etl_sys_cd" label="工程编号" align='center' width="120">
+        </el-table-column>
+        <el-table-column prop="subsysname" label="任务名称" align='center' width="150">
+        </el-table-column>
+        <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
+            <template slot-scope="scope">
+                <el-button size="mini" type="text" @click="jobBtn(scope.$index, scope.row)">
+                    {{scope.row.etl_job}}
+                </el-button>
+            </template>
+        </el-table-column>
+        <el-table-column prop="curr_bath_date" label="批量日期" align='center' width="150">
+        </el-table-column>
+        <el-table-column prop="status" label="状态" align='center' width="100">
+        </el-table-column>
+        <el-table-column prop="relyJob" label="依赖作业" align='center' width="100">
+            <template slot-scope="scope">
+                <el-button size="mini" type="text" @click="relyBtn(scope.$index, scope.row)">
+                    {{scope.row.relyJob}}
+                </el-button>
+            </template>
+        </el-table-column>
+        <el-table-column prop="configure" label="配置" align='center' width="100">
+            <template slot-scope="scope">
+                <i class="el-icon-setting" title="配置" @click="setting(scope.$index, scope.row)"></i>
+            </template>
+        </el-table-column>
+        <el-table-column label="操作" align='center' width="150">
+            <template slot-scope="scope">
+                <i class="el-icon-circle-close ls" title="停止" @click="handleStop(scope.$index, scope.row)"></i>
+                <i class="el-icon-finished ls" title="跳过" @click="handlePass(scope.$index, scope.row)"></i>
+                <i class="el-icon-refresh ls" title="重跑" @click="handleRefresh(scope.$index, scope.row)"></i>
+                <i class="el-icon-right ls" title="强制执行" @click="handleForce(scope.$index, scope.row)"></i>
+                <i class="el-icon-sort ls" title="临时调整优先级" @click="handleAdjust(scope.$index, scope.row)"></i>
+            </template>
+        </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-      <el-col :span="8">
-        <el-button size="mini" type="danger" @click="handleBatchIntervene">批量干预
-        </el-button>
-      </el-col>
-      <el-col :span="13" :offset="3">
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize1" :total="pageLength1" @current-change="handleCurrentChange1" @size-change="handleSizeChange1">
-        </el-pagination>
-      </el-col>
+        <el-col :span="8">
+            <el-button size="mini" type="danger" @click="handleBatchIntervene">批量干预
+            </el-button>
+        </el-col>
+        <el-col :span="13" :offset="3">
+            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize1" :total="pageLength1" @current-change="handleCurrentChange1" @size-change="handleSizeChange1">
+            </el-pagination>
+        </el-col>
     </el-row>
     <el-divider></el-divider>
     <div class="title">当前干预情况</div>
     <el-table ref="multipleTable" :data="tableData1" tooltip-effect="dark" border style="width: 100%">
-      <el-table-column prop="event_id" label="事件号" align='center' width="160">
-      </el-table-column>
-      <el-table-column prop="subsysname" label="任务名称" align='center' width="120">
-      </el-table-column>
-      <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
-      </el-table-column>
-      <el-table-column prop="types" label="干预类型" align='center' width="120">
-      </el-table-column>
-      <el-table-column prop="pro_para" label="作业程序参数" align='center' width="150">
-      </el-table-column>
-      <el-table-column prop="status" label="状态" align='center'>
-      </el-table-column>
-      <el-table-column prop="st_time" label="接收时间" align='center' width="160">
-      </el-table-column>
-      <el-table-column prop="warning" label="提示信息" align='center' width="160">
-      </el-table-column>
+        <el-table-column prop="event_id" label="事件号" align='center' width="160">
+        </el-table-column>
+        <el-table-column prop="subsysname" label="任务名称" align='center' width="120">
+        </el-table-column>
+        <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
+        </el-table-column>
+        <el-table-column prop="types" label="干预类型" align='center' width="120">
+        </el-table-column>
+        <el-table-column prop="pro_para" label="作业程序参数" align='center' width="150">
+        </el-table-column>
+        <el-table-column prop="status" label="状态" align='center'>
+        </el-table-column>
+        <el-table-column prop="st_time" label="接收时间" align='center' width="160">
+        </el-table-column>
+        <el-table-column prop="warning" label="提示信息" align='center' width="160">
+        </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-      <el-col :span="13" :offset="11">
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize2" :total="pageLength2" @current-change="handleCurrentChange2" @size-change="handleSizeChange2">
-        </el-pagination>
-      </el-col>
+        <el-col :span="13" :offset="11">
+            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize2" :total="pageLength2" @current-change="handleCurrentChange2" @size-change="handleSizeChange2">
+            </el-pagination>
+        </el-col>
     </el-row>
     <el-divider></el-divider>
     <div class="title">历史干预情况</div>
     <el-table ref="multipleTable" :data="tableData2" tooltip-effect="dark" border style="width: 100%">
-      <el-table-column prop="event_id" label="事件号" align='center' width="160">
-      </el-table-column>
-      <el-table-column prop="subsysname" label="任务名称" align='center' width="120">
-      </el-table-column>
-      <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
-      </el-table-column>
-      <el-table-column prop="types" label="干预类型" align='center' width="120">
-      </el-table-column>
-      <el-table-column prop="pro_para" label="作业程序参数" align='center' width="150">
-      </el-table-column>
-      <el-table-column prop="status" label="状态" align='center'>
-      </el-table-column>
-      <el-table-column prop="st_time" label="接收时间" align='center' width="160">
-      </el-table-column>
+        <el-table-column prop="event_id" label="事件号" align='center' width="160">
+        </el-table-column>
+        <el-table-column prop="subsysname" label="任务名称" align='center' width="120">
+        </el-table-column>
+        <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
+        </el-table-column>
+        <el-table-column prop="types" label="干预类型" align='center' width="120">
+        </el-table-column>
+        <el-table-column prop="pro_para" label="作业程序参数" align='center' width="150">
+        </el-table-column>
+        <el-table-column prop="status" label="状态" align='center'>
+        </el-table-column>
+        <el-table-column prop="st_time" label="接收时间" align='center' width="160">
+        </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-      <el-col :span="13" :offset="11">
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize3" :total="pageLength3" @current-change="handleCurrentChange3" @size-change="handleSizeChange3">
-        </el-pagination>
-      </el-col>
+        <el-col :span="13" :offset="11">
+            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize3" :total="pageLength3" @current-change="handleCurrentChange3" @size-change="handleSizeChange3">
+            </el-pagination>
+        </el-col>
     </el-row>
     <!-- 停止模态框 -->
     <el-dialog :title="stopTitle" :visible.sync="dialogVisibleStop" width="20%">
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleStop = false" size="mini" type="danger">否</el-button>
-        <el-button type="primary" @click="saveStop" size="mini">是</el-button>
-      </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisibleStop = false" size="mini" type="danger">否</el-button>
+            <el-button type="primary" @click="saveStop" size="mini">是</el-button>
+        </div>
     </el-dialog>
     <!-- 跳过模态框 -->
     <el-dialog :title="dropTitle" :visible.sync="dialogVisiblePass" width="20%">
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisiblePass = false" size="mini" type="danger">否</el-button>
-        <el-button type="primary" @click="savePass" size="mini">是</el-button>
-      </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisiblePass = false" size="mini" type="danger">否</el-button>
+            <el-button type="primary" @click="savePass" size="mini">是</el-button>
+        </div>
     </el-dialog>
     <!-- 重跑模态框 -->
     <el-dialog :title="refTitle" :visible.sync="dialogVisibleRefresh" width="20%">
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleRefresh = false" size="mini" type="danger">否</el-button>
-        <el-button type="primary" @click="saveRefresh" size="mini">是</el-button>
-      </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisibleRefresh = false" size="mini" type="danger">否</el-button>
+            <el-button type="primary" @click="saveRefresh" size="mini">是</el-button>
+        </div>
     </el-dialog>
     <!-- 强制执行模态框 -->
     <el-dialog :title="forceTitle" :visible.sync="dialogVisibleForce" width="20%">
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleForce = false" size="mini" type="danger">否</el-button>
-        <el-button type="primary" @click="saveForce" size="mini">是</el-button>
-      </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisibleForce = false" size="mini" type="danger">否</el-button>
+            <el-button type="primary" @click="saveForce" size="mini">是</el-button>
+        </div>
     </el-dialog>
     <!-- 调整优先级模态框 -->
     <el-dialog :title="adjustTitle" :visible.sync="dialogVisibleAdjust" width="30%">
-      <el-form :model="formAdjust" ref="formAdjust" class="demo-ruleForm" label-width="80px">
-        <el-form-item label="当前等级" prop="currentLevel">
-          <el-input v-model="formAdjust.currentLevel" autocomplete="off" placeholder="优先级"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleAdjust = false" size="mini" type="danger">否</el-button>
-        <el-button type="primary" @click="saveAdjust" size="mini">是</el-button>
-      </div>
+        <el-form :model="formAdjust" ref="formAdjust" class="demo-ruleForm" label-width="80px">
+            <el-form-item label="当前等级" prop="currentLevel">
+                <el-input v-model="formAdjust.currentLevel" autocomplete="off" placeholder="优先级"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisibleAdjust = false" size="mini" type="danger">否</el-button>
+            <el-button type="primary" @click="saveAdjust" size="mini">是</el-button>
+        </div>
     </el-dialog>
     <!-- 批量干预模态框 -->
     <el-dialog title="批量干预" :visible.sync="dialogVisiblebatchInter" width="40%">
-      <el-button class="btns" type="primary" @click="handleStop1" size="mini">停止</el-button>
-      <el-button class="btns" type="primary" @click="handlePass1" size="mini">跳过</el-button>
-      <el-button class="btns" type="primary" @click="handleRefresh1" size="mini">重跑</el-button>
-      <el-button class="btns" type="primary" @click="handleForce1" size="mini">强制执行</el-button>
-      <el-button class="btns" type="primary" @click="handleAdjust1" size="mini">调整优先级</el-button>
+        <el-button class="btns" type="primary" @click="handleStop1" size="mini">停止</el-button>
+        <el-button class="btns" type="primary" @click="handlePass1" size="mini">跳过</el-button>
+        <el-button class="btns" type="primary" @click="handleRefresh1" size="mini">重跑</el-button>
+        <el-button class="btns" type="primary" @click="handleForce1" size="mini">强制执行</el-button>
+        <el-button class="btns" type="primary" @click="handleAdjust1" size="mini">调整优先级</el-button>
     </el-dialog>
-  </div>
+</div>
 </template>
+
 <script>
 import * as jobLevelInterventeAllFun from "./jobLevelIntervente";
 export default {
-  data() {
-    return {
-      sys_cd:'',
-      codes:[],
-      form:{
-        etl_job:'',
-        sub_sys_desc:'',
-        job_status:'',
-      },
-      tempForm:{
-        etl_sys_cd:'',
-        etl_job:'',
-        curr_bath_date:'',
-      },
-      stopTitle:'',
-      dropTitle:'',
-      refTitle:'',
-      forceTitle:'',
-      adjustTitle:'',
-      jobStatus:[],
-      tableData:[],
-      tableData1:[],
-      tableData2:[],
-      formAdjust:{
-        currentLevel:'',
-      },
-      multipleSelection:[],
-      fileList:[],
-      dialogVisibleStop:false,
-      dialogVisiblePass:false,
-      dialogVisibleRefresh:false,
-      dialogVisibleForce:false,
-      dialogVisibleAdjust :false,
-      dialogVisiblebatchInter:false,
-      pagesize1: 5,
-      currpage1: 1,
-      pageLength1: 100,
-      pagesize2: 5,
-      currpage2: 1,
-      pageLength2: 100,
-      pagesize3: 5,
-      currpage3: 1,
-      pageLength3: 100,
-    };
-  },
-  mounted() {
-    this.goBack();
-    this.getSelectValue();
-    this.getJobInfo();
-    this.getCurrInfo();
-    this.getHistoryInfo();
-    this.getCode();
-    // this.demo();
-  },
-  methods: {
-    //从监控当前作业回来
-    goBack(){
-      if (this.$route.query.etl_sys_cd && this.$route.query.etl_job) {
-        this.form.etl_job = this.$route.query.etl_job;
-      }
+    data() {
+        return {
+            sys_cd: '',
+            codes: [],
+            form: {
+                etl_job: '',
+                sub_sys_desc: '',
+                job_status: '',
+            },
+            tempForm: {
+                etl_sys_cd: '',
+                etl_job: '',
+                curr_bath_date: '',
+            },
+            stopTitle: '',
+            dropTitle: '',
+            refTitle: '',
+            forceTitle: '',
+            adjustTitle: '',
+            jobStatus: [],
+            tableData: [],
+            tableData1: [],
+            tableData2: [],
+            formAdjust: {
+                currentLevel: '',
+            },
+            multipleSelection: [],
+            fileList: [],
+            dialogVisibleStop: false,
+            dialogVisiblePass: false,
+            dialogVisibleRefresh: false,
+            dialogVisibleForce: false,
+            dialogVisibleAdjust: false,
+            dialogVisiblebatchInter: false,
+            pagesize1: 5,
+            currpage1: 1,
+            pageLength1: 100,
+            pagesize2: 5,
+            currpage2: 1,
+            pageLength2: 100,
+            pagesize3: 5,
+            currpage3: 1,
+            pageLength3: 100,
+        };
     },
-    //操作按钮的代码值
-    getCode(){
-      let params = {};
-      let arr = [];
-      params["category"] = "Meddle_type";
-      jobLevelInterventeAllFun.getCategoryItems(params).then(res=>{
-        this.codes = res.data;
-      });
+    mounted() {
+        this.goBack();
+        this.getSelectValue();
+        this.getJobInfo();
+        this.getCurrInfo();
+        this.getHistoryInfo();
+        this.getCode();
+        // this.demo();
     },
-    //获取状态下拉框数据
-    getSelectValue(){
-      let params = {};
-      let arr = [];
-      params["category"] = "Job_Status";
-      jobLevelInterventeAllFun.getCategoryItems(params).then(res=>{
-        arr = res.data;
-        arr.forEach((item)=>{
-          item.label = item.value;
-          item.value = item.code;
-        });
-        this.jobStatus = arr;
-      });
-    },
-    //获取作业情况数据
-    getJobInfo(){
-      let params = {};
-      this.sys_cd = sessionStorage.getItem('sys_cd');
-      params["etl_sys_cd"] = this.sys_cd;
-      params["etl_job"] = this.form.etl_job;
-      params["sub_sys_desc"] = '';
-      params["job_status"] = '';
-      params["currPage"] = this.currpage1;
-      params["pageSize"] = this.pagesize1;
-      jobLevelInterventeAllFun.searchJobLevelIntervention(params).then(res=>{
-        this.pageLength1 = res.data.totalSize;
-        let dates = res.data.etlJobInfoList;
-        dates.forEach((item)=>{
-          item.relyJob = '依赖作业';
-          //状态
-          (function () {
+    methods: {
+        //从监控当前作业回来
+        goBack() {
+            if (this.$route.query.etl_sys_cd && this.$route.query.etl_job) {
+                this.form.etl_job = this.$route.query.etl_job;
+            }
+        },
+        //操作按钮的代码值
+        getCode() {
             let params = {};
-            params["category"] = "Job_Status";
-            params["code"] = item.job_disp_status;
-            jobLevelInterventeAllFun.getValue(params).then(res=>{
-              item.status = res.data;
-            });
-          })();
-        });
-        setTimeout(() => this.tableData = dates, 500);
-      });
-    },
-    //获取当前干预情况数据
-    getCurrInfo(){
-      let params = {};
-      params["etl_sys_cd"] = this.sys_cd;
-      params["currPage"] = this.currpage2;
-      params["pageSize"] = this.pagesize2;
-      jobLevelInterventeAllFun.searchJobLevelCurrInterventionByPage(params).then(res=>{
-        this.pageLength2 = res.data.totalSize;
-        let dates = res.data.currInterventionList;
-        dates.forEach((item)=>{
-          //干预类型
-          (function () {
-            let params = {};
+            let arr = [];
             params["category"] = "Meddle_type";
-            params["code"] = item.etl_hand_type;
-            jobLevelInterventeAllFun.getValue(params).then(res=>{
-              item.types = res.data;
+            jobLevelInterventeAllFun.getCategoryItems(params).then(res => {
+                this.codes = res.data;
             });
-          })();
-          //状态
-          (function () {
+        },
+        //获取状态下拉框数据
+        getSelectValue() {
             let params = {};
-            params["category"] = "Status";
-            params["code"] = item.hand_status;
-            jobLevelInterventeAllFun.getValue(params).then(res=>{
-              item.status = res.data;
-            });
-          })();
-        });
-        setTimeout(() => this.tableData1 = dates, 500);
-      });
-    },
-    //promise运用
-    /* getCurrInfo(){
-      return new Promise((resolve, reject)=>{
-        let params = {};
-        params["etl_sys_cd"] = this.sys_cd;
-        params["currPage"] = this.currpage2;
-        params["pageSize"] = this.pagesize2;
-        jobLevelInterventeAllFun.searchJobLevelCurrInterventionByPage(params).then(res=>{
-          this.pageLength2 = res.data.totalSize;
-          resolve(res.data.currInterventionList);
-        });
-      });
-    }, */
-    /* async demo(){
-      let dates = await this.getCurrInfo(); 
-      dates.forEach((item)=>{
-        //干预类型
-        (function () {
-          let params = {};
-          params["category"] = "Meddle_type";
-          params["code"] = item.etl_hand_type;
-          jobLevelInterventeAllFun.getValue(params).then(res=>{
-            item.types = res.data;
-          });
-        })();
-        //状态
-        (function () {
-          let params = {};
-          params["category"] = "Status";
-          params["code"] = item.hand_status;
-          jobLevelInterventeAllFun.getValue(params).then(res=>{
-            item.status = res.data;
-          });
-        })();
-      });
-      console.log(dates);
-      this.tableData1 = [...dates];
-    }, */
-    //获取历史干预情况数据
-    getHistoryInfo(){
-      let params = {};
-      params["etl_sys_cd"] = this.sys_cd;
-      params["currPage"] = this.currpage3;
-      params["pageSize"] = this.pagesize3;
-      jobLevelInterventeAllFun.searchJobLeverHisInterventionByPage(params).then(res=>{
-        this.pageLength3 = res.data.totalSize;
-        let dates = res.data.handHisList;
-        dates.forEach((item)=>{
-          //干预类型
-          (function () {
-            let params = {};
-            params["category"] = "Meddle_type";
-            params["code"] = item.etl_hand_type;
-            jobLevelInterventeAllFun.getValue(params).then(res=>{
-              item.types = res.data;
-            });
-          })();
-          //状态
-          (function () {
-            let params = {};
+            let arr = [];
             params["category"] = "Job_Status";
-            params["code"] = item.hand_status;
-            jobLevelInterventeAllFun.getValue(params).then(res=>{
-              item.status = res.data;
+            jobLevelInterventeAllFun.getCategoryItems(params).then(res => {
+                arr = res.data;
+                arr.forEach((item) => {
+                    item.label = item.value;
+                    item.value = item.code;
+                });
+                this.jobStatus = arr;
             });
-          })();
-        });
-        setTimeout(() => this.tableData2 = dates, 500);
-      });
-    },
-    //选中的数据
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
-    //搜索按钮
-    searchBtn(){
-      let params = {};
-      params["etl_sys_cd"] = this.sys_cd;
-      params["etl_job"] = this.form.etl_job;
-      params["sub_sys_desc"] = this.form.sub_sys_desc;
-      params["job_status"] = this.form.job_status;
-      params["currPage"] = this.currpage1;
-      params["pageSize"] = this.pagesize1;
-      jobLevelInterventeAllFun.searchJobLevelIntervention(params).then(res=>{
-        this.pageLength1 = res.data.totalSize;
-        let dates = res.data.etlJobInfoList;
-        dates.forEach((item)=>{
-          item.relyJob = '依赖作业';
-          //状态
-          (function () {
+        },
+        //获取作业情况数据
+        getJobInfo() {
             let params = {};
-            params["category"] = "Job_Status";
-            params["code"] = item.job_disp_status;
-            jobLevelInterventeAllFun.getValue(params).then(res=>{
-              item.status = res.data;
+            this.sys_cd = sessionStorage.getItem('sys_cd');
+            params["etl_sys_cd"] = this.sys_cd;
+            params["etl_job"] = this.form.etl_job;
+            params["sub_sys_desc"] = '';
+            params["job_status"] = '';
+            params["currPage"] = this.currpage1;
+            params["pageSize"] = this.pagesize1;
+            jobLevelInterventeAllFun.searchJobLevelIntervention(params).then(res => {
+                this.pageLength1 = res.data.totalSize;
+                let dates = res.data.etlJobInfoList;
+                dates.forEach((item) => {
+                    item.relyJob = '依赖作业';
+                    //状态
+                    (function () {
+                        let params = {};
+                        params["category"] = "Job_Status";
+                        params["code"] = item.job_disp_status;
+                        jobLevelInterventeAllFun.getValue(params).then(res => {
+                            item.status = res.data;
+                        });
+                    })();
+                });
+                setTimeout(() => this.tableData = dates, 500);
             });
-          })();
-        });
-        setTimeout(() => this.tableData = dates, 500);
-      });
-    },
-    //每个单独模态框
-    //停止按钮
-    handleStop(index, row){
-      this.dialogVisibleStop = true;
-      this.stopTitle = '确定执行停止操作?';
-      this.tempForm.etl_sys_cd = row.etl_sys_cd;
-      this.tempForm.etl_job = row.etl_job;
-      this.tempForm.curr_bath_date = row.curr_bath_date;
-    },
-    //跳过按钮
-    handlePass(index, row){
-      this.dialogVisiblePass = true;
-      this.dropTitle = '确定执行跳过操作?';
-      this.tempForm.etl_sys_cd = row.etl_sys_cd;
-      this.tempForm.etl_job = row.etl_job;
-      this.tempForm.curr_bath_date = row.curr_bath_date;
-    },
-    //重跑按钮
-    handleRefresh(index, row){
-      this.dialogVisibleRefresh = true;
-      this.refTitle = '确定执行重跑操作?';
-      this.tempForm.etl_sys_cd = row.etl_sys_cd;
-      this.tempForm.etl_job = row.etl_job;
-      this.tempForm.curr_bath_date = row.curr_bath_date;
-    },
-    //强制执行按钮
-    handleForce(index, row){
-      this.dialogVisibleForce = true;
-      this.forceTitle = '确定执行强制操作?';
-      this.tempForm.etl_sys_cd = row.etl_sys_cd;
-      this.tempForm.etl_job = row.etl_job;
-      this.tempForm.curr_bath_date = row.curr_bath_date;
-    },
-    //调整优先级按钮
-    handleAdjust(index, row){
-      this.dialogVisibleAdjust = true;
-      this.adjustTitle = '确定执行临时调整优先级操作?';
-      this.tempForm.etl_sys_cd = row.etl_sys_cd;
-      this.tempForm.etl_job = row.etl_job;
-      this.tempForm.curr_bath_date = row.curr_bath_date;
-    },
+        },
+        //获取当前干预情况数据
+        getCurrInfo() {
+            let params = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            params["currPage"] = this.currpage2;
+            params["pageSize"] = this.pagesize2;
+            jobLevelInterventeAllFun.searchJobLevelCurrInterventionByPage(params).then(res => {
+                this.pageLength2 = res.data.totalSize;
+                let dates = res.data.currInterventionList;
+                dates.forEach((item) => {
+                    //干预类型
+                    (function () {
+                        let params = {};
+                        params["category"] = "Meddle_type";
+                        params["code"] = item.etl_hand_type;
+                        jobLevelInterventeAllFun.getValue(params).then(res => {
+                            item.types = res.data;
+                        });
+                    })();
+                    //状态
+                    (function () {
+                        let params = {};
+                        params["category"] = "Status";
+                        params["code"] = item.hand_status;
+                        jobLevelInterventeAllFun.getValue(params).then(res => {
+                            item.status = res.data;
+                        });
+                    })();
+                });
+                setTimeout(() => this.tableData1 = dates, 500);
+            });
+        },
+        //promise运用
+        /* getCurrInfo(){
+          return new Promise((resolve, reject)=>{
+            let params = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            params["currPage"] = this.currpage2;
+            params["pageSize"] = this.pagesize2;
+            jobLevelInterventeAllFun.searchJobLevelCurrInterventionByPage(params).then(res=>{
+              this.pageLength2 = res.data.totalSize;
+              resolve(res.data.currInterventionList);
+            });
+          });
+        }, */
+        /* async demo(){
+          let dates = await this.getCurrInfo(); 
+          dates.forEach((item)=>{
+            //干预类型
+            (function () {
+              let params = {};
+              params["category"] = "Meddle_type";
+              params["code"] = item.etl_hand_type;
+              jobLevelInterventeAllFun.getValue(params).then(res=>{
+                item.types = res.data;
+              });
+            })();
+            //状态
+            (function () {
+              let params = {};
+              params["category"] = "Status";
+              params["code"] = item.hand_status;
+              jobLevelInterventeAllFun.getValue(params).then(res=>{
+                item.status = res.data;
+              });
+            })();
+          });
+          console.log(dates);
+          this.tableData1 = [...dates];
+        }, */
+        //获取历史干预情况数据
+        getHistoryInfo() {
+            let params = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            params["currPage"] = this.currpage3;
+            params["pageSize"] = this.pagesize3;
+            jobLevelInterventeAllFun.searchJobLeverHisInterventionByPage(params).then(res => {
+                this.pageLength3 = res.data.totalSize;
+                let dates = res.data.handHisList;
+                dates.forEach((item) => {
+                    //干预类型
+                    (function () {
+                        let params = {};
+                        params["category"] = "Meddle_type";
+                        params["code"] = item.etl_hand_type;
+                        jobLevelInterventeAllFun.getValue(params).then(res => {
+                            item.types = res.data;
+                        });
+                    })();
+                    //状态
+                    (function () {
+                        let params = {};
+                        params["category"] = "Job_Status";
+                        params["code"] = item.hand_status;
+                        jobLevelInterventeAllFun.getValue(params).then(res => {
+                            item.status = res.data;
+                        });
+                    })();
+                });
+                setTimeout(() => this.tableData2 = dates, 500);
+            });
+        },
+        //选中的数据
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        //搜索按钮
+        searchBtn() {
+            let params = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            params["etl_job"] = this.form.etl_job;
+            params["sub_sys_desc"] = this.form.sub_sys_desc;
+            params["job_status"] = this.form.job_status;
+            params["currPage"] = this.currpage1;
+            params["pageSize"] = this.pagesize1;
+            jobLevelInterventeAllFun.searchJobLevelIntervention(params).then(res => {
+                this.pageLength1 = res.data.totalSize;
+                let dates = res.data.etlJobInfoList;
+                dates.forEach((item) => {
+                    item.relyJob = '依赖作业';
+                    //状态
+                    (function () {
+                        let params = {};
+                        params["category"] = "Job_Status";
+                        params["code"] = item.job_disp_status;
+                        jobLevelInterventeAllFun.getValue(params).then(res => {
+                            item.status = res.data;
+                        });
+                    })();
+                });
+                setTimeout(() => this.tableData = dates, 500);
+            });
+        },
+        //每个单独模态框
+        //停止按钮
+        handleStop(index, row) {
+            this.dialogVisibleStop = true;
+            this.stopTitle = '确定执行停止操作?';
+            this.tempForm.etl_sys_cd = row.etl_sys_cd;
+            this.tempForm.etl_job = row.etl_job;
+            this.tempForm.curr_bath_date = row.curr_bath_date;
+        },
+        //跳过按钮
+        handlePass(index, row) {
+            this.dialogVisiblePass = true;
+            this.dropTitle = '确定执行跳过操作?';
+            this.tempForm.etl_sys_cd = row.etl_sys_cd;
+            this.tempForm.etl_job = row.etl_job;
+            this.tempForm.curr_bath_date = row.curr_bath_date;
+        },
+        //重跑按钮
+        handleRefresh(index, row) {
+            this.dialogVisibleRefresh = true;
+            this.refTitle = '确定执行重跑操作?';
+            this.tempForm.etl_sys_cd = row.etl_sys_cd;
+            this.tempForm.etl_job = row.etl_job;
+            this.tempForm.curr_bath_date = row.curr_bath_date;
+        },
+        //强制执行按钮
+        handleForce(index, row) {
+            this.dialogVisibleForce = true;
+            this.forceTitle = '确定执行强制操作?';
+            this.tempForm.etl_sys_cd = row.etl_sys_cd;
+            this.tempForm.etl_job = row.etl_job;
+            this.tempForm.curr_bath_date = row.curr_bath_date;
+        },
+        //调整优先级按钮
+        handleAdjust(index, row) {
+            this.dialogVisibleAdjust = true;
+            this.adjustTitle = '确定执行临时调整优先级操作?';
+            this.tempForm.etl_sys_cd = row.etl_sys_cd;
+            this.tempForm.etl_job = row.etl_job;
+            this.tempForm.curr_bath_date = row.curr_bath_date;
+        },
 
-    //批量干预按钮
-    handleBatchIntervene(){
-      if (this.multipleSelection.length == 0) {
-        this.$message({
-          message: '请选择干预的作业',
-          type: 'warning'
-        });
-      }else{
-        this.dialogVisiblebatchInter = true;
-      }
-    },
-    //批量模态框
-    //停止按钮1
-    handleStop1(index, row){
-      this.dialogVisiblebatchInter = false;
-      this.dialogVisibleStop = true;
-      this.stopTitle = '确定批量执行停止操作?';
-    },
-    //跳过按钮1
-    handlePass1(index, row){
-      this.dialogVisiblebatchInter = false;
-      this.dialogVisiblePass = true;
-      this.dropTitle = '确定批量执行跳过操作?';
-    },
-    //重跑按钮1
-    handleRefresh1(index, row){
-      this.dialogVisiblebatchInter = false;
-      this.dialogVisibleRefresh = true;
-      this.refTitle = '确定批量执行重跑操作?';
-    },
-    //强制执行按钮1
-    handleForce1(index, row){
-      this.dialogVisiblebatchInter = false;
-      this.dialogVisibleForce = true;
-      this.forceTitle = '确定批量执行强制操作?';
-    },
-    //调整优先级按钮1
-    handleAdjust1(index, row){
-      this.dialogVisiblebatchInter = false;
-      this.dialogVisibleAdjust = true;
-      this.adjustTitle = '确定批量执行临时调整优先级操作?';
-    },
+        //批量干预按钮
+        handleBatchIntervene() {
+            if (this.multipleSelection.length == 0) {
+                this.$message({
+                    message: '请选择干预的作业',
+                    type: 'warning'
+                });
+            } else {
+                this.dialogVisiblebatchInter = true;
+            }
+        },
+        //批量模态框
+        //停止按钮1
+        handleStop1(index, row) {
+            this.dialogVisiblebatchInter = false;
+            this.dialogVisibleStop = true;
+            this.stopTitle = '确定批量执行停止操作?';
+        },
+        //跳过按钮1
+        handlePass1(index, row) {
+            this.dialogVisiblebatchInter = false;
+            this.dialogVisiblePass = true;
+            this.dropTitle = '确定批量执行跳过操作?';
+        },
+        //重跑按钮1
+        handleRefresh1(index, row) {
+            this.dialogVisiblebatchInter = false;
+            this.dialogVisibleRefresh = true;
+            this.refTitle = '确定批量执行重跑操作?';
+        },
+        //强制执行按钮1
+        handleForce1(index, row) {
+            this.dialogVisiblebatchInter = false;
+            this.dialogVisibleForce = true;
+            this.forceTitle = '确定批量执行强制操作?';
+        },
+        //调整优先级按钮1
+        handleAdjust1(index, row) {
+            this.dialogVisiblebatchInter = false;
+            this.dialogVisibleAdjust = true;
+            this.adjustTitle = '确定批量执行临时调整优先级操作?';
+        },
 
-    //停止保存按钮
-    saveStop(){
-      if (this.stopTitle == '确定批量执行停止操作?') {
-        let arr = [];
-        let etl_sys_cd = '';
-        this.multipleSelection.forEach((item)=>{
-          let obj = {};
-          etl_sys_cd = item.etl_sys_cd;
-          obj.etl_job = item.etl_job;
-          obj.curr_bath_date = item.curr_bath_date;
-          arr.push(obj);
-        });
-        arr = JSON.stringify(arr);
-        let code = 'SS';
-        let params = {};
-        params["etl_sys_cd"] = etl_sys_cd;
-        params["etl_hand_type"] = code;
-        params["job_priority"] = 0;
-        params["batchEtlJob"] = arr;
-        jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统批量干预成功！',
-            type: 'success'
-          });
-        });
-      }else{
-        let code = 'SS';
-        let params = {};
-        params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
-        params["etl_job"] = this.tempForm.etl_job;
-        params["etl_hand_type"] = code;
-        params["curr_bath_date"] = this.tempForm.curr_bath_date;
-        params["job_priority"] = 0;
-        jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统干预成功！',
-            type: 'success'
-          });
-        });
-      }
-      this.tempForm = {};
-      this.multipleSelection = [];
-      this.dialogVisibleStop = false;
+        //停止保存按钮
+        saveStop() {
+            if (this.stopTitle == '确定批量执行停止操作?') {
+                let arr = [];
+                let etl_sys_cd = '';
+                this.multipleSelection.forEach((item) => {
+                    let obj = {};
+                    etl_sys_cd = item.etl_sys_cd;
+                    obj.etl_job = item.etl_job;
+                    obj.curr_bath_date = item.curr_bath_date;
+                    arr.push(obj);
+                });
+                arr = JSON.stringify(arr);
+                let code = 'SS';
+                let params = {};
+                params["etl_sys_cd"] = etl_sys_cd;
+                params["etl_hand_type"] = code;
+                params["job_priority"] = 0;
+                params["batchEtlJob"] = arr;
+                jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统批量干预成功！',
+                        type: 'success'
+                    });
+                });
+            } else {
+                let code = 'SS';
+                let params = {};
+                params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
+                params["etl_job"] = this.tempForm.etl_job;
+                params["etl_hand_type"] = code;
+                params["curr_bath_date"] = this.tempForm.curr_bath_date;
+                params["job_priority"] = 0;
+                jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                });
+            }
+            this.tempForm = {};
+            this.multipleSelection = [];
+            this.dialogVisibleStop = false;
+        },
+        //跳过保存按钮
+        savePass() {
+            if (this.dropTitle == '确定批量执行跳过操作?') {
+                let arr = [];
+                let etl_sys_cd = '';
+                this.multipleSelection.forEach((item) => {
+                    let obj = {};
+                    etl_sys_cd = item.etl_sys_cd;
+                    obj.etl_job = item.etl_job;
+                    obj.curr_bath_date = item.curr_bath_date;
+                    arr.push(obj);
+                });
+                arr = JSON.stringify(arr);
+                let code = 'JJ';
+                let params = {};
+                params["etl_sys_cd"] = etl_sys_cd;
+                params["etl_hand_type"] = code;
+                params["job_priority"] = 0;
+                params["batchEtlJob"] = arr;
+                jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统批量干预成功！',
+                        type: 'success'
+                    });
+                });
+            } else {
+                let code = 'JJ';
+                let params = {};
+                params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
+                params["etl_job"] = this.tempForm.etl_job;
+                params["etl_hand_type"] = code;
+                params["curr_bath_date"] = this.tempForm.curr_bath_date;
+                params["job_priority"] = 0;
+                jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                });
+            }
+            this.tempForm = {};
+            this.multipleSelection = [];
+            this.dialogVisiblePass = false;
+        },
+        //重跑保存按钮
+        saveRefresh() {
+            if (this.refTitle == '确定批量执行重跑操作?') {
+                let arr = [];
+                let etl_sys_cd = '';
+                this.multipleSelection.forEach((item) => {
+                    let obj = {};
+                    etl_sys_cd = item.etl_sys_cd;
+                    obj.etl_job = item.etl_job;
+                    obj.curr_bath_date = item.curr_bath_date;
+                    arr.push(obj);
+                });
+                arr = JSON.stringify(arr);
+                let code = 'SO';
+                let params = {};
+                params["etl_sys_cd"] = etl_sys_cd;
+                params["etl_hand_type"] = code;
+                params["job_priority"] = 0;
+                params["batchEtlJob"] = arr;
+                jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统批量干预成功！',
+                        type: 'success'
+                    });
+                });
+            } else {
+                let code = 'SO';
+                let params = {};
+                params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
+                params["etl_job"] = this.tempForm.etl_job;
+                params["etl_hand_type"] = code;
+                params["curr_bath_date"] = this.tempForm.curr_bath_date;
+                params["job_priority"] = 0;
+                jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                });
+            }
+            this.tempForm = {};
+            this.multipleSelection = [];
+            this.dialogVisibleRefresh = false;
+        },
+        //强制执行保存按钮
+        saveForce() {
+            if (this.forceTitle == '确定批量执行强制操作?') {
+                let arr = [];
+                let etl_sys_cd = '';
+                this.multipleSelection.forEach((item) => {
+                    let obj = {};
+                    etl_sys_cd = item.etl_sys_cd;
+                    obj.etl_job = item.etl_job;
+                    obj.curr_bath_date = item.curr_bath_date;
+                    arr.push(obj);
+                });
+                arr = JSON.stringify(arr);
+                let code = 'JT';
+                let params = {};
+                params["etl_sys_cd"] = etl_sys_cd;
+                params["etl_hand_type"] = code;
+                params["job_priority"] = 0;
+                params["batchEtlJob"] = arr;
+                jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统批量干预成功！',
+                        type: 'success'
+                    });
+                });
+            } else {
+                let code = 'JT';
+                let params = {};
+                params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
+                params["etl_job"] = this.tempForm.etl_job;
+                params["etl_hand_type"] = code;
+                params["curr_bath_date"] = this.tempForm.curr_bath_date;
+                params["job_priority"] = 0;
+                jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                });
+            }
+            this.tempForm = {};
+            this.multipleSelection = [];
+            this.dialogVisibleForce = false;
+        },
+        //调整优先级保存按钮
+        saveAdjust() {
+            if (this.adjustTitle == '确定批量执行临时调整优先级操作?') {
+                let arr = [];
+                let etl_sys_cd = '';
+                this.multipleSelection.forEach((item) => {
+                    let obj = {};
+                    etl_sys_cd = item.etl_sys_cd;
+                    obj.etl_job = item.etl_job;
+                    obj.curr_bath_date = item.curr_bath_date;
+                    arr.push(obj);
+                });
+                arr = JSON.stringify(arr);
+                let code = 'JP';
+                let params = {};
+                params["etl_sys_cd"] = etl_sys_cd;
+                params["etl_hand_type"] = code;
+                params["job_priority"] = this.formAdjust.currentLevel;
+                params["batchEtlJob"] = arr;
+                jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统批量干预成功！',
+                        type: 'success'
+                    });
+                });
+            } else {
+                let code = 'JP';
+                let params = {};
+                params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
+                params["etl_job"] = this.tempForm.etl_job;
+                params["etl_hand_type"] = code;
+                params["curr_bath_date"] = this.tempForm.curr_bath_date;
+                params["job_priority"] = this.formAdjust.currentLevel;
+                jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
+                    this.getJobInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                });
+            }
+            this.tempForm = {};
+            this.formAdjust = {};
+            this.multipleSelection = [];
+            this.dialogVisibleAdjust = false;
+        },
+        //分页方法1
+        handleCurrentChange1(cpage) {
+            this.currpage1 = cpage;
+            this.getJobInfo();
+        },
+        handleSizeChange1(psize) {
+            this.pagesize1 = psize;
+            this.getJobInfo();
+        },
+        //分页方法2
+        handleCurrentChange2(cpage) {
+            this.currpage2 = cpage;
+            this.getCurrInfo();
+        },
+        handleSizeChange2(psize) {
+            this.pagesize2 = psize;
+            this.getCurrInfo();
+        },
+        //分页方法3
+        handleCurrentChange3(cpage) {
+            this.currpage3 = cpage;
+            this.getHistoryInfo();
+        },
+        handleSizeChange3(psize) {
+            this.pagesize3 = psize;
+            this.getHistoryInfo();
+        },
+        //点击作业名称跳转
+        jobBtn(index, row) {
+            this.$router.push({
+                path: '/currentJob',
+                query: {
+                    etl_sys_cd: row.etl_sys_cd,
+                    etl_job: row.etl_job,
+                }
+            });
+            this.$emit('viewIn', '/currentJob', '当前作业');
+        },
+        //点击依赖作业跳转
+        relyBtn(index, row) {
+            this.$router.push({
+                path: '/relyJob',
+                query: {
+                    etl_sys_cd: row.etl_sys_cd,
+                    etl_job: row.etl_job,
+                }
+            });
+            this.$emit('viewIn', '/relyJob', '依赖作业');
+        },
+        //配置按钮
+        setting(index, row) {
+            this.$emit('viewIn', '/etlJobDef', '作业');
+            this.$router.push({
+                path: '/etlJobDef',
+                query: {
+                    etl_sys_cd: row.etl_sys_cd,
+                    etl_job: row.etl_job,
+                }
+            });
+        },
     },
-    //跳过保存按钮
-    savePass(){
-      if (this.dropTitle == '确定批量执行跳过操作?') {
-        let arr = [];
-        let etl_sys_cd = '';
-        this.multipleSelection.forEach((item)=>{
-          let obj = {};
-          etl_sys_cd = item.etl_sys_cd;
-          obj.etl_job = item.etl_job;
-          obj.curr_bath_date = item.curr_bath_date;
-          arr.push(obj);
-        });
-        arr = JSON.stringify(arr);
-        let code = 'JJ';
-        let params = {};
-        params["etl_sys_cd"] = etl_sys_cd;
-        params["etl_hand_type"] = code;
-        params["job_priority"] = 0;
-        params["batchEtlJob"] = arr;
-        jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统批量干预成功！',
-            type: 'success'
-          });
-        });
-      }else{
-        let code = 'JJ';
-        let params = {};
-        params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
-        params["etl_job"] = this.tempForm.etl_job;
-        params["etl_hand_type"] = code;
-        params["curr_bath_date"] = this.tempForm.curr_bath_date;
-        params["job_priority"] = 0;
-        jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统干预成功！',
-            type: 'success'
-          });
-        });
-      }
-      this.tempForm = {};
-      this.multipleSelection = [];
-      this.dialogVisiblePass = false;
-    },
-    //重跑保存按钮
-    saveRefresh(){
-      if (this.refTitle == '确定批量执行重跑操作?') {
-        let arr = [];
-        let etl_sys_cd = '';
-        this.multipleSelection.forEach((item)=>{
-          let obj = {};
-          etl_sys_cd = item.etl_sys_cd;
-          obj.etl_job = item.etl_job;
-          obj.curr_bath_date = item.curr_bath_date;
-          arr.push(obj);
-        });
-        arr = JSON.stringify(arr);
-        let code = 'SO';
-        let params = {};
-        params["etl_sys_cd"] = etl_sys_cd;
-        params["etl_hand_type"] = code;
-        params["job_priority"] = 0;
-        params["batchEtlJob"] = arr;
-        jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统批量干预成功！',
-            type: 'success'
-          });
-        });
-      }else{
-        let code = 'SO';
-        let params = {};
-        params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
-        params["etl_job"] = this.tempForm.etl_job;
-        params["etl_hand_type"] = code;
-        params["curr_bath_date"] = this.tempForm.curr_bath_date;
-        params["job_priority"] = 0;
-        jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统干预成功！',
-            type: 'success'
-          });
-        });
-      }
-      this.tempForm = {};
-      this.multipleSelection = [];
-      this.dialogVisibleRefresh = false;
-    },
-    //强制执行保存按钮
-    saveForce(){
-      if (this.forceTitle == '确定批量执行强制操作?') {
-        let arr = [];
-        let etl_sys_cd = '';
-        this.multipleSelection.forEach((item)=>{
-          let obj = {};
-          etl_sys_cd = item.etl_sys_cd;
-          obj.etl_job = item.etl_job;
-          obj.curr_bath_date = item.curr_bath_date;
-          arr.push(obj);
-        });
-        arr = JSON.stringify(arr);
-        let code = 'JT';
-        let params = {};
-        params["etl_sys_cd"] = etl_sys_cd;
-        params["etl_hand_type"] = code;
-        params["job_priority"] = 0;
-        params["batchEtlJob"] = arr;
-        jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统批量干预成功！',
-            type: 'success'
-          });
-        });
-      }else{
-        let code = 'JT';
-        let params = {};
-        params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
-        params["etl_job"] = this.tempForm.etl_job;
-        params["etl_hand_type"] = code;
-        params["curr_bath_date"] = this.tempForm.curr_bath_date;
-        params["job_priority"] = 0;
-        jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统干预成功！',
-            type: 'success'
-          });
-        });
-      }
-      this.tempForm = {};
-      this.multipleSelection = [];
-      this.dialogVisibleForce = false;
-    },
-    //调整优先级保存按钮
-    saveAdjust(){
-      if (this.adjustTitle == '确定批量执行临时调整优先级操作?') {
-        let arr = [];
-        let etl_sys_cd = '';
-        this.multipleSelection.forEach((item)=>{
-          let obj = {};
-          etl_sys_cd = item.etl_sys_cd;
-          obj.etl_job = item.etl_job;
-          obj.curr_bath_date = item.curr_bath_date;
-          arr.push(obj);
-        });
-        arr = JSON.stringify(arr);
-        let code = 'JP';
-        let params = {};
-        params["etl_sys_cd"] = etl_sys_cd;
-        params["etl_hand_type"] = code;
-        params["job_priority"] = this.formAdjust.currentLevel;
-        params["batchEtlJob"] = arr;
-        jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统批量干预成功！',
-            type: 'success'
-          });
-        });
-      }else{
-        let code = 'JP';
-        let params = {};
-        params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
-        params["etl_job"] = this.tempForm.etl_job;
-        params["etl_hand_type"] = code;
-        params["curr_bath_date"] = this.tempForm.curr_bath_date;
-        params["job_priority"] = this.formAdjust.currentLevel;
-        jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res=>{
-          this.getJobInfo();
-          this.getCurrInfo();
-          this.getHistoryInfo();
-          this.$message({
-            message: '系统干预成功！',
-            type: 'success'
-          });
-        });
-      }
-      this.tempForm = {};
-      this.formAdjust = {};
-      this.multipleSelection = [];
-      this.dialogVisibleAdjust = false;
-    },
-    //分页方法1
-    handleCurrentChange1(cpage){
-      this.currpage1 = cpage;
-      this.getJobInfo();
-    },
-    handleSizeChange1(psize){
-      this.pagesize1 = psize;
-      this.getJobInfo();
-    },
-    //分页方法2
-    handleCurrentChange2(cpage){
-      this.currpage2 = cpage;
-      this.getCurrInfo();
-    },
-    handleSizeChange2(psize){
-      this.pagesize2 = psize;
-      this.getCurrInfo();
-    },
-    //分页方法3
-    handleCurrentChange3(cpage){
-      this.currpage3 = cpage;
-      this.getHistoryInfo();
-    },
-    handleSizeChange3(psize){
-      this.pagesize3 = psize;
-      this.getHistoryInfo();
-    },
-    //点击作业名称跳转
-    jobBtn(index, row){
-      this.$router.push({
-        path:'/currentJob',
-        query:{
-          etl_sys_cd:row.etl_sys_cd,
-          etl_job:row.etl_job,
-        }
-      });
-    },
-    //点击依赖作业跳转
-    relyBtn(index, row){
-      this.$router.push({
-        path:'/relyJob',
-        query:{
-          etl_sys_cd:row.etl_sys_cd,
-          etl_job:row.etl_job,
-        }
-      });
-    },
-    //配置按钮
-    setting(index, row){
-      this.$router.push({
-        path:'/etlJobDef',
-        query:{
-          etl_sys_cd:row.etl_sys_cd,
-          etl_job:row.etl_job,
-        }
-      });
-    },
-  },
 };
 </script>
+
 <style scoped>
-.lines{
-  margin-top: -5px;
+.lines {
+    margin-top: -5px;
 }
-.title{
-  font-size: 16px;
-  margin-bottom: 10px;
+
+.title {
+    font-size: 16px;
+    margin-bottom: 10px;
 }
-.titles{
-  font-size: 16px;
-  margin-top: 15px;
-  margin-bottom: 10px;
+
+.titles {
+    font-size: 16px;
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
-.ls{
-  margin-right: 6px;
+
+.ls {
+    margin-right: 6px;
 }
-.tabBtns{
-  margin-top: 15px;
+
+.tabBtns {
+    margin-top: 15px;
 }
-.btns{
-  margin-left: 20px;
-  margin-right: 20px;
+
+.btns {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 </style>

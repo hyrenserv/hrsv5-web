@@ -152,7 +152,7 @@
     </el-form>
     <el-divider class="line"></el-divider>
     <div class="tips">资源信息</div>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%">
+    <el-table ref="multipleTable" size="medium " :data="tableData" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="resource_type" label="资源类型" align='center'>
         </el-table-column>
         <el-table-column prop="resource_req" label="需求数" align='center'>
@@ -227,8 +227,8 @@ export default {
                 });
             }
         },
-        changeMenu(val) {
-            this.$emit('viewIn', val);
+        changeMenu(val, val2) {
+            this.$emit('viewIn', val, val2);
         },
         //搜索按钮
         search() {
@@ -252,7 +252,7 @@ export default {
         },
         //干预按钮
         intervene() {
-            this.changeMenu('/jobLevelIntervente');
+            this.changeMenu('/jobLevelIntervente', '作业级干预');
             this.$router.push({
                 path: '/jobLevelIntervente',
                 query: {
