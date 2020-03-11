@@ -1,7 +1,6 @@
 <template>
 <div>
     <div class="title">搜索条件</div>
-    <el-divider></el-divider>
     <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
         <el-form-item label="作业名称" style="font-weight: 600">
             <el-input v-model="form.etl_job" placeholder="作业名称" size="mini"></el-input>
@@ -11,9 +10,7 @@
             <el-button type="success" @click="intervene" size="mini">干预</el-button>
         </el-form-item>
     </el-form>
-    <el-divider class="lines"></el-divider>
     <div class="titles">作业信息</div>
-    <el-divider></el-divider>
     <el-form :model="forms" ref="forms" class="demo-form-inline" :inline="true" label-width="100px">
         <el-col :span="8">
             <el-form-item label="作业描述">
@@ -150,7 +147,6 @@
             </el-form-item>
         </el-col>
     </el-form>
-    <el-divider class="line"></el-divider>
     <div class="tips">资源信息</div>
     <el-table ref="multipleTable" size="medium " :data="tableData" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="resource_type" label="资源类型" align='center'>
@@ -269,7 +265,7 @@ export default {
 <style scoped>
 .title {
     font-size: 16px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     font-weight: 600;
 }
 
