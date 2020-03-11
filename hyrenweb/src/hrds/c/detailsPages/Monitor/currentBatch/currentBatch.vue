@@ -45,7 +45,7 @@ export default {
         this.chartEventsInfo = {
             click: function (e) {
                 self.task = e.name;
-                self.$emit('viewIn', '/currentJob','当前作业');
+                self.$emit('viewIn', '/currentJob', '当前作业');
                 self.$router.push({
                     name: 'currentJob',
                     query: {
@@ -57,15 +57,15 @@ export default {
         }
         return {
             chartdataChartOne: {
-                columns: ['sub_sys_desc', '挂起', '等待', '错误', '暂停', '运行', '完成'],
+                columns: ['sub_sys_desc', '完成', '等待', '错误', '暂停', '运行', '挂起'],
                 rows: []
             },
             chartdataChartTwo: {
-                columns: ['sub_sys_desc', '挂起', '等待', '错误', '暂停', '运行', '完成'],
+                columns: ['sub_sys_desc', '完成', '等待', '错误', '暂停', '运行', '挂起'],
                 rows: []
             },
             chartdataChartThree: {
-                columns: ['etl_job', '挂起', '等待', '错误', '暂停', '运行', '完成'],
+                columns: ['etl_job', '完成', '等待', '错误', '暂停', '运行', '挂起'],
                 rows: []
             },
             dayDate: '',
