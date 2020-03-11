@@ -34,7 +34,7 @@ export default {
                 columns: ['resource_type', '总资源', '空闲资源', '使用资源'],
                 rows: []
             },
-            departmentalList:[],
+            departmentalList: [],
             chartExtendChartOne: {
                 series: {
                     //柱子宽度
@@ -62,7 +62,23 @@ export default {
                     item['使用资源'] = item.resource_used
                 })
                 this.chartdataChartOne.rows = res.data.etlResourceList;
-                this.departmentalList = res.data.jobRunList;
+                let arr = res.data.jobRunList;
+                arr.forEach(item => {
+                    if (item.job_disp_status == "D") {
+                        item.job_disp_status = '完成';
+                    } else if (item.job_disp_status == "E") {
+                        item.job_disp_status = '错误';
+                    } else if (item.job_disp_status == "P") {
+                        item.job_disp_status = '挂起';
+                    } else if (item.job_disp_status == "R") {
+                        item.job_disp_status = '运行';
+                    } else if (item.job_disp_status == "S") {
+                        item.job_disp_status = '停止';
+                    } else if (item.job_disp_status == "W") {
+                        item.job_disp_status = '等待';
+                    }
+                });
+                this.departmentalList = arr;
             })
         },
     }
