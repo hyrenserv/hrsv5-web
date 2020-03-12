@@ -44,13 +44,13 @@
             handleClick() {
                 this.tip = '数据加载中...';
                 dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
-                    this.data = res.data.dbmSortInfoTreeDataList
+                    this.data = res.data.dbmSortInfoTreeDataList;
                     if (this.data.length > 0) {
                         this.tip = ''
                     } else {
                         this.tip = '暂无数据'
                     }
-                    this.options = res.data.dbmSortInfoTreeDataList
+                    this.options = res.data.dbmSortInfoTreeDataList;
                 });
             }
 
