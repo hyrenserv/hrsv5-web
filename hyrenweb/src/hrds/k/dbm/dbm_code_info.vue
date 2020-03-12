@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import * as dataBenchmarkingAllFun from './dataBenchmarking'
+import * as dataBenchmarkingAllFun from './dbm'
 import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";

@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import * as dataBenchmarkingAllFun from './dataBenchmarking'
+import * as dataBenchmarkingAllFun from './dbm'
 import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
@@ -242,7 +242,7 @@ export default {
                               that.$emit('handleClick');
                         });
                     }
-                     
+
                 }
             })
         },
@@ -420,7 +420,7 @@ export default {
                 });
             }).catch(() => {})
         },
-        // 
+        //
         searchDbmSortInfo() {
             this.codeClassValue = this.codeClass_Value
             if (this.codeClassValue != '') {
