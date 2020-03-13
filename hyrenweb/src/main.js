@@ -20,7 +20,8 @@ Vue.use(filterRule)
 //导入charts并使用
 import VCharts from 'v-charts'
 Vue.use(VCharts);
-
+import HighchartsVue from 'highcharts-vue'
+Vue.use(HighchartsVue)
 // Base64
 import Base64 from '@/utils/base64.js' 
 Vue.prototype.$Base64 = Base64;
