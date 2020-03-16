@@ -105,6 +105,8 @@
 
 <script>
 import * as resourcesUsageAllFun from "./resourcesUsage";
+import * as message from "@/utils/js/message";
+let arr = [];
 export default {
     data() {
         return {
@@ -238,42 +240,6 @@ export default {
             this.formDelete.etl_job = row.etl_job;
             this.deleteTitle = '确定删除?';
         },
-        //文件列表移除文件时的钩子
-        handleRemove() {
-            this.$nextTick(function () {
-                this.$refs.child.handleRemove();
-            });
-        },
-        //点击文件列表中已上传的文件时的钩子
-        handlePreview() {
-            this.$nextTick(function () {
-                this.$refs.child.handlePreview();
-            });
-        },
-        //文件超出个数限制时的钩子
-        handleExceed() {
-            this.$nextTick(function () {
-                this.$refs.child.handleExceed();
-            });
-        },
-        //删除文件之前的钩子
-        beforeRemove() {
-            this.$nextTick(function () {
-                this.$refs.child.beforeRemove();
-            });
-        },
-        //导入数据按钮
-        importData() {
-            this.$nextTick(function () {
-                this.$refs.child.importData();
-            });
-        },
-        //下载按钮
-        downloadModel() {
-            this.$nextTick(function () {
-                this.$refs.child.downloadModel();
-            });
-        },
         //模态框新增/修改取消按钮
         cancleAdd() {
             this.dialogFormVisibleAdd = false;
@@ -361,6 +327,71 @@ export default {
             this.pagesize = psize;
             this.getTable();
         },
+        //文件超出个数限制时的钩子
+        handleExceed(files, fileList) {
+            this.$message.warning(`只能选择一个文件`);
+        },
+        // 获取上传的文件详情
+        handleChange(file, fileList) {
+            arr = fileList;
+        },
+        //导入数据按钮
+        importData() {
+            if (arr.length > 0) {
+                let param = new FormData() // 创建form对象
+                for (let i = 0; i < arr.length; i++) {
+                    param.append('file', arr[i].raw);
+                }
+                resourcesUsageAllFun.uploadExcelFile(param).then(res => {
+                    if (res.code == 200) {
+                        message.customizTitle("文件上传成功", "success");
+                    }
+                });
+            } else {
+                message.customizTitle("请选择上传文件", "warning");
+            }
+
+        },
+        //下载按钮
+        downloadModel() {
+            let that = this;
+            resourcesUsageAllFun.generateExcel({
+                etl_sys_cd: that.$route.query.etl_sys_cd,
+                tableName: 'etl_job_resource_rela'
+            }).then(res => {
+                if (res && res.code == 200) {
+                    that.downloadFile(res.data)
+                }
+            })
+        },
+        // 下载模板表格
+        downloadFile(val) {
+            resourcesUsageAllFun.downloadFile({
+                fileName: val
+            }).then(res => {
+                this.filename = val;
+                const blob = new Blob([res]);
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, this.filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    // document.body.appendChild(aTag);
+                    aTag.download = this.filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
+            })
+        }
     },
 };
 </script>

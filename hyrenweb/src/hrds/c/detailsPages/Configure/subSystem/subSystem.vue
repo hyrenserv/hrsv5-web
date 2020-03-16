@@ -325,18 +325,38 @@ export default {
                 etl_sys_cd: that.$route.query.etl_sys_cd,
                 tableName: 'etl_sub_sys_list'
             }).then(res => {
-                if (res.data == 200) {
-                    that.downloadFile()
+                if (res && res.code == 200) {
+                    that.downloadFile(res.data)
                 }
             })
         },
         // 下载模板表格
-        downloadFile(val){
-           subSystemAllFun.downloadFile({
-               fileName:val
-           }).then(res=>{
-
-           })
+        downloadFile(val) {
+            subSystemAllFun.downloadFile({
+                fileName: val
+            }).then(res => {
+                this.filename = val;
+                const blob = new Blob([res]);
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, this.filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    // document.body.appendChild(aTag);
+                    aTag.download = this.filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
+            })
         }
     },
     mounted() {
