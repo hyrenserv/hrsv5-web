@@ -35,16 +35,40 @@
         <el-table-column prop="curr_end_time" label="结束时间" align="center"></el-table-column>
         <el-table-column prop="job_disp_status" label="状态" align="center"></el-table-column>
         <el-table-column label="日志" align="center"> <template slot-scope="scope">
-                <el-button size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
+                <el-button size="mini" icon="el-icon-s-claim" title="日志" type="primary" @click="handleEdit(scope.$index, scope.row)">
                 </el-button>
             </template></el-table-column>
     </el-table>
+    <!-- 日志查看 -->
+    <el-dialog title="作业日志信息" :visible.sync="dialogForm">
+        <el-form :model="formAdd" ref="formAdd">
+            <el-form-item label="日志行数" :label-width="formLabelWidth" prop="readNum">
+                <el-input v-model="formAdd.readNum" autocomplete="off" placeholder="行数" style="width:284px"></el-input>
+                <el-button type="primary" class="download" @click='viewData' size="small">查 看</el-button>
+                <el-tooltip class="item" effect="dark" content="默认显示最后100行，最多显示最后1000行(正整数)" placement="right">
+                    <i class="fa fa-question-circle " aria-hidden="true"></i>
+                </el-tooltip>
+            </el-form-item>
+            <el-form-item label=" 日志日期" :label-width="formLabelWidth" prop="curr_bath_date">
+                <el-date-picker v-model="formAdd.curr_bath_date" @change="changevalue1" type="date" style="width:284px" placeholder="开始批量日期">
+                </el-date-picker>
+                <el-button class="download" @click="downLoad" type="primary" size="small">下 载</el-button>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button size="mini" type="danger" @click='closeDialog'>关 闭</el-button>
+        </div>
+    </el-dialog>
+
 </div>
 </template>
 
 <script>
 import * as functionAll from "./historyJob";
-import Highcahrts from 'highcharts'
+import Highcahrts from 'highcharts';
+import * as message from "@/utils/js/message";
+let object = {};
 export default {
     data() {
         return {
@@ -55,11 +79,17 @@ export default {
                 isHistoryBatch: '',
                 etl_sys_cd: this.$route.query.etl_sys_cd,
             },
+            formAdd: {
+                readNum: '',
+                curr_bath_date: ''
+            },
             departmentalList: [],
             curr_bath_dates: [],
             use_times: [],
             curr_st_times: [],
-            curr_end_times: []
+            curr_end_times: [],
+            dialogForm: false,
+            formLabelWidth: '150px'
         };
     },
     mounted() {
@@ -349,6 +379,70 @@ export default {
             }
             return value1 - value;
         },
+        // 打开模态框查看与下载
+        handleEdit(val, value) {
+            this.dialogForm = true;
+            console.log(val);
+            console.log(value)
+            this.formAdd.curr_bath_date = value.curr_bath_date;
+            this.formAdd.readNum = 100;
+            object = value;
+
+        },
+        // 关闭弹出框
+        closeDialog() {
+            this.dialogForm = false;
+        },
+        // 下载
+        downLoad() {
+            if (this.formAdd.curr_bath_date) {
+                functionAll.downHistoryJobLog({
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    etl_job: object.etl_job,
+                    curr_bath_date: this.formAdd.curr_bath_date
+                }).then(res => {
+                    // this.filename = this.data[index].source_id;
+                    const blob = new Blob([res]);
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, this.filename);
+                    } else {
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        // document.body.appendChild(aTag);
+                        aTag.download = this.filename + ".rar";
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
+                    }
+                })
+            } else {
+                message.customizTitle('请填写日志日期', 'warning');
+            }
+
+        },
+        //查看日志
+        viewData() {
+            if (this.formAdd.readNum) {
+                functionAll.readHistoryJobLogInfo({
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    etl_job: object.etl_job,
+                    readNum: this.formAdd.readNum
+                }).then(res => {
+
+                })
+            } else {
+                message.customizTitle('请填写日志行数', 'warning');
+            }
+
+        }
     }
 
 };
@@ -359,6 +453,14 @@ export default {
     font-size: 16px;
     margin-bottom: 10px;
     font-weight: 600;
+}
+
+.historyJob .item {
+    margin-left: 10px;
+}
+
+.historyJob .download {
+    margin-left: 20px;
 }
 
 .historyJob span {
