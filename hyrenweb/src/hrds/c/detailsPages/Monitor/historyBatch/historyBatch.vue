@@ -213,7 +213,6 @@ export default {
 }
 
 .historyBatch .titles {
-    margin-top: 20px;
     font-weight: 600;
 }
 
