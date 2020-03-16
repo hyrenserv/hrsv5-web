@@ -497,9 +497,12 @@
 
 <script>
 import * as etlJobDefAllFun from "./etlJobDef";
+import * as message from "@/utils/js/message";
+let arr = [];
 export default {
     data() {
         return {
+            fileList: [],
             sys_cd: '',
             form: {
                 etl_job: '',
@@ -1079,6 +1082,71 @@ export default {
             this.pagesize = psize;
             this.getTable();
         },
+        //文件超出个数限制时的钩子
+        handleExceed(files, fileList) {
+            this.$message.warning(`只能选择一个文件`);
+        },
+        // 获取上传的文件详情
+        handleChange(file, fileList) {
+            arr = fileList;
+        },
+        //导入数据按钮
+        importData() {
+            if (arr.length > 0) {
+                let param = new FormData() // 创建form对象
+                for (let i = 0; i < arr.length; i++) {
+                    param.append('file', arr[i].raw);
+                }
+                etlJobDefAllFun.uploadExcelFile(param).then(res => {
+                    if (res.code == 200) {
+                        message.customizTitle("文件上传成功", "success");
+                    }
+                });
+            } else {
+                message.customizTitle("请选择上传文件", "warning");
+            }
+
+        },
+        //下载按钮
+        downloadModel() {
+            let that = this;
+            etlJobDefAllFun.generateExcel({
+                etl_sys_cd: that.$route.query.etl_sys_cd,
+                tableName: 'etl_job_def'
+            }).then(res => {
+                if (res && res.code == 200) {
+                    that.downloadFile(res.data)
+                }
+            })
+        },
+        // 下载模板表格
+        downloadFile(val) {
+            etlJobDefAllFun.downloadFile({
+                fileName: val
+            }).then(res => {
+                this.filename = val;
+                const blob = new Blob([res]);
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, this.filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    // document.body.appendChild(aTag);
+                    aTag.download = this.filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
+            })
+        }
     },
 };
 </script>
