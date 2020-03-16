@@ -15,7 +15,7 @@
             <div id="myChart" :style="{width: '100%', height: '500px'}"></div>
         </el-row>
         <el-row v-show="showOrHidden" class="workName">
-            <div id="myChartSingle" :style="{width: '100%', height: '500px'}"></div>
+            <div id="jsmind_container" :style="{width: '100%', height: '500px'}"></div>
         </el-row>
     </el-row>
 </div>
@@ -24,6 +24,10 @@
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
+import * as jsmind from "@/utils/js/jsmind";
+import '@/assets/css/jsmind.css';
+let _jm = null;
+let flag = 0;
 require('echarts/dist/extension/dataTool.js')
 export default {
     data() {
@@ -48,52 +52,37 @@ export default {
                     etl_sys_cd: 'A1',
                     etl_job: 'nantong'
                 }).then(res => {
-                    let myChart = this.$echarts.init(document.getElementById('myChartSingle'));
-                    let data = res.data;
-                    let arr = [];
-                    // 绘制图表
-                    myChart.setOption({
-                        title: {
-                            text: '单作业依赖关系图',
-                            subtext: 'Default layout',
-                            top: 'bottom',
-                            left: 'right'
-                        },
-                        tooltip: {
-                            trigger: 'item',
-                            triggerOn: 'mousemove'
-                        },
-                        series: [{
-                            name: '作业依赖关系图',
-                            type: 'tree',
-                            data: [data],
-                            left: '25%',
-                            right: '25%',
-                            label: {
-                                position: 'left',
-                                verticalAlign: 'middle',
-                                align: 'right',
-                                fontSize: 16
-                            },
-                            symbol: 'diamond',
-                             symbolSize:12,
-                            leaves: {
-                                label: {
-                                    position: 'right',
-                                    verticalAlign: 'middle',
-                                    align: 'left'
-                                }
-                            },
-                            expandAndCollapse: false,
-                            animationDuration: 550,
-                            animationDurationUpdate: 750
-                        }]
-                    });
+                    let DATA = JSON.stringify(res.data).replace(/name/g, "topic")
+                    let data = JSON.parse(DATA)
+                    if (flag == 0) {
+                        this.open_empty();
+                        this.tree(data)
+                    } else {
+                        this.tree(data)
+                    }
+                    flag = 1;
                 })
             } else {
                 message.customizTitle('作业名称不能为空', 'warning');
             }
 
+        },
+        // jsmind方法
+        open_empty() {
+            var options = {
+                container: 'jsmind_container',
+                theme: 'primary',
+                editable: false //是否启用编辑
+            }
+            _jm = jsmind.show(options);
+        },
+        tree(data) {
+            var mind = {
+                "meta": {},
+                "format": "node_tree",
+                "data": data
+            }
+            _jm.show(mind);
         },
         // 全作业搜索
         searchALL() {
