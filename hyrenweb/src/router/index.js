@@ -246,11 +246,18 @@ export default new Router({
                     component: () => import('@/hrds/k/tsb/tsb.vue')
                 },
                 {
+                    path: '/tsb_result',
+                    name: 'tsb_result',
+                    title: 'tsb_result',
+                    component: () => import('@/hrds/k/tsb/tsb_result.vue')
+                },
+                {
                     path: '/tdb',
                     name: 'tdb',
                     title: 'tdb',
                     component: () => import('@/hrds/k/tdb/tdb.vue')
                 },
+                
             ]
         },
         //详情首页
