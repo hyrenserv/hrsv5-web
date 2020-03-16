@@ -3,7 +3,7 @@ import request from '@/utils/request'
 //分页查询etl资源定义信息
 export function searchEtlResourceByPage(data) {
     return request({
-        url: '/C/jobschedule/searchEtlResourceByPage',
+        url: '/C/jobconfig/searchEtlResourceByPage',
         method: 'post',
         params: data
     })
@@ -12,7 +12,7 @@ export function searchEtlResourceByPage(data) {
 //新增保存etl资源定义信息
 export function saveEtlResource(data) {
     return request({
-        url: '/C/jobschedule/saveEtlResource',
+        url: '/C/jobconfig/saveEtlResource',
         method: 'post',
         params: data
     })
@@ -21,7 +21,7 @@ export function saveEtlResource(data) {
 //更新资源信息
 export function updateEtlResource(data) {
     return request({
-        url: '/C/jobschedule/updateEtlResource',
+        url: '/C/jobconfig/updateEtlResource',
         method: 'post',
         params: data
     })
@@ -30,7 +30,7 @@ export function updateEtlResource(data) {
 //删除作业资源定义
 export function deleteEtlResource(data) {
     return request({
-        url: '/C/jobschedule/deleteEtlResource',
+        url: '/C/jobconfig/deleteEtlResource',
         method: 'post',
         params: data
     })
@@ -39,7 +39,7 @@ export function deleteEtlResource(data) {
 //批量删除作业资源定义
 export function batchDeleteEtlResource(data) {
     return request({
-        url: '/C/jobschedule/batchDeleteEtlResource',
+        url: '/C/jobconfig/batchDeleteEtlResource',
         method: 'post',
         params: data
     })
@@ -47,7 +47,7 @@ export function batchDeleteEtlResource(data) {
 //上传execl表格
 export function uploadExcelFile(data) {
     return request({
-        url: '/C/jobschedule/uploadExcelFile',
+        url: '/C/jobconfig/uploadExcelFile',
         method: 'post',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -56,7 +56,7 @@ export function uploadExcelFile(data) {
 //生成表格
 export function generateExcel(data) {
     return request({
-        url: '/C/jobschedule/generateExcel',
+        url: '/C/jobconfig/generateExcel',
         method: 'post',
         params: data
     })
@@ -64,8 +64,12 @@ export function generateExcel(data) {
 //下载表格
 export function downloadFile(data) {
     return request({
-        url: '/C/jobschedule/downloadFile',
+        url: '/C/jobconfig/downloadFile',
         method: 'post',
-        params: data
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
