@@ -7,3 +7,24 @@ export function monitorHistoryJobInfo(data) {
         params: data
     })
 }
+// 查看作业日志信息
+export function readHistoryJobLogInfo(data) {
+    return request({
+        url: '/C/etlmonitor/readHistoryJobLogInfo',
+        method: 'post',
+        params: data
+    })
+}
+
+// 下载日志文件到本地
+export function downHistoryJobLog(data) {
+    return request({
+        url: '/C/etlmonitor/downHistoryJobLog',
+        method: 'post',
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
