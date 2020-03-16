@@ -71,5 +71,29 @@ export function searchEtlResourceType(data) {
         params: data
     })
 }
-
+//上传execl表格
+export function uploadExcelFile(data) {
+    return request({
+        url: '/C/jobschedule/uploadExcelFile',
+        method: 'post',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+//生成表格
+export function generateExcel(data) {
+    return request({
+        url: '/C/jobschedule/generateExcel',
+        method: 'post',
+        params: data
+    })
+}
+//下载表格
+export function downloadFile(data) {
+    return request({
+        url: '/C/jobschedule/downloadFile',
+        method: 'post',
+        params: data
+    })
+}
 
