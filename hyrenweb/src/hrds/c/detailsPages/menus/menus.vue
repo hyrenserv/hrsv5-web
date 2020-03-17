@@ -107,26 +107,7 @@ export default {
                 }
             });
             this.pTitle = title.$slots.default[1].children[0].text;
-        },
-        //历史批量页面搜索按钮
-        search() {
-
-        },
-        //依赖作业页面单作业搜索按钮
-        singleSearch() {
-            this.job = this.$route.query.etl_job;
-            this.forms.etl_job = this.job;
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["etl_job"] = this.forms.etl_job;
-            menusAllFun.monitorJobDependencyInfo(params).then(res => {
-                console.log(res.data);
-            });
-        },
-        //依赖作业页面全作业搜索按钮
-        allSearch() {
-
-        },
+        }
     }
 }
 </script>

@@ -40,7 +40,9 @@ export default {
         };
     },
     mounted() {
-
+        if (this.$route.query.etl_job) {
+            this.form.etl_job = this.$route.query.etl_job;
+        }
     },
     methods: {
         // 单作业搜索
@@ -49,8 +51,8 @@ export default {
                 this.showOrHidden = true;
                 this.showChartsHidden = false;
                 functionAll.monitorJobDependencyInfo({
-                    etl_sys_cd: 'A1',
-                    etl_job: 'nantong'
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    etl_job: this.form.etl_job
                 }).then(res => {
                     let DATA = JSON.stringify(res.data).replace(/name/g, "topic")
                     let data = JSON.parse(DATA)
@@ -89,7 +91,7 @@ export default {
             this.showOrHidden = false;
             this.showChartsHidden = true;
             functionAll.monitorBatchEtlJobDependencyInfo({
-                etl_sys_cd: 'A1'
+                etl_sys_cd: this.$route.query.etl_sys_cd
             }).then(res => {
                 let data = res.data;
                 // 基于准备好的dom，初始化echarts实例
