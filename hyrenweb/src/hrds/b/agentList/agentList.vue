@@ -14,29 +14,29 @@
 
         <el-table-column label="数据库 Agent" align="center">
 
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-button v-if="scope.row.dbflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)">任务配置</el-button>
             </template>
         </el-table-column>
 
         <el-table-column label="半结构化 Agent" align="center">
 
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="非结构化 Agent" align="center">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-button v-if="scope.row.nonstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="Ftp Agent" align="center">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-button v-if="scope.row.halfstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="数据文件 Agent" align="center">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-button v-if="scope.row.ftpflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
             </template>
         </el-table-column>
@@ -54,7 +54,7 @@
             <el-table-column property="agent_port" label="Agent端口" align="center"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
             <el-table-column  label="Agent连接状态" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                       <span v-if="scope.row.agent_status=='未连接'" class='unlink'>{{scope.row.agent_status}}</span>
                       <span v-else-if="scope.row.agent_status=='已连接'" class='successlink'>{{scope.row.agent_status}}</span>
                       <span v-else class='linking'>{{scope.row.agent_status}}</span>
@@ -62,7 +62,7 @@
             </el-table-column>
 
             <el-table-column property="AgentOpt" label="操作" width="350px" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-row class='optheight'>
                         <el-col :span="8" >
                             <el-button type="success" size="mini" @click="addtask(scope.row,sourceName)" icon='el-icon-plus'>新增任务</el-button>
@@ -93,7 +93,7 @@
             <el-table-column label="采集频率" align="center" :show-overflow-tooltip="true"></el-table-column>
 
             <el-table-column label="操作" width="200px" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-row class='optheight'>
                         <el-col :span="5" class="edilt" style="text-align: center;">
                             <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>

@@ -21,7 +21,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column label="序号" align="center" width="60">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                             </template>
                         </el-table-column>
@@ -227,33 +227,33 @@
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
                 <el-table :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <span>{{scope.$index+(sqlexcurrentPage - 1) * sqlexpagesize + 1}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column property="table_name" label="表名" width="150px" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.table_name'" :rules="rule.default">
                                 <el-input v-model="scope.row.table_name" placeholder="表名" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column property="table_ch_name" label="表中文名" width="150px" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
                                 <el-input v-model="scope.row.table_ch_name" placeholder="表中文名" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column property="sql" label="查询SQL语句" align="center" style="line-height: 30px;" class="textlinght">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default" class="textclass">
                                 <el-input v-model="scope.row.sql" type="textarea" placeholder="查询SQL语句" style="line-height: 14px;" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" width="150px" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-row>
                                 <el-col :span="24" class="delbtn">
 

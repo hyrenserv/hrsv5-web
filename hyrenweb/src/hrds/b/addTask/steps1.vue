@@ -154,7 +154,7 @@
                                 </template>
                             </el-table-column>
                             <el-table-column property label="序号" width="60px" align="center">
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                                 </template>
                             </el-table-column>
@@ -162,7 +162,7 @@
                             <el-table-column property="classify_name" label="分类名称" width="100px" align="center"></el-table-column>
                             <el-table-column property="remark" label="描述" width="100px" align="center"></el-table-column>
                             <el-table-column label="操作" width="150px" align="center">
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <el-row>
 
                                         <el-col :span="12" style="text-align: center;">
