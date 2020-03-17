@@ -382,8 +382,6 @@ export default {
         // 打开模态框查看与下载
         handleEdit(val, value) {
             this.dialogForm = true;
-            console.log(val);
-            console.log(value)
             this.formAdd.curr_bath_date = value.curr_bath_date;
             this.formAdd.readNum = 100;
             object = value;
