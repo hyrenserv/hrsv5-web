@@ -7,7 +7,7 @@
         <el-col :span="6">
              <div style='height:0.1px'>&nbsp;</div>
             <Scrollbar>
-                <div class="mytree" hight='200'>
+                <div class="mytree" hight='260'>
                     <el-tree class="filter-tree" :data="data2" :indent='0'>
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
@@ -91,9 +91,9 @@ export default {
             })
         },
         treeData(){
-           tsbFun.getTSBTreeData().then(res => {
-               console.log(res)
-                    // this.data2 = res.data;
+           tsbFun.getTSBTreeData({'tree_source':'dataBenchmarking'}).then(res => {
+            //    console.log(res)
+                    this.data2 = res.data.tsbTreeList;
                 });
         }
     }
