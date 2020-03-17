@@ -43,7 +43,8 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import Scrollbar from '../../components/scrollbar';
-import Loading from '../../components/loading'
+import Loading from '../../components/loading';
+import * as tsbFun from './tsb'
 export default {
     components: {
         Scrollbar,
@@ -52,56 +53,7 @@ export default {
     data() {
         return {
              rule: validator.default,
-            data2: [{
-                    label: '贴源层',
-                    children: [{
-                            label: 'Hive',
-                            children: [{
-                                label: 'S01_I_AGENT_INFO',
-                            }, {
-                                label: 'S01_A02_SYS_PARA',
-                            }]
-                        },
-                        {
-                            label: 'Habse',
-                        }, {
-                            label: 'Mpp',
-                        }, {
-                            label: 'Spark',
-                        }
-                    ]
-                }, {
-                    label: '加工层',
-                    children: [{
-                        label: '加工层-1',
-                        children: [{
-                            label: '加工层-1-1'
-                        }]
-                    }, {
-                        label: '加工层-2',
-                        children: [{
-                            label: 'fytName'
-                        }]
-                    }]
-                }, {
-                    label: '集市层',
-                    children: [{
-                        label: '集市层-1',
-                        children: [{
-                            label: 'loheader'
-                        }]
-                    }, {
-                        label: '集市层-2',
-                        children: [{
-                            label: 'clollectName'
-                        }]
-                    }]
-                }, {
-                    label: '管控层',
-                },
-                {
-                    label: '自定义层',
-                }
+            data2: [
             ],
             ruleForm:{
                    tableData: [{
@@ -129,11 +81,20 @@ export default {
          
         }
     },
+    created(){
+        this.treeData()
+    },
     methods: {
         Select() {
             this.$router.push({
                 name: 'tsb_result'
             })
+        },
+        treeData(){
+           tsbFun.getTSBTreeData().then(res => {
+               console.log(res)
+                    // this.data2 = res.data;
+                });
         }
     }
 }
