@@ -3,7 +3,7 @@ import request from '@/utils/request'
 //分页查询作业定义信息
 export function searchEtlJobDefByPage(data) {
     return request({
-        url: '/C/jobschedule/searchEtlJobDefByPage',
+        url: '/C/jobconfig/searchEtlJobDefByPage',
         method: 'post',
         params: data
     })
@@ -12,7 +12,7 @@ export function searchEtlJobDefByPage(data) {
 //查询任务信息
 export function searchEtlSubSys(data) {
     return request({
-        url: '/C/jobschedule/searchEtlSubSys',
+        url: '/C/jobconfig/searchEtlSubSys',
         method: 'post',
         params: data
     })
@@ -30,7 +30,7 @@ export function getCategoryItems(data) {
 //新增保存作业信息
 export function saveEtlJobDef(data) {
     return request({
-        url: '/C/jobschedule/saveEtlJobDef',
+        url: '/C/jobconfig/saveEtlJobDef',
         method: 'post',
         params: data
     })
@@ -39,7 +39,7 @@ export function saveEtlJobDef(data) {
 //删除Etl作业定义信息
 export function deleteEtlJobDef(data) {
     return request({
-        url: '/C/jobschedule/deleteEtlJobDef',
+        url: '/C/jobconfig/deleteEtlJobDef',
         method: 'post',
         params: data
     })
@@ -48,7 +48,7 @@ export function deleteEtlJobDef(data) {
 //批量删除Etl作业定义信息
 export function batchDeleteEtlJobDef(data) {
     return request({
-        url: '/C/jobschedule/batchDeleteEtlJobDef',
+        url: '/C/jobconfig/batchDeleteEtlJobDef',
         method: 'post',
         params: data
     })
@@ -57,7 +57,7 @@ export function batchDeleteEtlJobDef(data) {
 //更新作业定义信息并返回更新后的最
 export function updateEtlJobDef(data) {
     return request({
-        url: '/C/jobschedule/updateEtlJobDef',
+        url: '/C/jobconfig/updateEtlJobDef',
         method: 'post',
         params: data
     })
@@ -75,7 +75,7 @@ export function getValue(data) {
 //查询作业名称信息
 export function searchEtlJob(data) {
     return request({
-        url: '/C/jobschedule/searchEtlJob',
+        url: '/C/jobconfig/searchEtlJob',
         method: 'post',
         params: data
     })
@@ -84,7 +84,7 @@ export function searchEtlJob(data) {
 //根据工程编号、作业名称查询作业定义
 export function searchEtlJobDefById(data) {
     return request({
-        url: '/C/jobschedule/searchEtlJobDefById',
+        url: '/C/jobconfig/searchEtlJobDefById',
         method: 'post',
         params: data
     })
@@ -92,7 +92,7 @@ export function searchEtlJobDefById(data) {
 //上传execl表格
 export function uploadExcelFile(data) {
     return request({
-        url: '/C/jobschedule/uploadExcelFile',
+        url: '/C/jobconfig/uploadExcelFile',
         method: 'post',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -101,7 +101,7 @@ export function uploadExcelFile(data) {
 //生成表格
 export function generateExcel(data) {
     return request({
-        url: '/C/jobschedule/generateExcel',
+        url: '/C/jobconfig/generateExcel',
         method: 'post',
         params: data
     })
@@ -109,7 +109,7 @@ export function generateExcel(data) {
 //下载表格
 export function downloadFile(data) {
     return request({
-        url: '/C/jobschedule/downloadFile',
+        url: '/C/jobconfig/downloadFile',
         method: 'post',
         params: data,
         responseType: 'blob',

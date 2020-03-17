@@ -3,7 +3,7 @@ import request from '@/utils/request'
 //分页查询作业调度系统参数信息
 export function searchEtlParaByPage(data) {
     return request({
-        url: '/C/jobschedule/searchEtlParaByPage',
+        url: '/C/jobconfig/searchEtlParaByPage',
         method: 'post',
         params: data
     })
@@ -12,7 +12,7 @@ export function searchEtlParaByPage(data) {
 //新增保存作业系统参数
 export function saveEtlPara(data) {
     return request({
-        url: '/C/jobschedule/saveEtlPara',
+        url: '/C/jobconfig/saveEtlPara',
         method: 'post',
         params: data
     })
@@ -21,7 +21,7 @@ export function saveEtlPara(data) {
 //更新保存作业系统参数
 export function updateEtlPara(data) {
     return request({
-        url: '/C/jobschedule/updateEtlPara',
+        url: '/C/jobconfig/updateEtlPara',
         method: 'post',
         params: data
     })
@@ -30,7 +30,7 @@ export function updateEtlPara(data) {
 //删除作业系统参数
 export function deleteEtlPara(data) {
     return request({
-        url: '/C/jobschedule/deleteEtlPara',
+        url: '/C/jobconfig/deleteEtlPara',
         method: 'post',
         params: data
     })
@@ -39,7 +39,7 @@ export function deleteEtlPara(data) {
 //批量删除作业系统参数
 export function batchDeleteEtlPara(data) {
     return request({
-        url: '/C/jobschedule/batchDeleteEtlPara',
+        url: '/C/jobconfig/batchDeleteEtlPara',
         method: 'post',
         params: data
     })
@@ -65,7 +65,7 @@ export function getValue(data) {
 //上传execl表格
 export function uploadExcelFile(data) {
     return request({
-        url: '/C/jobschedule/uploadExcelFile',
+        url: '/C/jobconfig/uploadExcelFile',
         method: 'post',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -74,7 +74,7 @@ export function uploadExcelFile(data) {
 //生成表格
 export function generateExcel(data) {
     return request({
-        url: '/C/jobschedule/generateExcel',
+        url: '/C/jobconfig/generateExcel',
         method: 'post',
         params: data
     })
@@ -82,7 +82,7 @@ export function generateExcel(data) {
 //下载表格
 export function downloadFile(data) {
     return request({
-        url: '/C/jobschedule/downloadFile',
+        url: '/C/jobconfig/downloadFile',
         method: 'post',
         params: data,
         responseType: 'blob',

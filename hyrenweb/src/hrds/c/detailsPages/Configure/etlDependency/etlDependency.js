@@ -3,7 +3,7 @@ import request from '@/utils/request'
 //分页查询作业依赖信息
 export function searchEtlDependencyByPage(data) {
     return request({
-        url: '/C/jobschedule/searchEtlDependencyByPage',
+        url: '/C/jobconfig/searchEtlDependencyByPage',
         method: 'post',
         params: data
     })
@@ -12,7 +12,7 @@ export function searchEtlDependencyByPage(data) {
 //新增保存作业依赖
 export function saveEtlDependency(data) {
     return request({
-        url: '/C/jobschedule/saveEtlDependency',
+        url: '/C/jobconfig/saveEtlDependency',
         method: 'post',
         params: data
     })
@@ -21,7 +21,7 @@ export function saveEtlDependency(data) {
 //更新保存作业依赖
 export function updateEtlDependency(data) {
     return request({
-        url: '/C/jobschedule/updateEtlDependency',
+        url: '/C/jobconfig/updateEtlDependency',
         method: 'post',
         params: data
     })
@@ -30,7 +30,7 @@ export function updateEtlDependency(data) {
 //删除作业依赖
 export function deleteEtlDependency(data) {
     return request({
-        url: '/C/jobschedule/deleteEtlDependency',
+        url: '/C/jobconfig/deleteEtlDependency',
         method: 'post',
         params: data
     })
@@ -39,7 +39,7 @@ export function deleteEtlDependency(data) {
 //批量新增保存作业依赖
 export function batchSaveEtlDependency(data) {
     return request({
-        url: '/C/jobschedule/batchSaveEtlDependency',
+        url: '/C/jobconfig/batchSaveEtlDependency',
         method: 'post',
         params: data
     })
@@ -48,7 +48,7 @@ export function batchSaveEtlDependency(data) {
 //批量删除作业依赖
 export function batchDeleteEtlDependency(data) {
     return request({
-        url: '/C/jobschedule/batchDeleteEtlDependency',
+        url: '/C/jobconfig/batchDeleteEtlDependency',
         method: 'post',
         params: data
     })
@@ -66,7 +66,7 @@ export function getValue(data) {
 //查询作业名称信息
 export function searchEtlJob(data) {
     return request({
-        url: '/C/jobschedule/searchEtlJob',
+        url: '/C/jobconfig/searchEtlJob',
         method: 'post',
         params: data
     })
@@ -75,7 +75,7 @@ export function searchEtlJob(data) {
 //查询任务信息
 export function searchEtlSubSys(data) {
     return request({
-        url: '/C/jobschedule/searchEtlSubSys',
+        url: '/C/jobconfig/searchEtlSubSys',
         method: 'post',
         params: data
     })
@@ -92,7 +92,7 @@ export function getCategoryItems(data) {
 //上传execl表格
 export function uploadExcelFile(data) {
     return request({
-        url: '/C/jobschedule/uploadExcelFile',
+        url: '/C/jobconfig/uploadExcelFile',
         method: 'post',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -101,7 +101,7 @@ export function uploadExcelFile(data) {
 //生成表格
 export function generateExcel(data) {
     return request({
-        url: '/C/jobschedule/generateExcel',
+        url: '/C/jobconfig/generateExcel',
         method: 'post',
         params: data
     })
@@ -109,7 +109,7 @@ export function generateExcel(data) {
 //下载表格
 export function downloadFile(data) {
     return request({
-        url: '/C/jobschedule/downloadFile',
+        url: '/C/jobconfig/downloadFile',
         method: 'post',
         params: data,
         responseType: 'blob',
