@@ -139,7 +139,6 @@ export default {
                 sub_sys_cd: val,
                 curr_bath_date: val2
             }).then(res => {
-                console.log(res)
                 // 数据处理成图标需要的格式
                 let time = [];
                 let colorsArray = [];
@@ -365,7 +364,6 @@ export default {
         dateToMill(date) {
             date = date.replace(new RegExp("-", "gm"), "/");
             date = (new Date(date)).getTime() + 8 * 60 * 60 * 1000; //得到毫秒数
-            console.log(date, 'i am date');
             return date;
         },
         edwColor(arry) {
