@@ -616,6 +616,8 @@ export default {
                             }
                             if (arrsql.length > 0) {
                                 this.sqlFun(arrsql)
+                            }else{
+                                this.activeSec = true;
                             }
                         });
                     }
