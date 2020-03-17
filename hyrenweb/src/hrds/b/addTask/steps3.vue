@@ -7,7 +7,7 @@
     </div>
     <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" height="360" border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)">
         <el-table-column label="序号" align="center" width="60">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
             </template>
         </el-table-column>
@@ -76,17 +76,17 @@
         <el-table :data="table_zfth" border size="medium" highlight-current-row>
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column property="field" label="原字符" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="replace_feild" label="替换后字符" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.replace_feild" placeholder="替换后字符" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="160px" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
 
@@ -136,22 +136,22 @@
             <div class="TableClean">
                 <el-table :data="allTableCleanSettingData.slice((allTableCleanSetData_currentPage - 1) * allTableCleanSetData_pagesize, allTableCleanSetData_currentPage * allTableCleanSetData_pagesize)" border size="medium" highlight-current-row>
                     <el-table-column type="index" label="序号" width="60px" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <span>{{scope.$index+(allTableCleanSetData_currentPage - 1) * allTableCleanSetData_pagesize + 1}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column property="field" label="原字符" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column property="replace_feild" label="替换后字符" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-input v-model="scope.row.replace_feild" placeholder="替换后字符" size="medium"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" width="160px" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-row>
                                 <el-col :span="24" class="delbtn">
 
@@ -195,14 +195,14 @@
         <div slot="footer" class="dialog-footer">
             <el-table :data="colCleanData.slice((colClean_currentPage - 1) * colClean_pagesize, colClean_currentPage * colClean_pagesize)" border :empty-text="tableloadingInfo" size="medium" highlight-current-row :default-sort="{prop: 'date', order: 'descending'}">
                 <el-table-column property label="序号" width="60px" align="center">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <span>{{scope.$index+(colClean_currentPage - 1) * colClean_pagesize + 1}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column property="column_name" label="列名" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column property="column_ch_name" label="列中文名" width="100px" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column property="compflag" label="字符补齐" align="center">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.compflag" :checked="scope.row.compflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.compflag==true" @click="zfbqFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="zfbqFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
@@ -211,7 +211,7 @@
 
                 <el-table-column property="replaceflag" label="字符替换" align="center" :reserve-selection="true">
 
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.replaceflag" :checked="scope.row.replaceflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.replaceflag==true" @click="zfthFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="zfthFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
@@ -220,7 +220,7 @@
 
                 <el-table-column property="formatflag" label="日期格式化" align="center">
 
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.formatflag" :checked="scope.row.formatflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.formatflag==true" @click="rqgshFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="rqgshFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
@@ -229,7 +229,7 @@
 
                 <el-table-column property="splitflag" label="列拆分" align="center">
 
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.splitflag" :checked="scope.row.splitflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.splitflag==true" @click="colcfFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="colcfFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
@@ -238,7 +238,7 @@
 
                 <el-table-column property="codevalueflag" label="码值转换" align="center">
 
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.codevalueflag" :value="scope.row.codevalueflag" :checked="scope.row.codevalueflag"></el-checkbox>
                         <span class="settingbtn" v-if="scope.row.codevalueflag==true" @click="mzzhFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">查看</span>
                         <span class="settingbtn" v-else @click="mzzhFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)">设置</span>
@@ -250,12 +250,12 @@
                             <span class="allclickColor">首尾去空</span>
                         </el-checkbox>
                     </template>
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.trimflag" :checked="scope.row.trimflag" @change="col_everySelectfun(scope.row.trimflag,colCleanData)"></el-checkbox>
                     </template>
                 </el-table-column>
                 <el-table-column label="清洗优先级" align="center" width="120">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-button type="success" @click="yxjFun(scope.$index+(colClean_currentPage - 1) * colClean_pagesize,scope.row)" size="mini">优先级调整</el-button>
                     </template>
                 </el-table-column>
@@ -291,17 +291,17 @@
         <el-table :data="Col_zfth" border size="medium" highlight-current-row>
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column property="field" label="原字符" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.field" placeholder="原字符" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="replace_feild" label="替换后字符" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.replace_feild" placeholder="替换后字符" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="160px" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
 
@@ -345,17 +345,17 @@
         <el-table :data="Col_colcf" border size="medium" highlight-current-row>
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column property="col_name" label="字段名称" align="center" width="140px">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.col_name" placeholder="字段名称" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="col_zhname" label="中文名称" align="center" width="140px">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.col_zhname" placeholder="中文名称" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="split_type" label="拆分方式" align="center" width="180px">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-select placeholder="选择" v-model="scope.row.split_type" style="width:150px" size="medium">
                         <el-option v-for="(item,index) in CharSplitType" :key="index" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -370,7 +370,7 @@
                         <i class="el-icon-question" aria-hidden="true">偏移量/字符拆分</i>
                     </el-tooltip>
                 </template>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-if="scope.row.split_type==1" v-model="scope.row.col_offset" placeholder="偏移量" size="medium"></el-input>
                     <div class="demo-input-suffix" v-if="scope.row.split_type==2">
                         分隔符：
@@ -391,12 +391,12 @@
                         <i class="el-icon-question" aria-hidden="true">类型</i>
                     </el-tooltip>
                 </template>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.col_type" placeholder="varchar(80)" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
 
@@ -419,7 +419,7 @@
                 <div class="topcolumename">填写完成后请保存</div>
                 <el-table :data="Col_mzzh" border size="medium" highlight-current-row>
                     <el-table-column property="sysname" label="系统名称" align="center" width="200px">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-select placeholder="选择系统名称" v-model="scope.row.orig_sys_name" size="medium" @change="Col_mzzh_currentSel">
                                 <el-option lablr="选择系统名称" value="选择系统名称"></el-option>
                                 <el-option :label="item.orig_sys_name+'('+item.orig_sys_code+')'" :value="item.orig_sys_name+'('+item.orig_sys_code+')'" v-for="(item,index) in CodeSysName" :key="index"></el-option>
@@ -427,7 +427,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column property="mztype" label="码值类型" align="center">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-select placeholder="选择系统类型" v-model="scope.row.code_classify" size="medium" @change="Col_mzzh_currentclass">
                                 <el-option lablr="选择系统类型" value="选择系统类型"></el-option>
                                 <el-option :label="item.code_classify" :value="item.code_classify" v-for="(item,index) in col_mzzhclass" :key="index"></el-option>
@@ -515,22 +515,22 @@
         <el-table :data="columnMerge" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column label="选择" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button type="success" @click="colSelectFun(scope.$index,scope.row)" size="mini">列选择</el-button>
                 </template>
             </el-table-column>
             <el-table-column property="col_name" label="列名" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.col_name" disabled :title="scope.row.col_name" placeholder="列名" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="old_name" label="合并列名" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.old_name" :title="scope.row.old_name" placeholder="合并列名" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="col_zhname" label="合并列中文名" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.col_zhname" :title="scope.row.col_zhname" placeholder="合并列中文名" size="medium"></el-input>
                 </template>
             </el-table-column>
@@ -541,12 +541,12 @@
                         <i class="el-icon-question" aria-hidden="true">字段类型</i>
                     </el-tooltip>
                 </template>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-model="scope.row.col_type" placeholder="字段类型" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="160px" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
 
