@@ -129,12 +129,7 @@ export default {
                     sysName[index] = arry[index].etl_job;
                     status[index] = arry[index].job_disp_status;
                     let curr_st_time = arry[index]['curr_st_time']
-                    let curr_end_time = '';
-                    if (arry[index]['curr_end_time']) {
-                        let curr_end_time = arry[index]['curr_end_time']
-                    } else {
-                        let curr_end_time = arry[index]['curr_st_time']
-                    }
+                    let curr_end_time = arry[index]['curr_end_time']
                     // 挂起：
                     if (arry[index]['job_disp_status'] == "P") {
                         colorsArray[index] = '#c4b4e4';
