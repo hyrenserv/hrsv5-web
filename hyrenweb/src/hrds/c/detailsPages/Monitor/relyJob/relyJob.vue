@@ -100,6 +100,7 @@ export default {
                 var jobNum = 0;
                 var allNum = 0;
                 var plNum = 0;
+                var nodown = 0;
                 graph.nodes.forEach(function (node) {
                     node.itemStyle = null;
                     node.symbolSize = 20;
@@ -112,9 +113,11 @@ export default {
                     } else if (node.category == 2) {
                         num += 1;
                     } else if (node.category == 3) {
+                        nodown += 1;
+                    } else if (node.category == 4) {
                         jobNum += 1;
                     }
-                    allNum = jobNum + num + count;
+                    allNum = jobNum + num + count + nodown + plNum;
                     node.x = node.y = null;
                     node.draggable = true;
                 });
@@ -129,8 +132,12 @@ export default {
                     name: '依赖但无上游作业' + num + "个"
                 };
                 categories[3] = {
-                    name: '依赖作业' + jobNum + "个，共有作业" + allNum + "个"
+                    name: '依赖但无下游作业' + nodown + "个"
                 };
+                categories[4] = {
+                    name: '全依赖作业' + jobNum + "个，共有作业" + allNum + "个"
+                };
+
                 // 绘制图表
                 myChart.setOption({
                     title: {
