@@ -10,9 +10,14 @@
             <el-col class="borderStyle" :span="5" style="margin-right: 10px;">
                 <!--树菜单-->
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
-                <el-tree empty-text="暂无数据" :expand-on-click-node="true" :props="treeProps" :load="loadNode" lazy
+                <div class='mytree'>
+                <el-tree empty-text="暂无数据"  :expand-on-click-node="true" :indent='0' :props="treeProps" :load="loadNode" lazy
                          node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
+                          <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="node.label">{{ node.label }}</span>
+                        </span>
                 </el-tree>
+                </div>
             </el-col>
             <el-col :span="18">
                 <el-tabs v-model="activeName" type="card">
