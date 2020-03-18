@@ -1,6 +1,6 @@
 <template>
 <div id="agentList">
-    <el-row>
+    <el-row class='topTitle'>
         <span>数据源Agent列表</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
@@ -8,7 +8,6 @@
             </el-button>
         </router-link>
     </el-row>
-    <div class="lines"></div>
     <el-table :data="AgenttableData" border style="width: 100%">
         <el-table-column prop="datasource_name" label="数据源" width="180" align="center"></el-table-column>
 
@@ -361,20 +360,13 @@ export default {
 }
 
 /* 图标字体设置 */
-.el-row {
+/* .el-row {
     width: 100%;
     height: 64px;
     line-height: 64px;
-}
+} */
 
-.el-row span {
-    color: #2196f3;
-    font-size: 18px;
-}
 
-.fa-home {
-    margin-right: 5px;
-}
 
 /* button样式设置 */
 .goIndex {

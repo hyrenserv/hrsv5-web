@@ -1,7 +1,12 @@
 <template>
 <div id="tsb_result">
-    <el-row>
-        <h4 class='el-icon-s-home title'>对标结果</h4>
+    <el-row class='topTitle'>
+        <span>对标结果</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
     </el-row>
     <el-row class="partTwo">
         <el-table :data="tableData" border stripe size="medium">
