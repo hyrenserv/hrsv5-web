@@ -240,6 +240,12 @@ export default new Router({
                     component: () => import('@/hrds/k/dbm/dbm.vue')
                 },
                 {
+                    path: '/dbm_check',
+                    name: 'dbm_check',
+                    title: 'dbm_check',
+                    component: () => import('@/hrds/k/dbm_check/dbm_check.vue')
+                },
+                {
                     path: '/tsb',
                     name: 'tsb',
                     title: 'tsb',

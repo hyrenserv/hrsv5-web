@@ -1,8 +1,13 @@
 <template>
     <div>
-        <el-row><h4 class='el-icon-s-home' style='color: #2196f3;
-    line-height: 30px;
-    padding-bottom: 10px;font-size: 18px;'>标准元管理</h4></el-row>
+      <el-row class='topTitle'>
+        <span>标准元管理</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
+    </el-row>
         <el-tabs type="border-card" @tab-click="handleClick">
             <el-tab-pane label="基础信息">
                 <BasicInformation @handleClick="handleClick" :data='data' :options='options' :tip='tip'/>
