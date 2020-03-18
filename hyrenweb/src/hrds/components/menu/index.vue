@@ -2,9 +2,9 @@
 <div class="home">
     <el-container>
         <el-header>
-            <el-row >
+            <el-row>
                 <el-col :span="6" style='text-align:left'>
-                    <span><i class="el-icon-menu" ></i>菜单列表</span>
+                    <span><i class="el-icon-menu"></i>菜单列表</span>
                 </el-col>
                 <el-col :span="12">&nbsp;
                     <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
@@ -15,37 +15,37 @@
             </el-row>
         </el-header>
         <el-container style="margin-top:50px;margin-bottom:30px">
-                 <el-aside width="200px">
+            <el-aside width="200px">
                 <!-- 导航 -->
                 <Scrollbar>
-                    <el-menu router :default-active="$route.path"  :unique-opened="false" :collapse="isCollapse">
+                    <el-menu router :default-active="$route.path" :unique-opened="true" :collapse-transition="true" :collapse="isCollapse">
                         <div v-for="items in menus" :key="items.name">
-                            <!-- <template v-if="items.children"> -->
-                            <!--二级菜单循环-->
-                            <!--  <el-submenu :index="items.children[0].path">
-                                <template slot="title"><i class="el-icon-message"></i>{{items.title}}</template>
-                                <div v-for="item in items.children" :key="item.name">
-                                    <el-menu-item :index="item.path">
-                                        <i :class="item.icon"></i>
-                                        <span>{{item.title}}</span>
-                                    </el-menu-item>
-                                </div>
-                            </el-submenu> -->
-                            <!-- </template> -->
-                            <!-- <template v-else> -->
-                            <!--一级菜单循环-->
-                            <el-menu-item :index="items.path">
-                                <i :class="items.icon"></i>
-                                <span>{{items.title}}</span>
-                            </el-menu-item>
-                            <!-- </template> -->
+                            <template v-if="items.children">
+                                <!--二级菜单循环-->
+                                <el-submenu :index="items.children[0].path">
+                                    <template slot="title"><i :class="items.icon"></i>{{items.title}}</template>
+                                    <div v-for="item in items.children" :key="item.name">
+                                        <el-menu-item :index="item.path">
+                                            <i :class="item.icon"></i>
+                                            <span>{{item.title}}</span>
+                                        </el-menu-item>
+                                    </div>
+                                </el-submenu>
+                            </template>
+                            <template v-else>
+                                <!--一级菜单循环-->
+                                <el-menu-item :index="items.path">
+                                    <i :class="items.icon"></i>
+                                    <span>{{items.title}}</span>
+                                </el-menu-item>
+                            </template>
                         </div>
                     </el-menu>
                 </Scrollbar>
             </el-aside>
-                <el-main>
-                    <router-view></router-view>
-                </el-main>
+            <el-main>
+                <router-view></router-view>
+            </el-main>
         </el-container>
         <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
     </el-container>
@@ -59,6 +59,7 @@ import {
 import Scrollbar from '../scrollbar';
 
 import * as addTaskAllFun from './menu'
+import childrenMenus from './childrenMenus'
 export default {
     components: {
         Scrollbar
@@ -67,23 +68,29 @@ export default {
         return {
             menus: [],
             deflink: '',
-            isCollapse:false
+            isCollapse: false
         }
     },
     mounted() {
         // 这里是菜单默认路径
         // this.$router.push('syspara');
         addTaskAllFun.getMenu().then(res => {
-            let Data = res.data;
+            let data = res.data;
+            console.log(data)
             let arr = []
-            for (var i = 0; i < Data.length; i++) {
-                arr.push({
-                    'icon': Data[i].menu_remark,
-                    'title': Data[i].menu_name,
-                    'path': Data[i].menu_path
-                })
+            for (var i = 0; i < data.length; i++) {
+                let user_type = data[i].user_type;
+                let children = {
+                    'icon': data[i].menu_remark,
+                    'title': data[i].menu_name,
+                    'path': data[i].menu_path
+                }
+                if (typeof childrenMenus[user_type] != 'undefined') {
+                    children['children'] = childrenMenus[user_type]
+                }
+                arr.push(children)
             }
-            this.menus = JSON.parse(JSON.stringify(arr))
+            this.menus = JSON.parse(JSON.stringify(arr));
             // this.deflink = this.menus[0]?this.menus[0].path:''
 
         })
@@ -98,10 +105,10 @@ export default {
             this.resetToken();
             this.$router.push('/');
         },
-      /*   isCollapseFun(){
-          this.isCollapse=!this.isCollapse
-        }, */
-        
+        /*   isCollapseFun(){
+            this.isCollapse=!this.isCollapse
+          }, */
+
     }
 }
 </script>
@@ -121,10 +128,11 @@ export default {
 }
 
 .el-header {
-     position: fixed;
+    position: fixed;
     top: 0%;
     width: 100%;
-    z-index: 10; left: 0;
+    z-index: 10;
+    left: 0;
     height: 50px !important;
     line-height: 50px;
 }

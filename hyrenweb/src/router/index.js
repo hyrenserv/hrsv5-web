@@ -22,11 +22,11 @@ Router.prototype.push = function push(location) {
  */
 export default new Router({
     routes: [
-        {path: '/', name: 'login', component: () => import('@/hrds/login/login.vue')},
+        { path: '/', name: 'login', component: () => import('@/hrds/login/login.vue') },
         //菜单路由地址配置
         {
             path: "/home", name: 'home', component: () => import('@/hrds/components/menu'), children: [
-                {path: '/syspara', name: 'syspara', component: () => import('@/hrds/a/syspara/index.vue')},
+                { path: '/syspara', name: 'syspara', component: () => import('@/hrds/a/syspara/index.vue') },
                 {
                     path: '/agentdeploy',
                     name: 'agentdeploy',
@@ -165,14 +165,7 @@ export default new Router({
                     name: 'dataStoreActionIndex',
                     title: 'dataStoreActionIndex',
                     component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')
-                },
-                {
-                    path: '/dataStoreAction',
-                    name: 'dataStoreAction',
-                    title: 'dataStoreAction',
-                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue')
-                },
-                {
+                }, {
                     path: '/typeLengthContrastInfo',
                     name: 'typeLengthContrastInfo',
                     title: 'typeLengthContrastInfo',
@@ -183,7 +176,16 @@ export default new Router({
                     name: 'addTypeLengthContrastInfo',
                     title: 'addTypeLengthContrastInfo',
                     component: () => import('@/hrds/a/datastore/addTypeLengthContrastInfo.vue')
+
                 },
+                {
+                    path: '/dataStoreAction',
+                    name: 'dataStoreAction',
+                    title: 'dataStoreAction',
+                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue')
+                },
+
+
                 {
                     path: '/addDataTypeContrastInfo',
                     name: 'addDataTypeContrastInfo',
@@ -257,7 +259,7 @@ export default new Router({
                     title: 'tdb',
                     component: () => import('@/hrds/k/tdb/tdb.vue')
                 },
-                
+
             ]
         },
         //详情首页
@@ -375,6 +377,6 @@ export default new Router({
                 },
             ]
         },
-        {path: '*', name: '*', component: () => import('@/hrds/components/notFound.vue')},
+        { path: '*', name: '*', component: () => import('@/hrds/components/notFound.vue') },
     ]
 })
