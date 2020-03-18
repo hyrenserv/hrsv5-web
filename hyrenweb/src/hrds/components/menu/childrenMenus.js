@@ -23,11 +23,11 @@ const childrenMemus = {
     ],
     37 : [
         {
-            path: '/dbm',
-            name: 'dbm',
+            path: '/sbgl',
+            name: 'dataQuery',
             title: '标准元管理',
-            icon: 'el-icon-s-finance',
-            component: () => import('@/hrds/k/dbm/dbm.vue')
+            icon: 'el-icon-files',
+            component: () => import('@/hrds/b/dataQuery/dataQuery.vue')
         },
         {
             path: '/tsb',
@@ -62,11 +62,11 @@ const childrenMemus = {
     ],
     55 :[
         {
-            path: '/sbgl',
-            name: 'dataQuery',
+            path: '/dbm',
+            name: 'dbm',
             title: '标准元管理',
-            icon: 'el-icon-files',
-            component: () => import('@/hrds/b/dataQuery/dataQuery.vue')
+            icon: 'el-icon-s-finance',
+            component: () => import('@/hrds/k/dbm/dbm.vue')
         }
     ]
 
