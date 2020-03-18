@@ -21,7 +21,7 @@
                             <el-radio v-model="scope.row.id" :label='scope.row.predict[0].standard_id'>&nbsp;</el-radio>
                         </el-col>
                         <el-col :span="18">
-                            中文： <span>{{scope.row.predict[0].col_en_name}}</span><br>
+                            中文： <span style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display:inline-block;">{{scope.row.predict[0].col_en_name}}</span><br>
                             字段名称： <span>{{scope.row.predict[0].col_zh_name}}</span><br>
                             匹配度： <span>{{scope.row.predict[0].xen}}</span>
                         </el-col>
