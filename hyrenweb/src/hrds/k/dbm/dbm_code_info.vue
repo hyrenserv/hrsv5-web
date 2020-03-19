@@ -268,6 +268,22 @@ export default {
         this.getDbmCodeTypeInfo(1, 10)
     },
     methods: {
+        cleanFun(){
+           this.status=''
+           this.code_type_id=''
+            this.code_item_id=''
+            this.open='false'
+            this.selectrow=[]
+            this.code_type_id_s=[]
+            this.code_status=''
+            this.item_selectrow=[]
+            this.searchCodeTyp_status=''
+            this.codeValue=''
+            this.codeItem_Value=''
+            this.codeItemValue=''
+            this.codeItem_Status=''
+            this.title=''
+       },
         //批量发布
         batchReleaseDbmCodeTypeInfo() {
             this.code_type_id_s = [];
@@ -609,7 +625,11 @@ export default {
                 'pageSize': pagesize,
                 'status': code_status
             }).then(res => {
+                if(res.data.dbmCodeTypeInfos.length>0){
                 this.tableData = res.data.dbmCodeTypeInfos
+                }else{
+                    this.tableloadingInfo='暂无数据'
+                }
                 this.totalSize = res.data.totalSize
             })
         },
@@ -628,7 +648,11 @@ export default {
                 'pageSize': pagesize,
                 'code_type_id': code_type_id
             }).then(res => {
-                this.dataList = res.data.dbmCodeItemInfos
+                if(res.data.dbmCodeItemInfos.length>0){
+                this.dataList = res.data.dbmCodeItemInfos}
+                else{
+                    this.tableloadingInfo='暂无数据'
+                }
             })
         }
     }

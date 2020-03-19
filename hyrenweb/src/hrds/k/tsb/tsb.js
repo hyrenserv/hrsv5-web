@@ -9,9 +9,9 @@ export function getTSBTreeData(data) {
 }
 
 //获取表字段列表信息
-export function getColumnByTableNames(data) {
+export function getColumnByFileId(data) {
     return request({
-        url: '/K/tsbenchmarking/getColumnByTableNames',
+        url: '/K/tsbenchmarking/getColumnByFileId',
         params: data,
     })
 }

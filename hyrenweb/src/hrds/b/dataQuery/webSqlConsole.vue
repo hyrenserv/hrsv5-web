@@ -1,8 +1,13 @@
 <template>
     <div>
-        <el-row>
-            <span class="el-icon-monitor" style="color: #3a8ee6"> SQL 操作台</span>
-        </el-row>
+         <el-row class='topTitle'>
+        <span>SQL 操作台</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
+    </el-row>
         <el-row>
             <hr>
         </el-row>

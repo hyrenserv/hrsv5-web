@@ -242,7 +242,7 @@ export default new Router({
                     component: () => import('@/hrds/k/dbm/dbm.vue')
                 },
                 {
-                    path: '/dbm_check',
+                    path: '/dbck',
                     name: 'dbm_check',
                     title: 'dbm_check',
                     component: () => import('@/hrds/k/dbm_check/dbm_check.vue')
