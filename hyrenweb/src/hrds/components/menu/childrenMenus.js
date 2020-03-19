@@ -23,9 +23,9 @@ const childrenMemus = {
     ],
     37 : [
         {
-            path: '/sbgl',
-            name: 'dataQuery',
-            title: '标准元管理',
+            path: '/dbck',
+            name: 'dbck',
+            title: '标准元查看',
             icon: 'el-icon-files',
             component: () => import('@/hrds/b/dataQuery/dataQuery.vue')
         },
