@@ -205,120 +205,8 @@ export default {
                     }
                     time[index] = [start, end];
                 }
-                var chart = Highcahrts.chart('container', {
-                    chart: {
-                        type: 'columnrange',
-                        inverted: true,
-                    },
-                    title: {
-                        text: ''
-                    },
-                    exporting: {
-                        enabled: false
-                    },
-                    xAxis: {
-                        categories: sysName,
-                        tickColor: 'gray',
-                        gridLineWidth: 1,
-                        gridLineColor: 'gray',
-                        tickmarkPlacement: 'on'
-                    },
-                    // 数据提示框
-                    tooltip: {
-                        crosshairs: true,
-                        useHTML: true,
-                        formatter: function () {
-                            var index = 0;
-                            for (var i = 0; i < sysName.length; i++) {
-                                if (this.x == sysName[i]) {
-                                    index = i;
-                                    var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
-                                    var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
-                                    if (status[index] == "P") {
-                                        return this.x + '<br/>' + '状态' + ':' + '挂机' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
-                                    } else if (status[index] == "W") {
-                                        return this.x + '<br/>' + '状态' + ':' + '等待' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
-                                    } else if (status[index] == "S") {
-                                        return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                    } else if (status[index] == "E") {
-                                        return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                    } else if (status[index] == "D") {
-                                        return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                    } else if (status[index] == "R") {
-                                        return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
-                                            Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
-                                    }
-                                }
-
-                            }
-                        }
-                    },
-                    yAxis: {
-                        type: 'datetime',
-                        title: {
-                            text: ''
-                        },
-                        gridLineWidth: 0,
-                        labels: {
-                            overflow: 'justify',
-                            useHTML: true,
-                            formatter: function () {
-                                var date = new Date(this.value);
-                                var hours = date.getUTCHours();
-                                var minutes = date.getUTCMinutes();
-                                var seconds = date.getUTCSeconds();
-                                if (this.isFirst) {
-                                    return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
-                                } else if (hours == 0 && minutes == 0 && seconds == 0) {
-                                    return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
-                                } else {
-                                    return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
-                                }
-                            }
-                        }
-                    },
-                    // 数据点
-                    plotOptions: {
-                        columnrange: {
-                            colorByPoint: true,
-                            pointPadding: 1,
-                            borderWidth: 0,
-                            pointWidth: 10,
-                            showCheckbox: true
-                        },
-                        series: {
-                            minPointLength: 15,
-                            cursor: 'pointer',
-                            point: {
-                                events: {
-                                    plotOptions: true,
-                                    enableMouseTracking: true,
-                                    click: function () {
-                                        let etlJobName = this.category;
-                                        that.$emit('viewIn', '/historyJob', '历史作业');
-                                        that.$router.push({
-                                            name: 'historyJob',
-                                            query: {
-                                                etl_job: etlJobName,
-                                                etl_sys_cd: that.$route.query.etl_sys_cd,
-                                                start_date: that.dayDate
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        },
-                    },
-                    // 图例
-                    legend: {
-                        enabled: false,
-                    },
-                    series: [{
-                        data: time,
-                        colors: colorsArray
-                    }]
-
-                })
+                // 获得图表信息
+                this.getChartInfo(sysName, startTime, status, endTime, time, colorsArray);
                 let arr = res.data;
                 // 数组去重
                 for (let i = 0; i < arr.length; i++) {
@@ -349,6 +237,123 @@ export default {
                     }
                 })
                 this.chartdataHistoryDeatil.rows = arr;
+            })
+        },
+        getChartInfo(sysName, startTime, status, endTime, time, colorsArray) {
+            let that = this;
+            var chart = Highcahrts.chart('container', {
+                chart: {
+                    type: 'columnrange',
+                    inverted: true,
+                },
+                title: {
+                    text: ''
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    categories: sysName,
+                    tickColor: 'gray',
+                    gridLineWidth: 1,
+                    gridLineColor: 'gray',
+                    tickmarkPlacement: 'on'
+                },
+                // 数据提示框
+                tooltip: {
+                    crosshairs: true,
+                    useHTML: true,
+                    formatter: function () {
+                        var index = 0;
+                        for (var i = 0; i < sysName.length; i++) {
+                            if (this.x == sysName[i]) {
+                                index = i;
+                                var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
+                                var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
+                                if (status[index] == "P") {
+                                    return this.x + '<br/>' + '状态' + ':' + '挂机' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
+                                } else if (status[index] == "W") {
+                                    return this.x + '<br/>' + '状态' + ':' + '等待' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
+                                } else if (status[index] == "S") {
+                                    return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                } else if (status[index] == "E") {
+                                    return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                } else if (status[index] == "D") {
+                                    return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                } else if (status[index] == "R") {
+                                    return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
+                                        Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
+                                }
+                            }
+
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: ''
+                    },
+                    gridLineWidth: 0,
+                    labels: {
+                        overflow: 'justify',
+                        useHTML: true,
+                        formatter: function () {
+                            var date = new Date(this.value);
+                            var hours = date.getUTCHours();
+                            var minutes = date.getUTCMinutes();
+                            var seconds = date.getUTCSeconds();
+                            if (this.isFirst) {
+                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                            } else if (hours == 0 && minutes == 0 && seconds == 0) {
+                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                            } else {
+                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
+                            }
+                        }
+                    }
+                },
+                // 数据点
+                plotOptions: {
+                    columnrange: {
+                        colorByPoint: true,
+                        pointPadding: 1,
+                        borderWidth: 0,
+                        pointWidth: 10,
+                        showCheckbox: true
+                    },
+                    series: {
+                        minPointLength: 15,
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                plotOptions: true,
+                                enableMouseTracking: true,
+                                click: function () {
+                                    let etlJobName = this.category;
+                                    that.$emit('viewIn', '/historyJob', '历史作业');
+                                    that.$router.push({
+                                        name: 'historyJob',
+                                        query: {
+                                            etl_job: etlJobName,
+                                            etl_sys_cd: that.$route.query.etl_sys_cd,
+                                            start_date: that.dayDate
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    },
+                },
+                // 图例
+                legend: {
+                    enabled: false,
+                },
+                series: [{
+                    data: time,
+                    colors: colorsArray
+                }]
+
             })
         },
         // 改变传参

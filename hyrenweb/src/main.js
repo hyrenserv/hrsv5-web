@@ -22,9 +22,15 @@ Vue.use(VCharts);
 // 引入echarts
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
-
+//HighchartsVue
 import HighchartsVue from 'highcharts-vue'
 Vue.use(HighchartsVue)
+//VueDraggableResizable
+import VueDraggableResizable from 'vue-draggable-resizable'
+// 可选择导入默认样式
+import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
+
+Vue.component('vue-draggable-resizable', VueDraggableResizable)
 // Base64
 import Base64 from '@/utils/base64.js' 
 Vue.prototype.$Base64 = Base64;
