@@ -519,6 +519,12 @@ export default {
                     type[j] = "部门管理"
                 } else if (type[j] == "99") {
                     type[j] = "用户管理"
+                } else if (type[j] == "55") {
+                    type[j] = "数据对标"
+                } else if (type[j] == '37') {
+                    type[j] = '数据对标'
+                } else if (type[j] == '27') {
+                    type[j] = '资源管理'
                 }
 
             }
