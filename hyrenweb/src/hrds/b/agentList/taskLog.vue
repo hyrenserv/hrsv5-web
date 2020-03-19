@@ -1,6 +1,6 @@
 <template>
 <div id="tasklog">
-    <el-row>
+    <el-row class='topTitle'>
         <span>日志查看</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
@@ -8,7 +8,6 @@
             </el-button>
         </router-link>
     </el-row>
-    <div class="lines"></div>
     <div class="logcontent">
         <div class="redcolor">请填写查看日志行数 : 默认显示最后100行,最多显示最后1000行.</div>
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
@@ -99,31 +98,6 @@ export default {
 #tasklog {
     padding: 0 40px;
 }
-
-/* 图标字体设置 */
-.el-row {
-    width: 100%;
-    height: 64px;
-    line-height: 64px;
-}
-
-.el-row span {
-    color: #2196f3;
-    font-size: 18px;
-}
-
-.fa-home {
-    margin-right: 5px;
-}
-
-/* button样式设置 */
-.goIndex {
-    float: right;
-    background: #337ab7;
-    margin-top: 18px;
-    margin-right: 14px;
-}
-
 /* 下划线样式 */
 .lines {
     width: 100%;

@@ -1,7 +1,12 @@
 <template>
 <div id='tsb'>
-    <el-row>
-        <h4 class='el-icon-s-home title'>表结构对标</h4>
+    <el-row class='topTitle'>
+        <span>表结构对标</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
     </el-row>
     <el-row :gutter='20'>
         <el-col :span="6">
