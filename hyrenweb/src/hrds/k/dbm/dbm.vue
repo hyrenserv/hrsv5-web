@@ -10,13 +10,13 @@
     </el-row>
         <el-tabs type="border-card" @tab-click="handleClick">
             <el-tab-pane label="基础信息">
-                <BasicInformation @handleClick="handleClick" :data='data' :options='options' :tip='tip'/>
+                <BasicInformation @handleClick="handleClick" :data='data' :options='options' :tip='tip' ref='child1'/>
             </el-tab-pane>
             <el-tab-pane label="代码配置">
-                <CodeConfiguration/>
+                <CodeConfiguration ref='child2'/>
             </el-tab-pane>
             <el-tab-pane label="标准分类配置">
-                <StandardClassConfiguration @handleClick="handleClick" :data='data' :options='options'/>
+                <StandardClassConfiguration @handleClick="handleClick" :data='data' :options='options' ref='child3'/>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -56,6 +56,9 @@
                         this.tip = '暂无数据'
                     }
                     this.options = res.data.dbmSortInfoTreeDataList;
+                     this.$refs.child1.getDbmNormbasicInfo(1,10);
+                     this.$refs.child2.getDbmCodeTypeInfo(1,10);
+                     this.$refs.child3.getDbmCodeTypeInfo(1,10);
                 });
             }
 

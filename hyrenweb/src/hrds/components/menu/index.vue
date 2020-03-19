@@ -4,7 +4,7 @@
         <el-header>
             <el-row>
                 <el-col :span="6" style='text-align:left'>
-                    <span><i class="el-icon-menu"></i>菜单列表</span>
+                    <span @click="meanClickFun()"><i class="el-icon-menu"></i>菜单列表</span>
                 </el-col>
                 <el-col :span="12">&nbsp;
                     <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
@@ -15,28 +15,26 @@
             </el-row>
         </el-header>
         <el-container style="margin-top:50px;margin-bottom:30px">
-            <el-aside width="200px">
+            <el-aside width='210px'>
                 <!-- 导航 -->
                 <Scrollbar>
-                    <el-menu router :default-active="$route.path" :unique-opened="true" :collapse-transition="true" :collapse="isCollapse">
+                    <el-menu background-color="#495179" text-color="#fff" active-text-color="rgba(255, 208, 75, 0.8)" router :default-active="$route.path" :collapse-transition="true" :collapse="isCollapse" class='el-menu-vertical-demo'>
                         <div v-for="items in menus" :key="items.name">
                             <template v-if="items.children">
                                 <!--二级菜单循环-->
-                                <el-submenu :index="items.children[0].path">
-                                    <template slot="title"><i :class="items.icon"></i>{{items.title}}</template>
-                                    <div v-for="item in items.children" :key="item.name">
-                                        <el-menu-item :index="item.path">
+                                <el-submenu :index="items.children[0].path" class='oneMenu'>
+                                    <template slot="title"><i :class="items.icon"></i><span slot="title">{{items.title}}</span></template>
+                                        <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path">
                                             <i :class="item.icon"></i>
                                             <span>{{item.title}}</span>
                                         </el-menu-item>
-                                    </div>
                                 </el-submenu>
                             </template>
                             <template v-else>
                                 <!--一级菜单循环-->
                                 <el-menu-item :index="items.path">
                                     <i :class="items.icon"></i>
-                                    <span>{{items.title}}</span>
+                                    <span slot="title">{{items.title}}</span>
                                 </el-menu-item>
                             </template>
                         </div>
@@ -105,15 +103,26 @@ export default {
             this.resetToken();
             this.$router.push('/');
         },
-        /*   isCollapseFun(){
-            this.isCollapse=!this.isCollapse
-          }, */
+       /*  meanClickFun() {
+            this.isCollapse = !this.isCollapse
+            if (!this.isCollapse) {
+                this.width = '10%'
+            } else {
+                this.width = '3%'
+            }
+
+        }, */
 
     }
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped>
+/* .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+} */
+
 .el-header,
 .el-footer {
     background-color: #495179;
@@ -138,32 +147,11 @@ export default {
 }
 
 .el-main {
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-.el-menu {
-    border: none !important;
-    background-color: #495179 !important;
-    color: #fff;
-}
-
-.el-menu-item {
-    color: #fff !important;
-}
-
-.el-menu-item:focus,
-.el-menu-item:hover {
-    outline: 0;
-    background-color: #aacaf0;
+    padding: 15px 30px;
 }
 
 .el-container {
     min-height: 90vh;
-}
-
-.el-menu-item.is-active {
-    color: #409EFF !important;
 }
 
 .el-footer {
