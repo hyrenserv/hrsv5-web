@@ -6,19 +6,15 @@
             <el-row>
                 <div class="el-header">
                     <span class="titles">工程名称 : {{sys_name}}</span>
-
                     <el-button type="primary" class="el1" @click="goBack" size="small">
                         <i class="block_icon fa fa-home"></i>返回首页
                     </el-button>
-                    <!-- <div class="lines"></div> -->
-
                 </div>
             </el-row>
         </el-header>
         <el-container>
             <el-aside width="16%">
                 <!-- 导航 -->
-
                 <el-menu :unique-opened="true" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
 
                     <div v-for="items in menus" :key="items.name">
@@ -91,7 +87,7 @@ export default {
             })
         },
         // 改变菜单栏的路径显示
-        changeTitle(val,val2) {
+        changeTitle(val, val2) {
             this.defaultActive = val;
             this.pTitle = val2;
         },
@@ -113,9 +109,9 @@ export default {
 </script>
 
 <style scoped>
-.menus {
+/* .menus {
     padding: 0 4% 0 3%;
-}
+} */
 
 .el-header {
     height: 50px;
@@ -125,13 +121,9 @@ export default {
 
 .el-aside {
     background-color: #e5e5e5;
-    margin-top: 25px;
     height: 550px;
 }
 
-/* .el-header{
-    height: 50px !important;
-} */
 .el-main {
     padding: 15px;
     margin-bottom: 15px;
@@ -185,7 +177,6 @@ i {
     overflow-y: auto;
     border: 1px solid #d5d5d5;
     margin-left: 15px;
-    margin-top: 25px;
     border-radius: 5px;
 }
 

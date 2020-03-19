@@ -80,3 +80,11 @@ export function downloadControlOrTriggerLog(data) {
         params: data
     })
 }
+//监控所有项目图表数据
+export function monitorAllProjectChartsData(data) {
+    return request({
+        url: '/C/etlmonitor/monitorAllProjectChartsData',
+        method: 'post',
+        params: data
+    })
+}
