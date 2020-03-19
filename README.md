@@ -26,3 +26,20 @@
   * 使用方式 :
     * `this.$Code.方法名称`
 ### 7、代码请注意格式化,保证代码格式的统一, 请统一使用vue-format格式化插件
+### 8、el-main内容区顶部标题直接复制下面代码修改里面显示文字和跳转链接即可
+     <el-row class='topTitle'>
+        <span>文件资源管理器</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
+    </el-row>
+  ### 9、树形控件样式直接复制下面代码（样式在类名mytree和span-ellipsis）
+     <div class="mytree" hight='200'>
+                    <el-tree class="filter-tree" :empty-text='tip' :data="data" :indent='0' :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="node.label">{{ node.label }}</span>
+                        </span>
+                    </el-tree>
+                </div>
