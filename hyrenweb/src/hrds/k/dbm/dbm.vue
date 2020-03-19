@@ -59,6 +59,9 @@
                      this.$refs.child1.getDbmNormbasicInfo(1,10);
                      this.$refs.child2.getDbmCodeTypeInfo(1,10);
                      this.$refs.child3.getDbmCodeTypeInfo(1,10);
+                     this.$refs.child1.cleanFun()
+                     this.$refs.child2.cleanFun()
+                     this.$refs.child3.cleanFun()
                 });
             }
 

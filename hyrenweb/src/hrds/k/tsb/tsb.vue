@@ -1,7 +1,7 @@
 <template>
 <div id='tsb'>
     <el-row class='topTitle'>
-        <span>表结构对标</span>
+        <span class='el-icon-location'>表结构对标</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
@@ -23,23 +23,23 @@
         </el-col>
         <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
             <el-form ref="ruleForm" :model="ruleForm">
-                <el-table :data="ruleForm.tableData" border stripe size="medium" >
+                <el-table :data="ruleForm.tableData" border stripe size="medium">
                     <el-table-column label="序号" align="center" width="60">
                         <template slot-scope="scope">{{scope.$index+(currentPage - 1) * pagesize + 1}}</template>
                     </el-table-column>
                     <el-table-column prop="EName" label="字段名" align="center" width="150">
                     </el-table-column>
-                    <el-table-column prop="cName" label="字段中文名" align="center" >
+                    <el-table-column prop="cName" label="字段中文名" align="center">
                         <template slot-scope="scope">
                             <!-- <el-form-item prop="cName"> -->
-                                <el-input v-model="scope.row.cName" size="medium" ></el-input>
+                            <el-input v-model="scope.row.cName" size="medium"></el-input>
                             <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
                     <el-table-column prop="describe" label="描述" align="center">
                         <template slot-scope="scope">
                             <!-- <el-form-item prop="describe"> -->
-                                <el-input type="textarea" v-model="scope.row.describe" autosize></el-input>
+                            <el-input type="textarea" v-model="scope.row.describe" autosize></el-input>
                             <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
@@ -121,11 +121,17 @@ export default {
         tsb_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
         },
-        handleNodeClick(data) {
+        handleNodeClick(data, y, m) {
             if (!data.children) {
                 console.log(data.id)
+                let params = {}
+                params["table_type"] = '01';
+                params["data_layer"] = 'DCL';
+                params["file_id"] = data.id;
+                tsbFun.getColumnByFileId(params).then(res => {
+                    console.log(res)
+                });
             }
-
         },
     }
 }

@@ -147,7 +147,7 @@ export default {
 }
 
 .el-main {
-    padding: 15px 30px;
+       padding: 14px 20px;
 }
 
 .el-container {

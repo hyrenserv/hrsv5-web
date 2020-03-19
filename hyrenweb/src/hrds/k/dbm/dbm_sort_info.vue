@@ -165,6 +165,16 @@ export default {
         this.getDbmCodeTypeInfo(1, 10)
     },
     methods: {
+        cleanFun(){
+             this.sort_id_s=[],
+            this.selectRow=[],
+            this.sort_status='',
+            this.codeClass_Value='',
+            this.codeClassValue='',
+            this.searchCodeClass_status='',
+            this.title=''
+            this.status=''
+        },
         sig_handleSizeChange(size) {
             this.pagesize = size;
             if (this.sort_status == '1' || this.sort_status == '0') {
@@ -248,6 +258,10 @@ export default {
         },
         // 获取分页数据
         getDbmCodeTypeInfo(page, size) {
+            this.sort_status=''
+            this.codeClass_Value=''
+            this.codeClassValue=''
+            this.searchCodeClass_status=''
             let params = {}
             params["currPage"] = page;
             params["pageSize"] = size;

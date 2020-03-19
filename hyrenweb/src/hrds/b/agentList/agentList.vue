@@ -355,9 +355,7 @@ export default {
 </script>
 
 <style scoped>
-#agentList {
-    padding: 0 40px;
-}
+
 
 /* 图标字体设置 */
 /* .el-row {

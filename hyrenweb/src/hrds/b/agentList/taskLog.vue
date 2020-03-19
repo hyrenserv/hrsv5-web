@@ -95,9 +95,6 @@ export default {
 </script>
 
 <style scoped>
-#tasklog {
-    padding: 0 40px;
-}
 /* 下划线样式 */
 .lines {
     width: 100%;

@@ -439,6 +439,17 @@ export default {
     },
 
     methods: {
+         cleanFun(){
+            this.listId=''
+            this.loading=true
+            this.basic_id_s=[]
+            this.selectrow=[]
+             this.norm_status=''
+             this.search_status=''
+             this.NodeClick=''
+             this.nodeId=''
+             this.search_Value=''
+       },
         // 批量发布
         batchReleaseDbmNormbasic() {
             this.basic_id_s = [];

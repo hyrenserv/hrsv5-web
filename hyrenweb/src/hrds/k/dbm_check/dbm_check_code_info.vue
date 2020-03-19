@@ -11,7 +11,7 @@
        
     </el-row>
     <!--  -->
-    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" @select-all='allselect' @selection-change="handleSelectionChange" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick" @filter-change="codeClass_fulterChangeFun">
+    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick" >
         <el-table-column type="expand">
             <template slot-scope="props">
                 <el-row style="margin-bottom:10px">
@@ -22,7 +22,7 @@
                         </el-input>
                     </el-col>
                 </el-row>
-                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}" @selection-change="item_handleSelectionChange" @select-all='item_allselect'>
+                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}" >
                     <el-table-column label="序号" align="center" width="60">
                         <template scope="scope">
                             <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
@@ -119,7 +119,22 @@ export default {
         this.getDbmCodeTypeInfo(1, 10)
     },
     methods: {
-      
+       cleanFun(){
+           this.status=''
+           this.code_type_id=''
+            this.code_item_id=''
+            this.open='false'
+            this.selectrow=[]
+            this.code_type_id_s=[]
+            this.code_status=''
+            this.item_selectrow=[]
+            this.searchCodeTyp_status=''
+            this.codeValue=''
+            this.codeItem_Value=''
+            this.codeItemValue=''
+            this.codeItem_Status=''
+            this.title=''
+       },
       
         sig_handleSizeChange(size) {
             this.pagesize = size;
@@ -151,22 +166,9 @@ export default {
         },
         item_handleSizeChange(size) {
             this.itempagesize = size;
-            /* if (this.searchCodeTyp_status == 'search' && this.codeItemValue != '') {
-                this.searchDbmCodeItemInfoFun(this.codeItemValue, this.itemcurrentPage, this.itempagesize, this.code_type_id)
-            } else {
-                this.getAllCodeItemFun(this.currentPage, this.pagesize)
-            } */
         },
         item_handleCurrentChange(currentPage) {
             this.itemcurrentPage = currentPage;
-        },
-        // 复选框选中
-        handleSelectionChange(selectTrue) {
-            this.selectrow = selectTrue
-        },
-        // 复选框选中
-        item_handleSelectionChange(selectTrue) {
-            this.item_selectrow = selectTrue
         },
         //点击展开代码项
         cellClick(row, column, event) {
@@ -203,6 +205,7 @@ export default {
       
         //代码类- 获取分页数据
         getDbmCodeTypeInfo(page, size) {
+            
             let params = {}
             params["currPage"] = page;
             params["pageSize"] = size;
@@ -211,11 +214,6 @@ export default {
                 this.totalSize = res.data.totalSize
             });
         },
-       
-       
-      
-       
-       
         //过滤发布状态
         codeClass_fulterChangeFun(filter) {
             this.code_status = filter.Releasestatus[0] ? filter.Releasestatus[0] : ''
@@ -245,16 +243,6 @@ export default {
                 this.totalSize = res.data.totalSize
             });
         },
-        // 全选
-        allselect(all) {
-            this.selectrow = all
-        },
-        //代码项全选
-        item_allselect(all) {
-            this.item_selectrow = all
-        },
-       
-       
         //代码类搜索
         searchDbmCodeTypeInfo() {
             this.codeTypeValue = this.codeValue
