@@ -12,7 +12,7 @@
         <el-col :span="6">
             <div style='height:0.1px'>&nbsp;</div>
             <Scrollbar>
-                <div class="mytree" hight='260'>
+                <div class="mytree" height='260'>
                     <el-tree class="filter-tree" :data="data2" :indent='0' @node-click="handleNodeClick">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
@@ -23,34 +23,38 @@
         </el-col>
         <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
             <el-form ref="ruleForm" :model="ruleForm">
-                <el-table :data="ruleForm.tableData" border stripe size="medium">
+                <el-table :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border stripe size="medium">
                     <el-table-column label="序号" align="center" width="60">
                         <template slot-scope="scope">{{scope.$index+(currentPage - 1) * pagesize + 1}}</template>
                     </el-table-column>
-                    <el-table-column prop="EName" label="字段名" align="center" width="150">
+                    <el-table-column prop="column_name" label="字段名" align="center" width="150">
                     </el-table-column>
-                    <el-table-column prop="cName" label="字段中文名" align="center">
+                    <el-table-column prop="column_ch_name" label="字段中文名" align="center">
                         <template slot-scope="scope">
                             <!-- <el-form-item prop="cName"> -->
-                            <el-input v-model="scope.row.cName" size="medium"></el-input>
+                            <el-input v-model="scope.row.column_ch_name" size="medium"></el-input>
                             <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
-                    <el-table-column prop="describe" label="描述" align="center">
+                    <el-table-column prop="column_remark" label="描述" align="center">
                         <template slot-scope="scope">
                             <!-- <el-form-item prop="describe"> -->
-                            <el-input type="textarea" v-model="scope.row.describe" autosize></el-input>
+                            <el-input type="textarea" v-model="scope.row.column_remark" autosize></el-input>
                             <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
                 </el-table>
             </el-form>
-            <el-pagination @size-change="tsb_handleSizeChange" @current-change="tsb_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
+            <el-pagination @size-change="tsb_handleSizeChange" @current-change="tsb_handleCurrentChange" :current-page="currentPage" @prev-click='preclickFun' @next-click='nextclickFun' :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.tableData.length" class='locationcenter' />
         </el-col>
     </el-row>
     <div slot="footer" class="dialog-footer">
-        <el-button @click="Select('ruleForm')" size="medium" type="primary" icon='el-icon-right'>对标</el-button>
+        <el-button @click="dbsubmitFun('ruleForm')" size="medium" type="primary" icon='el-icon-right'>对标</el-button>
     </div>
+    <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -70,30 +74,11 @@ export default {
             currentPage: 1,
             pagesize: 10,
             totalSize: 0,
+            isLoading: false,
             rule: validator.default,
             data2: [],
             ruleForm: {
-                tableData: [{
-                    EName: "agent_id",
-                    cName: "agent编号",
-                    describe: "无意义主键"
-                }, {
-                    EName: "agent_name",
-                    cName: "agent名称",
-                    describe: "每个agent的名称信息"
-                }, {
-                    EName: "agent_type",
-                    cName: "agent类型",
-                    describe: "agent类型、数据库等类"
-                }, {
-                    EName: "agent_ip",
-                    cName: "agentIp地址",
-                    describe: "ip地址"
-                }, {
-                    EName: "agent_status",
-                    cName: "agent状态",
-                    describe: "状态：连接、未连接等"
-                }]
+                tableData: []
             },
 
         }
@@ -102,10 +87,23 @@ export default {
         this.treeData()
     },
     methods: {
-        Select() {
-            this.$router.push({
-                name: 'tsb_result'
+        dbsubmitFun() {
+             this.isLoading=true
+            let col_info_s = this.ruleForm.tableData.map((key) => {
+                return ({
+                    col_id: key.column_id,
+                    col_cname: key.column_ch_name,
+                    col_remark: key.column_remark
+                });
             })
+            tsbFun.setDbmDtcolInfo({'col_info_s':JSON.stringify(col_info_s)}).then(res => {
+               console.log(res)
+               this.isLoading=false
+                  this.$router.push({
+                  name: 'tsb_result'
+              })
+            })
+           
         },
         treeData() {
             tsbFun.getTSBTreeData({
@@ -121,15 +119,22 @@ export default {
         tsb_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
         },
+        preclickFun(currentPage){
+            this.currentPage = currentPage;
+        },
+        nextclickFun(currentPage){
+            this.currentPage = currentPage;
+        },
         handleNodeClick(data, y, m) {
             if (!data.children) {
-                console.log(data.id)
                 let params = {}
                 params["table_type"] = '01';
                 params["data_layer"] = 'DCL';
                 params["file_id"] = data.id;
                 tsbFun.getColumnByFileId(params).then(res => {
-                    console.log(res)
+                    this.ruleForm.tableData = res.data?res.data:[]
+                console.log(res.data)
+
                 });
             }
         },

@@ -45,14 +45,14 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
+                <el-pagination @prev-click='dbMark_preclickFun' @next-click='dbMark_nextclickFun' @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
             </el-row>
         </el-col>
     </el-row>
     <!-- 查看详情的弹框 -->
     <el-dialog title="详细标准元" :visible.sync="dialogEditTableVisible" width="60%" class='data_edit'>
-        <div slot="title" class="header-title">
-            <span class="title">详细信息</span>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">详细信息</span>
         </div>
         <el-row>
             <el-collapse v-model="activeNames">
@@ -366,6 +366,12 @@ export default {
             }
 
         },
+        dbMark_nextclickFun(currentPage) {
+            this.dbMark_handleCurrentChange(currentPage)
+        },
+        dbMark_preclickFun(currentPage) {
+            this.dbMark_handleCurrentChange(currentPage)
+        },
         filterNode(value, data) {
             if (!value) return true;
             return data.label.indexOf(value) !== -1;
@@ -672,7 +678,7 @@ export default {
 }
 
 .xjtxtcolor p {
-    color: rgb(61, 141, 210);
+    color: #636c73;
     display: inline-block;
     font-weight: bold;
 }

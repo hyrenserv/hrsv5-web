@@ -70,14 +70,14 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
+                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" @prev-click='dbMark_preclickFun' @next-click='dbMark_nextclickFun' :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
             </el-row>
         </el-col>
     </el-row>
     <!-- 编辑的弹框 -->
     <el-dialog title="新增标准元" :visible.sync="dialogEditTableVisible" width="60%" class='data_edit'>
-        <div slot="title" class="header-title">
-            <span class="title">{{title}}标准元</span>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">{{title}}标准元</span>
         </div>
         <el-row>
             <el-collapse v-model="activeNames">
@@ -439,17 +439,17 @@ export default {
     },
 
     methods: {
-         cleanFun(){
-            this.listId=''
-            this.loading=true
-            this.basic_id_s=[]
-            this.selectrow=[]
-             this.norm_status=''
-             this.search_status=''
-             this.NodeClick=''
-             this.nodeId=''
-             this.search_Value=''
-       },
+        cleanFun() {
+            this.listId = ''
+            this.loading = true
+            this.basic_id_s = []
+            this.selectrow = []
+            this.norm_status = ''
+            this.search_status = ''
+            this.NodeClick = ''
+            this.nodeId = ''
+            this.search_Value = ''
+        },
         // 批量发布
         batchReleaseDbmNormbasic() {
             this.basic_id_s = [];
@@ -520,18 +520,17 @@ export default {
         dbMark_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
             if (this.norm_status == '1' || this.norm_status == '0' || this.search_status == 'search' || this.nodeId != '') {
-                // if (this.searchValue != '') {
                 this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status, this.nodeId)
-                /*   } else {
-                          this.classfilterFun(this.currentPage, this.pagesize, this.norm_status)
-                      }
-                  } else if (this.search_status == 'search' && this.searchValue != '') {
-                      this.searchDbmSortInfo(this.searchValue, this.currentPage, this.pagesize, this.norm_status)
-                  */
             } else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
 
+        },
+        dbMark_nextclickFun(currentPage) {
+            this.dbMark_handleCurrentChange(currentPage)
+        },
+        dbMark_preclickFun(currentPage) {
+            this.dbMark_handleCurrentChange(currentPage)
         },
         filterNode(value, data) {
             if (!value) return true;
@@ -1036,9 +1035,9 @@ export default {
     }
 
     .zdtitle {
-        font-size: 15px;
-        // font-weight: bold;
-        color: #2196f3;
+        font-size: 16px;
+        color: #738594;
+        font-weight: bold;
     }
 
     .scrollbar-wrap {

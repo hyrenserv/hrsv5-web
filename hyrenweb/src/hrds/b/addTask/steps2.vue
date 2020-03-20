@@ -59,10 +59,9 @@
                 </div>
                 <!-- 是否并行抽取弹层 -->
                 <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
-                    <div slot="title" class="header-title">
-                        <span class="title">定义分页抽取SQL&nbsp;&nbsp;&nbsp;&nbsp;</span>
-
-                        <span class="title">
+                    <div slot="title" >
+                        <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+                        <span class="dialogtoptxt">
                             表名:
                             <p class="topcolumename">{{EXtable_name}}</p>
                         </span>
@@ -117,11 +116,10 @@
                 </el-dialog>
                 <!-- 定义过滤弹层 -->
                 <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%" @close="SqlfiltCloseFun()">
-                    <div slot="title" class="header-title">
-                        <span class="title">自定义SQL过滤设置&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        <el-tooltip class="item" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
-                            <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: -13px;
-    margin-right: 10px;"></i>
+                    <div slot="title" >
+                        <span class="dialogtitle el-icon-caret-right">自定义SQL过滤设置</span>
+                        <el-tooltip class="dialogtoptxt" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
+                            <i class="fa fa-question-circle" aria-hidden="true" ></i>
                         </el-tooltip>
                     </div>
                     <el-form ref="addClassTask">
@@ -155,10 +153,10 @@
                 <!-- 选择列弹层 -->
                 <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()">
                     <div slot="title" class="header-title">
-                        <span class="title">选择列&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        <span class="title">
+                        <span class="dialogtitle el-icon-caret-right">选择列</span>
+                        <span class="dialogtoptxt">
                             表名:
-                            <p class="topcolumename">{{coltable_name}}</p>
+                            <p class="dialogtopname">{{coltable_name}}</p>
                         </span>
                     </div>
                     <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">

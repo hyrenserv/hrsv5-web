@@ -42,9 +42,9 @@
     </el-table>
     <!-- 点击任务配置显示弹框-->
     <el-dialog title :visible.sync="dialogTableVisible" width="80%">
-        <div slot="title" class="header-title">
-            <span class="title-sourceName">数据源名称:{{ sourceName }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span class="title-agentType">采集类型:{{agentType }}</span>
+        <div slot="title" >
+            <span class="dialogtitle el-icon-caret-right">数据源名称:{{ sourceName }}</span>
+            <span class="dialogtoptxt">采集类型: <p class="dialogtopname">{{agentType }}</p></span>
         </div>
         <el-table :data="gridData2" border size="medium">
             <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
@@ -83,6 +83,9 @@
     </el-dialog>
     <!-- 点击任务管理出现弹层 -->
     <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="60%" class="taskEx">
+          <div slot="title" >
+                    <span class="dialogtitle el-icon-caret-right">数据采集任务</span>
+    </div>
         <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
         <el-table :data="taskMang" border size="medium">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
@@ -355,25 +358,6 @@ export default {
 </script>
 
 <style scoped>
-
-
-/* 图标字体设置 */
-/* .el-row {
-    width: 100%;
-    height: 64px;
-    line-height: 64px;
-} */
-
-
-
-/* button样式设置 */
-.goIndex {
-    float: right;
-    background: #337ab7;
-    margin-top: 18px;
-    margin-right: 14px;
-}
-
 /* 下划线样式 */
 .lines {
     width: 100%;

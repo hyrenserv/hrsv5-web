@@ -3,26 +3,26 @@
     <el-row style="margin-bottom:10px">
         <el-col :span='17'>&nbsp;</el-col>
 
-        <el-col :span='5'  style="float:right">
+        <el-col :span='5' style="float:right">
             <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeValue">
                 <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeTypeInfo"></el-button>
             </el-input>
         </el-col>
-       
+
     </el-row>
     <!--  -->
-    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick" >
+    <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick">
         <el-table-column type="expand">
             <template slot-scope="props">
                 <el-row style="margin-bottom:10px">
-                     <el-col :span='13'>&nbsp;</el-col>
+                    <el-col :span='13'>&nbsp;</el-col>
                     <el-col :span='5' style="float:right">
                         <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeItem_Value">
                             <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeItemInfo"></el-button>
                         </el-input>
                     </el-col>
                 </el-row>
-                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}" >
+                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}">
                     <el-table-column label="序号" align="center" width="60">
                         <template scope="scope">
                             <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
@@ -54,7 +54,7 @@
         <el-table-column label="代码描述" prop="code_remark" align="center" width="150" :show-overflow-tooltip="true">
         </el-table-column>
     </el-table>
-    <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
+    <el-pagination @prev-click='sig_preclickFun' @next-click='sig_nextclickFun' @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
 </div>
 </template>
 
@@ -112,30 +112,30 @@ export default {
             codeItem_Value: '',
             codeItemValue: '',
             codeItem_Status: '',
-            title:''
+            title: ''
         }
     },
     mounted() {
         this.getDbmCodeTypeInfo(1, 10)
     },
     methods: {
-       cleanFun(){
-           this.status=''
-           this.code_type_id=''
-            this.code_item_id=''
-            this.open='false'
-            this.selectrow=[]
-            this.code_type_id_s=[]
-            this.code_status=''
-            this.item_selectrow=[]
-            this.searchCodeTyp_status=''
-            this.codeValue=''
-            this.codeItem_Value=''
-            this.codeItemValue=''
-            this.codeItem_Status=''
-            this.title=''
-       },
-      
+        cleanFun() {
+            this.status = ''
+            this.code_type_id = ''
+            this.code_item_id = ''
+            this.open = 'false'
+            this.selectrow = []
+            this.code_type_id_s = []
+            this.code_status = ''
+            this.item_selectrow = []
+            this.searchCodeTyp_status = ''
+            this.codeValue = ''
+            this.codeItem_Value = ''
+            this.codeItemValue = ''
+            this.codeItem_Status = ''
+            this.title = ''
+        },
+
         sig_handleSizeChange(size) {
             this.pagesize = size;
             if (this.code_status == '1' || this.code_status == '0') {
@@ -163,6 +163,12 @@ export default {
             } else {
                 this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
+        },
+        sig_preclickFun(currentPage) {
+            this.sig_handleCurrentChange(currentPage)
+        },
+        sig_nextclickFun(currentPage) {
+            this.sig_handleCurrentChange(currentPage)
         },
         item_handleSizeChange(size) {
             this.itempagesize = size;
@@ -201,11 +207,10 @@ export default {
                 }
             });
         },
-      
-      
+
         //代码类- 获取分页数据
         getDbmCodeTypeInfo(page, size) {
-            
+
             let params = {}
             params["currPage"] = page;
             params["pageSize"] = size;

@@ -52,6 +52,9 @@
     <el-pagination @size-change="clean_handleSizeChange" @current-change="clean_handleCurrentChange" :current-page="cleancurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="cleanpagesize" layout="total, sizes, prev, pager, next, jumper" :total="cleantableData.length" class="locationcenter"></el-pagination>
     <!-- 表-字符补齐 -->
     <el-dialog title="字符补齐" :visible.sync="dialogTable_zfbq" width="50%" class="alltable" @close="Table_zfbqclose()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">字符补齐</span>
+        </div>
         <el-form ref="table_zfbq" :model="table_zfbq" label-width="240px" text-align="center">
             <el-form-item label="补齐方式" :rules="rule.selected" prop="filling_type">
                 <el-radio-group v-model="table_zfbq.filling_type">
@@ -72,6 +75,9 @@
     </el-dialog>
     <!-- 表-字符替换 -->
     <el-dialog title="字符替换" :visible.sync="dialogTable_zfth" width="50%" class="alltable" @close="Table_zfthclose()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">字符替换</span>
+        </div>
         <el-button type="success" width="20" @click="Table_zfthaddRow(table_zfth)" size="mini" class="addline">新增行</el-button>
         <el-table :data="table_zfth" border size="medium" highlight-current-row>
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
@@ -104,6 +110,9 @@
     </el-dialog>
     <!-- 全表清洗优先级 -->
     <el-dialog title="全表清洗优先级" :visible.sync="dialogtableClean" width="50%">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">全表清洗优先级</span>
+        </div>
         <el-table :data="tableCleanData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
             <el-table-column property="SelectCol" type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column property="value" label="内容" align="center"></el-table-column>
@@ -125,6 +134,9 @@
     </el-dialog>
     <!-- 所有表清洗设置 -->
     <el-dialog title="所有表清洗设置" :visible.sync="dialogalltableClean" width="50%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">所有表清洗设置</span>
+        </div>
         <div class="alltablebox">
             <div class="alltabletitle">
                 字符替换
@@ -188,6 +200,9 @@
     </el-dialog>
     <!-- 选择列弹框 -->
     <el-dialog title="列清洗" :visible.sync="dialogColClean" width="70%" class="alltable" @close="selectColCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">列清洗</span>
+        </div>
         <div>
             <el-button size="mini" type="primary" @click="columnMergeFun">列合并</el-button>
             <el-button size="mini" type="success" @click="allTableOrd">整表优先级</el-button>
@@ -267,6 +282,9 @@
     </el-dialog>
     <!-- 选择列-字符补齐弹框 -->
     <el-dialog title="字符补齐" :visible.sync="dialogCol_zfbq" width="50%" class="alltable" @close="Col_zfbqCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">字符补齐</span>
+        </div>
         <el-form ref="Col_zfbq" :model="Col_zfbq" label-width="240px" text-align="center">
             <el-form-item label="补齐方式" prop="filling_type" :rules="rule.selected">
                 <el-radio-group v-model="Col_zfbq.filling_type">
@@ -287,6 +305,9 @@
     </el-dialog>
     <!-- 选择列-字符替换弹框 -->
     <el-dialog title="字符替换" :visible.sync="dialogCol_zfth" width="50%" class="alltable" @close="Col_zfthCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">字符替换</span>
+        </div>
         <el-button type="success" size="mini" width="20" @click="Col_zfthaddRow(Col_zfth)" class="addline">新增行</el-button>
         <el-table :data="Col_zfth" border size="medium" highlight-current-row>
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
@@ -319,6 +340,9 @@
     </el-dialog>
     <!-- 选择列-日期格式化弹框 -->
     <el-dialog title="日期格式化" :visible.sync="dialogCol_rqgsh" width="50%" class="alltable" @close="Col_rqgshCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">日期格式化</span>
+        </div>
         <el-form ref="form" :model="Col_rqgsh" label-width="240px" text-align="center">
             <el-form-item label="原格式">
                 <el-input v-model="Col_rqgsh.old_format" style="width:190px" size="medium"></el-input>
@@ -334,11 +358,12 @@
     </el-dialog>
     <!--选择列-列拆分弹框  -->
     <el-dialog title :visible.sync="dialogCol_colcf" width="70%" class="alltable quest" @close="Col_colcfCloseFun()">
-        <div slot="title" class="header-title">
-            <span class="title">列拆分(拆分的是最后的数据)&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span class="title">
+
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">列拆分(拆分的是最后的数据)</span>
+            <span class="dialogtoptxt">
                 列名称:
-                <p class="topcolumename">{{columechname}}({{columename}})</p>
+                <p class="dialogtopname">{{columechname}}({{columename}})</p>
             </span>
         </div>
         <el-button type="success" size="mini" width="20" @click="Col_colcfaddRow(Col_colcf)" class="addline">新增行</el-button>
@@ -414,6 +439,9 @@
     </el-dialog>
     <!--选择列-码值转换弹框  -->
     <el-dialog title="码值转换" :visible.sync="dialogCol_mzzh" width="70%" class="alltable" @close="Col_mzzhCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">码值转换</span>
+        </div>
         <el-row :gutter="20">
             <el-col :span="12" :offset="1">
                 <div class="topcolumename">填写完成后请保存</div>
@@ -452,11 +480,11 @@
     </el-dialog>
     <!--选择列-优先级调整弹框  -->
     <el-dialog title :visible.sync="dialogtableCleanOrd" width="50%" @close="Col_yxjCloseFun()">
-        <div slot="title" class="header-title">
-            <span class="title">清洗排序&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span class="title">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">清洗排序</span>
+            <span class="dialogtoptxt">
                 列名称:
-                <p class="topcolumename">{{columechname}}({{columename}})</p>
+                <p class="dialogtopname">{{columechname}}({{columename}})</p>
             </span>
         </div>
         <el-table :data="tableCleanOrdData" border size="medium" highlight-current-row>
@@ -480,11 +508,11 @@
     </el-dialog>
     <!--整表优先级-->
     <el-dialog title :visible.sync="dialogAlltableCleanOrd" width="50%">
-        <div slot="title" class="header-title">
-            <span class="title">清洗排序&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span class="title">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">清洗排序</span>
+            <span class="dialogtoptxt">
                 表名:
-                <p class="topcolumename">{{tablechname}}({{tablename}})</p>
+                <p class="dialogtopname">{{tablechname}}({{tablename}})</p>
             </span>
         </div>
         <el-table :data="AlltableCleanOrdData" border size="medium" highlight-current-row>
@@ -510,6 +538,12 @@
     <el-dialog :visible.sync="dialogcolumnMerge" width="70%" class="alltable" id="colmerg">
         <div slot="title" class="header-title">
             <span class="title">列合并(合并的是最后的数据)</span>
+        </div>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">列合并</span>
+            <span>
+                <p class="dialogtopname">(合并的是最后的数据)</p>
+            </span>
         </div>
         <el-button type="success" size="mini" width="20" @click="columnMerge_addRow(columnMerge)" class="addline">新增行</el-button>
         <el-table :data="columnMerge" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
@@ -564,6 +598,9 @@
     </el-dialog>
     <!-- 选择列 -->
     <el-dialog title="列信息" :visible.sync="dialogcolSelectData" width="70%" class="alltable" @close="colSelectCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">列信息</span>
+        </div>
         <el-table :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)" border :empty-text="tableloadingInfo" size="medium" highlight-current-row ref="multipleTable" :row-key="getRowKey">
             <el-table-column width="55" align="center" prop="selectionState">
                 <template slot="header" slot-scope="scope">
@@ -2000,3 +2037,5 @@ export default {
     margin-left: 10px;
 }
 </style>
+
+

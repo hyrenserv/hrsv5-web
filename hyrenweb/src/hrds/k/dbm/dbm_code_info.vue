@@ -84,12 +84,12 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
+    <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" @prev-click='sig_preclickFun' @next-click='sig_nextclickFun' :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
     <!-- 新增代码类弹框 -->
     <el-dialog title="新增代码类" :visible.sync="dialogaddCodeclassableVisible" width="40%" class='data_edit'>
-        <div slot="title" class="header-title">
-                        <span class="title">{{title}}代码类</span>
-                    </div>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">{{title}}代码类</span>
+        </div>
         <el-row>
             <el-form ref="codeClassData" label-width="86px" :model="codeClassData">
                 <el-row :gutter="20">
@@ -142,9 +142,9 @@
     </el-dialog>
     <!-- 新增代码项弹框 -->
     <el-dialog title="新增代码项" :visible.sync="dialogaddCodeXableVisible" width="40%" class='data_edit'>
-         <div slot="title" class="header-title">
-                        <span class="title">{{title}}代码项</span>
-                    </div>
+         <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">{{title}}代码项</span>
+        </div>
         <el-row>
             <el-form ref="codeItemData" label-width="86px" :model="codeItemData">
                 <el-row :gutter="20">
@@ -261,29 +261,29 @@ export default {
             codeItem_Value: '',
             codeItemValue: '',
             codeItem_Status: '',
-            title:''
+            title: ''
         }
     },
     mounted() {
         this.getDbmCodeTypeInfo(1, 10)
     },
     methods: {
-        cleanFun(){
-           this.status=''
-           this.code_type_id=''
-            this.code_item_id=''
-            this.open='false'
-            this.selectrow=[]
-            this.code_type_id_s=[]
-            this.code_status=''
-            this.item_selectrow=[]
-            this.searchCodeTyp_status=''
-            this.codeValue=''
-            this.codeItem_Value=''
-            this.codeItemValue=''
-            this.codeItem_Status=''
-            this.title=''
-       },
+        cleanFun() {
+            this.status = ''
+            this.code_type_id = ''
+            this.code_item_id = ''
+            this.open = 'false'
+            this.selectrow = []
+            this.code_type_id_s = []
+            this.code_status = ''
+            this.item_selectrow = []
+            this.searchCodeTyp_status = ''
+            this.codeValue = ''
+            this.codeItem_Value = ''
+            this.codeItemValue = ''
+            this.codeItem_Status = ''
+            this.title = ''
+        },
         //批量发布
         batchReleaseDbmCodeTypeInfo() {
             this.code_type_id_s = [];
@@ -339,13 +339,14 @@ export default {
                 this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
         },
+        sig_preclickFun(currentPage) {
+            this.sig_handleCurrentChange(currentPage)
+        },
+        sig_nextclickFun(currentPage) {
+            this.sig_handleCurrentChange(currentPage)
+        },
         item_handleSizeChange(size) {
             this.itempagesize = size;
-            /* if (this.searchCodeTyp_status == 'search' && this.codeItemValue != '') {
-                this.searchDbmCodeItemInfoFun(this.codeItemValue, this.itemcurrentPage, this.itempagesize, this.code_type_id)
-            } else {
-                this.getAllCodeItemFun(this.currentPage, this.pagesize)
-            } */
         },
         item_handleCurrentChange(currentPage) {
             this.itemcurrentPage = currentPage;
@@ -391,7 +392,7 @@ export default {
         },
         // 新增代码类
         addCodeClass() {
-            this.title='新增'
+            this.title = '新增'
             this.dialogaddCodeclassableVisible = true
             this.status = 'add'
             this.codeClassData.code_encode = ''
@@ -436,7 +437,7 @@ export default {
         },
         //编辑打开方法
         EditCodeClassFun(row) {
-            this.title='编辑'
+            this.title = '编辑'
             this.dialogaddCodeclassableVisible = true;
             this.status = 'edit'
             this.code_type_id = row.code_type_id
@@ -465,7 +466,7 @@ export default {
         },
         // 新增代码项
         addCodeItemFun() {
-            this.title='新增'
+            this.title = '新增'
             this.dialogaddCodeXableVisible = true;
             this.codeItemStatus = 'add'
             this.codeItemData.codeNum = ''
@@ -476,7 +477,7 @@ export default {
         },
         //编辑代码项
         editCodeItemFun(row) {
-            this.title='编辑'
+            this.title = '编辑'
             this.dialogaddCodeXableVisible = true;
             this.codeItemStatus = 'edit'
             this.code_item_id = row.code_item_id
@@ -599,13 +600,13 @@ export default {
             });
             let that = this
             message.confirmMsg('确定删除吗').then(res => {
-            dataBenchmarkingAllFun.batchDeleteDbmCodeItemInfo({
-                "code_item_id_s": that.code_item_id_s
-            }).then(res => {
-                message.deleteSuccess(res)
-                that.code_item_id_s = []
-                this.getAllCodeItemFun(that.code_type_id)
-            });
+                dataBenchmarkingAllFun.batchDeleteDbmCodeItemInfo({
+                    "code_item_id_s": that.code_item_id_s
+                }).then(res => {
+                    message.deleteSuccess(res)
+                    that.code_item_id_s = []
+                    this.getAllCodeItemFun(that.code_type_id)
+                });
             }).catch(() => {})
         },
         //代码类搜索
@@ -625,10 +626,10 @@ export default {
                 'pageSize': pagesize,
                 'status': code_status
             }).then(res => {
-                if(res.data.dbmCodeTypeInfos.length>0){
-                this.tableData = res.data.dbmCodeTypeInfos
-                }else{
-                    this.tableloadingInfo='暂无数据'
+                if (res.data.dbmCodeTypeInfos.length > 0) {
+                    this.tableData = res.data.dbmCodeTypeInfos
+                } else {
+                    this.tableloadingInfo = '暂无数据'
                 }
                 this.totalSize = res.data.totalSize
             })
@@ -648,10 +649,10 @@ export default {
                 'pageSize': pagesize,
                 'code_type_id': code_type_id
             }).then(res => {
-                if(res.data.dbmCodeItemInfos.length>0){
-                this.dataList = res.data.dbmCodeItemInfos}
-                else{
-                    this.tableloadingInfo='暂无数据'
+                if (res.data.dbmCodeItemInfos.length > 0) {
+                    this.dataList = res.data.dbmCodeItemInfos
+                } else {
+                    this.tableloadingInfo = '暂无数据'
                 }
             })
         }
