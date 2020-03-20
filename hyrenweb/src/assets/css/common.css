@@ -512,3 +512,26 @@
     background: #337ab7;
 }
 /* 内容区顶部标题以及右侧按钮返回样式--end */
+.dialogtitle{
+    font-size: 16px;
+    color: #409EFF;
+    font-weight: 600;
+    margin-right: 10px;
+}
+.dialogtoptxt{
+    font-size: 16px;
+    color: #656262;
+    margin-left: 5px;
+}
+.dialogtopname {
+    display: inline-block;
+    background: #f3eded;
+    color: #ec0b35;
+    padding: 2px;
+}
+/*弹框内居右对齐翻页  */
+.locationright {
+    text-align: right;
+    margin-top: 5px;
+}
+

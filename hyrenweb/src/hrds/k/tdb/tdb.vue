@@ -1,11 +1,20 @@
 <template>
-    <div>
-        <el-row><h4 class='el-icon-s-home' >表数据对标</h4></el-row>
-    </div>
+<div>
+    <el-row class='topTitle'>
+        <span class='el-icon-location'>表数据对标</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
+    </el-row>
+
+</div>
 </template>
+
 <script>
 </script>
-<style scoped lang='less'>
-// @import '../../../assets/css/changeColor.less';
 
+<style lang="less" scoped>
+// @import '../../../assets/css/changeColor.less';
 </style>

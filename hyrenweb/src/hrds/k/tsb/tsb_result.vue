@@ -11,11 +11,11 @@
     <el-row class="partTwo">
         <el-table :data="tableData" border stripe size="medium">
             <el-table-column label="序号" align="center" width="60">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="cName" label="中文名称" align="center" width="130">
+            <el-table-column prop="col_cnname" label="中文名称" align="center" width="130">
             </el-table-column>
             <el-table-column prop="eName" label="英文名称" align="center" width="130">
             </el-table-column>
@@ -23,12 +23,12 @@
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="2">
-                            <el-radio v-model="scope.row.id" :label='scope.row.predict[0].standard_id'>&nbsp;</el-radio>
+                            <el-radio v-model="scope.row.id" :label='scope.row.predict[0][0].standard_id'>&nbsp;</el-radio>
                         </el-col>
                         <el-col :span="18">
-                            中文： <span style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display:inline-block;">{{scope.row.predict[0].col_en_name}}</span><br>
-                            字段名称： <span>{{scope.row.predict[0].col_zh_name}}</span><br>
-                            匹配度： <span>{{scope.row.predict[0].xen}}</span>
+                            中文： <span>{{scope.row.predict[0][0].col_zh_name}}</span><br>
+                            字段名称： <span>{{scope.row.predict[0][0].col_en_name}}</span><br>
+                            匹配度： <span>{{scope.row.predict[0][1]}}</span>
                         </el-col>
                     </el-row>
                 </template>
@@ -37,12 +37,12 @@
             <el-table-column prop="result2" label="结果2" align="center">
                 <template slot-scope="scope">
                     <el-col :span="2">
-                        <el-radio v-model="scope.row.id" name="nature" :label='scope.row.predict[1].standard_id'>&nbsp;</el-radio>
+                        <el-radio v-model="scope.row.id" name="nature" :label='scope.row.predict[1][0].standard_id'>&nbsp;</el-radio>
                     </el-col>
                     <el-col :span="18">
-                        中文： <span>{{scope.row.predict[1].col_en_name}}</span><br>
-                        字段名称： <span>{{scope.row.predict[1].col_zh_name}}</span><br>
-                        匹配度： <span>{{scope.row.predict[1].xen}}</span>
+                        中文： <span>{{scope.row.predict[1][0].col_zh_name}}</span><br>
+                        字段名称： <span>{{scope.row.predict[1][0].col_en_name}}</span><br>
+                        匹配度： <span>{{scope.row.predict[1][1]}}</span>
                     </el-col>
                 </template>
             </el-table-column>
@@ -50,19 +50,19 @@
             <el-table-column prop="result3" label="结果3" align="center">
                 <template slot-scope="scope">
                     <el-col :span="2">
-                        <el-radio v-model="scope.row.id" :label='scope.row.predict[2].standard_id'>&nbsp;</el-radio>
+                        <el-radio v-model="scope.row.id" :label='scope.row.predict[2][0].standard_id'>&nbsp;</el-radio>
                     </el-col>
                     <el-col :span="18">
-                        中文： <span>{{scope.row.predict[2].col_en_name}}</span><br>
-                        字段名称： <span>{{scope.row.predict[2].col_zh_name}}</span><br>
-                        匹配度： <span>{{scope.row.predict[2].xen}}</span>
+                        中文： <span>{{scope.row.predict[2][0].col_zh_name}}</span><br>
+                        字段名称： <span>{{scope.row.predict[2][0].col_en_name}}</span><br>
+                        匹配度： <span>{{scope.row.predict[2][1]}}</span>
                     </el-col>
                 </template>
             </el-table-column>
 
             <el-table-column prop="describe" label="选择" align="center" width="160">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="warning" @click="dialogManualBenchdata=true">人工对标</el-button>
+                    <el-button size="mini" type="warning" @click="dialogDbFun(scope.row.id)">人工对标</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -71,199 +71,223 @@
         <el-button style="margin-top:10px;float:right" size="medium" type="primary" @click="tsb_resultFun()">确定</el-button>
     </div>
     <!-- 弹出框 -->
-    <el-dialog title="人工对标" :visible.sync="dialogManualBenchdata" width="90%" class="alltable">
-        <div slot="footer" class="dialog-footer">
-            <el-table :data="CollTaskData.slice((currentPagedata - 1) * pagesizedata, currentPagedata * pagesizedata)" border size="medium" highlight-current-row>
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <div style="padding-bottom: 15px;    padding-left: 20px;">
-                            <el-row style="margin-bottom: 10px;">
-                                <el-col :span="6"><strong style="color:#3d8dd2">标准编号 : </strong>IP500023</el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">标准中文名称 : </strong>投资占比</el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">标准英文名称 : </strong>Invest Ratio</el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">标准别名 : </strong></el-col>
-                            </el-row>
-                            <el-row style="margin-bottom: 10px;">
-                                <el-col :span="6"><strong style="color:#3d8dd2">数据类别 : </strong>数值类</el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">字段长度 : </strong>8</el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">小数长度 : </strong>5</el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">字段名称 : </strong>INVST_RATO</el-col>
-                            </el-row>
-                            <el-row style="margin-bottom: 10px;">
-                                <el-col style="margin-bottom: 10px;"><strong style="color:#3d8dd2">业务定义 : </strong>指股东出资金额占被投资对象全部资本的比例。</el-col>
-                                <el-col style="margin-bottom: 10px;"><strong style="color:#3d8dd2">业务规则 : </strong>股东出资额/全部资本</el-col>
-                                <el-col style="margin-bottom: 10px;"><strong style="color:#3d8dd2">值域 : </strong>[0,100.00000]</el-col>
-                                <el-col><strong style="color:#3d8dd2">标准依据 : </strong></el-col>
-                            </el-row>
-                            <el-row style="margin-bottom: 10px;">
-                                <el-col :span="6"><strong style="color:#3d8dd2">标准管理部门 : </strong></el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">可信数据源 : </strong></el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">相关标准 : </strong></el-col>
-                                <el-col :span="6"><strong style="color:#3d8dd2">标准制定人 : </strong>数据治理组</el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col><strong style="color:#3d8dd2">标准相关部门 : </strong>公司业务部，机构业务部，小微业务部，互联网金融部，信用卡部</el-col>
-                            </el-row>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column property label="选择" type="index" align="center" width='60'>
-                    <template slot-scope="scope">
-                        <el-radio v-model="radio" :label="scope.row.id">&thinsp;</el-radio>
-                    </template>
-                </el-table-column>
-                <el-table-column property label="序号" align="center">
-                    <template slot-scope="scope">
-                        <span>{{scope.$index+(currentPagedata - 1) * pagesizedata + 1}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column property="num" label="标准编号" align="center"></el-table-column>
-                <el-table-column property="tit" label="标准主题" align="center"></el-table-column>
-                <el-table-column property="Standardcategory" label="标准大类" align="center"></el-table-column>
-                <el-table-column property="Standardsubclass" label="标准子类" align="center"></el-table-column>
-                <el-table-column property="Standardch" label="标准中文名称" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column property="Standarden" label="标准英文名称" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column property="Standardname" label="标准别名" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column property="ziduan" label="字段名称" align="center"></el-table-column>
-                <el-table-column property="Businessdefinition" label="业务定义" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column property="Businessrules" label="业务规则" align="center" :show-overflow-tooltip="true"></el-table-column>
-            </el-table>
-            <el-pagination :current-page.sync="currentPagedata" :page-size="pagesizedata" layout="total, prev, pager, next" :total="CollTaskData.length" class="locationcenter"></el-pagination>
-            <el-button @click="dialogManualBenchdata = false" type="danger" size="mini">取 消</el-button>
-            <el-button type="primary" @click="dialogManualBenchdata = false" size="mini">确 定</el-button>
+    <el-dialog title="人工对标" :visible.sync="dialogManualBenchdata" width="90%">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">人工对标</span>
         </div>
+        <el-table :data="CollTaskData.slice((currentPagedata - 1) * pagesizedata, currentPagedata * pagesizedata)" border size="medium" highlight-current-row>
+            <el-table-column type="expand">
+                <template slot-scope="scope">
+                    <div style="padding-bottom: 15px;    padding-left: 20px;">
+                        <el-row style="margin-bottom: 10px;">
+                            <el-col :span="6"><strong style="color:#3d8dd2">标准编号 : </strong>{{scope.row.norm_code}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">标准中文名称 : </strong>{{scope.row.norm_cname}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">标准英文名称 : </strong>{{scope.row.norm_ename}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">标准别名 : </strong>{{scope.row.norm_aname}}</el-col>
+                        </el-row>
+                        <el-row style="margin-bottom: 10px;">
+                            <el-col :span="6"><strong style="color:#3d8dd2">数据类别 : </strong>{{scope.row.data_type}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">字段长度 : </strong>{{scope.row.col_len}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">小数长度 : </strong>{{scope.row.decimal_point}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">字段名称 : </strong>1111111</el-col>
+                        </el-row>
+                        <el-row style="margin-bottom: 10px;">
+                            <el-col style="margin-bottom: 10px;"><strong style="color:#3d8dd2">业务定义 : </strong>{{scope.row.business_def}}</el-col>
+                            <el-col style="margin-bottom: 10px;"><strong style="color:#3d8dd2">业务规则 : </strong>{{scope.row.business_rule}}</el-col>
+                            <el-col style="margin-bottom: 10px;"><strong style="color:#3d8dd2">值域 : </strong>{{scope.row.dbm_domain}}</el-col>
+                            <el-col><strong style="color:#3d8dd2">标准依据 : </strong>{{scope.row.norm_basis}}</el-col>
+                        </el-row>
+                        <el-row style="margin-bottom: 10px;">
+                            <el-col :span="6"><strong style="color:#3d8dd2">标准管理部门 : </strong>{{scope.row.manage_department}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">可信数据源 : </strong>{{scope.row.origin_system}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">相关标准 : </strong>{{scope.row.related_system}}</el-col>
+                            <el-col :span="6"><strong style="color:#3d8dd2">标准制定人 : </strong>{{scope.row.formulator}}</el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col><strong style="color:#3d8dd2">标准相关部门 : </strong>{{scope.row.relevant_department}}</el-col>
+                        </el-row>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column property label="选择" type="index" align="center" width='60'>
+                <template slot-scope="scope">
+                    <el-radio v-model="radio" :label="scope.row.basic_id">&thinsp;</el-radio>
+                </template>
+            </el-table-column>
+            <el-table-column property label="序号" align="center">
+                <template slot-scope="scope">
+                    <span>{{scope.$index+(currentPagedata - 1) * pagesizedata + 1}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column property="norm_code" label="标准编号" align="center"></el-table-column>
+            <el-table-column property="tit" label="标准主题" align="center"></el-table-column>
+            <el-table-column property="Standardcategory" label="标准大类" align="center"></el-table-column>
+            <el-table-column property="Standardsubclass" label="标准子类" align="center"></el-table-column>
+            <el-table-column property="norm_cname" label="标准中文名称" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="norm_ename" label="标准英文名称" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="norm_aname" label="标准别名" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="ziduan" label="字段名称" align="center"></el-table-column>
+            <el-table-column property="business_def" label="业务定义" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="business_rule" label="业务规则" align="center" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+        <el-pagination :current-page="currentPagedata" :page-size="pagesizedata" @current-change="db_dialoghandleCurrentChange" @prev-click='db_preFun' @next-click='db_nextFun' layout="total, prev, pager, next" :total="totalSize" class="locationright"></el-pagination>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogManualBenchdata = false" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="dbResultSubmitFun()" size="mini">确 定</el-button>
+        </span>
     </el-dialog>
 </div>
 </template>
 
 <script>
+import * as tsbFun from './tsb'
 export default {
     data() {
         return {
             currentPage: 1,
-            pagesize: 5,
+            pagesize: 10,
             currentPagedata: 1,
-            pagesizedata: 5,
+            pagesizedata: 10,
             radio: '',
+            options: [],
             dialogManualBenchdata: false,
+            dataType: [],
+            dbmCodeTypeInfos: [],
             tableData: [{
-                    cName: '机构名称',
-                    eName: 'ORG_NM',
-                    id: '111',
-                    predict: [{
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500090",
-                            'xen': 0.9991458654403687
+                "col_cnname": "金融机构代码",
+                "col_desc": "",
+                "id": "1000440385",
+                predict: [
+                    [{
+                            col_en_name: "Financial Institute Code",
+                            col_zh_name: "金融机构编码",
+                            description: "是标识各类金融机构的唯一编码。根据中国金融机构分类标准，明确金融机构涵盖范围和界定各类金融机构具体组成包括的货币当局、监管当局及其境内外派出机构；境内银行、证券、保险类金融机构的法人机构及其境内外具有经营许可的分支机构；交易结算类金融机构及其境内分支机构；境内设立的金融控股公司；国外金融机构在我国境内设立的具有经营许可的非法人分支机构，中国人民银行认定的其他有关金融机构。",
+                            standard_id: "IP500090"
                         },
-                        {
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500091",
-                            'xen': 0.9991458654403687
+                        0.9991458654403687
+                    ],
+                    [{
+                            col_en_name: "Organization Code",
+                            col_zh_name: "机构编码",
+                            description: "指贵州银行为统一管理，根据既定规则生成并分配给行内机构的唯一编码，在贵州银行内具有唯一性。 ",
+                            standard_id: "IP600012"
                         },
-                        {
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500092",
-                            'xen': 0.9991458654403687
+                        0.9990861415863037
+                    ],
+                    [{
+                            col_en_name: "National Organization Code (NOC)",
+                            col_zh_name: "组织机构代码",
+                            description: "指由国家质量技术监督部门对中华人民共和国境内依法注册、依法登记的机关、企业、事业单位、社会团体及其他组织颁发一个在全国范围内唯一的、始终不变的法定标识。组织机构代码实际上可以理解为单位的身份证号码。具有唯一性、终身不变性、准确性、完整性和统一性。",
+                            standard_id: "IP500054"
                         },
+                        0.9982936978340149
                     ]
-                },
-                {
-                    cName: '机构名称',
-                    eName: 'ORG_NM',
-                    id: '112',
-                    predict: [{
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500093",
-                            'xen': 0.9991458654403687
-                        },
-                        {
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500094",
-                            'xen': 0.9991458654403687
-                        },
-                        {
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500095",
-                            'xen': 0.9991458654403687
-                        },
-                    ]
-                },
-                {
-                    cName: '机构名称',
-                    eName: 'ORG_NM',
-                    id: '113',
-                    predict: [{
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500098",
-                            'xen': 0.9991458654403687
-                        },
-                        {
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500099",
-                            'xen': 0.9991458654403687
-                        },
-                        {
-                            "col_en_name": "Financial Institute Code",
-                            "col_zh_name": "金融机构编码",
-                            "standard_id": "IP500097",
-                            'xen': 0.9991458654403687
-                        },
-                    ]
-                },
-            ],
-            CollTaskData: [{
-                    id: '1',
-                    ziduan: 'CNTC_MOD',
-                    num: 'IP500023',
-                    tit: '参与人',
-                    Standardcategory: '对公客户',
-                    Standardsubclass: '关联信息',
-                    Standardch: '投资占比',
-                    Standarden: 'Invest Ratio',
-                    Standardname: '/',
-                    Businessdefinition: '指股东出资金额占被投资对象全部资本的比例。',
-                    Businessrules: '股东出资额/全部资本',
-                },
-                {
-                    id: '2',
-                    ziduan: 'CNTC_INFO',
-                    num: 'IP500024',
-                    tit: '参与人',
-                    Standardcategory: '对公客户',
-                    Standardsubclass: '关联信息',
-                    Standardch: '是否控股股东或实际控制人',
-                    Standarden: 'Controlling Shareholders Indicator',
-                    Standardname: '/',
-                    Businessdefinition: '指该股东是否控股或为实际控制人的说明。',
-                    Businessrules: '遵循标识的填写规则，“1”是“0”否。',
-                },
-                {
-                    id: '3',
-                    ziduan: 'CNTC_PSN_NAM',
-                    num: 'IP500025',
-                    tit: '参与人',
-                    Standardcategory: '对公客户',
-                    Standardsubclass: '关联信息',
-                    Standardch: '投向企业名称',
-                    Standarden: 'Invested Enterprise Name',
-                    Standardname: '/',
-                    Businessdefinition: '指单位客户对外投资时被投资企业的名称，应为企业的全称。',
-                    Businessrules: '/',
-                }
-            ]
+                ]
+            }],
+            CollTaskData: [],
+            totalSize: 0,
+            dbid: ''
         }
+    },
+    created() {
+        // 获取数据类型下拉框
+        this.$Code.getCategoryItems({
+            'category': 'DbmDataType'
+        }).then(res => {
+            this.dataType = res.data
+        })
+        this.getDbmCodeTypeIdAndNameInfo()
+    },
+    mounted() {
+
     },
     methods: {
         tsb_resultFun() {
             console.log(this.tableData)
+        },
+        dialogDbFun(id) {
+            this.dbid = id
+            this.dialogManualBenchdata = true
+            this.getDbmNormbasicInfo(1, 10)
+        },
+        getDbmSortTreeInfo() {
+            tsbFun.getDbmSortInfoTreeData().then(res => {
+                this.options = res.data.dbmSortInfoTreeDataList
+            });
+        },
+        //弹框点击翻页   
+        db_dialoghandleCurrentChange(currentPagedata) {
+            this.getDbmNormbasicInfo(currentPagedata, this.pagesizedata)
+        },
+        db_preFun(currentPagedata) {
+            this.getDbmNormbasicInfo(currentPagedata, this.pagesizedata)
+        },
+        db_nextFun(currentPagedata) {
+            this.getDbmNormbasicInfo(currentPagedata, this.pagesizedata)
+        },
+        // 获取数据
+        getDbmNormbasicInfo(curr, size) {
+            let params = {}
+            params["currPage"] = curr;
+            params["pageSize"] = size;
+            tsbFun.getDbmNormbasicInfo(params).then(res => {
+                let arr = res.data.dbmNormbasicInfos
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i].sortName = this.getparentClassNmae(arr[i].sort_id, this.options)
+                    arr[i].data_type = this.datatypeFun(arr[i].data_type)
+                    arr[i].code_type_id = this.codeValueFun(arr[i].code_type_id)
+                }
+                this.totalSize = res.data.totalSize
+                this.CollTaskData = arr
+            });
+
+        },
+        //通过id递归遍历树得到中文名
+        getparentClassNmae(key, treeData) {
+            let returnname = '';
+
+            function childrenEach(childrenData) {
+                for (var j = 0; j < childrenData.length; j++) {
+                    if (childrenData[j].id == key) {
+                        returnname = childrenData[j].label;
+                        break
+                    } else {
+                        if (childrenData[j].children) {
+                            childrenEach(childrenData[j].children);
+                        }
+                    }
+                }
+                return returnname;
+            }
+
+            return childrenEach(treeData);
+        },
+        // 数据类型遍历得到中文名
+        datatypeFun(data_type) {
+            for (let k = 0; k < this.dataType.length; k++) {
+                if (data_type == this.dataType[k].code) {
+                    return this.dataType[k].value
+                }
+            }
+        },
+        // 代码类遍历得到中文名
+        codeValueFun(code) {
+            for (let k = 0; k < this.dbmCodeTypeInfos.length; k++) {
+                if (code == this.dbmCodeTypeInfos[k].code_type_id) {
+                    return this.dbmCodeTypeInfos[k].code_type_name
+                }
+            }
+        },
+        // 获取代码类下拉
+        getDbmCodeTypeIdAndNameInfo() {
+            tsbFun.getDbmCodeTypeIdAndNameInfo().then(res => {
+                this.dbmCodeTypeInfos = res.data.dbmCodeTypeInfos
+            });
+        },
+        //人工对标确定
+        dbResultSubmitFun() {
+            this.dialogManualBenchdata = false
+            console.log(this.dbid, this.radio)
         }
     }
 }

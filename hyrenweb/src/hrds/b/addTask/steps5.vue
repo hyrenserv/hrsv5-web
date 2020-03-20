@@ -126,6 +126,9 @@
     <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
     <!-- 选择目的地弹框 -->
     <el-dialog title=" 选择目的地" :visible.sync="dialogChooseDestination" width="70%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">选择目的地</span>
+        </div>
         <el-table :data="destinationData.slice((destination_currentPage - 1) * destination_pagesize, destination_currentPage * destination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="getRowKeys">
             <el-table-column width="55" align="center" prop="selectionState">
                 <template slot="header" slot-scope="scope">
@@ -165,6 +168,9 @@
     </el-dialog>
     <!-- 查看详情 -->
     <el-dialog title=" 关系型数据库" :visible.sync="dialogViewDetails" width="60%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">关系型数据库</span>
+        </div>
         <table v-if="viewDatilsData==''" class="mailTable" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td class="nocontent">暂无信息</td>
@@ -181,11 +187,8 @@
     </el-dialog>
     <!-- 配置字段属性 -->
     <el-dialog :visible.sync="dialogFieldProperty" width="80%" class="alltable">
-        <div slot="title" class="header-title">
-            <span class="title">配置字段属性&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span class="title">
-                <p class="topcolumename">根据目的地选择字段存储</p>
-            </span>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">配置字段属性(根据目的地选择字段存储)</span>
         </div>
         <!--   <el-button
         type="success"
@@ -375,7 +378,7 @@ export default {
         });
         let params2 = {};
         params2["category"] = "StorageType";
-         this.$Code.getCategoryItems(params2).then(res => {
+        this.$Code.getCategoryItems(params2).then(res => {
             this.StorageType = res.data ? res.data : [];
         });
         this.storeTypeFun();
@@ -444,7 +447,7 @@ export default {
                             if (res.code == 200) {
                                 this.submit_1 = true;
                                 // this.dbid = res.data;
-                            } 
+                            }
                         });
                     } else {
                         this.submit_1 = true;
@@ -529,7 +532,7 @@ export default {
         storeTypeFun() {
             let params = {};
             params["category"] = "Store_type";
-             this.$Code.getCategoryItems(params).then(res => {
+            this.$Code.getCategoryItems(params).then(res => {
                 if (res) {
                     this.storeTypeData = res.data;
                 }
@@ -757,7 +760,7 @@ export default {
         specialfieldFun() {
             let params = {};
             params["category"] = "StoreLayerAdded";
-             this.$Code.getCategoryItems(params).then(res => {
+            this.$Code.getCategoryItems(params).then(res => {
                 if (res.data) {
                     this.StoreData = res.data;
                 }

@@ -15,3 +15,29 @@ export function getColumnByFileId(data) {
         params: data,
     })
 }
+//点击对标
+export function setDbmDtcolInfo(data) {
+    return request({
+        url: '/K/tsbenchmarking/setDbmDtcolInfo',
+        params: data,
+    })
+}
+//人工对标方法
+export function getDbmNormbasicInfo(data) {
+    return request({
+        url: '/K/dbmnormbasic/getDbmNormbasicInfo',
+        params: data,
+    })
+}
+// 获取代码类下拉框
+export function getDbmCodeTypeIdAndNameInfo() {
+    return request({
+        url: '/K/dbmcodetypeinfo/getDbmCodeTypeIdAndNameInfo',
+    })
+}
+//获取分类树信息
+export function getDbmSortInfoTreeData() {
+    return request({
+        url: '/K/dbmtree/getDbmSortInfoTreeData',
+    })
+}

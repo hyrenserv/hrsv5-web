@@ -73,6 +73,9 @@
     <el-pagination @size-change="unloading_handleSizeChange" @current-change="unloading_handleCurrentChange" :current-page="unloadingcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="unloadingpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.unloadingFileData.length" class="locationcenter"></el-pagination>
     <!--所有表分隔符设置  -->
     <el-dialog title="所有表分隔符设置" :visible.sync="dialogAllTableSeparatorSettings" width="50%" class="alltable" @close="AllTable_SeparatorCloseFun()">
+         <div slot="title" >
+                    <span class="dialogtitle el-icon-caret-right">所有表分隔符设置</span>
+    </div>
         <el-form ref="separatorData" :model="separatorData" label-width="240px" text-align="center">
             <el-form-item label="是否仅抽取:" prop="isExtraction" :rules="rule.selected">
                 <el-radio-group v-model="separatorData.isExtraction">

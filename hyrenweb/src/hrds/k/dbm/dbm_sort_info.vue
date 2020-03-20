@@ -26,7 +26,7 @@
             </el-table-column>
             <el-table-column prop="sort_level_num" label="分类层级数" align="center" width="80">
             </el-table-column>
-            <el-table-column prop="sort_name" label="分类名称" align="center"  :show-overflow-tooltip="true">
+            <el-table-column prop="sort_name" label="分类名称" align="center" :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column prop="sort_remark" label="分类描述" align="center" width="160" :show-overflow-tooltip="true">
             </el-table-column>
@@ -51,13 +51,13 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
+        <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" @prev-click='sig_preclickFun' @next-click='sig_nextclickFun' :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
     </el-row>
     <!-- 新增分类 -->
     <el-dialog title="新增标准分类" :visible.sync="dialogaddclassableVisible" width="40%" class='data_edit'>
-         <div slot="title" class="header-title">
-                        <span class="title">{{title}}标准分类</span>
-                    </div>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">{{title}}标准分类</span>
+        </div>
         <el-row>
             <el-form ref="standardClassifiFormRule" label-width="86px" :model="standardClassifiFormRule">
                 <el-row :gutter="20">
@@ -116,7 +116,7 @@ import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 export default {
-     props:['options'],
+    props: ['options'],
     data() {
         return {
             rule: validator.default,
@@ -152,9 +152,9 @@ export default {
             selectRow: [],
             sort_status: '',
             codeClass_Value: '',
-            codeClassValue:'',
+            codeClassValue: '',
             searchCodeClass_status: '',
-            title:''
+            title: ''
         }
     },
     created() {
@@ -165,15 +165,15 @@ export default {
         this.getDbmCodeTypeInfo(1, 10)
     },
     methods: {
-        cleanFun(){
-             this.sort_id_s=[],
-            this.selectRow=[],
-            this.sort_status='',
-            this.codeClass_Value='',
-            this.codeClassValue='',
-            this.searchCodeClass_status='',
-            this.title=''
-            this.status=''
+        cleanFun() {
+            this.sort_id_s = [],
+                this.selectRow = [],
+                this.sort_status = '',
+                this.codeClass_Value = '',
+                this.codeClassValue = '',
+                this.searchCodeClass_status = '',
+                this.title = ''
+            this.status = ''
         },
         sig_handleSizeChange(size) {
             this.pagesize = size;
@@ -203,6 +203,12 @@ export default {
                 this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
         },
+        sig_preclickFun(currentPage) {
+            this.sig_handleCurrentChange(currentPage)
+        },
+        sig_nextclickFun(currentPage) {
+            this.sig_handleCurrentChange(currentPage)
+        },
         // 复选框选中
         handleSelectionChange(selectTrue) {
             this.selectRow = selectTrue
@@ -215,7 +221,7 @@ export default {
             }).then(res => {
                 message.issueSuccess(res)
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                 that.$emit('handleClick');
+                that.$emit('handleClick');
             });
         },
         /* //归属分类
@@ -231,7 +237,7 @@ export default {
                     // 新增
                     let params = {},
                         that = this;
-                    params["parent_id"] =this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]? parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]):0;
+                    params["parent_id"] = this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1] ? parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]) : 0;
                     params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length;
                     params["sort_name"] = this.standardClassifiFormRule.chNmae;
                     params["sort_remark"] = this.standardClassifiFormRule.standardMark;
@@ -249,7 +255,7 @@ export default {
                             message.saveSuccess(res);
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                              that.$emit('handleClick');
+                            that.$emit('handleClick');
                         });
                     }
 
@@ -258,10 +264,10 @@ export default {
         },
         // 获取分页数据
         getDbmCodeTypeInfo(page, size) {
-            this.sort_status=''
-            this.codeClass_Value=''
-            this.codeClassValue=''
-            this.searchCodeClass_status=''
+            this.sort_status = ''
+            this.codeClass_Value = ''
+            this.codeClassValue = ''
+            this.searchCodeClass_status = ''
             let params = {}
             params["currPage"] = page;
             params["pageSize"] = size;
@@ -311,19 +317,19 @@ export default {
         },
         //新增分类打开方法
         addClass() {
-            this.title='新增'
+            this.title = '新增'
             this.dialogaddclassableVisible = true;
             this.status = 'add'
             this.standardClassifiFormRule.belongsClass = ''
             this.standardClassifiFormRule.chNmae = ''
             this.standardClassifiFormRule.standardMark = ''
             this.standardClassifiFormRule.code_status = ''
-              this.$emit('handleClick');
+            this.$emit('handleClick');
         },
         //编辑打开方法
         EditFun(row) {
-            this.title='编辑'
-              this.$emit('handleClick');
+            this.title = '编辑'
+            this.$emit('handleClick');
             this.dialogaddclassableVisible = true;
             this.status = 'edit'
             this.edit_sortId = row.sort_id
@@ -370,7 +376,7 @@ export default {
                 dataBenchmarkingAllFun.deleteDbmSortInfo(params).then(res => {
                     message.deleteSuccess(res);
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                     that.$emit('handleClick');
+                    that.$emit('handleClick');
                 });
             }).catch(() => {})
 
@@ -403,11 +409,11 @@ export default {
                 'pageSize': pagesize
             }).then(res => {
                 let arr = res.data.dbmSortInfos
-                if(arr.length>0){
-                for (let i = 0; i < arr.length; i++) {
-                    arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
+                if (arr.length > 0) {
+                    for (let i = 0; i < arr.length; i++) {
+                        arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
+                    }
                 }
-            }
                 this.tableData = arr
                 this.totalSize = res.data.totalSize
             });
@@ -430,7 +436,7 @@ export default {
                     message.deleteSuccess(res)
                     that.sort_id_s = []
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-                     that.$emit('handleClick');
+                    that.$emit('handleClick');
                 });
             }).catch(() => {})
         },
@@ -453,10 +459,11 @@ export default {
                 'status': sort_status
             }).then(res => {
                 let arr = res.data.dbmSortInfos
-                if(arr.length>0){
-                for (let i = 0; i < arr.length; i++) {
-                    arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
-                }}
+                if (arr.length > 0) {
+                    for (let i = 0; i < arr.length; i++) {
+                        arr[i].parentName = this.getparentClassNmae(arr[i].parent_id, this.options)
+                    }
+                }
                 this.tableData = arr
                 this.totalSize = res.data.totalSize
             })
