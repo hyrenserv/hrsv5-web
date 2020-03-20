@@ -44,3 +44,11 @@
                         </span>
                     </el-tree>
                 </div>
+      8.3 弹框标题样式，直接复制下面代码（样式在类名dialogtitle,dialogtoptst,topcolumename中）
+       <div slot="title" >
+                        <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+                        <span class="dialogtoptxt">
+                            表名:
+                            <p class="topcolumename">{{EXtable_name}}</p>
+                        </span>
+        </div>
