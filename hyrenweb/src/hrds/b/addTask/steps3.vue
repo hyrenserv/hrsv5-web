@@ -519,14 +519,14 @@
                     <el-button type="success" @click="colSelectFun(scope.$index,scope.row)" size="mini">列选择</el-button>
                 </template>
             </el-table-column>
-            <el-table-column property="col_name" label="列名" align="center">
+            <el-table-column property="old_name" label="要合并的字段名称" align="center">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.col_name" disabled :title="scope.row.col_name" placeholder="列名" size="medium"></el-input>
+                    <el-input v-model="scope.row.old_name" disabled :title="scope.row.old_name" placeholder="要合并的字段名称" size="medium"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column property="old_name" label="合并列名" align="center">
+            <el-table-column property="col_name" label="合并后字段名称" align="center">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.old_name" :title="scope.row.old_name" placeholder="合并列名" size="medium"></el-input>
+                    <el-input v-model="scope.row.col_name" :title="scope.row.col_name" placeholder="合并后字段名称" size="medium"></el-input>
                 </template>
             </el-table-column>
             <el-table-column property="col_zhname" label="合并列中文名" align="center">
@@ -1026,7 +1026,7 @@ export default {
         priorityDataFun() {
             let params = {};
             params["category"] = "CleanType";
-             this.$Code.getCategoryItems(params).then(res => {
+            this.$Code.getCategoryItems(params).then(res => {
                 this.priorityData = res.data ? res.data : [];
             });
         },
@@ -1825,7 +1825,7 @@ export default {
                 }
             }
             this.col_namstr = str;
-            this.columnMerge[index].col_name = this.col_namstr;
+            this.columnMerge[index].old_name = this.col_namstr;
             this.col_namstr = "";
             this.Allis_colselectionState = false;
         },
