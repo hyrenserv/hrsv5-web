@@ -3,7 +3,7 @@
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
-                <el-input size="mini" v-model="form.etl_job" style="width:130px" placeholder="作业名称"></el-input>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" style="width:130px" placeholder="作业名称"></el-autocomplete>
             </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -505,6 +505,7 @@ export default {
                 pro_type: '',
             },
             tableData: [],
+            listDatas: [],
             jobTitle: '',
             temp: 'false',
             multipleSelection: [],
@@ -564,6 +565,7 @@ export default {
         this.getTable();
         this.getSelect();
         this.getCode();
+        this.getJobName()
     },
     methods: {
         //下拉框数据强制渲染
@@ -593,6 +595,34 @@ export default {
                     item.value = item.sub_sys_cd;
                 });
                 this.addSelect.project_no = arr;
+            });
+        },
+        // input框的历史信息
+        querySearch(queryString, cb) {
+            var res = this.listDatas;
+            var results = queryString ? res.filter(this.createFilter(queryString)) : res;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+        createFilter(queryString) {
+            return (res) => {
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
+        },
+        //获取作业名称/上游作业名称下拉框数据
+        getJobName() {
+            let params = {};
+            let arr = [];
+            let obj = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            etlJobDefAllFun.searchEtlJob(params).then(res => {
+                res.data.forEach((item) => {
+                    obj.label = item;
+                    obj.value = item;
+                    arr.push(obj);
+                    obj = {};
+                });
+                this.listDatas = arr;
             });
         },
         //作业程序类型下拉框数据

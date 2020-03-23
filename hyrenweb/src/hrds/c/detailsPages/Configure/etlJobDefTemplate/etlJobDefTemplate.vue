@@ -2,7 +2,7 @@
   <div>
     <el-row>
       <template  v-for="(item, index) in templateData">
-        <el-button type="primary" :key="index" @click="filesBtn(item,index)">{{item.etl_temp_type}}
+        <el-button size="small" type="primary" :key="index" @click="filesBtn(item,index)">{{item.etl_temp_type}}
         </el-button>
       </template>
     </el-row>

@@ -5,7 +5,7 @@
             <el-col :span="8">
                 <el-form-item label="作业名称">
                     <div style="width:120px">
-                        <el-input size="mini" v-model="form.etl_job" placeholder="作业名称"></el-input>
+                        <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" placeholder="作业名称"></el-autocomplete>
                     </div>
                 </el-form-item>
             </el-col>
@@ -210,6 +210,7 @@ export default {
             tableData: [],
             tableData1: [],
             tableData2: [],
+            listDatas: [],
             formAdjust: {
                 currentLevel: '',
             },
@@ -239,7 +240,7 @@ export default {
         this.getCurrInfo();
         this.getHistoryInfo();
         this.getCode();
-        // this.demo();
+        this.getJobName();
     },
     methods: {
         //从监控当前作业回来
@@ -269,6 +270,34 @@ export default {
                     item.value = item.code;
                 });
                 this.jobStatus = arr;
+            });
+        },
+        // input框的历史信息
+        querySearch(queryString, cb) {
+            var res = this.listDatas;
+            var results = queryString ? res.filter(this.createFilter(queryString)) : res;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+        createFilter(queryString) {
+            return (res) => {
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
+        },
+        //获取作业名称/上游作业名称下拉框数据
+        getJobName() {
+            let params = {};
+            let arr = [];
+            let obj = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            jobLevelInterventeAllFun.searchEtlJob(params).then(res => {
+                res.data.forEach((item) => {
+                    obj.label = item;
+                    obj.value = item;
+                    arr.push(obj);
+                    obj = {};
+                });
+                this.listDatas = arr;
             });
         },
         //获取作业情况数据
@@ -859,9 +888,11 @@ export default {
 .tabBtns {
     margin-top: 15px;
 }
-.elRows{
+
+.elRows {
     height: 32px;
 }
+
 .btns {
     margin-left: 20px;
     margin-right: 20px;
