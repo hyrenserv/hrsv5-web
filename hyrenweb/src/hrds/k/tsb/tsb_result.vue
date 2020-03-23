@@ -199,7 +199,7 @@ export default {
             this.dataType = res.data
         })
         this.getDbmCodeTypeIdAndNameInfo()
-        this.getPredictBenchmarkingResults()
+        this.getPredictResult()
     },
     mounted() {
 
@@ -214,8 +214,8 @@ export default {
             this.getDbmNormbasicInfo(1, 10)
         },
         //初始化页面数据方法
-        getPredictBenchmarkingResults(){
-             tsbFun.getPredictBenchmarkingResults().then(res => {
+        getPredictResult(){
+             tsbFun.getPredictResult().then(res => {
                 console.log(res)
             });
         },
