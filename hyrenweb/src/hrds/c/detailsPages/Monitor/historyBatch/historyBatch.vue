@@ -2,10 +2,12 @@
 <div class="historyBatch">
     <div class="title">搜索条件</div>
     <el-row class="elRowdate">
-        日期筛选: <el-date-picker size="small" v-model="datePickerValue" type="date" placeholder="跑批日期">
+        <span> 日期筛选</span>&nbsp
+        <el-date-picker size="mini" v-model="datePickerValue" type="date" placeholder="跑批日期">
         </el-date-picker>
-        <el-button type="primary" @click="search" size="small">搜索</el-button>
+        <el-button type="primary" @click="search" size="mini">搜索</el-button>
     </el-row>
+    <el-divider></el-divider>
     <div class="titles">历史信息</div>
     <el-row>
         <el-row class="span10">系统批量</el-row>
@@ -404,7 +406,10 @@ export default {
 .historyBatch .elRowdate {
     margin-top: 16px;
 }
-
+.elRowdate span{
+    color: #606266;
+    font-size: 14px;
+}
 .historyBatch .titles {
     font-weight: 600;
 }

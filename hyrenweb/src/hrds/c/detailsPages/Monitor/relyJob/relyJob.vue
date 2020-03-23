@@ -2,14 +2,15 @@
 <div class="relyJob">
     <div class="title">搜索条件</div>
     <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
-        <el-form-item label="作业名称" style="font-weight: 600">
+        <el-form-item label="作业名称" class="elformItem">
             <el-input v-model="form.etl_job" placeholder="作业名称" size="mini"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="elformItem">
             <el-button type="primary" @click="searchSingle" size="mini">单作业搜索</el-button>
             <el-button type="success" @click="searchALL" size="mini">全作业搜索</el-button>
         </el-form-item>
     </el-form>
+    <el-divider></el-divider>
     <el-row>
         <el-row v-show="showChartsHidden" class="workName">
             <div id="myChart" :style="{width: '100%', height: '500px'}"></div>
@@ -194,5 +195,9 @@ export default {
     font-size: 16px;
     margin-bottom: 5px;
     font-weight: 600;
+}
+
+.relyJob .elformItem {
+    margin-bottom: 0px;
 }
 </style>

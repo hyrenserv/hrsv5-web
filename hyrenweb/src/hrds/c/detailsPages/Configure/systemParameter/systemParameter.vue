@@ -1,24 +1,35 @@
 <template>
 <div>
-    <el-row>
-        <div>
-            <el-input placeholder="变量名称" v-model="input">
-                <el-button slot="append" @click="searchBtn">搜索</el-button>
-            </el-input>
-        </div>
-    </el-row>
+    <div class="subSystemdiv2">
+        <el-input size="mini" placeholder="变量名称" v-model="input">
+            <el-button size="mini" slot="append" @click="searchBtn">搜索</el-button>
+        </el-input>
+    </div>
+    <div class="subSystemdiv">
+        <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+            <el-button size="mini" type="primary">选择上传文件</el-button>
+        </el-upload>
+        <el-button class="buttonStyle" size="mini" type="success" @click="importData">导入数据
+        </el-button>
+        <el-button class="buttonStyle" size="mini" type="primary" @click="downloadModel">下载模板
+        </el-button>
+        <el-button class="buttonStyle" size="mini" type="primary" @click="handleAdd">新增
+        </el-button>
+        <el-button class="buttonStyle" size="mini" type="danger" @click="handleBatchDelete">批量删除
+        </el-button>
+    </div>
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" align='center' disabled='true' :selectable="isDisabled">
+        <el-table-column type="selection"  show-overflow-tooltip  align='center' disabled='true' :selectable="isDisabled">
         </el-table-column>
-        <el-table-column prop="etl_sys_cd" label="工程编号" align='center'>
+        <el-table-column prop="etl_sys_cd" show-overflow-tooltip  label="工程编号" align='center'>
         </el-table-column>
-        <el-table-column prop="para_cd" label="变量名称" align='center'>
+        <el-table-column prop="para_cd" show-overflow-tooltip   label="变量名称" align='center'>
         </el-table-column>
-        <el-table-column prop="paraType" label="变量类型" align='center'>
+        <el-table-column prop="paraType" show-overflow-tooltip  label="变量类型" align='center'>
         </el-table-column>
-        <el-table-column prop="para_val" label="变量值" align='center'>
+        <el-table-column prop="para_val" show-overflow-tooltip  label="变量值" align='center'>
         </el-table-column>
-        <el-table-column prop="para_desc" label="描述" align='center'>
+        <el-table-column prop="para_desc" show-overflow-tooltip  label="描述" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template slot-scope="scope">
@@ -30,29 +41,9 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-col :span="8">
-            <el-button size="mini" type="primary" @click="handleAdd">新增
-            </el-button>
-            <el-button size="mini" type="danger" @click="handleBatchDelete">批量删除
-            </el-button>
-        </el-col>
-        <el-col :span="13" :offset="3">
+        <el-col :span="13" :offset="11">
             <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
             </el-pagination>
-        </el-col>
-    </el-row>
-    <el-divider></el-divider>
-    <el-row>
-        <el-col :span="4">
-            <el-upload accept=".xlsx" class="upload-demo" action="" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                <el-button size="mini" type="primary"><i class="el-icon-upload el-icon--left"></i>选择上传文件</el-button>
-            </el-upload>
-        </el-col>
-        <el-col :span="8" :offset="2">
-            <el-button size="mini" type="success" @click="importData">导入数据
-            </el-button>
-            <el-button size="mini" type="primary" @click="downloadModel">下载模板
-            </el-button>
         </el-col>
     </el-row>
     <!-- 添加/修改系统模态框 -->
@@ -419,5 +410,20 @@ export default {
 
 .tabBtns {
     margin-top: 15px;
+}
+
+.buttonStyle {
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+    margin-left: 0px;
+}
+
+.subSystemdiv {
+    float: right;
+}
+
+.subSystemdiv2 {
+    float: left;
 }
 </style>

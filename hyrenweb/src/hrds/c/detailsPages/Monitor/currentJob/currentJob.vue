@@ -2,14 +2,15 @@
 <div>
     <div class="title">搜索条件</div>
     <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
-        <el-form-item label="作业名称" style="font-weight: 600">
+        <el-form-item label="作业名称" class="itemformel">
             <el-input v-model="form.etl_job" placeholder="作业名称" size="mini"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="itemformel">
             <el-button type="primary" @click="search" size="mini">搜索</el-button>
             <el-button type="success" @click="intervene" size="mini">干预</el-button>
         </el-form-item>
     </el-form>
+    <el-divider></el-divider>
     <div class="titles">作业信息</div>
     <el-form :model="forms" ref="forms" class="demo-form-inline" :inline="true" label-width="100px">
         <el-col :span="8">
@@ -38,14 +39,8 @@
             </el-form-item>
         </el-col>
         <el-col :span="8">
-            <el-form-item label="调度频率" v-model="forms.disp_freq">
-                <el-input size="mini" v-if="forms.disp_freq == null" value="" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_freq == 'D'" value="天(D)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_freq == 'M'" value="月(M)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_freq == 'W'" value="周(W)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_freq == 'X'" value="旬(X)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_freq == 'Y'" value="年(Y)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_freq == 'F'" value="频率(F)" disabled></el-input>
+            <el-form-item label="调度频率">
+                <el-input size="mini" v-model="forms.disp_freq" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -59,14 +54,8 @@
             </el-form-item>
         </el-col>
         <el-col :span="8">
-            <el-form-item label="调度触发方式" v-model="forms.disp_type">
-                <el-input size="mini" v-if="forms.disp_type == null" value="" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_type == 'B'" value="批前(B)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_type == 'D'" value="依赖触发(D)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_type == 'T'" value="定时T+1触发(T)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_type == 'Z'" value="定时T+0触发(Z)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_type == 'A'" value="批后(A)" disabled></el-input>
-                <el-input size="mini" v-if="forms.disp_type == 'F'" value="频率(F)" disabled></el-input>
+            <el-form-item label="调度触发方式">
+                <el-input size="mini" v-model="forms.disp_type" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -80,11 +69,8 @@
             </el-form-item>
         </el-col>
         <el-col :span="8">
-            <el-form-item label="作业有效标志" v-model="forms.job_eff_flag">
-                <el-input size="mini" v-if="forms.job_eff_flag == null" value="" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_eff_flag == 'Y'" value="有效(Y)" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_eff_flag == 'N'" value="无效(N)" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_eff_flag == 'V'" value="空跑(V)" disabled></el-input>
+            <el-form-item label="作业有效标志">
+                <el-input size="mini" v-model="forms.job_eff_flag" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -99,9 +85,7 @@
         </el-col>
         <el-col :span="8">
             <el-form-item label="当天是否调度" v-model="forms.today_disp">
-                <el-input size="mini" v-if="forms.today_disp == null" value="" disabled></el-input>
-                <el-input size="mini" v-if="forms.today_disp == 'Y'" value="是(Y)" disabled></el-input>
-                <el-input size="mini" v-if="forms.today_disp == 'N'" value="否(N)" disabled></el-input>
+                <el-input size="mini" v-model="forms.today_disp" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -115,25 +99,13 @@
             </el-form-item>
         </el-col>
         <el-col :span="8">
-            <el-form-item label="作业调度状态" v-model="forms.job_disp_status">
-                <el-input size="mini" v-if="forms.job_disp_status == null" value="" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_disp_status == 'D'" value="完成" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_disp_status == 'E'" value="错误" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_disp_status == 'P'" value="挂起" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_disp_status == 'R'" value="运行" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_disp_status == 'S'" value="停止" disabled></el-input>
-                <el-input size="mini" v-if="forms.job_disp_status == 'W'" value="等待" disabled></el-input>
+            <el-form-item label="作业调度状态">
+                <el-input size="mini" v-model="forms.job_disp_status" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
-            <el-form-item label="主服务器同步标志" v-model="forms.main_serv_sync" label-width="130px">
-                <div style="width:150px">
-                    <el-input size="mini" v-if="forms.main_serv_sync == null" disabled></el-input>
-                    <el-input size="mini" v-if="forms.main_serv_sync == 'L'" value="锁定" disabled></el-input>
-                    <el-input size="mini" v-if="forms.main_serv_sync == 'N'" value="不同步" disabled></el-input>
-                    <el-input size="mini" v-if="forms.main_serv_sync == 'Y'" value="同步" disabled></el-input>
-                    <el-input size="mini" v-if="forms.main_serv_sync == 'B'" value="备份中" disabled></el-input>
-                </div>
+            <el-form-item label="主服务器同步标志" label-width="130px">
+                <el-input style="width:148px;" size="mini" v-model="forms.main_serv_sync" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -238,6 +210,104 @@ export default {
                 params["etl_sys_cd"] = this.sys_cd;
                 params["etl_job"] = this.form.etl_job;
                 currentJobAllFun.monitorCurrJobInfo(params).then(res => {
+                    // 数据处理
+                    switch (res.data.disp_freq) {
+                        case 'D':
+                            res.data.disp_freq = "天(D)";
+                            break;
+                        case 'M':
+                            res.data.disp_freq = "月(M)";
+                            break;
+                        case 'W':
+                            res.data.disp_freq = "周(W)";
+                            break;
+                        case 'X':
+                            res.data.disp_freq = "旬(X)";
+                            break;
+                        case 'Y':
+                            res.data.disp_freq = "年(Y)";
+                            break;
+                        case 'F':
+                            res.data.disp_freq = "频率(F)";
+                            break;
+                    }
+
+                    switch (res.data.disp_type) {
+                        case 'B':
+                            res.data.disp_type = "批前(B)";
+                            break;
+                        case 'D':
+                            res.data.disp_type = "依赖触发(D)";
+                            break;
+                        case 'T':
+                            res.data.disp_type = "定时T+1触发(T)";
+                            break;
+                        case 'Z':
+                            res.data.disp_type = "定时T+0触发(Z)";
+                            break;
+                        case 'A':
+                            res.data.disp_type = "批后(A)";
+                            break;
+                        case 'F':
+                            res.data.disp_type = "频率(F)";
+                            break;
+                    }
+                    switch (res.data.job_eff_flag) {
+                        case 'V':
+                            res.data.job_eff_flag = "空跑(V)";
+                            break;
+                        case 'N':
+                            res.data.job_eff_flag = "无效(N)";
+                            break;
+                        case 'Y':
+                            res.data.job_eff_flag = "有效(Y)";
+                            break;
+                    }
+
+                    switch (res.data.today_disp) {
+                        case 'N':
+                            res.data.today_disp = "否(N)";
+                            break;
+                        case 'Y':
+                            res.data.today_disp = "是(Y)";
+                            break;
+                    }
+
+                    switch (res.data.job_disp_status) {
+                        case 'D':
+                            res.data.job_disp_status = "完成";
+                            break;
+                        case 'E':
+                            res.data.job_disp_status = "错误";
+                            break;
+                        case 'P':
+                            res.data.job_disp_status = "挂起";
+                            break;
+                        case 'R':
+                            res.data.job_disp_status = "运行";
+                            break;
+                        case 'S':
+                            res.data.job_disp_status = "停止";
+                            break;
+                        case 'W':
+                            res.data.job_disp_status = "等待";
+                            break;
+                    }
+
+                    switch (res.data.main_serv_sync) {
+                        case 'L':
+                            res.data.main_serv_sync = "锁定";
+                            break;
+                        case 'N':
+                            res.data.main_serv_sync = "不同步";
+                            break;
+                        case 'Y':
+                            res.data.main_serv_sync = "同步";
+                            break;
+                        case 'B':
+                            res.data.main_serv_sync = "备份中";
+                            break;
+                    }
                     this.forms = res.data;
                     let arr = [];
                     let dates = res.data.resourceRelation;
@@ -291,5 +361,9 @@ export default {
 
 .tabBtns {
     margin-top: 15px;
+}
+
+.itemformel {
+    margin-bottom: 0;
 }
 </style>
