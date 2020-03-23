@@ -22,6 +22,12 @@ export function setDbmDtcolInfo(data) {
         params: data,
     })
 }
+//对标结果显示数据
+export function getPredictBenchmarkingResults() {
+    return request({
+        url: '/K/tsbenchmarking/getPredictBenchmarkingResults',
+    })
+}
 //人工对标方法
 export function getDbmNormbasicInfo(data) {
     return request({

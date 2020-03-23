@@ -1,7 +1,7 @@
 <template>
 <div id="agentList">
     <el-row class='topTitle'>
-        <span>数据源Agent列表</span>
+        <span class='el-icon-location'>数据源Agent列表</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
