@@ -91,15 +91,16 @@ export default {
     methods: {
         dbsubmitFun() {
              this.isLoading=true
-            let col_info_s = this.ruleForm.tableData.map((key) => {
+             console.log(this.ruleForm.tableData)
+           /*  let dbmColInfos = this.ruleForm.tableData.map((key) => {
                 return ({
                     col_id: key.column_id,
                     col_cname: key.column_ch_name,
                     col_remark: key.tc_remark?key.tc_remark:""
                 });
             })
-            console.log(col_info_s)
-            tsbFun.setDbmDtcolInfo({'col_info_s':JSON.stringify(col_info_s)}).then(res => {
+            console.log(dbmColInfos) */
+            tsbFun.predictBenchmarking({'col_info_s':JSON.stringify(this.ruleForm.tableData)}).then(res => {
                console.log(res)
                this.isLoading=false
                   this.$router.push({

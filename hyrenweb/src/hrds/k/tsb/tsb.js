@@ -16,16 +16,16 @@ export function getColumnByFileId(data) {
     })
 }
 //点击对标
-export function setDbmDtcolInfo(data) {
+export function predictBenchmarking(data) {
     return request({
-        url: '/K/tsbenchmarking/setDbmDtcolInfo',
+        url: '/K/tsbenchmarking/predictBenchmarking',
         params: data,
     })
 }
 //对标结果显示数据
-export function getPredictBenchmarkingResults() {
+export function getPredictResult() {
     return request({
-        url: '/K/tsbenchmarking/getPredictBenchmarkingResults',
+        url: '/K/tsbenchmarking/getPredictResult',
     })
 }
 //人工对标方法
