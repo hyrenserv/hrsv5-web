@@ -1,33 +1,47 @@
 <template>
 <div>
-    <el-form :model="form" ref="form" class="demo-form-inline" :inline="true">
-        <el-col :span="9" :offset="1">
+    <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
+        <el-col :span="12">
             <el-form-item label="作业名称">
-                <el-input v-model="form.etl_job" placeholder="作业名称"></el-input>
+                <el-input size="mini" v-model="form.etl_job" style="width:180px" placeholder="作业名称"></el-input>
             </el-form-item>
         </el-col>
-        <el-col :span="9">
+        <el-col :span="12">
             <el-form-item label="上游作业名称">
-                <el-input v-model="form.pre_etl_job" placeholder="上游作业名称"></el-input>
+                <el-input size="mini" v-model="form.pre_etl_job" style="width:180px" placeholder="上游作业名称"></el-input>
+                <el-button size="mini" class="searchBtn" type="primary" @click="searchBtn">搜索
+                </el-button>
             </el-form-item>
-        </el-col>
-        <el-col :span="2">
-            <el-button type="primary" @click="searchBtn">搜索
-            </el-button>
         </el-col>
     </el-form>
+    <el-divider></el-divider>
+    <el-row>
+        <div class="subSystemdiv">
+            <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                <el-button size="mini" type="primary">选择上传文件</el-button>
+            </el-upload>
+            <el-button class="buttonStyle" size="mini" type="success" @click="importData">导入数据
+            </el-button>
+            <el-button class="buttonStyle" size="mini" type="primary" @click="downloadModel">下载模板
+            </el-button>
+            <el-button class="buttonStyle" size="mini" type="primary" @click="handleAdd">新增
+            </el-button>
+            <el-button class="buttonStyle" size="mini" type="danger" @click="handleBatchDelete">批量删除
+            </el-button>
+        </div>
+    </el-row>
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
-        <el-table-column prop="etl_sys_cd" label="工程编号" align='center'>
+        <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
         </el-table-column>
-        <el-table-column prop="etl_job" label="作业名称" align='center'>
+        <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align='center'>
         </el-table-column>
-        <el-table-column prop="pre_etl_sys_cd" label="上游工程编号" align='center'>
+        <el-table-column prop="pre_etl_sys_cd" show-overflow-tooltip label="上游工程编号" align='center'>
         </el-table-column>
-        <el-table-column prop="pre_etl_job" label="上游作业名称" align='center'>
+        <el-table-column prop="pre_etl_job" show-overflow-tooltip label="上游作业名称" align='center'>
         </el-table-column>
-        <el-table-column prop="statu" label="状态" align='center'>
+        <el-table-column prop="statu" show-overflow-tooltip label="状态" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template slot-scope="scope">
@@ -540,5 +554,25 @@ export default {
 <style scoped>
 .tabBtns {
     margin-top: 15px;
+}
+
+.demo-form-inlines {
+    height: 32px;
+}
+
+.searchBtn {
+    margin-left: 10px;
+}
+
+.buttonStyle {
+    display: block;
+    float: left;
+    margin-right: 10px;
+    margin-left: 0px;
+}
+
+.subSystemdiv {
+    float: right;
+    margin-bottom: 14px;
 }
 </style>

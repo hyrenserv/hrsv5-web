@@ -62,7 +62,7 @@ export default {
     data() {
         return {
             sys_cd: '',
-            defaultActive: menus[2].children[0].path,
+            defaultActive: '',
             job: '',
             menus: menus,
             sys_name: '',
@@ -76,6 +76,10 @@ export default {
         }
     },
     mounted() {
+        if (this.$route.query.name && this.$route.query.dec) {
+            this.defaultActive = this.$route.query.name;
+            this.pTitle = this.$Base64.decode(this.$route.query.dec);
+        }
         this.sys_name = sessionStorage.getItem('sys_name');
         this.sys_cd = sessionStorage.getItem('sys_cd');
     },
@@ -95,11 +99,61 @@ export default {
         handleSelect(key, keyPath, title) {
             this.defaultActive = key;
             let path = key.replace(/\//g, "");
+            let changeKey;
+            switch (key) {
+                case '/currentBatch':
+                    changeKey = "当前批量";
+                    break;
+                case '/historyBatch':
+                    changeKey = "历史批量";
+                    break;
+                case '/currentJob':
+                    changeKey = "当前作业";
+                    break;
+                case '/historyJob':
+                    changeKey = "历史作业";
+                    break;
+                case '/relyJob':
+                    changeKey = "依赖作业";
+                    break;
+                case '/systemResource':
+                    changeKey = "系统资源";
+                    break;
+                case '/sysLevelIntervente':
+                    changeKey = "系统级干预";
+                    break;
+                case '/jobLevelIntervente':
+                    changeKey = "作业级干预";
+                    break;
+                case '/subSystem':
+                    changeKey = "任务";
+                    break;
+                case '/etlJobDefTemplate':
+                    changeKey = "作业模板";
+                    break;
+                case '/etlJobDef':
+                    changeKey = "作业";
+                    break;
+                case '/resourcesAvailable':
+                    changeKey = "资源定义";
+                    break;
+                case '/resourcesUsage':
+                    changeKey = "资源分配";
+                    break;
+                case '/systemParameter':
+                    changeKey = "系统参数";
+                    break;
+                case '/etlDependency':
+                    changeKey = "作业依赖";
+                    break;
+            }
             this.$router.push({
                 name: path,
                 query: {
                     etl_sys_name: this.$route.query.etl_sys_name,
-                    etl_sys_cd: this.$route.query.etl_sys_cd
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    name: key,
+                    dec: this.$Base64.encode(changeKey)
                 }
             });
             this.pTitle = title.$slots.default[1].children[0].text;

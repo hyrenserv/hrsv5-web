@@ -51,11 +51,11 @@
                         <span class="pDrag"> <span> {{item.sys_name}} --拖动可排列顺序</span>
                             <span>
                                 <el-tooltip class="items" effect="dark" content="点击可放大查看详情" placement="bottom">
-                                    <i @click="fullScreen" class="el-icon-full-screen"></i>
+                                    <i @click="fullScreen(item)" class="el-icon-full-screen"></i>
                                 </el-tooltip>
                             </span>
                         </span>
-                        <p class="span10">批量运行状态</p>
+                        <p class="span10" @click="routerLink(item)">批量运行状态</p>
                         <p class="span11">批量日期：{{item.bathdate}}</p>
                         <p :id="`radar${index}`" :style="{ height: '300px'}"></p>
                     </div>
@@ -202,12 +202,31 @@
         </div>
     </el-dialog>
     <!-- 调度监控模态框 -->
-    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogMointer" width="60%">
+    <el-dialog :title="title" :visible.sync="dialogMointer" width="78%">
+        <el-divider></el-divider>
         <div>
-            
+            <div class="fixed">
+                <el-col :span="10">
+                    <p class="span22">批量运行状态</p>
+                    <p class="span2">批量日期:{{this.dayDate}}</p>
+                    <VeLine :data="chartdataChartOne" :extend="chartExtendChartOne"></VeLine>
+                </el-col>
+                <el-col :span="14">
+                    <p class="span22">系统运行状态</p>
+                    <p class="span2">批量日期:{{this.dayDate}}</p>
+                    <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings" :events="chartEvents"></VeLine>
+                </el-col>
+            </div>
+
+            <div v-if="showOrhidden">
+                <p class="span22">任务:{{this.task}}</p>
+                <p class="span2">批量日期:{{this.dayDate}}</p>
+            </div>
+            <div v-if="showOrhidden" id="container" :style="{width: '100%', height: 'auto'}"></div>
         </div>
+        <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
-            <el-button size="mini" type="danger">关闭</el-button>
+            <el-button size="mini" @click="close" type="danger">关闭</el-button>
         </div>
     </el-dialog>
 </div>
@@ -215,18 +234,37 @@
 
 <script>
 import * as etlMageAllFun from "./etlMage";
+import * as functionAll from "../detailsPages/Monitor/currentBatch/currentBatch.js";
+import Highcahrts from 'highcharts';
+import highchartsMore from 'highcharts/highcharts-more';
+highchartsMore(Highcahrts);
 import regular from "@/utils/js/regular";
 import VeLine from 'v-charts/lib/histogram.common';
 import Vuex from 'vuex';
 import draggable from 'vuedraggable'
 import Sortable from 'sortablejs'
+let changValue;
 export default {
     components: {
         draggable,
-        Sortable
+        Sortable,
+        VeLine
     },
     data() {
-
+        this.chartSettings = {
+            stack: {
+                '任务': ['挂起', '等待', '运行', '暂停', '错误', '完成']
+            }
+        }
+        let self = this;
+        this.chartEvents = {
+            click: function (e) {
+                self.task = e.name;
+                self.showOrhidden = true;
+                let id = self.changeParamas(e.name)
+                self.searchMonitorJobStateBySubCd(id);
+            }
+        }
         return {
             dialogFormVisibleAdd: false,
             dialogFormVisibleDeploy: false,
@@ -234,22 +272,37 @@ export default {
             dialogFormVisibleStartTRI: false,
             dialogFormVisibleRecordCON: false,
             dialogFormVisibleRecordTRI: false,
-            dialogMointer:false,
+            dialogMointer: false,
             projectTitle: '',
             activeName: 'first',
+            title: "ceshi",
             formAdd: {
                 etl_sys_cd: "",
                 etl_sys_name: "",
                 comments: "",
             },
             chartdataChartOne: {
-                columns: ['etl_sys_name', '完成', '等待', '错误', '暂停', '运行', '挂起'],
+                columns: ['sub_sys_desc', '完成', '等待', '错误', '暂停', '运行', '挂起'],
                 rows: []
             },
+            chartdataChartTwo: {
+                columns: ['sub_sys_desc', '完成', '等待', '错误', '暂停', '运行', '挂起'],
+                rows: []
+            },
+            dayDate: '',
+            task: '',
+            showOrhidden: false,
+            valueTime: '',
             chartExtendChartOne: {
                 series: {
                     //柱子宽度
                     barWidth: 15
+                }
+            },
+            chartExtendChartTwo: {
+                series: {
+                    //柱子宽度
+                    barWidth: 80
                 }
             },
             formDeploy: {
@@ -324,7 +377,6 @@ export default {
                     item['暂停'] = item.suspension;
                     item['错误'] = item.error;
                     item['完成'] = item.done;
-                    this.chartdataChartOne.rows.push(item)
                     arry.push(item);
                     let myChart = this.$echarts.init(document.getElementById(`radar${index}`));
                     myChart.setOption({
@@ -388,6 +440,8 @@ export default {
             this.$router.push({
                 name: 'menus',
                 query: {
+                    name: '/subSystem',
+                    dec: this.$Base64.encode('任务'),
                     etl_sys_name: row.etl_sys_name,
                     etl_sys_cd: row.etl_sys_cd,
                 }
@@ -579,9 +633,281 @@ export default {
             this.onViewTRI();
         },
         // 全屏幕显示
-        fullScreen() {
-            this.dialogMointer = true;
-            console.log('i am click')
+        fullScreen(val) {
+            this.dayDate = val.bathdate;
+            this.monitorCurrentBatchInfo(val.etl_sys_cd);
+            changValue = val.etl_sys_cd;
+        },
+        // 当前批量情况获取
+        monitorCurrentBatchInfo(val) {
+            functionAll.monitorCurrentBatchInfo({
+                etl_sys_cd: val
+            }).then((res) => {
+                res.data.systemOperationStatus.forEach(item => {
+                    item['挂起'] = item.pending;
+                    item['等待'] = item.waiting;
+                    item['运行'] = item.runing;
+                    item['暂停'] = item.suspension;
+                    item['错误'] = item.error;
+                    item['完成'] = item.done;
+                })
+                this.dayDate = res.data.curr_bath_date;
+                // 系统运行状态
+                this.chartdataChartTwo.rows = res.data.systemOperationStatus;
+                // 批量运行状态
+                this.chartdataChartOne.rows = res.data.systemOperationStatus;
+                this.dialogMointer = true;
+            })
+        },
+        // 改变传参
+        changeParamas(val) {
+            this.chartdataChartTwo.rows.forEach(item => {
+                if (val == item.sub_sys_desc) {
+                    val = item.sub_sys_cd;
+                }
+            })
+            return val;
+        },
+        // 监控当前系统运行任务下的作业信息
+        searchMonitorJobStateBySubCd(val) {
+            let that = this;
+            functionAll.searchMonitorJobStateBySubCd({
+                etl_sys_cd: changValue,
+                sub_sys_cd: val,
+                curr_bath_date: this.dayDate
+            }).then(res => {
+                // 数据处理成图标需要的格式
+                let time = [];
+                let colorsArray = [];
+                let sysName = [];
+                let status = [];
+                let startTime = [];
+                let endTime = [];
+                let start = 0;
+                let end = 0;
+                let arry = res.data;
+                let date = new Date().valueOf() + 8 * 60 * 60 * 1000;
+                for (let index = 0; index < arry.length; index++) {
+                    sysName[index] = arry[index].etl_job;
+                    status[index] = arry[index].job_disp_status;
+                    let curr_st_time = arry[index]['curr_st_time']
+                    let curr_end_time = arry[index]['curr_end_time']
+                    // 挂起：
+                    if (arry[index]['job_disp_status'] == "P") {
+                        colorsArray[index] = '#c4b4e4';
+                        start = date;
+                        end = date;
+                    }
+                    // 等待
+                    if (arry[index]['job_disp_status'] == "W") {
+                        colorsArray[index] = '#5ab1ef';
+                        start = date;
+                        end = date;
+                    }
+                    // 暂停
+                    if (arry[index]['job_disp_status'] == "S") {
+                        colorsArray[index] = '#ffb980';
+                        startTime[index] = this.dateToMill(curr_st_time);
+                        endTime[index] = this.dateToMill(curr_end_time);
+                        start = startTime[index];
+                        end = start;
+                    }
+
+                    // 错误
+                    if (arry[index]['job_disp_status'] == "E") {
+                        colorsArray[index] = '#c23531';
+                        startTime[index] = this.dateToMill(curr_st_time);
+                        endTime[index] = this.dateToMill(curr_end_time);
+                        start = startTime[index];
+                        end = start;
+                    }
+                    // 运行时长：
+                    if (arry[index]['job_disp_status'] == "R") {
+                        colorsArray[index] = '#0067a6';
+                        startTime[index] = this.dateToMill(curr_st_time);
+                        start = startTime[index];
+                        end = date;
+                    }
+                    // 完成
+                    if (arry[index]['job_disp_status'] == "D") {
+                        startTime[index] = (this.dateToMill(curr_st_time));
+                        endTime[index] = (this.dateToMill(curr_end_time));
+                        colorsArray[index] = '#19d4ae';
+                        // 是否虚拟作业
+                        if (startTime[index] > endTime[index]) {
+                            startTime[index] = endTime[index];
+                        }
+                        start = startTime[index];
+                        end = endTime[index];
+                    }
+                    time[index] = [start, end];
+                    this.getChartInfo(sysName, startTime, status, endTime, time, colorsArray);
+                }
+
+            })
+        },
+        // 获得图表信息
+        getChartInfo(sysName, startTime, status, endTime, time, colorsArray) {
+            let that = this;
+            var chart = Highcahrts.chart('container', {
+                chart: {
+                    type: 'columnrange',
+                    inverted: true,
+                },
+                title: {
+                    text: ''
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    categories: sysName,
+                    tickColor: 'gray',
+                    gridLineWidth: 1,
+                    gridLineColor: 'gray',
+                    tickmarkPlacement: 'on'
+                },
+                // 数据提示框
+                tooltip: {
+                    crosshairs: true,
+                    useHTML: true,
+                    formatter: function () {
+                        var index = 0;
+                        for (var i = 0; i < sysName.length; i++) {
+                            if (this.x == sysName[i]) {
+                                index = i;
+                                var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
+                                var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
+                                if (status[index] == "P") {
+                                    return this.x + '<br/>' + '状态' + ':' + '挂机' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
+                                } else if (status[index] == "W") {
+                                    return this.x + '<br/>' + '状态' + ':' + '等待' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
+                                } else if (status[index] == "S") {
+                                    return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                } else if (status[index] == "E") {
+                                    return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                } else if (status[index] == "D") {
+                                    return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                } else if (status[index] == "R") {
+                                    return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
+                                        Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
+                                }
+                            }
+
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: ''
+                    },
+                    gridLineWidth: 0,
+                    labels: {
+                        overflow: 'justify',
+                        useHTML: true,
+                        formatter: function () {
+                            var date = new Date(this.value);
+                            var hours = date.getUTCHours();
+                            var minutes = date.getUTCMinutes();
+                            var seconds = date.getUTCSeconds();
+                            if (this.isFirst) {
+                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                            } else if (hours == 0 && minutes == 0 && seconds == 0) {
+                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                            } else {
+                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
+                            }
+                        }
+                    }
+                },
+                // 数据点
+                plotOptions: {
+                    columnrange: {
+                        colorByPoint: true,
+                        pointPadding: 1,
+                        borderWidth: 0,
+                        pointWidth: 10,
+                        showCheckbox: true
+                    },
+                    series: {
+                        minPointLength: 15,
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                plotOptions: true,
+                                enableMouseTracking: true,
+                                click: function () {
+                                    let etlJobName = this.category;
+                                    // that.$emit('viewIn', '/currentJob', '当前作业');
+                                    that.$router.push({
+                                        name: 'currentJob',
+                                        query: {
+                                            name: '/currentJob',
+                                            dec: that.$Base64.encode('当前作业'),
+                                            etl_job: etlJobName,
+                                            etl_sys_cd: that.$route.query.etl_sys_cd
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    },
+                },
+                // 图例
+                legend: {
+                    enabled: false,
+                },
+                series: [{
+                    data: time,
+                    colors: colorsArray
+                }]
+
+            })
+        },
+        // 毫秒数
+        dateToMill(date) {
+            date = date.replace(new RegExp("-", "gm"), "/");
+            date = (new Date(date)).getTime() + 8 * 60 * 60 * 1000; //得到毫秒数
+            return date;
+        },
+        edwColor(arry) {
+            var color = ['#c23531', '#90EE7E', '#19d4ae'];
+            if (typeof (arry) == "string") {
+                if (arry == "E") {
+                    return color[0];
+                    //除了错误和已完成其余都是一个颜色
+                } else if (arry == "R") {
+                    return color[1];
+                } else if (arry == "W") {
+                    return color[1];
+                } else if (arry == "P") {
+                    return color[1];
+                } else if (arry == "S") {
+                    return color[1];
+                } else if (arry == "D") {
+                    return color[2];
+                }
+            }
+        },
+        // 关闭模态框
+        close() {
+            this.dialogMointer = false;
+            this.chartdataChartTwo.rows = [];
+            this.chartdataChartOne.rows = [];
+            this.showOrhidden = false;
+        },
+        // 跳转详情页
+        routerLink(val) {
+            this.$router.push({
+                name: 'currentBatch',
+                query: {
+                    name: '/currentBatch',
+                    dec: this.$Base64.encode('当前批量'),
+                    etl_sys_name: val.etl_sys_name,
+                    etl_sys_cd: val.etl_sys_cd,
+                }
+            });
         }
     },
 };
@@ -635,20 +961,18 @@ i {
     float: right;
 }
 
-.loindex .span10 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
 .loindex .span11 {
     text-align: center;
     margin-bottom: 10px;
 }
 
 .loindex .span10 {
+    cursor: pointer;
     margin-top: 30px;
     font-size: 20px;
     margin-bottom: 6px;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .loindex .span11 {
@@ -689,5 +1013,34 @@ i {
 
 .loindex .color-item {
     border: 1px solid #ddd;
+}
+
+.loindex .span2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.loindex .span22 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.loindex .span22 {
+    font-size: 20px;
+}
+
+.loindex .span2 {
+    font-size: 12px;
+}
+
+.fixed {
+    min-height: 500px;
+}
+
+.loindex>>>.el-dialog__body {
+    padding: 0px 20px;
+    color: #606266;
+    font-size: 14px;
+    word-break: break-all;
 }
 </style>

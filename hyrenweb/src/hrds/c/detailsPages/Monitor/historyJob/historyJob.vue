@@ -1,30 +1,31 @@
 <template>
 <div class="historyJob">
     <div class="title">搜索条件</div>
-    <el-form :model="form" ref="form" class="demo-form-inline" :inline="true" label-width="100px">
-        <el-col :span="12">
+    <el-form :model="form" ref="form" class="demo-form-inline" :inline="true" style="height:40px;">
+        <el-col :span="6">
             <el-form-item label="作业名称">
-                <el-input v-model="form.etl_job" placeholder="作业名称" size="small"></el-input>
+                <el-input size="mini" style="width:100px;" v-model="form.etl_job" placeholder="作业名称"></el-input>
             </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="9">
             <el-form-item label="开始批量日期">
-                <el-date-picker v-model="form.start_date" @change="changevalue1" type="date" placeholder="开始批量日期" size="small">
+                <el-date-picker size="mini" style="width:120px;" v-model="form.start_date" @change="changevalue1" type="date" placeholder="开始日期">
                 </el-date-picker>
             </el-form-item>
         </el-col>
-        <el-col :span="24">
+        <el-col :span="9">
             <el-form-item label="结束批量日期">
-                <el-date-picker v-model="form.end_date" @change="changevalue2" type="date" placeholder="结束批量日期" size="small">
+                <el-date-picker size="mini" style="width:120px;" v-model="form.end_date" @change="changevalue2" type="date" placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="search" size="small">搜索</el-button>
+                <el-button type="primary" @click="search" size="mini">搜索</el-button>
             </el-form-item>
         </el-col>
     </el-form>
+    <el-divider></el-divider>
     <div>
-        <span>信息详情</span>
+        信息详情
     </div>
     <div id="container" :style="{width: '100%', height: '420px'}"></div>
     <el-table stripe :data="departmentalList" border size="medium">
