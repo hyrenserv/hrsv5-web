@@ -36,10 +36,10 @@
                             <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
-                    <el-table-column prop="column_remark" label="描述" align="center">
+                    <el-table-column prop="tc_remark" label="描述" align="center">
                         <template slot-scope="scope">
                             <!-- <el-form-item prop="describe"> -->
-                            <el-input type="textarea" v-model="scope.row.column_remark" autosize></el-input>
+                            <el-input type="textarea" v-model="scope.row.tc_remark" autosize></el-input>
                             <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
@@ -63,11 +63,13 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import Scrollbar from '../../components/scrollbar';
 import Loading from '../../components/loading';
+// import location from '../../components/location';
 import * as tsbFun from './tsb'
 export default {
     components: {
         Scrollbar,
-        Loading
+        Loading,
+        // location
     },
     data() {
         return {
@@ -93,9 +95,10 @@ export default {
                 return ({
                     col_id: key.column_id,
                     col_cname: key.column_ch_name,
-                    col_remark: key.column_remark
+                    col_remark: key.tc_remark?key.tc_remark:""
                 });
             })
+            console.log(col_info_s)
             tsbFun.setDbmDtcolInfo({'col_info_s':JSON.stringify(col_info_s)}).then(res => {
                console.log(res)
                this.isLoading=false
@@ -109,7 +112,7 @@ export default {
             tsbFun.getTSBTreeData({
                 'tree_source': 'dataBenchmarking'
             }).then(res => {
-                //    console.log(res)
+                   console.log(res)
                 this.data2 = res.data.tsbTreeList;
             });
         },

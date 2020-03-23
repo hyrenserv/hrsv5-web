@@ -23,7 +23,7 @@
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="2">
-                            <el-radio v-model="scope.row.id" :label='scope.row.predict[0][0].standard_id'>&nbsp;</el-radio>
+                            <el-radio v-model="scope.row.radio" :label='scope.row.predict[0][0]' @change="radioClickFun(scope.row.radio)">&nbsp;</el-radio>
                         </el-col>
                         <el-col :span="18">
                             中文： <span>{{scope.row.predict[0][0].col_zh_name}}</span><br>
@@ -37,7 +37,7 @@
             <el-table-column prop="result2" label="结果2" align="center">
                 <template slot-scope="scope">
                     <el-col :span="2">
-                        <el-radio v-model="scope.row.id" name="nature" :label='scope.row.predict[1][0].standard_id'>&nbsp;</el-radio>
+                        <el-radio v-model="scope.row.radio" name="nature" :label='scope.row.predict[1][0]' @change="radioClickFun(scope.row.radio)">&nbsp;</el-radio>
                     </el-col>
                     <el-col :span="18">
                         中文： <span>{{scope.row.predict[1][0].col_zh_name}}</span><br>
@@ -50,7 +50,7 @@
             <el-table-column prop="result3" label="结果3" align="center">
                 <template slot-scope="scope">
                     <el-col :span="2">
-                        <el-radio v-model="scope.row.id" :label='scope.row.predict[2][0].standard_id'>&nbsp;</el-radio>
+                        <el-radio v-model="scope.row.radio" :label='scope.row.predict[2][0]' @change="radioClickFun(scope.row.radio)">&nbsp;</el-radio>
                     </el-col>
                     <el-col :span="18">
                         中文： <span>{{scope.row.predict[2][0].col_zh_name}}</span><br>
@@ -111,7 +111,7 @@
             </el-table-column>
             <el-table-column property label="选择" type="index" align="center" width='60'>
                 <template slot-scope="scope">
-                    <el-radio v-model="radio" :label="scope.row.basic_id">&thinsp;</el-radio>
+                    <el-radio v-model="radio" :label="scope.row">&thinsp;</el-radio>
                 </template>
             </el-table-column>
             <el-table-column property label="序号" align="center">
@@ -157,6 +157,7 @@ export default {
                 "col_cnname": "金融机构代码",
                 "col_desc": "",
                 "id": "1000440385",
+                'radio':'',
                 predict: [
                     [{
                             col_en_name: "Financial Institute Code",
@@ -186,7 +187,8 @@ export default {
             }],
             CollTaskData: [],
             totalSize: 0,
-            dbid: ''
+            dbid: '',
+            dm_arr:[]
         }
     },
     created() {
@@ -197,6 +199,7 @@ export default {
             this.dataType = res.data
         })
         this.getDbmCodeTypeIdAndNameInfo()
+        this.getPredictBenchmarkingResults()
     },
     mounted() {
 
@@ -209,6 +212,12 @@ export default {
             this.dbid = id
             this.dialogManualBenchdata = true
             this.getDbmNormbasicInfo(1, 10)
+        },
+        //初始化页面数据方法
+        getPredictBenchmarkingResults(){
+             tsbFun.getPredictBenchmarkingResults().then(res => {
+                console.log(res)
+            });
         },
         getDbmSortTreeInfo() {
             tsbFun.getDbmSortInfoTreeData().then(res => {
@@ -225,7 +234,7 @@ export default {
         db_nextFun(currentPagedata) {
             this.getDbmNormbasicInfo(currentPagedata, this.pagesizedata)
         },
-        // 获取数据
+        // 点击下拉获取数据
         getDbmNormbasicInfo(curr, size) {
             let params = {}
             params["currPage"] = curr;
@@ -287,7 +296,13 @@ export default {
         //人工对标确定
         dbResultSubmitFun() {
             this.dialogManualBenchdata = false
-            console.log(this.dbid, this.radio)
+            this.dm_arr.push({col_id:this.dbid,col_similarity:this.radio.norm_code,standard_id:this.radio.basic_id,is_artificial:'1'})
+            this.dbid=''
+            console.log(this.dm_arr)
+        },
+        //单选按钮点击
+        radioClickFun(row){
+          console.log(row)
         }
     }
 }
