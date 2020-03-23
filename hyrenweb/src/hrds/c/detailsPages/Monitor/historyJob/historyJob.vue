@@ -4,7 +4,7 @@
     <el-form :model="form" ref="form" class="demo-form-inline" :inline="true" style="height:40px;">
         <el-col :span="6">
             <el-form-item label="作业名称">
-                <el-input size="mini" style="width:100px;" v-model="form.etl_job" placeholder="作业名称"></el-input>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" style="width:110px;" v-model="form.etl_job" placeholder="作业名称"></el-autocomplete>
             </el-form-item>
         </el-col>
         <el-col :span="9">
@@ -87,6 +87,7 @@ export default {
             departmentalList: [],
             curr_bath_dates: [],
             use_times: [],
+            listDatas: [],
             curr_st_times: [],
             curr_end_times: [],
             dialogForm: false,
@@ -103,6 +104,7 @@ export default {
         } else {
             this.form.isHistoryBatch = '';
         }
+        this.getJobName();
     },
     methods: {
         //查询历史作业
@@ -391,6 +393,34 @@ export default {
         // 关闭弹出框
         closeDialog() {
             this.dialogForm = false;
+        },
+        // input框的历史信息
+        querySearch(queryString, cb) {
+            var res = this.listDatas;
+            var results = queryString ? res.filter(this.createFilter(queryString)) : res;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+        createFilter(queryString) {
+            return (res) => {
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
+        },
+        //获取作业名称/上游作业名称下拉框数据
+        getJobName() {
+            let params = {};
+            let arr = [];
+            let obj = {};
+            params["etl_sys_cd"] = this.$route.query.etl_sys_cd;
+            functionAll.searchEtlJob(params).then(res => {
+                res.data.forEach((item) => {
+                    obj.label = item;
+                    obj.value = item;
+                    arr.push(obj);
+                    obj = {};
+                });
+                this.listDatas = arr;
+            });
         },
         // 下载
         downLoad() {

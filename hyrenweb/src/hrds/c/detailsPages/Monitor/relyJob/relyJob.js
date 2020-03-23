@@ -19,3 +19,11 @@ export function monitorJobDependencyInfo(data) {
         params: data
     })
 }
+//查询作业名称信息
+export function searchEtlJob(data) {
+    return request({
+        url: '/C/jobconfig/searchEtlJob',
+        method: 'post',
+        params: data
+    })
+}

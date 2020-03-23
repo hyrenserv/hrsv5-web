@@ -3,7 +3,7 @@
     <div class="title">搜索条件</div>
     <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
         <el-form-item label="作业名称" class="itemformel">
-            <el-input v-model="form.etl_job" placeholder="作业名称" size="mini"></el-input>
+            <el-autocomplete :fetch-suggestions="querySearch" v-model="form.etl_job" placeholder="作业名称" size="mini"></el-autocomplete>
         </el-form-item>
         <el-form-item class="itemformel">
             <el-button type="primary" @click="search" size="mini">搜索</el-button>
@@ -145,6 +145,7 @@ export default {
             form: {
                 etl_job: '',
             },
+            listDatas: [],
             forms: {
                 etl_job_desc: '',
                 pro_type: '',
@@ -174,6 +175,7 @@ export default {
     },
     mounted() {
         this.getForm();
+        this.getJobName();
     },
     methods: {
         //刷新表单
@@ -218,6 +220,34 @@ export default {
                 }
             });
 
+        },
+        // input框的历史信息
+        querySearch(queryString, cb) {
+            var res = this.listDatas;
+            var results = queryString ? res.filter(this.createFilter(queryString)) : res;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+        createFilter(queryString) {
+            return (res) => {
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
+        },
+        //获取作业名称/上游作业名称下拉框数据
+        getJobName() {
+            let params = {};
+            let arr = [];
+            let obj = {};
+            params["etl_sys_cd"] = this.sys_cd;
+            currentJobAllFun.searchEtlJob(params).then(res => {
+                res.data.forEach((item) => {
+                    obj.label = item;
+                    obj.value = item;
+                    arr.push(obj);
+                    obj = {};
+                });
+                this.listDatas = arr;
+            });
         },
         // 获取当前作业信息
         monitorCurrJobInfo(params) {

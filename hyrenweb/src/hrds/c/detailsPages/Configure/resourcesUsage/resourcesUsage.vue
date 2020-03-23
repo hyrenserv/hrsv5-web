@@ -3,7 +3,7 @@
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
-                <el-input size="mini" v-model="form.etl_job" style="width:180px" placeholder="作业名称"></el-input>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" style="width:180px" placeholder="作业名称"></el-autocomplete>
             </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -30,7 +30,7 @@
         </div>
     </el-row>
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column  type="selection" align='center'>
+        <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" align='center'>
         </el-table-column>
@@ -108,6 +108,7 @@ export default {
                 etl_job: '',
                 resource_type: '',
             },
+            listDatas: [],
             tableData: [],
             resourceTitle: '',
             deleteTitle: '',
@@ -167,7 +168,20 @@ export default {
                     obj = {};
                 });
                 this.formSelect.jobName = arr;
+                this.listDatas = arr;
             });
+        },
+        // input框的历史信息
+        querySearch(queryString, cb) {
+            var res = this.listDatas;
+            var results = queryString ? res.filter(this.createFilter(queryString)) : res;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+        createFilter(queryString) {
+            return (res) => {
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
         },
         //获取资源类型下拉框数据
         getResourceType() {

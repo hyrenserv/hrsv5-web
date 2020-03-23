@@ -3,7 +3,7 @@
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
-                <el-input size="mini" v-model="form.etl_job" style="width:180px" placeholder="作业名称"></el-input>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" style="width:180px" placeholder="作业名称"></el-autocomplete>
             </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -25,6 +25,8 @@
             <el-button class="buttonStyle" size="mini" type="primary" @click="downloadModel">下载模板
             </el-button>
             <el-button class="buttonStyle" size="mini" type="primary" @click="handleAdd">新增
+            </el-button>
+            <el-button class="buttonStyle" size="mini" type="primary" @click="handleBatchAdd">批量新增
             </el-button>
             <el-button class="buttonStyle" size="mini" type="danger" @click="handleBatchDelete">批量删除
             </el-button>
@@ -59,50 +61,54 @@
         </el-col>
     </el-row>
     <!-- 添加/修改/批量添加作业模态框 -->
-    <el-dialog :title="dependTitle" :visible.sync="dialogFormVisibleAdd" width="35%">
+    <el-dialog :title="dependTitle" :visible.sync="dialogFormVisibleAdd" width="35%" :before-close="beforeClose">
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="170px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <div style="width:193px">
-                    <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                    <el-input v-model="formAdd.etl_sys_cd" style="width:200px" autocomplete="off" placeholder="工程编号" disabled></el-input>
                 </div>
             </el-form-item>
-            <el-form-item v-if="this.dependTitle == '添加作业依赖'" label="作业名称" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.etl_job" placeholder="请选择作业名称">
+
+            <el-form-item v-if="this.dependTitle == '添加作业依赖'" prop="etl_job" label="作业名称" :rules="rule.selected ">
+                <el-select v-model="formAdd.etl_job" placeholder="请选择作业名称" style="width:200px">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="this.dependTitle == '修改作业依赖'" label="作业名称" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.etl_job" disabled placeholder="请选择作业名称">
+            <el-form-item v-if="this.dependTitle == '修改作业依赖'" prop="etl_job" label="作业名称" :rules="rule.selected ">
+                <el-select v-model="formAdd.etl_job" disabled placeholder="请选择作业名称" style="width:200px">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="this.dependTitle == '批量添加作业依赖'" label="任务名称" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.sub_sys_cd" placeholder="请选择任务名称">
+            <el-form-item v-if="this.dependTitle == '批量添加作业依赖'" prop="sub_sys_cd" label="任务名称" :rules="rule.selected ">
+                <el-select v-model="formAdd.sub_sys_cd" placeholder="请选择任务名称" style="width:200px">
                     <el-option v-for="item in formSelect.proName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
+
             <el-form-item label="上游工程编号" prop="pre_etl_sys_cd">
                 <div style="width:193px">
-                    <el-input v-model="formAdd.pre_etl_sys_cd" autocomplete="off" placeholder="上游工程编号" disabled></el-input>
+                    <el-input v-model="formAdd.pre_etl_sys_cd" autocomplete="off" style="width:200px" placeholder="上游工程编号" disabled></el-input>
                 </div>
             </el-form-item>
-            <el-form-item v-if="this.dependTitle != '批量添加作业依赖'" label="上游作业名称" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.pre_etl_job" placeholder="请选择上游作业">
+            <el-form-item v-if="this.dependTitle != '批量添加作业依赖'" prop="pre_etl_job" label="上游作业名称" :rules="rule.selected ">
+                <el-select v-model="formAdd.pre_etl_job" placeholder="请选择上游作业" style="width:200px">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="this.dependTitle == '批量添加作业依赖'" label="上游任务名称" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.pre_sub_sys_cd" placeholder="请选择上游任务">
+
+            <el-form-item v-if="this.dependTitle == '批量添加作业依赖'" prop="pre_sub_sys_cd" label="上游任务名称" :rules="rule.selected ">
+                <el-select v-model="formAdd.pre_sub_sys_cd" placeholder="请选择上游任务" style="width:200px">
                     <el-option v-for="item in formSelect.proName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="状态" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.status" placeholder="请选择状态">
+
+            <el-form-item label="状态" prop="status" :rules="rule.selected ">
+                <el-select v-model="formAdd.status" placeholder="请选择状态" style="width:200px">
                     <el-option v-for="item in formSelect.statu" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
@@ -110,7 +116,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 删除任务模态框 -->
@@ -126,15 +132,19 @@
 <script>
 import * as etlDependencyAllFun from "./etlDependency";
 import * as message from "@/utils/js/message";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 let arr = [];
 export default {
     data() {
         return {
             sys_cd: '',
+            rule: validator.default,
             form: {
                 etl_job: '',
                 pre_etl_job: '',
             },
+            listDatas: [],
             tableData: [],
             dependTitle: '',
             deleteTitle: '',
@@ -173,9 +183,9 @@ export default {
     },
     mounted() {
         this.getTable();
-        this.getJobName();
         this.getProName();
         this.getStatu();
+        this.getJobName();
     },
     methods: {
         //刷新表格
@@ -201,7 +211,7 @@ export default {
                         });
                     })();
                 });
-                setTimeout(() => this.tableData = dates, 200);
+                setTimeout(() => this.tableData = dates, 800);
             });
         },
         //搜索按钮
@@ -231,7 +241,7 @@ export default {
             });
         },
         //获取作业名称/上游作业名称下拉框数据
-        getJobName() {
+        getJobName(val) {
             let params = {};
             let arr = [];
             let obj = {};
@@ -244,7 +254,20 @@ export default {
                     obj = {};
                 });
                 this.formSelect.jobName = arr;
+                this.listDatas = arr;
             });
+        },
+        // input框的历史信息
+        querySearch(queryString, cb) {
+            var res = this.listDatas;
+            var results = queryString ? res.filter(this.createFilter(queryString)) : res;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+        createFilter(queryString) {
+            return (res) => {
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
         },
         //获取任务名称/上游任务名称下拉框数据
         getProName() {
@@ -326,82 +349,81 @@ export default {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.formOld = {};
+            this.$refs.formAdd.resetFields();
         },
         //模态框添加/修改/批量添加保存按钮
-        saveAdd() {
-            if (this.dependTitle == '添加作业依赖') {
-                if (this.formAdd.etl_job == '' || this.formAdd.pre_etl_job == '' || this.formAdd.status == '') {
-                    this.$message({
-                        message: '请输入完整信息',
-                        type: 'warning'
-                    });
-                } else {
-                    let params = {};
-                    params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                    params["etl_job"] = this.formAdd.etl_job;
-                    params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
-                    params["pre_etl_job"] = this.formAdd.pre_etl_job;
-                    params["status"] = this.formAdd.status;
-                    etlDependencyAllFun.saveEtlDependency(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '添加成功',
-                            type: 'success'
+        saveAdd(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    if (this.dependTitle == '添加作业依赖') {
+                        let params = {};
+                        params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                        params["etl_job"] = this.formAdd.etl_job;
+                        params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
+                        params["pre_etl_job"] = this.formAdd.pre_etl_job;
+                        params["status"] = this.formAdd.status;
+                        etlDependencyAllFun.saveEtlDependency(params).then(res => {
+                            if (res.code == 200) {
+                                this.getTable();
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                            }
                         });
-                    });
-                    this.dialogFormVisibleAdd = false;
-                    this.formAdd = {};
-                }
-            } else if (this.dependTitle == '修改作业依赖') {
-                if (this.formAdd.pre_etl_job == '' || this.formAdd.status == '') {
-                    this.$message({
-                        message: '请输入完整信息',
-                        type: 'warning'
-                    });
-                } else {
-                    let params = {};
-                    params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                    params["etl_job"] = this.formAdd.etl_job;
-                    params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
-                    params["pre_etl_job"] = this.formAdd.pre_etl_job;
-                    params["status"] = this.formAdd.status;
-                    params["oldEtlJob"] = this.formOld.oldEtlJob;
-                    params["oldPreEtlJob"] = this.formOld.oldPreEtlJob;
-                    etlDependencyAllFun.updateEtlDependency(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '修改成功',
-                            type: 'success'
+
+                    } else if (this.dependTitle == '修改作业依赖') {
+                        let params = {};
+                        params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                        params["etl_job"] = this.formAdd.etl_job;
+                        params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
+                        params["pre_etl_job"] = this.formAdd.pre_etl_job;
+                        params["status"] = this.formAdd.status;
+                        params["oldEtlJob"] = this.formOld.oldEtlJob;
+                        params["oldPreEtlJob"] = this.formOld.oldPreEtlJob;
+                        etlDependencyAllFun.updateEtlDependency(params).then(res => {
+                            if (res.code == 200) {
+                                this.getTable();
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                                this.formOld = {};
+                            }
                         });
-                    });
-                    this.dialogFormVisibleAdd = false;
-                    this.formAdd = {};
-                    this.formOld = {};
-                }
-            } else if (this.dependTitle == '批量添加作业依赖') {
-                if (this.formAdd.sub_sys_cd == '' || this.formAdd.pre_sub_sys_cd == '' || this.formAdd.status == '') {
-                    this.$message({
-                        message: '请输入完整信息',
-                        type: 'warning'
-                    });
-                } else {
-                    let params = {};
-                    params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                    params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
-                    params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
-                    params["pre_sub_sys_cd"] = this.formAdd.pre_sub_sys_cd;
-                    params["status"] = this.formAdd.status;
-                    etlDependencyAllFun.batchSaveEtlDependency(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '批量添加成功',
-                            type: 'success'
+
+                    } else if (this.dependTitle == '批量添加作业依赖') {
+                        let params = {};
+                        params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                        params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
+                        params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
+                        params["pre_sub_sys_cd"] = this.formAdd.pre_sub_sys_cd;
+                        params["status"] = this.formAdd.status;
+                        etlDependencyAllFun.batchSaveEtlDependency(params).then(res => {
+                            if (res.code == 200) {
+                                this.getTable();
+                                this.$message({
+                                    message: '批量添加成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                            }
                         });
-                    });
-                    this.dialogFormVisibleAdd = false;
-                    this.formAdd = {};
+
+                    }
                 }
-            }
+            })
+        },
+        beforeClose() {
+            this.formAdd = {};
+            this.$refs.formAdd.resetFields();
+            this.dialogFormVisibleAdd = false;
+            this.dialogVisibleDelete = false;
         },
         //模态框删除取消按钮
         cancleDelete() {
