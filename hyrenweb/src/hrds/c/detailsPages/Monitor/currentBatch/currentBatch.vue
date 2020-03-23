@@ -265,7 +265,7 @@ export default {
                         colorByPoint: true,
                         pointPadding: 1,
                         borderWidth: 0,
-                        pointWidth: 10,
+                        pointWidth: 8,
                         showCheckbox: true
                     },
                     series: {
@@ -282,7 +282,9 @@ export default {
                                         name: 'currentJob',
                                         query: {
                                             etl_job: etlJobName,
-                                            etl_sys_cd: that.$route.query.etl_sys_cd
+                                            etl_sys_cd: that.$route.query.etl_sys_cd,
+                                            name:'/currentJob',
+                                            dec:that.$Base64.encode('当前作业')
                                         }
                                     });
                                 }

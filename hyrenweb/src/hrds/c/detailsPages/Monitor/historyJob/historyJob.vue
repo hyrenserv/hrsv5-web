@@ -9,13 +9,13 @@
         </el-col>
         <el-col :span="9">
             <el-form-item label="开始批量日期">
-                <el-date-picker size="mini" style="width:120px;" v-model="form.start_date" @change="changevalue1" type="date" placeholder="开始日期">
+                <el-date-picker size="mini" style="width:126px;" v-model="form.start_date" @change="changevalue1" type="date" placeholder="开始日期">
                 </el-date-picker>
             </el-form-item>
         </el-col>
         <el-col :span="9">
             <el-form-item label="结束批量日期">
-                <el-date-picker size="mini" style="width:120px;" v-model="form.end_date" @change="changevalue2" type="date" placeholder="结束日期">
+                <el-date-picker size="mini" style="width:126px;" v-model="form.end_date" @change="changevalue2" type="date" placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -29,12 +29,12 @@
     </div>
     <div id="container" :style="{width: '100%', height: '420px'}"></div>
     <el-table stripe :data="departmentalList" border size="medium">
-        <el-table-column prop="sub_sys_cd" label="系统名称" align="center"></el-table-column>
-        <el-table-column prop="etl_job" label="作业名称" align="center"></el-table-column>
-        <el-table-column prop="curr_bath_date" label="批量日期	" align="center"></el-table-column>
-        <el-table-column prop="curr_st_time" label="开始时间" align="center"></el-table-column>
-        <el-table-column prop="curr_end_time" label="结束时间" align="center"></el-table-column>
-        <el-table-column prop="job_disp_status" label="状态" align="center"></el-table-column>
+        <el-table-column prop="sub_sys_cd" show-overflow-tooltip label="系统名称" align="center"></el-table-column>
+        <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align="center"></el-table-column>
+        <el-table-column prop="curr_bath_date" show-overflow-tooltip label="批量日期	" align="center"></el-table-column>
+        <el-table-column prop="curr_st_time" show-overflow-tooltip label="开始时间" align="center"></el-table-column>
+        <el-table-column prop="curr_end_time" show-overflow-tooltip label="结束时间" align="center"></el-table-column>
+        <el-table-column prop="job_disp_status" show-overflow-tooltip label="状态" align="center"></el-table-column>
         <el-table-column label="日志" align="center"> <template slot-scope="scope">
                 <el-button size="mini" icon="el-icon-s-claim" title="日志" type="primary" @click="handleEdit(scope.$index, scope.row)">
                 </el-button>

@@ -1,35 +1,34 @@
 <template>
 <div>
-    <el-row>
+    <el-row class="elRows">
         <el-form :model="form" ref="form" class="demo-form-inline" style="height:40px;" :inline="true">
-            <el-col :span="6" :offset="1">
+            <el-col :span="8">
                 <el-form-item label="作业名称">
                     <div style="width:120px">
-                        <el-input v-model="form.etl_job" placeholder="作业名称"></el-input>
+                        <el-input size="mini" v-model="form.etl_job" placeholder="作业名称"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
                 <el-form-item label="任务名称">
                     <div style="width:120px">
-                        <el-input v-model="form.sub_sys_desc" placeholder="任务名称"></el-input>
+                        <el-input size="mini" v-model="form.sub_sys_desc" placeholder="任务名称"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
                 <el-form-item label="状态">
-                    <div style="width:150px">
-                        <el-select v-model="form.job_status" placeholder="--请选择--" clearable>
+                    <div>
+                        <el-select size="mini" style="width:120px" v-model="form.job_status" placeholder="--请选择--" clearable>
                             <el-option v-for="item in jobStatus" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
+                        <el-button size="mini" class="searchBtn" type="primary" @click="searchBtn">搜索
+                        </el-button>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="2">
-                <el-button type="primary" @click="searchBtn">搜索
-                </el-button>
-            </el-col>
+
         </el-form>
     </el-row>
     <el-divider></el-divider>
@@ -860,9 +859,15 @@ export default {
 .tabBtns {
     margin-top: 15px;
 }
-
+.elRows{
+    height: 32px;
+}
 .btns {
     margin-left: 20px;
     margin-right: 20px;
+}
+
+.searchBtn {
+    margin-left: 10px;
 }
 </style>
