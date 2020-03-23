@@ -12,6 +12,7 @@
                 </div>
             </el-row>
         </el-header>
+        <div class="lines"></div>
         <el-container>
             <el-aside width="16%">
                 <!-- 导航 -->
@@ -247,5 +248,12 @@ i {
 .tops {
     height: 30px;
     margin-bottom: 0;
+}
+.lines {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 1px;
+    background: #dddddd;
+    margin-bottom: 15px;
 }
 </style>

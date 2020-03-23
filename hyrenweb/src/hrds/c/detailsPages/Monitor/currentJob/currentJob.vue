@@ -185,14 +185,7 @@ export default {
                 let params = {};
                 params["etl_sys_cd"] = this.sys_cd;
                 params["etl_job"] = this.form.etl_job;
-                currentJobAllFun.monitorCurrJobInfo(params).then(res => {
-                    this.forms = res.data;
-                    let arr = [];
-                    let dates = res.data.resourceRelation;
-                    arr.push(dates);
-                    this.tableData = arr;
-                    let date = res.data;
-                });
+                this.monitorCurrJobInfo(params);
             }
         },
         changeMenu(val, val2) {
@@ -209,111 +202,7 @@ export default {
                 let params = {};
                 params["etl_sys_cd"] = this.sys_cd;
                 params["etl_job"] = this.form.etl_job;
-                currentJobAllFun.monitorCurrJobInfo(params).then(res => {
-                    // 数据处理
-                    switch (res.data.disp_freq) {
-                        case 'D':
-                            res.data.disp_freq = "天(D)";
-                            break;
-                        case 'M':
-                            res.data.disp_freq = "月(M)";
-                            break;
-                        case 'W':
-                            res.data.disp_freq = "周(W)";
-                            break;
-                        case 'X':
-                            res.data.disp_freq = "旬(X)";
-                            break;
-                        case 'Y':
-                            res.data.disp_freq = "年(Y)";
-                            break;
-                        case 'F':
-                            res.data.disp_freq = "频率(F)";
-                            break;
-                    }
-
-                    switch (res.data.disp_type) {
-                        case 'B':
-                            res.data.disp_type = "批前(B)";
-                            break;
-                        case 'D':
-                            res.data.disp_type = "依赖触发(D)";
-                            break;
-                        case 'T':
-                            res.data.disp_type = "定时T+1触发(T)";
-                            break;
-                        case 'Z':
-                            res.data.disp_type = "定时T+0触发(Z)";
-                            break;
-                        case 'A':
-                            res.data.disp_type = "批后(A)";
-                            break;
-                        case 'F':
-                            res.data.disp_type = "频率(F)";
-                            break;
-                    }
-                    switch (res.data.job_eff_flag) {
-                        case 'V':
-                            res.data.job_eff_flag = "空跑(V)";
-                            break;
-                        case 'N':
-                            res.data.job_eff_flag = "无效(N)";
-                            break;
-                        case 'Y':
-                            res.data.job_eff_flag = "有效(Y)";
-                            break;
-                    }
-
-                    switch (res.data.today_disp) {
-                        case 'N':
-                            res.data.today_disp = "否(N)";
-                            break;
-                        case 'Y':
-                            res.data.today_disp = "是(Y)";
-                            break;
-                    }
-
-                    switch (res.data.job_disp_status) {
-                        case 'D':
-                            res.data.job_disp_status = "完成";
-                            break;
-                        case 'E':
-                            res.data.job_disp_status = "错误";
-                            break;
-                        case 'P':
-                            res.data.job_disp_status = "挂起";
-                            break;
-                        case 'R':
-                            res.data.job_disp_status = "运行";
-                            break;
-                        case 'S':
-                            res.data.job_disp_status = "停止";
-                            break;
-                        case 'W':
-                            res.data.job_disp_status = "等待";
-                            break;
-                    }
-
-                    switch (res.data.main_serv_sync) {
-                        case 'L':
-                            res.data.main_serv_sync = "锁定";
-                            break;
-                        case 'N':
-                            res.data.main_serv_sync = "不同步";
-                            break;
-                        case 'Y':
-                            res.data.main_serv_sync = "同步";
-                            break;
-                        case 'B':
-                            res.data.main_serv_sync = "备份中";
-                            break;
-                    }
-                    this.forms = res.data;
-                    let arr = [];
-                    let dates = res.data.resourceRelation;
-                    arr.push(dates);
-                    this.tableData = arr;
-                });
+                this.monitorCurrJobInfo(params);
             }
         },
         //干预按钮
@@ -324,9 +213,119 @@ export default {
                 query: {
                     etl_sys_cd: this.sys_cd,
                     etl_job: this.form.etl_job,
+                    name: '/jobLevelIntervente',
+                    dec: this.$Base64.encode('作业级干预')
                 }
             });
 
+        },
+        // 获取当前作业信息
+        monitorCurrJobInfo(params) {
+            currentJobAllFun.monitorCurrJobInfo(params).then(res => {
+                // 数据处理
+                switch (res.data.disp_freq) {
+                    case 'D':
+                        res.data.disp_freq = "天(D)";
+                        break;
+                    case 'M':
+                        res.data.disp_freq = "月(M)";
+                        break;
+                    case 'W':
+                        res.data.disp_freq = "周(W)";
+                        break;
+                    case 'X':
+                        res.data.disp_freq = "旬(X)";
+                        break;
+                    case 'Y':
+                        res.data.disp_freq = "年(Y)";
+                        break;
+                    case 'F':
+                        res.data.disp_freq = "频率(F)";
+                        break;
+                }
+
+                switch (res.data.disp_type) {
+                    case 'B':
+                        res.data.disp_type = "批前(B)";
+                        break;
+                    case 'D':
+                        res.data.disp_type = "依赖触发(D)";
+                        break;
+                    case 'T':
+                        res.data.disp_type = "定时T+1触发(T)";
+                        break;
+                    case 'Z':
+                        res.data.disp_type = "定时T+0触发(Z)";
+                        break;
+                    case 'A':
+                        res.data.disp_type = "批后(A)";
+                        break;
+                    case 'F':
+                        res.data.disp_type = "频率(F)";
+                        break;
+                }
+                switch (res.data.job_eff_flag) {
+                    case 'V':
+                        res.data.job_eff_flag = "空跑(V)";
+                        break;
+                    case 'N':
+                        res.data.job_eff_flag = "无效(N)";
+                        break;
+                    case 'Y':
+                        res.data.job_eff_flag = "有效(Y)";
+                        break;
+                }
+
+                switch (res.data.today_disp) {
+                    case 'N':
+                        res.data.today_disp = "否(N)";
+                        break;
+                    case 'Y':
+                        res.data.today_disp = "是(Y)";
+                        break;
+                }
+
+                switch (res.data.job_disp_status) {
+                    case 'D':
+                        res.data.job_disp_status = "完成";
+                        break;
+                    case 'E':
+                        res.data.job_disp_status = "错误";
+                        break;
+                    case 'P':
+                        res.data.job_disp_status = "挂起";
+                        break;
+                    case 'R':
+                        res.data.job_disp_status = "运行";
+                        break;
+                    case 'S':
+                        res.data.job_disp_status = "停止";
+                        break;
+                    case 'W':
+                        res.data.job_disp_status = "等待";
+                        break;
+                }
+
+                switch (res.data.main_serv_sync) {
+                    case 'L':
+                        res.data.main_serv_sync = "锁定";
+                        break;
+                    case 'N':
+                        res.data.main_serv_sync = "不同步";
+                        break;
+                    case 'Y':
+                        res.data.main_serv_sync = "同步";
+                        break;
+                    case 'B':
+                        res.data.main_serv_sync = "备份中";
+                        break;
+                }
+                this.forms = res.data;
+                let arr = [];
+                let dates = res.data.resourceRelation;
+                arr.push(dates);
+                this.tableData = arr;
+            });
         },
     },
 };

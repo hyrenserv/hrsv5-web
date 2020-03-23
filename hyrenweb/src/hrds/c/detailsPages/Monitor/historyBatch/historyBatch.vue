@@ -339,7 +339,9 @@ export default {
                                         query: {
                                             etl_job: etlJobName,
                                             etl_sys_cd: that.$route.query.etl_sys_cd,
-                                            start_date: that.dayDate
+                                            start_date: that.dayDate,
+                                            name:'/historyJob',
+                                            dec:that.$Base64.encode('历史作业')
                                         }
                                     });
                                 }

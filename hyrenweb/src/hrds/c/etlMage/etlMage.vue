@@ -275,7 +275,7 @@ export default {
             dialogMointer: false,
             projectTitle: '',
             activeName: 'first',
-            title: "ceshi",
+            title: "",
             formAdd: {
                 etl_sys_cd: "",
                 etl_sys_name: "",
@@ -378,51 +378,55 @@ export default {
                     item['错误'] = item.error;
                     item['完成'] = item.done;
                     arry.push(item);
-                    let myChart = this.$echarts.init(document.getElementById(`radar${index}`));
-                    myChart.setOption({
-                        legend: {},
-                        tooltip: {
-                            trigger: 'axis',
-                            axisPointer: { // 坐标轴指示器，坐标轴触发有效
-                                type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-                            }
-                        },
-                        dataset: {
-                            dimensions: ['etl_sys_name', '错误', '等待', '运行', '暂停', '完成', '挂起'],
-                            source: arry
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis: [{
-                            type: 'category',
-                            axisTick: {
-                                alignWithLabel: true
-                            }
-                        }],
-                        yAxis: {},
-                        series: [{
-                                type: 'bar'
+                    var bar_dv = document.getElementById(`radar${index}`);
+                    if (bar_dv) {
+                        let myChart = this.$echarts.init(bar_dv);
+                        myChart.setOption({
+                            legend: {},
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                                }
                             },
-                            {
-                                type: 'bar'
+                            dataset: {
+                                dimensions: ['etl_sys_name', '错误', '等待', '运行', '暂停', '完成', '挂起'],
+                                source: arry
                             },
-                            {
-                                type: 'bar'
-                            }, {
-                                type: 'bar'
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
                             },
-                            {
-                                type: 'bar'
-                            },
-                            {
-                                type: 'bar'
-                            }
-                        ]
-                    })
+                            xAxis: [{
+                                type: 'category',
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }],
+                            yAxis: {},
+                            series: [{
+                                    type: 'bar'
+                                },
+                                {
+                                    type: 'bar'
+                                },
+                                {
+                                    type: 'bar'
+                                }, {
+                                    type: 'bar'
+                                },
+                                {
+                                    type: 'bar'
+                                },
+                                {
+                                    type: 'bar'
+                                }
+                            ]
+                        })
+                    }
+
                 })
 
             })
@@ -637,6 +641,7 @@ export default {
             this.dayDate = val.bathdate;
             this.monitorCurrentBatchInfo(val.etl_sys_cd);
             changValue = val.etl_sys_cd;
+            this.title = val.sys_name;
         },
         // 当前批量情况获取
         monitorCurrentBatchInfo(val) {
@@ -827,8 +832,8 @@ export default {
                         colorByPoint: true,
                         pointPadding: 1,
                         borderWidth: 0,
-                        pointWidth: 10,
-                        showCheckbox: true
+                        pointWidth: 8,
+                        showCheckbox: true,
                     },
                     series: {
                         minPointLength: 15,

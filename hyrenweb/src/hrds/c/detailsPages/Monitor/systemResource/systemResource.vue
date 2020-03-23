@@ -9,12 +9,12 @@
         <span class="spanDeatil">系统当前占用资源</span>
         <el-row>
             <el-table stripe :data="departmentalList" border size="medium">
-                <el-table-column prop="resource_type" label="资源类型" align="center"></el-table-column>
-                <el-table-column prop="sub_sys_cd" label="系统名称" align="center"></el-table-column>
-                <el-table-column prop="etl_job" label="作业名称	" align="center"></el-table-column>
-                <el-table-column prop="resource_req" label="占用资源数" align="center"></el-table-column>
-                <el-table-column prop="curr_st_time" label="开始时间" align="center"></el-table-column>
-                <el-table-column prop="job_disp_status" label="状态" align="center"></el-table-column>
+                <el-table-column prop="resource_type" show-overflow-tooltip label="资源类型" align="center"></el-table-column>
+                <el-table-column prop="sub_sys_cd" show-overflow-tooltip label="系统名称" align="center"></el-table-column>
+                <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称	" align="center"></el-table-column>
+                <el-table-column prop="resource_req" show-overflow-tooltip label="占用资源数" align="center"></el-table-column>
+                <el-table-column prop="curr_st_time" show-overflow-tooltip label="开始时间" align="center"></el-table-column>
+                <el-table-column prop="job_disp_status" show-overflow-tooltip label="状态" align="center"></el-table-column>
             </el-table>
         </el-row>
     </el-row>
