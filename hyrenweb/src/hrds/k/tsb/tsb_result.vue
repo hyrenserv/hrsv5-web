@@ -481,7 +481,7 @@ export default {
         },
         // 单选按钮被点击触发
         clickRadioFun(id,colid) {
-            this.updataRationFun(id,'0')
+            this.updataRationFun(colid,id,'0')
             //点击选择后遍历之前人工对标存储的，将其删除
             for(let i=0;i<this.dm_arr.length;i++){
                 if(this.dm_arr[i].col_id==colid){
@@ -494,12 +494,12 @@ export default {
         dbResultSubmitFun() {
             this.dialogManualBenchdata = false
             this.dm_arr.push({'col_id':this.dbid,'id':this.radio})
-            this.updataRationFun(this.dbid,'1')
+            this.updataRationFun(this.dbid,this.radio,'1')
         },
         // 遍历表中数据修改radio值
-        updataRationFun(id,m) {
+        updataRationFun(colid,id,m) {
             for (let i = 0; i < this.tableData.length; i++) {
-                if (this.tableData[i].id == id) {
+                if (this.tableData[i].id == colid) {
                     this.tableData[i].radio = id
                     this.tableData[i].peo = m//人工对标m是1，否则是0
                 }

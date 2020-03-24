@@ -35,7 +35,19 @@
                                 <el-input v-model="scope.row.table_ch_name" placeholder="中文名" @change="changetablechnameFun(scope.row.table_ch_name,scope.row.table_name)"></el-input>
                             </template>
                         </el-table-column>
+                        <el-table-column label="卸数方式" align="center">
+                            <template slot-scope="scope">
+                                <el-select placeholder="卸数方式" v-model="scope.row.xsType" size="medium" @change="XSTypeFun(scope.row)">
+                                    <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="is_parallel" label=" 计算MD5" align="center">
 
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.md5" :checked="scope.row.md5" ></el-checkbox>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
 
                             <template slot-scope="scope">
@@ -57,69 +69,22 @@
                     </el-table>
                     <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"></el-pagination>
                 </div>
-                <!-- 是否并行抽取弹层 -->
-                <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
-                    <div slot="title" >
-                        <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
-                        <span class="dialogtoptxt">
-                            表名:
-                            <p class="topcolumename">{{EXtable_name}}</p>
-                        </span>
-                    </div>
-                    <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
-                        <el-row type="flex" style="text-align:right;padding-right:10px;">
-                            <el-col :span="24">
-                                <el-button type="text" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
-                            </el-col>
-                        </el-row>
-                        <el-form-item label="分页抽取SQL" prop="EXtable_sql" :rules="rule.default">
-                            <el-row type="flex" justify="center">
-                                <el-col>
-                                    <el-input v-model="ruleForm_ParallelEx.EXtable_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-                        <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default">
-                            <el-row type="flex" justify="center">
-                                <el-col>
-                                    <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                                        <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
-                                    </el-input>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-                        <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default">
-                            <el-row type="flex" justify="center">
-                                <el-col>
-                                    <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-                        <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default">
-                            <el-row type="flex" justify="center">
-                                <el-col>
-                                    <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="testParallelExtractionCloseFun()" type="danger" size="mini">取 消</el-button>
-                        <el-button @click="testParallelExtractionSubmitFun('ruleForm_ParallelEx')" type="primary" size="mini">确 定</el-button>
-                    </div>
-                </el-dialog>
+               
                 <!-- 测试弹框 -->
                 <el-dialog title="测试sql" :visible.sync="testDialogVisible" width="30%">
+                      <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">测试sql</span>
+                    </div>
                     <div class="testLinnk">
                         <span>{{testLinkReturn}}</span>
                     </div>
                 </el-dialog>
                 <!-- 定义过滤弹层 -->
                 <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%" @close="SqlfiltCloseFun()">
-                    <div slot="title" >
+                    <div slot="title">
                         <span class="dialogtitle el-icon-caret-right">自定义SQL过滤设置</span>
                         <el-tooltip class="dialogtoptxt" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
-                            <i class="fa fa-question-circle" aria-hidden="true" ></i>
+                            <i class="fa fa-question-circle" aria-hidden="true"></i>
                         </el-tooltip>
                     </div>
                     <el-form ref="addClassTask">
@@ -217,6 +182,7 @@
                         <el-button type="primary" @click="dialogSelectColumn = false;SelectColumnSubmitFun()" size="mini">确 定</el-button>
                     </div>
                 </el-dialog>
+              
             </div>
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
@@ -243,6 +209,25 @@
                             </el-form-item>
                         </template>
                     </el-table-column>
+                      <el-table-column label="卸数方式" align="center">
+                            <template slot-scope="scope">
+                                <el-select placeholder="卸数方式" v-model="scope.row.xsType" size="medium" @change="XSTypeFun(scope.row)">
+                                    <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="is_parallel" label=" 计算MD5" align="center">
+
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.md5" :checked="scope.row.md5" ></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
+
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
+                            </template>
+                        </el-table-column>
                     <el-table-column property="sql" label="查询SQL语句" align="center" style="line-height: 30px;" class="textlinght">
                         <template slot-scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default" class="textclass">
@@ -269,6 +254,139 @@
             <!-- <el-button size="mini" type="danger" @click="sqlExtractDataSubmitFun('ruleForm')">保存</el-button> -->
             <!-- </div> -->
         </el-tab-pane>
+          <!-- 增量弹层 -->
+                <el-dialog title :visible.sync="dialog_xsadd" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
+                    </div>
+                    <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
+                        <el-form-item label="删除SQL" prop="del_sql" :rules="rule.default">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="xstypeadd.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="新增SQL" prop="add_sql" :rules="rule.default">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="xstypeadd.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="更新SQL" prop="updata_sql" :rules="rule.default">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="xstypeadd.updata_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="danger" size="mini" @click="dialog_xsadd=false">取 消</el-button>
+                        <el-button type="primary" size="mini" @click="dialog_xsadd=false">确 定</el-button>
+                    </div>
+                </el-dialog>
+                 <!-- 是否并行抽取弹层 -->
+                <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+                        <span class="dialogtoptxt">
+                            表名:
+                            <p class="topcolumename">{{EXtable_name}}</p>
+                        </span>
+                    </div>
+                    <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
+                        <el-row type="flex" style="text-align:right;padding-right:10px;">
+                            <el-col :span="24">
+                                <el-button type="warning" size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                            </el-col>
+                        </el-row>
+                        <el-form-item label="自定义SQL" prop="EXtable_sql" :rules="rule.default">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-radio-group v-model="ruleForm_ParallelEx.issql">
+                                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                                    </el-radio-group>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="分页抽取SQL" prop="EXtable_sql" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='1'">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.EXtable_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
+                                        <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                                    </el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="testParallelExtractionCloseFun()" type="danger" size="mini">取 消</el-button>
+                        <el-button @click="testParallelExtractionSubmitFun('ruleForm_ParallelEx')" type="primary" size="mini">确 定</el-button>
+                    </div>
+                </el-dialog>
+                 <!-- 自定义是否并行抽取弹层 -->
+                <el-dialog title :visible.sync="dialogTableVisible_zdy" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+                    </div>
+                    <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
+                        <el-row type="flex" style="text-align:right;padding-right:10px;">
+                            <el-col :span="24">
+                                <el-button type="text" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                            </el-col>
+                        </el-row>
+                        <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" >
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
+                                        <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                                    </el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default" >
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default" >
+                            <el-row type="flex" justify="center">
+                                <el-col>
+                                    <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button  type="danger" size="mini" @click="dialogTableVisible_zdy=false">取 消</el-button>
+                        <el-button  type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
+                    </div>
+                </el-dialog>
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
@@ -293,6 +411,7 @@ export default {
             Allis_selectionState: false,
             Allis_SelectColumn: false,
             Alliskey_SelectColumn: false,
+            dialogTableVisible_zdy:false,
             activeName: "first",
             data: [],
             currentPage: 1,
@@ -321,6 +440,11 @@ export default {
                 db_allnum: "",
                 everDay_addnum: "",
                 pageExnum: 5
+            },
+            xstypeadd: {
+                del_sql: '',
+                add_sql: '',
+                updata_sql: ''
             },
             dbid: null,
             agentId: null,
@@ -361,7 +485,25 @@ export default {
                     code: '3'
                 }
             ],
+            xsType: [{
+                    value: '全量',
+                    code: '1'
+                },
+                {
+                    value: '增量',
+                    code: '2'
+                },
+            ],
+            YesNo:[{
+                    value: '是',
+                    code: '1'
+                },
+                {
+                    value: '否',
+                    code: '2'
+                },],
             handleactive: false,
+            dialog_xsadd: false
         };
     },
     created() {
@@ -423,6 +565,7 @@ export default {
             params["colSetId"] = this.dbid;
             // this.tableloadingInfo='数据加载中...'
             addTaskAllFun.steps_getInitInfo(params).then(res => {
+                console.log(res)
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -614,7 +757,7 @@ export default {
                             }
                             if (arrsql.length > 0) {
                                 this.sqlFun(arrsql)
-                            }else{
+                            } else {
                                 this.activeSec = true;
                             }
                         });
@@ -961,6 +1104,10 @@ export default {
         },
         SqlfiltCloseFun() {
             this.tablename = "";
+        },
+        // 自定义是否抽取sql
+        checkedis_zdyparallelFun(){
+           this.dialogTableVisible_zdy=true
         },
         // 是否抽取sql弹框
         checkedis_parallelFun(row) {
@@ -1366,6 +1513,16 @@ export default {
                     this.sqlSubmit = true
                 }
             });
+        },
+        XSTypeFun(row) {
+            console.log(row)
+            row.md5 = false
+            if (row.xsType == '全量') {
+                // row.md5dis = false
+            } else {
+                // row.md5dis = true
+                this.dialog_xsadd = true
+            }
         }
     }
 };

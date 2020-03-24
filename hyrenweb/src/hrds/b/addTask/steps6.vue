@@ -61,7 +61,7 @@ export default {
                 }
             }
             this.$router.push({
-                path: "/collection1_5",
+                path: "/collection1_4",
                 query: data
             });
         },
