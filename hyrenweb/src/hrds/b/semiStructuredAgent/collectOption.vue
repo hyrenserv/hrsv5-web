@@ -85,7 +85,7 @@
 
             <el-col :span="12">
                 <el-form-item label="是否存在数据字典" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.is_sendok">
+                    <el-radio-group v-model="form.is_dictionary" @change="changRadioValue">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -102,13 +102,13 @@
 
             <el-col :span="12">
                 <el-form-item label="文件后缀名" :label-width="formLabelWidth">
-                    <el-input v-model="form.row_remark"></el-input>
+                    <el-input v-model="form.file_suffix"></el-input>
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
-                <el-form-item label="数据日期" :label-width="formLabelWidth">
-                    <el-input v-model="form.remark"></el-input>
+            <el-col :span="12" v-if="showData_date">
+                <el-form-item label="数据日期" :label-width="formLabelWidth" prop="data_date" :rules="rule.selected">
+                    <el-date-picker type="date" placeholder="选择结束日期" v-model="form.data_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -116,10 +116,10 @@
                 <el-form-item label="选择采集路径" :label-width="formLabelWidth" prop="file_path" :rules="rule.selected">
                     <el-input v-model="form.file_path" :disabled="disabled">
                         <template slot="prepend">
-                            <el-button @click="dialogSelectfolder = true">选择文件夹</el-button>
+                            <el-button @click="dialogSelectfolder = true;seletFilePath()">选择文件夹</el-button>
                         </template>
                         <template slot="append">
-                            <el-button type="primary" @click="dialogWatchSheet = true">查看表</el-button>
+                            <el-button type="primary" @click="dialogWatchSheet = true;viewTable()">查看表</el-button>
                         </template>
                     </el-input>
                 </el-form-item>
@@ -139,18 +139,20 @@
         </el-col>
     </el-row>
 
-    <!-- 选择文件夹弹窗框 -->
+    <!-- 选择文件夹弹出框 -->
     <el-dialog title="选择文件夹" :visible.sync="dialogSelectfolder">
-        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span>{{ node.label }}</span>
-                <span>
-                    <el-button class="netxNUM" type="text" @click="() => append(data)">
-                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
-                    </el-button>
+        <div class="mytree"  hight='200'>
+            <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+                <span class="span-ellipsis" slot-scope="{ node, data }">
+                    <span @click="() => append(data)">{{ node.label }}</span>
+                    <span>
+                        <el-button class="netxNUM" type="text" @click="() => append(data)">
+                            点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                        </el-button>
+                    </span>
                 </span>
-            </span>
-        </el-tree>
+            </el-tree>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
@@ -158,20 +160,14 @@
     </el-dialog>
 
     <!-- 查看表弹出框 -->
-    <el-dialog title="选择文件夹" :visible.sync="dialogWatchSheet">
-        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span>{{ node.label }}</span>
-                <span>
-                    <el-button class="netxNUM" type="text" @click="() => append(data)">
-                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
-                    </el-button>
-                </span>
-            </span>
-        </el-tree>
+    <el-dialog title="查看表" :visible.sync="dialogWatchSheet">
+        <el-table :data="tableData" border stripe size="mini" style="width: 100%">
+            <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+            <el-table-column prop="table_name" show-overflow-tooltip label="表名" align="center"></el-table-column>
+            <el-table-column prop="table_ch_name" show-overflow-tooltip label="表中文名" align="center"></el-table-column>
+        </el-table>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
+            <el-button @click="closeDiolag" size="mini" type="danger">关 闭</el-button>
         </div>
     </el-dialog>
     <!-- <el-row class="partThree">
@@ -229,10 +225,18 @@ export default {
                 database_code: "",
                 run_way: "",
                 object_collect_type: "1",
-                is_sendok: "1",
+                is_sendok: "",
                 s_date: '',
-                e_date: ''
+                e_date: '',
+                system_name: '',
+                host_name: '',
+                local_time: '',
+                file_path: '',
+                data_date: '',
+                file_suffix: '',
+                is_dictionary: '1'
             },
+            showData_date: false,
             dialogSelectfolder: false,
             dialogWatchSheet: false,
             active: 0,
@@ -241,6 +245,7 @@ export default {
             runWay: [],
             YesNo: [],
             data2: [],
+            tableData: [],
             defaultProps: {
                 children: "children",
                 label: "path"
@@ -250,15 +255,66 @@ export default {
             formLabelWidth: "150px"
         }
     },
-    created() {
+    mounted() {
         this.getCategoryItems("DataBaseCode");
         this.getCategoryItems("ObjectCollectType");
         this.getCategoryItems("ExecuteWay");
         this.getCategoryItems("IsFlag");
+        this.searchObjectCollect();
         // 1.需要调用一个接口拿到操作系统，本地时间和系统时间等disabled的input值；
     },
     methods: {
-        // 1.一个点击下一步添加的接口
+        // 新增编辑获取首页数据
+        searchObjectCollect() {
+            // 初始页面
+            functionAll.searchObjectCollect({
+                agent_id: this.$route.query.agent_id
+            }).then(res => {
+                this.form.system_name = res.data.osName;
+                this.form.host_name = res.data.userName;
+                // 处理传来的年月日服务器日期
+                let year = res.data.agentdate.substring(0, 4);
+                let month = res.data.agentdate.substring(4, 6);
+                let day = res.data.agentdate.substring(6, 9);
+                let dateChange = year + "-" + month + "-" + day;
+                // 处理传来的时分秒
+                let hour = res.data.agenttime.substring(0, 2);
+                let minutes = res.data.agenttime.substring(2, 4);
+                let seconds = res.data.agenttime.substring(4, 6);
+                let hourChange = hour + ":" + minutes + ":" + seconds;
+                this.form.server_date = dateChange + " " + hourChange;
+
+                // 处理传来的年月日本地日期
+                let yearlocal = res.data.localDate.substring(0, 4);
+                let monthlocal = res.data.localDate.substring(4, 6);
+                let daylocal = res.data.localDate.substring(6, 9);
+                let dateChangelocal = yearlocal + "-" + monthlocal + "-" + daylocal;
+                // 处理传来的时分秒
+                let hourlocal = res.data.localtime.substring(0, 2);
+                let minuteslocal = res.data.localtime.substring(2, 4);
+                let secondslocal = res.data.localtime.substring(4, 6);
+                let hourChangelocal = hourlocal + ":" + minuteslocal + ":" + secondslocal;
+                this.form.local_time = dateChangelocal + " " + hourChangelocal;
+            })
+        },
+        // 获取目录结构
+        seletFilePath(data) {
+            let arry = [];
+            let path;
+            if (typeof (data) != "undefined") {
+                path = data.path;
+            }
+            functionAll
+                .selectPath({
+                    agent_id: this.$route.query.agent_id,
+                    path: path
+                })
+                .then(res => {
+                    if (typeof (data) == 'undefined') {
+                        this.data2 = res.data;
+                    }
+                });
+        },
         //  获取目录下一级选择文件夹
         append(data) {
             if (!data.children) {
@@ -277,12 +333,37 @@ export default {
         handleCheckChange(data) {
             this.form.file_path = data.path;
         },
-        //3.首次获取操作系统，本地时间和系统时间的接口方法
-
         // 取消取消选择目录并且关闭弹出框
         cancelSelect() {
             this.form.file_path = "";
             this.dialogSelectfolder = false;
+        },
+        // 关闭查看表
+        closeDiolag() {
+            this.dialogWatchSheet = false;
+        },
+        // 查看表信息
+        viewTable() {
+            functionAll.viewTable({
+                file_path: this.form.file_path,
+                agent_id: this.$route.query.agent_id,
+                is_dictionary: this.form.is_dictionary,
+                data_date: this.form.data_date,
+                file_suffix: this.form.file_suffix
+            }).then(res => {
+                if (res.code == 200) {
+                    this.tableData = res.data
+                }
+
+            })
+        },
+        // 是否显示日期数据
+        changRadioValue(val) {
+            if (val == 0) {
+                this.showData_date = true;
+            } else {
+                this.showData_date = false;
+            }
         },
         // 返回上一级
         goBackQuit() {
@@ -292,6 +373,7 @@ export default {
         },
         // 下一步
         nextSteps(formName) {
+
             if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
@@ -300,7 +382,6 @@ export default {
                     duration: 0
                 })
             } else {
-                this.form.file_path = "/";
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         function changeData(num) {
@@ -308,22 +389,34 @@ export default {
                         }
                         let s_date = (this.form.s_date.getFullYear() + '-' + changeData((this.form.s_date.getMonth() + 1)) + '-' + changeData(this.form.s_date.getDate())).replace(/\-/g, '');
                         let e_date = (this.form.e_date.getFullYear() + '-' + changeData((this.form.e_date.getMonth() + 1)) + '-' + changeData(this.form.e_date.getDate())).replace(/\-/g, '');
-                        //这里有一个保存的接口成功才会跳转
                         this.form["s_date"] = s_date;
                         this.form["e_date"] = e_date;
+                        this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
+                        this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
+                        this.form.agent_id = this.$route.query.agent_id;
+                        if (this.form.data_date) {
+                            this.form.data_date = (this.form.data_date.getFullYear() + '-' + changeData((this.form.data_date.getMonth() + 1)) + '-' + changeData(this.form.data_date.getDate())).replace(/\-/g, '');
+                        }
                         functionAll.addObjectCollect(this.form).then((res) => {
                             if (res && res.success) {
                                 this.$router.push({
-                                    name: "collectFileOption"
+                                    name: "collectFileOption",
+                                    query: {
+                                        agent_id: this.$route.query.agent_id,
+                                        odc_id: res.data,
+                                        num: this.form.is_dictionary
+                                    }
                                 })
                             } else {
                                 this.form["s_date"] = "";
                                 this.form["e_date"] = "";
+                                this.form["data_date"] = "";
                             }
                         })
                     } else {
                         this.form["s_date"] = "";
                         this.form["e_date"] = "";
+                        this.form["data_date"] = "";
                     }
                 });
 
@@ -410,7 +503,11 @@ export default {
     top: 13%;
     right: 10%;
     font-size: 80%;
-    color: #191c83;
+    /* color: #191c83; */
+}
+
+.collectOption .netxNUM {
+    color: transparent;
 }
 
 /* 按钮设置 */

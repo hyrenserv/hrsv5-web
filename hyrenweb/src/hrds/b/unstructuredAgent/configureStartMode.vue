@@ -354,6 +354,12 @@ export default {
     margin-bottom: 20px;
 }
 
+.configureStartMode>>>.el-radio-group {
+    display: inline-block;
+    vertical-align: inherit;
+    line-height: inherit;
+}
+
 /* 提示信息 */
 .configureStartMode .item {
     float: right;

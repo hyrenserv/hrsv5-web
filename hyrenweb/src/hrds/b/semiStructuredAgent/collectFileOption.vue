@@ -12,25 +12,20 @@
     </el-row>
 
     <el-row class="partTwo">
-
         <el-row class="spanCollect"><i class="fa fa-signal"></i>采集文件列表</el-row>
-        <el-row>
-            <el-button size="mini" type="success" @click="addOneRow">添加</el-button>
-        </el-row>
         <div class="partTwoContent">
-
-            <el-table :data="tableData" border stripe size="mini">
+            <el-table :data="tableDataMain" border stripe size="medium">
                 <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
 
-                <el-table-column prop="datasource_name" label="英文名" align="center">
+                <el-table-column prop="en_name" label="英文名" align="center">
                     <template slot-scope="scope">
-                        <el-input placeholder="英文名" v-model="englishName"></el-input>
+                        <el-input placeholder="英文名" v-model="scope.row.en_name"></el-input>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="dep_name" label="中文名" align="center">
+                <el-table-column prop="zh_name" label="中文名" align="center">
                     <template slot-scope="scope">
-                        <el-input placeholder="中文名" v-model="cnName"></el-input>
+                        <el-input placeholder="中文名" v-model="scope.row.zh_name"></el-input>
                     </template>
                 </el-table-column>
 
@@ -66,15 +61,15 @@
 
                 <el-table-column label="操作码表" width="120" align="center">
                     <template slot-scope="scope">
-                        <el-button type="success" size="mini" @click="operationCodeTable = true">操作码表</el-button>
+                        <el-button type="success" size="mini" @click="operationCodeTable = true;searchObjectHandleType()">操作码表</el-button>
                     </template>
                 </el-table-column>
             </el-table>
 
             <!-- 分页内容 -->
-            <el-row class="pagination">
+            <!-- <el-row class="pagination">
                 <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
-            </el-row>
+            </el-row> -->
         </div>
     </el-row>
     <el-row class="partFour">
@@ -159,12 +154,12 @@
 
     <!-- 操作码表弹出框 -->
     <el-dialog title="操作码表" :visible.sync="operationCodeTable">
-        <el-table :data="tableData" border stripe size="mini">
+        <el-table :data="operationType" border stripe size="mini">
             <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
 
-            <el-table-column label="KEY" align="center">
+            <el-table-column label="KEY" prop="value" align="center">
                 <template slot-scope="scope">
-                    <el-input placeholder="中文名" v-model="cnName"></el-input>
+                    <el-input placeholder="中文名" v-model="scope.row.value"></el-input>
                 </template>
             </el-table-column>
 
@@ -191,6 +186,9 @@ export default {
             tableData: [],
             options: [],
             dataType: [],
+            tableDataMain: [],
+            upDateWay: [],
+            operationType: [],
             englishName: "",
             cnName: "",
             dataTypeCode: "",
@@ -201,7 +199,28 @@ export default {
 
         }
     },
+    mounted() {
+        // 获取代码项和页面初始值
+        this.searchObjectCollectTask();
+        this.getCategoryItems("DataBaseCode");
+        this.getCategoryItems("CollectDataType");
+        this.getCategoryItems("UpdateType");
+    },
     methods: {
+        // 获取采集文件设置初始数据
+        searchObjectCollectTask() {
+            functionAll.searchObjectCollectTask({
+                odc_id: '1000441634',
+                agent_id: '1000003437'
+            }).then(res => {
+                console.log(res)
+                this.tableDataMain = res.data;
+            })
+        },
+        // 获取操作码表
+        searchObjectHandleType() {
+            this.getCategoryItems("OperationType");
+        },
         // 返回上一级
         goBackQuit() {
             this.$router.push({
@@ -238,12 +257,20 @@ export default {
                         this.options = res.data;
                     }
                 })
-            } else if (e == "ExecuteWay") {
+            } else if (e == "UpdateType") {
                 functionAll.getCategoryItems({
                     category: e
                 }).then((res) => {
                     if (res && res.success) {
                         this.upDateWay = res.data;
+                    }
+                })
+            } else if (e == "OperationType") {
+                functionAll.getCategoryItems({
+                    category: e
+                }).then((res) => {
+                    if (res && res.success) {
+                        this.operationType = res.data;
                     }
                 })
             }
@@ -252,12 +279,6 @@ export default {
         cancelSelect() {
             this.operationCodeTable = false;
             this.dialogCollectStructure = false;
-        },
-        // 添加新的一行数据
-        addOneRow() {
-            this.tableData.push({});
-            this.getCategoryItems("DataBaseCode");
-            this.getCategoryItems("CollectDataType");
         },
         // 删除表格的当前行
         deleteArry(index, row) {

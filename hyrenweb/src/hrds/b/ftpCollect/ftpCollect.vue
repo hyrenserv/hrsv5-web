@@ -162,16 +162,19 @@
     </el-row>
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
-        <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span>{{ node.label }}</span>
-                <span>
-                    <el-button class="netxNUM" type="text" @click="() => append(data)">
-                        点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
-                    </el-button>
+        <div class="mytree"  hight='200'>
+            <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+                <span class="span-ellipsis" slot-scope="{ node, data }">
+                    <span @click="() => append(data)">{{ node.label }}</span>
+                    <span>
+                        <el-button class="netxNUM" type="text" @click="() => append(data)">
+                            点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                        </el-button>
+                    </span>
                 </span>
-            </span>
-        </el-tree>
+            </el-tree>
+        </div>
+
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
@@ -215,7 +218,6 @@ export default {
                 ftp_number: "",
                 ftp_password: "",
                 ftp_dir: "",
-                local_path: "",
                 ftp_rule_path: "",
                 run_way: "",
                 start_date: "",
@@ -518,6 +520,12 @@ export default {
 .ftpCollect>>>.el-input-group__prepend button.el-button {
     background-color: #D9534F;
     color: white;
+}
+
+.ftpCollect>>>.el-radio-group {
+    display: inline-block;
+    vertical-align: inherit;
+    line-height: inherit;
 }
 
 /* 提示信息 */
