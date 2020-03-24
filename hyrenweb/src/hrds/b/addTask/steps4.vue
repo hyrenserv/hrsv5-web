@@ -13,7 +13,7 @@
             </el-table-column>
             <el-table-column prop="table_name" label="表名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label=" 是否仅抽取" width="115" align="center">
+           <!--  <el-table-column label=" 是否仅抽取" width="115" align="center">
                 <template slot="header">
                     <el-checkbox @change="exCheckAllChange(ruleForm.unloadingFileData,excheckAll)" v-model="excheckAll" :checked="excheckAll">
                         <span class="allclickColor">是否仅抽取</span>
@@ -22,11 +22,11 @@
                 <template slot-scope="scope">
                     <el-checkbox :checked="scope.row.data_extract_type=='true'" v-model="scope.row.data_extract_type" @change="singleChangeFun(scope.row,scope.row.data_extract_type,ruleForm.unloadingFileData)"></el-checkbox>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label=" 抽取数据存储方式" align="center">
                 <template slot-scope="scope">
-                    <el-form-item :prop="'unloadingFileData.'+scope.$index+'.dbfile_format'" :rules="rule.selected">
-                        <el-select placeholder="抽取数据存储方式" v-model="scope.row.dbfile_format" style="width:150px" size="medium" @focus="IsExDataFun(scope.row.data_extract_type)" @change="IsExChangeDataFun(scope.row)">
+                    <el-form-item :prop="'unloadingFileData.'+scope.$index+'.dbfile_format'"  :rules="rule.selected">
+                        <el-select placeholder="抽取数据存储方式"  multiple v-model="scope.row.dbfile_format" style="width:150px" size="medium" @focus="IsExDataFun(scope.row.data_extract_type)" @change="IsExChangeDataFun(scope.row)">
                             <el-option size="medium" v-for="(item,index) in ExtractDataType" :key="index" :label="item.value" :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
@@ -68,6 +68,15 @@
                     </el-select>
                 </template>
             </el-table-column>
+            <el-table-column label="落地目录" align="center">
+                <template>
+                   <el-input  placeholder="落地目录"  size="medium">
+                        <template slot="prepend">
+                            <el-button >选择目录</el-button>
+                        </template>
+                    </el-input>
+                </template>
+            </el-table-column>
         </el-table>
     </el-form>
     <el-pagination @size-change="unloading_handleSizeChange" @current-change="unloading_handleCurrentChange" :current-page="unloadingcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="unloadingpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.unloadingFileData.length" class="locationcenter"></el-pagination>
@@ -77,13 +86,13 @@
                     <span class="dialogtitle el-icon-caret-right">所有表分隔符设置</span>
     </div>
         <el-form ref="separatorData" :model="separatorData" label-width="240px" text-align="center">
-            <el-form-item label="是否仅抽取:" prop="isExtraction" :rules="rule.selected">
+           <!--  <el-form-item label="是否仅抽取:" prop="isExtraction" :rules="rule.selected">
                 <el-radio-group v-model="separatorData.isExtraction">
                     <el-radio v-for="(item,index) in AlltableisExData" :key="index" :label="item.code" :value="item.value" @change="isexRadFun">{{item.value}}</el-radio>
                 </el-radio-group>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="抽取数据存储格式" prop="Extractformat" :rules="rule.selected">
-                <el-select placeholder="抽取数据存储方式" v-model="separatorData.Extractformat" style="width: 190px;" size="medium" @focus="AllTableIsExDataFun(separatorData.isExtraction)" @change="exchangeFun">
+                <el-select placeholder="抽取数据存储方式" multiple v-model="separatorData.Extractformat" style="width: 190px;" size="medium" @focus="AllTableIsExDataFun(separatorData.isExtraction)" @change="exchangeFun">
                     <el-option v-for="(item,index) in ExtractDataType" :key="index" :label="item.value" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
@@ -110,6 +119,7 @@
                     </el-select>
                 </template>
             </el-form-item>
+            
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="AllTable_SeparatorCloseFun()" type="danger" size="mini">取 消</el-button>

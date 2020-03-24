@@ -74,16 +74,16 @@ export default new Router({
                     title: '数据库采集04',
                     component: () => import('@/hrds/b/addTask/steps4.vue')
                 },
-                {
+               /*  {
                     path: '/collection1_5',
                     name: 'addTask05',
                     title: '数据库采集05',
                     component: () => import('@/hrds/b/addTask/steps5.vue')
-                },
+                }, */
                 {
-                    path: '/collection1_6',
-                    name: 'addTask06',
-                    title: '数据库采集06',
+                    path: '/collection1_5',
+                    name: 'addTask05',
+                    title: '数据库采集05',
                     component: () => import('@/hrds/b/addTask/steps6.vue')
                 },
                 {
