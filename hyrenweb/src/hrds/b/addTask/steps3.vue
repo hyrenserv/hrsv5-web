@@ -621,6 +621,10 @@
     </el-dialog>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+       <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -630,16 +634,20 @@ import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
+import Loading from '../../components/loading'
+
 import {
     parse
 } from "path";
 export default {
     components: {
-        Step
+        Step,
+        Loading
     },
     data() {
         return {
             active: 2,
+            isLoading:false,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
             checkAll: false,
@@ -783,6 +791,7 @@ export default {
             return row.column_id;
         },
         next() {
+            this.isLoading=true
             let tbCleanString = this.dataCleanConfigFun();
             let data = {};
             if (this.$route.query.edit == "yes") {
@@ -806,12 +815,14 @@ export default {
                 params["colSetId"] = this.databaseId;
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     // this.dbid = res.data;
+                    this.isLoading=false
                     this.$router.push({
                         path: "/collection1_4",
                         query: data
                     });
                 });
             } else {
+                this.isLoading=false
                 this.$router.push({
                     path: "/collection1_4",
                     query: data

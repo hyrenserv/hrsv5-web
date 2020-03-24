@@ -390,6 +390,10 @@
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+       <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -399,9 +403,12 @@ import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
+import Loading from '../../components/loading'
+
 export default {
     components: {
-        Step
+        Step,
+        Loading
     },
     data() {
         return {
@@ -503,7 +510,8 @@ export default {
                     code: '2'
                 },],
             handleactive: false,
-            dialog_xsadd: false
+            dialog_xsadd: false,
+            isLoading:false,
         };
     },
     created() {
@@ -735,6 +743,7 @@ export default {
             }
         },
         next() {
+            this.isLoading=true
             this.saveTableConfFun();
             let arrsql = []
             if (this.handleactive == true) {
@@ -761,6 +770,8 @@ export default {
                                 this.activeSec = true;
                             }
                         });
+                    }else{
+                        this.isLoading=false
                     }
                 });
             } else {
@@ -783,10 +794,13 @@ export default {
                 if (res.code == 200) {
                     this.activeSec = true;
                     // this.dbid = res.data;
+                }else{
+                    this.isLoading=false
                 }
             });
         },
         nextlinkFun() {
+             this.isLoading=false
             let data = {};
             if (this.$route.query.edit == "yes") {
                 data = {
@@ -1013,6 +1027,8 @@ export default {
                     if (res.code == 200) {
                         this.activeFirst = true;
                         // this.dbid = res.data;
+                    }else{
+                        this.isLoading=false
                     }
                 });
             });
