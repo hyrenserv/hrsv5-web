@@ -465,6 +465,7 @@ export default {
             this.dbid = id
             this.dialogManualBenchdata = true
             this.getDbmNormbasicInfo(1, 10)
+             this.radio=''
             // 再次打开回显之前点击的
               for(let i=0;i<this.dm_arr.length;i++){
                 if(this.dm_arr[i].col_id==id){
@@ -484,7 +485,7 @@ export default {
             //点击选择后遍历之前人工对标存储的，将其删除
             for(let i=0;i<this.dm_arr.length;i++){
                 if(this.dm_arr[i].col_id==colid){
-                   this.dm_arr[i].splice(i,1)
+                   this.dm_arr.splice(i,1)
                    i--
                 }
             }
