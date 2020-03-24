@@ -12,19 +12,27 @@
             <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
         </span>
     </el-dialog>
+       <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
 <script>
 import Step from "./step";
 import * as sendTask from "./addTask"
+import Loading from '../../components/loading'
+
 export default {
     components: {
-        Step
+        Step,
+        Loading
     },
     data() {
         return {
             active: 5,
+            isLoading:false,
             dbid: null,
             aId: null,
             sourId: null,

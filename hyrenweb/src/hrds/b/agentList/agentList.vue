@@ -21,7 +21,7 @@
         <el-table-column label="半结构化 Agent" align="center">
 
             <template slot-scope="scope">
-                <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
+                <el-button v-if="scope.row.halfstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="非结构化 Agent" align="center">
@@ -31,12 +31,12 @@
         </el-table-column>
         <el-table-column label="Ftp Agent" align="center">
             <template slot-scope="scope">
-                <el-button v-if="scope.row.halfstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)">任务配置</el-button>
+                <el-button v-if="scope.row.ftpflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="数据文件 Agent" align="center">
             <template slot-scope="scope">
-                <el-button v-if="scope.row.ftpflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
+                <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
             </template>
         </el-table-column>
     </el-table>

@@ -128,6 +128,10 @@
     </el-dialog>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
+       <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -136,16 +140,20 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
+import Loading from '../../components/loading'
+
 import Step from "./step";
 var IsExtypeData1 = [],
     IsExtypeData2 = [];
 export default {
     components: {
-        Step
+         Step,
+        Loading
     },
     data() {
         return {
             active: 3,
+            isLoading:false,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
             excheckAll: false,
@@ -230,6 +238,7 @@ export default {
     },
     methods: {
         next(formName) {
+            this.isLoading=true
             var a = this.ruleForm.unloadingFileData;
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -262,6 +271,7 @@ export default {
                         params["colSetId"] = this.databaseId;
                         params["extractionDefString"] = JSON.stringify(dataAll);
                         addTaskAllFun.saveFileConf(params).then(res => {
+                            this.isLoading=false
                             this.getInitInfo();
                             let data = {};
                             if (this.$route.query.edit == "yes") {
@@ -301,6 +311,7 @@ export default {
                                 source_name: this.$Base64.encode(this.sName)
                             };
                         }
+                        this.isLoading=false
                         this.$router.push({
                             path: "/collection1_5",
                             query: data
@@ -309,6 +320,7 @@ export default {
 
                 } else {
                     return false;
+                    this.isLoading=false
                 }
             });
         },
