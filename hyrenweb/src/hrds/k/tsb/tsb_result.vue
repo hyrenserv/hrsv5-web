@@ -355,7 +355,6 @@
                 tsbFun.saveTSBConfData({"dbm_normbmd_info_s": JSON.stringify(save_data_list)}).then(res => {
                     if (res.success) {
                         this.isLoading = false;
-                        console.log(res);
                         this.$message({
                             type: 'success',
                             message: '表结构对标结果保存成功!'
