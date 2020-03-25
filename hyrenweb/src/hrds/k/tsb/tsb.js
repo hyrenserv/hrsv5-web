@@ -15,6 +15,7 @@ export function getColumnByFileId(data) {
         params: data,
     })
 }
+
 //点击对标
 export function predictBenchmarking(data) {
     return request({
@@ -22,12 +23,14 @@ export function predictBenchmarking(data) {
         params: data,
     })
 }
+
 //对标结果显示数据
 export function getPredictResult() {
     return request({
         url: '/K/tsbenchmarking/getPredictResult',
     })
 }
+
 //人工对标方法
 export function getDbmNormbasicInfo(data) {
     return request({
@@ -35,15 +38,11 @@ export function getDbmNormbasicInfo(data) {
         params: data,
     })
 }
-// 获取代码类下拉框
-export function getDbmCodeTypeIdAndNameInfo() {
+
+//保存对标结果信息
+export function saveTSBConfData(data) {
     return request({
-        url: '/K/dbmcodetypeinfo/getDbmCodeTypeIdAndNameInfo',
-    })
-}
-//获取分类树信息
-export function getDbmSortInfoTreeData() {
-    return request({
-        url: '/K/dbmtree/getDbmSortInfoTreeData',
+        url: '/K/tsbenchmarking/saveTSBConfData',
+        params: data,
     })
 }
