@@ -361,6 +361,10 @@
                         });
                         //对标结果保存成功后,将对标结果置空
                         this.tableData = [];
+                        //保存完成后,跳转到表结构对标首页
+                        this.$router.push({
+                            name: 'tsb'
+                        })
                     } else {
                         this.isLoading = false;
                     }
