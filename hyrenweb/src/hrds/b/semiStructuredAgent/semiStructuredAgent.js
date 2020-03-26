@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 
 //collectOption页面
 /**(0)
@@ -75,6 +75,117 @@ export function searchObjectHandleType(data) {
 export function searchCollectColumnStruct(data) {
     return request({
         url: '/B/agent/objectcollect/searchCollectColumnStruct',
+        params: data
+    })
+}
+/**(3)
+ * 保存操作码表
+ */
+export function saveHandleType(data) {
+    return request({
+        url: '/B/agent/objectcollect/saveHandleType',
+        params: data
+    })
+}
+/**(4)
+ * 保存对象采集结构信息（采集列结构）
+ */
+export function saveCollectColumnStruct(data) {
+    return request({
+        url: '/B/agent/objectcollect/saveCollectColumnStruct',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+/**(5)
+ * 检查采集文件设置
+ */
+export function checkFieldsForSaveObjectCollectTask(data) {
+    return request({
+        url: '/B/agent/objectcollect/checkFieldsForSaveObjectCollectTask',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+/**(6)
+ * 获取对象采集树节点信息
+ */
+export function getObjectCollectTreeInfo(data) {
+    return request({
+        url: '/B/agent/objectcollect/getObjectCollectTreeInfo',
+        params: data
+    })
+}
+/**(7)
+ * 保存文件设置信息
+ */
+export function saveObjectCollectTask(data) {
+    return request({
+        url: '/B/agent/objectcollect/saveObjectCollectTask',
+        params: data
+    })
+}
+//collectionStructureSet页面
+/**(0)
+ * 获取存储信息
+ */
+export function searchObjectStorage(data) {
+    return request({
+        url: '/B/agent/objectcollect/searchObjectStorage',
+        params: data
+    })
+}
+/**(1)
+ * 查询solr配置信息
+ */
+export function searchSolrConfInfo(data) {
+    return request({
+        url: '/B/agent/objectcollect/searchSolrConfInfo',
+        params: data
+    })
+}
+/**(2)
+ * 根据ocs_id查询hbase配置信息
+ */
+export function searchHBaseConfInfo(data) {
+    return request({
+        url: '/B/agent/objectcollect/searchHBaseConfInfo',
+        params: data
+    })
+}
+/**(3)
+ * 保存SOLR
+ */
+export function saveSolrConfInfo(data) {
+    return request({
+        url: '/B/agent/objectcollect/saveSolrConfInfo',
+        params: data
+    })
+}
+/**(4)
+ * 保存hbase
+ */
+export function saveHBaseConfInfo(data) {
+    return request({
+        url: '/B/agent/objectcollect/saveHBaseConfInfo',
+        params: data
+    })
+}
+/**(4)
+ * 保存对象文件配置信息时检查字段
+ */
+export function checkFieldsForSaveObjectStorage(data) {
+    return request({
+        url: '/B/agent/objectcollect/checkFieldsForSaveObjectStorage',
+        params: data
+    })
+}
+/**(5)
+ * 保存存储设置
+ */
+export function saveObjectStorage(data) {
+    return request({
+        url: '/B/agent/objectcollect/saveObjectStorage',
         params: data
     })
 }

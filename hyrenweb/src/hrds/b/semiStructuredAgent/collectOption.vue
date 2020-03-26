@@ -147,7 +147,7 @@
                     <span @click="() => append(data)">{{ node.label }}</span>
                     <span>
                         <el-button class="netxNUM" type="text" @click="() => append(data)">
-                            点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                            点击获取下一级
                         </el-button>
                     </span>
                 </span>
@@ -403,8 +403,7 @@ export default {
                                     name: "collectFileOption",
                                     query: {
                                         agent_id: this.$route.query.agent_id,
-                                        odc_id: res.data,
-                                        num: this.form.is_dictionary
+                                        odc_id: res.data
                                     }
                                 })
                             } else {
