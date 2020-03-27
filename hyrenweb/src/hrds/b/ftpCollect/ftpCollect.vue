@@ -222,6 +222,7 @@ export default {
                 run_way: "",
                 start_date: "",
                 end_date: "",
+                file_suffix: ""
             },
             FtpRule: [],
             dataBaseCode: [],
@@ -243,6 +244,8 @@ export default {
             dialogSelectOk: false,
             rule: validator.default,
             formLabelWidth: "150px",
+            oldstart: '',
+            oldend: ''
         };
     },
     created() {
@@ -274,7 +277,7 @@ export default {
         //判断是新增采集还是编辑更新采集
         addOrUpdate() {
             let ftp_id = this.$route.query.id;
-            if (ftp_id || '') {
+            if (this.$route.query.id) {
                 functionAll.searchFtp_collect({
                     ftp_id: ftp_id,
                     agent_id: this.$route.query.agent_id
@@ -290,6 +293,8 @@ export default {
                     let dayEnd = res.data.end_date.substring(6, 9);
                     let dateEnd = yearEnd + "-" + monthEnd + "-" + dayEnd;
                     this.form.end_date = dateEnd;
+                    this.oldstart = dateStart;
+                    this.oldend = dateEnd;
                 })
             }
         },
@@ -345,17 +350,29 @@ export default {
         },
         // 添加ftp收集任务或者编辑更新判断
         addFtpCollect() {
-            function changeData(num) {
-                return num > 9 ? (num + "") : ("0" + num);
-            }
-            let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
-            let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
-            let ftp_id = this.$route.query.ftp_id;
+            let ftp_id = this.$route.query.id;
             this.form["agent_id"] = this.$route.query.agent_id;
-            this.form["start_date"] = s_date;
-            this.form["end_date"] = e_date;
-            if (ftp_id || '') {
-                this.form["ftp_id"] = this.$route.query.ftp_id;
+            if (this.$route.query.id) {
+                function changeData(num) {
+                    return num > 9 ? (num + "") : ("0" + num);
+                }
+                // 处理开始时间
+                if (typeof (this.form.start_date) == "string") {
+                    let s_date = JSON.stringify(this.form.start_date).replace(/\-/g, '');
+                    this.form["start_date"] = s_date;
+                } else if (typeof (this.form.start_date) == "object") {
+                    let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
+                    this.form["start_date"] = s_date;
+                };
+                // 处理结束时间
+                if (typeof (this.form.end_date) == "string") {
+                    let e_date = JSON.stringify(this.form.end_date).replace(/\-/g, '');
+                    this.form["end_date"] = e_date;
+                } else if (typeof (this.form.end_date) == "object") {
+                    let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
+                    this.form["end_date"] = e_date;
+                }
+                this.form["ftp_id"] = this.$route.query.id;
                 functionAll.updateFtp_collect(this.form).then(res => {
                     if (res && res.success) {
                         this.$message({
@@ -366,11 +383,21 @@ export default {
                             name: "agentList"
                         });
                     } else {
-                        this.form["start_date"] = "";
-                        this.form["end_date"] = "";
+                        this.form["start_date"] = this.oldstart;
+                        this.form["end_date"] = this.oldend;
                     }
                 });
             } else {
+                this.oldstart = this.form.start_date;
+                this.oldend = this.form.end_date;
+
+                function changeData(num) {
+                    return num > 9 ? (num + "") : ("0" + num);
+                }
+                let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
+                this.form["start_date"] = s_date;
+                let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
+                this.form["end_date"] = e_date;
                 functionAll.addFtp_collect(this.form).then(res => {
                     if (res && res.success) {
                         this.$message({
@@ -381,8 +408,8 @@ export default {
                             name: "agentList"
                         });
                     } else {
-                        this.form["start_date"] = "";
-                        this.form["end_date"] = "";
+                        this.form["start_date"] = this.oldstart;
+                        this.form["end_date"] = this.oldend;
                     }
                 });
             }
@@ -456,6 +483,8 @@ export default {
         },
         // 检查表单有没有填写完整
         submitForm(formName) {
+            this.oldstart = this.form.start_date;
+            this.oldend = this.form.end_date;
             if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
@@ -468,8 +497,8 @@ export default {
                     if (valid) {
                         this.dialogSelectOk = true
                     } else {
-                        this.form["start_date"] = "";
-                        this.form["end_date"] = "";
+                        this.form["start_date"] = this.oldstart;
+                        this.form["end_date"] = this.oldend;
                     }
                 });
             }

@@ -126,7 +126,9 @@ export default {
             showOrHidden_unzip: false,
             size: "medium",
             rule: validator.default,
-            formLabelWidth: "150px"
+            formLabelWidth: "150px",
+            oldstart: '',
+            oldend: ''
         }
     },
     created() {
@@ -146,7 +148,7 @@ export default {
         // 获取首页数据（同时判断是新加任务还是编辑任务)
         searchFileCollect() {
             let fcs_id = this.$route.query.id;
-            if (fcs_id || '') {
+            if (this.$route.query.id) {
                 functionAll.searchFileCollect({
                     agent_id: this.$route.query.agent_id,
                     fcs_id: fcs_id
@@ -174,7 +176,6 @@ export default {
                         let seconds = res.data.agenttime.substring(4, 6);
                         let hourChange = hour + ":" + minutes + ":" + seconds;
                         this.form.agent_time = dateChange + " " + hourChange;
-
                     }
                 });
             } else {
@@ -215,7 +216,6 @@ export default {
                         res.data.forEach((item => {
                             item['run_way'] = item.code;
                         }))
-                        console.log(res.data)
                         this.runWay = res.data;
                     }
                 })
@@ -244,6 +244,8 @@ export default {
                         return num > 9 ? (num + "") : ("0" + num);
                     }
                     // 处理传参日期与form
+                    this.oldstart = this.form.start_date;
+                    this.oldend = this.form.end_date;
                     let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
                     let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
                     this.form["start_date"] = s_date;
@@ -253,7 +255,7 @@ export default {
                     this.form["fcs_id"] = fcs_id;
                     // 通过fcs_id判断是更新还是新建任务
                     if (valid) {
-                        if (fcs_id || '') {
+                        if (fcs_id) {
                             // 更新任务
                             functionAll.updateFileCollect(
                                 this.form
@@ -272,8 +274,8 @@ export default {
                                         }
                                     });
                                 } else {
-                                    this.form["start_date"] = "";
-                                    this.form["end_date"] = "";
+                                    this.form["start_date"] = this.oldstart;
+                                    this.form["end_date"] = this.oldend;
                                 }
                             })
                         } else {
@@ -295,14 +297,14 @@ export default {
                                         }
                                     });
                                 } else {
-                                    this.form["start_date"] = "";
-                                    this.form["end_date"] = "";
+                                    this.form["start_date"] = this.oldstart;
+                                    this.form["end_date"] = this.oldend;
                                 }
                             })
                         }
                     } else {
-                        this.form["start_date"] = "";
-                        this.form["end_date"] = "";
+                        this.form["start_date"] = this.oldstart;
+                        this.form["end_date"] = this.oldend;
                     }
                 });
             }
