@@ -486,11 +486,15 @@
 }
 /* 发送文本按钮颜色 */
 .sendcolor {
-    color: #76b8f1 !important;
+    color: #67c23a !important;
 }
 /* 发布文本按钮颜色 */
 .issuecolor{
    color:#67c23a !important;
+}
+/* 生成作业 */
+.workcolor {
+    color: #8c8b8b !important
 }
 /*内容区顶部标题以及右侧按钮返回样式--start */
 .topTitle{

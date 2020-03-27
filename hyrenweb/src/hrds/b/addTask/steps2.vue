@@ -11,7 +11,7 @@
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
                 <div>
-                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" :empty-text="tableloadingInfo" style="width: 100%" height="360" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
+                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" :empty-text="tableloadingInfo" style="width: 100%"  border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -355,7 +355,7 @@
                     <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
                         <el-row type="flex" style="text-align:right;padding-right:10px;">
                             <el-col :span="24">
-                                <el-button type="text" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                                <el-button type="warning" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
                             </el-col>
                         </el-row>
                         <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" >
