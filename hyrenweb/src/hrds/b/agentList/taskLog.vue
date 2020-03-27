@@ -1,7 +1,7 @@
 <template>
 <div id="tasklog">
     <el-row class='topTitle'>
-        <span>日志查看</span>
+        <span class='el-icon-location'>日志查看</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
@@ -43,7 +43,7 @@
                     <el-button type="primary" @click="onSubmit()" size="mini">查看</el-button>
                 </el-col>
                 <el-col :span="1">
-                    <el-button type="primary" size="mini" icon="el-icon-download" @click="downloadTaskLog()"></el-button>
+                    <el-button type="success" size="mini" icon="el-icon-download" @click="downloadTaskLog()"></el-button>
                 </el-col>
             </el-row>
         </el-form>

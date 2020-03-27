@@ -714,6 +714,7 @@ export default {
             let params = {};
             let arr = [];
             params["etl_sys_cd"] = this.sys_cd;
+            console.log(this.sys_cd)
             etlJobDefAllFun.searchEtlJob(params).then(res => {
                 res.data.forEach((item) => {
                     let obj = {};

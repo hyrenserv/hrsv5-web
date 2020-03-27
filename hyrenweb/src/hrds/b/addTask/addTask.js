@@ -413,7 +413,7 @@ export function getInitInfo(data) {
     })
 }
 //根据数据抽取方式返回卸数文件格式
-export function getFileFormatByExtractType(data) {
+export function getFileFormatByExtractType(data) {//暂时不用
     return request({
         url: '/B/agent/dbagentconf/fileconf/getFileFormatByExtractType',
         params:data
@@ -514,5 +514,21 @@ export function sendDBCollctTaskById(data) {
     return request({
         url: '/B/agent/sendDBCollctTaskById',
         params:data
+    })
+}
+
+
+
+export function selectPath(data) {
+   return request({
+       url: '/B/agent/unstructuredfilecollect/selectPath',
+       params: data
+   })
+}
+//查询作业名称信息
+export function searchEtlJob(data) {
+    return request({
+        url: '/C/jobconfig/searchEtlJob',
+        params: data
     })
 }

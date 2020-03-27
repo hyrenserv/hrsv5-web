@@ -86,8 +86,8 @@
           <div slot="title" >
                     <span class="dialogtitle el-icon-caret-right">数据采集任务</span>
     </div>
-        <el-button type="primary" size="mini" style="margin: 10px 0;">全部发送</el-button>
-        <el-table :data="taskMang" border size="medium">
+        <el-button type="success" size="mini" style="margin: 10px 0;">全部发送</el-button>
+        <el-table :data="taskMang" border size="medium" :empty-text="tableloadingInfo">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center" :show-overflow-tooltip="true"></el-table-column>
 
@@ -119,6 +119,9 @@
     </el-dialog>
     <!--生成作业  -->
      <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
+          <div slot="title" >
+                    <span class="dialogtitle el-icon-caret-right">生成作业</span>
+    </div>
         <el-form ref="separatorData" :model="ProdeceJobsData" label-width="240px" text-align="center">
             <el-form-item label="选择工程" prop="project" :rules="rule.selected">
                 <el-select placeholder="选择工程" v-model="ProdeceJobsData.project" style="width: 190px;" size="medium" >
@@ -151,6 +154,7 @@ export default {
             AgenttableData: [],
             gridData2: [],
             taskMang: [],
+            tableloadingInfo:'数据加载中...',
             rule: validator.default,
             dialogTableVisible: false,
             dialogProdeceJobs:false,
@@ -241,6 +245,11 @@ export default {
                     arrdata[i].agent_type = row.agent_type;
                 }
                 this.taskMang = arrdata;
+                if(res.data.length>0){
+                this.tableloadingInfo=''
+                }else{
+                    this.tableloadingInfo='暂无数据'
+                }
             });
         },
         // 任务管理里面的编辑  根据不同类型跳转不同页面
@@ -359,34 +368,6 @@ export default {
 
 <style scoped>
 /* 下划线样式 */
-.lines {
-    width: 100%;
-    min-height: 1px;
-    background: #dddddd;
-    margin-bottom: 15px;
-}
-
-.edilt {
-    text-align: center;
-    color: #4691ef;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.sendmsg {
-    text-align: center;
-    color: #4691ef;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.delbtn {
-    text-align: center;
-    color: #4691ef;
-    font-size: 22px;
-    font-weight: bold;
-}
-
 .taskEx>>>.el-dialog__body {
     padding: 8px 20px;
 }
@@ -412,21 +393,6 @@ export default {
     color: #000;
 }
 
-.editcolor {
-    color: #2bc73e;
-}
-
-.delcolor {
-    color: #e83a3a;
-}
-
-.sendcolor {
-    color: #76b8f1;
-}
-
-.workcolor {
-    color: #8c8b8b
-}
 .optheight{
     height: 20px;
     line-height: 20px;
