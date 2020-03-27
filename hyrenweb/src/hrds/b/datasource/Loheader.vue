@@ -1,6 +1,6 @@
 <template>
 <div class="loheader">
-    <el-row>
+    <el-row class="loheaderRow">
         <i class="block_icon fa text-warning fa-globe blue"></i>
         <span>数据来源表</span>
         <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;departmentInfo()" size="small">
@@ -227,8 +227,6 @@ export default {
 /* button样式设置 */
 .els {
     float: right;
-    margin-top: 18px;
-
 }
 
 .el1 {
@@ -245,6 +243,12 @@ export default {
 
 .fa-question-circle {
     margin-top: 12px;
+}
+
+.loheaderRow {
+    height: 34px;
+    line-height: 34px;
+    margin-bottom: 10px;
 }
 
 /* 上传选择文件 */
