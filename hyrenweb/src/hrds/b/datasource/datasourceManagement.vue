@@ -287,8 +287,8 @@ export default {
 
 <style scoped>
 .index1001 {
-    padding-left: 53px;
-    padding-right: 53px;
+    padding-left: 8px;
+    padding-right: 15px;
 }
 
 .authorityManagement {

@@ -1,141 +1,139 @@
 <template>
 <div class="agentList">
-    <el-main>
-        <!-- 数据来源标题 -->
+    <!-- 数据来源标题 -->
+    <el-row class="agentListrow">
+        <i class="fa text-warning fa-desktop blue"></i>
+        <span>数据源Agent列表</span>
+        <router-link to="/datasourceManagement">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
+    </el-row>
+    <div class="lines"></div>
+    <!-- 列表内容 -->
+    <div class="listContent">
+        <div class="listPic" @click="tapDifferentType(1)">
+            <img src="@/assets/images/datasource.png" alt="数据图片" />
+        </div>
+        <h3>数据库 Agent</h3>
+        <p>数据库 Agent 是用于采集结构化数据（RDBMS Etc）的Agent，只需要一个Agent就可以采集同一数据源中的不同源数据</p>
+    </div>
+
+    <div class="listContent">
+        <div class="listPic" @click="tapDifferentType(4)">
+            <img src="@/assets/images/a1.png" alt="数据图片" />
+        </div>
+        <h3>数据库文件 Agent</h3>
+        <p>数据文件 Agent 是用于对各种关系型存储的数据文件进行数据采集的组件，例如从RDBMS数据库中卸载的CSV或各种自定义格式的数据文件，以EXCEL存储的行列关系的数据文件</p>
+    </div>
+
+    <div class="listContent">
+        <div class="listPic" @click="tapDifferentType(5)">
+            <img src="@/assets/images/object.png" alt="数据图片" />
+        </div>
+        <h3>半结构化 Agent</h3>
+        <p>半结构化 Agent 是用于采集各种半结构化数据的组件，例如XML、JSON等储存在文件系统之上的数据文件。</p>
+    </div>
+
+    <div class="listContent">
+        <div class="listPic" @click="tapDifferentType(2)">
+            <img src="@/assets/images/filesource.png" alt="数据图片" />
+        </div>
+        <h3>非结构化 Agent</h3>
+        <p>非结构化 Agent 是用于采集各种半结构化或非结构化数据的组件，例如Word、PDF、图片文件等存储在文件系统之上的数据文件。</p>
+    </div>
+
+    <div class="listContent listContentlast">
+        <div class="listPic" @click="tapDifferentType(3)">
+            <img src="@/assets/images/ftp.png" alt="数据图片" />
+        </div>
+        <h3>FTP Agent</h3>
+        <p>FTP Agent 是用于将系统之上的数据文件使用SFTP的方式将数据拉取到指定的系统盘之上的组件，多用于数据分发等。</p>
+    </div>
+
+    <!-- 数据类型标题 -->
+    <h4>
+        当前所属数据源为：
+        <strong>{{this.datasource_name}}</strong>
+    </h4>
+    <!-- 数据表格标题 -->
+    <div class="tableList">
         <el-row>
-            <i class="fa text-warning fa-desktop blue"></i>
-            <span>数据源Agent列表</span>
-            <router-link to="/datasourceManagement">
-                <el-button type="primary" size="small" class="goIndex">
-                    <i class="fa fa-home fa-lg"></i>返回首页
-                </el-button>
-            </router-link>
+            <i class="fa text-warning fa-database blue"></i>
+            <span v-if="sourceAgent">数据源Agent</span>
+            <span v-if="dataFile">数据文件 Agent</span>
+            <span v-if="semiStructure">半结构化 Agent</span>
+            <span v-if="nonStructural">非结构化 Agent</span>
+            <span v-if="ftpAgent">FTP Agent</span>
+            <!-- 添加数据表单弹出框  -->
+            <el-button type="success" class="addAgent" size="small" v-if="sourceAgent" @click="dialogFormVisible = true;DataCathInfo()">新增数据库Agent</el-button>
+            <el-button type="success" class="addAgent" size="small" v-if="dataFile" @click="dialogFormVisible = true;DataCathInfo()">新增DBAgent</el-button>
+            <el-button type="success" class="addAgent" size="small" v-if="semiStructure" @click="dialogFormVisible = true;DataCathInfo()">新增半结构化 Agent</el-button>
+            <el-button type="success" class="addAgent" size="small" v-if="nonStructural" @click="dialogFormVisible = true;DataCathInfo()">新增非结构化 Agent</el-button>
+            <el-button type="success" class="addAgent" size="small" v-if="ftpAgent" @click="dialogFormVisible = true;DataCathInfo()">新增FTP Agent采集数据</el-button>
         </el-row>
+        <!-- 表格内容 -->
+        <el-table stripe :data="tableData" border>
+            <el-table-column prop="agent_name" label="Agent名称" align="center"></el-table-column>
+            <el-table-column prop="agent_ip" label="Agent所在服务器IP" align="center"></el-table-column>
+            <el-table-column prop="agent_port" label="Agent 连接端口" align="center"></el-table-column>
+            <el-table-column prop="user_name" label="数据采集用户" align="center"></el-table-column>
+            <el-table-column label="操作" width="190" align="center">
+                <template slot-scope="scope">
+                    <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
+                    <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
         <div class="lines"></div>
-        <!-- 列表内容 -->
-        <div class="listContent">
-            <div class="listPic" @click="tapDifferentType(1)">
-                <img src="@/assets/images/datasource.png" alt="数据图片" />
-            </div>
-            <h3>数据库 Agent</h3>
-            <p>数据库 Agent 是用于采集结构化数据（RDBMS Etc）的Agent，只需要一个Agent就可以采集同一数据源中的不同源数据</p>
+    </div>
+    <!-- 点击新增数据库按钮弹出框 -->
+    <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%" :before-close="beforeClose">
+        <el-form :model="formAdd" ref="formAdd">
+            <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
+                <el-input v-model="formAdd.agent_ip" autocomplete="off" placeholder="例如 127.9.08.7" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
+                <el-input v-model="formAdd.agent_port" autocomplete="off" placeholder="端口范围1204-65535" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
+                <el-select v-model="formAdd.user_id" filterable placeholder="请选择" style="width:284px">
+                    <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
         </div>
-
-        <div class="listContent">
-            <div class="listPic" @click="tapDifferentType(4)">
-                <img src="@/assets/images/a1.png" alt="数据图片" />
-            </div>
-            <h3>数据库文件 Agent</h3>
-            <p>数据文件 Agent 是用于对各种关系型存储的数据文件进行数据采集的组件，例如从RDBMS数据库中卸载的CSV或各种自定义格式的数据文件，以EXCEL存储的行列关系的数据文件</p>
+    </el-dialog>
+    <!-- 点击编辑按钮编辑信息弹出框 -->
+    <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%">
+        <el-form :model="form" ref="form">
+            <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
+                <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
+                <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
+                <el-select v-model="form.user_id" filterable placeholder="请选择" style="width:284px">
+                    <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
         </div>
-
-        <div class="listContent">
-            <div class="listPic" @click="tapDifferentType(5)">
-                <img src="@/assets/images/object.png" alt="数据图片" />
-            </div>
-            <h3>半结构化 Agent</h3>
-            <p>半结构化 Agent 是用于采集各种半结构化数据的组件，例如XML、JSON等储存在文件系统之上的数据文件。</p>
-        </div>
-
-        <div class="listContent">
-            <div class="listPic" @click="tapDifferentType(2)">
-                <img src="@/assets/images/filesource.png" alt="数据图片" />
-            </div>
-            <h3>非结构化 Agent</h3>
-            <p>非结构化 Agent 是用于采集各种半结构化或非结构化数据的组件，例如Word、PDF、图片文件等存储在文件系统之上的数据文件。</p>
-        </div>
-
-        <div class="listContent listContentlast">
-            <div class="listPic" @click="tapDifferentType(3)">
-                <img src="@/assets/images/ftp.png" alt="数据图片" />
-            </div>
-            <h3>FTP Agent</h3>
-            <p>FTP Agent 是用于将系统之上的数据文件使用SFTP的方式将数据拉取到指定的系统盘之上的组件，多用于数据分发等。</p>
-        </div>
-
-        <!-- 数据类型标题 -->
-        <h4>
-            当前所属数据源为：
-            <strong>{{this.datasource_name}}</strong>
-        </h4>
-        <!-- 数据表格标题 -->
-        <div class="tableList">
-            <el-row>
-                <i class="fa text-warning fa-database blue"></i>
-                <span v-if="sourceAgent">数据源Agent</span>
-                <span v-if="dataFile">数据文件 Agent</span>
-                <span v-if="semiStructure">半结构化 Agent</span>
-                <span v-if="nonStructural">非结构化 Agent</span>
-                <span v-if="ftpAgent">FTP Agent</span>
-                <!-- 添加数据表单弹出框  -->
-                <el-button type="success" class="addAgent" size="small" v-if="sourceAgent" @click="dialogFormVisible = true;DataCathInfo()">新增数据库Agent</el-button>
-                <el-button type="success" class="addAgent" size="small" v-if="dataFile" @click="dialogFormVisible = true;DataCathInfo()">新增DBAgent</el-button>
-                <el-button type="success" class="addAgent" size="small" v-if="semiStructure" @click="dialogFormVisible = true;DataCathInfo()">新增半结构化 Agent</el-button>
-                <el-button type="success" class="addAgent" size="small" v-if="nonStructural" @click="dialogFormVisible = true;DataCathInfo()">新增非结构化 Agent</el-button>
-                <el-button type="success" class="addAgent" size="small" v-if="ftpAgent" @click="dialogFormVisible = true;DataCathInfo()">新增FTP Agent采集数据</el-button>
-            </el-row>
-            <!-- 表格内容 -->
-            <el-table stripe :data="tableData" border>
-                <el-table-column prop="agent_name" label="Agent名称" align="center"></el-table-column>
-                <el-table-column prop="agent_ip" label="Agent所在服务器IP" align="center"></el-table-column>
-                <el-table-column prop="agent_port" label="Agent 连接端口" align="center"></el-table-column>
-                <el-table-column prop="user_name" label="数据采集用户" align="center"></el-table-column>
-                <el-table-column label="操作" width="190" align="center">
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="lines"></div>
-        </div>
-        <!-- 点击新增数据库按钮弹出框 -->
-        <el-dialog :title="dialogName" :visible.sync="dialogFormVisible" width="40%" :before-close="beforeClose">
-            <el-form :model="formAdd" ref="formAdd">
-                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.agent_name" autocomplete="off" placeholder="Agent名称" style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
-                    <el-input v-model="formAdd.agent_ip" autocomplete="off" placeholder="例如 127.9.08.7" style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
-                    <el-input v-model="formAdd.agent_port" autocomplete="off" placeholder="端口范围1204-65535" style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
-                    <el-select v-model="formAdd.user_id" filterable placeholder="请选择" style="width:284px">
-                        <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
-                <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
-            </div>
-        </el-dialog>
-        <!-- 点击编辑按钮编辑信息弹出框 -->
-        <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%">
-            <el-form :model="form" ref="form">
-                <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
-                    <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
-                    <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
-                </el-form-item>
-                <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
-                    <el-select v-model="form.user_id" filterable placeholder="请选择" style="width:284px">
-                        <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
-                <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
-            </div>
-        </el-dialog>
-    </el-main>
+    </el-dialog>
 </div>
 </template>
 
@@ -397,6 +395,7 @@ export default {
 
 <style scoped>
 .agentList {
+    margin-left: 8px;
     width: 100%;
 }
 
@@ -405,6 +404,12 @@ export default {
     width: 100%;
     height: 64px;
     line-height: 64px;
+}
+
+.agentListrow {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
 }
 
 .el-row span {
@@ -430,7 +435,7 @@ export default {
 /* button样式设置 */
 .goIndex {
     float: right;
-    margin-top: 18px;
+    margin-top: 3px;
     margin-right: 14px;
 }
 
@@ -447,6 +452,7 @@ export default {
     min-height: 1px;
     background: #dddddd;
     margin-bottom: 15px;
+    margin-top: 8px;
 }
 
 /* 列表内容 */
@@ -455,6 +461,7 @@ export default {
     padding: 10px 10px 0 10px;
     border: 1px solid #cccccc;
     height: 310px;
+    overflow: auto;
     margin-bottom: 20px;
     margin-right: 2%;
     float: left;
