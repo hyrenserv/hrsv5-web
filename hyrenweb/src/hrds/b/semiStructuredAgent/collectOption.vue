@@ -12,7 +12,7 @@
     </el-row>
 
     <el-row class="partTwo">
-        <el-form ref="form" :model="form">
+        <el-form ref="form" :model="form" status-icon>
             <el-col :span="12">
                 <el-form-item label="半结构化设置编号" :label-width="formLabelWidth" prop="obj_number" :rules="filter_rules([{required: true,dataType: 'confignum'}])">
                     <el-input v-model="form.obj_number" placeholder="半结构化设置编号"></el-input>
@@ -161,11 +161,18 @@
 
     <!-- 查看表弹出框 -->
     <el-dialog title="查看表" :visible.sync="dialogWatchSheet">
-        <el-table :data="tableData" border stripe size="mini" style="width: 100%">
-            <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+        <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border stripe size="mini" style="width: 100%">
+            <el-table-column type="index" label="序号" width="64" align="center">
+                <template slot-scope="scope">
+                    <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="table_name" show-overflow-tooltip label="表名" align="center"></el-table-column>
             <el-table-column prop="table_ch_name" show-overflow-tooltip label="表中文名" align="center"></el-table-column>
         </el-table>
+        <div class="pageDiv">
+            <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" :total="tableData.length"></el-pagination>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="closeDiolag" size="mini" type="danger">关 闭</el-button>
         </div>
@@ -224,6 +231,8 @@ export default {
             form: {
                 database_code: "",
                 run_way: "",
+                obj_number: "",
+                obj_collect_name: "",
                 object_collect_type: "1",
                 is_sendok: "",
                 s_date: '',
@@ -236,6 +245,9 @@ export default {
                 file_suffix: '',
                 is_dictionary: '1'
             },
+            oldstart: '',
+            oldend: '',
+            olddata: '',
             showData_date: false,
             dialogSelectfolder: false,
             dialogWatchSheet: false,
@@ -252,7 +264,9 @@ export default {
             },
             disabled: true,
             rule: validator.default,
-            formLabelWidth: "150px"
+            formLabelWidth: "150px",
+            currentPage: 1,
+            pagesize: 10,
         }
     },
     mounted() {
@@ -261,41 +275,105 @@ export default {
         this.getCategoryItems("ExecuteWay");
         this.getCategoryItems("IsFlag");
         this.searchObjectCollect();
-        // 1.需要调用一个接口拿到操作系统，本地时间和系统时间等disabled的input值；
     },
     methods: {
-        // 新增编辑获取首页数据
+        //判断是新增采集还是编辑更新采集
         searchObjectCollect() {
-            // 初始页面
-            functionAll.searchObjectCollect({
-                agent_id: this.$route.query.agent_id
-            }).then(res => {
-                this.form.system_name = res.data.osName;
-                this.form.host_name = res.data.userName;
-                // 处理传来的年月日服务器日期
-                let year = res.data.agentdate.substring(0, 4);
-                let month = res.data.agentdate.substring(4, 6);
-                let day = res.data.agentdate.substring(6, 9);
-                let dateChange = year + "-" + month + "-" + day;
-                // 处理传来的时分秒
-                let hour = res.data.agenttime.substring(0, 2);
-                let minutes = res.data.agenttime.substring(2, 4);
-                let seconds = res.data.agenttime.substring(4, 6);
-                let hourChange = hour + ":" + minutes + ":" + seconds;
-                this.form.server_date = dateChange + " " + hourChange;
+            if (this.$route.query.id) {
+                // 更新初始页面
+                functionAll.searchObjectCollect({
+                    agent_id: this.$route.query.agent_id,
+                    odc_id: this.$route.query.id
+                }).then(res => {
+                    this.form.system_name = res.data.osName;
+                    this.form.host_name = res.data.userName;
+                    // 处理传来的年月日服务器日期
+                    let year = res.data.agentdate.substring(0, 4);
+                    let month = res.data.agentdate.substring(4, 6);
+                    let day = res.data.agentdate.substring(6, 9);
+                    let dateChange = year + "-" + month + "-" + day;
+                    // 处理传来的时分秒
+                    let hour = res.data.agenttime.substring(0, 2);
+                    let minutes = res.data.agenttime.substring(2, 4);
+                    let seconds = res.data.agenttime.substring(4, 6);
+                    let hourChange = hour + ":" + minutes + ":" + seconds;
+                    this.form.server_date = dateChange + " " + hourChange;
 
-                // 处理传来的年月日本地日期
-                let yearlocal = res.data.localDate.substring(0, 4);
-                let monthlocal = res.data.localDate.substring(4, 6);
-                let daylocal = res.data.localDate.substring(6, 9);
-                let dateChangelocal = yearlocal + "-" + monthlocal + "-" + daylocal;
-                // 处理传来的时分秒
-                let hourlocal = res.data.localtime.substring(0, 2);
-                let minuteslocal = res.data.localtime.substring(2, 4);
-                let secondslocal = res.data.localtime.substring(4, 6);
-                let hourChangelocal = hourlocal + ":" + minuteslocal + ":" + secondslocal;
-                this.form.local_time = dateChangelocal + " " + hourChangelocal;
-            })
+                    // 处理传来的年月日本地日期
+                    let yearlocal = res.data.localDate.substring(0, 4);
+                    let monthlocal = res.data.localDate.substring(4, 6);
+                    let daylocal = res.data.localDate.substring(6, 9);
+                    let dateChangelocal = yearlocal + "-" + monthlocal + "-" + daylocal;
+                    // 处理传来的时分秒
+                    let hourlocal = res.data.localtime.substring(0, 2);
+                    let minuteslocal = res.data.localtime.substring(2, 4);
+                    let secondslocal = res.data.localtime.substring(4, 6);
+                    let hourChangelocal = hourlocal + ":" + minuteslocal + ":" + secondslocal;
+                    this.form.local_time = dateChangelocal + " " + hourChangelocal;
+                    this.form.obj_number = res.data.object_collect_info.obj_number;
+                    this.form.obj_collect_name = res.data.object_collect_info.obj_collect_name;
+                    let startYear = res.data.object_collect_info.s_date.substring(0, 4);
+                    let startMonth = res.data.object_collect_info.s_date.substring(4, 6);
+                    let startDay = res.data.object_collect_info.s_date.substring(6, 9);
+                    let start = startYear + "-" + startMonth + "-" + startDay;
+                    this.form.s_date = start;
+                    let endYear = res.data.object_collect_info.e_date.substring(0, 4);
+                    let endMonth = res.data.object_collect_info.e_date.substring(4, 6);
+                    let endDay = res.data.object_collect_info.e_date.substring(6, 9);
+                    let end = endYear + "-" + endMonth + "-" + endDay;
+                    this.form.e_date = end;
+                    this.form.database_code = res.data.object_collect_info.database_code;
+                    this.form.run_way = res.data.object_collect_info.run_way;
+                    if (res.data.object_collect_info.is_dictionary == "0") {
+                        this.showData_date = true;
+                        let dataYear = res.data.object_collect_info.data_date.substring(0, 4);
+                        let dataMonth = res.data.object_collect_info.data_date.substring(4, 6);
+                        let dataDay = res.data.object_collect_info.data_date.substring(6, 9);
+                        let data = dataYear + "-" + dataMonth + "-" + dataDay;
+                        this.form.data_date = data;
+                        this.olddata = data;
+                    } else {
+                        this.showData_date = false;
+                    }
+                    this.oldstart = start;
+                    this.oldend = end;
+                    this.form.is_dictionary = res.data.object_collect_info.is_dictionary;
+                    this.form.file_suffix = res.data.object_collect_info.file_suffix;
+                    this.form.file_path = res.data.object_collect_info.file_path;
+                })
+            } else {
+                // 新增初始页面
+                functionAll.searchObjectCollect({
+                    agent_id: this.$route.query.agent_id
+                }).then(res => {
+                    this.form.system_name = res.data.osName;
+                    this.form.host_name = res.data.userName;
+                    // 处理传来的年月日服务器日期
+                    let year = res.data.agentdate.substring(0, 4);
+                    let month = res.data.agentdate.substring(4, 6);
+                    let day = res.data.agentdate.substring(6, 9);
+                    let dateChange = year + "-" + month + "-" + day;
+                    // 处理传来的时分秒
+                    let hour = res.data.agenttime.substring(0, 2);
+                    let minutes = res.data.agenttime.substring(2, 4);
+                    let seconds = res.data.agenttime.substring(4, 6);
+                    let hourChange = hour + ":" + minutes + ":" + seconds;
+                    this.form.server_date = dateChange + " " + hourChange;
+
+                    // 处理传来的年月日本地日期
+                    let yearlocal = res.data.localDate.substring(0, 4);
+                    let monthlocal = res.data.localDate.substring(4, 6);
+                    let daylocal = res.data.localDate.substring(6, 9);
+                    let dateChangelocal = yearlocal + "-" + monthlocal + "-" + daylocal;
+                    // 处理传来的时分秒
+                    let hourlocal = res.data.localtime.substring(0, 2);
+                    let minuteslocal = res.data.localtime.substring(2, 4);
+                    let secondslocal = res.data.localtime.substring(4, 6);
+                    let hourChangelocal = hourlocal + ":" + minuteslocal + ":" + secondslocal;
+                    this.form.local_time = dateChangelocal + " " + hourChangelocal;
+                })
+            }
+
         },
         // 获取目录结构
         seletFilePath(data) {
@@ -352,7 +430,7 @@ export default {
                 file_suffix: this.form.file_suffix
             }).then(res => {
                 if (res.code == 200) {
-                    this.tableData = res.data
+                    this.tableData = res.data;
                 }
 
             })
@@ -373,7 +451,6 @@ export default {
         },
         // 下一步
         nextSteps(formName) {
-
             if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
@@ -382,42 +459,107 @@ export default {
                     duration: 0
                 })
             } else {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        function changeData(num) {
-                            return num > 9 ? (num + "") : ("0" + num);
-                        }
-                        let s_date = (this.form.s_date.getFullYear() + '-' + changeData((this.form.s_date.getMonth() + 1)) + '-' + changeData(this.form.s_date.getDate())).replace(/\-/g, '');
-                        let e_date = (this.form.e_date.getFullYear() + '-' + changeData((this.form.e_date.getMonth() + 1)) + '-' + changeData(this.form.e_date.getDate())).replace(/\-/g, '');
-                        this.form["s_date"] = s_date;
-                        this.form["e_date"] = e_date;
-                        this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
-                        this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
-                        this.form.agent_id = this.$route.query.agent_id;
-                        if (this.form.data_date) {
-                            this.form.data_date = (this.form.data_date.getFullYear() + '-' + changeData((this.form.data_date.getMonth() + 1)) + '-' + changeData(this.form.data_date.getDate())).replace(/\-/g, '');
-                        }
-                        functionAll.addObjectCollect(this.form).then((res) => {
-                            if (res && res.success) {
-                                this.$router.push({
-                                    name: "collectFileOption",
-                                    query: {
-                                        agent_id: this.$route.query.agent_id,
-                                        odc_id: res.data
-                                    }
-                                })
-                            } else {
-                                this.form["s_date"] = "";
-                                this.form["e_date"] = "";
-                                this.form["data_date"] = "";
+                if (this.$route.query.id) {
+                    this.$refs[formName].validate(valid => {
+                        if (valid) {
+                            function changeData(num) {
+                                return num > 9 ? (num + "") : ("0" + num);
                             }
-                        })
-                    } else {
-                        this.form["s_date"] = "";
-                        this.form["e_date"] = "";
-                        this.form["data_date"] = "";
+                            // 处理开始时间
+                            if (typeof (this.form.s_date) == "string") {
+                                let s_date = JSON.stringify(this.form.s_date).replace(/\-/g, '');
+                                this.form["s_date"] = s_date;
+                            } else if (typeof (this.form.s_date) == "object") {
+                                let s_date = (this.form.s_date.getFullYear() + '-' + changeData((this.form.s_date.getMonth() + 1)) + '-' + changeData(this.form.s_date.getDate())).replace(/\-/g, '');
+                                this.form["s_date"] = s_date;
+                            };
+                            // 处理结束时间
+                            if (typeof (this.form.e_date) == "string") {
+                                let e_date = JSON.stringify(this.form.e_date).replace(/\-/g, '');
+                                this.form["e_date"] = e_date;
+                            } else if (typeof (this.form.e_date) == "object") {
+                                let e_date = (this.form.e_date.getFullYear() + '-' + changeData((this.form.e_date.getMonth() + 1)) + '-' + changeData(this.form.e_date.getDate())).replace(/\-/g, '');
+                                this.form["e_date"] = e_date;
+                            }
+                            // 处理数据日期
+                            if (this.form.data_date) {
+                                if (typeof (this.form.data_date) == "string") {
+                                    let data_date = JSON.stringify(this.form.data_date).replace(/\-/g, '');
+                                    this.form["data_date"] = data_date;
+                                } else if (typeof (this.form.data_date) == "object") {
+                                    let data_date = (this.form.data_date.getFullYear() + '-' + changeData((this.form.data_date.getMonth() + 1)) + '-' + changeData(this.form.data_date.getDate())).replace(/\-/g, '');
+                                    this.form["data_date"] = data_date;
+                                }
+                            }
+                            this.form['odc_id'] = this.$route.query.id;
+                            this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
+                            this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
+                            this.form.agent_id = this.$route.query.agent_id;
+                            functionAll.updateObjectCollect(this.form).then((res) => {
+                                if (res && res.success) {
+                                    this.$router.push({
+                                        name: "collectFileOption",
+                                        query: {
+                                            agent_id: this.$route.query.agent_id,
+                                            odc_id: res.data
+                                        }
+                                    })
+                                } else {
+                                    this.form["s_date"] = this.oldstart;
+                                    this.form["e_date"] = this.oldend;
+                                    this.form["data_date"] = this.olddata;
+                                }
+                            })
+                        } else {
+                            this.form["s_date"] = this.oldstart;
+                            this.form["e_date"] = this.oldend;
+                            this.form["data_date"] = this.olddata;
+                        }
+                    });
+                } else {
+                    this.oldstart = this.form.s_date;
+                    this.oldend = this.form.e_date;
+                    if (this.form.data_date) {
+                        this.olddata = this.form.data_date;
                     }
-                });
+                    this.$refs[formName].validate(valid => {
+                        if (valid) {
+                            function changeData(num) {
+                                return num > 9 ? (num + "") : ("0" + num);
+                            }
+                            let s_date = (this.form.s_date.getFullYear() + '-' + changeData((this.form.s_date.getMonth() + 1)) + '-' + changeData(this.form.s_date.getDate())).replace(/\-/g, '');
+                            let e_date = (this.form.e_date.getFullYear() + '-' + changeData((this.form.e_date.getMonth() + 1)) + '-' + changeData(this.form.e_date.getDate())).replace(/\-/g, '');
+                            this.form["s_date"] = s_date;
+                            this.form["e_date"] = e_date;
+
+                            this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
+                            this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
+                            this.form.agent_id = this.$route.query.agent_id;
+                            if (this.form.data_date) {
+                                this.form.data_date = (this.form.data_date.getFullYear() + '-' + changeData((this.form.data_date.getMonth() + 1)) + '-' + changeData(this.form.data_date.getDate())).replace(/\-/g, '');
+                            }
+                            functionAll.addObjectCollect(this.form).then((res) => {
+                                if (res && res.success) {
+                                    this.$router.push({
+                                        name: "collectFileOption",
+                                        query: {
+                                            agent_id: this.$route.query.agent_id,
+                                            odc_id: res.data
+                                        }
+                                    })
+                                } else {
+                                    this.form["s_date"] = this.oldstart;
+                                    this.form["e_date"] = this.oldend;
+                                    this.form["data_date"] = this.olddata;
+                                }
+                            })
+                        } else {
+                            this.form["s_date"] = this.oldstart;
+                            this.form["e_date"] = this.oldend;
+                            this.form["data_date"] = this.olddata;
+                        }
+                    });
+                }
 
             }
 
@@ -458,7 +600,14 @@ export default {
                 })
             }
 
-        }
+        },
+        // 前端分页
+        handleSizeChange(size) {
+            this.pagesize = size;
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage;
+        },
     },
     computed: {
         DifferenceValue() {
@@ -527,5 +676,14 @@ export default {
     display: inline-block;
     vertical-align: inherit;
     line-height: inherit;
+}
+
+.collectOption .pageDiv {
+    margin-top: 10px;
+    height: 30px;
+}
+
+.collectOption .page {
+    float: right;
 }
 </style>

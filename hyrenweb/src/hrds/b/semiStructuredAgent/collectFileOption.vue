@@ -412,7 +412,11 @@ export default {
         // 上一步
         backSteps() {
             this.$router.push({
-                name: "collectOption"
+                name: "collectOption",
+                query: {
+                    agent_id: this.$route.query.agent_id,
+                    id: this.$route.query.odc_id
+                }
             })
         },
         // 下一步
@@ -519,8 +523,8 @@ export default {
         saveObjectCollectTask(val) {
             functionAll.saveObjectCollectTask({
                 object_collect_task_array: JSON.stringify(val),
-                agent_id: '1000003437',
-                odc_id: '1000442047'
+                agent_id: this.$route.query.agent_id,
+                odc_id: this.$route.query.odc_id
             }).then(res => {
                 if (res.code == 200) {
                     this.$router.push({

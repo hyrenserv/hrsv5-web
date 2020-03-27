@@ -65,7 +65,7 @@
 
     <!-- Hbase弹出框 -->
     <el-dialog title="Hbase" :visible.sync="showDiolag" width="50%" :before-close="beforeClose">
-        <el-table :data="arryHabse" border stripe size="mini">
+        <el-table :data="arryHabse.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border stripe size="mini">
             <el-table-column label="多列作rowkey的顺序" align="center" prop="col_seq"></el-table-column>
 
             <el-table-column prop="column_name" label="字段英文名" align="center">
@@ -81,6 +81,9 @@
                 </template>
             </el-table-column>
         </el-table>
+        <div class="pageDiv">
+            <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" :total="arryHabse.length"></el-pagination>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelectHbase" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="saveHbase" size="mini">保存</el-button>
@@ -89,8 +92,11 @@
 
     <!-- Solr弹出框 -->
     <el-dialog title=" 查看列" :visible.sync=" solrDiolag" width="50%">
-        <el-table :data="arry" border stripe size="mini">
+        <el-table :data="arry.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border stripe size="mini">
             <el-table-column prop='col_seq' label="序号" width="74" align="center">
+                <template slot-scope="scope">
+                    <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="is_solrs" align="center" width="134">
                 <template slot="header" slot-scope="scope">
@@ -104,17 +110,13 @@
             <el-table-column label="列名" align="center" prop="column_name">
             </el-table-column>
         </el-table>
+        <div class="pageDiv">
+            <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" :total="arry.length"></el-pagination>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelectSolr" size="mini" type="danger">取 消</el-button>
             <el-button type="success" @click="saveSolr" size="mini">保存</el-button>
         </div>
-        <!-- 分页内容 -->
-        <!-- <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
-        </el-row> -->
-        <!-- <template slot-scope="scope">
-                    {{scope.$index+(currentPage - 1) * pageSize + 1}}
-                </template> -->
     </el-dialog>
 </div>
 </template>
@@ -136,7 +138,9 @@ export default {
             solrDiolag: false,
             tableData: [],
             arry: [],
-            arryHabse: []
+            arryHabse: [],
+            currentPage: 1,
+            pagesize: 10,
         }
     },
     mounted() {
@@ -184,7 +188,11 @@ export default {
         // 返回上一级
         goBackQuit() {
             this.$router.push({
-                name: "agentList"
+                name: "agentList",
+                query: {
+                    agent_id: this.$route.query.agent_id,
+                    odc_id: this.$route.query.odc_id
+                }
             })
         },
         // 上一步
@@ -475,6 +483,13 @@ export default {
         beforeClose() {
             this.showDiolag = false;
         },
+        // 前端分页
+        handleSizeChange(size) {
+            this.pagesize = size;
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage;
+        },
     },
 }
 </script>
@@ -500,5 +515,14 @@ export default {
     width: 85%;
     display: inline-block;
     text-align: left;
+}
+
+.collectionStructureSet .pageDiv {
+    margin-top: 10px;
+    height: 30px;
+}
+
+.collectionStructureSet .page {
+    float: right;
 }
 </style>

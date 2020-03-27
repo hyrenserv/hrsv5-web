@@ -49,6 +49,15 @@ export function viewTable(data) {
         params: data
     })
 }
+/**(5)
+ * 更新半结构化文件采集页面信息
+ */
+export function updateObjectCollect(data) {
+    return request({
+        url: '/B/agent/objectcollect/updateObjectCollect',
+        params: data
+    })
+}
 
 //collectFileOption页面
 /**(0)

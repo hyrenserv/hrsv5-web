@@ -5,7 +5,7 @@
     </el-row>
 
     <el-row class="partTwo">
-        <el-form ref="form" :model="form">
+        <el-form ref="form" :model="form" status-icon>
             <el-col :span="12">
                 <el-form-item label="归属Agent" :label-width="formLabelWidth">
                     <el-input v-model="form.agent_name" placeholder="归属Agent" :size="size" :disabled="disabled"></el-input>
