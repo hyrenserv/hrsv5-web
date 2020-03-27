@@ -5,7 +5,7 @@
     </el-row>
 
     <el-row class="partTwo">
-        <el-form ref="form" :model="form">
+        <el-form ref="form" :model="form" status-icon>
             <el-col :span="12">
                 <el-form-item label="ftp任务编号" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true,dataType: 'confignum'}])">
                     <el-input v-model="form.ftp_number" placeholder="ftp任务编号" :size="size"></el-input>
