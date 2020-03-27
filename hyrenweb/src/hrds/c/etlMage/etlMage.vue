@@ -244,6 +244,7 @@ import Vuex from 'vuex';
 import draggable from 'vuedraggable'
 import Sortable from 'sortablejs'
 let changValue;
+let sys_cds;
 export default {
     components: {
         draggable,
@@ -844,6 +845,7 @@ export default {
                                 enableMouseTracking: true,
                                 click: function () {
                                     let etlJobName = this.category;
+
                                     // that.$emit('viewIn', '/currentJob', '当前作业');
                                     that.$router.push({
                                         name: 'currentJob',
@@ -851,7 +853,7 @@ export default {
                                             name: '/currentJob',
                                             dec: that.$Base64.encode('当前作业'),
                                             etl_job: etlJobName,
-                                            etl_sys_cd: that.$route.query.etl_sys_cd
+                                            etl_sys_cd: changValue
                                         }
                                     });
                                 }

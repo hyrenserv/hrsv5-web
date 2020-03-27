@@ -180,7 +180,11 @@ export default {
     methods: {
         //刷新表单
         getForm() {
-            this.sys_cd = sessionStorage.getItem('sys_cd');
+            if (this.$route.etl_sys_cd) {
+                this.sys_cd = this.$route.etl_sys_cd;
+            } else {
+                this.sys_cd = sessionStorage.getItem('sys_cd');
+            }
             this.job = this.$route.query.etl_job;
             this.form.etl_job = this.job;
             if (this.job) {

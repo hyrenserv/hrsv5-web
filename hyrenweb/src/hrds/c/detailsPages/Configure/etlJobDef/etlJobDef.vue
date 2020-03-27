@@ -83,7 +83,7 @@
     </el-row>
     <!-- 添加/修改任务模态框 -->
     <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'">
-        <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="170px">
+        <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="150px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
@@ -143,14 +143,14 @@
                     </el-select>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="调度时间位移" prop="disp_offset">
                     <div style="width:150px">
                         <el-input v-model="formAdd.disp_offset" autocomplete="off" placeholder="0"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="调度触发方式" :rules="filter_rules([{required: true}])">
                     <div style="width:150px">
                         <el-select v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
@@ -160,7 +160,7 @@
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="调度触发时间" prop="disp_time">
                     <div style="width:150px">
                         <el-time-picker v-model="formAdd.disp_time" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}" placeholder="调度时间 hh:mm:ss" value-format="HH:mm:ss" format="HH:mm:ss">
@@ -168,14 +168,14 @@
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="作业优先级" prop="job_priority">
                     <div style="width:150px">
                         <el-input v-model="formAdd.job_priority" autocomplete="off" placeholder="0"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="作业有效标志" :rules="filter_rules([{required: true}])">
                     <div style="width:150px">
                         <el-select v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
@@ -185,7 +185,7 @@
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="当天是否调度" :rules="filter_rules([{required: true}])">
                     <div style="width:150px">
                         <el-select v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
@@ -210,7 +210,7 @@
     </el-dialog>
     <!-- 添加/修改任务模态框1 -->
     <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq == 'F'">
-        <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="170px">
+        <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="150px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                     <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
@@ -480,7 +480,7 @@
         </div>
     </el-dialog>
     <!-- 删除任务模态框 -->
-    <el-dialog title="确定删除?" :visible.sync="dialogVisibleDelete" width="20%">
+    <el-dialog title="确定删除?" :visible.sync="dialogVisibleDelete" width="40%">
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
             <el-button type="primary" @click="saveDelete" size="mini">是</el-button>

@@ -9,7 +9,7 @@
         </el-col>
     </el-row>
     <el-row class="partOne">
-        <el-table :data="tableData" border stripe size="medium" :span-method="arraySpanMethod">
+        <el-table :data="tableData" border stripe size="medium" :span-method="arraySpanMethod" height="469">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
             <el-table-column label="长度对照名称" prop="dlcs_name" align="center"></el-table-column>
             <el-table-column label="长度对照表备注" prop="dlcs_remark" align="center"> </el-table-column>

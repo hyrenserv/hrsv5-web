@@ -61,8 +61,8 @@
         </el-col>
     </el-row>
     <!-- 添加/修改/批量添加作业模态框 -->
-    <el-dialog :title="dependTitle" :visible.sync="dialogFormVisibleAdd" width="35%" :before-close="beforeClose">
-        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="170px">
+    <el-dialog :title="dependTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
+        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <div style="width:193px">
                     <el-input v-model="formAdd.etl_sys_cd" style="width:200px" autocomplete="off" placeholder="工程编号" disabled></el-input>
@@ -120,7 +120,7 @@
         </div>
     </el-dialog>
     <!-- 删除任务模态框 -->
-    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="20%">
+    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="40%">
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
             <el-button type="primary" @click="saveDelete" size="mini">是</el-button>

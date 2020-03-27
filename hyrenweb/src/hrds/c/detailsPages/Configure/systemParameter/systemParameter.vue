@@ -19,17 +19,17 @@
         </el-button>
     </div>
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection"  show-overflow-tooltip  align='center' disabled='true' :selectable="isDisabled">
+        <el-table-column type="selection" show-overflow-tooltip align='center' disabled='true' :selectable="isDisabled">
         </el-table-column>
-        <el-table-column prop="etl_sys_cd" show-overflow-tooltip  label="工程编号" align='center'>
+        <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
         </el-table-column>
-        <el-table-column prop="para_cd" show-overflow-tooltip   label="变量名称" align='center'>
+        <el-table-column prop="para_cd" show-overflow-tooltip label="变量名称" align='center'>
         </el-table-column>
-        <el-table-column prop="paraType" show-overflow-tooltip  label="变量类型" align='center'>
+        <el-table-column prop="paraType" show-overflow-tooltip label="变量类型" align='center'>
         </el-table-column>
-        <el-table-column prop="para_val" show-overflow-tooltip  label="变量值" align='center'>
+        <el-table-column prop="para_val" show-overflow-tooltip label="变量值" align='center'>
         </el-table-column>
-        <el-table-column prop="para_desc" show-overflow-tooltip  label="描述" align='center'>
+        <el-table-column prop="para_desc" show-overflow-tooltip label="描述" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template slot-scope="scope">
@@ -48,7 +48,7 @@
     </el-row>
     <!-- 添加/修改系统模态框 -->
     <el-dialog :title="systemTitle" :visible.sync="dialogFormVisibleAdd" width="40%">
-        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="170px">
+        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="120px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
@@ -91,7 +91,7 @@
         </div>
     </el-dialog>
     <!-- 删除/批量删除系统模态框 -->
-    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="20%">
+    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="40%">
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
             <el-button type="primary" @click="saveDelete" size="mini">是</el-button>
