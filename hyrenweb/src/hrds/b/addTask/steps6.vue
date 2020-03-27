@@ -544,7 +544,7 @@ export default {
 
 .startupform {
     border: 1px solid #efebeb;
-    padding: 14px 0 0 28px;
+    padding: 14px 0 0 10px;
     margin: 12px 0;
     border-radius: 4px;
 }
