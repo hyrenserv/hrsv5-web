@@ -9,7 +9,7 @@
         </el-col>
     </el-row>
     <el-row class="partOne">
-        <el-table :data="tableData" border stripe size="medium" :span-method="arraySpanMethod">
+        <el-table :data="tableData" border stripe size="medium" :span-method="arraySpanMethod" height="469">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
             <el-table-column label="类型对照名称" prop="dtcs_name" align="center"></el-table-column>
             <el-table-column label="类型对照备注" prop="dtcs_remark" align="center"> </el-table-column>
@@ -103,7 +103,7 @@ export default {
                 dtcs_name: '',
                 dtcs_remark: ''
             },
-            tableData: [], 
+            tableData: [],
             dialogFormVisibleUpdate: false,
             spanArr: [],
             pos: 0,
@@ -216,7 +216,7 @@ export default {
                             this.form.dialogTableData = data;
                         }
                     })
-                } 
+                }
             });
         },
         dataRosolve(tableData) {

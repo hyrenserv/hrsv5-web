@@ -39,15 +39,15 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-       
+
         <el-col :span="13" :offset="11">
             <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
             </el-pagination>
         </el-col>
     </el-row>
     <!-- 添加资源模态框 -->
-    <el-dialog title="添加资源定义" :visible.sync="dialogFormVisibleAdd" width="40%">
-        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="170px">
+    <el-dialog title="添加资源定义" :visible.sync="dialogFormVisibleAdd" width="42%">
+        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="120px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
@@ -64,8 +64,8 @@
         </div>
     </el-dialog>
     <!-- 修改资源模态框 -->
-    <el-dialog title="修改资源定义" :visible.sync="dialogFormVisibleModify" width="40%">
-        <el-form :model="formModify" ref="formModify" class="demo-ruleForm" label-width="170px">
+    <el-dialog title="修改资源定义" :visible.sync="dialogFormVisibleModify" width="42%">
+        <el-form :model="formModify" ref="formModify" class="demo-ruleForm" label-width="120px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formModify.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
@@ -82,14 +82,14 @@
         </div>
     </el-dialog>
     <!-- 删除资源模态框 -->
-    <el-dialog title="确定删除该资源?" :visible.sync="dialogVisibleDelete" width="20%">
+    <el-dialog title="确定删除该资源?" :visible.sync="dialogVisibleDelete" width="40%">
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleDelete" size="mini" type="danger">取消</el-button>
             <el-button type="primary" @click="saveDelete" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 批量删除资源模态框 -->
-    <el-dialog title="确定批量删除?" :visible.sync="dialogVisibleBatchDelete" width="20%">
+    <el-dialog title="确定批量删除?" :visible.sync="dialogVisibleBatchDelete" width="40%">
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleBatchDelete" size="mini" type="danger">取消</el-button>
             <el-button type="primary" @click="saveBatchDelete" size="mini">保存</el-button>
