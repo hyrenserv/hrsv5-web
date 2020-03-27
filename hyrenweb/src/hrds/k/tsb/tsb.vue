@@ -16,7 +16,7 @@
                         <el-tree class="filter-tree" :data="data2" :indent='0' @node-click="handleNodeClick"
                                  :default-expand-all="true">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description">{{ node.label }}</span>
+                            <span :title="data.description">{{node.label}}</span>
                         </span>
                         </el-tree>
                     </div>
@@ -126,11 +126,12 @@
             nextclickFun(currentPage) {
                 this.currentPage = currentPage;
             },
-            handleNodeClick(data, y, m) {
-                if (!data.children) {
+            handleNodeClick(data) {
+                if (data.file_id !== '') {
+                    console.log(data);
                     let params = {};
-                    params["table_type"] = '01';
-                    params["data_layer"] = 'DCL';
+                    params["data_layer"] = data.data_layer;
+                    params["data_own_type"] = data.data_own_type;
                     params["file_id"] = data.id;
                     tsbFun.getColumnByFileId(params).then(res => {
                         this.ruleForm.tableData = res.data ? res.data : [];
