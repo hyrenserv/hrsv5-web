@@ -96,7 +96,9 @@
         methods: {
             dbsubmitFun() {
                 this.isLoading = true;
-                tsbFun.predictBenchmarking({'col_info_s': JSON.stringify(this.ruleForm.tableData)}).then(res => {
+                tsbFun.predictBenchmarking({
+                    'dbmColInfos': JSON.stringify(this.ruleForm.tableData),
+                }).then(res => {
                     if (res.success) {
                         this.isLoading = false;
                         this.$router.push({
@@ -108,9 +110,7 @@
                 });
             },
             treeData() {
-                tsbFun.getTSBTreeData({
-                    'tree_source': 'dataBenchmarking'
-                }).then(res => {
+                tsbFun.getTSBTreeData().then(res => {
                     this.data2 = res.data.tsbTreeList;
                 });
             },
@@ -128,7 +128,6 @@
             },
             handleNodeClick(data) {
                 if (data.file_id !== '') {
-                    console.log(data);
                     let params = {};
                     params["data_layer"] = data.data_layer;
                     params["data_own_type"] = data.data_own_type;

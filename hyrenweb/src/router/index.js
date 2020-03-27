@@ -267,7 +267,42 @@ export default new Router({
                     path: '/dataControl',
                     name: 'dataControl',
                     title: 'dataControl',
-                    component: () => import('@/hrds/k/dataControl/dataControl.vue')
+                    component: () => import('@/hrds/k/dataControl/dataControl.vue'),
+                },
+                //元数据管理
+                {
+                    path: '/mateDataManagement',
+                    name: 'mateDataManagement',
+                    title: '元数据管理',
+                    component: () => import('@/hrds/k/dataControl/mateDataManagement/mateDataManagement.vue')
+                },
+                //血缘分析
+                {
+                    path: '/bloodAnalysis',
+                    name: 'bloodAnalysis',
+                    title: '血缘分析',
+                    component: () => import('@/hrds/k/dataControl/bloodAnalysis/bloodAnalysis.vue')
+                },
+                //变量配置
+                {
+                    path: '/variableConfig',
+                    name: 'variableConfig',
+                    title: '变量配置',
+                    component: () => import('@/hrds/k/dataControl/variableConfig/variableConfig.vue')
+                },
+                //规则配置
+                {
+                    path: '/ruleConfig',
+                    name: 'ruleConfig',
+                    title: '规则配置',
+                    component: () => import('@/hrds/k/dataControl/ruleConfig/ruleConfig.vue')
+                },
+                //规则结果
+                {
+                    path: '/ruleResults',
+                    name: 'ruleResults',
+                    title: '规则结果',
+                    component: () => import('@/hrds/k/dataControl/ruleResults/ruleResults.vue')
                 },
                 //详情首页
                 {

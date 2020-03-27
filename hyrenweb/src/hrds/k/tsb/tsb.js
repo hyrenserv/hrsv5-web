@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
 //获取表结构对标树信息
-export function getTSBTreeData(data) {
+export function getTSBTreeData() {
     return request({
         url: '/K/tsb/getTSBTreeData',
-        params: data,
     })
 }
 

@@ -74,7 +74,6 @@ export default {
         // this.$router.push('syspara');
         addTaskAllFun.getMenu().then(res => {
             let data = res.data;
-            console.log(data)
             let arr = []
             for (var i = 0; i < data.length; i++) {
                 let user_type = data[i].user_type;
