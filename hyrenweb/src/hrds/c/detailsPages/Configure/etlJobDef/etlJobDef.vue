@@ -46,25 +46,25 @@
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" width="88" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="sub_sys_cd" label="任务编号" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="sub_sys_cd" label="任务编号" width="88" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="etl_job" label="作业名称" align='center' width="150">
+        <el-table-column show-overflow-tooltip prop="etl_job" label="作业名称" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="etl_job_desc" label="作业描述" align='center' width="200">
+        <el-table-column show-overflow-tooltip prop="etl_job_desc" label="作业描述" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="pro_name" label="作业程序名称" align='center' width="150">
+        <el-table-column show-overflow-tooltip prop="pro_name" label="作业程序名称" width="110" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="dispFreq" label="调度频率" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="dispFreq" label="调度频率" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="dispType" label="调度触发方式" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="dispType" label="调度触发方式" width="110" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="jobEffFlag" label="作业有效标志" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="jobEffFlag" label="作业有效标志" width="110" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="upd_time" label="定义时间" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="upd_time" label="定义时间" align='center'>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="todayDisp" label="当天是否调度" align='center' width="120">
+        <el-table-column show-overflow-tooltip prop="todayDisp" label="当天是否调度" width="110" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center' width="120">
             <template slot-scope="scope">

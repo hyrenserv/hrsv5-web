@@ -1,58 +1,35 @@
 <template>
 <div class="menus">
-
-    <el-container>
-        <el-header>
-            <el-row>
-                <div class="el-header">
-                    <span class="titles">工程名称 : {{sys_name}}</span>
-                    <el-button type="primary" class="el1" @click="goBack" size="small">
-                        <i class="block_icon fa fa-home"></i>返回首页
-                    </el-button>
-                </div>
-            </el-row>
-        </el-header>
-        <div class="lines"></div>
-        <el-container>
-            <el-aside width="16%">
-                <!-- 导航 -->
-                <el-menu :unique-opened="true" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
-
-                    <div v-for="items in menus" :key="items.name">
-                        <template v-if="items.children">
-                            <!--二级菜单循环-->
-                            <el-submenu :index="items.children[0].path">
-                                <template slot="title">{{items.title}}</template>
-                                <div v-for="item in items.children" :key="item.name">
-                                    <el-menu-item :index="item.path">
-                                        <i :class="item.icon"></i>
-                                        <span>{{item.title}}</span>
-                                    </el-menu-item>
-                                </div>
-                            </el-submenu>
-                        </template>
-                        <template v-else>
-                            <!--一级菜单循环-->
-                            <el-menu-item :index="items.path">
-                                <i :class="items.icon"></i>
-                                <span>{{items.title}}</span>
-                            </el-menu-item>
-                        </template>
-                    </div>
-                </el-menu>
-            </el-aside>
-            <el-container>
-                <div class="pcontain">
-                    <div class="ptitle">
-                        <el-col :span="14">{{pTitle}}</el-col>
-                    </div>
-                    <el-main class="pbody">
-                        <router-view v-on:viewIn="changeTitle"></router-view>
-                    </el-main>
-                </div>
-            </el-container>
-        </el-container>
-    </el-container>
+    <el-row>
+        <div class="el-header">
+            <span class="titles">工程名称 : {{sys_name}}</span>
+            <el-button type="primary" class="el1" @click="goBack" size="small">
+                <i class="block_icon fa fa-home"></i>返回首页
+            </el-button>
+        </div>
+    </el-row>
+    <div class="lines"></div>
+    <!-- 导航 -->
+    <el-menu mode="horizontal" text-color="#000" active-text-color="rgba(255, 0, 0, 0.9)" background-color="#e5e5e5" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
+        <!--二级菜单循环-->
+        <el-submenu v-for="items in menus" :key="items.name" :index="items.children[0].path">
+            <template slot="title">{{items.title}}</template>
+            <div v-for="item in items.children" :key="item.name">
+                <el-menu-item :index="item.path">
+                    <i :class="item.icon"></i>
+                    <span>{{item.title}}</span>
+                </el-menu-item>
+            </div>
+        </el-submenu>
+    </el-menu>
+    <div class="pcontain">
+        <div class="ptitle">
+            <el-col :span="14">{{pTitle}}</el-col>
+        </div>
+        <el-main class="pbody">
+            <router-view v-on:viewIn="changeTitle"></router-view>
+        </el-main>
+    </div>
 </div>
 </template>
 
@@ -164,10 +141,6 @@ export default {
 </script>
 
 <style scoped>
-/* .menus {
-    padding: 0 4% 0 3%;
-} */
-
 .el-header {
     height: 50px;
     line-height: 50px;
@@ -184,29 +157,9 @@ export default {
     margin-bottom: 15px;
 }
 
-.el-menu {
-    border: none !important;
-    background-color: #e5e5e5;
-    color: #000;
-}
-
-.el-menu-item {
-    color: #000 !important;
-}
-
-.el-menu-item:focus,
-.el-menu-item:hover {
-    outline: 0;
-    background-color: #e9f0aa;
-}
-
 .el-container {
     min-height: 550px;
     overflow: hidden;
-}
-
-.el-menu-item.is-active {
-    background-color: #337ab7 !important;
 }
 
 i {
@@ -214,7 +167,7 @@ i {
 }
 
 .el1 {
-    margin-top: 15px;
+    margin-top: 10px;
     float: right;
 }
 
@@ -224,21 +177,19 @@ i {
 }
 
 .pcontain {
-
+    margin-top: 4px;
     width: 100%;
     min-height: 550px;
-
     overflow-x: hidden;
     overflow-y: auto;
     border: 1px solid #d5d5d5;
-    margin-left: 15px;
     border-radius: 5px;
 }
 
 .ptitle {
     background-color: #e5e5e5;
     line-height: 30px;
-    padding: 10px;
+    padding: 5px;
     width: 100%;
     height: 30px;
     border-bottom: 1px solid #d5d5d5;
@@ -249,11 +200,17 @@ i {
     height: 30px;
     margin-bottom: 0;
 }
+
 .lines {
     margin-top: 10px;
     width: 100%;
     min-height: 1px;
     background: #dddddd;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.menus>>>.el-menu--horizontal>.el-submenu .el-submenu__title {
+    height: 40px;
+    line-height: 40px;
 }
 </style>
