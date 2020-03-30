@@ -27,32 +27,32 @@
                 <template scope="scope">
                     <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" disabled placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
-                            <el-button size="mini" @click="dialogSelectfolder = true;seletFilePath()">选择目录<span class='exDataColor'>(非定长)</span></el-button>
+                            <el-button size="mini" @click="seletFilePath(scope.row.table_id,'fdc')">选择目录<span class='exDataColor'>(非定长)</span></el-button>
                         </template>
                     </el-input>
                     <el-input v-show="scope.row.dc" v-model="scope.row.dc_ml" disabled placeholder="定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
-                            <el-button size="mini" @click="dialogSelectfolder = true;">选择目录<span class='exDataColor'>(定长)</span></el-button>
+                            <el-button size="mini" @click="seletFilePath(scope.row.table_id,'dc')">选择目录<span class='exDataColor'>(定长)</span></el-button>
                         </template>
                     </el-input>
                     <el-input v-show="scope.row.orc" v-model="scope.row.orc_ml" disabled placeholder="ORC落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
-                            <el-button size="mini" @click="dialogSelectfolder = true;">选择目录<span class='exDataColor'>(ORC)</span></el-button>
+                            <el-button size="mini" @click="seletFilePath(scope.row.table_id,'orc')">选择目录<span class='exDataColor'>(ORC)</span></el-button>
                         </template>
                     </el-input>
                     <el-input v-show="scope.row.par" v-model="scope.row.par_ml" disabled placeholder="PAR落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
-                            <el-button size="mini" @click="dialogSelectfolder = true;">选择目录<span class='exDataColor'>(PAR)</span></el-button>
+                            <el-button size="mini" @click="seletFilePath(scope.row.table_id,'par')">选择目录<span class='exDataColor'>(PAR)</span></el-button>
                         </template>
                     </el-input>
                     <el-input v-show="scope.row.csv" v-model="scope.row.csv_ml" disabled placeholder="CSV落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
-                            <el-button size="mini" @click="dialogSelectfolder = true;">选择目录<span class='exDataColor'>(CSV)</span></el-button>
+                            <el-button size="mini" @click="seletFilePath(scope.row.table_id,'csv')">选择目录<span class='exDataColor'>(CSV)</span></el-button>
                         </template>
                     </el-input>
                     <el-input v-show="scope.row.seq" v-model="scope.row.seq_ml" disabled placeholder="SEQ落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
-                            <el-button size="mini" @click="dialogSelectfolder = true;">选择目录<span class='exDataColor'>(SEQ)</span></el-button>
+                            <el-button size="mini" @click="seletFilePath(scope.row.table_id,'seq')">选择目录<span class='exDataColor'>(SEQ)</span></el-button>
                         </template>
                     </el-input>
                 </template>
@@ -246,7 +246,7 @@
             <span class="dialogtitle el-icon-caret-right">选择目录</span>
         </div>
         <div class="mytree"  hight='200'>
-            <el-tree ref='tree' :data="data2" show-checkbox node-key="name" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange" @node-expand='appendFun'>
+            <el-tree ref='tree' :data="data2" :empty-text="treenloadingInfo" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span>{{ node.label }}</span>
                 </span>
@@ -290,6 +290,7 @@ export default {
             isLoading: false,
             dialogDatasaveType: false,
             tableloadingInfo: "数据加载中...",
+            treenloadingInfo: '数据加载中...',
             rule: validator.default,
             dialogAllTableSeparatorSettings: false,
             unloadingcurrentPage: 1,
@@ -381,7 +382,9 @@ export default {
             ExtractDataType: [],
             arrData: [],
             dialogSelectfolder: false,
-            path: ''
+            path: '',
+            row_ml: '',
+            row_ml_name: ''
         };
     },
     created() {
@@ -738,26 +741,29 @@ res.data[i].dbfile_format=['定长','1','3']
             }
         },
         // 获取目录结构
-        seletFilePath(data) {
-            let arry = [];
-            let path;
-            if (typeof (data) != "undefined") {
-                path = data.path;
-            }
+        seletFilePath(id, name) {
+            this.dialogSelectfolder = true;
+            this.row_ml = id
+            this.row_ml_name = name
+            let arry = [],
+                path = '';
             addTaskAllFun
                 .selectPath({
                     agent_id: this.$route.query.agent_id,
                     path: path
                 })
                 .then(res => {
-                    if (typeof (data) == 'undefined') {
+                    if (res.data && res.data.length > 0) {
                         for (let i = 0; i < res.data.length; i++) {
                             if (res.data[i].isFolder == 'true') {
                                 res.data[i].children = [{}]
                             }
                         }
                         this.data2 = res.data;
+                    } else {
+                        this.treenloadingInfo = '暂无数据'
                     }
+
                 });
         },
         //获取选中状态下的数据
@@ -765,33 +771,78 @@ res.data[i].dbfile_format=['定长','1','3']
             if (checked === true) {
                 this.checkedId = data.name;
                 this.path = data.path
-                this.$refs.tree.setCheckedKeys([data.name]);
+                // this.$refs.tree.setCheckedKeys([data.name]);
             } else {
                 if (this.checkedId == data.name) {
                     this.$refs.tree.setCheckedKeys([data.name]);
                 }
             }
         },
-        appendFun(data, b, c) {
-            console.log(data, b, c)
-            addTaskAllFun
-                .selectPath({
-                    agent_id: this.$route.query.agent_id,
-                    path: data.path
-                })
-                .then(res => {
-                    for (let i = 0; i < res.data.length; i++) {
-                        if (res.data[i].isFolder == 'true') {
-                            res.data[i].children = [{}]
-                        }
-                    }
-                    data.children = res.data
-                    console.log(res.data)
-                });
+        loadNode(node, resolve) {
+            if (node.level > 0) {
+                let path = node.data.path,
+                    id = this.$route.query.agent_id;
+                setTimeout(() => {
+                    addTaskAllFun
+                        .selectPath({
+                            agent_id: id,
+                            path: path
+                        })
+                        .then(res => {
+                            for (let i = 0; i < res.data.length; i++) {
+                                if (res.data[i].isFolder == 'true') {
+                                    res.data[i].children = [{}]
+                                }
+                            }
+                            resolve(res.data);
+                        });
+
+                }, 500);
+            }
+
         },
         pathSubmit() {
-            console.log(this.path)
-        }
+            let id = this.row_ml,
+                path = this.path
+            if (this.row_ml_name == 'fdc') {
+                this.ruleForm.unloadingFileData.forEach((item) => {
+                    if (item.table_id == id) {
+                        item.fdc_ml = path
+                    }
+                })
+            } else if (this.row_ml_name == 'dc') {
+                this.ruleForm.unloadingFileData.forEach((item) => {
+                    if (item.table_id == id) {
+                        item.dc_ml = path
+                    }
+                })
+            } else if (this.row_ml_name == 'csv') {
+                this.ruleForm.unloadingFileData.forEach((item) => {
+                    if (item.table_id == id) {
+                        item.csv_ml = path
+                    }
+                })
+            } else if (this.row_ml_name == 'seq') {
+                this.ruleForm.unloadingFileData.forEach((item) => {
+                    if (item.table_id == id) {
+                        item.seq_ml = path
+                    }
+                })
+            } else if (this.row_ml_name == 'par') {
+                this.ruleForm.unloadingFileData.forEach((item) => {
+                    if (item.table_id == id) {
+                        item.par_ml = path
+                    }
+                })
+            } else if (this.row_ml_name == 'orc') {
+                this.ruleForm.unloadingFileData.forEach((item) => {
+                    if (item.table_id == id) {
+                        item.orc_ml = path
+                    }
+                })
+            }
+        },
+
     }
 };
 </script>
