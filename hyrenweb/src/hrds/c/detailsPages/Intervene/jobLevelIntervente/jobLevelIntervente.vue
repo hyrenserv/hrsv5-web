@@ -36,9 +36,9 @@
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
-        <el-table-column prop="etl_sys_cd" label="工程编号" align='center' width="120">
+        <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
         </el-table-column>
-        <el-table-column prop="subsysname" label="任务名称" align='center' width="150">
+        <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center'>
         </el-table-column>
         <el-table-column prop="etl_job" label="作业名称" show-overflow-tooltip align='center' width="150">
             <template slot-scope="scope">
@@ -47,9 +47,9 @@
                 </el-button>
             </template>
         </el-table-column>
-        <el-table-column prop="curr_bath_date" label="批量日期" align='center' width="150">
+        <el-table-column prop="curr_bath_date" label="批量日期" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="status" label="状态" align='center' width="100">
+        <el-table-column prop="status" label="状态" align='center' show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="relyJob" label="依赖作业" align='center' width="100">
             <template slot-scope="scope">
@@ -88,19 +88,19 @@
     <el-table ref="multipleTable" :data="tableData1" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
-        <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center' width="120">
+        <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center'>
         </el-table-column>
-        <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align='center' width="150">
+        <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align='center'>
         </el-table-column>
-        <el-table-column prop="types" label="干预类型" align='center' width="120">
+        <el-table-column prop="types" label="干预类型" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="pro_para" show-overflow-tooltip label="作业程序参数" align='center' width="150">
+        <el-table-column prop="pro_para" show-overflow-tooltip label="作业程序参数" align='center'>
         </el-table-column>
-        <el-table-column prop="status" label="状态" align='center'>
+        <el-table-column prop="status" label="状态" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="st_time" label="接收时间" align='center' width="160">
+        <el-table-column prop="st_time" label="接收时间" align='center' show-overflow-tooltip width="160">
         </el-table-column>
-        <el-table-column prop="warning" show-overflow-tooltip label="提示信息" align='center' width="160">
+        <el-table-column prop="warning" show-overflow-tooltip label="提示信息" align='center' width="80">
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
@@ -114,17 +114,17 @@
     <el-table ref="multipleTable" :data="tableData2" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
-        <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center' width="120">
+        <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center'>
         </el-table-column>
-        <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align='center' width="150">
+        <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align='center'>
         </el-table-column>
-        <el-table-column prop="types" show-overflow-tooltip label="干预类型" align='center' width="120">
+        <el-table-column prop="types" show-overflow-tooltip label="干预类型" align='center'>
         </el-table-column>
-        <el-table-column prop="pro_para" show-overflow-tooltip label="作业程序参数" align='center' width="150">
+        <el-table-column prop="pro_para" show-overflow-tooltip label="作业程序参数" align='center'>
         </el-table-column>
-        <el-table-column prop="status" label="状态" align='center'>
+        <el-table-column prop="status" show-overflow-tooltip label="状态" align='center'>
         </el-table-column>
-        <el-table-column prop="st_time" label="接收时间" align='center' width="160">
+        <el-table-column prop="st_time" show-overflow-tooltip label="接收时间" align='center' width="160">
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
@@ -858,6 +858,8 @@ export default {
                 query: {
                     etl_sys_cd: row.etl_sys_cd,
                     etl_job: row.etl_job,
+                    name: '/etlJobDef',
+                    dec: this.$Base64.encode('作业')
                 }
             });
         },

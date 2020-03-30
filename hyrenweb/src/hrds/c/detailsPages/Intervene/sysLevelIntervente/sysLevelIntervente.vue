@@ -6,19 +6,19 @@
         </el-table-column>
         <el-table-column prop="curr_bath_date" label="批量日期" align='center' width="150">
         </el-table-column>
-        <el-table-column prop="pending_num" label="挂起" align='center'>
+        <el-table-column prop="pending_num" show-overflow-tooltip label="挂起" align='center'>
         </el-table-column>
-        <el-table-column prop="waiting_num" label="等待" align='center'>
+        <el-table-column prop="waiting_num" show-overflow-tooltip label="等待" align='center'>
         </el-table-column>
-        <el-table-column prop="running_num" label="运行" align='center'>
+        <el-table-column prop="running_num" show-overflow-tooltip label="运行" align='center'>
         </el-table-column>
-        <el-table-column prop="done_num" label="完成" align='center'>
+        <el-table-column prop="done_num" show-overflow-tooltip label="完成" align='center'>
         </el-table-column>
-        <el-table-column prop="alarm_num" label="预警" align='center'>
+        <el-table-column prop="alarm_num" show-overflow-tooltip label="预警" align='center'>
         </el-table-column>
-        <el-table-column prop="error_num" label="错误" align='center'>
+        <el-table-column prop="error_num" show-overflow-tooltip label="错误" align='center'>
         </el-table-column>
-        <el-table-column prop="stop_num" label="停止" align='center'>
+        <el-table-column prop="stop_num" show-overflow-tooltip label="停止" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center' width="150">
             <template slot-scope="scope">
@@ -34,34 +34,34 @@
     <el-table ref="multipleTable" :data="tableData1" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
-        <el-table-column prop="etl_sys_cd" label="工程编号" align='center' width="120">
+        <el-table-column prop="etl_sys_cd" label="工程编号" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
+        <el-table-column prop="etl_job" label="作业名称" align='center' show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="types" label="干预类型" show-overflow-tooltip align='center' width="120">
         </el-table-column>
-        <el-table-column prop="pro_para" label="作业程序参数" align='center' width="150">
+        <el-table-column prop="pro_para" label="作业程序参数" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="status" label="状态" align='center'>
+        <el-table-column prop="status" label="状态" align='center' show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="st_time" label="接收时间" align='center' width="160">
         </el-table-column>
-        <el-table-column prop="warning" show-overflow-tooltip label="提示信息" align='center' width="160">
+        <el-table-column prop="warning" show-overflow-tooltip label="提示信息" align='center' width="80">
         </el-table-column>
     </el-table>
     <div class="titles">历史干预情况</div>
     <el-table ref="multipleTable" :data="tableData2" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
-        <el-table-column prop="etl_sys_cd" label="工程编号" align='center' width="120">
+        <el-table-column prop="etl_sys_cd" label="工程编号" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="etl_job" label="作业名称" align='center' width="150">
+        <el-table-column prop="etl_job" label="作业名称" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="types" show-overflow-tooltip label="干预类型" align='center' width="120">
+        <el-table-column prop="types" show-overflow-tooltip label="干预类型" align='center'>
         </el-table-column>
-        <el-table-column prop="pro_para" label="作业程序参数" align='center' width="150">
+        <el-table-column prop="pro_para" label="作业程序参数" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="status" label="状态" align='center'>
+        <el-table-column prop="status" label="状态" align='center' show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="st_time" label="接收时间" align='center' width="160">
         </el-table-column>
