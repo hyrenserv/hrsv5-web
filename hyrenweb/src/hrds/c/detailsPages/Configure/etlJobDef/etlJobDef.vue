@@ -506,6 +506,10 @@ export default {
             },
             tableData: [],
             listDatas: [],
+            Today_Dispatch_Flag: [],
+            Job_Effective_Flag: [],
+            Dispatch_Type: [],
+            Dispatch_Frequency: [],
             jobTitle: '',
             temp: 'false',
             multipleSelection: [],
@@ -562,10 +566,14 @@ export default {
         };
     },
     mounted() {
-        this.getTable();
+        this.getCodeItems("Dispatch_Frequency");
+        this.getCodeItems("Dispatch_Type");
+        this.getCodeItems("Job_Effective_Flag");
+        this.getCodeItems("Today_Dispatch_Flag");
         this.getSelect();
-        this.getCode();
-        this.getJobName()
+        this.getTable();
+        this.getProType();
+        this.getJobName();
     },
     methods: {
         //下拉框数据强制渲染
@@ -574,7 +582,7 @@ export default {
         },
         //获取代码项
         getCode() {
-            this.getProType();
+            // this.getProType();
             this.getDispRate();
             this.getDispType();
             this.getJobFlag();
@@ -714,7 +722,6 @@ export default {
             let params = {};
             let arr = [];
             params["etl_sys_cd"] = this.sys_cd;
-            console.log(this.sys_cd)
             etlJobDefAllFun.searchEtlJob(params).then(res => {
                 res.data.forEach((item) => {
                     let obj = {};
@@ -738,49 +745,62 @@ export default {
                 this.pageLength = res.data.totalSize;
                 dates.forEach((item) => {
                     //调度频率
-                    (function () {
-                        let params = {};
-                        params["category"] = "Dispatch_Frequency";
-                        params["code"] = item.disp_freq;
-                        etlJobDefAllFun.getValue(params).then(res => {
-                            item.dispFreq = res.data;
-                        });
-                    })();
+                    this.Dispatch_Frequency.forEach(val => {
+                        if (item.disp_freq == val.code) {
+                            item.dispFreq = val.value;
+                        }
+                    })
                     //调度触发方式
-                    if (item.disp_type != 'F') {
-                        (function () {
-                            let params = {};
-                            params["category"] = "Dispatch_Type";
-                            params["code"] = item.disp_type;
-                            etlJobDefAllFun.getValue(params).then(res => {
-                                item.dispType = res.data;
-                            });
-                        })();
-                    } else {
-                        item.dispType = '';
-                    }
+                    this.Dispatch_Type.forEach(val2 => {
+                        if (item.disp_type == val2.code) {
+                            item.dispType = val2.value;
+                        }
+                    })
                     //作业有效标志
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Effective_Flag";
-                        params["code"] = item.job_eff_flag;
-                        etlJobDefAllFun.getValue(params).then(res => {
-                            item.jobEffFlag = res.data;
-                        });
-                    })();
+                    this.Job_Effective_Flag.forEach(val3 => {
+                        if (item.job_eff_flag == val3.code) {
+                            item.jobEffFlag = val3.value;
+                        }
+                    })
                     //当天是否调度
-                    (function () {
-                        let params = {};
-                        params["category"] = "Today_Dispatch_Flag";
-                        params["code"] = item.today_disp;
-                        etlJobDefAllFun.getValue(params).then(res => {
-                            item.todayDisp = res.data;
-                        });
-                    })();
+                    this.Today_Dispatch_Flag.forEach(val4 => {
+                        if (item.today_disp == val4.code) {
+                            item.todayDisp = val4.value;
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData = dates, 500);
+                this.tableData = dates;
             });
         },
+        // 获取表格代码项
+        getCodeItems(val) {
+            if (val == "Dispatch_Frequency") { //调度频率
+                etlJobDefAllFun.getCategoryItems({
+                    category: 'Dispatch_Frequency'
+                }).then(res => {
+                    this.Dispatch_Frequency = res.data;
+                })
+            } else if (val == "Dispatch_Type") { //触发方式
+                etlJobDefAllFun.getCategoryItems({
+                    category: 'Dispatch_Type'
+                }).then(res => {
+                    this.Dispatch_Type = res.data;
+                })
+            } else if (val == "Job_Effective_Flag") { //作业有效标志
+                etlJobDefAllFun.getCategoryItems({
+                    category: 'Job_Effective_Flag'
+                }).then(res => {
+                    this.Job_Effective_Flag = res.data;
+                })
+            } else if (val == "Today_Dispatch_Flag") { //是否当天调度
+                etlJobDefAllFun.getCategoryItems({
+                    category: 'Today_Dispatch_Flag'
+                }).then(res => {
+                    this.Today_Dispatch_Flag = res.data;
+                })
+            }
+        },
+
         //清空模态框切换残余数据
         clears() {
             this.formAdd.disp_type = '';
@@ -849,6 +869,7 @@ export default {
         },
         //新增按钮
         handleAdd() {
+            this.getCode();
             this.jobTitle = '添加作业';
             this.dialogFormVisibleAdd = true;
             this.formAdd.etl_sys_cd = this.sys_cd;
@@ -882,6 +903,7 @@ export default {
         },
         //编辑按钮
         handleEdit(index, row) {
+            this.getCode();
             let params = {};
             let arr = [];
             params["etl_sys_cd"] = row.etl_sys_cd;
@@ -1088,15 +1110,15 @@ export default {
             params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
             params["etl_job"] = this.deleteForm.etl_job;
             etlJobDefAllFun.deleteEtlJobDef(params).then(res => {
-                this.getTable();
-                this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                });
-            }).catch(err => {
-                this.$message.error('删除失败');
-            });
-            this.dialogVisibleDelete = false;
+                if (res.code == 200) {
+                    this.getTable();
+                    this.$message({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    this.dialogVisibleDelete = false;
+                }
+            })
         },
         //分页方法
         handleCurrentChange(cpage) {

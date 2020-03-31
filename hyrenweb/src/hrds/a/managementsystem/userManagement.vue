@@ -173,6 +173,7 @@ export default {
             arryCode: [],
             functionalTypes: [],
             defaultFunction: [],
+            UserType: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleUpdate: false,
             // 添加新增用户表单
@@ -195,8 +196,10 @@ export default {
         }
     },
     created() {
+        this.getCodeItems("UserType")
         // 获取用户所有信息
         this.getSysUserInfoAll(1);
+
     },
     methods: {
         // 用户信息方法封装
@@ -452,80 +455,95 @@ export default {
             this.getSysUserInfoAll("1");
             this.currentPage = 1;
         },
+        // 获取表格代码项
+        getCodeItems(val) {
+            if (val == "UserType") { //调度频率
+                functionAll.getCategoryItems({
+                    category: 'UserType'
+                }).then(res => {
+                    this.UserType = res.data;
+                })
+            }
+        },
         // getvalue代码项
         getValueWithcode(type) {
             for (let j = 0; j < type.length; j++) {
-                if (type[j] == "01") {
-                    type[j] = "采集管理"
-                } else if (type[j] == "02") {
-                    type[j] = "数据采集"
-                } else if (type[j] == "03") {
-                    type[j] = "数据查询"
-                } else if (type[j] == "04") {
-                    type[j] = "作业调度"
-                } else if (type[j] == "05") {
-                    type[j] = "作业操作员"
-                } else if (type[j] == "06") {
-                    type[j] = "数据可视化管理"
-                } else if (type[j] == "07") {
-                    type[j] = "可视化数据源"
-                } else if (type[j] == "08") {
-                    type[j] = "数据可视化分析"
-                } else if (type[j] == "09") {
-                    type[j] = "数据可视化查看"
-                } else if (type[j] == "10") {
-                    type[j] = "监控管理"
-                } else if (type[j] == "11") {
-                    type[j] = "服务接口管理"
-                } else if (type[j] == "12") {
-                    type[j] = "服务接口用户"
-                } else if (type[j] == "13") {
-                    type[j] = "分词器管理"
-                } else if (type[j] == "14") {
-                    type[j] = "数据集市"
-                } else if (type[j] == "15") {
-                    type[j] = "数据加工"
-                } else if (type[j] == "16") {
-                    type[j] = "机器学习工作台"
-                } else if (type[j] == "17") {
-                    type[j] = "机器学习业务"
-                } else if (type[j] == "18") {
-                    type[j] = "流数据管理"
-                } else if (type[j] == "19") {
-                    type[j] = "流数据生产"
-                } else if (type[j] == "20") {
-                    type[j] = "数据库配置(永洪)"
-                } else if (type[j] == "21") {
-                    type[j] = "报表创建(永洪)"
-                } else if (type[j] == "22") {
-                    type[j] = "报表查看(永洪)"
-                } else if (type[j] == "23") {
-                    type[j] = "流数据消费"
-                } else if (type[j] == "24") {
-                    type[j] = "数据管控"
-                } else if (type[j] == "25") {
-                    type[j] = "自主分析管理"
-                } else if (type[j] == "26") {
-                    type[j] = "自主分析操作"
-                } else if (type[j] == "00") {
-                    type[j] = "系统管理员"
-                } else if (type[j] == "95") {
-                    type[j] = "数据存储层定义"
-                } else if (type[j] == "96") {
-                    type[j] = "数据整理"
-                } else if (type[j] == "97") {
-                    type[j] = "系统参数管理"
-                } else if (type[j] == "98") {
-                    type[j] = "部门管理"
-                } else if (type[j] == "99") {
-                    type[j] = "用户管理"
-                } else if (type[j] == "55") {
-                    type[j] = "数据对标"
-                } else if (type[j] == '37') {
-                    type[j] = '数据对标'
-                } else if (type[j] == '27') {
-                    type[j] = '资源管理'
-                }
+                this.UserType.forEach(item => {
+                    if (type[j] == item.code) {
+                        type[j] = item.value;
+                    }
+                })
+                // if (type[j] == "01") {
+                //     type[j] = "采集管理"
+                // } else if (type[j] == "02") {
+                //     type[j] = "数据采集"
+                // } else if (type[j] == "03") {
+                //     type[j] = "数据查询"
+                // } else if (type[j] == "04") {
+                //     type[j] = "作业调度"
+                // } else if (type[j] == "05") {
+                //     type[j] = "作业操作员"
+                // } else if (type[j] == "06") {
+                //     type[j] = "数据可视化管理"
+                // } else if (type[j] == "07") {
+                //     type[j] = "可视化数据源"
+                // } else if (type[j] == "08") {
+                //     type[j] = "数据可视化分析"
+                // } else if (type[j] == "09") {
+                //     type[j] = "数据可视化查看"
+                // } else if (type[j] == "10") {
+                //     type[j] = "监控管理"
+                // } else if (type[j] == "11") {
+                //     type[j] = "服务接口管理"
+                // } else if (type[j] == "12") {
+                //     type[j] = "服务接口用户"
+                // } else if (type[j] == "13") {
+                //     type[j] = "分词器管理"
+                // } else if (type[j] == "14") {
+                //     type[j] = "数据集市"
+                // } else if (type[j] == "15") {
+                //     type[j] = "数据加工"
+                // } else if (type[j] == "16") {
+                //     type[j] = "机器学习工作台"
+                // } else if (type[j] == "17") {
+                //     type[j] = "机器学习业务"
+                // } else if (type[j] == "18") {
+                //     type[j] = "流数据管理"
+                // } else if (type[j] == "19") {
+                //     type[j] = "流数据生产"
+                // } else if (type[j] == "20") {
+                //     type[j] = "数据库配置(永洪)"
+                // } else if (type[j] == "21") {
+                //     type[j] = "报表创建(永洪)"
+                // } else if (type[j] == "22") {
+                //     type[j] = "报表查看(永洪)"
+                // } else if (type[j] == "23") {
+                //     type[j] = "流数据消费"
+                // } else if (type[j] == "24") {
+                //     type[j] = "数据管控"
+                // } else if (type[j] == "25") {
+                //     type[j] = "自主分析管理"
+                // } else if (type[j] == "26") {
+                //     type[j] = "自主分析操作"
+                // } else if (type[j] == "00") {
+                //     type[j] = "系统管理员"
+                // } else if (type[j] == "95") {
+                //     type[j] = "数据存储层定义"
+                // } else if (type[j] == "96") {
+                //     type[j] = "数据整理"
+                // } else if (type[j] == "97") {
+                //     type[j] = "系统参数管理"
+                // } else if (type[j] == "98") {
+                //     type[j] = "部门管理"
+                // } else if (type[j] == "99") {
+                //     type[j] = "用户管理"
+                // } else if (type[j] == "55") {
+                //     type[j] = "数据对标"
+                // } else if (type[j] == '37') {
+                //     type[j] = '数据对标'
+                // } else if (type[j] == '27') {
+                //     type[j] = '资源管理'
+                // }
 
             }
             return type;

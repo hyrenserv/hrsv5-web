@@ -129,9 +129,13 @@ export default {
             pagesize: 5,
             currpage: 1,
             pageLength: 100,
+            meddletype: [],
+            jobStatued: [],
         };
     },
     mounted() {
+        this.getCodeItems("Meddle_type");
+        this.getCodeItems("Job_Status");
         this.getSystemInfo();
         this.getCurrInfo();
         this.getHistoryInfo();
@@ -171,25 +175,19 @@ export default {
                 let dates = res.data;
                 dates.forEach((item) => {
                     //干预类型
-                    (function () {
-                        let params = {};
-                        params["category"] = "Meddle_type";
-                        params["code"] = item.etl_hand_type;
-                        sysLevelInterventeAllFun.getValue(params).then(res => {
-                            item.types = res.data;
-                        });
-                    })();
+                    this.meddletype.forEach(val => {
+                        if (item.etl_hand_type == val.code) {
+                            item.types = val.value
+                        }
+                    });
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Status";
-                        params["code"] = item.hand_status;
-                        sysLevelInterventeAllFun.getValue(params).then(res => {
-                            item.status = res.data;
-                        });
-                    })();
+                    this.jobStatued.forEach(value => {
+                        if (item.hand_status == value.code) {
+                            item.status = value.value
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData1 = dates, 500);
+                this.tableData1 = dates;
             });
         },
         //历史干预情况
@@ -203,25 +201,19 @@ export default {
                 this.pageLength = res.data.totalSize;
                 dates.forEach((item) => {
                     //干预类型
-                    (function () {
-                        let params = {};
-                        params["category"] = "Meddle_type";
-                        params["code"] = item.etl_hand_type;
-                        sysLevelInterventeAllFun.getValue(params).then(res => {
-                            item.types = res.data;
-                        });
-                    })();
+                    this.meddletype.forEach(val => {
+                        if (item.etl_hand_type == val.code) {
+                            item.types = val.value
+                        }
+                    });
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Status";
-                        params["code"] = item.hand_status;
-                        sysLevelInterventeAllFun.getValue(params).then(res => {
-                            item.status = res.data;
-                        });
-                    })();
+                    this.jobStatued.forEach(value => {
+                        if (item.hand_status == value.code) {
+                            item.status = value.value
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData2 = dates, 500);
+                this.tableData2 = dates;
             });
         },
         //暂停按钮
@@ -244,7 +236,22 @@ export default {
         handleStop() {
             this.dialogVisibleStop = true;
         },
-
+        // 获取代码项
+        getCodeItems(val) {
+            if (val == "Meddle_type") {
+                sysLevelInterventeAllFun.getCategoryItems({
+                    category: 'Meddle_type'
+                }).then(res => {
+                    this.meddletype = res.data;
+                })
+            } else if (val == "Job_Status") {
+                sysLevelInterventeAllFun.getCategoryItems({
+                    category: 'Job_Status'
+                }).then(res => {
+                    this.jobStatued = res.data;
+                })
+            }
+        },
         //暂停保存按钮
         savePause() {
             let code = 'SP';

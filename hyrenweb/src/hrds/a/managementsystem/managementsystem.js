@@ -84,7 +84,7 @@ import request from '@/utils/request'
 }
 
 /**(8)
-   * 获取部门信息和用户功能菜单信息
+   * 获取用户
    */
   export function getSysUserByUserId(data) {
     return request({
@@ -92,7 +92,15 @@ import request from '@/utils/request'
         params: data
     })
 }
-
+/**(8)
+   * 根据代码项分组编号，获取该代码项所
+   */
+export function getCategoryItems(data) {
+    return request({
+        url: '/A/codes/getCategoryItems',
+        params: data
+    })
+}
 
 // departmentalList页
 /**(0)
