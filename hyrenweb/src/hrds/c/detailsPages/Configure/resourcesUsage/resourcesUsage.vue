@@ -56,7 +56,7 @@
         </el-col>
     </el-row>
     <!-- 添加/修改资源模态框 -->
-    <el-dialog :title="resourceTitle" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog :title="resourceTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <div style="width:193px">
@@ -249,6 +249,10 @@ export default {
         },
         //模态框新增/修改取消按钮
         cancleAdd() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
+        },
+        beforeClosechange() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
         },

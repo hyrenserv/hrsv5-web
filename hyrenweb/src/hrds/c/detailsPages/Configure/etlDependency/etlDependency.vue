@@ -209,14 +209,6 @@ export default {
                             item.statu = val.value;
                         }
                     })
-                    // (function () {
-                    //     let params = {};
-                    //     params["category"] = "Status";
-                    //     params["code"] = item.status;
-                    //     etlDependencyAllFun.getValue(params).then(res => {
-                    //         item.statu = res.data;
-                    //     });
-                    // })();
                 });
                 console.log(dates)
                 this.tableData = dates;
@@ -228,7 +220,7 @@ export default {
                 etlDependencyAllFun.getCategoryItems({
                     category: 'Status'
                 }).then(res => {
-                   this.statusNum = res.data;
+                    this.statusNum = res.data;
                 })
             }
         },
