@@ -44,16 +44,6 @@ export function batchJobLevelInterventionOperate(data) {
         params: data
     })
 }
-
-//根据代码项分组编号和代码项值，获取中文名称
-export function getValue(data) {
-    return request({
-        url: '/A/codes/getValue',
-        method: 'post',
-        params: data
-    })
-}
-
 //根据代码项分组编号，获取该代码项所
 export function getCategoryItems(data) {
     return request({

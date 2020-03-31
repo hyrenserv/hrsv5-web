@@ -152,6 +152,7 @@ export default {
             fileList: [],
             dialogFormVisibleAdd: false,
             dialogVisibleDelete: false,
+            statusNum: [],
             formAdd: {
                 etl_sys_cd: '',
                 etl_job: '',
@@ -182,9 +183,10 @@ export default {
         };
     },
     mounted() {
+        this.getCodeItems("Status");
+        this.getStatu();
         this.getTable();
         this.getProName();
-        this.getStatu();
         this.getJobName();
     },
     methods: {
@@ -202,17 +204,33 @@ export default {
                 this.pageLength = res.data.totalSize;
                 dates.forEach((item) => {
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Status";
-                        params["code"] = item.status;
-                        etlDependencyAllFun.getValue(params).then(res => {
-                            item.statu = res.data;
-                        });
-                    })();
+                    this.statusNum.forEach(val => {
+                        if (item.status == val.code) {
+                            item.statu = val.value;
+                        }
+                    })
+                    // (function () {
+                    //     let params = {};
+                    //     params["category"] = "Status";
+                    //     params["code"] = item.status;
+                    //     etlDependencyAllFun.getValue(params).then(res => {
+                    //         item.statu = res.data;
+                    //     });
+                    // })();
                 });
-                setTimeout(() => this.tableData = dates, 800);
+                console.log(dates)
+                this.tableData = dates;
             });
+        },
+        // 获取表格代码项
+        getCodeItems(val) {
+            if (val == "Status") { //调度频率
+                etlDependencyAllFun.getCategoryItems({
+                    category: 'Status'
+                }).then(res => {
+                   this.statusNum = res.data;
+                })
+            }
         },
         //搜索按钮
         searchBtn() {

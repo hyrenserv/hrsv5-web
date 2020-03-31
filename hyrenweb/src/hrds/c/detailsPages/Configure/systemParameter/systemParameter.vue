@@ -33,9 +33,9 @@
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template slot-scope="scope">
-                <el-button v-if="scope.row.etl_sys_cd != 'SYS'" size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
+                <el-button :disabled="scope.row.etl_sys_cd = 'SYS'" size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
                 </el-button>
-                <el-button v-if="scope.row.etl_sys_cd != 'SYS'" size="mini" icon="el-icon-delete" title="删除" type="danger" @click="handleDelete(scope.$index, scope.row)">
+                <el-button :disabled="scope.row.etl_sys_cd = 'SYS'" size="mini" icon="el-icon-delete" title="删除" type="danger" @click="handleDelete(scope.$index, scope.row)">
                 </el-button>
             </template>
         </el-table-column>
@@ -114,6 +114,7 @@ export default {
             tableData: [],
             multipleSelection: [],
             fileList: [],
+            paratype: [],
             dialogFormVisibleAdd: false,
             dialogVisibleDelete: false,
             formAdd: {
@@ -135,6 +136,7 @@ export default {
         };
     },
     mounted() {
+        this.getCodeItems("ParamType");
         this.getTable();
         this.getParaName();
     },
@@ -152,17 +154,23 @@ export default {
                 this.pageLength = res.data.totalSize;
                 dates.forEach((item) => {
                     //变量类型
-                    (function () {
-                        let params = {};
-                        params["category"] = "ParamType";
-                        params["code"] = item.para_type;
-                        systemParameterAllFun.getValue(params).then(res => {
-                            item.paraType = res.data;
-                        });
-                    })();
+                    this.paratype.forEach(val => {
+                        if (item.para_type == val.code) {
+                            item.paraType = val.value;
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData = dates, 200);
+                this.tableData = dates;
             });
+        },
+        getCodeItems(val) {
+            if (val == "ParamType") {
+                systemParameterAllFun.getCategoryItems({
+                    category: 'ParamType'
+                }).then(res => {
+                    this.paratype = res.data;
+                })
+            }
         },
         //获取变量名称下拉框数据
         getParaName() {

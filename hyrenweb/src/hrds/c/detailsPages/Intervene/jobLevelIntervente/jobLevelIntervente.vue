@@ -231,9 +231,15 @@ export default {
             pagesize3: 5,
             currpage3: 1,
             pageLength3: 100,
+            meddletype: [],
+            jobStatued: [],
+            jobStatused: []
         };
     },
     mounted() {
+        this.getCodeItems("Meddle_type");
+        this.getCodeItems("Job_Status");
+        this.getCodeItems("Status");
         this.goBack();
         this.getSelectValue();
         this.getJobInfo();
@@ -241,12 +247,34 @@ export default {
         this.getHistoryInfo();
         this.getCode();
         this.getJobName();
+
     },
     methods: {
         //从监控当前作业回来
         goBack() {
             if (this.$route.query.etl_sys_cd && this.$route.query.etl_job) {
                 this.form.etl_job = this.$route.query.etl_job;
+            }
+        },
+        getCodeItems(val) {
+            if (val == "Meddle_type") {
+                jobLevelInterventeAllFun.getCategoryItems({
+                    category: 'Meddle_type'
+                }).then(res => {
+                    this.meddletype = res.data;
+                })
+            } else if (val == "Status") {
+                jobLevelInterventeAllFun.getCategoryItems({
+                    category: 'Status'
+                }).then(res => {
+                    this.jobStatused = res.data;
+                })
+            } else if (val == "Job_Status") {
+                jobLevelInterventeAllFun.getCategoryItems({
+                    category: 'Job_Status'
+                }).then(res => {
+                    this.jobStatued = res.data;
+                })
             }
         },
         //操作按钮的代码值
@@ -316,16 +344,13 @@ export default {
                 dates.forEach((item) => {
                     item.relyJob = '依赖作业';
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Status";
-                        params["code"] = item.job_disp_status;
-                        jobLevelInterventeAllFun.getValue(params).then(res => {
-                            item.status = res.data;
-                        });
-                    })();
+                    this.jobStatued.forEach(value => {
+                        if (item.job_disp_status == value.code) {
+                            item.status = value.value
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData = dates, 500);
+                this.tableData = dates;
             });
         },
         //获取当前干预情况数据
@@ -339,65 +364,21 @@ export default {
                 let dates = res.data.currInterventionList;
                 dates.forEach((item) => {
                     //干预类型
-                    (function () {
-                        let params = {};
-                        params["category"] = "Meddle_type";
-                        params["code"] = item.etl_hand_type;
-                        jobLevelInterventeAllFun.getValue(params).then(res => {
-                            item.types = res.data;
-                        });
-                    })();
+                    this.meddletype.forEach(val => {
+                        if (item.etl_hand_type == val.code) {
+                            item.types = val.value
+                        }
+                    });
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Status";
-                        params["code"] = item.hand_status;
-                        jobLevelInterventeAllFun.getValue(params).then(res => {
-                            item.status = res.data;
-                        });
-                    })();
+                    this.jobStatused.forEach(value => {
+                        if (item.hand_status == value.code) {
+                            item.status = value.value
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData1 = dates, 500);
+                this.tableData1 = dates;
             });
         },
-        //promise运用
-        /* getCurrInfo(){
-          return new Promise((resolve, reject)=>{
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["currPage"] = this.currpage2;
-            params["pageSize"] = this.pagesize2;
-            jobLevelInterventeAllFun.searchJobLevelCurrInterventionByPage(params).then(res=>{
-              this.pageLength2 = res.data.totalSize;
-              resolve(res.data.currInterventionList);
-            });
-          });
-        }, */
-        /* async demo(){
-          let dates = await this.getCurrInfo(); 
-          dates.forEach((item)=>{
-            //干预类型
-            (function () {
-              let params = {};
-              params["category"] = "Meddle_type";
-              params["code"] = item.etl_hand_type;
-              jobLevelInterventeAllFun.getValue(params).then(res=>{
-                item.types = res.data;
-              });
-            })();
-            //状态
-            (function () {
-              let params = {};
-              params["category"] = "Status";
-              params["code"] = item.hand_status;
-              jobLevelInterventeAllFun.getValue(params).then(res=>{
-                item.status = res.data;
-              });
-            })();
-          });
-          console.log(dates);
-          this.tableData1 = [...dates];
-        }, */
         //获取历史干预情况数据
         getHistoryInfo() {
             let params = {};
@@ -409,25 +390,19 @@ export default {
                 let dates = res.data.handHisList;
                 dates.forEach((item) => {
                     //干预类型
-                    (function () {
-                        let params = {};
-                        params["category"] = "Meddle_type";
-                        params["code"] = item.etl_hand_type;
-                        jobLevelInterventeAllFun.getValue(params).then(res => {
-                            item.types = res.data;
-                        });
-                    })();
+                    this.meddletype.forEach(val => {
+                        if (item.etl_hand_type == val.code) {
+                            item.types = val.value
+                        }
+                    });
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Status";
-                        params["code"] = item.hand_status;
-                        jobLevelInterventeAllFun.getValue(params).then(res => {
-                            item.status = res.data;
-                        });
-                    })();
+                    this.jobStatued.forEach(value => {
+                        if (item.hand_status == value.code) {
+                            item.status = value.value
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData2 = dates, 500);
+                this.tableData2 = dates
             });
         },
         //选中的数据
@@ -449,16 +424,13 @@ export default {
                 dates.forEach((item) => {
                     item.relyJob = '依赖作业';
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Status";
-                        params["code"] = item.job_disp_status;
-                        jobLevelInterventeAllFun.getValue(params).then(res => {
-                            item.status = res.data;
-                        });
-                    })();
+                    this.jobStatued.forEach(value => {
+                        if (item.job_disp_status == value.code) {
+                            item.status = value.value
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData = dates, 500);
+                this.tableData = dates;
             });
         },
         //每个单独模态框
