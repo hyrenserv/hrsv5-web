@@ -82,7 +82,7 @@
         </el-col>
     </el-row>
     <!-- 添加/修改任务模态框 -->
-    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'">
+    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="150px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
@@ -209,7 +209,7 @@
         </div>
     </el-dialog>
     <!-- 添加/修改任务模态框1 -->
-    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq == 'F'">
+    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq == 'F'" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="150px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
@@ -334,7 +334,7 @@
         </div>
     </el-dialog>
     <!-- 添加/修改任务模态框2 -->
-    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_type == 'D'">
+    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_type == 'D'" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="170px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
@@ -946,6 +946,10 @@ export default {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.tempForm = {};
+        },
+        beforeClosechange() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
         },
         //新增/修改模态框保存按钮
         saveAdd() {

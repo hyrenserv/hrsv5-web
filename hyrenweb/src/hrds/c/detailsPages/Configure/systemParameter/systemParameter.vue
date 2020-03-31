@@ -32,10 +32,10 @@
         <el-table-column prop="para_desc" show-overflow-tooltip label="描述" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center'>
-            <template slot-scope="scope">
-                <el-button :disabled="scope.row.etl_sys_cd = 'SYS'" size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
+              <template slot-scope="scope">
+                <el-button v-if="scope.row.etl_sys_cd != 'SYS'" size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
                 </el-button>
-                <el-button :disabled="scope.row.etl_sys_cd = 'SYS'" size="mini" icon="el-icon-delete" title="删除" type="danger" @click="handleDelete(scope.$index, scope.row)">
+                <el-button v-if="scope.row.etl_sys_cd != 'SYS'" size="mini" icon="el-icon-delete" title="删除" type="danger" @click="handleDelete(scope.$index, scope.row)">
                 </el-button>
             </template>
         </el-table-column>
@@ -47,7 +47,7 @@
         </el-col>
     </el-row>
     <!-- 添加/修改系统模态框 -->
-    <el-dialog :title="systemTitle" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog :title="systemTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="120px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
@@ -254,6 +254,10 @@ export default {
         },
         //模态框新增/修改取消按钮
         cancleAdd() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
+        },
+        beforeClosechange() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
         },
