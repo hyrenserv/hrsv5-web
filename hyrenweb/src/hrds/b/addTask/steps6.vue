@@ -7,7 +7,7 @@
                 <el-form-item label="工程编号" prop="Project_num" :rules="filter_rules([{required: true}])">
                     <el-col :span="16">
                         <el-input v-model="ruleForm.Project_num" size="medium" disabled placeholder="工程编号">
-                            <el-button slot="append" icon="el-icon-zoom-in" @click="Projectnumdialog=true"></el-button>
+                            <el-button slot="append" icon="el-icon-zoom-in" @click="Projectnumdialog=true;getEtlSysDataFun()"></el-button>
                         </el-input>
                     </el-col>
                 </el-form-item>
@@ -16,12 +16,12 @@
                 <el-form-item label="任务编号" prop="work_num" :rules="filter_rules([{required: true}])">
                     <el-col :span="16">
                         <el-input v-model="ruleForm.work_num" size="medium" disabled placeholder="任务编号">
-                            <el-button slot="append" icon="el-icon-zoom-in"  @click="getwork_numFun()"></el-button>
+                            <el-button slot="append" icon="el-icon-zoom-in" @click="getwork_numFun()"></el-button>
                         </el-input>
                     </el-col>
                 </el-form-item>
             </el-col>
-             <el-col :span="8">
+            <el-col :span="8">
                 <el-form-item label="作业程序类型" prop="work_type" :rules="rule.default">
                     <el-col :span="16">
                         <el-input v-model="ruleForm.work_type" size="medium" disabled placeholder="作业程序类型"></el-input>
@@ -37,7 +37,7 @@
                     </el-col>
                 </el-form-item>
             </el-col>
-             <el-col :span="8">
+            <el-col :span="8">
                 <el-form-item label="调度频率" prop="Dispatching_frequency" :rules="rule.default">
                     <el-col :span="16">
                         <el-select style="width:100%" v-model="ruleForm.Dispatching_frequency" placeholder="频率选择" clearable size="medium" @change="Dispatching_frequencyFun">
@@ -86,7 +86,7 @@
             </el-col>
             <el-col :span="8" v-else>
             </el-col>
-             <el-col :span="8">
+            <el-col :span="8">
                 <el-form-item label="调度时间位移" prop="Dispatching_timedrift" :rules="filter_rules([{required: true}])" v-show="TandZ=='1'">
                     <el-col :span="16">
                         <el-input v-model="ruleForm.Dispatching_timedrift" @change="getDispatching_timedriftFun" size="medium" placeholder="0"></el-input>
@@ -104,7 +104,7 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                 <el-form-item label="日志目录" prop="log_path" :rules="rule.selected" class='ml_lable'>
+                <el-form-item label="日志目录" prop="log_path" :rules="rule.selected" class='ml_lable'>
                     <el-col :span="24">
                         <el-input v-model="ruleForm.log_path" placeholder="日志目录" size="medium">
                         </el-input>
@@ -113,7 +113,7 @@
             </el-col>
             <el-col :span="4"></el-col>
         </el-row>
-        
+
     </el-form>
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
         <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)">
@@ -127,34 +127,34 @@
                     <el-input v-model="scope.row.work_name" placeholder="作业名称" size="mini"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column prop="work_desc" label="作业描述"  align="center" :show-overflow-tooltip="true">
+            <el-table-column prop="work_desc" label="作业描述" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
                     <el-input v-model="scope.row.work_desc" type="textarea" placeholder="作业描述" size="mini"></el-input>
                 </template>
             </el-table-column>
             <el-table-column prop="Dispatching_frequency" label="调度频率" align="center" :show-overflow-tooltip="true">
-              <template slot-scope="scope">
-                    <el-input v-model="scope.row.Dispatching_frequency"  placeholder="调度频率" size="mini"></el-input>
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.Dispatching_frequency" placeholder="调度频率" size="mini"></el-input>
                 </template>
             </el-table-column>
             <el-table-column prop="work_pri" label="作业优先级" align="center" :show-overflow-tooltip="true">
-                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.work_pri"  placeholder="作业优先级" size="mini"></el-input>
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.work_pri" placeholder="作业优先级" size="mini"></el-input>
                 </template>
             </el-table-column>
             <el-table-column prop="Dispatching_timedrift" label="调度时间位移" align="center" :show-overflow-tooltip="true" v-if="TandZ==='1'">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.Dispatching_timedrift"  placeholder="调度时间位移" size="mini"></el-input>
+                    <el-input v-model="scope.row.Dispatching_timedrift" placeholder="调度时间位移" size="mini"></el-input>
                 </template>
             </el-table-column>
             <el-table-column prop="Scheduling_trigger_time" label="调度触发时间" align="center" :show-overflow-tooltip="true" v-if="TandZ==='1'">
-                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.Scheduling_trigger_time"  placeholder="调度触发时间" size="mini"></el-input>
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.Scheduling_trigger_time" placeholder="调度触发时间" size="mini"></el-input>
                 </template>
             </el-table-column>
             <el-table-column prop="Upstream_operation" label="上游作业" align="center" :show-overflow-tooltip="true" v-if="TandZ==='2'">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.Upstream_operation"  placeholder="上游作业" size="mini"></el-input>
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.Upstream_operation" placeholder="上游作业" size="mini"></el-input>
                 </template>
             </el-table-column>
         </el-table>
@@ -178,8 +178,8 @@
                     <span>{{scope.$index+(ProjectnumcurrentPage - 1) * Projectnumpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column property="proj_num" label="工程编号" align="center"></el-table-column>
-            <el-table-column property="proj_name" label="工程名称" align="center"></el-table-column>
+            <el-table-column property="etl_sys_cd" label="工程编号" align="center"></el-table-column>
+            <el-table-column property="etl_sys_name" label="工程名称" align="center"></el-table-column>
         </el-table>
         <el-pagination @size-change="Projectnum_handleSizeChange" @current-change="Projectnum_handleCurrentChange" :current-page.sync="ProjectnumcurrentPage" :page-size="Projectnumpagesize" layout="total, prev, pager, next" :total="ProjectnumData.length" class="locationright"></el-pagination>
         <div slot="footer" class="dialog-footer">
@@ -193,13 +193,13 @@
             <span class="dialogtitle el-icon-caret-right">选择任务编号</span>
             <span class="dialogtoptxt">
                 工程名称:
-                <p class="dialogtopname">000</p>
+                <p class="dialogtopname">{{ruleForm.Project_name}}</p>
             </span>
         </div>
         <el-table :empty-text="tableloadingInfo" :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
-                    <el-radio v-model="worknum_radio" :label="scope.row.work_id">&thinsp;</el-radio>
+                    <el-radio v-model="worknum_radio" :label="scope.row.sub_sys_cd">&thinsp;</el-radio>
                 </template>
             </el-table-column>
             <el-table-column property label="序号" width="60px" align="center">
@@ -207,13 +207,13 @@
                     <span>{{scope.$index+(WorknumcurrentPage - 1) * Worknumpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column property="work_num" label="任务编号" align="center"></el-table-column>
-            <el-table-column property="work_name" label="任务名称" align="center"></el-table-column>
+            <el-table-column property="sub_sys_cd" label="任务编号" align="center"></el-table-column>
+            <el-table-column property="sub_sys_desc" label="任务名称" align="center"></el-table-column>
         </el-table>
         <el-pagination @size-change="Worknum_handleSizeChange" @current-change="Worknum_handleCurrentChange" :current-page.sync="WorknumcurrentPage" :page-size="Worknumpagesize" layout="total, prev, pager, next" :total="WorknumData.length" class="locationright"></el-pagination>
         <div slot="footer" class="dialog-footer">
             <el-button type="danger" size="mini">取 消</el-button>
-            <el-button type="primary" size="mini">确定</el-button>
+            <el-button type="primary" size="mini" @click="worknumSubmitFun()">确定</el-button>
 
         </div>
     </el-dialog>
@@ -300,17 +300,7 @@ export default {
             },
             Dispatch_Frequency: [], //调度频率
             Dispatching_mode: [], //调度触发方式
-            ProjectnumData: [{
-                    proj_id: '1',
-                    proj_num: '111',
-                    proj_name: 'name',
-                },
-                {
-                    proj_id: '12',
-                    proj_num: '111',
-                    proj_name: 'name',
-                }
-            ], //工程编号数据
+            ProjectnumData: [], //工程编号数据
             projnum_radio: {}, //工程编号选择radio
             WorknumData: [{
                 proj_id: '1',
@@ -337,6 +327,8 @@ export default {
     mounted() {
         //Dispatch_Frequency
         this.getPreJobName() //获取上游作业名称
+        this.getAgentPathFun() //获取目录
+        this.getPreviewJobFun() //获取任务下的作业信息
         // 调度频率
         this.$Code.getCategoryItems({
             'category': 'Dispatch_Frequency'
@@ -391,6 +383,31 @@ export default {
                 query: data
             });
         },
+        // 获取工程信息
+        getEtlSysDataFun() {
+            sendTask.getEtlSysData().then(res => {
+                console.log(res)
+                this.ProjectnumData = res.data
+            })
+        },
+        // 获取路径
+        getAgentPathFun() {
+            sendTask.getAgentPath({
+                colSetId: this.dbid
+            }).then(res => {
+                console.log(res)
+                this.ruleForm.log_path = res.data.log_dic
+                this.ruleForm.work_path = res.data.pro_dic
+            })
+        },
+        // 获取作业列表
+        getPreviewJobFun() {
+            sendTask.getPreviewJob({
+                colSetId: this.dbid
+            }).then(res => {
+                console.log(res)
+            })
+        },
         finishSubmit() {
             this.finishDialogVisible = false
             sendTask.sendDBCollctTaskById({
@@ -412,18 +429,18 @@ export default {
         //触发方式改变
         Dispatching_modeFun(key) {
             console.log(key, this.ruleForm.Dispatching_mode)
-           
+
             let value = this.getDispatching_modeValueFun(key)
             if (key == 'T' || key == 'Z') {
                 this.TandZ = '1'
-            this.ruleForm.Upstream_operation = ''
+                this.ruleForm.Upstream_operation = ''
                 this.ruleForm.startuptableData.forEach((item) => {
                     item.workUpstream_operation_pri = ''
                 })
             } else if (key == 'D') {
                 this.TandZ = '2'
-                 this.ruleForm.Dispatching_timedrift = ''
-            this.ruleForm.Dispatching_time = ''
+                this.ruleForm.Dispatching_timedrift = ''
+                this.ruleForm.Dispatching_time = ''
                 this.ruleForm.startuptableData.forEach((item) => {
                     item.Scheduling_trigger_time = ''
                     item.Dispatching_timedrift = ''
@@ -456,7 +473,8 @@ export default {
         },
         // 选择工程弹框确定
         projNumSubmitFun() {
-            this.ruleForm.Project_num = this.projnum_radio.proj_num
+            this.ruleForm.Project_num = this.projnum_radio.etl_sys_cd
+            this.ruleForm.Project_name = this.projnum_radio.etl_sys_name
             this.ruleForm.work_num = ''
             this.ruleForm.work_type = "",
                 this.ruleForm.work_name = "",
@@ -466,6 +484,18 @@ export default {
         getwork_numFun() {
             this.Worknumdialog = true
             //调接口显示内容
+            sendTask.getEtlSubSysData({
+                'etl_sys_cd': this.ruleForm.Project_num
+            }).then(res => {
+                this.WorknumData = res.data
+            })
+        },
+        // 任务编号提交
+        worknumSubmitFun() {
+            this.ruleForm.work_num = this.worknum_radio
+            this.Worknumdialog = false
+            this.ruleForm.work_type = ""
+            this.ruleForm.work_name = ""
         },
         // 调度频率改变时
         Dispatching_frequencyFun() {
@@ -553,10 +583,12 @@ export default {
     background-color: #E6A23C;
     color: white;
 }
-.ml_lable>>>.el-form-item__label{
-    width:26% !important;
+
+.ml_lable>>>.el-form-item__label {
+    width: 26% !important;
 }
-.ml_lable>>>.el-form-item__content{
-        margin-left: 26% !important;
+
+.ml_lable>>>.el-form-item__content {
+    margin-left: 26% !important;
 }
 </style>

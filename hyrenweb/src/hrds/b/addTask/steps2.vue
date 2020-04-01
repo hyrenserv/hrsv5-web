@@ -36,33 +36,35 @@
                             <template slot-scope="scope">
                                 <el-row>
                                     <el-col :span="19">
-                                        <el-select placeholder="卸数方式" v-model="scope.row.xsType" size="medium">
+                                        <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium">
                                             <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
                                         </el-select>
                                     </el-col>
                                     <el-col :span="3">
-                                        <el-button type="text" v-if="scope.row.xsType=='增量'" @click="XSTypeFun(scope.row)">设置</el-button>
+                                        <el-button type="text" v-if="scope.row.unload_type=='增量'" @click="XSTypeFun(scope.row)">设置</el-button>
+                                        <el-button type="text" v-else disabled>设置</el-button>
                                     </el-col>
                                 </el-row>
                             </template>
                         </el-table-column>
                         <el-table-column prop="is_parallel" label=" 计算MD5" align="center">
                             <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.md5" :checked="scope.row.md5"></el-checkbox>
+                                <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
 
                             <template slot-scope="scope">
-                                <el-checkbox v-if="scope.row.xsType=='增量'" disabled v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
-                                <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
+                                <el-checkbox v-if="scope.row.unload_type=='全量'" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
+                                <el-checkbox v-else disabled></el-checkbox>
                             </template>
                         </el-table-column>
 
                         <el-table-column prop="sqlFiltering" label="SQL过滤" align="center">
 
                             <template slot-scope="scope">
-                                <el-button size="mini" @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
+                                <el-button size="mini" v-if="scope.row.unload_type=='全量'" @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
+                                <el-button size="mini" v-else disabled type="success">定义过滤</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column prop="selectCol" label="选择列" align="center">
@@ -71,129 +73,13 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"></el-pagination>
+                    <el-pagination @size-change="sig1_handleSizeChange" @current-change="sig1_handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"></el-pagination>
                 </div>
-
-                <!-- 测试弹框 -->
-                <el-dialog title="测试sql" :visible.sync="testDialogVisible" width="30%">
-                    <div slot="title">
-                        <span class="dialogtitle el-icon-caret-right">测试sql</span>
-                    </div>
-                    <div class="testLinnk">
-                        <span>{{testLinkReturn}}</span>
-                    </div>
-                </el-dialog>
-                <!-- 定义过滤弹层 -->
-                <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%" @close="SqlfiltCloseFun()">
-                    <div slot="title">
-                        <span class="dialogtitle el-icon-caret-right">自定义SQL过滤设置</span>
-                        <el-tooltip class="dialogtoptxt" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
-                            <i class="fa fa-question-circle" aria-hidden="true"></i>
-                        </el-tooltip>
-                    </div>
-                    <span class="alltabletitle">sql说明：#{tx_date}-当前跑批日期；#{tx_date_next}-后一跑批日期；#{tx_date_pre}-后一跑批日期；#{自定义列名}-自定义列名;</span>
-                    <el-form ref="addClassTask">
-                        <el-row type="flex">
-                            <el-col :span="10">
-                                <el-form-item label=" 表名: " prop="table_name" class="bordernone">
-                                    <span>{{sqlFiltSetData_tablename}}</span>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="8">
-                                <el-form-item label=" 变量名: " prop="Variable_name">
-                                    <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
-                                        <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row type="flex" justify="center">
-                            <el-col :span="24">
-                                <el-form-item prop="table_des">
-                                    <el-input v-model="sqlFiltSetData_SQL" type="textarea"></el-input>
-                                </el-form-item>
-
-                            </el-col>
-                        </el-row>
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="dialogTableSqlFilt = false;SqlfiltCloseFun()" type="danger" size="mini">取 消</el-button>
-                        <el-button type="primary" @click="dialogTableSqlFilt = false;SqlfiltSubmitFun()" size="mini">确 定</el-button>
-                    </div>
-                </el-dialog>
-                <!-- 选择列弹层 -->
-                <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()">
-                    <div slot="title" class="header-title">
-                        <span class="dialogtitle el-icon-caret-right">选择列</span>
-                        <span class="dialogtoptxt">
-                            表名:
-                            <p class="dialogtopname">{{coltable_name}}</p>
-                        </span>
-                    </div>
-                    <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
-
-                        <el-table-column label="选择列" align="center">
-
-                            <template slot="header" slot-scope="scope">
-                                <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
-                                <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn"></el-checkbox>&nbsp;选择列
-                            </template>
-                            <template slot-scope="scope">
-                                <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="disShow==false" disabled></el-checkbox>
-                                <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else @change="every_SelectColumnfun(scope.row.is_get,SelectColumnData)"></el-checkbox>
-                                <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column label="主键定义" align="center">
-
-                            <template slot="header" slot-scope="scope">
-                                <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
-                                <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn"></el-checkbox> 主键定义
-                            </template>
-                            <template slot-scope="scope">
-                                <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==false" disabled></el-checkbox>
-                                <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData)"></el-checkbox>
-                                <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
-                            </template>
-                        </el-table-column>
-                        <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
-
-                        <el-table-column property="column_type" label="字段类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column property="column_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
-
-                            <template slot-scope="scope">
-                                <el-input v-model="scope.row.column_ch_name" placeholder="中文名" size="medium"></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="操作" width="160px" align="center">
-                            <template slot-scope="scope">
-                                <el-button size="mini" v-if="disShow==false" disabled>
-                                    <i class="el-icon-arrow-up"></i>
-                                </el-button>
-                                <el-button size="mini" v-else :disabled="scope.$index===0" @click="moveUp(scope.$index,scope.row,SelectColumnData)">
-                                    <i class="el-icon-arrow-up"></i>
-                                </el-button>
-                                <el-button size="mini" v-if="disShow==false" disabled>
-                                    <i class="el-icon-arrow-down"></i>
-                                </el-button>
-                                <el-button size="mini" v-else :disabled="scope.$index===(SelectColumnData.length-1)" @click="moveDown(scope.$index,scope.row,SelectColumnData)">
-                                    <i class="el-icon-arrow-down"></i>
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="dialogSelectColumn = false;SelectColumnCloseFun()" type="danger" size="mini">取 消</el-button>
-                        <el-button type="primary" @click="dialogSelectColumn = false;SelectColumnSubmitFun()" size="mini">确 定</el-button>
-                    </div>
-                </el-dialog>
-
             </div>
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
-            <span class="alltabletitle">sql说明：#{tx_date}-当前跑批日期；#{tx_date_next}-后一跑批日期；#{tx_date_pre}-后一跑批日期；#{自定义列名}-自定义列名;</span>
+            <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
                 <el-table :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
@@ -219,194 +105,378 @@
                         <template slot-scope="scope">
                             <el-row>
                                 <el-col :span="19">
-                                    <el-select placeholder="卸数方式" v-model="scope.row.xsType" size="medium">
+                                    <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium">
                                         <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
                                     </el-select>
                                 </el-col>
                                 <el-col :span="3">
-                                    <el-button type="text" v-if="scope.row.xsType=='增量'" @click="XSTypeFun(scope.row)">设置</el-button>
+                                    <el-button type="text" v-if="scope.row.unload_type=='全量'||scope.row.unload_type=='增量'" @click="XSTypeFun2(scope.row)">设置</el-button>
+                                    <el-button type="text" v-else disabled>设置</el-button>
                                 </el-col>
                             </el-row>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="is_parallel" label=" 计算MD5" align="center">
+                    <el-table-column prop="is_parallel" label=" 计算MD5" align="center" width="100">
                         <template slot-scope="scope">
-                            <el-checkbox v-model="scope.row.md5" :checked="scope.row.md5"></el-checkbox>
+                            <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5"></el-checkbox>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
-
+                    <el-table-column prop="is_parallel" label="是否并行抽取" align="center" width="120">
                         <template slot-scope="scope">
-                            <el-checkbox v-if="scope.row.xsType=='增量'" disabled v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
-                            <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
+                            <el-checkbox v-if="scope.row.unload_type=='全量'" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
+                            <el-checkbox v-else disabled></el-checkbox>
                         </template>
                     </el-table-column>
-                    <el-table-column property="sql" label="查询SQL语句" align="center" style="line-height: 30px;" class="textlinght">
+                    <el-table-column label="操作" align="center" width="70px">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'sqlExtractData.'+scope.$index+'.sql'" :rules="rule.default" class="textclass">
-                                <el-input v-model="scope.row.sql" v-if="scope.row.xsType=='增量'" disabled type="textarea" placeholder="查询SQL语句" style="line-height: 14px;" size="medium"></el-input>
-                                <el-input v-model="scope.row.sql" v-else type="textarea" placeholder="查询SQL语句" style="line-height: 14px;" size="medium"></el-input>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" width="150px" align="center">
-                        <template slot-scope="scope">
-                            <el-row>
-                                <el-col :span="24" class="delbtn">
-
-                                    <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
-
-                                </el-col>
-                            </el-row>
+                            <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </el-form>
             <el-pagination @size-change="sqlex_handleSizeChange" @current-change="sqlex_handleCurrentChange" :current-page.sync="sqlexcurrentPage" :page-size="sqlexpagesize" layout="total, prev, pager, next" :total="ruleForm.sqlExtractData.length" class="locationcenter"></el-pagination>
-            <!-- <div class="locationright"> -->
-            <!-- <el-button size="medium" type="danger">取 消</el-button> -->
-            <!-- <el-button size="mini" type="danger" @click="sqlExtractDataSubmitFun('ruleForm')">保存</el-button> -->
-            <!-- </div> -->
         </el-tab-pane>
-        <!-- 增量弹层 -->
-        <el-dialog title :visible.sync="dialog_xsadd" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
-            <div slot="title">
-                <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
-            </div>
-            <span class="alltabletitle">sql说明：#{tx_date}-当前跑批日期；#{tx_date_next}-后一跑批日期；#{tx_date_pre}-后一跑批日期；#{自定义列名}-自定义列名;</span>
-
-            <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-                <el-form-item label="删除SQL" prop="del_sql" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="xstypeadd.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="新增SQL" prop="add_sql" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="xstypeadd.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="更新SQL" prop="updata_sql" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="xstypeadd.updata_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="danger" size="mini" @click="dialog_xsadd=false">取 消</el-button>
-                <el-button type="primary" size="mini" @click="dialog_xsadd=false">确 定</el-button>
-            </div>
-        </el-dialog>
-        <!-- 是否并行抽取弹层 -->
-        <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
-            <div slot="title">
-                <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
-                <span class="dialogtoptxt">
-                    表名:
-                    <p class="topcolumename">{{EXtable_name}}</p>
-                </span>
-            </div>
-            <span class="alltabletitle">sql说明：#{tx_date}-当前跑批日期；#{tx_date_next}-后一跑批日期；#{tx_date_pre}-后一跑批日期；#{自定义列名}-自定义列名;</span>
-            <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
-                <el-row type="flex" style="text-align:right;padding-right:10px;">
-                    <el-col :span="24">
-                        <el-button type="warning" size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
-                    </el-col>
-                </el-row>
-                <el-form-item label="自定义SQL" prop="EXtable_sql" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-radio-group v-model="ruleForm_ParallelEx.issql">
-                                <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                            </el-radio-group>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="分页抽取SQL" prop="EXtable_sql" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='1'">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.EXtable_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                                <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="testParallelExtractionCloseFun()" type="danger" size="mini">取 消</el-button>
-                <el-button @click="testParallelExtractionSubmitFun('ruleForm_ParallelEx')" type="primary" size="mini">确 定</el-button>
-            </div>
-        </el-dialog>
-        <!-- 自定义是否并行抽取弹层 -->
-        <el-dialog title :visible.sync="dialogTableVisible_zdy" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
-            <div slot="title">
-                <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
-            </div>
-            <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
-                <el-row type="flex" style="text-align:right;padding-right:10px;">
-                    <el-col :span="24">
-                        <el-button type="warning" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
-                    </el-col>
-                </el-row>
-                <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                                <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default">
-                    <el-row type="flex" justify="center">
-                        <el-col>
-                            <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="danger" size="mini" @click="dialogTableVisible_zdy=false">取 消</el-button>
-                <el-button type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
-            </div>
-        </el-dialog>
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+    <!-- 测试弹框 -->
+    <el-dialog title="测试sql" :visible.sync="testDialogVisible" width="30%">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">测试sql</span>
+        </div>
+        <div class="testLinnk">
+            <span>{{testLinkReturn}}</span>
+        </div>
+    </el-dialog>
+    <!-- 定义过滤弹层 -->
+    <el-dialog title="自定义SQL过滤设置" :visible.sync="dialogTableSqlFilt" width="50%" @close="SqlfiltCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">自定义SQL过滤设置</span>
+            <el-tooltip class="dialogtoptxt" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
+                <i class="fa fa-question-circle" aria-hidden="true"></i>
+            </el-tooltip>
+        </div>
+        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <el-form ref="addClassTask">
+            <el-row type="flex">
+                <el-col :span="10">
+                    <el-form-item label=" 表名: " prop="table_name" class="bordernone">
+                        <span>{{sqlFiltSetData_tablename}}</span>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label=" 变量名: " prop="Variable_name">
+                        <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
+                            <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-col :span="24">
+                    <el-form-item prop="table_des">
+                        <el-input v-model="sqlFiltSetData_SQL" type="textarea"></el-input>
+                    </el-form-item>
+
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogTableSqlFilt = false;SqlfiltCloseFun()" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="dialogTableSqlFilt = false;SqlfiltSubmitFun()" size="mini">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 选择列弹层 -->
+    <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()">
+        <div slot="title" class="header-title">
+            <span class="dialogtitle el-icon-caret-right">选择列</span>
+            <span class="dialogtoptxt">
+                表名:
+                <p class="dialogtopname">{{coltable_name}}</p>
+            </span>
+        </div>
+        <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+
+            <el-table-column label="选择列" align="center">
+
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn"></el-checkbox>&nbsp;选择列
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else @change="every_SelectColumnfun(scope.row.is_get,SelectColumnData)"></el-checkbox>
+                    <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+
+            <el-table-column label="主键定义" align="center">
+
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn"></el-checkbox> 主键定义
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData)"></el-checkbox>
+                    <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+            <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
+
+            <el-table-column property="column_type" label="字段类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="column_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
+
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.column_ch_name" placeholder="中文名" size="medium"></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="160px" align="center">
+                <template slot-scope="scope">
+                    <el-button size="mini" v-if="disShow==false" disabled>
+                        <i class="el-icon-arrow-up"></i>
+                    </el-button>
+                    <el-button size="mini" v-else :disabled="scope.$index===0" @click="moveUp(scope.$index,scope.row,SelectColumnData)">
+                        <i class="el-icon-arrow-up"></i>
+                    </el-button>
+                    <el-button size="mini" v-if="disShow==false" disabled>
+                        <i class="el-icon-arrow-down"></i>
+                    </el-button>
+                    <el-button size="mini" v-else :disabled="scope.$index===(SelectColumnData.length-1)" @click="moveDown(scope.$index,scope.row,SelectColumnData)">
+                        <i class="el-icon-arrow-down"></i>
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogSelectColumn = false;SelectColumnCloseFun()" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="dialogSelectColumn = false;SelectColumnSubmitFun()" size="mini">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 第一个页面增量弹层 -->
+    <el-dialog title :visible.sync="dialog_xsadd" width="50%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
+        </div>
+        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
+            <el-form-item label="删除SQL" prop="del_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="新增SQL" prop="add_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="更新SQL" prop="updata_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd.updata_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialog_xsadd=false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="dialog_xsadd=false;xsaddSubmitFun()">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 第二个页面增量弹层 -->
+    <el-dialog title :visible.sync="dialog_xsadd2" width="50%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
+        </div>
+        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
+            <el-form-item label="删除SQL" prop="del_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="新增SQL" prop="add_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="更新SQL" prop="updata_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd.updata_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialog_xsadd2=false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="dialog_xsadd2=false;xsaddSubmittwoFun()">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!--卸数方式-全量  -->
+    <el-dialog title :visible.sync="dialog_xsall" width="50%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">卸数方式-全量</span>
+        </div>
+        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
+            <el-form-item label="SQL" prop="del_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="xstypeadd2.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialog_xsall=false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="dialog_xsall=false;xsallSubmitFun()">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 是否并行抽取弹层 -->
+    <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+            <span class="dialogtoptxt">
+                表名:
+                <p class="topcolumename">{{EXtable_name}}</p>
+            </span>
+        </div>
+        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
+            <el-row type="flex" style="text-align:right;padding-right:10px;">
+                <el-col :span="24">
+                    <el-button type="warning" v-if='ruleForm_ParallelEx.issql=="1"' size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                </el-col>
+            </el-row>
+            <el-form-item label="自定义SQL" prop="EXtable_sql" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-radio-group v-model="ruleForm_ParallelEx.issql">
+                            <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                        </el-radio-group>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="分页抽取SQL" prop="EXtable_sql" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='1'">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.EXtable_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
+                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="testParallelExtractionCloseFun()" type="danger" size="mini">取 消</el-button>
+            <el-button @click="testParallelExtractionSubmitFun('ruleForm_ParallelEx')" type="primary" size="mini">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 自定义是否并行抽取弹层 -->
+    <el-dialog title :visible.sync="dialogTableVisible_zdy" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+        </div>
+        <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
+            <el-row type="flex" style="text-align:right;padding-right:10px;">
+                <el-col :span="24">
+                    <el-button type="warning" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                </el-col>
+            </el-row>
+            <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
+                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialogTableVisible_zdy=false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!--定义分页抽取sql  -->
+    <el-dialog title :visible.sync="dialogdyfysql" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+        </div>
+        <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
+            <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
+                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+            <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default">
+                <el-row type="flex" justify="center">
+                    <el-col>
+                        <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialogdyfysql=false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="checkedis_zdyparallelSubmitFun()">确 定</el-button>
+        </div>
+    </el-dialog>
     <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
@@ -436,12 +506,13 @@ export default {
             Allis_SelectColumn: false,
             Alliskey_SelectColumn: false,
             dialogTableVisible_zdy: false,
+            dialogdyfysql: false,
             activeName: "first",
             data: [],
             currentPage: 1,
             pagesize: 100,
             sqlexcurrentPage: 1,
-            sqlexpagesize: 10,
+            sqlexpagesize: 100,
             search: "",
             input: "",
             input2: "",
@@ -460,12 +531,18 @@ export default {
             },
 
             ruleForm_ParallelEx: {
+                issql: '',
                 EXtable_sql: "",
                 db_allnum: "",
                 everDay_addnum: "",
                 pageExnum: 5
             },
             xstypeadd: {
+                del_sql: '',
+                add_sql: '',
+                updata_sql: ''
+            },
+            xstypeadd2: {
                 del_sql: '',
                 add_sql: '',
                 updata_sql: ''
@@ -484,9 +561,9 @@ export default {
             tableInfoString: [],
             collTbConfParamString: [],
             tablename: "",
-            SelectColumn: [], //选择列点击过保存的值
-            sqlFiltArr: [], //sql过滤点击过保存的值
-            ParallelExtractionArr: [], //并行抽取数据
+            SelectColumn: [], //第一个页面选择列点击过保存的值
+            sqlFiltArr: [], //第一个页面sql过滤点击过保存的值
+            ParallelExtractionArr: [], //第一个页面并行抽取数据
             ParallelExtractionLink: false,
             is_parallel: false,
             tableInfoArray: [],
@@ -495,7 +572,7 @@ export default {
             activeSec: false,
             edit: false,
             disShow: false,
-            sqlSubmit: true,
+            sqlSubmit: false,
             sqlfiltVar: [{
                     value: '当前跑批日',
                     code: '1'
@@ -529,7 +606,13 @@ export default {
             ],
             handleactive: false,
             dialog_xsadd: false,
+            dialog_xsall: false,
+            dialog_xsadd2: false,
             isLoading: false,
+            Xstable_name: '', //卸数方式存放表名
+            xsTypeArr: [], //第一个页面卸数增量是存放数据
+            xsTypeArr2: [], //第二个页面卸数增量是存放数据
+            ParallelExtractionArr2: [], //第二个页面并行抽取保存数据
         };
     },
     created() {
@@ -549,6 +632,7 @@ export default {
         let params = {};
         params["colSetId"] = this.dbid;
         addTaskAllFun.getAllTableInfo(params).then(res => {
+            console.log(res.data)
             let data = res.data
             for (let i = 0; i < data.length; i++) {
                 if (data[i].table_id) {
@@ -560,6 +644,11 @@ export default {
                     data[i].is_parallel = true;
                 } else {
                     data[i].is_parallel = false;
+                }
+                if (data[i].is_md5 != "0") {
+                    data[i].is_md5 = true;
+                } else {
+                    data[i].is_md5 = false;
                 }
             }
             this.allDataList = data;
@@ -605,6 +694,17 @@ export default {
                         } else {
                             data[i].is_parallel = false;
                         }
+                        if (data[i].is_md5 != "0") {
+                            data[i].is_md5 = true;
+                        } else {
+                            data[i].is_md5 = false;
+                        }
+                        if (data[i].unload_type != "1") {
+                            data[i].unload_type = '全量';
+                        } else if ((data[i].unload_type != "2")) {
+                            data[i].unload_type = '增量';
+                        }
+
                     }
                     this.tableData = data;
                     this.callTable = JSON.parse(JSON.stringify(data))
@@ -764,50 +864,33 @@ export default {
             this.isLoading = true
             this.saveTableConfFun();
             let arrsql = []
-            if (this.handleactive == true) {
+            if (this.handleactive == true) {//切换过第二个页面
                 this.$refs['ruleForm'].validate(valid => {
                     if (valid) {
                         this.tableInfoArray = this.ruleForm.sqlExtractData;
                         this.sqlSubmit = true
                         arrsql = this.tableInfoArray
-                        let params0 = {};
-                        params0["colSetId"] = this.dbid;
-                        addTaskAllFun.getAllSQLs(params0).then(res => {
-                            for (let i = 0; i < arrsql.length; i++) {
-                                for (let j = 0; j < res.data.length; j++) {
-                                    if (arrsql[i].table_id == res.data[j].table_id) {
-                                        if (arrsql[i].table_ch_name == res.data[j].table_ch_name && arrsql[i].sql == res.data[j].sql && arrsql[i].table_name == res.data[j].table_name) {
-                                            arrsql.splice(i, 1)
-                                        }
-                                    }
-                                }
-                            }
-                            if (arrsql.length > 0) {
-                                this.sqlFun(arrsql)
-                            } else {
-                                this.activeSec = true;
-                            }
-                        });
+                         this.sqlFun(arrsql)
                     } else {
                         this.isLoading = false
                     }
                 });
             } else {
-                this.activeSec = true;
-                /*   let params0 = {};
+                  let params0 = {};
                   params0["colSetId"] = this.dbid;
                   addTaskAllFun.getAllSQLs(params0).then(res => {
                       arrsql = res.data ? res.data : [];
                       this.sqlFun(arrsql)
-                  }); */
+                  });
             }
 
         },
         sqlFun(arrsql) {
+                       console.log(params1,xsTypeArr2,ParallelExtractionArr2)
+
             let params1 = {};
             params1["tableInfoArray"] = arrsql.length > 0 ? JSON.stringify(arrsql) : '';
             params1["colSetId"] = parseInt(this.dbid);
-            console.log(params1)
             addTaskAllFun.saveAllSQL(params1).then(res => {
                 if (res.code == 200) {
                     this.activeSec = true;
@@ -1125,7 +1208,7 @@ export default {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
                     sql: this.sqlFiltSetData_SQL
-                    // sqlFiltvar:this.sqlFiltSetData_var 接收变量名
+                    //    sqlFiltvar:this.sqlFiltSetData_var //接收变量名
                 });
             } else {
                 this.sqlFiltArr.push({
@@ -1139,15 +1222,43 @@ export default {
         SqlfiltCloseFun() {
             this.tablename = "";
         },
-        // 自定义是否抽取sql
-        checkedis_zdyparallelFun() {
-            this.dialogTableVisible_zdy = true
+        //第二个页面 自定义是否抽取sql
+        checkedis_zdyparallelFun(row) {
+            this.EXtable_name = row.table_name
+            this.dialogdyfysql = true
         },
+        checkedis_zdyparallelSubmitFun() {
+            if (this.ParallelExtractionArr2.length != 0) {
+                for (let i = 0; i < this.ParallelExtractionArr2.length; i++) {
+                    if (this.ParallelExtractionArr2[i].tablename == this.EXtable_name) {
+                        this.ParallelExtractionArr2.splice(i, 1);
+                        i--;
+                    }
+                }
+                this.ParallelExtractionArr2.push({
+                    tablename: this.EXtable_name,
+                    table_count: this.ruleForm_ParallelEx.db_allnum,
+                    pageparallels: this.ruleForm_ParallelEx.pageExnum,
+                    dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                });
+            } else {
+                this.ParallelExtractionArr2.push({
+                    tablename: this.EXtable_name,
+                    table_count: this.ruleForm_ParallelEx.db_allnum,
+                    pageparallels: this.ruleForm_ParallelEx.pageExnum,
+                    dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                });
+            }
+
+            this.dialogdyfysql = false;
+        },
+
         // 是否抽取sql弹框
         checkedis_parallelFun(row) {
             this.dialogTableVisible = true;
             this.EXtable_name = row.table_name;
             this.is_parallel = row.is_parallel;
+            this.ruleForm_ParallelEx.issql = ''
             this.ruleForm_ParallelEx.EXtable_sql = "";
             this.ruleForm_ParallelEx.pageExnum = "";
             this.ruleForm_ParallelEx.db_allnum = "";
@@ -1162,6 +1273,9 @@ export default {
                     arrid.length = 0;
                     for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
                         if (this.ParallelExtractionArr[i].tablename == this.EXtable_name) {
+                            this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[
+                                i
+                            ].is_user_defined;
                             this.ruleForm_ParallelEx.EXtable_sql = this.ParallelExtractionArr[
                                 i
                             ].page_sql;
@@ -1194,7 +1308,9 @@ export default {
             let params = {};
             params["tableId"] = id;
             addTaskAllFun.getPageSQL(params).then(res => {
+                console.log(res.data)
                 if (res.data) {
+                    this.ruleForm_ParallelEx.issql = res.data[0].is_user_defined
                     this.ruleForm_ParallelEx.EXtable_sql = res.data[0].page_sql;
                     this.ruleForm_ParallelEx.pageExnum = res.data[0].pageparallels;
                     this.ruleForm_ParallelEx.db_allnum = res.data[0].table_count;
@@ -1241,14 +1357,98 @@ export default {
             params["tableName"] = this.EXtable_name;
             params["colSetId"] = parseInt(this.dbid);
             addTaskAllFun.getTableDataCount(params).then(res => {
+                  var aData = new Date();
+                  let date = {
+                        year: nowDate.getFullYear(),
+                        month: nowDate.getMonth() + 1,
+                        date: nowDate.getDate(),
+                    }
                 this.ruleForm_ParallelEx.db_allnum = res.data ? res.data : "";
+                this.ruleForm_ParallelEx.newtime=date.year + 0 + date.month  + 0 + date.date;
             });
         },
         // 是否抽取sql弹框确定提交
         testParallelExtractionSubmitFun(formName) {
+            let that = this
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    this.testParallelExtractionFun("submit");
+                    if (that.ruleForm_ParallelEx.issql == '1') {
+                        let params = {};
+                        params["colSetId"] = this.dbid;
+                        params["pageSql"] = this.ruleForm_ParallelEx.EXtable_sql;
+                        addTaskAllFun.testParallelExtraction(params).then(res => {
+                            if (res.success == true) {
+                                if (this.ParallelExtractionArr.length != 0) {
+                                    for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
+                                        if (this.ParallelExtractionArr[i].tablename == this.EXtable_name) {
+                                            this.ParallelExtractionArr.splice(i, 1);
+                                            i--;
+                                        }
+                                    }
+                                    this.ParallelExtractionArr.push({
+                                        tablename: this.EXtable_name,
+                                        is_user_defined: this.ruleForm_ParallelEx.issql,
+                                        page_sql: this.ruleForm_ParallelEx.EXtable_sql,
+                                    });
+                                } else {
+                                    this.ParallelExtractionArr.push({
+                                        tablename: this.EXtable_name,
+                                        is_user_defined: this.ruleForm_ParallelEx.issql,
+                                        page_sql: this.ruleForm_ParallelEx.EXtable_sql,
+                                    });
+                                }
+                                for (let j = 0; j < this.tableData.length; j++) {
+                                    if (this.tableData[j].table_name == this.EXtable_name) {
+                                        this.tableData[j].is_parallel = true;
+                                        for (let m = 0; m < this.allDataList.length; m++) {
+                                            if (this.allDataList[m].table_name == this.EXtable_name) {
+                                                this.allDataList[m].is_parallel = true;
+                                            }
+                                        }
+                                        this.EXtable_name = "";
+                                    }
+                                }
+                                this.dialogTableVisible = false;
+                            }
+                        });
+                    } else if (that.ruleForm_ParallelEx.issql == '2') {
+                        if (this.ParallelExtractionArr.length != 0) {
+                            for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
+                                if (this.ParallelExtractionArr[i].tablename == this.EXtable_name) {
+                                    this.ParallelExtractionArr.splice(i, 1);
+                                    i--;
+                                }
+                            }
+                            this.ParallelExtractionArr.push({
+                                tablename: this.EXtable_name,
+                                is_user_defined: this.ruleForm_ParallelEx.issql,
+                                table_count: this.ruleForm_ParallelEx.db_allnum,
+                                pageparallels: this.ruleForm_ParallelEx.pageExnum,
+                                dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                            });
+                        } else {
+                            this.ParallelExtractionArr.push({
+                                tablename: this.EXtable_name,
+                                is_user_defined: this.ruleForm_ParallelEx.issql,
+                                table_count: this.ruleForm_ParallelEx.db_allnum,
+                                pageparallels: this.ruleForm_ParallelEx.pageExnum,
+                                dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                            });
+                        }
+                        for (let j = 0; j < this.tableData.length; j++) {
+                            if (this.tableData[j].table_name == this.EXtable_name) {
+                                this.tableData[j].is_parallel = true;
+                                for (let m = 0; m < this.allDataList.length; m++) {
+                                    if (this.allDataList[m].table_name == this.EXtable_name) {
+                                        this.allDataList[m].is_parallel = true;
+                                    }
+                                }
+                                this.EXtable_name = "";
+                            }
+                        }
+                        this.dialogTableVisible = false;
+                    }
+                    console.log(this.ParallelExtractionArr)
                 }
             });
         },
@@ -1299,29 +1499,29 @@ export default {
         },
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
-            for (let j = 0; j < this.tableData.length; j++) {
-                if (this.tableData[j].table_name == this.EXtable_name) {
-                    if (this.is_parallel == false) {
-                        this.tableData[j].is_parallel = true;
-                        for (let i = 0; i < this.allDataList.length; i++) {
-                            if (this.allDataList[i].table_name == this.EXtable_name) {
-                                this.allDataList[i].is_parallel = true;
-                            }
-                        }
-                        this.dialogTableVisible = false;
-                    } else {
-                        this.tableData[j].is_parallel = false;
-                        for (let i = 0; i < this.allDataList.length; i++) {
-                            if (this.allDataList[i].table_name == this.EXtable_name) {
-                                this.allDataList[i].is_parallel = false;
-                            }
-                        }
-                        this.dialogTableVisible = false;
-                    }
+            /*  for (let j = 0; j < this.tableData.length; j++) {
+                 if (this.tableData[j].table_name == this.EXtable_name) {
+                     if (this.is_parallel == false) {
+                         this.tableData[j].is_parallel = true;
+                         for (let i = 0; i < this.allDataList.length; i++) {
+                             if (this.allDataList[i].table_name == this.EXtable_name) {
+                                 this.allDataList[i].is_parallel = true;
+                             }
+                         }
+                         this.dialogTableVisible = false;
+                     } else {
+                         this.tableData[j].is_parallel = false;
+                         for (let i = 0; i < this.allDataList.length; i++) {
+                             if (this.allDataList[i].table_name == this.EXtable_name) {
+                                 this.allDataList[i].is_parallel = false;
+                             }
+                         }
+                         this.dialogTableVisible = false;
+                     }
 
-                    this.EXtable_name = "";
-                }
-            }
+                     this.EXtable_name = "";
+                 }
+             } */
         },
         // 选择列
         selectCol(value, row) {
@@ -1418,7 +1618,6 @@ export default {
         },
         // 选择列弹框确认
         SelectColumnSubmitFun() {
-            let arrdata = this.SelectColumnData;
             if (this.SelectColumn.length != 0) {
                 for (let i = 0; i < this.SelectColumn.length; i++) {
                     if (this.SelectColumn[i].tablename == this.tablename) {
@@ -1428,7 +1627,7 @@ export default {
                 }
                 this.SelectColumn.push({
                     tablename: this.tablename,
-                    data: arrdata
+                    data: this.SelectColumnData
                 });
             } else {
                 this.SelectColumn.push({
@@ -1436,6 +1635,7 @@ export default {
                     data: this.SelectColumnData
                 });
             }
+            console.log(this.SelectColumn)
             this.tablename = "";
         },
         // 选择列弹框关闭
@@ -1462,10 +1662,10 @@ export default {
                 }
             });
         },
-        sig_handleSizeChange(size) {
+        sig1_handleSizeChange(size) {
             this.pagesize = size;
         },
-        sig_handleCurrentChange(currentPage) {
+        sig1_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
         },
         sqlex_handleSizeChange(size) {
@@ -1507,7 +1707,9 @@ export default {
             tableData.push({
                 table_name: "",
                 table_ch_name: "",
-                sql: ""
+                unload_type: "",
+                is_md5: false,
+                is_parallel: ""
             });
         },
         // 修改表名
@@ -1525,10 +1727,11 @@ export default {
         },
         // 使用SQL抽取数据
         handleClick(tab) {
-            this.sqlExtractDataSubmitFun('ruleForm')
-            if (tab.name == "second") {
+            if (tab.name == "first") {
+                this.sqlExtractDataSubmitFun('ruleForm')
+            } else if (tab.name == "second") {
                 this.handleactive = true
-                if (this.tableInfoArray.length > 0) {
+                if (this.sqlSubmit == true) {
                     this.ruleForm.sqlExtractData = this.tableInfoArray;
                 } else {
                     let params = {};
@@ -1548,15 +1751,114 @@ export default {
                 }
             });
         },
+        //第一个页面打开卸数方式设置
         XSTypeFun(row) {
             console.log(row)
-            row.md5 = false
-            if (row.xsType == '全量') {
-                // row.md5dis = false
+            this.Xstable_name = row.table_name
+            if (row.unload_type == '全量') {
+                this.dialog_xsall = true
             } else {
-                // row.md5dis = true
                 this.dialog_xsadd = true
             }
+        },
+        //第二个页面打开卸数方式设置
+        XSTypeFun2(row) {
+            console.log(row)
+            this.Xstable_name = row.table_name
+            if (row.unload_type == '全量') {
+                this.dialog_xsall = true
+            } else {
+                this.dialog_xsadd2 = true
+            }
+        },
+        //第一个页面面卸数方式增量的设置提交
+        xsaddSubmitFun() {
+            if (this.xsTypeArr.length > 0) {
+                let arr = []
+                this.xsTypeArr.forEach((item) => {
+                    arr.push(item.table_name)
+                })
+                if (arr.indexOf(this.Xstable_name) != -1) {
+                    this.xsTypeArr.forEach((item) => {
+                        if (item.table_name == this.Xstable_name) {
+                            item.sql = this.xstypeadd
+                        }
+                    })
+                    arr = []
+                } else {
+                    this.xsTypeArr.push({
+                        table_name: this.Xstable_name,
+                        sql: this.xstypeadd
+                    })
+                    arr = []
+                }
+            } else {
+                this.xsTypeArr.push({
+                    table_name: this.Xstable_name,
+                    sql: this.xstypeadd
+                })
+
+            }
+            console.log(this.xsTypeArr)
+        },
+        //第一个页面面卸数方式增量的设置提交
+        xsaddSubmittwoFun() {
+            if (this.xsTypeArr2.length > 0) {
+                let arr = []
+                this.xsTypeArr2.forEach((item) => {
+                    arr.push(item.table_name)
+                })
+                if (arr.indexOf(this.Xstable_name) != -1) {
+                    this.xsTypeArr2.forEach((item) => {
+                        if (item.table_name == this.Xstable_name) {
+                            item.sql = this.xstypeadd2
+                        }
+                    })
+                    arr = []
+                } else {
+                    this.xsTypeArr2.push({
+                        table_name: this.Xstable_name,
+                        sql: this.xstypeadd2
+                    })
+                    arr = []
+                }
+            } else {
+                this.xsTypeArr2.push({
+                    table_name: this.Xstable_name,
+                    sql: this.xstypeadd2
+                })
+
+            }
+            console.log(this.xsTypeArr2)
+        },
+        xsallSubmitFun() {
+            if (this.xsTypeArr2.length > 0) {
+                let arr = []
+                this.xsTypeArr2.forEach((item) => {
+                    arr.push(item.table_name)
+                })
+                if (arr.indexOf(this.Xstable_name) != -1) {
+                    this.xsTypeArr2.forEach((item) => {
+                        if (item.table_name == this.Xstable_name) {
+                            item.sql = this.xstypeadd2
+                        }
+                    })
+                    arr = []
+                } else {
+                    this.xsTypeArr2.push({
+                        table_name: this.Xstable_name,
+                        sql: this.xstypeadd2
+                    })
+                    arr = []
+                }
+            } else {
+                this.xsTypeArr2.push({
+                    table_name: this.Xstable_name,
+                    sql: this.xstypeadd2
+                })
+
+            }
+            console.log(this.xsTypeArr2)
         }
     }
 };

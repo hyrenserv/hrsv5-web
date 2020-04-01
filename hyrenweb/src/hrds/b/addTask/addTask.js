@@ -7,6 +7,12 @@ export function getDBConfInfo(data) {
         params:data
     })
 }
+//根据数据库采集任务ID进行查询并在页面上回显数据源配置信息
+export function addDBConfInfo() {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/addDBConfInfo'
+    })
+}
 //根据数据源ID获取分类信息
 export function getClassifyInfo(data) {
     return request({
@@ -518,7 +524,7 @@ export function sendDBCollctTaskById(data) {
 }
 
 
-
+// 6
 export function selectPath(data) {
    return request({
        url: '/B/agent/unstructuredfilecollect/selectPath',
@@ -532,3 +538,32 @@ export function searchEtlJob(data) {
         params: data
     })
 }
+
+//获取工程信息
+export function getEtlSysData() {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlSysData',
+    })
+}
+//根据工程编号获取任务
+export function getEtlSubSysData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlSubSysData',
+        params: data
+    })
+ }
+// 获取目录路径
+export function getAgentPath(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getAgentPath',
+        params: data
+    })
+ }
+//获取任务下的作业信息
+
+export function getPreviewJob(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getPreviewJob',
+        params: data
+    })
+ }

@@ -59,7 +59,7 @@
             </el-table-column>
             <el-table-column label=" 换行符" align="center">
                 <template slot-scope="scope">
-                    <el-form-item v-show="scope.row.fdc" :prop="'unloadingFileData.'+scope.$index+'.row_separator'" :rules="rule.selected">
+                    <el-form-item v-show="scope.row.fdc" :prop="'unloadingFileData.'+scope.$index+'.fdc_row_separator'" :rules="rule.selected">
                         <el-select placeholder="非定长换行符" v-model="scope.row.fdc_row_separator" style="margin-bottom: 8px" size="mini">
                             <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
                         </el-select>
@@ -142,7 +142,7 @@
             <el-form-item label="落地目录" prop="Extractformat">
                 <el-input v-model="separatorData.ml" placeholder="落地目录" size="medium" style="width: 240px;">
                     <template slot="prepend">
-                        <el-button size="mini">选择目录</el-button>
+                        <el-button size="mini" @click="seletFilePath('','all')">选择目录</el-button>
                     </template>
                 </el-input>
             </el-form-item>
@@ -422,89 +422,122 @@ export default {
             this.isLoading = true
             var a = this.ruleForm.unloadingFileData;
             console.log(this.ruleForm.unloadingFileData)
-            /*  this.$refs[formName].validate(valid => {
-                 if (valid) {
-                     let dataAll = a;
-                     for (var i = 0; i < dataAll.length; i++) {
-                         delete dataAll[i].table_ch_name;
-                         delete dataAll[i].table_name;
-                         dataAll[i].row_separator = dataAll[i].row_separator
-                             .split("(")[0]
-                             .split(" ")
-                             .join("");
-                         if (dataAll[i].data_extract_type == true) {
-                             for (var key in IsExtypeData1) {
-                                 if (IsExtypeData1[key].value == dataAll[i].dbfile_format) {
-                                     dataAll[i].dbfile_format = IsExtypeData1[key].code;
-                                 }
-                             }
-                             dataAll[i].data_extract_type = "1";
-                         } else {
-                             for (var key in IsExtypeData2) {
-                                 if (IsExtypeData2[key].value == dataAll[i].dbfile_format) {
-                                     dataAll[i].dbfile_format = IsExtypeData2[key].code;
-                                 }
-                                 dataAll[i].data_extract_type = "2";
-                             }
-                         }
-                     }
-                     if (dataAll.length > 0) {
-                         let params = {};
-                         params["colSetId"] = this.databaseId;
-                         params["extractionDefString"] = JSON.stringify(dataAll);
-                         addTaskAllFun.saveFileConf(params).then(res => {
-                             this.isLoading = false
-                             this.getInitInfo();
-                             let data = {};
-                             if (this.$route.query.edit == "yes") {
-                                 data = {
-                                     agent_id: this.aId,
-                                     id: this.dbid,
-                                     source_id: this.sourId,
-                                     source_name: this.$Base64.encode(this.sName),
-                                     edit: "yes"
-                                 };
-                             } else {
-                                 data = {
-                                     id: this.dbid,
-                                     source_id: this.sourId,
-                                     source_name: this.$Base64.encode(this.sName)
-                                 };
-                             }
-                             this.$router.push({
-                                 path: "/collection1_5",
-                                 query: data
-                             });
-                         });
-                     } else {
-                         let data = {};
-                         if (this.$route.query.edit == "yes") {
-                             data = {
-                                 agent_id: this.aId,
-                                 id: this.dbid,
-                                 source_id: this.sourId,
-                                 source_name: this.$Base64.encode(this.sName),
-                                 edit: "yes"
-                             };
-                         } else {
-                             data = {
-                                 id: this.dbid,
-                                 source_id: this.sourId,
-                                 source_name: this.$Base64.encode(this.sName)
-                             };
-                         }
-                         this.isLoading = false
-                         this.$router.push({
-                             path: "/collection1_5",
-                             query: data
-                         });
-                     }
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let dataAll = a,
+                        extractionDefString = [];
+                    if (dataAll.length > 0) {
+                        for (var i = 0; i < dataAll.length; i++) {
+                            for (let j = 0; j < dataAll[i].dbfile_format.length; j++) {
+                                if (dataAll[i][j] == '非定长') {
+                                    extractionDefString.push({
+                                        'table_id': dataAll[i].table_id,
+                                        'plane_url': dataAll[i].fdc_ml,
+                                        'row_separator': dataAll[i].fdc_row_separator,
+                                        'database_separatorr': dataAll[i].fdc_database_separatorr,
+                                        'database_code': dataAll[i].fdc_database_code,
+                                        'dbfile_format': dataAll[i].dbfile_format
+                                    })
+                                } else if (dataAll[i][j] == '定长') {
+                                    extractionDefString.push({
+                                        'table_id': dataAll[i].table_id,
+                                        'plane_url': dataAll[i].dc_ml,
+                                        'row_separator': dataAll[i].dc_row_separator,
+                                        'database_separatorr': dataAll[i].dc_database_separatorr,
+                                        'database_code': dataAll[i].dc_database_code,
+                                        'dbfile_format': dataAll[i].dbfile_format
+                                    })
+                                } else if (dataAll[i][j] == '"CSV"') {
+                                    extractionDefString.push({
+                                        'table_id': dataAll[i].table_id,
+                                        'plane_url': dataAll[i].csv_ml,
+                                        'row_separator': dataAll[i].csv_row_separator,
+                                        'database_separatorr': dataAll[i].csv_database_separatorr,
+                                        'database_code': dataAll[i].csv_database_code,
+                                        'dbfile_format': dataAll[i].dbfile_format
+                                    })
+                                } else if (dataAll[i][j] == 'ORC') {
+                                    extractionDefString.push({
+                                        'table_id': dataAll[i].table_id,
+                                        'plane_url': dataAll[i].orc_ml,
+                                        'database_code': dataAll[i].orc_database_code
+                                    })
 
-                 } else {
-                     return false;
-                     this.isLoading = false
-                 }
-             }); */
+                                } else if (dataAll[i][j] == 'SEQUENCEFILE') {
+                                    extractionDefString.push({
+                                        'table_id': dataAll[i].table_id,
+                                        'plane_url': dataAll[i].seq_ml,
+                                        'database_code': dataAll[i].seq_database_code
+                                    })
+
+                                } else if (dataAll[i][j] == 'PARQUET') {
+                                    extractionDefString.push({
+                                        'table_id': dataAll[i].table_id,
+                                        'plane_url': dataAll[i].par_ml,
+                                        'database_code': dataAll[i].par_database_code
+                                    })
+
+                                }
+                            }
+
+                        }
+                        let params = {};
+                        params["colSetId"] = this.databaseId;
+                        params["extractionDefString"] = JSON.stringify(extractionDefString);
+                        console.log(extractionDefString)
+                        addTaskAllFun.saveFileConf(params).then(res => {
+                            this.isLoading = false
+                            // this.getInitInfo();
+                            let data = {};
+                            if (this.$route.query.edit == "yes") {
+                                data = {
+                                    agent_id: this.aId,
+                                    id: this.dbid,
+                                    source_id: this.sourId,
+                                    source_name: this.$Base64.encode(this.sName),
+                                    edit: "yes"
+                                };
+                            } else {
+                                data = {
+                                    id: this.dbid,
+                                    source_id: this.sourId,
+                                    source_name: this.$Base64.encode(this.sName)
+                                };
+                            }
+                            this.$router.push({
+                                path: "/collection1_5",
+                                query: data
+                            });
+                        });
+                    } else {
+                        let data = {};
+                        if (this.$route.query.edit == "yes") {
+                            data = {
+                                agent_id: this.aId,
+                                id: this.dbid,
+                                source_id: this.sourId,
+                                source_name: this.$Base64.encode(this.sName),
+                                edit: "yes"
+                            };
+                        } else {
+                            data = {
+                                id: this.dbid,
+                                source_id: this.sourId,
+                                source_name: this.$Base64.encode(this.sName)
+                            };
+                        }
+                        this.isLoading = false
+                        this.$router.push({
+                            path: "/collection1_5",
+                            query: data
+                        });
+                    }
+
+                } else {
+                    return false;
+                    this.isLoading = false
+                }
+            });
         },
         pre() {
             let data = {};
@@ -539,6 +572,7 @@ export default {
             this.databaseId = this.dbid;
             let params = {};
             params["colSetId"] = this.databaseId;
+            console.log(params)
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getInitInfo(params).then(res => {
                 console.log(res)
@@ -774,7 +808,7 @@ res.data[i].dbfile_format=['定长','1','3']
                 // this.$refs.tree.setCheckedKeys([data.name]);
             } else {
                 if (this.checkedId == data.name) {
-                    this.$refs.tree.setCheckedKeys([data.name]);
+                    // this.$refs.tree.setCheckedKeys([data.name]);
                 }
             }
         },
@@ -840,6 +874,8 @@ res.data[i].dbfile_format=['定长','1','3']
                         item.orc_ml = path
                     }
                 })
+            } else if (this.row_ml_name == 'all') {
+                this.separatorData.ml = path
             }
         },
 

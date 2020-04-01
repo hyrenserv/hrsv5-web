@@ -129,13 +129,13 @@
                 </el-form>
                 <!-- 分类编号弹层 -->
                 <el-dialog title="采集任务分类" :visible.sync="outerVisible" class="collTask">
-                     <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">采集任务分类</span>
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">采集任务分类</span>
                     </div>
                     <el-dialog width="40%" title="新增采集任务分类" :visible.sync="innerVisible" append-to-body>
-                        <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">新增采集任务分类</span>
-                    </div>
+                        <div slot="title">
+                            <span class="dialogtitle el-icon-caret-right">新增采集任务分类</span>
+                        </div>
                         <el-form :model="addClassTask" ref="addClassTask">
                             <el-form-item label=" 分类编号" prop="class_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
                                 <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
@@ -193,8 +193,8 @@
                 </el-dialog>
                 <!-- 点击编辑弹层 -->
                 <el-dialog width="40%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
-                     <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">修改采集任务分类</span>
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">修改采集任务分类</span>
                     </div>
                     <el-form :model="editClassTask" ref="addClassTask">
                         <el-form-item label=" 分类编号" prop="class_num" :rules="rule.default" :label-width="formLabelWidth" width="130">
@@ -215,8 +215,8 @@
 
                 <!-- 测试连接弹层 -->
                 <el-dialog title="提示信息" :visible.sync="testLink" width="30%">
-                    <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">提示信息</span>
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">提示信息</span>
                     </div>
                     <div class="testLinnk">
                         <span>{{linkTip}}</span>
@@ -225,8 +225,8 @@
                 <!-- 查看日志弹层 -->
 
                 <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%">
-                     <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">Agent日志信息</span>
+                    <div slot="title">
+                        <span class="dialogtitle el-icon-caret-right">Agent日志信息</span>
                     </div>
                     <div class="logseach">
                         <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select" size="mini">
@@ -246,12 +246,11 @@
     </el-tabs>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">返回</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
-     <!-- 加载过度 -->
+    <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
     </transition>
 </div>
-
 </template>
 
 <script>
@@ -274,7 +273,7 @@ export default {
             activeNames: "first",
             radio: null,
             linkTip: "",
-            isLoading:false,
+            isLoading: false,
             CollTaskData: [],
             currentPage: 1,
             pagesize: 10,
@@ -362,17 +361,25 @@ export default {
                 });
                 //
             });
+        } else {
+            addTaskAllFun.addDBConfInfo().then(res => {
+                if (res.data) {
+                    this.ruleForm = res.data[0];
+                    this.radio = res.data[0].classify_id;
+                    this.dbid = res.data[0].database_id;
+                }
+            });
         }
     },
     methods: {
         next(formName) {
-            this.isLoading=true
+            this.isLoading = true
             let that = this;
             that.$refs[formName].validate(valid => {
                 if (valid) {
                     that.testLinkFun("2");
-                }else{
-                 this.isLoading=false   
+                } else {
+                    this.isLoading = false
                 }
             });
             // saveDbConf
@@ -396,7 +403,7 @@ export default {
                 }
                 params["agent_id"] = this.agentId;
                 addTaskAllFun.saveDbConf(params).then(res => {
-                    this.isLoading=false
+                    this.isLoading = false
                     if (res.code == "200") {
                         let data = {};
                         if (this.edit == "yes") {
@@ -629,7 +636,7 @@ export default {
                 } else {
                     this.linkTip = res.message;
                     this.activelink = "false";
-                    this.isLoading=false
+                    this.isLoading = false
                 }
                 if (n == "2") {
                     this.nextLink(this.activelink);
@@ -666,7 +673,7 @@ export default {
 }
 
 .testLinnk>span {
-       font-size: 14px;
+    font-size: 14px;
     color: #e84d45
 }
 
