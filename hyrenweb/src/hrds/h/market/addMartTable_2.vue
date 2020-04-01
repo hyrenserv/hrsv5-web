@@ -1,0 +1,353 @@
+<template>
+    <div>
+        <el-row class='topTitle'>
+            <span>数据集市</span>
+        </el-row>
+        <el-row>
+            <el-col class="borderStyle" :span="5" style="margin-right: 10px;">
+                <!--树菜单-->
+                <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
+                <div class='mytree'>
+                    <el-tree empty-text="暂无数据"  :expand-on-click-node="true" :indent='0' :props="treeProps" :load="loadNode" lazy
+                             node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
+                          <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="node.label">{{ node.label }}</span>
+                        </span>
+                    </el-tree>
+                </div>
+            </el-col>
+            <el-col :span="18">
+                <el-tabs type="card">
+                    <el-row>
+                        <span>SQL查询</span>
+                    </el-row>
+                    <el-col :span="20">
+                        <el-input type="textarea" rows="5" autosize placeholder="请输入查询SQL" v-model="querysql"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button class="query-sql-btn" type="primary"
+                                   @click="querydatadialogshow = true;getdatabysql()"
+                                   size="small">查询
+                        </el-button>
+                        <el-button class="query-sql-btn" type="primary" @click="getcolumnbysql()"
+                                   size="small">确定
+                        </el-button>
+                    </el-col>
+                </el-tabs>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col>
+                <el-tabs type="card">
+                    <el-table :data="columnbysql" border size="mini">
+                        <el-table-column type="index" label="序号" width="70px" align='center'></el-table-column>
+                        <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.field_en_name" autocomplete="off"
+                                          placeholder="字段英文名"></el-input>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column prop="field_cn_name" label="字段中文名" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.field_cn_name" autocomplete="off"
+                                          placeholder="字段中文名"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="field_type" label="字段类型" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.field_type" placeholder="请选择">
+                                    <el-option v-for="item in allfield_type" :key="item.target_type"
+                                               :label="item.target_type"
+                                               :value="item.target_type"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="field_length" label="字段长度" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.field_length" autocomplete="off"
+                                          placeholder="字段长度"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="field_process" label="处理方式" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.field_process" placeholder="请选择">
+                                    <el-option v-for="item in allfield_process" :key="item.value"
+                                               :label="item.value"
+                                               :value="item.code"></el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="process_para" label="处理方式对应参数" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-input v-if="scope.row.field_proccess == 'map'" readonly
+                                          v-model="scope.row.process_para" autocomplete="off"
+                                          placeholder="处理方式对应参数"></el-input>
+                                <el-input v-else v-model="scope.row.process_para" autocomplete="off"
+                                          placeholder="处理方式对应参数"></el-input>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column prop="source_column" label="来源值" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-input readonly v-model="scope.row.source_column" autocomplete="off"
+                                          placeholder="来源值"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="field_desc" label="描述" show-overflow-tooltip
+                                         align="center">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.field_desc" autocomplete="off"
+                                          placeholder="描述"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-for="index in columnmore"
+                                         :label="index.dsla_storelayer" prop="index" align="center">
+                            <template slot-scope="scope">
+                                <el-checkbox v-model="scope.row[scope.column.label]"
+                                             :checked="scope.row[scope.column.label]"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-button type="primary" size="medium" class="rightbtn" @click="next('dm_datatable')">下一步
+                    </el-button>
+                    <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
+                </el-tabs>
+            </el-col>
+        </el-row>
+
+
+        <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
+            <el-table :data="databysql" border size="mini">
+                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item"
+                                 :prop="item">
+                    <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                    <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
+    </div>
+</template>
+<script>
+    import * as functionAll from "./marketAction";
+
+    export default {
+        data() {
+            return {
+                data_mart_id: this.$route.query.data_mart_id,
+                is_add: this.$route.query.is_add,
+                datatable_id: this.$route.query.datatable_id,
+                querydatadialogshow: false,
+                querysql: '',
+                filterText: '',
+                columnbysql: [],
+                columnmore: [],
+                columnmore: [],
+                allfield_type: [],
+                allfield_process: [{
+                    "value": "映射",
+                    "code": "map"
+                }, {
+                    "value": "自增",
+                    "code": "increment"
+                }, {
+                    "value": "定值",
+                    "code": "appoint"
+                }],
+                databysql: [],
+                filterText: '',
+                treeProps: {id: 'id', label: 'name', children: 'children',},
+                treeDataInfo: {
+                    isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
+                    isRootNode: '1', tableName: ''
+                },
+            };
+        },
+        watch: {
+            //设置检索内容
+            filterText() {
+                this.$refs.tree.filter(this.filterText);
+            }
+        },
+        mounted() {
+            // this.getcolumnbysql();
+            this.getallfield_type();
+            this.getcolumnmore();
+            this.getcolumnfromdatabase();
+            this.getquerysql();
+        },
+        methods: {
+            filterNode(value, data, node) {
+                // 如果检索内容为空,直接返回
+                if (!value) return true;
+                // 如果传入的value和data中的name相同说明是匹配到了
+                return data.name.indexOf(value) !== -1;
+                // 否则要去判断它是不是选中节点的子节点
+                // return this.checkBelongToChooseNode(value, data, node);
+            },
+            loadNode(node, resolve) {
+                debugger;
+                // this.searchResolve = resolve;
+                // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
+                if (node.level === 0) {
+                    functionAll.getTreeDataInfo(this.treeDataInfo).then((res) => {
+                        return resolve(res.data.tree_sources);
+                    }).catch(() => {
+                        return resolve([]);
+                    });
+                } else {
+                    // 如果当前节点是父节点,则根据当前节点数据获取下一级的所有节点,否则根据节点信息查询数据
+                    if (node.data.isParent) {
+                        functionAll.getTreeDataInfo(node.data).then((res) => {
+                            return resolve(res.data.tree_sources);
+                        });
+                    } else {
+                        // 查询数据
+                        functionAll.queryDataBasedOnTableName({'tableName': 'sys_para', 'queryNum': 10}).then((res) => {
+                            this.dataByTableName = res.data;
+                        });
+                    }
+                }
+
+            },
+
+            getquerysql() {
+                let params = {
+                    "datatable_id": this.datatable_id,
+                };
+                functionAll.getQuerySql(params).then((res) => {
+                    if (res.data.length != 0) {
+                        this.querysql = res.data[0].querysql;
+                    }
+                })
+            },
+            getcolumnfromdatabase() {
+                let params = {
+                    "datatable_id": this.datatable_id,
+                };
+                functionAll.getColumnFromDatabase(params).then((res) => {
+                    this.columnbysql = res.data;
+                })
+            },
+            getcolumnbysql() {
+                if (this.querysql === '') {
+                    this.$message({type: 'warning', message: '查询sql不能为空!'});
+                } else {
+                    let params = {
+                        querysql: this.querysql,
+                        "datatable_id": this.datatable_id
+                    };
+                    functionAll.getColumnBySql(params).then(((res) => {
+                        this.columnbysql = res.data;
+                    }))
+                }
+            },
+            // 根据SQL查询数据
+            getdatabysql() {
+                if (this.querysql === '') {
+                    this.$message({type: 'warning', message: '查询sql不能为空!'});
+                } else {
+                    functionAll.getDataBySQL({'querysql': this.querysql}).then((res) => {
+                        this.databysql = res.data;
+                    });
+                }
+            },
+            getcolumnmore() {
+                functionAll.getColumnMore({
+                    "datatable_id": this.datatable_id
+                }).then((res) => {
+                    this.columnmore = res.data;
+                    res.data.forEach((item) => {
+                        this.$Code.getValue({
+                            category: "StoreLayerAdded",
+                            code: item.dsla_storelayer,
+                        }).then((res) => {
+                            item.dsla_storelayer = res.data;
+                        });
+                    })
+                    this.columnmore = res.data;
+                });
+            },
+            getallfield_type() {
+                functionAll.getAllField_Type({
+                    "datatable_id": this.datatable_id
+                }).then((res) => {
+                    this.allfield_type = res.data;
+                });
+            },
+            back() {
+                this.$router.push({
+                    name: 'addMartTable_1',
+                    query: {
+                        data_mart_id: this.data_mart_id,
+                        datatable_id: this.datatable_id,
+                        is_add: 1
+                    }
+                });
+            },
+            next() {
+                let dm_column_storage = [];
+                for (var i = 0; i < this.columnmore.length; i++) {
+                    var dslad_id = this.columnmore[i].dslad_id
+                    var dsla_storelayer = this.columnmore[i].dsla_storelayer
+                    for (var j = 0; j < this.columnbysql.length; j++) {
+                        var everydatatable_field_info = this.columnbysql[j];
+                        if (everydatatable_field_info.hasOwnProperty(dsla_storelayer)) {
+                            if (everydatatable_field_info[dsla_storelayer] == true) {
+                                dm_column_storage.push({"csi_number": j, "dslad_id": dslad_id})
+                            }
+                        }
+                    }
+                }
+                let param = {
+                    "datatable_field_info": JSON.stringify(this.columnbysql),
+                    "datatable_id": this.datatable_id,
+                    "dm_column_storage": JSON.stringify(dm_column_storage),
+                    "querysql":this.querysql
+                }
+                functionAll.addDFInfo(param).then((res) => {
+                    this.$message({
+                        type: "success",
+                        message: "保存成功!"
+                    });
+                })
+
+            }
+        }
+    }
+</script>
+<style scoped>
+    .borderStyle {
+        border: 1px solid #e6e6e6;
+        padding: 1%;
+    }
+
+    /* 查询sql按钮*/
+    .query-sql-btn {
+        margin-left: 5%;
+    }
+
+    .rightbtn {
+        margin-top: 12px;
+        margin-top: 12px;
+        float: right;
+        margin: 15px;
+        margin-bottom: 10px;
+    }
+
+    .leftbtn {
+        margin-top: 12px;
+        margin-top: 12px;
+        float: left;
+        margin: 15px;
+        margin-bottom: 10px;
+    }
+</style>

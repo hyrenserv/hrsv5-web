@@ -44,7 +44,15 @@ module.exports = {
 			pathRewrite: {
 				'^/K': '/K/action/hrds/k/biz'
 			}
-		}
+	      },
+            '/H': {
+                target: process.env.VUE_APP_HRDS_H_API, // 目标 API 地址
+                changeOrigin: true, // 允许websockets跨域
+                ws: true,
+                pathRewrite: {
+                    '^/H': '/H/action/hrds/h/biz'
+                }
+            }
 	    }
 	  }
 };
