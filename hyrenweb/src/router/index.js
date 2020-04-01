@@ -419,7 +419,30 @@ export default new Router({
                         },
                     ]
                 },
-
+                {
+                    path: '/dataMart',
+                    name: 'dataMart',
+                    title: 'dataMart',
+                    component: () => import('@/hrds/h/market/marketIndex.vue')
+                },
+                {
+                    path: '/detailMart',
+                    name: 'detailMart',
+                    title: 'detailMart',
+                    component: () => import('@/hrds/h/market/detailMart.vue')
+                },
+                {
+                    path: '/addMartTable_1',
+                    name: 'addMartTable_1',
+                    title: 'addMartTable_1',
+                    component: () => import('@/hrds/h/market/addMartTable_1.vue')
+                },
+                {
+                    path: '/addMartTable_2',
+                    name: 'addMartTable_2',
+                    title: 'addMartTable_2',
+                    component: () => import('@/hrds/h/market/addMartTable_2.vue')
+                },
             ]
         },
 
