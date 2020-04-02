@@ -1,7 +1,7 @@
 <template>
 <div class="loindex">
-    <el-row>
-        <i class="block_icon fa fa-briefcase fa-globe blue"></i>
+    <el-row class="elRows">
+        <!-- <i class="block_icon fa fa-briefcase fa-globe blue"></i> -->
         <span>工程管理</span>
         <el-button type="primary" class="el1 els" @click="addProject" size="small">
             <i class="block_icon fa fa-plus-circle"></i>添加工程
@@ -922,15 +922,15 @@ export default {
 
 <style scoped>
 .lines {
-    margin-top: 10px;
+    margin-top: 2px;
     width: 100%;
     min-height: 1px;
     background: #dddddd;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .tabes {
-    margin-top: 25px;
+    margin-top: 14px;
 }
 
 .el-row {
@@ -938,7 +938,11 @@ export default {
     line-height: 64px;
     width: 100%;
 }
-
+.elRows{
+    height: 40px;
+    line-height: 40px;
+    width:100%;
+}
 .el-row span {
     color: #2196f3;
     font-size: 18px;
@@ -957,7 +961,7 @@ i {
 /* button样式设置 */
 .els {
     float: right;
-    margin-top: 18px;
+    margin-top: 3px;
 }
 
 .el1 {

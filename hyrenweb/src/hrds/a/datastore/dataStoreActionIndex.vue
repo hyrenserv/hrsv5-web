@@ -4,7 +4,7 @@
         <span>数据存储层定义</span>
         <el-button size="small" class="dataSaveBtn" type="primary" @click="addTableData"><i class="el-icon-circle-plus-outline"></i>新增数据存储层</el-button>
     </el-row>
-
+    <el-divider></el-divider>
     <el-row class="partTwo">
         <el-table :data="tableData" border stripe size="medium">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
@@ -547,7 +547,7 @@ export default {
                         param.append('dsl_id', this.dsl_id);
 
                         // 处理参数dataStoreLayerAttr
-                        let valueArr =[];
+                        let valueArr = [];
                         this.form.tableDataConfigure.forEach((item) => {
                             if (item.is_file != 1 || JSON.stringify(item).indexOf("is_file") == -1) {
                                 valueArr.push(item);
@@ -928,9 +928,8 @@ export default {
 </script>
 
 <style scoped>
-.dataStoreAction {
-    padding: 0 2% 0 2%;
-
+.dataStoreAction>>>.el-divider--horizontal {
+    margin: 1px 0 15px 0;
 }
 
 /* form边框 */
@@ -941,7 +940,9 @@ export default {
 }
 
 .dataStoreAction .dataSave {
-    margin: 20px 0 10px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
     color: #2196f3;
     font-size: 18px;
 }
