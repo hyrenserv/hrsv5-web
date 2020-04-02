@@ -1,6 +1,6 @@
 <template>
 <div class="menus">
-    <el-row>
+    <el-row class="elRows">
         <div class="el-header">
             <span class="titles">工程名称 : {{sys_name}}</span>
             <el-button type="primary" class="el1" @click="goBack" size="small">
@@ -167,7 +167,7 @@ i {
 }
 
 .el1 {
-    margin-top: 10px;
+    margin-top: 3px;
     float: right;
 }
 
@@ -202,11 +202,17 @@ i {
 }
 
 .lines {
-    margin-top: 10px;
+    margin-top: 2px;
     width: 100%;
     min-height: 1px;
     background: #dddddd;
     margin-bottom: 10px;
+}
+
+.elRows {
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
 }
 
 .menus>>>.el-menu--horizontal>.el-submenu .el-submenu__title {
