@@ -210,7 +210,6 @@ export default {
                         }
                     })
                 });
-                console.log(dates)
                 this.tableData = dates;
             });
         },

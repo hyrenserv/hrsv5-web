@@ -135,10 +135,6 @@ export default {
 </script>
 
 <style scoped>
-.addTypeLengthContrastInfo {
-    padding: 0 2% 0 2%;
-}
-
 .addTypeLengthContrastInfo .dataSave {
     margin: 20px 0;
     color: #2196f3;

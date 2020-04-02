@@ -1,7 +1,7 @@
 <template>
 <div class="loheader">
     <el-row class="loheaderRow">
-        <i class="block_icon fa text-warning fa-globe blue"></i>
+        <!-- <i class="block_icon fa text-warning fa-globe blue"></i> -->
         <span>数据来源表</span>
         <el-button type="primary" class="el1 els" @click="dialogFormVisibleAdd = true;departmentInfo()" size="small">
             <i class="el-icon-circle-plus-outline"></i>添加数据源
