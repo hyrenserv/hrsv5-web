@@ -8,6 +8,7 @@
             <el-button size="small" type="primary" @click="addTypeLengthContrastInfo =true;addinfo()"><i class="el-icon-circle-plus-outline"></i>新增对照表</el-button>
         </el-col>
     </el-row>
+    <el-divider></el-divider>
     <el-row class="partOne">
         <el-table :data="tableData" border stripe size="medium" :span-method="arraySpanMethod" height="469">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
@@ -280,12 +281,14 @@ export default {
 </script>
 
 <style scoped>
-.typeLengthContrastInfo {
-    padding: 0 2% 0 2%;
+.typeLengthContrastInfo>>>.el-divider--horizontal {
+    margin: 1px 0 15px 0;
 }
 
 .typeLengthContrastInfo .dataSave {
-    margin: 20px 0;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
     color: #2196f3;
     font-size: 18px;
 }

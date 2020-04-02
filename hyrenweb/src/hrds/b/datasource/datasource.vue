@@ -2,7 +2,7 @@
 <div class="agentList">
     <!-- 数据来源标题 -->
     <el-row class="agentListrow">
-        <i class="fa text-warning fa-desktop blue"></i>
+        <!-- <i class="fa text-warning fa-desktop blue"></i> -->
         <span>数据源Agent列表</span>
         <router-link to="/datasourceManagement">
             <el-button type="primary" size="small" class="goIndex">
@@ -60,7 +60,7 @@
     <!-- 数据表格标题 -->
     <div class="tableList">
         <el-row>
-            <i class="fa text-warning fa-database blue"></i>
+            <!-- <i class="fa text-warning fa-database blue"></i> -->
             <span v-if="sourceAgent">数据源Agent</span>
             <span v-if="dataFile">数据文件 Agent</span>
             <span v-if="semiStructure">半结构化 Agent</span>

@@ -1,12 +1,13 @@
 <template>
 <div class="departmentalList">
-    <el-row>
-        <i class="el-icon-s-check"></i>
+    <el-row class="elRows">
+        <!-- <i class="el-icon-s-check"></i> -->
         <span>部门列表</span>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
             <i class="el-icon-circle-plus-outline"></i>新增部门
         </el-button>
     </el-row>
+    <div class="lines"></div>
     <el-table stripe :data="departmentalList" border size="medium">
         <el-table-column type="index" label="序号" width="62" align="center">
             <template slot-scope="scope">
@@ -24,11 +25,11 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="新增部门" :visible.sync="dialogFormVisibleAdd"  :before-close="beforeCloseAdd">
+    <el-dialog title="新增部门" :visible.sync="dialogFormVisibleAdd" :before-close="beforeCloseAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
@@ -45,7 +46,7 @@
 
     <!-- 实现点击编辑按钮进行页面部门更新-->
     <!-- 编辑的弹出表单 -->
-    <el-dialog title="更新部门信息" :visible.sync="dialogFormVisibleUpdate"  :before-close="beforeClose">
+    <el-dialog title="更新部门信息" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeClose">
         <el-form :model="formUpdate" ref="formUpdate">
             <el-form-item label=" 部门名称" :label-width="formLabelWidth" prop="dep_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formUpdate.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
@@ -239,10 +240,16 @@ export default {
     font-size: 18px;
 }
 
+.elRows {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+}
+
 /* button样式设置 */
 .els {
     float: right;
-    margin-top: 18px;
+    margin-top: 3px;
 
 }
 
@@ -270,5 +277,13 @@ export default {
 
 .el-pagination {
     float: right;
+}
+
+.lines {
+    margin-top: 4px;
+    width: 100%;
+    min-height: 1px;
+    background: #dddddd;
+    margin-bottom: 15px;
 }
 </style>

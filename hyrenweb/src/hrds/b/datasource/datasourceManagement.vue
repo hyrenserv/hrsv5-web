@@ -5,7 +5,7 @@
     <!-- 数据管理列表开始 -->
     <div class="dataManage">
         <el-row>
-            <i class="block_icon fa text-warning fa-book blue"></i>
+            <!-- <i class="block_icon fa text-warning fa-book blue"></i> -->
             <span>数据管理列表</span>
             <div class="lines"></div>
             <el-table stripe :data="tableDatalist" size="medium" border>
@@ -29,14 +29,14 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPagelist" @size-change="handleSizeChangelist" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total, sizes,prev, pager, next, jumper" :total="totalItemlist"></el-pagination>
+            <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPagelist" @size-change="handleSizeChangelist" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total, sizes,prev, pager, next, jumper" :total="totalItemlist"></el-pagination>
         </el-row>
     </div>
     <!-- 数据管理列表完 -->
 
     <!-- 数据权限管理开始 -->
     <div class="authorityManagement">
-        <i class="block_icon fa text-warning fa-users blue"></i>
+        <!-- <i class="block_icon fa text-warning fa-users blue"></i> -->
         <span>数据权限管理</span>
         <div class="lines"></div>
         <!-- 表格 -->
@@ -76,7 +76,7 @@
         </el-row>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total, sizes,prev, pager, next, jumper" :total="totalItems"></el-pagination>
+            <el-pagination @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total, sizes,prev, pager, next, jumper" :total="totalItems"></el-pagination>
         </el-row>
     </div>
     <!-- 数据权限管理完 -->
