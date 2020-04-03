@@ -604,7 +604,7 @@ export default {
                     code: '2'
                 },
             ],
-            handleactive: false,
+            // handleactive: false,
             dialog_xsadd: false,
             dialog_xsall: false,
             dialog_xsadd2: false,
@@ -626,6 +626,7 @@ export default {
         // 获取进入页面的总数据
         if (this.$route.query.edit == "yes") {
             this.steps_getInitInfo();
+            this.editzdySQLFun()
         } else {
             this.tableloadingInfo = '暂无数据'
         }
@@ -674,6 +675,15 @@ export default {
         }
     },
     methods: {
+        //编辑状态获取第二个页面值
+        editzdySQLFun(){
+            let params0 = {};
+                params0["colSetId"] = this.dbid;
+                addTaskAllFun.getAllSQLs(params0).then(res => {
+                    this.ruleForm.sqlExtractData = res.data ? res.data : [];
+                   
+                });
+        },
         //编辑状态获得初始化信息
         steps_getInitInfo() {
             let params = {};
@@ -861,32 +871,49 @@ export default {
             }
         },
         next() {
-            this.isLoading = true
-            this.saveTableConfFun();
+            // this.isLoading = true
             let arrsql = []
-            if (this.handleactive == true) {//切换过第二个页面
+
+            // if (this.handleactive == true) { //切换过第二个页面
                 this.$refs['ruleForm'].validate(valid => {
                     if (valid) {
-                        this.tableInfoArray = this.ruleForm.sqlExtractData;
-                        this.sqlSubmit = true
-                        arrsql = this.tableInfoArray
-                         this.sqlFun(arrsql)
+                        let tableData = this.tableData;
+                        sqlExtractData = this.ruleForm.sqlExtractData;
+                        rep_table = []
+                        for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
+                            for (let j = 0; j < sqlExtractData.length; j++) {
+                                if (tableData[i].table_name == sqlExtractData[j].table_name) {
+                                    rep_table.push(tableData[i].table_name)
+                                }
+                            }
+                        }
+                        if (rep_table.length > 0) { //有重复表
+                            this.$message({
+                                showClose: true,
+                                message: '表' + rep_table + '重复,请修改',
+                                type: "error"
+                            });
+                        } else {
+                            this.saveTableConfFun();//处理第一个页面数据
+                             this.sqlFun()//处理第二个页面数据
+                        }
                     } else {
-                        this.isLoading = false
+                        this.activeName = 'second'
                     }
                 });
-            } else {
-                  let params0 = {};
-                  params0["colSetId"] = this.dbid;
-                  addTaskAllFun.getAllSQLs(params0).then(res => {
-                      arrsql = res.data ? res.data : [];
-                      this.sqlFun(arrsql)
-                  });
-            }
+           /*  } else { //未切换过第二个页面，直接调取接口拿去原本数据
+                let params0 = {};
+                params0["colSetId"] = this.dbid;
+                addTaskAllFun.getAllSQLs(params0).then(res => {
+                    arrsql = res.data ? res.data : [];
+                });
+            } */
 
         },
-        sqlFun(arrsql) {
-                       console.log(params1,xsTypeArr2,ParallelExtractionArr2)
+        sqlFun() {
+             console.log(this.ruleForm.sqlExtractData, '第二个页面数据')
+               console.log(this.xsTypeArr2, '第二个页面卸数增量是存放数据')
+               console.log(this.ParallelExtractionArr2, '第二个页面并行抽取保存数据')
 
             let params1 = {};
             params1["tableInfoArray"] = arrsql.length > 0 ? JSON.stringify(arrsql) : '';
@@ -894,7 +921,6 @@ export default {
             addTaskAllFun.saveAllSQL(params1).then(res => {
                 if (res.code == 200) {
                     this.activeSec = true;
-                    // this.dbid = res.data;
                 } else {
                     this.isLoading = false
                 }
@@ -924,6 +950,11 @@ export default {
             });
         },
         saveTableConfFun() {
+            console.log(this.tableData, '第一个页面数据')
+              console.log(this.SelectColumn, '第一个页面选择列点击过保存的值')
+                        console.log(this.sqlFiltArr, '第一个页面sql过滤点击过保存的值')
+                        console.log(this.ParallelExtractionArr, '第一个页面并行抽取数据')
+                        console.log(this.xsTypeArr, '第一个页面卸数增量是存放数据')
             let arrData = [],
                 delJson = [],
                 tableInfoString = [],
@@ -947,15 +978,15 @@ export default {
                 }
                 for (let j = 0; j < this.callTable.length; j++) {
                     delJson.push({
-                        'tableId': this.callTable[j].table_id
+                        'tableId': this.callTable[j].table_id//存储删除的表id
                     })
                 }
                 if (res.data.length > 0) {
                     let arr = res.data;
-                    for (let i = 0; i < arrData.length; i++) {
+                    for (let i = 0; i < arrData.length; i++) {//已勾选的表
                         //与原接口数据对比
-                        for (let j = 0; j < arr.length; j++) {
-                            if (arrData[i].table_name == arr[j].table_name) {
+                        for (let j = 0; j < arr.length; j++) {//之前编辑的表
+                            if (arrData[i].table_name == arr[j].table_name) {//本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
                                 if (arr[j].page_sql) {
                                     arrData[i].page_sql = arr[j].page_sql;
                                 }
@@ -975,7 +1006,7 @@ export default {
                         }
                     }
                 }
-                if (this.ParallelExtractionArr.length > 0) {
+                if (this.ParallelExtractionArr.length > 0) {//本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.ParallelExtractionArr.length; jj++) {
                             if (
@@ -1004,7 +1035,7 @@ export default {
                         }
                     }
                 }
-                if (this.sqlFiltArr.length > 0) {
+                if (this.sqlFiltArr.length > 0) {//本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.sqlFiltArr.length; jj++) {
                             if (arrData[j].table_name == this.sqlFiltArr[jj].tablename) {
@@ -1357,14 +1388,14 @@ export default {
             params["tableName"] = this.EXtable_name;
             params["colSetId"] = parseInt(this.dbid);
             addTaskAllFun.getTableDataCount(params).then(res => {
-                  var aData = new Date();
-                  let date = {
-                        year: nowDate.getFullYear(),
-                        month: nowDate.getMonth() + 1,
-                        date: nowDate.getDate(),
-                    }
+                var aData = new Date();
+                let date = {
+                    year: nowDate.getFullYear(),
+                    month: nowDate.getMonth() + 1,
+                    date: nowDate.getDate(),
+                }
                 this.ruleForm_ParallelEx.db_allnum = res.data ? res.data : "";
-                this.ruleForm_ParallelEx.newtime=date.year + 0 + date.month  + 0 + date.date;
+                this.ruleForm_ParallelEx.newtime = date.year + 0 + date.month + 0 + date.date;
             });
         },
         // 是否抽取sql弹框确定提交
@@ -1730,26 +1761,22 @@ export default {
             if (tab.name == "first") {
                 this.sqlExtractDataSubmitFun('ruleForm')
             } else if (tab.name == "second") {
-                this.handleactive = true
                 if (this.sqlSubmit == true) {
                     this.ruleForm.sqlExtractData = this.tableInfoArray;
-                } else {
-                    let params = {};
-                    params["colSetId"] = this.dbid;
-                    addTaskAllFun.getAllSQLs(params).then(res => {
-                        this.ruleForm.sqlExtractData = res.data ? res.data : [];
-                    });
                 }
             }
         },
         // 使用SQL抽取数据确定
         sqlExtractDataSubmitFun(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    this.tableInfoArray = this.ruleForm.sqlExtractData;
-                    this.sqlSubmit = true
-                }
-            });
+            this.tableInfoArray = this.ruleForm.sqlExtractData; //
+            this.sqlSubmit = true
+            /*  this.$refs[formName].validate(valid => {
+                 if (valid) {
+                     this.tableInfoArray = this.ruleForm.sqlExtractData;
+                     this.sqlSubmit = true
+                     console.log(this.ruleForm.sqlExtractData,2)
+                 }
+             }); */
         },
         //第一个页面打开卸数方式设置
         XSTypeFun(row) {

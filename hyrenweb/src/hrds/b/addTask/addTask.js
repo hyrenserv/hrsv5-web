@@ -567,3 +567,17 @@ export function getPreviewJob(data) {
         params: data
     })
  }
+//编辑状态下获取作业信息
+export function getEtlJobData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlJobData',
+        params: data
+    })
+ }
+//  保存完成
+export function saveJobDataToDatabase(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/saveJobDataToDatabase',
+        params: data
+    })
+ }

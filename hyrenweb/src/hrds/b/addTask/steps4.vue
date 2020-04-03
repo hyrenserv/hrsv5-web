@@ -7,7 +7,7 @@
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
         <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
             <el-table-column label="序号" align="center" width="60">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
                 </template>
             </el-table-column>
@@ -24,7 +24,7 @@
                 </template>
             </el-table-column>
             <el-table-column label="落地目录" align="center" width="260">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" disabled placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'fdc')">选择目录<span class='exDataColor'>(非定长)</span></el-button>
@@ -59,7 +59,7 @@
             </el-table-column>
             <el-table-column label=" 换行符" align="center">
                 <template slot-scope="scope">
-                    <el-form-item v-show="scope.row.fdc" :prop="'unloadingFileData.'+scope.$index+'.fdc_row_separator'" :rules="rule.selected" class='linefs'>
+                    <el-form-item v-if="scope.row.fdc==true" :prop="'unloadingFileData.'+scope.$index+'.fdc_row_separator'" :rules="rule.selected" class='linefs'>
                         <el-select placeholder="非定长换行符" v-model="scope.row.fdc_row_separator" style="margin-bottom: 8px" size="mini" >
                             <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
                         </el-select>
@@ -91,8 +91,8 @@
                         <i class="el-icon-question" aria-hidden="true">数据列分隔符</i>
                     </el-tooltip>
                 </template>
-                <template scope="scope">
-                    <el-form-item v-show="scope.row.fdc" :prop="'unloadingFileData.'+scope.$index+'.fdc_database_separatorr'" :rules="rule.default" class='linefs'>
+                <template slot-scope="scope">
+                    <el-form-item v-if="scope.row.fdc==true" :prop="'unloadingFileData.'+scope.$index+'.fdc_database_separatorr'" :rules="rule.default" class='linefs'>
                         <el-input size="mini" v-model="scope.row.fdc_database_separatorr" style="margin-bottom: 8px;" placeholder="非定长数据列分隔符"></el-input>
                     </el-form-item>
                     <el-input v-show="scope.row.dc" size="mini" v-model="scope.row.dc_database_separatorr" style="margin-bottom: 8px;" placeholder="定长数据列分隔符"></el-input>
@@ -103,7 +103,7 @@
                 </template>
             </el-table-column>
             <el-table-column label="数据字符集" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-select v-show="scope.row.fdc" placeholder="非定长数据字符集" v-model="scope.row.fdc_database_code" style="margin-bottom: 8px;" size="mini">
                         <el-option v-for="(item,index) in DataBaseCode" :key="index" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -294,7 +294,6 @@ export default {
         this.$Code.getCategoryItems(params).then(res => {
             if (res.data) {
                 this.ExtractDataType = res.data;
-                console.log(this.ExtractDataType)
             }
         });
     },
@@ -384,8 +383,7 @@ export default {
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
-                            console.log(111)
-                            if (res.code == '200') {
+                            if (res.code == 200) {
                                 let data = {};
                                 if (this.$route.query.edit == "yes") {
                                     data = {
@@ -531,7 +529,6 @@ export default {
                     this.dialogAllTableSeparatorSettings = false;
                     let data = this.separatorData;
                     let alldata = this.ruleForm.unloadingFileData;
-                    console.log(this.ruleForm.unloadingFileData, this.separatorData)
                     for (var i = 0; i < alldata.length; i++) {
                         alldata[i].dc = false
                         alldata[i].fdc = false
@@ -573,10 +570,10 @@ export default {
                             alldata[i].dc_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == '非定长') {
                             alldata[i].fdc = true
+                            this.$set(alldata[i],'fdc_database_separatorr',this.separatorData.Datacolumnseparator)
+                            this.$set(alldata[i],'fdc_row_separator',this.separatorData.Newlinecharacte)
                             alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                             alldata[i].fdc_database_code = this.separatorData.Datacharacterset //字符集
-                            alldata[i].fdc_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
-                            alldata[i].fdc_row_separator = this.separatorData.Newlinecharacte //换行符
                             alldata[i].fdc_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'ORC') {
                             alldata[i].orc = true

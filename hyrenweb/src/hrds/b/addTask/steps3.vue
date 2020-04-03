@@ -536,9 +536,6 @@
     </el-dialog>
     <!-- 列合并 -->
     <el-dialog :visible.sync="dialogcolumnMerge" width="70%" class="alltable" id="colmerg">
-        <div slot="title" class="header-title">
-            <span class="title">列合并(合并的是最后的数据)</span>
-        </div>
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">列合并</span>
             <span>
