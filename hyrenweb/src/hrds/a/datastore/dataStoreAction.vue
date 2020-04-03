@@ -644,10 +644,6 @@ export default {
 </script>
 
 <style scoped>
-.dataStoreAction {
-    padding: 0 2% 0 2%;
-}
-
 /* form边框 */
 .dataStoreAction .partOne {
     border: 1px solid #e6e6e6;
