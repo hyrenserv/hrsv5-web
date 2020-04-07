@@ -65,15 +65,15 @@
     </el-tabs>
     <!-- 添加/编辑工程模态框 -->
     <el-dialog :title="projectTitle" :visible.sync="dialogFormVisibleAdd" width="40%">
-        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm">
+        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号"></el-input>
+                <el-input v-model="formAdd.etl_sys_cd" style="width:270px" autocomplete="off" placeholder="工程编号"></el-input>
             </el-form-item>
             <el-form-item label="工程名称" prop="etl_sys_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.etl_sys_name" autocomplete="off" placeholder="工程名称"></el-input>
+                <el-input v-model="formAdd.etl_sys_name" style="width:270px" autocomplete="off" placeholder="工程名称"></el-input>
             </el-form-item>
             <el-form-item label="工程描述" prop="comments">
-                <el-input type="textarea" v-model="formAdd.comments" autocomplete="off" placeholder="工程描述"></el-input>
+                <el-input type="textarea" v-model="formAdd.comments" style="width:270px" autocomplete="off" placeholder="工程描述"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -85,19 +85,19 @@
     <el-dialog title="部署Agent工程参数" :visible.sync="dialogFormVisibleDeploy" width="40%">
         <el-form :model="formDeploy" ref="formDeploy" label-width="170px" class="demo-ruleForm">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.etl_sys_cd" disabled></el-input>
+                <el-input v-model="formDeploy.etl_sys_cd" style="width:270px" disabled></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器IP" prop="etl_serv_ip" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.etl_serv_ip"></el-input>
+                <el-input v-model="formDeploy.etl_serv_ip" style="width:270px"></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器用户名" prop="user_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.user_name"></el-input>
+                <el-input v-model="formDeploy.user_name" style="width:270px"></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器密码" prop="user_pwd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.user_pwd" show-password></el-input>
+                <el-input v-model="formDeploy.user_pwd" style="width:270px" show-password></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.serv_file_path"></el-input>
+                <el-input v-model="formDeploy.serv_file_path" style="width:270px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -150,7 +150,7 @@
         </div>
     </el-dialog>
     <!-- CONTROL日志模态框 -->
-    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="60%">
+    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="72%">
         <el-form :model="formRecordCON" ref="formRecordCON" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="工程编号" prop="readNum">
                 <el-input v-model="formRecordCON.readNum"></el-input>
@@ -167,7 +167,6 @@
             </el-form-item>
         </el-form>
         <div style="margin-top:-25px">
-            <el-divider></el-divider>
             <span>{{formRecordCON.project_records}}</span>
             <el-divider></el-divider>
         </div>
@@ -176,7 +175,7 @@
         </div>
     </el-dialog>
     <!-- TRIGGER日志模态框 -->
-    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="60%">
+    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="72%">
         <el-form :model="formRecordTRI" ref="formRecordTRI" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="工程编号" prop="readNum">
                 <el-input v-model="formRecordTRI.readNum"></el-input>
@@ -193,7 +192,6 @@
             </el-form-item>
         </el-form>
         <div style="margin-top:-25px">
-            <el-divider></el-divider>
             <span>{{formRecordTRI.project_records}}</span>
             <el-divider></el-divider>
         </div>
@@ -938,11 +936,13 @@ export default {
     line-height: 64px;
     width: 100%;
 }
-.elRows{
+
+.elRows {
     height: 40px;
     line-height: 40px;
-    width:100%;
+    width: 100%;
 }
+
 .el-row span {
     color: #2196f3;
     font-size: 18px;
