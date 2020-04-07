@@ -177,23 +177,21 @@ i {
 }
 
 .pcontain {
-    margin-top: 4px;
-    width: 100%;
     min-height: 550px;
     overflow-x: hidden;
     overflow-y: auto;
     border: 1px solid #d5d5d5;
-    border-radius: 5px;
+    border-top:none; 
 }
 
 .ptitle {
-    background-color: #e5e5e5;
-    line-height: 30px;
+    line-height: 36px;
     padding: 5px;
     width: 100%;
-    height: 30px;
+    height: 36px;
     border-bottom: 1px solid #d5d5d5;
-    color: #000;
+    color: #2196f3;
+    font-size: 18px;
 }
 
 .tops {
@@ -216,7 +214,10 @@ i {
 }
 
 .menus>>>.el-menu--horizontal>.el-submenu .el-submenu__title {
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
+    line-height: 50px;
+}
+.menus>>> .el-menu.el-menu--horizontal {
+    border: solid 1px #e6e6e6;
 }
 </style>
