@@ -297,25 +297,25 @@
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
-        <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-            <el-form-item label="删除SQL" prop="del_sql" :rules="rule.default">
+        <el-form :model="xstypeadd2" status-icon ref="xstypeadd" label-width="30%">
+            <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="add_sql" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="add" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="updata_sql" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="updata" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.updata_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.updata" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -332,10 +332,10 @@
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form :model="xstypeadd2" status-icon ref="xstypeadd" label-width="30%">
-            <el-form-item label="SQL" prop="add_sql" :rules="rule.default">
+            <el-form-item label="SQL" prop="add" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd2.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -547,9 +547,9 @@ export default {
                 updata_sql: ''
             },
             xstypeadd2: {
-                del_sql: '',
-                add_sql: '',
-                updata_sql: ''
+                delete: '',
+                add: '',
+                updata: ''
             },
             dbid: null,
             agentId: null,
@@ -967,7 +967,7 @@ export default {
             console.log(this.ParallelExtractionArr2, twotabledata)
             for (let i = 0; i < twotabledata.length; i++) {
                 if (twotabledata[i].unload_type == '增量') {
-                    twotabledata[i].unload_type = '0'
+                    twotabledata[i].unload_type = '2'
                 } else {
                     twotabledata[i].unload_type = '1'
                 }
@@ -1409,6 +1409,7 @@ export default {
                 });
             }
             this.tablename = "";
+            console.log(this.sqlFiltArr)
         },
         // 第一个页面过滤关闭
         SqlfiltCloseFun() {
@@ -1490,7 +1491,7 @@ export default {
                     rec_num_date: this.ruleForm_ParallelEx.rec_num_date,
                 });
             }
-
+console.log(this.ParallelExtractionArr2)
             this.dialogdyfysql = false;
         },
 
@@ -2055,27 +2056,27 @@ export default {
             console.log(row, this.xsTypeArr2)
             this.Xstable_name = row.table_name
             if (row.unload_type == '全量') {
-                 this.xstypeadd2.add_sql = ''
-                this.xstypeadd2.del_sql = ''
-                this.xstypeadd2.updata_sql = ''
+                 this.xstypeadd2.add = ''
+                this.xstypeadd2.delete = ''
+                this.xstypeadd2.updata = ''
                 if (this.xsTypeArr2.length > 0) {
                     for (let i = 0; i < this.xsTypeArr2.length; i++) {
                         if (this.xsTypeArr2[i].table_name == row.table_name) {
-                            this.xstypeadd2.add_sql = this.xsTypeArr2[i].sql
+                            this.xstypeadd2.add = this.xsTypeArr2[i].sql
                         }
                     }
                 }
                 this.dialog_xsall = true
             } else {
-                 this.xstypeadd2.add_sql = ''
-                this.xstypeadd2.del_sql = ''
-                this.xstypeadd2.updata_sql = ''
+                 this.xstypeadd2.add = ''
+                this.xstypeadd2.delete = ''
+                this.xstypeadd2.updata = ''
                 if (this.xsTypeArr2.length > 0) {
                     for (let i = 0; i < this.xsTypeArr2.length; i++) {
                         if (this.xsTypeArr2[i].table_name == row.table_name) {
-                            this.xstypeadd2.add_sql = this.xsTypeArr2[i].sql.add_sql
-                            this.xstypeadd2.del_sql = this.xsTypeArr2[i].sql.del_sql
-                            this.xstypeadd2.updata_sql = this.xsTypeArr2[i].sql.updata_sql
+                            this.xstypeadd2.add = this.xsTypeArr2[i].sql.add
+                            this.xstypeadd2.delete = this.xsTypeArr2[i].sql.delete
+                            this.xstypeadd2.updata = this.xsTypeArr2[i].sql.updata
                         }
                     }
                 }
@@ -2114,6 +2115,7 @@ export default {
         },
         //第2个页面面卸数方式增量的设置提交
         xsaddSubmittwoFun() {
+            console.log(this.xstypeadd2)
             if (this.xsTypeArr2.length > 0) {
                 let arr = []
                 this.xsTypeArr2.forEach((item) => {
@@ -2129,11 +2131,12 @@ export default {
                 } else {
                     this.xsTypeArr2.push({
                         table_name: this.Xstable_name,
-                        sql:  JSON.parse(JSON.stringify(this.xstypeadd2))
+                        sql: JSON.parse(JSON.stringify(this.xstypeadd2))
                     })
                     arr = []
                 }
             } else {
+                console.log(this.xstypeadd2,this.Xstable_name)
                 this.xsTypeArr2.push({
                     table_name: this.Xstable_name,
                     sql: JSON.parse(JSON.stringify(this.xstypeadd2))
@@ -2153,21 +2156,21 @@ export default {
                 if (arr.indexOf(this.Xstable_name) != -1) {
                     this.xsTypeArr2.forEach((item) => {
                         if (item.table_name == this.Xstable_name) {
-                            item.sql = this.xstypeadd2.add_sql
+                            item.sql = this.xstypeadd2.add
                         }
                     })
                     arr = []
                 } else {
                     this.xsTypeArr2.push({
                         table_name: this.Xstable_name,
-                        sql: this.xstypeadd2.add_sql
+                        sql: this.xstypeadd2.add
                     })
                     arr = []
                 }
             } else {
                 this.xsTypeArr2.push({
                     table_name: this.Xstable_name,
-                    sql: this.xstypeadd2.add_sql
+                    sql: this.xstypeadd2.add
                 })
 
             }
