@@ -36,7 +36,7 @@
                             <template slot-scope="scope">
                                 <el-row>
                                     <el-col :span="19">
-                                        <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium">
+                                        <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium" @change="oneunloadTypeFun(scope.row)">
                                             <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
                                         </el-select>
                                     </el-col>
@@ -47,9 +47,9 @@
                                 </el-row>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="is_parallel" label=" 计算MD5" align="center">
+                        <el-table-column prop="is_md5" label=" 计算MD5" align="center">
                             <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5"></el-checkbox>
+                                <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
@@ -90,7 +90,8 @@
                     <el-table-column property="table_name" label="表名" width="150px" align="center">
                         <template slot-scope="scope">
                             <el-form-item :prop="'sqlExtractData.'+scope.$index+'.table_name'" :rules="rule.default">
-                                <el-input v-model="scope.row.table_name" placeholder="表名" size="medium"></el-input>
+                                <el-input v-if="scope.row.table_id&&scope.row.table_id!=''" disabled v-model="scope.row.table_name" placeholder="表名" size="medium"></el-input>
+                                <el-input v-else  v-model="scope.row.table_name" placeholder="表名" size="medium"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
@@ -105,9 +106,11 @@
                         <template slot-scope="scope">
                             <el-row>
                                 <el-col :span="19">
+                                     <el-form-item :prop="'sqlExtractData.'+scope.$index+'.unload_type'" :rules="rule.selected">
                                     <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium">
                                         <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
                                     </el-select>
+                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
                                     <el-button type="text" v-if="scope.row.unload_type=='全量'||scope.row.unload_type=='增量'" @click="XSTypeFun2(scope.row)">设置</el-button>
@@ -116,11 +119,12 @@
                             </el-row>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="is_parallel" label=" 计算MD5" align="center" width="100">
+               <el-table-column prop="is_md5" label=" 计算MD5" align="center" width="100">
                         <template slot-scope="scope">
                             <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5"></el-checkbox>
                         </template>
                     </el-table-column>
+                      
                     <el-table-column prop="is_parallel" label="是否并行抽取" align="center" width="120">
                         <template slot-scope="scope">
                             <el-checkbox v-if="scope.row.unload_type=='全量'" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
@@ -327,11 +331,11 @@
             <span class="dialogtitle el-icon-caret-right">卸数方式-全量</span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
-        <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-            <el-form-item label="SQL" prop="del_sql" :rules="rule.default">
+        <el-form :model="xstypeadd2" status-icon ref="xstypeadd" label-width="30%">
+            <el-form-item label="SQL" prop="add_sql" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd2.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -341,7 +345,7 @@
             <el-button type="primary" size="mini" @click="dialog_xsall=false;xsallSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
-    <!-- 是否并行抽取弹层 -->
+    <!--diyi 是否并行抽取弹层 -->
     <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
@@ -357,7 +361,7 @@
                     <el-button type="warning" v-if='ruleForm_ParallelEx.issql=="1"' size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
                 </el-col>
             </el-row>
-            <el-form-item label="自定义SQL" prop="EXtable_sql" :rules="rule.default">
+            <el-form-item label="自定义SQL" prop="EXtable_sql">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-radio-group v-model="ruleForm_ParallelEx.issql">
@@ -373,7 +377,7 @@
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+            <el-form-item label="数据总量" prop="db_allnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='0'">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
@@ -382,14 +386,14 @@
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+            <el-form-item label="每日数据增量" prop="everDay_addnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='0'">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.everDay_addnum" size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='2'">
+            <el-form-item label="分页并行数" prop="pageExnum" :rules="rule.default" v-if="ruleForm_ParallelEx.issql=='0'">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.pageExnum" size="medium" style="width:284px" placeholder="请根据数据总量指定合适的线程数"></el-input>
@@ -442,7 +446,7 @@
             <el-button type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
         </div>
     </el-dialog>
-    <!--定义分页抽取sql  -->
+    <!--dier定义分页抽取sql  -->
     <el-dialog title :visible.sync="dialogdyfysql" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
@@ -601,7 +605,7 @@ export default {
                 },
                 {
                     value: '否',
-                    code: '2'
+                    code: '0'
                 },
             ],
             // handleactive: false,
@@ -613,6 +617,8 @@ export default {
             xsTypeArr: [], //第一个页面卸数增量是存放数据
             xsTypeArr2: [], //第二个页面卸数增量是存放数据
             ParallelExtractionArr2: [], //第二个页面并行抽取保存数据
+            callTable2: [],
+            zdycallTable: []
         };
     },
     created() {
@@ -651,7 +657,13 @@ export default {
                 } else {
                     data[i].is_md5 = false;
                 }
+                if (data[i].unload_type != "1") {
+                    data[i].unload_type = '全量';
+                } else if ((data[i].unload_type != "2")) {
+                    data[i].unload_type = '增量';
+                }
             }
+              console.log( data)
             this.allDataList = data;
         });
     },
@@ -676,13 +688,31 @@ export default {
     },
     methods: {
         //编辑状态获取第二个页面值
-        editzdySQLFun(){
+        editzdySQLFun() {
             let params0 = {};
-                params0["colSetId"] = this.dbid;
-                addTaskAllFun.getAllSQLs(params0).then(res => {
-                    this.ruleForm.sqlExtractData = res.data ? res.data : [];
-                   
-                });
+            params0["colSetId"] = this.dbid;
+            addTaskAllFun.getAllSQLs(params0).then(res => {
+                let data = res.data ? res.data : [];
+                   for (let i = 0; i < data.length; i++) {
+                 if (data[i].is_parallel != "0") {
+                            data[i].is_parallel = true;
+                        } else {
+                            data[i].is_parallel = false;
+                        }
+                        if (data[i].is_md5 != "0") {
+                            data[i].is_md5 = true;
+                        } else {
+                            data[i].is_md5 = false;
+                        }
+                        if (data[i].unload_type != "1") {
+                            data[i].unload_type = '全量';
+                        } else if ((data[i].unload_type != "2")) {
+                            data[i].unload_type = '增量';
+                        }}
+                this.ruleForm.sqlExtractData = data ? data : [];
+                console.log( this.ruleForm.sqlExtractData )
+                this.zdycallTable = JSON.parse(JSON.stringify(data))
+            });
         },
         //编辑状态获得初始化信息
         steps_getInitInfo() {
@@ -717,7 +747,8 @@ export default {
 
                     }
                     this.tableData = data;
-                    this.callTable = JSON.parse(JSON.stringify(data))
+                    this.callTable = JSON.parse(JSON.stringify(data)) //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
+                    this.callTable2 = JSON.parse(JSON.stringify(data))
                     // this.Allis_selectionState = true;
                 }
             });
@@ -872,55 +903,102 @@ export default {
         },
         next() {
             // this.isLoading = true
-            let arrsql = []
 
             // if (this.handleactive == true) { //切换过第二个页面
-                this.$refs['ruleForm'].validate(valid => {
-                    if (valid) {
-                        let tableData = this.tableData;
-                        sqlExtractData = this.ruleForm.sqlExtractData;
+            this.$refs['ruleForm'].validate(valid => {
+                if (valid) {
+                    let tableData = this.tableData,
+                        sqlExtractData = this.ruleForm.sqlExtractData,
                         rep_table = []
-                        for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
-                            for (let j = 0; j < sqlExtractData.length; j++) {
-                                if (tableData[i].table_name == sqlExtractData[j].table_name) {
-                                    rep_table.push(tableData[i].table_name)
-                                }
+                        console.log(this.tableData,this.ruleForm.sqlExtractData)
+                    for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
+                        for (let j = 0; j < sqlExtractData.length; j++) {
+                            if (tableData[i].table_name ==sqlExtractData[j].table_name&&tableData[i].selectionState==true) {
+                                console.log(tableData[i].table_name,sqlExtractData[j].table_name)
+                                rep_table.push(tableData[i].table_name)
                             }
                         }
-                        if (rep_table.length > 0) { //有重复表
-                            this.$message({
-                                showClose: true,
-                                message: '表' + rep_table + '重复,请修改',
-                                type: "error"
-                            });
-                        } else {
-                            this.saveTableConfFun();//处理第一个页面数据
-                             this.sqlFun()//处理第二个页面数据
-                        }
-                    } else {
-                        this.activeName = 'second'
                     }
-                });
-           /*  } else { //未切换过第二个页面，直接调取接口拿去原本数据
-                let params0 = {};
-                params0["colSetId"] = this.dbid;
-                addTaskAllFun.getAllSQLs(params0).then(res => {
-                    arrsql = res.data ? res.data : [];
-                });
-            } */
-
+                    if (rep_table.length > 0) { //有重复表
+                        this.$message({
+                            showClose: true,
+                            message: '表' + rep_table + '重复,请修改',
+                            type: "error"
+                        });
+                    } else {
+                        this.saveTableConfFun(); //处理第一个页面数据
+                        this.sqlFun() //处理第二个页面数据
+                    }
+                } else {
+                    this.activeName = 'second'
+                }
+            });
+            
         },
         sqlFun() {
-             console.log(this.ruleForm.sqlExtractData, '第二个页面数据')
-               console.log(this.xsTypeArr2, '第二个页面卸数增量是存放数据')
-               console.log(this.ParallelExtractionArr2, '第二个页面并行抽取保存数据')
+            console.log(this.ruleForm.sqlExtractData, '第二个页面数据')
+            console.log(this.xsTypeArr2, '第二个页面卸数增量是存放数据')
+            console.log(this.ParallelExtractionArr2, '第二个页面并行抽取保存数据')
+            console.log(this.zdycallTable, 11)
+            let delold = [],twotabledata=JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData))//删除的表
+            for (let i = 0; i < twotabledata.length; i++) {
+                for (let j = 0; j < this.zdycallTable.length; j++) {
+                    if (twotabledata[i].table_name == this.zdycallTable[j].table_name) {
+                        this.zdycallTable.splice(j, 1)
+                        j--
+                    }
+                }
+            }
+            for (let j = 0; j < this.zdycallTable.length; j++) {
+                delold.push({
+                    'tableId': this.zdycallTable[j].table_id //存储删除的表id
+                })
+            }
+            for (let i = 0; i < twotabledata.length; i++) {
+                for (let j = 0; j < this.xsTypeArr2.length; j++) {
+                    if (twotabledata[i].table_name = this.xsTypeArr2[j].table_name) {
+                        twotabledata[i].sql = this.xsTypeArr2[j].sql
+                    }
 
+                }
+            }
+            console.log(this.ParallelExtractionArr2,twotabledata)
+            for (let i = 0; i < twotabledata.length; i++) {
+                if (twotabledata[i].unload_type == '增量') {
+                    twotabledata[i].unload_type = '0'
+                } else {
+                   twotabledata[i].unload_type = '1'
+                }
+                if (twotabledata[i].is_md5 == false) {
+                    twotabledata[i].is_md5 = '0'
+                } else {
+                    twotabledata[i].is_md5 = '1'
+                }
+                if (twotabledata[i].is_parallel == false) {
+                    twotabledata[i].is_parallel = '0'
+                } else {
+                    twotabledata[i].is_parallel = '1'
+                }
+                for (let j = 0; j < this.ParallelExtractionArr2.length; j++) {
+                    if (twotabledata[i].table_name == this.ParallelExtractionArr2[j].tablename) {
+                        twotabledata[i].dataincrement =  parseInt(this.ParallelExtractionArr2[j].dataincrement)
+                        twotabledata[i].pageparallels = parseInt(this.ParallelExtractionArr2[j].pageparallels)
+                        twotabledata[i].table_count =this.ParallelExtractionArr2[j].table_count+''
+                        twotabledata[i].rec_num_date = this.ParallelExtractionArr2[j].rec_num_date
+                    }
+
+                }
+            }
             let params1 = {};
-            params1["tableInfoArray"] = arrsql.length > 0 ? JSON.stringify(arrsql) : '';
+            params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
             params1["colSetId"] = parseInt(this.dbid);
+            //delold  删除的
+             params1["delTbString"] = delold.length > 0 ? JSON.stringify(delold) : '';
+             console.log(params1)
             addTaskAllFun.saveAllSQL(params1).then(res => {
-                if (res.code == 200) {
+                if (res.code == '200') {
                     this.activeSec = true;
+                    console.log(111)
                 } else {
                     this.isLoading = false
                 }
@@ -949,12 +1027,13 @@ export default {
                 query: data
             });
         },
+        // 处理第一个页面数据
         saveTableConfFun() {
             console.log(this.tableData, '第一个页面数据')
-              console.log(this.SelectColumn, '第一个页面选择列点击过保存的值')
-                        console.log(this.sqlFiltArr, '第一个页面sql过滤点击过保存的值')
-                        console.log(this.ParallelExtractionArr, '第一个页面并行抽取数据')
-                        console.log(this.xsTypeArr, '第一个页面卸数增量是存放数据')
+            console.log(this.SelectColumn, '第一个页面选择列点击过保存的值')
+            console.log(this.sqlFiltArr, '第一个页面sql过滤点击过保存的值')
+            console.log(this.ParallelExtractionArr, '第一个页面并行抽取数据')
+            console.log(this.xsTypeArr, '第一个页面卸数增量是存放数据')
             let arrData = [],
                 delJson = [],
                 tableInfoString = [],
@@ -978,43 +1057,59 @@ export default {
                 }
                 for (let j = 0; j < this.callTable.length; j++) {
                     delJson.push({
-                        'tableId': this.callTable[j].table_id//存储删除的表id
+                        'tableId': this.callTable[j].table_id //存储删除的表id
                     })
                 }
-                if (res.data.length > 0) {
-                    let arr = res.data;
-                    for (let i = 0; i < arrData.length; i++) {//已勾选的表
+                if (this.callTable2.length > 0) {
+                    for (let i = 0; i < arrData.length; i++) { //已勾选的表
                         //与原接口数据对比
-                        for (let j = 0; j < arr.length; j++) {//之前编辑的表
-                            if (arrData[i].table_name == arr[j].table_name) {//本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
-                                if (arr[j].page_sql) {
-                                    arrData[i].page_sql = arr[j].page_sql;
+                        for (let j = 0; j < this.callTable2.length; j++) { //之前编辑的表
+                            if (arrData[i].table_name == this.callTable2.table_name) { //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
+                                if (this.callTable2[j].dataincrement) {
+                                    arrData[i].dataincrement = this.callTable2[j].dataincrement; //每日数据增量
                                 }
-                                if (arr[j].sql) {
-                                    arrData[i].sql = arr[j].sql;
+                                if (this.callTable2[j].is_customize_sql) {
+                                    arrData[i].is_customize_sql = this.callTable2[j].is_customize_sql; //并行抽取的自定义sql
                                 }
-                                if (arr[j].pageparallels) {
-                                    arrData[i].pageparallels = arr[j].pageparallels;
+                                /*  if (arr[j].is_user_defined) {
+                                     arrData[i].is_user_defined = arr[j].is_user_defined;//是否sql抽取
+                                 } */
+                                if (this.callTable2[j].page_sql) {
+                                    arrData[i].page_sql = this.callTable2[j].page_sql; //分页sql
                                 }
-                                if (arr[j].dataincrement) {
-                                    arrData[i].dataincrement = arr[j].dataincrement;
+                                if (this.callTable2[j].pageparallels) {
+                                    arrData[i].pageparallels = this.callTable2[j].pageparallels; //分页并行数
                                 }
-                                if (arr[j].table_count) {
-                                    arrData[i].table_count = arr[j].table_count;
+                                if (this.callTable2[j].rec_num_date) {
+                                    arrData[i].rec_num_date = this.callTable2[j].rec_num_date; //获取数据总量点击按钮日期
                                 }
+                                if (this.callTable2[j].sql) {
+                                    arrData[i].sql = this.callTable2[j].sql; //过滤的sql
+                                }
+                              /*   if (this.callTable2[j].xssql) {
+                                    arrData[i].xssql = this.callTable2[j].xssql; //卸数方式设置的sql
+                                } */
+                                if (this.callTable2[j].table_count) {
+                                    arrData[i].table_count = this.callTable2[j].table_count; //数据总量
+                                }
+
                             }
                         }
                     }
                 }
-                if (this.ParallelExtractionArr.length > 0) {//本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
+                if (this.ParallelExtractionArr.length > 0) { //本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.ParallelExtractionArr.length; jj++) {
                             if (
                                 arrData[j].table_name ==
                                 this.ParallelExtractionArr[jj].tablename
                             ) {
+                                arrData[j].is_customize_sql = this.ParallelExtractionArr[jj].is_customize_sql;
                                 if (this.ParallelExtractionArr[jj].page_sql) {
                                     arrData[j].page_sql = this.ParallelExtractionArr[jj].page_sql;
+                                }
+                                if (this.ParallelExtractionArr[jj].rec_num_date) {
+                                    arrData[j].rec_num_date = this.ParallelExtractionArr[jj].rec_num_date;
                                 }
                                 if (this.ParallelExtractionArr[jj].pageparallels) {
                                     arrData[j].pageparallels = this.ParallelExtractionArr[
@@ -1035,7 +1130,7 @@ export default {
                         }
                     }
                 }
-                if (this.sqlFiltArr.length > 0) {//本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
+                if (this.sqlFiltArr.length > 0) { //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.sqlFiltArr.length; jj++) {
                             if (arrData[j].table_name == this.sqlFiltArr[jj].tablename) {
@@ -1046,22 +1141,82 @@ export default {
                         }
                     }
                 }
+                //   xsTypeArr
+                if (this.xsTypeArr.length > 0) { //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
+                    for (let j = 0; j < arrData.length; j++) {
+                        for (let jj = 0; jj < this.xsTypeArr.length; jj++) {
+                            if (arrData[j].table_name == this.xsTypeArr[jj].table_name) {
+                                if (this.xsTypeArr[jj].sql) {
+                                    arrData[j].xssql = this.xsTypeArr[jj].sql;
+                                }
+                            }
+                        }
+                    }
+                }
+                console.log(arrData)
                 for (let k = 0; k < arrData.length; k++) {
-                    tableInfoString.push({
-                        database_id: this.dbid,
-                        table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
-                        is_parallel: arrData[k].is_parallel ? "1" : "0",
-                        table_ch_name: arrData[k].table_ch_name,
-                        table_name: arrData[k].table_name,
-                        page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
-                        sql: arrData[k].sql ? arrData[k].sql : "",
-                        pageparallels: arrData[k].pageparallels ?
-                            parseInt(arrData[k].pageparallels) : null,
-                        dataincrement: arrData[k].dataincrement ?
-                            parseInt(arrData[k].dataincrement) : null,
-                        table_count: arrData[k].table_count ?
-                            "" + arrData[k].table_count : ""
-                    });
+                    if (arrData[k].unload_type == '增量') {
+                        tableInfoString.push({
+                            database_id: this.dbid,
+                            table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                            is_parallel: "0",
+                            is_md5: arrData[k].is_md5 ? "1" : "0",
+                            table_ch_name: arrData[k].table_ch_name,
+                            table_name: arrData[k].table_name,
+                            sql: arrData[k].xssql ? arrData[k].xssql : "",
+                            unload_type: '2'
+                        });
+                    } else {
+                        if (arrData[k].is_parallel == true) {
+                            if (arrData[k].is_customize_sql == '1') {
+                                tableInfoString.push({
+                                    database_id: this.dbid,
+                                    table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                                    is_parallel: "1",
+                                    unload_type: '1',
+                                    is_customize_sql: "1",
+                                    is_md5: arrData[k].is_md5 ? "1" : "0",
+                                    table_ch_name: arrData[k].table_ch_name,
+                                    table_name: arrData[k].table_name,
+                                    page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
+                                    sql: arrData[k].sql ? arrData[k].sql : "",
+                                });
+                            } else {
+                                tableInfoString.push({
+                                    database_id: this.dbid,
+                                    unload_type: '1',
+                                    table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                                    is_parallel: "1",
+                                    is_customize_sql: "0",
+                                    is_md5: arrData[k].is_md5 ? "1" : "0",
+                                    table_ch_name: arrData[k].table_ch_name,
+                                    table_name: arrData[k].table_name,
+                                    sql: arrData[k].sql ? arrData[k].sql : "",
+                                    pageparallels: arrData[k].pageparallels ?
+                                        parseInt(arrData[k].pageparallels) : null,
+                                    dataincrement: arrData[k].dataincrement ?
+                                        parseInt(arrData[k].dataincrement) : null,
+                                    table_count: arrData[k].table_count ?
+                                        "" + arrData[k].table_count : "",
+                                    rec_num_date: arrData[k].rec_num_date ? arrData[k].rec_num_date : ''
+                                });
+                            }
+
+                        } else {
+                            tableInfoString.push({
+                                database_id: this.dbid,
+                                unload_type: '1',
+                                table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                                is_parallel: "0",
+                                is_md5: arrData[k].is_md5 ? "1" : "0",
+                                table_ch_name: arrData[k].table_ch_name,
+                                table_name: arrData[k].table_name,
+                                sql: arrData[k].sql ? arrData[k].sql : "",
+                            });
+                        }
+
+                    }
+
                 }
                 this.tablein = tableInfoString;
                 this.saveTableInfofun(arrData, delJson);
@@ -1187,7 +1342,7 @@ export default {
                 query: data
             });
         },
-        // 定义过滤
+        //第一个页面 定义过滤
         Sqlfilt(value, row) {
             this.dialogTableSqlFilt = true;
             this.tablename = row.table_name;
@@ -1215,7 +1370,7 @@ export default {
                 this.SqlfiltShowFun(row.table_name);
             }
         },
-        // 定义过滤接口回显数据
+        //第一个页面 定义过滤接口回显数据
         SqlfiltShowFun(name) {
             let params = {};
             params["colSetId"] = this.dbid;
@@ -1227,7 +1382,7 @@ export default {
                 }
             });
         },
-        // 定义过滤提交按钮
+        //第一个页面 定义过滤提交按钮
         SqlfiltSubmitFun() {
             if (this.sqlFiltArr.length != 0) {
                 for (let i = 0; i < this.sqlFiltArr.length; i++) {
@@ -1250,6 +1405,7 @@ export default {
             }
             this.tablename = "";
         },
+        // 第一个页面过滤关闭
         SqlfiltCloseFun() {
             this.tablename = "";
         },
@@ -1258,6 +1414,7 @@ export default {
             this.EXtable_name = row.table_name
             this.dialogdyfysql = true
         },
+        // 第二个页面自定义sql提交
         checkedis_zdyparallelSubmitFun() {
             if (this.ParallelExtractionArr2.length != 0) {
                 for (let i = 0; i < this.ParallelExtractionArr2.length; i++) {
@@ -1270,22 +1427,25 @@ export default {
                     tablename: this.EXtable_name,
                     table_count: this.ruleForm_ParallelEx.db_allnum,
                     pageparallels: this.ruleForm_ParallelEx.pageExnum,
-                    dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                    dataincrement: this.ruleForm_ParallelEx.everDay_addnum,
+                    rec_num_date: this.ruleForm_ParallelEx.rec_num_date,
                 });
             } else {
                 this.ParallelExtractionArr2.push({
                     tablename: this.EXtable_name,
                     table_count: this.ruleForm_ParallelEx.db_allnum,
                     pageparallels: this.ruleForm_ParallelEx.pageExnum,
-                    dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                    dataincrement: this.ruleForm_ParallelEx.everDay_addnum,
+                    rec_num_date: this.ruleForm_ParallelEx.rec_num_date,
                 });
             }
 
             this.dialogdyfysql = false;
         },
 
-        // 是否抽取sql弹框
+        //第一个页面 是否抽取sql弹框
         checkedis_parallelFun(row) {
+            console.log(row)
             this.dialogTableVisible = true;
             this.EXtable_name = row.table_name;
             this.is_parallel = row.is_parallel;
@@ -1304,21 +1464,24 @@ export default {
                     arrid.length = 0;
                     for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
                         if (this.ParallelExtractionArr[i].tablename == this.EXtable_name) {
-                            this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[
-                                i
-                            ].is_user_defined;
-                            this.ruleForm_ParallelEx.EXtable_sql = this.ParallelExtractionArr[
-                                i
-                            ].page_sql;
-                            this.ruleForm_ParallelEx.db_allnum = this.ParallelExtractionArr[
-                                i
-                            ].table_count;
-                            this.ruleForm_ParallelEx.pageExnum = this.ParallelExtractionArr[
-                                i
-                            ].pageparallels;
-                            this.ruleForm_ParallelEx.everDay_addnum = this.ParallelExtractionArr[
-                                i
-                            ].dataincrement;
+                            if (this.ParallelExtractionArr[i].is_customize_sql == '1') {
+                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[i].is_customize_sql;
+                                this.ruleForm_ParallelEx.EXtable_sql = this.ParallelExtractionArr[
+                                    i
+                                ].page_sql;
+                            } else {
+                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[i].is_customize_sql;
+                                this.ruleForm_ParallelEx.db_allnum = this.ParallelExtractionArr[
+                                    i
+                                ].table_count;
+                                this.ruleForm_ParallelEx.pageExnum = this.ParallelExtractionArr[
+                                    i
+                                ].pageparallels;
+                                this.ruleForm_ParallelEx.everDay_addnum = this.ParallelExtractionArr[
+                                    i
+                                ].dataincrement;
+                            }
+
                         }
                     }
                 } else {
@@ -1336,16 +1499,22 @@ export default {
         },
         // 是否并行抽取sql弹框回显数据
         is_parallelShowFun(id) {
+            // ParallelExtractionArr
             let params = {};
             params["tableId"] = id;
             addTaskAllFun.getPageSQL(params).then(res => {
                 console.log(res.data)
                 if (res.data) {
-                    this.ruleForm_ParallelEx.issql = res.data[0].is_user_defined
-                    this.ruleForm_ParallelEx.EXtable_sql = res.data[0].page_sql;
-                    this.ruleForm_ParallelEx.pageExnum = res.data[0].pageparallels;
-                    this.ruleForm_ParallelEx.db_allnum = res.data[0].table_count;
-                    this.ruleForm_ParallelEx.everDay_addnum = res.data[0].dataincrement;
+                    if (res.data[0].is_customize_sql == '1') {
+                        this.ruleForm_ParallelEx.issql = res.data[0].is_customize_sql //是否
+                        this.ruleForm_ParallelEx.EXtable_sql = res.data[0].page_sql; //自定义sql
+                    } else {
+                        this.ruleForm_ParallelEx.issql = res.data[0].is_customize_sql //是否
+                        this.ruleForm_ParallelEx.pageExnum = res.data[0].pageparallels; //分页行数
+                        this.ruleForm_ParallelEx.db_allnum = res.data[0].table_count; //数据总量
+                        this.ruleForm_ParallelEx.everDay_addnum = res.data[0].dataincrement; //每日数据增量
+                    }
+
                 }
             });
         },
@@ -1388,14 +1557,15 @@ export default {
             params["tableName"] = this.EXtable_name;
             params["colSetId"] = parseInt(this.dbid);
             addTaskAllFun.getTableDataCount(params).then(res => {
-                var aData = new Date();
+                var nowDate = new Date();
                 let date = {
                     year: nowDate.getFullYear(),
                     month: nowDate.getMonth() + 1,
                     date: nowDate.getDate(),
                 }
                 this.ruleForm_ParallelEx.db_allnum = res.data ? res.data : "";
-                this.ruleForm_ParallelEx.newtime = date.year + 0 + date.month + 0 + date.date;
+                this.ruleForm_ParallelEx.rec_num_date = date.year + (date.month < 9 ? ('0' + date.month) : date.month) + (date.date < 9 ? ('0' + date.date) : date.date);
+                console.log(this.ruleForm_ParallelEx)
             });
         },
         // 是否抽取sql弹框确定提交
@@ -1418,13 +1588,13 @@ export default {
                                     }
                                     this.ParallelExtractionArr.push({
                                         tablename: this.EXtable_name,
-                                        is_user_defined: this.ruleForm_ParallelEx.issql,
+                                        is_customize_sql: this.ruleForm_ParallelEx.issql,
                                         page_sql: this.ruleForm_ParallelEx.EXtable_sql,
                                     });
                                 } else {
                                     this.ParallelExtractionArr.push({
                                         tablename: this.EXtable_name,
-                                        is_user_defined: this.ruleForm_ParallelEx.issql,
+                                        is_customize_sql: this.ruleForm_ParallelEx.issql,
                                         page_sql: this.ruleForm_ParallelEx.EXtable_sql,
                                     });
                                 }
@@ -1442,7 +1612,7 @@ export default {
                                 this.dialogTableVisible = false;
                             }
                         });
-                    } else if (that.ruleForm_ParallelEx.issql == '2') {
+                    } else if (that.ruleForm_ParallelEx.issql == '0') {
                         if (this.ParallelExtractionArr.length != 0) {
                             for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
                                 if (this.ParallelExtractionArr[i].tablename == this.EXtable_name) {
@@ -1452,33 +1622,35 @@ export default {
                             }
                             this.ParallelExtractionArr.push({
                                 tablename: this.EXtable_name,
-                                is_user_defined: this.ruleForm_ParallelEx.issql,
+                                is_customize_sql: this.ruleForm_ParallelEx.issql,
                                 table_count: this.ruleForm_ParallelEx.db_allnum,
                                 pageparallels: this.ruleForm_ParallelEx.pageExnum,
-                                dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                                dataincrement: this.ruleForm_ParallelEx.everDay_addnum,
+                                rec_num_date: this.ruleForm_ParallelEx.rec_num_date
                             });
                         } else {
                             this.ParallelExtractionArr.push({
                                 tablename: this.EXtable_name,
-                                is_user_defined: this.ruleForm_ParallelEx.issql,
+                                is_customize_sql: this.ruleForm_ParallelEx.issql,
                                 table_count: this.ruleForm_ParallelEx.db_allnum,
                                 pageparallels: this.ruleForm_ParallelEx.pageExnum,
-                                dataincrement: this.ruleForm_ParallelEx.everDay_addnum
+                                dataincrement: this.ruleForm_ParallelEx.everDay_addnum,
+                                rec_num_date: this.ruleForm_ParallelEx.rec_num_date
                             });
                         }
-                        for (let j = 0; j < this.tableData.length; j++) {
-                            if (this.tableData[j].table_name == this.EXtable_name) {
-                                this.tableData[j].is_parallel = true;
-                                for (let m = 0; m < this.allDataList.length; m++) {
-                                    if (this.allDataList[m].table_name == this.EXtable_name) {
-                                        this.allDataList[m].is_parallel = true;
-                                    }
-                                }
-                                this.EXtable_name = "";
-                            }
-                        }
-                        this.dialogTableVisible = false;
                     }
+                    for (let j = 0; j < this.tableData.length; j++) {
+                        if (this.tableData[j].table_name == this.EXtable_name) {
+                            this.tableData[j].is_parallel = true;
+                            for (let m = 0; m < this.allDataList.length; m++) {
+                                if (this.allDataList[m].table_name == this.EXtable_name) {
+                                    this.allDataList[m].is_parallel = true;
+                                }
+                            }
+                            this.EXtable_name = "";
+                        }
+                    }
+                    this.dialogTableVisible = false;
                     console.log(this.ParallelExtractionArr)
                 }
             });
@@ -1528,31 +1700,48 @@ export default {
                 });
             }
         },
+        // 第一个页面md5
+        md50Fun(row) {
+            console.log(row)
+            if (row.is_md5 == true) {
+                for (let i = 0; i < this.allDataList.length; i++) {
+                    if (this.allDataList[i].table_name == row.table_name) {
+                        this.allDataList[i].is_md5 = true;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.allDataList.length; i++) {
+                    if (this.allDataList[i].table_name == row.table_name) {
+                        this.allDataList[i].is_md5 = false;
+                    }
+                }
+            }
+        },
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
-            /*  for (let j = 0; j < this.tableData.length; j++) {
-                 if (this.tableData[j].table_name == this.EXtable_name) {
-                     if (this.is_parallel == false) {
-                         this.tableData[j].is_parallel = true;
-                         for (let i = 0; i < this.allDataList.length; i++) {
-                             if (this.allDataList[i].table_name == this.EXtable_name) {
-                                 this.allDataList[i].is_parallel = true;
-                             }
-                         }
-                         this.dialogTableVisible = false;
-                     } else {
-                         this.tableData[j].is_parallel = false;
-                         for (let i = 0; i < this.allDataList.length; i++) {
-                             if (this.allDataList[i].table_name == this.EXtable_name) {
-                                 this.allDataList[i].is_parallel = false;
-                             }
-                         }
-                         this.dialogTableVisible = false;
-                     }
+            for (let j = 0; j < this.tableData.length; j++) {
+                if (this.tableData[j].table_name == this.EXtable_name) {
+                    if (this.is_parallel == false) {
+                        this.tableData[j].is_parallel = true;
+                        for (let i = 0; i < this.allDataList.length; i++) {
+                            if (this.allDataList[i].table_name == this.EXtable_name) {
+                                this.allDataList[i].is_parallel = true;
+                            }
+                        }
+                        this.dialogTableVisible = false;
+                    } else {
+                        this.tableData[j].is_parallel = false;
+                        for (let i = 0; i < this.allDataList.length; i++) {
+                            if (this.allDataList[i].table_name == this.EXtable_name) {
+                                this.allDataList[i].is_parallel = false;
+                            }
+                        }
+                        this.dialogTableVisible = false;
+                    }
 
-                     this.EXtable_name = "";
-                 }
-             } */
+                    this.EXtable_name = "";
+                }
+            }
         },
         // 选择列
         selectCol(value, row) {
@@ -1745,14 +1934,23 @@ export default {
         },
         // 修改表名
         changetablechnameFun(chname, name) {
-            for (let m = 0; m < this.allData.length; m++) {
-                if (this.allData[m].table_name == name) {
-                    this.allData[m].table_ch_name = chname;
-                }
-            }
+            /*  for (let m = 0; m < this.allData.length; m++) {
+                 if (this.allData[m].table_name == name) {
+                     this.allData[m].table_ch_name = chname;
+                 }
+             } */
             for (let m = 0; m < this.allDataList.length; m++) {
                 if (this.allDataList[m].table_name == name) {
                     this.allDataList[m].table_ch_name = chname;
+                }
+            }
+        },
+
+        // 第一个页面卸数方式发生改变
+        oneunloadTypeFun(row) {
+            for (let m = 0; m < this.allDataList.length; m++) {
+                if (this.allDataList[m].table_name == row.table_name) {
+                    this.allDataList[m].unload_type = row.unload_type;
                 }
             }
         },
@@ -1828,7 +2026,7 @@ export default {
             }
             console.log(this.xsTypeArr)
         },
-        //第一个页面面卸数方式增量的设置提交
+        //第2个页面面卸数方式增量的设置提交
         xsaddSubmittwoFun() {
             if (this.xsTypeArr2.length > 0) {
                 let arr = []
@@ -1859,6 +2057,8 @@ export default {
             console.log(this.xsTypeArr2)
         },
         xsallSubmitFun() {
+            console.log(this.xsTypeArr2)
+
             if (this.xsTypeArr2.length > 0) {
                 let arr = []
                 this.xsTypeArr2.forEach((item) => {
@@ -1867,25 +2067,24 @@ export default {
                 if (arr.indexOf(this.Xstable_name) != -1) {
                     this.xsTypeArr2.forEach((item) => {
                         if (item.table_name == this.Xstable_name) {
-                            item.sql = this.xstypeadd2
+                            item.sql = this.xstypeadd2.add_sql
                         }
                     })
                     arr = []
                 } else {
                     this.xsTypeArr2.push({
                         table_name: this.Xstable_name,
-                        sql: this.xstypeadd2
+                        sql: this.xstypeadd2.add_sql
                     })
                     arr = []
                 }
             } else {
                 this.xsTypeArr2.push({
                     table_name: this.Xstable_name,
-                    sql: this.xstypeadd2
+                    sql: this.xstypeadd2.add_sql
                 })
 
             }
-            console.log(this.xsTypeArr2)
         }
     }
 };
