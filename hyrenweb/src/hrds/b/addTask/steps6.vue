@@ -327,11 +327,11 @@ export default {
         //Dispatch_Frequency
         this.getPreJobName() //获取上游作业名称
         this.getAgentPathFun() //获取目录
-        if (this.$route.query.edit) {
+       /*  if (this.$route.query.edit) {
             this.getEtlJobDataFun()//获取编辑任务下的作业信息
-        } else {
+        } else { */
             this.getPreviewJobFun() //获取任务下的作业信息
-        }
+        // }
         // 调度频率
         this.$Code.getCategoryItems({
             'category': 'Dispatch_Frequency'
