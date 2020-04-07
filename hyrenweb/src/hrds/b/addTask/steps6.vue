@@ -327,11 +327,11 @@ export default {
         //Dispatch_Frequency
         this.getPreJobName() //获取上游作业名称
         this.getAgentPathFun() //获取目录
-       /*  if (this.$route.query.edit) {
+        if (this.$route.query.edit) {
             this.getEtlJobDataFun()//获取编辑任务下的作业信息
-        } else { */
+        } else {
             this.getPreviewJobFun() //获取任务下的作业信息
-        // }
+        }
         // 调度频率
         this.$Code.getCategoryItems({
             'category': 'Dispatch_Frequency'
@@ -369,7 +369,6 @@ export default {
                     params["log_dic"] = this.ruleForm.log_path;
                     params["sub_sys_cd"] = this.ruleForm.work_num;
                     let arrdata = this.ruleForm.startuptableData
-                    console.log( this.ruleForm)
                     let etlJobs = [],
                         type = this.ruleForm.Dispatching_mode,ded_arr=[];
                     if (type == 'D') {
@@ -404,7 +403,7 @@ export default {
                                 'etl_job': arrdata[i].etl_job,
                                 'etl_job_desc': arrdata[i].etl_job_desc,
                                 'disp_freq': this.getDispatch_FrequencycodeFun(arrdata[i].disp_freq),
-                                'job_priority': arrdata[i].job_priority,
+                                'job_priority': parseInt(arrdata[i].job_priority),
                                 'disp_offset': parseInt(arrdata[i].disp_offset),
                                 'disp_time': arrdata[i].disp_time,
                                 'etl_sys_cd':this.ruleForm.Project_num,
@@ -412,10 +411,9 @@ export default {
                         }
                     }
                     params["etlJobs"] = JSON.stringify(etlJobs)
-                    params["ded_arr"] = JSON.stringify(ded_arr)
+                    params["ded_arr"] = ded_arr.join('^')
                     console.log(params)
                     sendTask.saveJobDataToDatabase(params).then(res => {
-                        console.log(res)
                         if (res.code == 200) {
                             this.isLoading = false
                             this.active = 6;
@@ -429,11 +427,17 @@ export default {
         },
         //通过触发方式value值遍历得到code
         getDispatch_FrequencycodeFun(value) {
-            this.Dispatch_Frequency.forEach((item) => {
+            for(let i=0;i<this.Dispatch_Frequency.length;i++){
+                if(this.Dispatch_Frequency[i].value==value){
+                    return this.Dispatch_Frequency[i].code
+                }
+            }
+          /*   this.Dispatch_Frequency.forEach((item) => {
                 if (item.value == value) {
+                    console.log(item.code)
                     return item.code
                 }
-            })
+            }) */
         },
         pre() {
             let data = {}
@@ -579,6 +583,7 @@ export default {
                         });
                     });
                     this.preJobName = arr;
+                    console.log(arr)
                 }
 
             });
