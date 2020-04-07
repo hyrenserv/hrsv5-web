@@ -8,7 +8,7 @@
         </el-button>
         <div class="lines"></div>
     </el-row>
-    <el-tabs class="tabes" v-model="activeName" type="card" @tab-click="handleClick">
+    <el-tabs class="tabes" v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="工程信息" name="first">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" width="70px" align='center'>
