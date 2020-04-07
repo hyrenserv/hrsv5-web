@@ -810,20 +810,20 @@ export default {
                 let params = {};
                 params["tbCleanString"] = JSON.stringify(tbCleanString);
                 params["colSetId"] = this.databaseId;
+                console.log(params)
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     // this.dbid = res.data;
                     this.isLoading=false
-                    this.$router.push({
+                    if(res.code==200){
+                           this.$router.push({
                         path: "/collection1_4",
                         query: data
                     });
+                    }
+                  
                 });
             } else {
                 this.isLoading=false
-                this.$router.push({
-                    path: "/collection1_4",
-                    query: data
-                });
             }
 
         },
@@ -851,6 +851,7 @@ export default {
         },
         dataCleanConfigFun() {
             let arr = JSON.parse(JSON.stringify(this.cleantableData));
+            console.log(arr)
             let arr3 = [];
             let json = {
                 tableId: "",
