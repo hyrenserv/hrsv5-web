@@ -363,7 +363,8 @@ export default {
             });
         } else {
             addTaskAllFun.addDBConfInfo().then(res => {
-                if (res.data) {
+
+                if (res.data.length != 0) {
                     this.ruleForm = res.data[0];
                     this.radio = res.data[0].classify_id;
                     this.dbid = res.data[0].database_id;
@@ -398,9 +399,9 @@ export default {
                 params["user_name"] = this.ruleForm.user_name;
                 params["database_pad"] = this.ruleForm.database_pad;
                 params["jdbc_url"] = this.ruleForm.jdbc_url;
-                if (this.edit == "yes") {
+                // if (this.edit == "yes") {
                     params["database_id"] = this.dbid;
-                }
+                // }
                 params["agent_id"] = this.agentId;
                 addTaskAllFun.saveDbConf(params).then(res => {
                     this.isLoading = false
