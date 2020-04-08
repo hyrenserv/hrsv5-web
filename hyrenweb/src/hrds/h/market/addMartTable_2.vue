@@ -8,7 +8,8 @@
                 <!--树菜单-->
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                 <div class='mytree'>
-                    <el-tree empty-text="暂无数据"  :expand-on-click-node="true" :indent='0' :props="treeProps" :load="loadNode" lazy
+                    <el-tree empty-text="暂无数据" :expand-on-click-node="true" :indent='0' :props="treeProps"
+                             :load="loadNode" lazy
                              node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
                           <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
@@ -152,16 +153,7 @@
                 columnmore: [],
                 columnmore: [],
                 allfield_type: [],
-                allfield_process: [{
-                    "value": "映射",
-                    "code": "map"
-                }, {
-                    "value": "自增",
-                    "code": "increment"
-                }, {
-                    "value": "定值",
-                    "code": "appoint"
-                }],
+                allfield_process: [],
                 databysql: [],
                 filterText: '',
                 treeProps: {id: 'id', label: 'name', children: 'children',},
@@ -180,6 +172,7 @@
         mounted() {
             // this.getcolumnbysql();
             this.getallfield_type();
+            this.getallfield_process();
             this.getcolumnmore();
             this.getcolumnfromdatabase();
             this.getquerysql();
@@ -194,7 +187,6 @@
                 // return this.checkBelongToChooseNode(value, data, node);
             },
             loadNode(node, resolve) {
-                debugger;
                 // this.searchResolve = resolve;
                 // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
                 if (node.level === 0) {
@@ -218,7 +210,6 @@
                 }
 
             },
-
             getquerysql() {
                 let params = {
                     "datatable_id": this.datatable_id,
@@ -247,6 +238,19 @@
                     };
                     functionAll.getColumnBySql(params).then(((res) => {
                         this.columnbysql = res.data;
+                        let tmp_field_type = this.columnbysql[0].field_type;
+                        console.log(this.allfield_type);
+                        let flag = true;
+                        debugger;
+                        for(var i=0;i<this.allfield_type.length;i++){
+                            if(tmp_field_type == this.allfield_type[i].target_type){
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if(flag){
+                            this.allfield_type.push({"target_type":tmp_field_type});
+                        }
                     }))
                 }
             },
@@ -283,6 +287,13 @@
                     this.allfield_type = res.data;
                 });
             },
+            getallfield_process() {
+                this.$Code.getCategoryItems({
+                    'category': 'ProcessType'
+                }).then(res => {
+                    this.allfield_process = res.data
+                })
+            },
             back() {
                 this.$router.push({
                     name: 'addMartTable_1',
@@ -311,7 +322,7 @@
                     "datatable_field_info": JSON.stringify(this.columnbysql),
                     "datatable_id": this.datatable_id,
                     "dm_column_storage": JSON.stringify(dm_column_storage),
-                    "querysql":this.querysql
+                    "querysql": this.querysql
                 }
                 functionAll.addDFInfo(param).then((res) => {
                     this.$message({

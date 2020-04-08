@@ -20,7 +20,6 @@
                 </el-form-item>
             </el-col>
 
-
             <el-col :span="10">
                 <el-form-item label="执行引擎" prop="sql_engine" :rules="rule.selected">
                     <el-select v-model="dm_datatable.sql_engine" placeholder="请选择">
@@ -37,13 +36,38 @@
                 </el-form-item>
             </el-col>
 
-
             <el-col :span="10">
-                <el-form-item label="数据存储方式" prop="datatype" :rules="rule.selected">
-                    <el-select v-model="dm_datatable.datatype" placeholder="请选择">
-                        <el-option v-for="item in alldatatype" :key="item.value" :label="item.value"
+                <el-form-item label="进数方式" prop="storage_type" :rules="rule.selected">
+                    <el-select v-model="dm_datatable.storage_type" placeholder="请选择">
+                        <el-option v-for="item in allstoragetype" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
                     </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="10">
+                <el-form-item label="数据存储方式" prop="table_storage" :rules="rule.selected">
+                    <el-select v-model="dm_datatable.table_storage" placeholder="请选择">
+                        <el-option v-for="item in alltablestorage" :key="item.value" :label="item.value"
+                                   :value="item.code"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="10">
+                <el-form-item label="数据生命周期" prop="datatable_lifecycle" :rules="rule.selected">
+                    <el-select v-model="dm_datatable.datatable_lifecycle" placeholder="请选择"
+                               @change="changeDataLifeCycle">
+                        <el-option v-for="item in alldatatablelifecycle" :key="item.value" :label="item.value"
+                                   :value="item.code"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="10" v-if="showData_date">
+                <el-form-item label="数据表到期日期" prop="datatable_due_date" :rules="rule.selected">
+                    <el-date-picker v-model="dm_datatable.datatable_due_date" format="yyyy-MM-dd" type="date"
+                                    align="right" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
             </el-col>
         </el-form>
@@ -123,6 +147,7 @@
     export default {
         data() {
             return {
+                showData_date: false,
                 data_table_id: "",
                 rule: validator.default,
                 dsl_id: "",
@@ -130,7 +155,9 @@
                 is_add: this.$route.query.is_add,
                 datatable_id: this.$route.query.datatable_id,
                 allsqlengine: [],
-                alldatatype: [],
+                allstoragetype: [],
+                alltablestorage: [],
+                alldatatablelifecycle: [],
                 dataSaveConfigure: false,
                 tableData: [],
                 dm_datatable: {
@@ -138,7 +165,10 @@
                     datatable_cn_name: "",
                     datatable_desc: "",
                     sql_engine: "",
-                    datatype: ""
+                    storage_type: "",
+                    table_storage: "",
+                    datatable_lifecycle: "",
+                    datatable_due_date: ""
                 },
                 checkboxType: [],
                 tableDataConfigure: [],
@@ -150,14 +180,23 @@
             };
         },
         mounted() {
+            this.getTable();
+            this.getAllSqlEngine();
+            this.getAllStorageType();
+            this.getAllTableStorage();
+            this.getAllDatatableLifecycle();
             if (this.datatable_id != undefined) {
                 this.queryDMDataTableByDataTableId()
             }
-            this.getTable();
-            this.getAllSqlEngine();
-            this.getAllDataType();
         },
         methods: {
+            changeDataLifeCycle() {
+                if (this.dm_datatable.datatable_lifecycle == "1") {
+                    this.showData_date = false;
+                } else {
+                    this.showData_date = true;
+                }
+            },
             queryDMDataTableByDataTableId() {
                 let param = {
                     "datatable_id": this.datatable_id
@@ -165,7 +204,15 @@
                 functionAll.queryDMDataTableByDataTableId(param).then((res) => {
                     if (res && res.success) {
                         this.dm_datatable = res.data[0];
+                        let dataYear = this.dm_datatable.datatable_due_date.substring(0, 4);
+                        let dataMonth = this.dm_datatable.datatable_due_date.substring(4, 6);
+                        let dataDay = this.dm_datatable.datatable_due_date.substring(6, 9);
+                        let data = dataYear + "-" + dataMonth + "-" + dataDay;
+                        this.dm_datatable.datatable_due_date = data;
                         this.dsl_id = res.data[0].dsl_id;
+                        if (this.dm_datatable.datatable_lifecycle == "2") {
+                            this.showData_date = true;
+                        }
                     } else {
                         this.$emit(response.message);
                     }
@@ -178,11 +225,25 @@
                     this.allsqlengine = res.data
                 })
             },
-            getAllDataType() {
+            getAllStorageType() {
                 this.$Code.getCategoryItems({
                     'category': 'StorageType'
                 }).then(res => {
-                    this.alldatatype = res.data
+                    this.allstoragetype = res.data
+                })
+            },
+            getAllTableStorage() {
+                this.$Code.getCategoryItems({
+                    'category': 'TableStorage'
+                }).then(res => {
+                    this.alltablestorage = res.data
+                })
+            },
+            getAllDatatableLifecycle() {
+                this.$Code.getCategoryItems({
+                    'category': 'TableLifeCycle'
+                }).then(res => {
+                    this.alldatatablelifecycle = res.data
                 })
             },
             next(formName) {
@@ -195,6 +256,7 @@
                             });
                             return false;
                         } else {
+                            debugger;
                             //新增
                             if (this.is_add == 0) {
                                 this.dm_datatable.dsl_id = this.dsl_id;
@@ -251,6 +313,7 @@
                             })
                         })
                         this.tableData = res.data;
+
                     }
                 });
             },
