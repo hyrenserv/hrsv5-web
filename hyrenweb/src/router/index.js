@@ -274,7 +274,7 @@ export default new Router({
                     path: '/mateDataManagement',
                     name: 'mateDataManagement',
                     title: '元数据管理',
-                    component: () => import('@/hrds/k/dataControl/mateDataManagement/mateDataManagement.vue')
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/mateDataManage.vue')
                 },
                 //血缘分析
                 {

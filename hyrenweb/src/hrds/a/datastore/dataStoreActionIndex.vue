@@ -4,7 +4,7 @@
         <span>数据存储层定义</span>
         <el-button size="small" class="dataSaveBtn" type="primary" @click="addTableData"><i class="el-icon-circle-plus-outline"></i>新增数据存储层</el-button>
     </el-row>
-
+    <el-divider></el-divider>
     <el-row class="partTwo">
         <el-table :data="tableData" border stripe size="medium">
             <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
@@ -238,10 +238,19 @@ let tableDatas = [];
 let fileArry = [];
 let dataKey;
 let index;
+let flag = 0;
+let flag2 = 0;
+let flag3 = 0;
+let flag4 = 0;
+let flag5 = 0;
+let flag6 = 0;
 let uploadindex;
 let valueIndex;
 let storetype;
 let uploadIndex;
+let arryMarkhive = [];
+let arryMarkhbase = [];
+let arrMarkall = [];
 export default {
     data() {
         return {
@@ -415,19 +424,133 @@ export default {
                 let j = arry.length - 1;
                 let i = res.data.layerAndAttr.length;
                 arry.push(...arr2);
+                let oldHive = [{
+                        storage_property_key: "database_drive"
+                    }, {
+                        storage_property_key: "jdbc_url"
+                    }, {
+                        storage_property_key: "user_name"
+                    }, {
+                        storage_property_key: "database_pad"
+                    }, {
+                        storage_property_key: "database_type"
+                    },
+                    {
+                        storage_property_key: "hbase-site.xml",
+                    }, {
+                        storage_property_key: "hdfs-site.xml"
+                    }, {
+                        storage_property_key: "core-site.xml"
+                    },
+                    {
+                        storage_property_key: "yarn-site.xml"
+                    },
+                    {
+                        storage_property_key: "mapreduce-site.xml"
+                    }, {
+                        storage_property_key: "keytab"
+                    }, {
+                        storage_property_key: "krb5"
+                    }
+                ];
+                let oldHbase = [{
+                    storage_property_key: "zkhost"
+                }, {
+                    storage_property_key: "hbase-site.xml",
+                }, {
+                    storage_property_key: "hdfs-site.xml"
+                }, {
+                    storage_property_key: "core-site.xml"
+                }, {
+                    storage_property_key: "keytab"
+                }, {
+                    storage_property_key: "krb5"
+                }]
                 // 编辑显示选择文件
                 if (row.store_type == "hive" || row.store_type == "Hbase") {
-                    this.inputindex = j;
-                    this.uploadindexmore = i;
-                    this.uploadindexless = j;
-                    this.showValue = false;
-                    this.selectVlueOrUpload = true;
+                    if (row.store_type == "hive") {
+                        this.inputindex = j;
+                        this.uploadindexmore = 12;
+                        this.uploadindexless = j;
+                        this.showValue = false;
+                        this.selectVlueOrUpload = true;
+                        let length = oldHive.length;
+                        flag = 1;
+                        flag2 = 0;
+                        flag3 = 0;
+                        flag4 = 0;
+                        flag5 = 0;
+                        flag6 = 0;
+                        arry.forEach(item => {
+                            for (let index = 0; index < length; index++) {
+                                if (item.storage_property_key == oldHive[index].storage_property_key) {
+                                    oldHive[index] = item
+                                }
+                            }
+
+                        })
+                        this.form.tableDataConfigure = oldHive;
+                        arryMarkhive = oldHive;
+                    } else if (row.store_type == "Hbase") {
+                        this.inputindex = j;
+                        this.uploadindexmore = 6;
+                        this.uploadindexless = j;
+                        this.showValue = false;
+                        this.selectVlueOrUpload = true;
+                        let length = oldHbase.length;
+                        flag = 0;
+                        flag2 = 0;
+                        flag3 = 1;
+                        flag4 = 0;
+                        flag5 = 0;
+                        flag6 = 0;
+                        arry.forEach(item => {
+                            for (let index = 0; index < length; index++) {
+                                if (item.storage_property_key == oldHbase[index].storage_property_key) {
+                                    oldHbase[index] = item;
+                                }
+                            }
+
+                        })
+                        this.form.tableDataConfigure = oldHbase;
+                        arryMarkhbase = oldHbase;
+                    }
                 } else {
+                    if (row.store_type == "solr") {
+                        flag = 0;
+                        flag2 = 0;
+                        flag3 = 0;
+                        flag4 = 1;
+                        flag5 = 0;
+                        flag6 = 0;
+                    } else if (row.store_type == "ElasticSearch") {
+                        flag = 0;
+                        flag2 = 0;
+                        flag3 = 0;
+                        flag4 = 0;
+                        flag5 = 1;
+                        flag6 = 0;
+                    } else if (row.store_type == "mongodb") {
+                        flag = 0;
+                        flag2 = 0;
+                        flag3 = 0;
+                        flag4 = 0;
+                        flag5 = 0;
+                        flag6 = 1;
+                    } else if (row.store_type == "关系型数据库") {
+                        flag = 0;
+                        flag2 = 1;
+                        flag3 = 0;
+                        flag4 = 0;
+                        flag5 = 0;
+                        flag6 = 0;
+                    }
                     this.showValue = true;
                     this.selectVlueOrUpload = false;
                     fileArry = [];
+                    this.form.tableDataConfigure = arry;
+                    arrMarkall = arry;
                 }
-                this.form.tableDataConfigure = arry;
                 this.form.dsl_name = res.data.dsl_name;
                 this.form.dtcs_id = res.data.dtcs_id;
                 this.form.dlcs_id = res.data.dlcs_id;
@@ -547,7 +670,7 @@ export default {
                         param.append('dsl_id', this.dsl_id);
 
                         // 处理参数dataStoreLayerAttr
-                        let valueArr =[];
+                        let valueArr = [];
                         this.form.tableDataConfigure.forEach((item) => {
                             if (item.is_file != 1 || JSON.stringify(item).indexOf("is_file") == -1) {
                                 valueArr.push(item);
@@ -627,6 +750,7 @@ export default {
             this.searchDataStore();
             this.dialogFormVisibleUpdate = false;
             this.$refs.form.resetFields();
+            this.form.tableDataConfigure = [];
         },
         // 关闭弹出框之前触发事件
         beforeClose() {
@@ -716,22 +840,10 @@ export default {
                 this.showValue = true;
                 this.selectVlueOrUpload = false;
                 this.showDownloadButton = false;
-                this.form.tableDataConfigure = [{
-                    storage_property_key: "database_drive"
-                }, {
-                    storage_property_key: "jdbc_url"
-                }, {
-                    storage_property_key: "user_name"
-                }, {
-                    storage_property_key: "database_pad"
-                }, {
-                    storage_property_key: "database_type"
-                }];
-                this.deleteLength = 5;
-                this.lengthdata = 5;
-                tableDataLength = this.form.tableDataConfigure.length;
-            } else if (val === "2") {
-                this.form.tableDataConfigure = [{
+                if (flag2 == 1) {
+                    this.form.tableDataConfigure = arrMarkall;
+                } else {
+                    this.form.tableDataConfigure = [{
                         storage_property_key: "database_drive"
                     }, {
                         storage_property_key: "jdbc_url"
@@ -741,25 +853,45 @@ export default {
                         storage_property_key: "database_pad"
                     }, {
                         storage_property_key: "database_type"
-                    },
-                    {
-                        storage_property_key: "hbase-site.xml",
-                    }, {
-                        storage_property_key: "hdfs-site.xml"
-                    }, {
-                        storage_property_key: "core-site.xml"
-                    },
-                    {
-                        storage_property_key: "yarn-site.xml"
-                    },
-                    {
-                        storage_property_key: "mapreduce-site.xml"
-                    }, {
-                        storage_property_key: "keytab"
-                    }, {
-                        storage_property_key: "krb5"
-                    }
-                ];
+                    }];
+                }
+                this.deleteLength = 5;
+                this.lengthdata = 5;
+                tableDataLength = this.form.tableDataConfigure.length;
+            } else if (val === "2") {
+                if (flag == 0) {
+                    this.form.tableDataConfigure = [{
+                            storage_property_key: "database_drive"
+                        }, {
+                            storage_property_key: "jdbc_url"
+                        }, {
+                            storage_property_key: "user_name"
+                        }, {
+                            storage_property_key: "database_pad"
+                        }, {
+                            storage_property_key: "database_type"
+                        },
+                        {
+                            storage_property_key: "hbase-site.xml",
+                        }, {
+                            storage_property_key: "hdfs-site.xml"
+                        }, {
+                            storage_property_key: "core-site.xml"
+                        },
+                        {
+                            storage_property_key: "yarn-site.xml"
+                        },
+                        {
+                            storage_property_key: "mapreduce-site.xml"
+                        }, {
+                            storage_property_key: "keytab"
+                        }, {
+                            storage_property_key: "krb5"
+                        }
+                    ];
+                } else {
+                    this.form.tableDataConfigure = arryMarkhive;
+                }
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.showDownloadButton = false;
                 this.lengthdata = 12;
@@ -770,19 +902,24 @@ export default {
                 this.uploadindexmore = 11;
                 this.inputindex = 4;
             } else if (val === "3") {
-                this.form.tableDataConfigure = [{
-                    storage_property_key: "zkhost"
-                }, {
-                    storage_property_key: "hbase-site.xml",
-                }, {
-                    storage_property_key: "hdfs-site.xml"
-                }, {
-                    storage_property_key: "core-site.xml"
-                }, {
-                    storage_property_key: "keytab"
-                }, {
-                    storage_property_key: "krb5"
-                }]
+                if (flag3 == 0) {
+                    this.form.tableDataConfigure = [{
+                        storage_property_key: "zkhost"
+                    }, {
+                        storage_property_key: "hbase-site.xml",
+                    }, {
+                        storage_property_key: "hdfs-site.xml"
+                    }, {
+                        storage_property_key: "core-site.xml"
+                    }, {
+                        storage_property_key: "keytab"
+                    }, {
+                        storage_property_key: "krb5"
+                    }]
+                } else {
+                    this.form.tableDataConfigure = arryMarkhbase;
+                }
+
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.lengthdata = 6;
                 this.showValue = false;
@@ -795,9 +932,13 @@ export default {
             } else if (val === "4") {
                 this.showValue = true;
                 this.selectVlueOrUpload = false;
-                this.form.tableDataConfigure = [{
-                    storage_property_key: "solr_url"
-                }]
+                if (flag4 == 1) {
+                    this.form.tableDataConfigure = arrMarkall;
+                } else {
+                    this.form.tableDataConfigure = [{
+                        storage_property_key: "solr_url"
+                    }]
+                }
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.lengthdata = 1;
                 this.deleteLength = 1;
@@ -805,7 +946,11 @@ export default {
             } else if (val === "5") {
                 this.deleteLength = 0;
                 this.showValue = true;
-                this.form.tableDataConfigure = [];
+                if (flag5 == 1) {
+                    this.form.tableDataConfigure = arrMarkall;
+                } else {
+                    this.form.tableDataConfigure = [];
+                }
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.lengthdata = this.form.tableDataConfigure.length;
                 this.showDownloadButton = false;
@@ -813,7 +958,11 @@ export default {
             } else if (val === "6") {
                 this.deleteLength = 0;
                 this.showValue = true;
-                this.form.tableDataConfigure = [];
+                if (flag6 == 1) {
+                    this.form.tableDataConfigure = arrMarkall;
+                } else {
+                    this.form.tableDataConfigure = [];
+                }
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.lengthdata = this.form.tableDataConfigure.length;
                 this.showDownloadButton = false;
@@ -928,9 +1077,8 @@ export default {
 </script>
 
 <style scoped>
-.dataStoreAction {
-    padding: 0 2% 0 2%;
-
+.dataStoreAction>>>.el-divider--horizontal {
+    margin: 1px 0 15px 0;
 }
 
 /* form边框 */
@@ -941,7 +1089,9 @@ export default {
 }
 
 .dataStoreAction .dataSave {
-    margin: 20px 0 10px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
     color: #2196f3;
     font-size: 18px;
 }

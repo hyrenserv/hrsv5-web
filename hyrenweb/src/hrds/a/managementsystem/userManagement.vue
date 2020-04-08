@@ -1,12 +1,13 @@
 <template>
 <div class="userManagement">
-    <el-row>
-        <i class="el-icon-view"></i>
+    <el-row class="elRows">
+        <!-- <i class="el-icon-view"></i> -->
         <span>用户列表</span>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true; getDepartAndUsertype()" size="small">
             <i class="el-icon-circle-plus-outline"></i>新增用户
         </el-button>
     </el-row>
+    <div class="lines"></div>
     <el-table stripe :data="userTablelist" border size="medium">
         <el-table-column type="index" label="序号" width="62" align="center">
             <template slot-scope="scope">
@@ -27,7 +28,7 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮增加新的用户信息-->
     <!-- 新增用户弹出框 -->
@@ -568,8 +569,14 @@ export default {
 /* button样式设置 */
 .els {
     float: right;
-    margin-top: 18px;
+    margin-top: 3px;
 
+}
+
+.elRows {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
 }
 
 .el1 {
@@ -586,6 +593,14 @@ export default {
 
 .fa-question-circle {
     margin-top: 12px;
+}
+
+.lines {
+    margin-top: 4px;
+    width: 100%;
+    min-height: 1px;
+    background: #dddddd;
+    margin-bottom: 15px;
 }
 
 /* 分页 */

@@ -536,9 +536,6 @@
     </el-dialog>
     <!-- 列合并 -->
     <el-dialog :visible.sync="dialogcolumnMerge" width="70%" class="alltable" id="colmerg">
-        <div slot="title" class="header-title">
-            <span class="title">列合并(合并的是最后的数据)</span>
-        </div>
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">列合并</span>
             <span>
@@ -813,20 +810,20 @@ export default {
                 let params = {};
                 params["tbCleanString"] = JSON.stringify(tbCleanString);
                 params["colSetId"] = this.databaseId;
+                console.log(params)
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     // this.dbid = res.data;
                     this.isLoading=false
-                    this.$router.push({
+                    if(res.code==200){
+                           this.$router.push({
                         path: "/collection1_4",
                         query: data
                     });
+                    }
+                  
                 });
             } else {
                 this.isLoading=false
-                this.$router.push({
-                    path: "/collection1_4",
-                    query: data
-                });
             }
 
         },
@@ -854,6 +851,7 @@ export default {
         },
         dataCleanConfigFun() {
             let arr = JSON.parse(JSON.stringify(this.cleantableData));
+            console.log(arr)
             let arr3 = [];
             let json = {
                 tableId: "",

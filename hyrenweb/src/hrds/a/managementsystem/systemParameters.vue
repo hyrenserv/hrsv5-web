@@ -1,18 +1,20 @@
 <template>
 <div class="systemParameters">
-    <el-row>
-        <i class="el-icon-coin"></i>
+    <el-row class="elRows">
+        <!-- <i class="el-icon-coin"></i> -->
         <span>系统参数列表</span>
         <el-button type="primary" class="els" @click="dialogFormVisibleAdd = true;" size="small">
             <i class="el-icon-circle-plus-outline"></i>新增系统参数
         </el-button>
     </el-row>
 
-    <el-col :span="8" class="searchData">
+    <div class="lines"></div>
+
+    <!-- <el-col :span="8" class="searchData">
         <el-input v-model="search" size="medium" @change="searchData" placeholder="系统参数名称">
             <el-button slot="append" icon="el-icon-search" @click="searchData" class="searchBtn">搜索</el-button>
         </el-input>
-    </el-col>
+    </el-col> -->
 
     <el-table stripe :data="systemParameters" size="medium" border>
         <el-table-column type="index" label="序号" width="62" align="center">
@@ -24,7 +26,11 @@
         <el-table-column prop="para_value" label="系统参数值" align="left" show-overflow-tooltip></el-table-column>
         <el-table-column prop="para_type" label="系统参数类型 " width="150" align="left" show-overflow-tooltip></el-table-column>
         <el-table-column prop="remark" label="系统参数备注" align="left" show-overflow-tooltip></el-table-column>
-        <el-table-column label="操作" align="center" width="160">
+        <el-table-column label="操作" align="center" width="164">
+            <template slot="header" slot-scope="scope">
+                <el-input v-model="search" size="mini" @keyup.enter.native="searchData" placeholder="系统参数名称(Enter)">
+                </el-input>
+            </template>
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
             </template>
@@ -33,11 +39,11 @@
 
     <!-- 分页内容 -->
     <el-row class="pagination">
-        <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
+        <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
     </el-row>
     <!-- 实现点击添加按钮进行页面数添加-->
     <!-- 添加的弹出表单 -->
-    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd"  :before-close="beforeCloseAdd">
+    <el-dialog title="新增系统参数" :visible.sync="dialogFormVisibleAdd" :before-close="beforeCloseAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label=" 系统参数名称" :label-width="formLabelWidth" prop="para_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.para_name" autocomplete="off" placeholder="请输入系统参数名称" style="width:284px"></el-input>
@@ -247,16 +253,30 @@ export default {
     margin-bottom: 4px;
 }
 
+.elRows {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+}
+
 .el-icon-coin,
 .el-row span {
     color: #2196f3;
     font-size: 18px;
 }
 
+.lines {
+    margin-top: 4px;
+    width: 100%;
+    min-height: 1px;
+    background: #dddddd;
+    margin-bottom: 15px;
+}
+
 /* button样式设置 */
 .els {
     float: right;
-    margin-top: 18px;
+    margin-top: 3px;
 
 }
 
@@ -289,5 +309,10 @@ export default {
 
 .el-pagination {
     float: right;
+}
+
+/* 搜索框样式 */
+.systemParameters>>>.el-table th {
+    padding: 7px 0;
 }
 </style>

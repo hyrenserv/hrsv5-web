@@ -7,7 +7,7 @@
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
         <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
             <el-table-column label="序号" align="center" width="60">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
                 </template>
             </el-table-column>
@@ -18,13 +18,13 @@
                     <!-- <el-button type="success"  size="mini" @click="dialogDatasaveType=true">选择数据存储方式</el-button> -->
                     <el-form-item :prop="'unloadingFileData.'+scope.$index+'.dbfile_format'" :rules="rule.selected">
                         <el-select placeholder="抽取数据存储方式" multiple v-model="scope.row.dbfile_format" style="margin-bottom: 5px;" size="mini" @change="IsExChangeDataFun(scope.row)" @remove-tag='removeTag'>
-                            <el-option size="medium" v-for="(item,index) in ExtractDataType" :key="index" :label="item.value" :value="item.value"></el-option>
+                            <el-option size="medium" v-for="(item,index) in ExtractDataType" :key="index+scope.$index" :label="item.value" :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
                 </template>
             </el-table-column>
             <el-table-column label="落地目录" align="center" width="260">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" disabled placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'fdc')">选择目录<span class='exDataColor'>(非定长)</span></el-button>
@@ -59,8 +59,8 @@
             </el-table-column>
             <el-table-column label=" 换行符" align="center">
                 <template slot-scope="scope">
-                    <el-form-item v-show="scope.row.fdc" :prop="'unloadingFileData.'+scope.$index+'.fdc_row_separator'" :rules="rule.selected">
-                        <el-select placeholder="非定长换行符" v-model="scope.row.fdc_row_separator" style="margin-bottom: 8px" size="mini">
+                    <el-form-item v-if="scope.row.fdc==true" :prop="'unloadingFileData.'+scope.$index+'.fdc_row_separator'" :rules="rule.selected" class='linefs'>
+                        <el-select placeholder="非定长换行符" v-model="scope.row.fdc_row_separator" style="margin-bottom: 8px" size="mini" >
                             <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
                         </el-select>
                     </el-form-item>
@@ -91,8 +91,8 @@
                         <i class="el-icon-question" aria-hidden="true">数据列分隔符</i>
                     </el-tooltip>
                 </template>
-                <template scope="scope">
-                    <el-form-item v-show="scope.row.fdc" :prop="'unloadingFileData.'+scope.$index+'.fdc_database_separatorr'" :rules="rule.default">
+                <template slot-scope="scope">
+                    <el-form-item v-if="scope.row.fdc==true" :prop="'unloadingFileData.'+scope.$index+'.fdc_database_separatorr'" :rules="rule.default" class='linefs'>
                         <el-input size="mini" v-model="scope.row.fdc_database_separatorr" style="margin-bottom: 8px;" placeholder="非定长数据列分隔符"></el-input>
                     </el-form-item>
                     <el-input v-show="scope.row.dc" size="mini" v-model="scope.row.dc_database_separatorr" style="margin-bottom: 8px;" placeholder="定长数据列分隔符"></el-input>
@@ -103,7 +103,7 @@
                 </template>
             </el-table-column>
             <el-table-column label="数据字符集" align="center">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-select v-show="scope.row.fdc" placeholder="非定长数据字符集" v-model="scope.row.fdc_database_code" style="margin-bottom: 8px;" size="mini">
                         <el-option v-for="(item,index) in DataBaseCode" :key="index" :label="item.value" :value="item.code"></el-option>
                     </el-select>
@@ -178,68 +178,6 @@
     </el-dialog>
     <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
     <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
-    <!-- 抽取数据存储方式弹框 -->
-    <!--    <el-dialog title="数据存储方式" :visible.sync="dialogDatasaveType" width="80%" class="alltable">
-        <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">数据存储方式</span>
-        </div>
-        <el-form ref="ruleForm" :model="ruleForm" class="steps4">
-            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe style="width: 100%" size="medium" border :data='ruleForm.dataSaveFileData'>
-                <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
-                </el-table-column>
-                <el-table-column label="序号" align="center" type="index" width="60">
-                </el-table-column>
-                <el-table-column label=" 抽取数据存储方式" align="center" prop="dbfile_format">
-                </el-table-column>
-                <el-table-column label=" 换行符" align="center">
-                    <template slot-scope="scope">
-                        <el-form-item v-if="scope.row.dbfile_format=='非定长'" :prop="'dataSaveFileData.'+scope.$index+'.row_separator'" :rules="rule.selected">
-                            <el-select placeholder="换行符" v-model="scope.row.row_separator" style="width:150px" size="medium" :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'">
-                                <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-select v-else placeholder="换行符" v-model="scope.row.row_separator" style="width:150px" size="medium" :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'">
-                            <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
-                        </el-select>
-                    </template>
-                </el-table-column>
-                <el-table-column label align="center">
-                    <template slot="header">
-                        <el-tooltip class="item" effect="light" content placement="right">
-                            <div slot="content">
-                                多行信息
-                                <br />第二行信息
-                            </div>
-                            <i class="el-icon-question" aria-hidden="true">数据列分隔符</i>
-                        </el-tooltip>
-                    </template>
-                    <template scope="scope">
-                        <el-form-item v-if="scope.row.dbfile_format=='非定长'" :prop="'dataSaveFileData.'+scope.$index+'.database_separatorr'" :rules="rule.default">
-                            <el-input :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'" size="medium" v-model="scope.row.database_separatorr" style="width:150px" placeholder="数据列分隔符"></el-input>
-                        </el-form-item>
-                        <el-input v-else :disabled="scope.row.dbfile_format=='ORC'||scope.row.dbfile_format=='PARQUET'||scope.row.dbfile_format=='SEQUENCEFILE'" size="medium" v-model="scope.row.database_separatorr" style="width:150px" placeholder="数据列分隔符"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column label="数据字符集" align="center">
-                    <template scope="scope">
-                        <el-select placeholder="数据字符集" v-model="scope.row.database_code" style="width:150px" size="medium">
-                            <el-option v-for="(item,index) in DataBaseCode" :key="index" :label="item.value" :value="item.code"></el-option>
-                        </el-select>
-                    </template>
-                </el-table-column>
-                <el-table-column label="是否有表头" align="center">
-                    <template scope="scope">
-                        <el-checkbox v-if="scope.row.dbfile_format=='CSV'" v-model="scope.row.istable" :checked="scope.row.istableS"></el-checkbox>
-                        <el-checkbox v-else disabled v-model="scope.row.istable" :checked="scope.row.istableS"></el-checkbox>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogDatasaveType=false" type="danger" size="mini">取 消</el-button>
-            <el-button type="primary" @click="dialogDatasaveType=false" size="mini">确 定</el-button>
-        </div>
-    </el-dialog> -->
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
         <div slot="title">
@@ -297,48 +235,6 @@ export default {
             unloadingpagesize: 100,
             ruleForm: {
                 unloadingFileData: [],
-                /*  dataSaveFileData: [{
-                         dbfile_format: '定长',
-                         row_separator: '',
-                         database_separatorr: '',
-                         database_code: '',
-                         istable: ''
-                     },
-                     {
-                         dbfile_format: '非定长',
-                         row_separator: '',
-                         database_separatorr: '',
-                         database_code: '',
-                         istable: ''
-                     }, {
-                         dbfile_format: 'ORC',
-                         row_separator: '',
-                         database_separatorr: '',
-                         database_code: '',
-                         istable: ''
-                     },
-                     {
-                         dbfile_format: 'CSV',
-                         row_separator: '',
-                         database_separatorr: '',
-                         database_code: '',
-                         istable: ''
-                     },
-                     {
-                         dbfile_format: 'PARQUET',
-                         row_separator: '',
-                         database_separatorr: '',
-                         database_code: '',
-                         istable: ''
-                     },
-                     {
-                         dbfile_format: 'SEQUENCEFILT',
-                         row_separator: '',
-                         database_separatorr: '',
-                         database_code: '',
-                         istable: ''
-                     }
-                 ] */
             },
             unloadingFileData: [],
             separatorData: {
@@ -392,6 +288,14 @@ export default {
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
         this.sName = this.$Base64.decode(this.$route.query.source_name);
+        // 抽取数据存储方式
+        let params = {};
+        params["category"] = "FileFormat";
+        this.$Code.getCategoryItems(params).then(res => {
+            if (res.data) {
+                this.ExtractDataType = res.data;
+            }
+        });
     },
     mounted() {
 
@@ -399,15 +303,6 @@ export default {
         // if (this.$route.query.edit == "yes") {
         this.getInitInfo();
         // }
-        // 抽取数据存储方式
-        let params = {};
-        params["category"] = "FileFormat";
-        this.$Code.getCategoryItems(params).then(res => {
-            if (res.data) {
-                this.ExtractDataType = res.data;
-                console.log(this.ExtractDataType)
-            }
-        });
         // 字符集下拉
         let params2 = {};
         params2["category"] = "DataBaseCode";
@@ -421,7 +316,6 @@ export default {
         next(formName) {
             this.isLoading = true
             var a = this.ruleForm.unloadingFileData;
-            console.log(this.ruleForm.unloadingFileData)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     let dataAll = a,
@@ -429,52 +323,55 @@ export default {
                     if (dataAll.length > 0) {
                         for (var i = 0; i < dataAll.length; i++) {
                             for (let j = 0; j < dataAll[i].dbfile_format.length; j++) {
-                                if (dataAll[i][j] == '非定长') {
+                                if (dataAll[i].dbfile_format[j] == '非定长') {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].fdc_ml,
                                         'row_separator': dataAll[i].fdc_row_separator,
                                         'database_separatorr': dataAll[i].fdc_database_separatorr,
                                         'database_code': dataAll[i].fdc_database_code,
-                                        'dbfile_format': dataAll[i].dbfile_format
+                                        'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
-                                } else if (dataAll[i][j] == '定长') {
+                                } else if (dataAll[i].dbfile_format[j] == '定长') {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].dc_ml,
                                         'row_separator': dataAll[i].dc_row_separator,
                                         'database_separatorr': dataAll[i].dc_database_separatorr,
                                         'database_code': dataAll[i].dc_database_code,
-                                        'dbfile_format': dataAll[i].dbfile_format
+                                        'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
-                                } else if (dataAll[i][j] == '"CSV"') {
+                                } else if (dataAll[i].dbfile_format[j] == 'CSV') {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].csv_ml,
                                         'row_separator': dataAll[i].csv_row_separator,
                                         'database_separatorr': dataAll[i].csv_database_separatorr,
                                         'database_code': dataAll[i].csv_database_code,
-                                        'dbfile_format': dataAll[i].dbfile_format
+                                        'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
-                                } else if (dataAll[i][j] == 'ORC') {
+                                } else if (dataAll[i].dbfile_format[j] == 'ORC') {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].orc_ml,
-                                        'database_code': dataAll[i].orc_database_code
+                                        'database_code': dataAll[i].orc_database_code,
+                                        'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
 
-                                } else if (dataAll[i][j] == 'SEQUENCEFILE') {
+                                } else if (dataAll[i].dbfile_format[j] == 'SEQUENCEFILE') {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].seq_ml,
-                                        'database_code': dataAll[i].seq_database_code
+                                        'database_code': dataAll[i].seq_database_code,
+                                        'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
 
-                                } else if (dataAll[i][j] == 'PARQUET') {
+                                } else if (dataAll[i].dbfile_format[j] == 'PARQUET') {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].par_ml,
-                                        'database_code': dataAll[i].par_database_code
+                                        'database_code': dataAll[i].par_database_code,
+                                        'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
 
                                 }
@@ -482,57 +379,34 @@ export default {
 
                         }
                         let params = {};
-                        params["colSetId"] = this.databaseId;
+                        params["colSetId"] = parseInt(this.databaseId);
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
-                        console.log(extractionDefString)
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
-                            // this.getInitInfo();
-                            let data = {};
-                            if (this.$route.query.edit == "yes") {
-                                data = {
-                                    agent_id: this.aId,
-                                    id: this.dbid,
-                                    source_id: this.sourId,
-                                    source_name: this.$Base64.encode(this.sName),
-                                    edit: "yes"
-                                };
-                            } else {
-                                data = {
-                                    id: this.dbid,
-                                    source_id: this.sourId,
-                                    source_name: this.$Base64.encode(this.sName)
-                                };
+                            if (res.code == 200) {
+                                let data = {};
+                                if (this.$route.query.edit == "yes") {
+                                    data = {
+                                        agent_id: this.aId,
+                                        id: this.dbid,
+                                        source_id: this.sourId,
+                                        source_name: this.$Base64.encode(this.sName),
+                                        edit: "yes"
+                                    };
+                                } else {
+                                    data = {
+                                        id: this.dbid,
+                                        source_id: this.sourId,
+                                        source_name: this.$Base64.encode(this.sName)
+                                    };
+                                }
+                                this.$router.push({
+                                    path: "/collection1_5",
+                                    query: data
+                                });
                             }
-                            this.$router.push({
-                                path: "/collection1_5",
-                                query: data
-                            });
-                        });
-                    } else {
-                        let data = {};
-                        if (this.$route.query.edit == "yes") {
-                            data = {
-                                agent_id: this.aId,
-                                id: this.dbid,
-                                source_id: this.sourId,
-                                source_name: this.$Base64.encode(this.sName),
-                                edit: "yes"
-                            };
-                        } else {
-                            data = {
-                                id: this.dbid,
-                                source_id: this.sourId,
-                                source_name: this.$Base64.encode(this.sName)
-                            };
-                        }
-                        this.isLoading = false
-                        this.$router.push({
-                            path: "/collection1_5",
-                            query: data
                         });
                     }
-
                 } else {
                     return false;
                     this.isLoading = false
@@ -572,23 +446,81 @@ export default {
             this.databaseId = this.dbid;
             let params = {};
             params["colSetId"] = this.databaseId;
-            console.log(params)
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getInitInfo(params).then(res => {
-                console.log(res)
                 if (res) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
                     } else {
-                        /*    for(let i=0;i<res.data.length;i++){
-res.data[i].dbfile_format=['定长','1','3']
- console.log(res.data[i].dbfile_format[0])
-                        } */
-                        this.ruleForm.unloadingFileData = res.data;
-                        console.log(this.ruleForm.unloadingFileData)
+                        let arrData = res.data
+                        for (let i = 0; i < arrData.length; i++) {
+                            arrData[i].dbfile_format = []
+                            for (let j = 0; j < arrData[i].tableData.length; j++) {
+                                if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == '非定长') {
+                                    arrData[i].fdc = true
+                                    arrData[i].fdc_ml = arrData[i].tableData[j].plane_url
+                                    arrData[i].fdc_row_separator = arrData[i].tableData[j].row_separator
+                                    arrData[i].fdc_database_separatorr = arrData[i].tableData[j].database_separatorr
+                                    arrData[i].fdc_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dbfile_format.push('非定长')
+                                } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == '定长') {
+                                    arrData[i].dc = true
+                                    arrData[i].dc_ml = arrData[i].tableData[j].plane_url
+                                    arrData[i].dc_row_separator = arrData[i].tableData[j].row_separator
+                                    arrData[i].dc_database_separatorr = arrData[i].tableData[j].database_separatorr
+                                    arrData[i].dc_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dbfile_format.push('定长')
+                                } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'ORC') {
+                                    arrData[i].orc = true
+                                    arrData[i].orc_ml = arrData[i].tableData[j].plane_url
+                                    arrData[i].orc_row_separator = arrData[i].tableData[j].row_separator
+                                    arrData[i].orc_database_separatorr = arrData[i].tableData[j].database_separatorr
+                                    arrData[i].orc_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dbfile_format.push('ORC')
+                                } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'CSV') {
+                                    arrData[i].csv = true
+                                    arrData[i].csv_ml = arrData[i].tableData[j].plane_url
+                                    arrData[i].csv_row_separator = arrData[i].tableData[j].row_separator
+                                    arrData[i].csv_database_separatorr = arrData[i].tableData[j].database_separatorr
+                                    arrData[i].csv_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dbfile_format.push('CSV')
+                                } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'SEQUENCEFILE') {
+                                    arrData[i].seq = true
+                                    arrData[i].seq_ml = arrData[i].tableData[j].plane_url
+                                    arrData[i].seq_row_separator = arrData[i].tableData[j].row_separator
+                                    arrData[i].seq_database_separatorr = arrData[i].tableData[j].database_separatorr
+                                    arrData[i].seq_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dbfile_format.push('SEQUENCEFILE')
+                                } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'PARQUET') {
+                                    arrData[i].par = true
+                                    arrData[i].par_ml = arrData[i].tableData[j].plane_url
+                                    arrData[i].par_row_separator = arrData[i].tableData[j].row_separator
+                                    arrData[i].par_database_separatorr = arrData[i].tableData[j].database_separatorr
+                                    arrData[i].par_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dbfile_format.push('PARQUET')
+                                }
+                            }
+                        }
+                        this.ruleForm.unloadingFileData = arrData;
                     }
                 }
             });
+        },
+        //抽取数据存储方式遍历得到中文名
+        getExtractDataTypeFun(code) {
+            for (let i = 0; i < this.ExtractDataType.length; i++) {
+                if (this.ExtractDataType[i].code == code) {
+                    return this.ExtractDataType[i].value
+                }
+            }
+        },
+        //抽取数据存储方式遍历得到code值
+        getExtractDataTypecodeFun(value) {
+            for (let i = 0; i < this.ExtractDataType.length; i++) {
+                if (this.ExtractDataType[i].value == value) {
+                    return this.ExtractDataType[i].code
+                }
+            }
         },
         //全表设置提交
         AllTable_SeparatorSubmitFun(formName) {
@@ -597,7 +529,6 @@ res.data[i].dbfile_format=['定长','1','3']
                     this.dialogAllTableSeparatorSettings = false;
                     let data = this.separatorData;
                     let alldata = this.ruleForm.unloadingFileData;
-                    console.log(this.ruleForm.unloadingFileData, this.separatorData)
                     for (var i = 0; i < alldata.length; i++) {
                         alldata[i].dc = false
                         alldata[i].fdc = false
@@ -605,14 +536,14 @@ res.data[i].dbfile_format=['定长','1','3']
                         alldata[i].seq = false
                         alldata[i].par = false
                         alldata[i].csv = false
-                        alldata[i].dbfile_format = '' //抽取方式
-                        alldata[i].dc_database_code = '' //字符集
+                        alldata[i].dbfile_format=''//抽取方式
+                        alldata[i].dc_database_code=''//字符集
                         alldata[i].dc_database_separatorr = '' //数据列分隔符
                         alldata[i].dc_row_separator = '' //换行符
                         alldata[i].dc_ml = this.separatorData.ml //目录
                         alldata[i].fdc_database_code = '' //字符集
-                        alldata[i].fdc_database_separatorr = '' //数据列分隔符
-                        alldata[i].fdc_row_separator = '' //换行符
+                        delete alldata[i].fdc_database_separatorr //数据列分隔符
+                        delete alldata[i].fdc_row_separator //换行符
                         alldata[i].fdc_ml = '' //目录
                         alldata[i].orc_database_code = '' //字符集
                         alldata[i].orc_database_separatorr = '' //数据列分隔符
@@ -639,10 +570,10 @@ res.data[i].dbfile_format=['定长','1','3']
                             alldata[i].dc_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == '非定长') {
                             alldata[i].fdc = true
+                            this.$set(alldata[i],'fdc_database_separatorr',this.separatorData.Datacolumnseparator)
+                            this.$set(alldata[i],'fdc_row_separator',this.separatorData.Newlinecharacte)
                             alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                             alldata[i].fdc_database_code = this.separatorData.Datacharacterset //字符集
-                            alldata[i].fdc_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
-                            alldata[i].fdc_row_separator = this.separatorData.Newlinecharacte //换行符
                             alldata[i].fdc_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'ORC') {
                             alldata[i].orc = true
@@ -673,7 +604,6 @@ res.data[i].dbfile_format=['定长','1','3']
                             alldata[i].par_row_separator = this.separatorData.Newlinecharacte //换行符
                             alldata[i].par_ml = this.separatorData.ml //目录
                         }
-                        console.log(alldata)
                     }
                     this.separatorData = {
                         ml: "",
@@ -688,7 +618,6 @@ res.data[i].dbfile_format=['定长','1','3']
                 }
             });
         },
-
         //全表关闭
         AllTable_SeparatorCloseFun() {
             this.dialogAllTableSeparatorSettings = false;
@@ -704,6 +633,7 @@ res.data[i].dbfile_format=['定长','1','3']
         AllTable_SeparatorFun() {
             this.dialogAllTableSeparatorSettings = true;
         },
+        // 选项改变时
         IsExChangeDataFun(row) {
             row.fdc = false
             row.dc = false
@@ -735,43 +665,37 @@ res.data[i].dbfile_format=['定长','1','3']
             this.separatorData.newlineCharacter = "";
             this.separatorData.dataColumnSeparator = "";
         },
-        /*   isexRadFun() {
-              this.separatorData.Extractformat = "";
-              this.separatorData.Newlinecharacte = "";
-              this.separatorData.Datacolumnseparator = "";
-          }, */
-
         removeTag(key) {
             if (key == '非定长') {
-                this.arrData.fdc_database_code = ''
-                this.arrData.fdc_database_separatorr = ''
-                this.arrData.fdc_row_separator = ''
-                this.arrData.fdc_ml = ''
+                delete this.arrData.fdc_database_code
+                delete this.arrData.fdc_database_separatorr
+                delete this.arrData.fdc_row_separator
+                delete this.arrData.fdc_ml
             } else if (key == '定长') {
-                this.arrData.dc_database_code = ''
-                this.arrData.dc_database_separatorr = ''
-                this.arrData.dc_row_separator = ''
-                this.arrData.dc_ml = ''
+                delete this.arrData.dc_database_code
+                delete this.arrData.dc_database_separatorr
+                delete this.arrData.dc_row_separator
+                delete this.arrData.dc_ml
             } else if (key == 'CSV') {
-                this.arrData.csv_database_code = ''
-                this.arrData.csv_database_separatorr = ''
-                this.arrData.csv_row_separator = ''
-                this.arrData.csv_ml = ''
+                delete this.arrData.csv_database_code
+                delete this.arrData.csv_database_separatorr
+                delete this.arrData.csv_row_separator
+                delete this.arrData.csv_ml
             } else if (key == 'SEQUENCEFILE') {
-                this.arrData.seq_database_code = ''
-                this.arrData.seq_database_separatorr = ''
-                this.arrData.seq_row_separator = ''
-                this.arrData.seq_ml = ''
+                delete this.arrData.seq_database_code
+                delete this.arrData.seq_database_separatorr
+                delete this.arrData.seq_row_separator
+                delete this.arrData.seq_ml
             } else if (key == 'PARQUET') {
-                this.arrData.par_database_code = ''
-                this.arrData.par_database_separatorr = ''
-                this.arrData.par_row_separator = ''
-                this.arrData.par_ml = ''
+                delete this.arrData.par_database_code
+                delete this.arrData.par_database_separatorr
+                delete this.arrData.par_row_separator
+                delete this.arrData.par_ml
             } else if (key == 'ORC') {
-                this.arrData.orc_database_code = ''
-                this.arrData.orc_database_separatorr = ''
-                this.arrData.orc_row_separator = ''
-                this.arrData.orc_ml = ''
+                delete this.arrData.orc_database_code
+                delete this.arrData.orc_database_separatorr
+                delete this.arrData.orc_row_separator
+                delete this.arrData.orc_ml
             }
         },
         // 获取目录结构
@@ -943,7 +867,9 @@ res.data[i].dbfile_format=['定长','1','3']
     left: 4%;
     z-index: 1
 }
-
+.linefs>>>.el-form-item__content{
+    line-height: 23px !important;
+}
 .steps4>>>.el-form-item__content::before {
     content: "*";
     color: #f56c6c;

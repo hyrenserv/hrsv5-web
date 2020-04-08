@@ -1,14 +1,14 @@
 <template>
 <div class="loindex">
-    <el-row>
-        <i class="block_icon fa fa-briefcase fa-globe blue"></i>
+    <el-row class="elRows">
+        <!-- <i class="block_icon fa fa-briefcase fa-globe blue"></i> -->
         <span>工程管理</span>
         <el-button type="primary" class="el1 els" @click="addProject" size="small">
             <i class="block_icon fa fa-plus-circle"></i>添加工程
         </el-button>
         <div class="lines"></div>
     </el-row>
-    <el-tabs class="tabes" v-model="activeName" type="card" @tab-click="handleClick">
+    <el-tabs class="tabes" v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="工程信息" name="first">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" width="70px" align='center'>
@@ -64,16 +64,16 @@
         </el-tab-pane>
     </el-tabs>
     <!-- 添加/编辑工程模态框 -->
-    <el-dialog :title="projectTitle" :visible.sync="dialogFormVisibleAdd" width="40%">
-        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm">
+    <el-dialog :title="projectTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
+        <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号"></el-input>
+                <el-input v-model="formAdd.etl_sys_cd" style="width:270px" autocomplete="off" placeholder="工程编号"></el-input>
             </el-form-item>
             <el-form-item label="工程名称" prop="etl_sys_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.etl_sys_name" autocomplete="off" placeholder="工程名称"></el-input>
+                <el-input v-model="formAdd.etl_sys_name" style="width:270px" autocomplete="off" placeholder="工程名称"></el-input>
             </el-form-item>
             <el-form-item label="工程描述" prop="comments">
-                <el-input type="textarea" v-model="formAdd.comments" autocomplete="off" placeholder="工程描述"></el-input>
+                <el-input type="textarea" v-model="formAdd.comments" style="width:270px" autocomplete="off" placeholder="工程描述"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -85,19 +85,19 @@
     <el-dialog title="部署Agent工程参数" :visible.sync="dialogFormVisibleDeploy" width="40%">
         <el-form :model="formDeploy" ref="formDeploy" label-width="170px" class="demo-ruleForm">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.etl_sys_cd" disabled></el-input>
+                <el-input v-model="formDeploy.etl_sys_cd" style="width:270px" disabled></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器IP" prop="etl_serv_ip" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.etl_serv_ip"></el-input>
+                <el-input v-model="formDeploy.etl_serv_ip" style="width:270px"></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器用户名" prop="user_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.user_name"></el-input>
+                <el-input v-model="formDeploy.user_name" style="width:270px"></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器密码" prop="user_pwd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.user_pwd" show-password></el-input>
+                <el-input v-model="formDeploy.user_pwd" style="width:270px" show-password></el-input>
             </el-form-item>
             <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.serv_file_path"></el-input>
+                <el-input v-model="formDeploy.serv_file_path" style="width:270px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -132,7 +132,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleCON" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="startCON" size="mini">启动</el-button>
+            <el-button type="primary" @click="startCON('formStartCON')" size="mini">启动</el-button>
         </div>
     </el-dialog>
     <!-- 启动TRIGGER模态框  -->
@@ -150,7 +150,7 @@
         </div>
     </el-dialog>
     <!-- CONTROL日志模态框 -->
-    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="60%">
+    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="72%">
         <el-form :model="formRecordCON" ref="formRecordCON" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="工程编号" prop="readNum">
                 <el-input v-model="formRecordCON.readNum"></el-input>
@@ -167,7 +167,6 @@
             </el-form-item>
         </el-form>
         <div style="margin-top:-25px">
-            <el-divider></el-divider>
             <span>{{formRecordCON.project_records}}</span>
             <el-divider></el-divider>
         </div>
@@ -176,7 +175,7 @@
         </div>
     </el-dialog>
     <!-- TRIGGER日志模态框 -->
-    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="60%">
+    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="72%">
         <el-form :model="formRecordTRI" ref="formRecordTRI" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="工程编号" prop="readNum">
                 <el-input v-model="formRecordTRI.readNum"></el-input>
@@ -193,7 +192,6 @@
             </el-form-item>
         </el-form>
         <div style="margin-top:-25px">
-            <el-divider></el-divider>
             <span>{{formRecordTRI.project_records}}</span>
             <el-divider></el-divider>
         </div>
@@ -366,6 +364,11 @@ export default {
             }
 
         },
+        // 关闭弹出框数据回显
+        beforeClose() {
+            this.getTable();
+            this.dialogFormVisibleAdd = false;
+        },
         // 所有项目图标数据
         monitorAllProjectChartsData() {
             etlMageAllFun.monitorAllProjectChartsData().then(res => {
@@ -454,53 +457,80 @@ export default {
         },
         //添加/修改工程模态框保存按钮
         add(formName) {
-            this.dialogFormVisibleAdd = false;
-            if (this.projectTitle == '添加工程') {
-                let params = {};
-                params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                params["etl_sys_name"] = this.formAdd.etl_sys_name;
-                params["comments"] = this.formAdd.comments;
-                etlMageAllFun.addEtlSys(params).then(res => {
-                    this.getTable();
-                });
-            } else if (this.projectTitle == '修改工程') {
-                let params = {};
-                params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                params["etl_sys_name"] = this.formAdd.etl_sys_name;
-                params["comments"] = this.formAdd.comments;
-                etlMageAllFun.updateEtlSys(params).then(res => {
-                    this.getTable();
-                });
-            }
-            this.formAdd = {};
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+
+                    if (this.projectTitle == '添加工程') {
+                        let params = {};
+                        params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                        params["etl_sys_name"] = this.formAdd.etl_sys_name;
+                        params["comments"] = this.formAdd.comments;
+                        etlMageAllFun.addEtlSys(params).then(res => {
+                            if (res.code == 200) {
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.getTable();
+                            }
+
+                        });
+                    } else if (this.projectTitle == '修改工程') {
+                        let params = {};
+                        params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                        params["etl_sys_name"] = this.formAdd.etl_sys_name;
+                        params["comments"] = this.formAdd.comments;
+                        etlMageAllFun.updateEtlSys(params).then(res => {
+                            if (res.code == 200) {
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.getTable();
+                            }
+                        });
+                    }
+                    this.formAdd = {};
+                }
+            })
+
         },
         //添加/修改工程模态框取消按钮
         cancleAdd() {
             // 表单清空
             this.formAdd = {};
             // 隐藏对话框
+            this.getTable();
             this.dialogFormVisibleAdd = false;
         },
         //部署Agent工程模态框保存按钮
-        saveDeploy() {
-            if (this.formDeploy.etl_sys_cd == '' || this.formDeploy.etl_serv_ip == '' || this.formDeploy.serv_file_path == '' || this.formDeploy.user_name == '' || this.formDeploy.user_pwd == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.formDeploy.etl_sys_cd;
-                params["etl_serv_ip"] = this.formDeploy.etl_serv_ip;
-                params["serv_file_path"] = this.formDeploy.serv_file_path;
-                params["user_name"] = this.formDeploy.user_name;
-                params["user_pwd"] = this.formDeploy.user_pwd;
-                etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
-                    this.getTable();
-                });
-                this.dialogFormVisibleDeploy = false;
-                this.formDeploy = {};
-            }
+        saveDeploy(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.formDeploy.etl_sys_cd;
+                    params["etl_serv_ip"] = this.formDeploy.etl_serv_ip;
+                    params["serv_file_path"] = this.formDeploy.serv_file_path;
+                    params["user_name"] = this.formDeploy.user_name;
+                    params["user_pwd"] = this.formDeploy.user_pwd;
+                    etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
+                        if (res.code == 200) {
+                            this.$message({
+                                message: '部署成功',
+                                type: 'success'
+                            });
+                            this.getTable();
+                            this.dialogFormVisibleDeploy = false;
+                            this.formDeploy = {};
+                        }
+
+                    });
+
+                }
+            })
+
         },
         //部署Agent工程模态框取消按钮
         cancleDeploy() {
@@ -508,24 +538,29 @@ export default {
             this.formDeploy = {};
         },
         //启动CONTROL模态框启动按钮
-        startCON() {
-            if (this.formStartCON.etl_sys_cd == '' || this.formStartCON.isResumeRun == '' || this.formStartCON.isAutoShift == '' || this.formStartCON.curr_bath_date == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.formStartCON.etl_sys_cd;
-                params["isResumeRun"] = this.formStartCON.isResumeRun;
-                params["isAutoShift"] = this.formStartCON.isAutoShift;
-                params["curr_bath_date"] = this.formStartCON.curr_bath_date;
-                etlMageAllFun.startControl(params).then(res => {
-                    this.getTable();
-                });
-                this.dialogFormVisibleStartCON = false;
-                this.formStartCON = {};
-            }
+        startCON(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.formStartCON.etl_sys_cd;
+                    params["isResumeRun"] = this.formStartCON.isResumeRun;
+                    params["isAutoShift"] = this.formStartCON.isAutoShift;
+                    params["curr_bath_date"] = this.formStartCON.curr_bath_date;
+                    etlMageAllFun.startControl(params).then(res => {
+                        if (res.code == 200) {
+                            this.$message({
+                                message: '启动CONTROL成功',
+                                type: 'success'
+                            });
+                            this.getTable();
+                            this.dialogFormVisibleStartCON = false;
+                            this.formStartCON = {};
+                        }
+                    });
+
+                }
+            })
+
         },
         //启动CONTROL模态框取消按钮
         cancleCON() {
@@ -537,10 +572,17 @@ export default {
             let params = {};
             params["etl_sys_cd"] = this.formStartTRI.etl_sys_cd;
             etlMageAllFun.startTrigger(params).then(res => {
-                this.getTable();
+                if (res.code == 200) {
+                    this.$message({
+                        message: '启动TRIGGER成功',
+                        type: 'success'
+                    });
+                    this.getTable();
+                    this.formStartTRI = {};
+                    this.dialogFormVisibleStartTRI = false;
+                }
             });
-            this.formStartTRI = {};
-            this.dialogFormVisibleStartTRI = false;
+
         },
         //启动TRIGGER模态框取消按钮
         cancleTRI() {
@@ -922,20 +964,26 @@ export default {
 
 <style scoped>
 .lines {
-    margin-top: 10px;
+    margin-top: 2px;
     width: 100%;
     min-height: 1px;
     background: #dddddd;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .tabes {
-    margin-top: 25px;
+    margin-top: 14px;
 }
 
 .el-row {
     height: 64px;
     line-height: 64px;
+    width: 100%;
+}
+
+.elRows {
+    height: 40px;
+    line-height: 40px;
     width: 100%;
 }
 
@@ -957,7 +1005,7 @@ i {
 /* button样式设置 */
 .els {
     float: right;
-    margin-top: 18px;
+    margin-top: 3px;
 }
 
 .el1 {

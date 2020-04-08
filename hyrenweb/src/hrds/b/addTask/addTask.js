@@ -171,6 +171,13 @@ export function getColumnInfoByColSetId(data) {
         params:data
     })
 }
+// 点击卸数方式的设置
+export function getTableSetUnloadData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getTableSetUnloadData',
+        params:data
+    })
+}
 //steps3
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
@@ -564,6 +571,20 @@ export function getAgentPath(data) {
 export function getPreviewJob(data) {
     return request({
         url: '/B/agent/dbagentconf/startwayconf/getPreviewJob',
+        params: data
+    })
+ }
+//编辑状态下获取作业信息
+export function getEtlJobData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlJobData',
+        params: data
+    })
+ }
+//  保存完成
+export function saveJobDataToDatabase(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/saveJobDataToDatabase',
         params: data
     })
  }
