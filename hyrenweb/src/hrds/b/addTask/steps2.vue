@@ -169,7 +169,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <!--   <el-form-item label=" 变量名: " prop="Variable_name">
+                    <!--   <el-form-item label=" 变量名: " prop="Variable_name">
                         <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
                             <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
                         </el-select>
@@ -264,24 +264,24 @@
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-            <el-form-item label="删除SQL" prop="del_sql" :rules="rule.default">
+            <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.del_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="add_sql" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="add" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.add_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="updata_sql" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="update" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.updata_sql" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.update" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -297,25 +297,25 @@
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
-        <el-form :model="xstypeadd2" status-icon ref="xstypeadd" label-width="30%">
+        <el-form :model="xstypeadd2" status-icon ref="xstypeadd2" label-width="30%">
             <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
             <el-form-item label="新增SQL" prop="add" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="updata" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="update" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.updata" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.update" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -331,7 +331,7 @@
             <span class="dialogtitle el-icon-caret-right">卸数方式-全量</span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
-        <el-form :model="xstypeadd2" status-icon ref="xstypeadd" label-width="30%">
+        <el-form :model="xstypeadd2" status-icon ref="xstypeadd2" label-width="30%">
             <el-form-item label="SQL" prop="add" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
@@ -346,7 +346,7 @@
         </div>
     </el-dialog>
     <!--diyi 是否并行抽取弹层 -->
-    <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+    <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
             <span class="dialogtoptxt">
@@ -407,9 +407,9 @@
         </div>
     </el-dialog>
     <!-- 自定义是否并行抽取弹层 -->
-    <el-dialog title :visible.sync="dialogTableVisible_zdy" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+    <!--  <el-dialog title :visible.sync="dialogTableVisible_zdy" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
         <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
+            <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL1111</span>
         </div>
         <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
             <el-row type="flex" style="text-align:right;padding-right:10px;">
@@ -445,9 +445,9 @@
             <el-button type="danger" size="mini" @click="dialogTableVisible_zdy=false">取 消</el-button>
             <el-button type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
         </div>
-    </el-dialog>
+    </el-dialog> -->
     <!--dier定义分页抽取sql  -->
-    <el-dialog title :visible.sync="dialogdyfysql" width="50%" class="alltable" @close="testParallelExtractionCloseFun()">
+    <el-dialog title :visible.sync="dialogdyfysql" width="50%" class="alltable" @close="testParallelExtractionCloseFun2()">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
         </div>
@@ -477,7 +477,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button type="danger" size="mini" @click="dialogdyfysql=false">取 消</el-button>
+            <el-button type="danger" size="mini" @click="testParallelExtractionCloseFun2()">取 消</el-button>
             <el-button type="primary" size="mini" @click="checkedis_zdyparallelSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
@@ -542,14 +542,14 @@ export default {
                 pageExnum: 5
             },
             xstypeadd: {
-                del_sql: '',
-                add_sql: '',
-                updata_sql: ''
+                delete: '',
+                add: '',
+                update: ''
             },
             xstypeadd2: {
                 delete: '',
                 add: '',
-                updata: ''
+                update: ''
             },
             dbid: null,
             agentId: null,
@@ -748,6 +748,7 @@ export default {
 
                     }
                     this.tableData = data;
+                    console.log(this.tableData)
                     this.callTable = JSON.parse(JSON.stringify(data)) //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
                     this.callTable2 = JSON.parse(JSON.stringify(data))
                     // this.Allis_selectionState = true;
@@ -908,6 +909,7 @@ export default {
             // if (this.handleactive == true) { //切换过第二个页面
             this.$refs['ruleForm'].validate(valid => {
                 if (valid) {
+                    this.isLoading = true
                     let tableData = this.tableData,
                         sqlExtractData = this.ruleForm.sqlExtractData,
                         rep_table = []
@@ -921,6 +923,7 @@ export default {
                         }
                     }
                     if (rep_table.length > 0) { //有重复表
+                        this.isLoading = false
                         this.$message({
                             showClose: true,
                             message: '表' + rep_table + '重复,请修改',
@@ -943,19 +946,19 @@ export default {
             console.log(this.zdycallTable, 11)
             let delold = [],
                 twotabledata = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData)) //删除的表
-            for (let i = 0; i < twotabledata.length; i++) {
-                for (let j = 0; j < this.zdycallTable.length; j++) {
-                    if (twotabledata[i].table_name == this.zdycallTable[j].table_name) {
-                        this.zdycallTable.splice(j, 1)
-                        j--
-                    }
-                }
-            }
-            for (let j = 0; j < this.zdycallTable.length; j++) {
-                delold.push({
-                    'tableId': this.zdycallTable[j].table_id //存储删除的表id
-                })
-            }
+            /*   for (let i = 0; i < twotabledata.length; i++) {
+                  for (let j = 0; j < this.zdycallTable.length; j++) {
+                      if (twotabledata[i].table_name == this.zdycallTable[j].table_name) {
+                          this.zdycallTable.splice(j, 1)
+                          j--
+                      }
+                  }
+              }
+              for (let j = 0; j < this.zdycallTable.length; j++) {
+                  delold.push({
+                      'tableId': this.zdycallTable[j].table_id //存储删除的表id
+                  })
+              } */
             for (let i = 0; i < twotabledata.length; i++) {
                 for (let j = 0; j < this.xsTypeArr2.length; j++) {
                     if (twotabledata[i].table_name = this.xsTypeArr2[j].table_name) {
@@ -984,7 +987,7 @@ export default {
                 for (let j = 0; j < this.ParallelExtractionArr2.length; j++) {
                     if (twotabledata[i].table_name == this.ParallelExtractionArr2[j].tablename) {
                         twotabledata[i].dataincrement = parseInt(this.ParallelExtractionArr2[j].dataincrement)
-                        twotabledata[i].pageparallels = parseInt(this.ParallelExtractionArr2[j].pageparallels)
+                        twotabledata[i].pageparallels = this.ParallelExtractionArr2[j].pageparallels != '' ? parseInt(this.ParallelExtractionArr2[j].pageparallels) : 0
                         twotabledata[i].table_count = this.ParallelExtractionArr2[j].table_count + ''
                         twotabledata[i].rec_num_date = this.ParallelExtractionArr2[j].rec_num_date
                     }
@@ -995,7 +998,7 @@ export default {
             params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
             params1["colSetId"] = parseInt(this.dbid);
             //delold  删除的
-            params1["delTbString"] = delold.length > 0 ? JSON.stringify(delold) : '';
+            // params1["delTbString"] = delold.length > 0 ? JSON.stringify(delold) : '';
             console.log(params1)
             addTaskAllFun.saveAllSQL(params1).then(res => {
                 if (res.code == '200') {
@@ -1063,19 +1066,21 @@ export default {
                     })
                 }
                 if (this.callTable2.length > 0) {
+                    console.log(this.callTable2)
                     for (let i = 0; i < arrData.length; i++) { //已勾选的表
                         //与原接口数据对比
                         for (let j = 0; j < this.callTable2.length; j++) { //之前编辑的表
-                            if (arrData[i].table_name == this.callTable2.table_name) { //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
+                            if (arrData[i].table_name == this.callTable2[j].table_name && arrData[i].unload_type == this.callTable2[j].unload_type) {
+                                //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
                                 if (this.callTable2[j].dataincrement) {
                                     arrData[i].dataincrement = this.callTable2[j].dataincrement; //每日数据增量
                                 }
                                 if (this.callTable2[j].is_customize_sql) {
                                     arrData[i].is_customize_sql = this.callTable2[j].is_customize_sql; //并行抽取的自定义sql
                                 }
-                                /*  if (arr[j].is_user_defined) {
-                                     arrData[i].is_user_defined = arr[j].is_user_defined;//是否sql抽取
-                                 } */
+                                /*   if (arr[j].table_ch_name) {
+                                      arrData[i].table_ch_name = this.callTable2[j].table_ch_name;//是否sql抽取
+                                  } */
                                 if (this.callTable2[j].page_sql) {
                                     arrData[i].page_sql = this.callTable2[j].page_sql; //分页sql
                                 }
@@ -1087,7 +1092,9 @@ export default {
                                 }
                                 if (this.callTable2[j].sql) {
                                     arrData[i].sql = this.callTable2[j].sql; //过滤的sql
+
                                 }
+
                                 /*   if (this.callTable2[j].xssql) {
                                       arrData[i].xssql = this.callTable2[j].xssql; //卸数方式设置的sql
                                   } */
@@ -1098,6 +1105,7 @@ export default {
                             }
                         }
                     }
+                    console.log(arrData)
                 }
                 if (this.ParallelExtractionArr.length > 0) { //本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
@@ -1135,7 +1143,7 @@ export default {
                 if (this.sqlFiltArr.length > 0) { //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.sqlFiltArr.length; jj++) {
-                            if (arrData[j].table_name == this.sqlFiltArr[jj].tablename) {
+                            if (arrData[j].table_name == this.sqlFiltArr[jj].tablename && arrData[j].unload_type == '全量') {
                                 if (this.sqlFiltArr[jj].sql) {
                                     arrData[j].sql = this.sqlFiltArr[jj].sql;
                                 }
@@ -1147,9 +1155,9 @@ export default {
                 if (this.xsTypeArr.length > 0) { //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.xsTypeArr.length; jj++) {
-                            if (arrData[j].table_name == this.xsTypeArr[jj].table_name) {
+                            if (arrData[j].table_name == this.xsTypeArr[jj].table_name && arrData[j].unload_type == '增量') {
                                 if (this.xsTypeArr[jj].sql) {
-                                    arrData[j].xssql = this.xsTypeArr[jj].sql;
+                                    arrData[j].sql = JSON.stringify(this.xsTypeArr[jj].sql);
                                 }
                             }
                         }
@@ -1165,14 +1173,13 @@ export default {
                             is_md5: arrData[k].is_md5 ? "1" : "0",
                             table_ch_name: arrData[k].table_ch_name,
                             table_name: arrData[k].table_name,
-                            sql: arrData[k].xssql ? arrData[k].xssql : "",
+                            sql: arrData[k].sql ? arrData[k].sql : '',
                             unload_type: '2'
                         });
                     } else {
                         if (arrData[k].is_parallel == true) {
-                             console.log(arrData[k])
+                            console.log(arrData[k])
                             if (arrData[k].is_customize_sql == '1') {
-                           
 
                                 tableInfoString.push({
                                     database_id: this.dbid,
@@ -1184,7 +1191,7 @@ export default {
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
-                                    sql: arrData[k].sql ? arrData[k].sql : "",
+                                    sql: arrData[k].sql ? arrData[k].sql : '',
                                 });
                             } else {
                                 tableInfoString.push({
@@ -1196,7 +1203,7 @@ export default {
                                     is_md5: arrData[k].is_md5 ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
-                                    sql: arrData[k].sql ? arrData[k].sql : "",
+                                    sql: arrData[k].sql ? arrData[k].sql : '',
                                     pageparallels: arrData[k].pageparallels ?
                                         parseInt(arrData[k].pageparallels) : null,
                                     dataincrement: arrData[k].dataincrement ?
@@ -1216,7 +1223,7 @@ export default {
                                 is_md5: arrData[k].is_md5 ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
                                 table_name: arrData[k].table_name,
-                                sql: arrData[k].sql ? arrData[k].sql : "",
+                                sql: arrData[k].sql ? arrData[k].sql : '',
                             });
                         }
 
@@ -1417,13 +1424,15 @@ export default {
         },
         //第二个页面 自定义是否抽取sql
         checkedis_zdyparallelFun(row) {
+            let a = row.is_parallel
             this.EXtable_name = row.table_name
+            this.is_parallel = a;
             this.dialogdyfysql = true
             this.ruleForm_ParallelEx.pageExnum = "";
             this.ruleForm_ParallelEx.db_allnum = "";
             this.ruleForm_ParallelEx.everDay_addnum = "";
             this.ruleForm_ParallelEx.rec_num_date = "";
-             // 判断如果数组暂存的有数据就遍历显示，没有见调接口
+            // 判断如果数组暂存的有数据就遍历显示，没有见调接口
             if (this.ParallelExtractionArr2.length != 0) {
                 let arrid = [];
                 for (let i = 0; i < this.ParallelExtractionArr2.length; i++) {
@@ -1491,16 +1500,22 @@ export default {
                     rec_num_date: this.ruleForm_ParallelEx.rec_num_date,
                 });
             }
-console.log(this.ParallelExtractionArr2)
+            for (let j = 0; j < this.ruleForm.sqlExtractData.length; j++) {
+                if (this.ruleForm.sqlExtractData[j].table_name == this.EXtable_name) {
+                    this.ruleForm.sqlExtractData[j].is_parallel = true;
+                    this.EXtable_name = "";
+                }
+            }
             this.dialogdyfysql = false;
         },
 
         //第一个页面 是否抽取sql弹框
         checkedis_parallelFun(row) {
             console.log(row)
+            let a = JSON.parse(JSON.stringify(row.is_parallel))
             this.dialogTableVisible = true;
             this.EXtable_name = row.table_name;
-            this.is_parallel = row.is_parallel;
+            this.is_parallel = a;
             this.ruleForm_ParallelEx.issql = ''
             this.ruleForm_ParallelEx.EXtable_sql = "";
             this.ruleForm_ParallelEx.pageExnum = "";
@@ -1623,10 +1638,11 @@ console.log(this.ParallelExtractionArr2)
         // 是否抽取sql弹框确定提交
         testParallelExtractionSubmitFun(formName) {
             let that = this
+            console.log(that.ruleForm_ParallelEx, 'that.ruleForm_ParallelEx')
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     console.log(this.EXtable_name)
-                    let tablename=this.EXtable_name
+                    let tablename = this.EXtable_name
                     if (that.ruleForm_ParallelEx.issql == '1') {
                         let params = {};
                         params["colSetId"] = this.dbid;
@@ -1653,10 +1669,11 @@ console.log(this.ParallelExtractionArr2)
                                     });
                                 }
                                 for (let j = 0; j < this.tableData.length; j++) {
-                                    if (this.tableData[j].table_name ==tablename) {
+                                    if (this.tableData[j].table_name == tablename) {
                                         this.tableData[j].is_parallel = true;
+                                        console.log(this.tableData[j])
                                         for (let m = 0; m < this.allDataList.length; m++) {
-                                            if (this.allDataList[m].table_name ==tablename) {
+                                            if (this.allDataList[m].table_name == tablename) {
                                                 this.allDataList[m].is_parallel = true;
                                             }
                                         }
@@ -1666,6 +1683,7 @@ console.log(this.ParallelExtractionArr2)
                                 this.dialogTableVisible = false;
                             }
                         });
+
                     } else if (that.ruleForm_ParallelEx.issql == '0') {
                         if (this.ParallelExtractionArr.length != 0) {
                             for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
@@ -1692,20 +1710,24 @@ console.log(this.ParallelExtractionArr2)
                                 rec_num_date: this.ruleForm_ParallelEx.rec_num_date
                             });
                         }
-                    }
-                    for (let j = 0; j < this.tableData.length; j++) {
-                        if (this.tableData[j].table_name ==tablename) {
-                            this.tableData[j].is_parallel = true;
-                            for (let m = 0; m < this.allDataList.length; m++) {
-                                if (this.allDataList[m].table_name ==tablename) {
-                                    this.allDataList[m].is_parallel = true;
+                        for (let j = 0; j < that.tableData.length; j++) {
+                            if (that.tableData[j].table_name == tablename) {
+                                that.tableData[j].is_parallel = true;
+                                // that.tableData[j].table_ch_name='11111'
+                                console.log(that.tableData, 'that')
+                                console.log(that.tableData[j])
+                                for (let m = 0; m < that.allDataList.length; m++) {
+                                    if (that.allDataList[m].table_name == tablename) {
+                                        that.allDataList[m].is_parallel = true;
+                                    }
                                 }
+                                // this.EXtable_name = "";
                             }
-                            // this.EXtable_name = "";
                         }
+                        this.dialogTableVisible = false;
                     }
-                    this.dialogTableVisible = false;
-                    console.log(this.ParallelExtractionArr)
+
+                    console.log(that.tableData)
                 }
             });
         },
@@ -1773,6 +1795,7 @@ console.log(this.ParallelExtractionArr2)
         },
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
+            console.log(this.is_parallel)
             for (let j = 0; j < this.tableData.length; j++) {
                 if (this.tableData[j].table_name == this.EXtable_name) {
                     if (this.is_parallel == false) {
@@ -1791,6 +1814,22 @@ console.log(this.ParallelExtractionArr2)
                             }
                         }
                         this.dialogTableVisible = false;
+                    }
+
+                    this.EXtable_name = "";
+                }
+            }
+        },
+        // 第二
+        testParallelExtractionCloseFun2() {
+            for (let j = 0; j < this.ruleForm.sqlExtractData.length; j++) {
+                if (this.ruleForm.sqlExtractData[j].table_name == this.EXtable_name) {
+                    if (this.is_parallel == false) {
+                        this.ruleForm.sqlExtractData[j].is_parallel = true;
+                        this.dialogdyfysql = false;
+                    } else {
+                        this.ruleForm.sqlExtractData[j].is_parallel = false;
+                        this.dialogdyfysql = false;
                     }
 
                     this.EXtable_name = "";
@@ -2032,56 +2071,163 @@ console.log(this.ParallelExtractionArr2)
         },
         //第一个页面打开卸数方式设置
         XSTypeFun(row) {
+            /*  this.Xstable_name = row.table_name
+             if (row.unload_type == '全量') {
+                 this.dialog_xsall = true
+             } else {
+                 this.xstypeadd.add_sql = ''
+                 this.xstypeadd.del_sql = ''
+                 this.xstypeadd.updata_sql = ''
+                 if (this.xsTypeArr.length > 0) {
+                     for (let i = 0; i < this.xsTypeArr.length; i++) {
+                         if (this.xsTypeArr[i].table_name == row.table_name) {
+                             this.xstypeadd.add_sql = this.xsTypeArr[i].sql.add_sql
+                             this.xstypeadd.del_sql = this.xsTypeArr[i].sql.del_sql
+                             this.xstypeadd.updata_sql = this.xsTypeArr[i].sql.updata_sql
+                         }
+                     }
+                 }
+                 this.dialog_xsadd = true
+             } */
+            // 
             this.Xstable_name = row.table_name
-            if (row.unload_type == '全量') {
-                this.dialog_xsall = true
-            } else {
-                this.xstypeadd.add_sql = ''
-                this.xstypeadd.del_sql = ''
-                this.xstypeadd.updata_sql = ''
-                if (this.xsTypeArr.length > 0) {
-                    for (let i = 0; i < this.xsTypeArr.length; i++) {
-                        if (this.xsTypeArr[i].table_name == row.table_name) {
-                            this.xstypeadd.add_sql = this.xsTypeArr[i].sql.add_sql
-                            this.xstypeadd.del_sql = this.xsTypeArr[i].sql.del_sql
-                            this.xstypeadd.updata_sql = this.xsTypeArr[i].sql.updata_sql
+            this.xstypeadd.add = ''
+            this.xstypeadd.delete = ''
+            this.xstypeadd.update = ''
+            let arrid = [];
+            if (this.xsTypeArr.length > 0) {
+                for (let i = 0; i < this.xsTypeArr.length; i++) {
+                    arrid.push(this.xsTypeArr[i].table_name);
+                }
+            }
+            if (arrid.length > 0 && arrid.indexOf(row.table_name) != -1) {
+                console.log('q')
+                arrid.length = 0;
+                if (row.unload_type == '全量') {
+                    if (this.xsTypeArr.length > 0) {
+                        for (let i = 0; i < this.xsTypeArr.length; i++) {
+                            if (this.xsTypeArr[i].table_name == row.table_name) {
+                                this.xstypeadd.add = this.xsTypeArr[i].sql
+                            }
                         }
                     }
+                    this.dialog_xsall = true
+                } else {
+                    console.log('z')
+                    if (this.xsTypeArr.length > 0) {
+                        for (let i = 0; i < this.xsTypeArr.length; i++) {
+                            if (this.xsTypeArr[i].table_name == row.table_name) {
+                                this.xstypeadd.add = this.xsTypeArr[i].sql.add
+                                this.xstypeadd.delete = this.xsTypeArr[i].sql.delete
+                                this.xstypeadd.update = this.xsTypeArr[i].sql.update
+                            }
+                        }
+                    }
+                    this.dialog_xsadd = true
                 }
-                this.dialog_xsadd = true
+            } else {
+                if (row.table_id && row.table_id != '') {
+                    console.log(row.table_id, row.unload_type)
+                    this.getTableSetUnloadDataFunfist(row.table_id, row.unload_type)
+                } else {
+                    console.log('wr')
+                    if (row.unload_type == '全量') {
+                        this.dialog_xsall = true
+                    } else {
+                        this.dialog_xsadd = true
+                    }
+                }
             }
+
+            // 
         },
         //第二个页面打开卸数方式设置
         XSTypeFun2(row) {
             console.log(row, this.xsTypeArr2)
             this.Xstable_name = row.table_name
-            if (row.unload_type == '全量') {
-                 this.xstypeadd2.add = ''
-                this.xstypeadd2.delete = ''
-                this.xstypeadd2.updata = ''
-                if (this.xsTypeArr2.length > 0) {
-                    for (let i = 0; i < this.xsTypeArr2.length; i++) {
-                        if (this.xsTypeArr2[i].table_name == row.table_name) {
-                            this.xstypeadd2.add = this.xsTypeArr2[i].sql
-                        }
-                    }
+            this.xstypeadd2.add = ''
+            this.xstypeadd2.delete = ''
+            this.xstypeadd2.update = ''
+            let arrid = [];
+            if (this.xsTypeArr2.length > 0) {
+                for (let i = 0; i < this.xsTypeArr2.length; i++) {
+                    arrid.push(this.xsTypeArr2[i].table_name);
                 }
-                this.dialog_xsall = true
-            } else {
-                 this.xstypeadd2.add = ''
-                this.xstypeadd2.delete = ''
-                this.xstypeadd2.updata = ''
-                if (this.xsTypeArr2.length > 0) {
-                    for (let i = 0; i < this.xsTypeArr2.length; i++) {
-                        if (this.xsTypeArr2[i].table_name == row.table_name) {
-                            this.xstypeadd2.add = this.xsTypeArr2[i].sql.add
-                            this.xstypeadd2.delete = this.xsTypeArr2[i].sql.delete
-                            this.xstypeadd2.updata = this.xsTypeArr2[i].sql.updata
-                        }
-                    }
-                }
-                this.dialog_xsadd2 = true
             }
+            if (arrid.length > 0 && arrid.indexOf(row.table_name) != -1) {
+                console.log('q')
+                arrid.length = 0;
+                if (row.unload_type == '全量') {
+                    if (this.xsTypeArr2.length > 0) {
+                        for (let i = 0; i < this.xsTypeArr2.length; i++) {
+                            if (this.xsTypeArr2[i].table_name == row.table_name) {
+                                this.xstypeadd2.add = this.xsTypeArr2[i].sql
+                            }
+                        }
+                    }
+                    this.dialog_xsall = true
+                } else {
+                    console.log('z')
+                    if (this.xsTypeArr2.length > 0) {
+                        for (let i = 0; i < this.xsTypeArr2.length; i++) {
+                            if (this.xsTypeArr2[i].table_name == row.table_name) {
+                                this.xstypeadd2.add = this.xsTypeArr2[i].sql.add
+                                this.xstypeadd2.delete = this.xsTypeArr2[i].sql.delete
+                                this.xstypeadd2.update = this.xsTypeArr2[i].sql.update
+                            }
+                        }
+                    }
+                    this.dialog_xsadd2 = true
+                }
+            } else {
+                if (row.table_id && row.table_id != '') {
+                    this.getTableSetUnloadDataFun(row.table_id, row.unload_type)
+                } else {
+                    console.log('wr')
+                    if (row.unload_type == '全量') {
+                        this.dialog_xsall = true
+                    } else {
+                        this.dialog_xsadd2 = true
+                    }
+                }
+            }
+
+        },
+        //点击设置调接口
+        getTableSetUnloadDataFun(id, type) {
+            console.log('d')
+            let params = {};
+            params["table_id"] = id;
+            if (type == '全量') {
+                addTaskAllFun.getTableSetUnloadData(params).then(res => {
+                    this.dialog_xsall = true
+                    this.xstypeadd2.add = res.data.sql
+                })
+            } else {
+                addTaskAllFun.getTableSetUnloadData(params).then(res => {
+                    this.dialog_xsadd2 = true
+                    this.xstypeadd2 = JSON.parse(res.data.sql)
+                })
+            }
+
+        },
+        getTableSetUnloadDataFunfist(id, type) {
+            console.log('d')
+            let params = {};
+            params["table_id"] = id;
+            if (type == '全量') {
+                addTaskAllFun.getTableSetUnloadData(params).then(res => {
+                    this.dialog_xsall = true
+                    this.xstypeadd.add = res.data.sql
+                })
+            } else {
+                addTaskAllFun.getTableSetUnloadData(params).then(res => {
+                    this.dialog_xsadd = true
+                    this.xstypeadd = JSON.parse(JSON.stringify(res.data.sql))
+                    console.log(res.data.sql)
+                })
+            }
+
         },
         //第一个页面面卸数方式增量的设置提交
         xsaddSubmitFun() {
@@ -2136,7 +2282,7 @@ console.log(this.ParallelExtractionArr2)
                     arr = []
                 }
             } else {
-                console.log(this.xstypeadd2,this.Xstable_name)
+                console.log(this.xstypeadd2, this.Xstable_name)
                 this.xsTypeArr2.push({
                     table_name: this.Xstable_name,
                     sql: JSON.parse(JSON.stringify(this.xstypeadd2))

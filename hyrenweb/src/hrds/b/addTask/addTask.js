@@ -171,6 +171,13 @@ export function getColumnInfoByColSetId(data) {
         params:data
     })
 }
+// 点击卸数方式的设置
+export function getTableSetUnloadData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getTableSetUnloadData',
+        params:data
+    })
+}
 //steps3
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
