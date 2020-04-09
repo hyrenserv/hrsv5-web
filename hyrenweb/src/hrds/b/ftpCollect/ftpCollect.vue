@@ -513,10 +513,6 @@ export default {
 </script>
 
 <style scoped>
-.ftpCollect {
-    padding: 0 2% 0 2%;
-}
-
 .ftpCollect .el-row {
     margin-top: 20px;
 }

@@ -146,6 +146,13 @@ export default new Router({
                     title: '采集ftp agent',
                     component: () => import('@/hrds/b/ftpCollect/ftpCollect.vue')
                 },
+                // db文件采集
+                {
+                    path: '/collection4_1',
+                    name: 'ftpCollect',
+                    title: '采集ftp agent',
+                    component: () => import('@/hrds/b/dbAgentcollect/step1.vue')
+                },
                 // 非结构化 Agent采集
                 {
                     path: '/collection2_1',
