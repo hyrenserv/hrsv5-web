@@ -178,6 +178,13 @@ export function getTableSetUnloadData(data) {
         params:data
     })
 }
+// 两个页面点击下一步传表数组得到哪些表有有主见
+export function checkTablePrimary(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/checkTablePrimary',
+        params:data
+    })
+}
 //steps3
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {

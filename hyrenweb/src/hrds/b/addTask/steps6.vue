@@ -371,6 +371,7 @@ export default {
                     let arrdata = this.ruleForm.startuptableData
                     let etlJobs = [],
                         type = this.ruleForm.Dispatching_mode,ded_arr=[];
+                        let jobRelation = {}
                     if (type == 'D') {
                         for (let i = 0; i < arrdata.length; i++) {
                             ded_arr.push(arrdata[i].ded_id)
@@ -389,6 +390,7 @@ export default {
                                 'pro_para': arrdata[i].pro_para,
                                 'etl_sys_cd':this.ruleForm.Project_num,
                             })
+                            jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join('^');
                         }
                     } else {
                         for (let i = 0; i < arrdata.length; i++) {
@@ -412,7 +414,7 @@ export default {
                     }
                     params["etlJobs"] = JSON.stringify(etlJobs)
                     params["ded_arr"] = ded_arr.join('^')
-                    console.log(params)
+                    params["jobRelations"] = jobRelation
                     sendTask.saveJobDataToDatabase(params).then(res => {
                         if (res.code == 200) {
                             this.isLoading = false

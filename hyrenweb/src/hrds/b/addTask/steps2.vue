@@ -131,6 +131,11 @@
                             <el-checkbox v-else disabled></el-checkbox>
                         </template>
                     </el-table-column>
+                    <el-table-column prop="selectCol" label="选择列" align="center">
+                        <template slot-scope="scope">
+                            <el-button size="mini" @click="selectCol2(scope.$index, scope.row)" type="info">选择列</el-button>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="操作" align="center" width="70px">
                         <template slot-scope="scope">
                             <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
@@ -190,13 +195,13 @@
             <el-button type="primary" @click="dialogTableSqlFilt = false;SqlfiltSubmitFun()" size="mini">确 定</el-button>
         </div>
     </el-dialog>
-    <!-- 选择列弹层 -->
+    <!-- 第一个页面 选择列弹层 -->
     <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()">
         <div slot="title" class="header-title">
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
                 表名:
-                <p class="dialogtopname">{{coltable_name}}</p>
+                <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
         <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
@@ -254,7 +259,7 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogSelectColumn = false;SelectColumnCloseFun()" type="danger" size="mini">取 消</el-button>
-            <el-button type="primary" @click="dialogSelectColumn = false;SelectColumnSubmitFun()" size="mini">确 定</el-button>
+            <el-button type="primary" @click="SelectColumnSubmitFun()" size="mini">确 定</el-button>
         </div>
     </el-dialog>
     <!-- 第一个页面增量弹层 -->
@@ -325,7 +330,7 @@
             <el-button type="primary" size="mini" @click="dialog_xsadd2=false;xsaddSubmittwoFun()">确 定</el-button>
         </div>
     </el-dialog>
-    <!--卸数方式-全量  -->
+    <!--第二个页面卸数方式-全量  -->
     <el-dialog title :visible.sync="dialog_xsall" width="50%" class="alltable">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-全量</span>
@@ -345,7 +350,7 @@
             <el-button type="primary" size="mini" @click="dialog_xsall=false;xsallSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
-    <!--diyi 是否并行抽取弹层 -->
+    <!--第一个页面是否并行抽取弹层 -->
     <el-dialog title :visible.sync="dialogTableVisible" width="50%" class="alltable">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
@@ -446,7 +451,7 @@
             <el-button type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
         </div>
     </el-dialog> -->
-    <!--dier定义分页抽取sql  -->
+    <!--第二个页面定义分页抽取sql  -->
     <el-dialog title :visible.sync="dialogdyfysql" width="50%" class="alltable" @close="testParallelExtractionCloseFun2()">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
@@ -481,6 +486,73 @@
             <el-button type="primary" size="mini" @click="checkedis_zdyparallelSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
+    <!-- 第二个页面 选择列弹层 -->
+    <el-dialog title="选择列" :visible.sync="dialogSelectColumn2" width="70%">
+        <div slot="title" class="header-title">
+            <span class="dialogtitle el-icon-caret-right">选择列</span>
+            <span class="dialogtoptxt">
+                表名:
+                <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
+            </span>
+        </div>
+        <el-table :data="SelectColumnData2" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+
+            <el-table-column label="选择列" align="center">
+
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2"></el-checkbox>&nbsp;选择列
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else @change="every_SelectColumnfun(scope.row.is_get,SelectColumnData2)"></el-checkbox>
+                    <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+
+            <el-table-column label="主键定义" align="center">
+
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2"></el-checkbox> 主键定义
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData2)"></el-checkbox>
+                    <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+            <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
+
+            <el-table-column property="column_type" label="字段类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="column_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
+
+                <template slot-scope="scope">
+                    <el-input v-model="scope.row.column_ch_name" placeholder="中文名" size="medium"></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="160px" align="center">
+                <template slot-scope="scope">
+                    <el-button size="mini" v-if="disShow==false" disabled>
+                        <i class="el-icon-arrow-up"></i>
+                    </el-button>
+                    <el-button size="mini" v-else :disabled="scope.$index===0" @click="moveUp(scope.$index,scope.row,SelectColumnData2)">
+                        <i class="el-icon-arrow-up"></i>
+                    </el-button>
+                    <el-button size="mini" v-if="disShow==false" disabled>
+                        <i class="el-icon-arrow-down"></i>
+                    </el-button>
+                    <el-button size="mini" v-else :disabled="scope.$index===(SelectColumnData2.length-1)" @click="moveDown(scope.$index,scope.row,SelectColumnData2)">
+                        <i class="el-icon-arrow-down"></i>
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="SelectColumnCloseFun2()" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="SelectColumnSubmitFun2()" size="mini">确 定</el-button>
+        </div>
+    </el-dialog>
     <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
@@ -508,7 +580,9 @@ export default {
             rule: validator.default,
             Allis_selectionState: false,
             Allis_SelectColumn: false,
+            Allis_SelectColumn2: false,
             Alliskey_SelectColumn: false,
+            Alliskey_SelectColumn2: false,
             dialogTableVisible_zdy: false,
             dialogdyfysql: false,
             activeName: "first",
@@ -524,11 +598,13 @@ export default {
             testDialogVisible: false,
             dialogTableSqlFilt: false,
             dialogSelectColumn: false,
+            dialogSelectColumn2: false,
             tableData: [],
             sqlFiltSetData_tablename: "",
             sqlFiltSetData_var: "",
             sqlFiltSetData_SQL: "",
             SelectColumnData: [],
+            SelectColumnData2: [],
             multipleSelection: [],
             ruleForm: {
                 sqlExtractData: []
@@ -566,6 +642,7 @@ export default {
             collTbConfParamString: [],
             tablename: "",
             SelectColumn: [], //第一个页面选择列点击过保存的值
+            SelectColumn2: [], //第2个页面选择列点击过保存的值
             sqlFiltArr: [], //第一个页面sql过滤点击过保存的值
             ParallelExtractionArr: [], //第一个页面并行抽取数据
             ParallelExtractionLink: false,
@@ -740,9 +817,9 @@ export default {
                         } else {
                             data[i].is_md5 = false;
                         }
-                        if (data[i].unload_type != "1") {
+                        if (data[i].unload_type == "1") {
                             data[i].unload_type = '全量';
-                        } else if ((data[i].unload_type != "2")) {
+                        } else {
                             data[i].unload_type = '增量';
                         }
 
@@ -912,9 +989,14 @@ export default {
                     this.isLoading = true
                     let tableData = this.tableData,
                         sqlExtractData = this.ruleForm.sqlExtractData,
-                        rep_table = []
+                        rep_table = [],
+                        isparmi = [],
+                        isparmi2 = [];
                     console.log(this.tableData, this.ruleForm.sqlExtractData)
                     for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
+                        if (tableData[i].selectionState == true) {
+                            isparmi.push(tableData[i].table_name)
+                        }
                         for (let j = 0; j < sqlExtractData.length; j++) {
                             if (tableData[i].table_name == sqlExtractData[j].table_name && tableData[i].selectionState == true) {
                                 console.log(tableData[i].table_name, sqlExtractData[j].table_name)
@@ -922,6 +1004,34 @@ export default {
                             }
                         }
                     }
+                    for (let j = 0; j < sqlExtractData.length; j++) {
+                        isparmi2.push(sqlExtractData[j].table_name)
+                    }
+                    if (isparmi2.length == 0 && isparmi.length == 0) {
+                        this.$message({
+                            showClose: true,
+                            message: '至少选择一张表',
+                            type: "error"
+                        });
+                    } else {
+                        //checkTablePrimary 
+                        let params1 = {};
+                        params1["tableNames"] = JSON.stringify(isparmi);
+                        params1["colSetId"] = parseInt(this.dbid);
+                        console.log(params1)
+                        addTaskAllFun.checkTablePrimary(params1).then(res => {
+                            console.log(res, 1)
+                        });
+                        let params2 = {};
+                        params2["tableNames"] = JSON.stringify(isparmi2);
+                        params2["colSetId"] = parseInt(this.dbid);
+                        console.log(params2)
+                        addTaskAllFun.checkTablePrimary(params2).then(res => {
+                            console.log(res, 2)
+                        });
+
+                    }
+
                     if (rep_table.length > 0) { //有重复表
                         this.isLoading = false
                         this.$message({
@@ -930,8 +1040,9 @@ export default {
                             type: "error"
                         });
                     } else {
-                        this.saveTableConfFun(); //处理第一个页面数据
-                        this.sqlFun() //处理第二个页面数据
+                        // 判断每个表主键问题
+                        /*   this.saveTableConfFun(); //处理第一个页面数据
+                          this.sqlFun() //处理第二个页面数据 */
                     }
                 } else {
                     this.activeName = 'second'
@@ -1243,6 +1354,7 @@ export default {
             params["colSetId"] = this.dbid;
             addTaskAllFun.getColumnInfoByColSetId(params).then(res => {
                 let colData = res.data ? res.data : [];
+                console.log(colData)
                 for (let i = 0; i < arrData.length; i++) {
                     if (arrData[i].selectionState == true) {
                         if (colData) {
@@ -1317,13 +1429,14 @@ export default {
                     });
                 }
                 let collstring = collTbConfParamString;
+                console.log(collTbConfParamString)
                 params2["colSetId"] = parseInt(this.dbid);
                 params2["tableInfoString"] = JSON.stringify(this.tablein);
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
                 params2["delTbString"] = delJson.length > 0 ? JSON.stringify(delJson) : '';
                 console.log(params2)
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
-                    if (res.code == 200) {
+                    if (res && res.code == 200) {
                         this.activeFirst = true;
                         // this.dbid = res.data;
                     } else {
@@ -1836,10 +1949,11 @@ export default {
                 }
             }
         },
-        // 选择列
+        //第一页 选择列
         selectCol(value, row) {
             this.dialogSelectColumn = true;
             this.tablename = row.table_name;
+            this.unloadType = row.unload_type
             this.tableloadingInfo = "数据加载中...";
             // this.disShow = false
             if (this.SelectColumn.length != 0) {
@@ -1854,6 +1968,7 @@ export default {
                     params["tableName"] = row.table_name;
                     params["tableId"] = row.table_id;
                     addTaskAllFun.getColumnsigleInfo(params).then(res => {
+                        console.log(res)
                         this.disShow = res.data.editFlag == '1' ? true : false;
                         for (let i = 0; i < this.SelectColumn.length; i++) {
                             if (this.SelectColumn[i].tablename == this.tablename) {
@@ -1869,13 +1984,49 @@ export default {
                 this.SelectColumnShowFun(row.table_name, row.table_id);
             }
         },
-        // 选择列弹框回显数据调接口
+        //第二个  选择列
+        selectCol2(value, row) {
+            this.dialogSelectColumn2 = true;
+            this.tablename = row.table_name;
+            this.unloadType = row.unload_type
+            this.tableloadingInfo = "数据加载中...";
+            // this.disShow = false
+            if (this.SelectColumn2.length != 0) {
+                let arrid = [];
+                for (let i = 0; i < this.SelectColumn2.length; i++) {
+                    arrid.push(this.SelectColumn2[i].tablename);
+                }
+                if (arrid.indexOf(this.tablename) != -1) {
+                    arrid.length = 0;
+                    let params = {};
+                    params["colSetId"] = this.dbid;
+                    params["tableName"] = row.table_name;
+                    params["tableId"] = row.table_id;
+                    addTaskAllFun.getColumnsigleInfo(params).then(res => {
+                        console.log(res)
+                        this.disShow = res.data.editFlag == '1' ? true : false;
+                        for (let i = 0; i < this.SelectColumn2.length; i++) {
+                            if (this.SelectColumn2[i].tablename == this.tablename) {
+                                this.SelectColumnData2 = this.SelectColumn2[i].data;
+                            }
+                        }
+                    })
+                } else {
+                    arrid.length = 0;
+                    this.SelectColumnShowFun(row.table_name, row.table_id);
+                }
+            } else {
+                this.SelectColumnShowFun(row.table_name, row.table_id);
+            }
+        },
+        //第一页 选择列弹框回显数据调接口
         SelectColumnShowFun(name, id) {
             let params = {};
             params["colSetId"] = this.dbid;
             params["tableName"] = name;
             params["tableId"] = id;
             addTaskAllFun.getColumnsigleInfo(params).then(res => {
+                console.log(res)
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -1929,33 +2080,167 @@ export default {
 
             });
         },
-        // 选择列弹框确认
+        //第二页 选择列弹框回显数据调接口
+        SelectColumnShowFun(name, id) {
+            let params = {};
+            params["colSetId"] = this.dbid;
+            params["tableName"] = name;
+            params["tableId"] = id;
+            addTaskAllFun.getColumnsigleInfo(params).then(res => {
+                console.log(res)
+                if (res.data.length == 0) {
+                    this.tableloadingInfo = "暂无数据";
+                } else {
+                    this.coltable_name = "";
+                    this.coltable_name = res.data.tableName ? res.data.tableName : "";
+                    this.disShow = res.data.editFlag == '1' ? true : false;
+                    let data = res.data.columnInfo ? res.data.columnInfo : [],
+                        count = 0,
+                        num = 0;
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].is_get) {
+                            if (data[i].is_get == "1") {
+                                count++;
+                                data[i].is_get = true;
+                            } else {
+                                data[i].is_get = false;
+                            }
+                        } else {
+                            data[i].is_get = false;
+                        }
+                        if (data[i].is_primary_key) {
+                            if (data[i].is_primary_key == "1") {
+                                num++;
+                                data[i].is_primary_key = true;
+                            } else {
+                                data[i].is_primary_key = false;
+                            }
+                        } else {
+                            data[i].is_primary_key = false;
+                        }
+                        if (data[i].column_ch_name == '') {
+                            data[i].column_ch_name = data[i].column_name
+                        }
+                    }
+                    if (count == data.length && data) {
+                        this.Allis_SelectColumn = true;
+                        count = 0;
+                    } else {
+                        this.Allis_SelectColumn = false;
+                        count = 0;
+                    }
+                    if (num == data.length && data) {
+                        this.Alliskey_SelectColumn = true;
+                        num = 0;
+                    } else {
+                        this.Alliskey_SelectColumn = false;
+                        num = 0;
+                    }
+                    this.SelectColumnData2 = JSON.parse(JSON.stringify(data));
+                }
+
+            });
+        },
+        //第一页 选择列弹框确认
         SelectColumnSubmitFun() {
-            if (this.SelectColumn.length != 0) {
-                for (let i = 0; i < this.SelectColumn.length; i++) {
-                    if (this.SelectColumn[i].tablename == this.tablename) {
-                        this.SelectColumn.splice(i, 1);
-                        i--;
+            let arrData = this.SelectColumnData,
+                hasprimaryKey = false;
+            if (this.unloadType == '增量') {
+                for (let i = 0; i < arrData.length; i++) {
+                    if (arrData[i].is_primary_key == true) {
+                        hasprimaryKey = true
                     }
                 }
-                this.SelectColumn.push({
-                    tablename: this.tablename,
-                    data: this.SelectColumnData
-                });
             } else {
-                this.SelectColumn.push({
-                    tablename: this.tablename,
-                    data: this.SelectColumnData
+                hasprimaryKey = true
+            }
+            if (hasprimaryKey == true) {
+                if (this.SelectColumn.length > 0) {
+                    for (let i = 0; i < this.SelectColumn.length; i++) {
+                        if (this.SelectColumn[i].tablename == this.tablename) {
+                            this.SelectColumn.splice(i, 1);
+                            i--;
+                        }
+                    }
+                    this.SelectColumn.push({
+                        tablename: this.tablename,
+                        data: this.SelectColumnData,
+                        hasprimaryKey: true
+                    });
+                } else {
+                    this.SelectColumn.push({
+                        tablename: this.tablename,
+                        data: this.SelectColumnData,
+                        hasprimaryKey: true
+                    });
+                }
+                this.dialogSelectColumn = false;
+                this.tablename = "";
+            } else {
+                this.$message({
+                    showClose: true,
+                    message: '请选择至少一个主键',
+                    type: "error"
                 });
             }
-            console.log(this.SelectColumn)
-            this.tablename = "";
+            console.log(this.SelectColumn, this.SelectColumnData)
+
         },
-        // 选择列弹框关闭
+        //第二页 选择列弹框确认
+        SelectColumnSubmitFun2() {
+            let arrData = this.SelectColumnData2,
+                hasprimaryKey = false;
+            if (this.unloadType == '增量') {
+                for (let i = 0; i < arrData.length; i++) {
+                    if (arrData[i].is_primary_key == true) {
+                        hasprimaryKey = true
+                    }
+                }
+            } else {
+                hasprimaryKey = true
+            }
+            if (hasprimaryKey == true) {
+                if (this.SelectColumn2.length > 0) {
+                    for (let i = 0; i < this.SelectColumn2.length; i++) {
+                        if (this.SelectColumn2[i].tablename == this.tablename) {
+                            this.SelectColumn2.splice(i, 1);
+                            i--;
+                        }
+                    }
+                    this.SelectColumn2.push({
+                        tablename: this.tablename,
+                        data: this.SelectColumnData2,
+                        hasprimaryKey: true
+                    });
+                } else {
+                    this.SelectColumn2.push({
+                        tablename: this.tablename,
+                        data: this.SelectColumnData2,
+                        hasprimaryKey: true
+                    });
+                }
+                this.dialogSelectColumn2 = false;
+                this.tablename = "";
+            } else {
+                this.$message({
+                    showClose: true,
+                    message: '请选择至少一个主键',
+                    type: "error"
+                });
+            }
+            console.log(this.SelectColumn2, this.SelectColumnData2)
+
+        },
+        //第一页 选择列弹框关闭
         SelectColumnCloseFun() {
             this.tablename = "";
         },
-        // 选择列的弹框复选框全选
+        //第2页 选择列弹框关闭
+        SelectColumnCloseFun2() {
+            this.dialogSelectColumn2 = false;
+            this.tablename = "";
+        },
+        //第一页 选择列的弹框复选框全选
         Allis_SelectColumnFun(items, e) {
             items.forEach((item, i) => {
                 if (e) {
@@ -1965,7 +2250,7 @@ export default {
                 }
             });
         },
-        //
+        //第一页 选择列 主键
         Alliskey_SelectColumnFun(items, e) {
             items.forEach((item, i) => {
                 if (e) {
@@ -2223,8 +2508,8 @@ export default {
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsadd = true
-                    this.xstypeadd = JSON.parse(JSON.stringify(res.data.sql))
-                    console.log(res.data.sql)
+                    this.xstypeadd = JSON.parse(res.data.sql)
+                    console.log(res.data.sql, JSON.parse(res.data.sql))
                 })
             }
 
