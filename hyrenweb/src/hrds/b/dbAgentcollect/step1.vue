@@ -62,7 +62,6 @@
                 </el-form-item>
             </el-col>
         </el-form>
-
     </div>
     <div class="step1Footer">
         <el-col :span="12">
@@ -70,7 +69,7 @@
         </el-col>
         <el-col :span="12">
             <div>
-                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect('form')">下一步<i class="el-icon-right"></i></el-button>
+                <el-button size="medium" type="primary" style="float:right" @click="nextCollect('form')">下一步</el-button>
             </div>
         </el-col>
     </div>
@@ -95,12 +94,12 @@
                 </el-form-item>
             </el-form>
             <div slot="footer">
-                <el-button size="mini" type="danger" @click="innerVisible = false">取 消</el-button>
-                <el-button type="primary" size="mini" @click="innerVisible = false;addClassTaskFun('addClassTask')">保存</el-button>
+                <el-button size="mini" type="danger" @click="cancelAdd">取 消</el-button>
+                <el-button type="primary" size="mini" @click="addClassTaskFun('addClassTask')">保存</el-button>
             </div>
         </el-dialog>
         <div slot="footer" class="dialog-footer">
-            <el-table :empty-text="tableloadingInfo" :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" highlight-current-row @current-change="handleSelectionChange" @row-click="chooseone">
+            <el-table :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium">
                 <el-table-column property label="选择" width="60px" type="index" align="center">
                     <template slot-scope="scope">
                         <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
@@ -117,12 +116,11 @@
                 <el-table-column label="操作" width="150px" align="center">
                     <template slot-scope="scope">
                         <el-row>
-
                             <el-col :span="12" style="text-align: center;">
-                                <el-button type="text" circle @click="colltaskEditBtn(scope.row)" class='editcolor'>编辑</el-button>
+                                <el-button type="text" circle @click="editText(scope.row)" class='editcolor'>编辑</el-button>
                             </el-col>
                             <el-col :span="12">
-                                <el-button class='delcolor' type="text" circle @click="colltaskDeleBtn(scope.row)" @row-click="chooseone">删除</el-button>
+                                <el-button class='delcolor' type="text" circle @click="deleteText(scope.row)" @row-click="chooseone">删除</el-button>
                             </el-col>
                         </el-row>
                     </template>
@@ -131,9 +129,8 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" :total="CollTaskData.length"></el-pagination>
             <div class="btntop">
                 <el-button @click="cancelClassNumBtn()" type="danger" size="mini">取 消</el-button>
-                <el-button @click="addClassNumBtn();innerVisible = true" type="success" size="mini">新增</el-button>
-                <el-button @click="updataClassNumBtn(CollTaskData)" type="primary" size="mini">确定</el-button>
-
+                <el-button @click="innerVisible = true" type="success" size="mini">新增</el-button>
+                <el-button @click="saveClassNumBtn(CollTaskData)" type="primary" size="mini">确定</el-button>
             </div>
         </div>
     </el-dialog>
@@ -185,23 +182,35 @@ export default {
                 name: "agentList"
             })
         },
+        //获取首页信息
+        getAllInfo() {
+
+        },
         // 获取分类编号和分类名称
+        //一个查询接口
         getNumber() {
             this.showDiolag = true;
         },
         //编辑任务分类
-        editText() {
+        editText(val) {
 
         },
         // 删除任务分类
-        deleteText() {
+        deleteText(val) {
 
         },
-        // 新增任务分类
-        addClassNumBtn() {
-            (this.addClassTask.class_num = ""),
-            (this.addClassTask.class_name = ""),
-            (this.addClassTask.class_des = "");
+        // 保存新增任务
+        addClassTaskFun(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+
+                }
+            })
+        },
+        //取消新增保存
+        cancelAdd() {
+            this.$refs.addClassTask.resetFields();
+            this.innerVisible = false;
         },
         //取消选择名称
         cancelClassNumBtn() {
@@ -209,7 +218,7 @@ export default {
             this.radio = "";
         },
         //保存选择名称
-        updataClassNumBtn(row) {
+        saveClassNumBtn(row) {
             if (row.length > 0) {
                 if (this.radio != '') {
                     for (let i = 0; i < row.length; i++) {
@@ -261,6 +270,22 @@ export default {
                     }
                 })
             }
+        },
+        // 保存采集任务跳转下一步
+        nextCollect(formName) {
+            // this.$refs[formName].validate(valid => {
+            //     if (valid) {
+
+            //     }
+            // })
+            this.$router.push({
+                path: "/step2",
+                // query: {
+                //     fcs_id: res.data,
+                //     agent_id: this.$route.query.agent_id,
+                //     agent_name: this.$route.query.agent_name
+                // }
+            });
         },
     },
 

@@ -110,8 +110,8 @@
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button type="primary" style="float:left" size="medium" @click="backSteps"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="success" style="float:right" size="medium" @click="checkDataOk('form')"> 完成 <i class="el-icon-check"></i></el-button>
+                <el-button type="primary" style="float:left" size="medium" @click="backSteps">上一步</el-button>
+                <el-button type="success" style="float:right" size="medium" @click="checkDataOk('form')"> 完成</el-button>
             </div>
         </el-col>
     </el-row>

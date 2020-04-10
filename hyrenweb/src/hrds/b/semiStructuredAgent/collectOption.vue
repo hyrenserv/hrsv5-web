@@ -134,7 +134,7 @@
 
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:right" size="medium" @click="nextSteps('form')"> 下一步<i class="el-icon-right"></i></el-button>
+                <el-button type="primary" style="float:right" size="medium" @click="nextSteps('form')"> 下一步</el-button>
             </div>
         </el-col>
     </el-row>
