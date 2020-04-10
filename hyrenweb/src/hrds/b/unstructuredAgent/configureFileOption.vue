@@ -33,7 +33,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="is_office" label="office文件" align="center">
+            <el-table-column prop="is_office" width="90" label="office文件" align="center">
                 <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.is_office"></el-checkbox>
                 </template>
@@ -323,10 +323,6 @@ export default {
 </script>
 
 <style scoped>
-.configureFileOption {
-    padding: 0 2% 0 2%;
-}
-
 .configureFileOption .el-row {
     margin-top: 20px;
 }
@@ -338,13 +334,13 @@ export default {
 
 /* 表格边框 */
 .configureFileOption .partTwo {
-    padding: 2%;
+    padding: 1%;
     width: 100%;
     border: 1px solid #e6e6e6;
 }
 
 .configureFileOption .partTwo .el-table {
-    margin-top: 8px;
+    margin-top: 2px;
 }
 
 /* 按钮设置 */

@@ -94,12 +94,12 @@
 
     <el-row class="partThree">
         <el-col :span="12">
-            <el-button size="medium" type="primary" @click="goBackQuit"> 返回</el-button>
+            <el-button size="mini" type="primary" @click="goBackQuit"> 返回</el-button>
         </el-col>
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect('form')">下一步<i class="el-icon-right"></i></el-button>
+                <el-button size="mini" type="primary" style="float:right" @click="unStructuredCollect('form')">下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -327,10 +327,6 @@ export default {
 </script>
 
 <style scoped>
-.configureStartMode {
-    padding: 0 2% 0 2%;
-}
-
 .configureStartMode .el-row {
     margin-top: 20px;
 }
@@ -342,7 +338,7 @@ export default {
 
 /* form表单 */
 .configureStartMode .partTwo {
-    padding: 2%;
+    padding: 2% 4% 2% 0;
     width: 100%;
     border: 1px solid #e6e6e6;
 }
