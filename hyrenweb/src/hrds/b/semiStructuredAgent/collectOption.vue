@@ -129,12 +129,12 @@
 
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary" @click="goBackQuit" size="small"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit" size="mini"> 返回</el-button>
         </el-col>
 
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:right" size="small" @click="nextSteps('form')"> 下一步<i class="el-icon-right"></i></el-button>
+                <el-button type="primary" style="float:right" size="mini" @click="nextSteps('form')"> 下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -618,17 +618,13 @@ export default {
 </script>
 
 <style scoped>
-.collectOption {
-    padding: 0 2% 0 2%;
-}
-
 .collectOption .el-row {
     margin-top: 20px;
 }
 
 /* form表单 */
 .collectOption .partTwo {
-    padding: 2%;
+    padding: 2% 4% 2% 0;
     width: 100%;
     border: 1px solid #e6e6e6;
 }

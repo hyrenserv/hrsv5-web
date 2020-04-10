@@ -74,12 +74,12 @@
     </el-row>
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary" @click="goBackQuit" size="small"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit" size="mini"> 返回</el-button>
         </el-col>
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:left" @click="backSteps" size="small"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="primary" style="float:right" @click="nextSteps" size="small"> 下一步<i class="el-icon-right"></i></el-button>
+                <el-button type="primary" style="float:left" @click="backSteps" size="mini"><i class="el-icon-back"></i>上一步</el-button>
+                <el-button type="primary" style="float:right" @click="nextSteps" size="mini"> 下一步<i class="el-icon-right"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -543,10 +543,6 @@ export default {
 </script>
 
 <style scoped>
-.collectFileOption {
-    padding: 0 1% 0 1%;
-}
-
 .collectFileOption .partTwo {
     padding: 0 0 2% 0;
     width: 100%;

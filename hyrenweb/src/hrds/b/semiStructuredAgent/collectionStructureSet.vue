@@ -53,12 +53,12 @@
     </el-row>
     <el-row class="partFour">
         <el-col :span="12">
-            <el-button type="primary" @click="goBackQuit" size="small"> 返回</el-button>
+            <el-button type="primary" @click="goBackQuit" size="mini"> 返回</el-button>
         </el-col>
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:left" @click="backSteps" size="small"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="success" style="float:right" @click="checkFieldsForSaveObjectStorage" size="small">完 成<i class="el-icon-check"></i></el-button>
+                <el-button type="primary" style="float:left" @click="backSteps" size="mini"><i class="el-icon-back"></i>上一步</el-button>
+                <el-button type="success" style="float:right" @click="checkFieldsForSaveObjectStorage" size="mini">完 成<i class="el-icon-check"></i></el-button>
             </div>
         </el-col>
     </el-row>
@@ -495,10 +495,6 @@ export default {
 </script>
 
 <style scoped>
-.collectionStructureSet {
-    padding: 0 2% 0 2%;
-}
-
 .collectionStructureSet .el-row {
     margin-top: 20px;
 }
