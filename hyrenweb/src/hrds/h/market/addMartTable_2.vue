@@ -227,7 +227,7 @@
             getifhbase() {
                 functionAll.getIfHbase({"datatable_id": this.datatable_id}).then(((res) => {
                     this.ifhbae = res.data.result;
-                    this.ifhbae = true;
+                    // this.ifhbae = true;
                 }))
             },
             filterNode(value, data, node) {
@@ -413,6 +413,13 @@
                             message: "保存成功!"
                         });
                         this.ifhbasesort = false;
+                        this.$router.push({
+                            name: 'addMartTable_3',
+                            query: {
+                                data_mart_id: this.data_mart_id,
+                                datatable_id: this.datatable_id
+                            }
+                        });
                     } else {
                         this.$emit(res.message);
                     }

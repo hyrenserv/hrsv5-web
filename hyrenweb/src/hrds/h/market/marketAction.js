@@ -268,6 +268,15 @@ export function getIfHbase(data) {
 }
 
 
+//获取是否是数据进入Hbase
+export function excutMartJob(data) {
+    return request({
+        url: '/H/market/excutMartJob',
+        params: data
+    })
+}
+
+
 
 
 
