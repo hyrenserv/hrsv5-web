@@ -22,108 +22,119 @@
                     <el-row>
                         <span>SQL查询</span>
                     </el-row>
-                    <el-col :span="20">
-                        <el-input type="textarea" rows="5" autosize placeholder="请输入查询SQL" v-model="querysql"/>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-button class="query-sql-btn" type="primary"
-                                   @click="querydatadialogshow = true;getdatabysql()"
-                                   size="small">查询
-                        </el-button>
-                        <el-button class="query-sql-btn" type="primary" @click="getcolumnbysql()"
-                                   size="small">确定
-                        </el-button>
-                    </el-col>
+                    <el-row>
+                        <el-col :span="18">
+                            <el-input type="textarea" rows="5" autosize placeholder="请输入查询SQL" v-model="querysql"/>
+                        </el-col>
+                        <el-col :span="2">
+                            <el-button class="query-sql-btn" type="primary"
+                                       @click="querydatadialogshow = true;getdatabysql()"
+                                       size="small">查询
+                            </el-button>
+                        </el-col>
+                        <el-col :span="2">
+                            <el-button class="query-sql-btn" type="primary" @click="getcolumnbysql()"
+                                       size="small">确定
+                            </el-button>
+                        </el-col>
+                        <el-col :span="2">
+                            <el-button class="query-sql-btn" type="primary" @click="getcolumnbysql()"
+                                       size="small">精准确定
+                            </el-button>
+                        </el-col>
+                    </el-row>
                 </el-tabs>
             </el-col>
         </el-row>
-
-        <el-row>
-            <el-col>
-                <el-tabs type="card">
-                    <el-table :data="columnbysql" border size="mini">
-                        <el-table-column type="index" label="序号" width="70px" align='center'></el-table-column>
-                        <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-input v-model="scope.row.field_en_name" autocomplete="off"
-                                          placeholder="字段英文名"></el-input>
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column prop="field_cn_name" label="字段中文名" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-input v-model="scope.row.field_cn_name" autocomplete="off"
-                                          placeholder="字段中文名"></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="field_type" label="字段类型" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-select v-model="scope.row.field_type" placeholder="请选择">
-                                    <el-option v-for="item in allfield_type" :key="item.target_type"
-                                               :label="item.target_type"
-                                               :value="item.target_type"></el-option>
-                                </el-select>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="field_length" label="字段长度" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-input v-model="scope.row.field_length" autocomplete="off"
-                                          placeholder="字段长度"></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="field_process" label="处理方式" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-select v-model="scope.row.field_process" placeholder="请选择">
-                                    <el-option v-for="item in allfield_process" :key="item.value"
-                                               :label="item.value"
-                                               :value="item.code"></el-option>
-                                </el-select>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="process_para" label="处理方式对应参数" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-input v-if="scope.row.field_proccess == 'map'" readonly
-                                          v-model="scope.row.process_para" autocomplete="off"
-                                          placeholder="处理方式对应参数"></el-input>
-                                <el-input v-else v-model="scope.row.process_para" autocomplete="off"
-                                          placeholder="处理方式对应参数"></el-input>
-                            </template>
-                        </el-table-column>
-
-                        <el-table-column prop="source_column" label="来源值" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-input readonly v-model="scope.row.source_column" autocomplete="off"
-                                          placeholder="来源值"></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="field_desc" label="描述" show-overflow-tooltip
-                                         align="center">
-                            <template slot-scope="scope">
-                                <el-input v-model="scope.row.field_desc" autocomplete="off"
-                                          placeholder="描述"></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column v-for="index in columnmore"
-                                         :label="index.dsla_storelayer" prop="index" align="center">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row[scope.column.label]"
-                                             :checked="scope.row[scope.column.label]"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <el-button type="primary" size="medium" class="rightbtn" @click="next('dm_datatable')">下一步
+        <el-tabs type="card">
+            <el-row>
+                <el-col :span='2' style="float:right">
+                    <el-button class="query-sql-btn" type="primary" @click="addcolumn()"
+                               size="small">新增字段
                     </el-button>
-                    <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
-                </el-tabs>
-            </el-col>
-        </el-row>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-table :data="columnbysql" border size="mini">
+                    <el-table-column type="index" label="序号" width="70px" align='center'></el-table-column>
+                    <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.field_en_name" autocomplete="off"
+                                      placeholder="字段英文名"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="field_cn_name" label="字段中文名" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.field_cn_name" autocomplete="off"
+                                      placeholder="字段中文名"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="field_type" label="字段类型" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-select v-model="scope.row.field_type" placeholder="请选择">
+                                <el-option v-for="item in allfield_type" :key="item.target_type"
+                                           :label="item.target_type"
+                                           :value="item.target_type"></el-option>
+                            </el-select>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="field_length" label="字段长度" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.field_length" autocomplete="off"
+                                      placeholder="字段长度"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="field_process" label="处理方式" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-select v-model="scope.row.field_process" placeholder="请选择">
+                                <el-option v-for="item in allfield_process" :key="item.value"
+                                           :label="item.value"
+                                           :value="item.code"></el-option>
+                            </el-select>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="process_para" label="处理方式参数" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <!--<el-input v-if="scope.row.field_proccess == 'map'" readonly-->
+                            <!--v-model="scope.row.process_para" autocomplete="off"-->
+                            <!--placeholder="处理方式参数"></el-input>-->
+                            <el-input v-model="scope.row.process_para" autocomplete="off"
+                                      placeholder="处理方式参数"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="field_desc" label="描述" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.field_desc" autocomplete="off"
+                                      placeholder="描述"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column v-for="index in columnmore"
+                                     :label="index.dsla_storelayer" prop="index" align="center">
+                        <template slot-scope="scope">
+                            <el-checkbox v-model="scope.row[scope.column.label]"
+                                         :checked="scope.row[scope.column.label]"></el-checkbox>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="medium" @click="deletecolumn(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-button type="primary" size="medium" class="rightbtn" @click="prenext('dm_datatable')">下一步
+                </el-button>
+                <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
+            </el-row>
+        </el-tabs>
 
 
         <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
@@ -135,14 +146,45 @@
                 </el-table-column>
             </el-table>
         </el-dialog>
+
+        <el-dialog title="Hbase的Rowkey排序" :visible.sync="ifhbasesort" width="30%" class='data_edit'>
+            <el-row>
+                <el-table :data="hbasesort" border size="mini">
+                    <el-table-column type="index" label="序号" width="70px" align='center'></el-table-column>
+                    <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.field_en_name" autocomplete="off"
+                                      placeholder="字段英文名"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="操作" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="medium" @click="upcolumn(scope.$index,scope.row)">上移</el-button>
+                            <el-button type="primary" size="medium" @click="downcolumn(scope.$index,scope.row)">下移</el-button>
+                        </template>
+                    </el-table-column>
+
+                </el-table>
+            </el-row>
+            <el-row>
+                <el-button type="primary" size="medium" class="rightbtn" @click="next()">确定</el-button>
+                <el-button type="primary" size="medium" class="rightbtn" @click="dismissifhbasesort()">取消</el-button>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 <script>
     import * as functionAll from "./marketAction";
+    import * as validator from "@/utils/js/validator";
+    import * as message from "@/utils/js/message";
 
     export default {
         data() {
             return {
+                rule: validator.default,
                 data_mart_id: this.$route.query.data_mart_id,
                 is_add: this.$route.query.is_add,
                 datatable_id: this.$route.query.datatable_id,
@@ -161,6 +203,9 @@
                     isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
                     isRootNode: '1', tableName: ''
                 },
+                ifhbase: false,
+                ifhbasesort: false,
+                hbasesort: [],
             };
         },
         watch: {
@@ -176,8 +221,15 @@
             this.getcolumnmore();
             this.getcolumnfromdatabase();
             this.getquerysql();
+            this.getifhbase();
         },
         methods: {
+            getifhbase() {
+                functionAll.getIfHbase({"datatable_id": this.datatable_id}).then(((res) => {
+                    this.ifhbae = res.data.result;
+                    this.ifhbae = true;
+                }))
+            },
             filterNode(value, data, node) {
                 // 如果检索内容为空,直接返回
                 if (!value) return true;
@@ -237,19 +289,22 @@
                         "datatable_id": this.datatable_id
                     };
                     functionAll.getColumnBySql(params).then(((res) => {
-                        this.columnbysql = res.data;
-                        let tmp_field_type = this.columnbysql[0].field_type;
-                        console.log(this.allfield_type);
-                        let flag = true;
-                        debugger;
-                        for(var i=0;i<this.allfield_type.length;i++){
-                            if(tmp_field_type == this.allfield_type[i].target_type){
-                                flag = false;
-                                break;
+                        if (res && res.success) {
+                            this.columnbysql = res.data;
+                            let tmp_field_type = this.columnbysql[0].field_type;
+                            console.log(this.allfield_type);
+                            let flag = true;
+                            for (var i = 0; i < this.allfield_type.length; i++) {
+                                if (tmp_field_type == this.allfield_type[i].target_type) {
+                                    flag = false;
+                                    break;
+                                }
                             }
-                        }
-                        if(flag){
-                            this.allfield_type.push({"target_type":tmp_field_type});
+                            if (flag) {
+                                this.allfield_type.push({"target_type": tmp_field_type});
+                            }
+                        } else {
+                            this.$emit(res.message);
                         }
                     }))
                 }
@@ -304,6 +359,32 @@
                     }
                 });
             },
+            prenext() {
+                this.hbasesort = [];
+                let ifhasrowkeyflag = false;
+                if (this.ifhbae) {
+                    for (var i = 0; i < this.columnbysql.length; i++) {
+                        var everyrow = this.columnbysql[i];
+                        if (everyrow.hasOwnProperty("rowkey") && everyrow.rowkey == true) {
+                            ifhasrowkeyflag = true;
+                            this.hbasesort.push({"field_en_name": everyrow.field_en_name})
+                        }
+                    }
+                    if (!ifhasrowkeyflag) {
+                        message.confirmMsg('目的地为Hbase,但没有选择rowkey,默认rowkey为全字段的MD5').then(res => {
+                            this.next();
+                        }).catch(() => {
+                        })
+                    } else {
+                        functionAll.sortHbae({"hbasesort":JSON.stringify(this.hbasesort),"datatable_id": this.datatable_id}).then((res)=>{
+                            this.hbasesort = res.data;
+                        })
+                        this.ifhbasesort = true;
+                    }
+                } else {
+                    this.next();
+                }
+            },
             next() {
                 let dm_column_storage = [];
                 for (var i = 0; i < this.columnmore.length; i++) {
@@ -322,16 +403,64 @@
                     "datatable_field_info": JSON.stringify(this.columnbysql),
                     "datatable_id": this.datatable_id,
                     "dm_column_storage": JSON.stringify(dm_column_storage),
-                    "querysql": this.querysql
+                    "querysql": this.querysql,
+                    "hbasesort":JSON.stringify(this.hbasesort)
                 }
                 functionAll.addDFInfo(param).then((res) => {
-                    this.$message({
-                        type: "success",
-                        message: "保存成功!"
-                    });
+                    if (res && res.success) {
+                        this.$message({
+                            type: "success",
+                            message: "保存成功!"
+                        });
+                        this.ifhbasesort = false;
+                    } else {
+                        this.$emit(res.message);
+                    }
                 })
-
-            }
+            },
+            addcolumn() {
+                let param = {
+                    field_en_name: "",
+                    field_cn_name: "",
+                    field_type: this.allfield_type[0].target_type,
+                    field_length: "",
+                    field_process: this.allfield_process[0].code,
+                    process_para: "",
+                    field_desc: "",
+                }
+                this.columnbysql.push(param);
+            },
+            deletecolumn(row) {
+                let index = this.columnbysql.indexOf(row);
+                this.columnbysql.splice(index, 1);
+            },
+            downcolumn(val,data) {
+                if (val + 1 === this.hbasesort.length) {
+                    this.$message({
+                        message: '已经是最后一条，不可下移',
+                        type: 'warning',
+                    });
+                } else {
+                    let downDate = this.hbasesort[val + 1];
+                    this.hbasesort.splice(val + 1, 1);
+                    this.hbasesort.splice(val, 0, downDate);
+                }
+            },
+            upcolumn(val,data) {
+                if (val > 0) {
+                    let upDate = this.hbasesort[val - 1];
+                    this.hbasesort.splice(val - 1, 1);
+                    this.hbasesort.splice(val, 0, upDate);
+                } else {
+                    this.$message({
+                        message: '已经是第一条，不可上移',
+                        type: 'warning',
+                    });
+                }
+            },
+            dismissifhbasesort() {
+                this.ifhbasesort = false;
+            },
         }
     }
 </script>

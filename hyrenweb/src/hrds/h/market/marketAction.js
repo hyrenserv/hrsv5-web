@@ -225,6 +225,15 @@ export function addDFInfo(data) {
     })
 }
 
+//新增datafiels_info信息
+export function sortHbae(data) {
+    return request({
+        url: '/H/market/sortHbae',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+
 //根据集市表ID,获取回显字段
 export function getColumnFromDatabase(data) {
     return request({
@@ -245,8 +254,15 @@ export function getQuerySql(data) {
 //获取树菜单数据
 export function getTreeDataInfo(data) {
     return request({
-        // url: '/H/market/getTreeDataInfo',
         url: '/B/websqlquery/getTreeDataInfo',
+        params: data
+    })
+}
+
+//获取是否是数据进入Hbase
+export function getIfHbase(data) {
+    return request({
+        url: '/H/market/getIfHbase',
         params: data
     })
 }
