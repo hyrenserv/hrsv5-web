@@ -148,12 +148,12 @@
 
     <el-row class="partThree">
         <el-col :span="12">
-            <el-button size="mini" type="primary" @click="goBackQuit">返回</el-button>
+            <el-button size="medium" type="primary" @click="goBackQuit">返回</el-button>
         </el-col>
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="mini" type="success" style="float:right" @click="submitForm('form')">
+                <el-button size="medium" type="success" style="float:right" @click="submitForm('form')">
                     完成
                     <i class="el-icon-check"></i>
                 </el-button>
