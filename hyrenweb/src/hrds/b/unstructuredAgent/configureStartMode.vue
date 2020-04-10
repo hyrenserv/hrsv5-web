@@ -99,7 +99,7 @@
 
         <el-col :span="12">
             <div class="partThreeDiv">
-                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect('form')">下一步<i class="el-icon-right"></i></el-button>
+                <el-button size="medium" type="primary" style="float:right" @click="unStructuredCollect('form')">下一步</el-button>
             </div>
         </el-col>
     </el-row>

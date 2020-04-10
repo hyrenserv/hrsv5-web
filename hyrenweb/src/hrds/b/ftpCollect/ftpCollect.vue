@@ -155,7 +155,6 @@
             <div class="partThreeDiv">
                 <el-button size="medium" type="success" style="float:right" @click="submitForm('form')">
                     完成
-                    <i class="el-icon-check"></i>
                 </el-button>
             </div>
         </el-col>

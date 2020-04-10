@@ -57,8 +57,8 @@
         </el-col>
         <el-col :span="12">
             <div class="partFourDiv">
-                <el-button type="primary" style="float:left" @click="backSteps" size="medium"><i class="el-icon-back"></i>上一步</el-button>
-                <el-button type="success" style="float:right" @click="checkFieldsForSaveObjectStorage" size="medium">完 成<i class="el-icon-check"></i></el-button>
+                <el-button type="primary" style="float:left" @click="backSteps" size="medium">上一步</el-button>
+                <el-button type="success" style="float:right" @click="checkFieldsForSaveObjectStorage" size="medium">完 成</el-button>
             </div>
         </el-col>
     </el-row>
