@@ -8,9 +8,10 @@ export function getDBConfInfo(data) {
     })
 }
 //根据数据库采集任务ID进行查询并在页面上回显数据源配置信息
-export function addDBConfInfo() {
+export function addDBConfInfo(data) {
     return request({
-        url: '/B/agent/dbagentconf/dbconf/addDBConfInfo'
+        url: '/B/agent/dbagentconf/dbconf/addDBConfInfo',
+        params: data
     })
 }
 //根据数据源ID获取分类信息

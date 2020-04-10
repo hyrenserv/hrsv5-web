@@ -343,7 +343,7 @@ export default {
         if (this.edit == "yes") {
             this.show = true;
             let params = {};
-            params["databaseId"] = this.dbid;
+            params["databaseId"] = this.sourceId;
             addTaskAllFun.getDBConfInfo(params).then(res => {
                 if (res.data) {
                     this.ruleForm = res.data[0];
@@ -362,7 +362,9 @@ export default {
                 //
             });
         } else {
-            addTaskAllFun.addDBConfInfo().then(res => {
+            let params = {};
+            params["databaseId"] = this.sourceId;
+            addTaskAllFun.addDBConfInfo(params).then(res => {
 
                 if (res.data.length != 0) {
                     this.ruleForm = res.data[0];
