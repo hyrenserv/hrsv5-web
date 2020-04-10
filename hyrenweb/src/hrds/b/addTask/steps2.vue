@@ -36,35 +36,39 @@
                             <template slot-scope="scope">
                                 <el-row>
                                     <el-col :span="19">
-                                        <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium" @change="oneunloadTypeFun(scope.row)">
+                                        <el-select placeholder="卸数方式" v-if="scope.row.collectState==true" v-model="scope.row.unload_type" size="medium" @change="oneunloadTypeFun(scope.row)">
+                                            <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
+                                        </el-select>
+                                        <el-select placeholder="卸数方式" v-else disabled v-model="scope.row.unload_type" size="medium" @change="oneunloadTypeFun(scope.row)">
                                             <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
                                         </el-select>
                                     </el-col>
                                     <el-col :span="3">
-                                        <el-button type="text" style='font-weight: bold;' v-if="scope.row.unload_type=='增量'" @click="XSTypeFun(scope.row)">设置</el-button>
-                                        <el-button type="text" style='font-weight: bold;' v-else disabled>设置</el-button>
+                                        <el-button type="text" style='font-weight: bold;' disabled v-if="scope.row.unload_type=='全量'||scope.row.collectState==false">设置</el-button>
+                                        <el-button type="text" style='font-weight: bold;' v-else  @click="XSTypeFun(scope.row)">设置</el-button>
                                     </el-col>
                                 </el-row>
                             </template>
                         </el-table-column>
                         <el-table-column prop="is_md5" label=" 计算MD5" align="center">
                             <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
+                                <el-checkbox v-model="scope.row.is_md5" v-if="scope.row.collectState==true" :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
+                                <el-checkbox v-model="scope.row.is_md5" v-else disabled :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
 
                             <template slot-scope="scope">
-                                <el-checkbox v-if="scope.row.unload_type=='全量'" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
-                                <el-checkbox v-else disabled></el-checkbox>
+                                <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
+                                <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
 
                         <el-table-column prop="sqlFiltering" label="SQL过滤" align="center">
 
                             <template slot-scope="scope">
-                                <el-button size="mini" v-if="scope.row.unload_type=='全量'" @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
-                                <el-button size="mini" v-else disabled type="success">定义过滤</el-button>
+                                <el-button size="mini" disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false"  type="success">定义过滤</el-button>
+                                <el-button size="mini" v-else  @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column prop="selectCol" label="选择列" align="center">
@@ -107,28 +111,32 @@
                             <el-row>
                                 <el-col :span="19">
                                     <el-form-item :prop="'sqlExtractData.'+scope.$index+'.unload_type'" :rules="rule.selected">
-                                        <el-select placeholder="卸数方式" v-model="scope.row.unload_type" size="medium">
+                                        <el-select placeholder="卸数方式" disabled v-if="scope.row.collectState==false" v-model="scope.row.unload_type" size="medium">
+                                            <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
+                                        </el-select>
+                                        <el-select placeholder="卸数方式" v-else  v-model="scope.row.unload_type" size="medium">
                                             <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
-                                    <el-button type="text" style='font-weight: bold;' v-if="scope.row.unload_type=='全量'||scope.row.unload_type=='增量'" @click="XSTypeFun2(scope.row)">设置</el-button>
-                                    <el-button type="text" v-else disabled style='font-weight: bold;'>设置</el-button>
+                                    <el-button type="text"  disabled style='font-weight: bold;' v-if="scope.row.collectState==false" > 设置</el-button>
+                                    <el-button type="text" style='font-weight: bold;' v-else  @click="XSTypeFun2(scope.row)">设置</el-button>
                                 </el-col>
                             </el-row>
                         </template>
                     </el-table-column>
                     <el-table-column prop="is_md5" label=" 计算MD5" align="center" width="100">
                         <template slot-scope="scope">
-                            <el-checkbox v-model="scope.row.is_md5" :checked="scope.row.is_md5"></el-checkbox>
+                            <el-checkbox v-model="scope.row.is_md5" disabled v-if="scope.row.collectState==false" :checked="scope.row.is_md5"></el-checkbox>
+                            <el-checkbox v-model="scope.row.is_md5" v-else  :checked="scope.row.is_md5"></el-checkbox>
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="is_parallel" label="是否并行抽取" align="center" width="120">
                         <template slot-scope="scope">
-                            <el-checkbox v-if="scope.row.unload_type=='全量'" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
-                            <el-checkbox v-else disabled></el-checkbox>
+                            <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
+                            <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
                         </template>
                     </el-table-column>
                     <el-table-column prop="selectCol" label="选择列" align="center">
@@ -136,7 +144,7 @@
                             <el-button size="mini" @click="selectCol2(scope.$index, scope.row)" type="info">选择列</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" align="center" width="70px">
+                    <el-table-column label="操作" align="center" width="90px">
                         <template slot-scope="scope">
                             <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
                         </template>
@@ -209,11 +217,11 @@
             <el-table-column label="选择列" align="center">
 
                 <template slot="header" slot-scope="scope">
-                    <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn"></el-checkbox>&nbsp;选择列
                 </template>
                 <template slot-scope="scope">
-                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else @change="every_SelectColumnfun(scope.row.is_get,SelectColumnData)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                 </template>
@@ -222,11 +230,11 @@
             <el-table-column label="主键定义" align="center">
 
                 <template slot="header" slot-scope="scope">
-                    <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn"></el-checkbox> 主键定义
                 </template>
                 <template slot-scope="scope">
-                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                 </template>
@@ -242,13 +250,13 @@
             </el-table-column>
             <el-table-column label="操作" width="160px" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" v-if="disShow==false" disabled>
+                    <el-button size="mini" v-if="disShow==true" disabled>
                         <i class="el-icon-arrow-up"></i>
                     </el-button>
                     <el-button size="mini" v-else :disabled="scope.$index===0" @click="moveUp(scope.$index,scope.row,SelectColumnData)">
                         <i class="el-icon-arrow-up"></i>
                     </el-button>
-                    <el-button size="mini" v-if="disShow==false" disabled>
+                    <el-button size="mini" v-if="disShow==true" disabled>
                         <i class="el-icon-arrow-down"></i>
                     </el-button>
                     <el-button size="mini" v-else :disabled="scope.$index===(SelectColumnData.length-1)" @click="moveDown(scope.$index,scope.row,SelectColumnData)">
@@ -276,10 +284,10 @@
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="add" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="insert" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -310,10 +318,10 @@
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="add" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="insert" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd2.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -337,10 +345,10 @@
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form :model="xstypeadd2" status-icon ref="xstypeadd2" label-width="30%">
-            <el-form-item label="SQL" prop="add" :rules="rule.default">
+            <el-form-item label="SQL" prop="insert" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
-                        <el-input v-model="xstypeadd2.add" type="textarea" autosize size="medium" style="width:284px"></el-input>
+                        <el-input v-model="xstypeadd2.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
@@ -501,11 +509,11 @@
 
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
-                    <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2"></el-checkbox>&nbsp;选择列
+                    <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" disabled></el-checkbox>&nbsp;选择列
                 </template>
                 <template slot-scope="scope">
                     <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-if="disShow==false" disabled></el-checkbox>
-                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else @change="every_SelectColumnfun(scope.row.is_get,SelectColumnData2)"></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get" v-else @change="every_SelectColumnfun(scope.row.is_get,SelectColumnData2)" disabled></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                 </template>
             </el-table-column>
@@ -513,11 +521,11 @@
             <el-table-column label="主键定义" align="center">
 
                 <template slot="header" slot-scope="scope">
-                    <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2"></el-checkbox> 主键定义
                 </template>
                 <template slot-scope="scope">
-                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==false" disabled></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData2)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
                 </template>
@@ -533,13 +541,13 @@
             </el-table-column>
             <el-table-column label="操作" width="160px" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" v-if="disShow==false" disabled>
+                    <el-button size="mini" v-if="disShow==true" disabled>
                         <i class="el-icon-arrow-up"></i>
                     </el-button>
                     <el-button size="mini" v-else :disabled="scope.$index===0" @click="moveUp(scope.$index,scope.row,SelectColumnData2)">
                         <i class="el-icon-arrow-up"></i>
                     </el-button>
-                    <el-button size="mini" v-if="disShow==false" disabled>
+                    <el-button size="mini" v-if="disShow==true" disabled>
                         <i class="el-icon-arrow-down"></i>
                     </el-button>
                     <el-button size="mini" v-else :disabled="scope.$index===(SelectColumnData2.length-1)" @click="moveDown(scope.$index,scope.row,SelectColumnData2)">
@@ -580,7 +588,7 @@ export default {
             rule: validator.default,
             Allis_selectionState: false,
             Allis_SelectColumn: false,
-            Allis_SelectColumn2: false,
+            Allis_SelectColumn2: true,
             Alliskey_SelectColumn: false,
             Alliskey_SelectColumn2: false,
             dialogTableVisible_zdy: false,
@@ -619,12 +627,12 @@ export default {
             },
             xstypeadd: {
                 delete: '',
-                add: '',
+                insert: '',
                 update: ''
             },
             xstypeadd2: {
                 delete: '',
-                add: '',
+                insert: '',
                 update: ''
             },
             dbid: null,
@@ -719,7 +727,7 @@ export default {
             console.log(res.data)
             let data = res.data
             for (let i = 0; i < data.length; i++) {
-                if (data[i].table_id) {
+                if (data[i].table_id && data[i].table_id != '') {
                     data[i].selectionState = true;
                 } else {
                     data[i].selectionState = false;
@@ -806,6 +814,8 @@ export default {
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].table_id) {
                             data[i].selectionState = true;
+                        } else {
+                            data[i].selectionState = false;
                         }
                         if (data[i].is_parallel != "0") {
                             data[i].is_parallel = true;
@@ -981,21 +991,23 @@ export default {
             }
         },
         next() {
-            // this.isLoading = true
-
             // if (this.handleactive == true) { //切换过第二个页面
             this.$refs['ruleForm'].validate(valid => {
                 if (valid) {
                     this.isLoading = true
-                    let tableData = this.tableData,
-                        sqlExtractData = this.ruleForm.sqlExtractData,
-                        rep_table = [],
-                        isparmi = [],
-                        isparmi2 = [];
+                    let tableData = this.tableData, //第一个页面所有表
+                        sqlExtractData = this.ruleForm.sqlExtractData, //第二个页面所有表
+                        rep_table = [], //两张表重复的表
+                        isparmi = [], //单表查询中增量存在的表
+                        isparmi2 = [], //sql抽取中增量存在的表
+                        istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     console.log(this.tableData, this.ruleForm.sqlExtractData)
                     for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
-                        if (tableData[i].selectionState == true) {
+                        if (tableData[i].selectionState == true && tableData[i].unload_type == '增量') {
                             isparmi.push(tableData[i].table_name)
+                        }
+                        if (tableData[i].selectionState == true) {
+                            istrue.push(tableData[i].table_name)
                         }
                         for (let j = 0; j < sqlExtractData.length; j++) {
                             if (tableData[i].table_name == sqlExtractData[j].table_name && tableData[i].selectionState == true) {
@@ -1005,9 +1017,14 @@ export default {
                         }
                     }
                     for (let j = 0; j < sqlExtractData.length; j++) {
-                        isparmi2.push(sqlExtractData[j].table_name)
+                        if (sqlExtractData[j].unload_type == '增量') {
+                            isparmi2.push(sqlExtractData[j].table_name)
+                        }
+                        if (sqlExtractData[j].selectionState == true) {
+                            istrue.push(sqlExtractData[j].table_name)
+                        }
                     }
-                    if (isparmi2.length == 0 && isparmi.length == 0) {
+                    if (istrue.length == 0) { //判断第二步整体有没有表存在
                         this.$message({
                             showClose: true,
                             message: '至少选择一张表',
@@ -1015,35 +1032,142 @@ export default {
                         });
                     } else {
                         //checkTablePrimary 
-                        let params1 = {};
-                        params1["tableNames"] = JSON.stringify(isparmi);
-                        params1["colSetId"] = parseInt(this.dbid);
-                        console.log(params1)
-                        addTaskAllFun.checkTablePrimary(params1).then(res => {
-                            console.log(res, 1)
-                        });
-                        let params2 = {};
-                        params2["tableNames"] = JSON.stringify(isparmi2);
-                        params2["colSetId"] = parseInt(this.dbid);
-                        console.log(params2)
-                        addTaskAllFun.checkTablePrimary(params2).then(res => {
-                            console.log(res, 2)
-                        });
+                        console.log(this.SelectColumn, this.SelectColumn2)
+                        if (rep_table.length > 0) { //有重复表
+                            this.isLoading = false
+                            this.$message({
+                                showClose: true,
+                                message: '单表查询和sql抽取数据中存在表' + rep_table + '重复,请修改',
+                                type: "error"
+                            });
+                        } else { //没有重复表
+                            if (isparmi.length > 0) { //第一个页面卸数方式是增量存在的
+                                let params1 = {};
+                                params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
+                                params1["colSetId"] = parseInt(this.dbid);
+                                console.log(params1)
+                                addTaskAllFun.checkTablePrimary(params1).then(res => {
+                                    console.log(res, 1)
+                                    let arrdata = res.data
+                                    if (this.SelectColumn.length > 0) {
+                                        for (let key in arrdata) {
+                                            for (let j = 0; j < this.SelectColumn.length; j++) {
+                                                if (key == this.SelectColumn[j].tablename) { //判断手动保存的列当时是true或者false,true则删除
+                                                    if (this.SelectColumn[j].hasprimaryKey == true) {
+                                                        delete arrdata[key];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // arrdata删除本次设置了主键的剩余的做判断
+                                        if (arrdata.length > 0) {
+                                            let arr = []
+                                            for (let key in arrdata) {
+                                                if (arrdata[key] == false) {
+                                                    arr.push(key)
+                                                }
+                                            }
+                                            if (arr.length > 0) { //存在未设置主键
+                                                this.isLoading = false
+                                                this.$message({
+                                                    showClose: true,
+                                                    message: '单表查询中表' + arr + '未设置主键',
+                                                    type: "error"
+                                                });
+                                            } else { //不存在继续下面方法
+                                                this.saveTableConfFun(); //处理第一个页面数据
+                                            }
+                                        }
+                                    } else { //手动没有保存的选择列信息，只需要判断从接口获取的原本的
+                                        let arr = []
+                                        for (let key in arrdata) {
+                                            if (arrdata[key] == false) {
+                                                arr.push(key)
+                                            }
+                                        }
+                                        if (arr.length > 0) { //存在未设置主键的表
+                                            this.isLoading = false
+                                            this.$message({
+                                                showClose: true,
+                                                message: '单表查询中表' + arr + '未设置主键',
+                                                type: "error"
+                                            });
+                                        } else { //不存在未设置主键的表则继续下面整合数据方法
+                                            this.saveTableConfFun(); //处理第一个页面数据
+                                        }
+
+                                    }
+
+                                });
+                            } else { //第一个页面无增量的卸数存在直接进整理数据方法
+                                this.saveTableConfFun(); //处理第一个页面数据
+                            }
+                            // 第二个页面
+                            if (isparmi2.length > 0) { //第一个页面卸数方式是增量存在的
+                                let params2 = {};
+                                params2["tableNames"] = isparmi2; //勾选表并且卸数方式是增量
+                                params2["colSetId"] = parseInt(this.dbid);
+                                console.log(params2)
+                                addTaskAllFun.checkTablePrimary(params2).then(res => {
+                                    console.log(res, 1)
+                                    let arrdata = res.data
+                                    if (this.SelectColumn2.length > 0) {
+                                        for (let key in arrdata) {
+                                            for (let j = 0; j < this.SelectColumn2.length; j++) {
+                                                if (key == this.SelectColumn2[j].tablename) { //判断手动保存的列当时是true或者false,true则删除
+                                                    if (this.SelectColumn2[j].hasprimaryKey == true) {
+                                                        delete arrdata[key];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // arrdata删除本次设置了主键的剩余的做判断
+                                        if (arrdata.length > 0) {
+                                            let arr = []
+                                            for (let key in arrdata) {
+                                                if (arrdata[key] == false) {
+                                                    arr.push(key)
+                                                }
+                                            }
+                                            if (arr.length > 0) { //存在未设置主键
+                                                this.isLoading = false
+                                                this.$message({
+                                                    showClose: true,
+                                                    message: 'SQl抽取数据中表' + arr + '未设置主键',
+                                                    type: "error"
+                                                });
+                                            } else { //不存在继续下面方法
+                                                this.sqlFun(); //处理第二个页面数据
+                                            }
+                                        }
+                                    } else { //手动没有保存的选择列信息，只需要判断从接口获取的原本的
+                                        let arr = []
+                                        for (let key in arrdata) {
+                                            if (arrdata[key] == false) {
+                                                arr.push(key)
+                                            }
+                                        }
+                                        if (arr.length > 0) { //存在未设置主键的表
+                                            this.isLoading = false
+                                            this.$message({
+                                                showClose: true,
+                                                message: 'SQl抽取数据中表' + arr + '未设置主键',
+                                                type: "error"
+                                            });
+                                        } else { //不存在未设置主键的表则继续下面整合数据方法
+                                            this.sqlFun(); //处理第二个页面数据
+                                        }
+
+                                    }
+
+                                });
+                            } else { //第一个页面无增量的卸数存在直接进整理数据方法
+                                this.sqlFun(); //处理第二个页面数据
+                            }
+                        }
 
                     }
 
-                    if (rep_table.length > 0) { //有重复表
-                        this.isLoading = false
-                        this.$message({
-                            showClose: true,
-                            message: '表' + rep_table + '重复,请修改',
-                            type: "error"
-                        });
-                    } else {
-                        // 判断每个表主键问题
-                        /*   this.saveTableConfFun(); //处理第一个页面数据
-                          this.sqlFun() //处理第二个页面数据 */
-                    }
                 } else {
                     this.activeName = 'second'
                 }
@@ -1055,21 +1179,10 @@ export default {
             console.log(this.xsTypeArr2, '第二个页面卸数增量是存放数据')
             console.log(this.ParallelExtractionArr2, '第二个页面并行抽取保存数据')
             console.log(this.zdycallTable, 11)
+            console.log(this.SelectColumn2, '第二个页面选择列保存数据')
             let delold = [],
-                twotabledata = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData)) //删除的表
-            /*   for (let i = 0; i < twotabledata.length; i++) {
-                  for (let j = 0; j < this.zdycallTable.length; j++) {
-                      if (twotabledata[i].table_name == this.zdycallTable[j].table_name) {
-                          this.zdycallTable.splice(j, 1)
-                          j--
-                      }
-                  }
-              }
-              for (let j = 0; j < this.zdycallTable.length; j++) {
-                  delold.push({
-                      'tableId': this.zdycallTable[j].table_id //存储删除的表id
-                  })
-              } */
+                twotabledata = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData)),
+                twotabledata2 = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData))
             for (let i = 0; i < twotabledata.length; i++) {
                 for (let j = 0; j < this.xsTypeArr2.length; j++) {
                     if (twotabledata[i].table_name = this.xsTypeArr2[j].table_name) {
@@ -1105,20 +1218,92 @@ export default {
 
                 }
             }
-            let params1 = {};
-            params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
-            params1["colSetId"] = parseInt(this.dbid);
-            //delold  删除的
-            // params1["delTbString"] = delold.length > 0 ? JSON.stringify(delold) : '';
-            console.log(params1)
-            addTaskAllFun.saveAllSQL(params1).then(res => {
-                if (res.code == '200') {
-                    this.activeSec = true;
-                    console.log(111)
-                } else {
-                    this.isLoading = false
+            //
+            let arrcol = [],
+                cola = [],
+                collTbConfParamString = [],
+                params = {},
+                params1 = {};
+            params["colSetId"] = this.dbid;
+            addTaskAllFun.getColumnInfoByColSetId(params).then(res => {
+                let colData = res.data ? res.data : [];
+                console.log(colData)
+                /* if(colData.length>0){
+                    for (let i = 0; i < twotabledata.length; i++) {
+                            for (let key in colData) {
+                                if (twotabledata[i].table_name == key) {
+                                    twotabledata[i].data = colData[key];
+                                    twotabledata[i].edit = "1";
+                                }
+                            }
                 }
-            });
+                } */
+                if (this.SelectColumn2.length > 0) {
+                    for (let j = 0; j < twotabledata2.length; j++) {
+                        for (let n = 0; n < this.SelectColumn2.length; n++) {
+                            if (
+                                twotabledata2[j].table_name == this.SelectColumn2[n].tablename
+                            ) {
+                                twotabledata2[j].data = this.SelectColumn2[n].data;
+
+                            }
+                        }
+                    }
+                }
+                for (let m = 0; m < twotabledata2.length; m++) {
+                    console.log(twotabledata2[m].data)
+                    let a = [],
+                        c = [];
+                    a = twotabledata2[m].data ? JSON.parse(JSON.stringify(twotabledata2[m].data)) : '';
+                    if (a.length > 0) {
+                        for (let i = 0; i < a.length; i++) {
+                            for (let key in a[i]) {
+                                a[i].tc_remark = (i + 1) + ''
+                                if (key == "is_get") {
+                                    if (a[i][key] == true) {
+                                        a[i][key] = "1";
+                                    } else if (a[i][key] == false) {
+                                        a[i][key] = "0";
+                                    }
+                                }
+                                if (key == "column_ch_name") {
+                                    if (a[i][key] == "") {
+                                        a[i][key] = a[i].column_name;
+                                    }
+                                }
+                                if (key == "is_primary_key") {
+                                    if (a[i][key] == true) {
+                                        a[i][key] = "1";
+                                    } else if (a[i][key] == false) {
+                                        a[i][key] = "0";
+                                    }
+                                }
+                            }
+                        }
+                        collTbConfParamString.push({
+                            collColumnString: a.length != 0 ? JSON.stringify(a) : ""
+                        });
+                    }
+
+                }
+                console.log(collTbConfParamString)
+                let collTbConf = collTbConfParamString
+                params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
+                params1["colSetId"] = parseInt(this.dbid);
+                params1["collTbConfParamString"] = JSON.stringify(collTbConf);
+                //delold  删除的
+                // params1["delTbString"] = delold.length > 0 ? JSON.stringify(delold) : '';
+                console.log(params1)
+                addTaskAllFun.saveAllSQL(params1).then(res => {
+                    if (res.code == '200') {
+                        this.activeSec = true;
+                        console.log(111)
+                    } else {
+                        this.isLoading = false
+                    }
+                });
+            })
+
         },
         nextlinkFun() {
             this.isLoading = false
@@ -1181,7 +1366,7 @@ export default {
                     for (let i = 0; i < arrData.length; i++) { //已勾选的表
                         //与原接口数据对比
                         for (let j = 0; j < this.callTable2.length; j++) { //之前编辑的表
-                            if (arrData[i].table_name == this.callTable2[j].table_name && arrData[i].unload_type == this.callTable2[j].unload_type) {
+                            if (arrData[i].table_name == this.callTable2[j].table_name) {
                                 //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
                                 if (this.callTable2[j].dataincrement) {
                                     arrData[i].dataincrement = this.callTable2[j].dataincrement; //每日数据增量
@@ -1189,9 +1374,6 @@ export default {
                                 if (this.callTable2[j].is_customize_sql) {
                                     arrData[i].is_customize_sql = this.callTable2[j].is_customize_sql; //并行抽取的自定义sql
                                 }
-                                /*   if (arr[j].table_ch_name) {
-                                      arrData[i].table_ch_name = this.callTable2[j].table_ch_name;//是否sql抽取
-                                  } */
                                 if (this.callTable2[j].page_sql) {
                                     arrData[i].page_sql = this.callTable2[j].page_sql; //分页sql
                                 }
@@ -1201,22 +1383,19 @@ export default {
                                 if (this.callTable2[j].rec_num_date) {
                                     arrData[i].rec_num_date = this.callTable2[j].rec_num_date; //获取数据总量点击按钮日期
                                 }
-                                if (this.callTable2[j].sql) {
-                                    arrData[i].sql = this.callTable2[j].sql; //过滤的sql
-
-                                }
-
-                                /*   if (this.callTable2[j].xssql) {
-                                      arrData[i].xssql = this.callTable2[j].xssql; //卸数方式设置的sql
-                                  } */
                                 if (this.callTable2[j].table_count) {
                                     arrData[i].table_count = this.callTable2[j].table_count; //数据总量
                                 }
 
                             }
+                            if (arrData[i].table_name == this.callTable2[j].table_name && arrData[i].unload_type == this.callTable2[j].unload_type) {
+                                if (this.callTable2[j].sql) {
+                                    arrData[i].sql = this.callTable2[j].sql; //过滤的sql或者卸数为增量的sql
+                                }
+                            }
+
                         }
                     }
-                    console.log(arrData)
                 }
                 if (this.ParallelExtractionArr.length > 0) { //本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
@@ -1346,86 +1525,81 @@ export default {
             });
         },
         saveTableInfofun(arrData, delJson) {
-            let arrcol = [],
-                cola = [],
-                collTbConfParamString = [],
+            let collTbConfParamString = [],
                 params = {},
-                params2 = {};
+                params2 = {},
+                arrData1 = JSON.parse(JSON.stringify(arrData))
             params["colSetId"] = this.dbid;
             addTaskAllFun.getColumnInfoByColSetId(params).then(res => {
                 let colData = res.data ? res.data : [];
-                console.log(colData)
-                for (let i = 0; i < arrData.length; i++) {
-                    if (arrData[i].selectionState == true) {
-                        if (colData) {
+                if (colData.length > 0) {
+                    for (let i = 0; i < arrData1.length; i++) {
+                        if (arrData1[i].selectionState == true) {
                             for (let key in colData) {
-                                if (arrData[i].table_name == key) {
-                                    arrData[i].data = colData[key];
-                                    arrData[i].edit = "1";
+                                if (arrData1[i].table_name == key) {
+                                    arrData1[i].data = colData[key];
+                                    arrData1[i].edit = "1";
                                 }
                             }
                         }
-                        arrcol.push({
-                            tablename: arrData[i].table_name,
-                            edit: arrData[i].edit ? arrData[i].edit : "0", //为时上次编辑的加上标志
-                            data: arrData[i].data ? arrData[i].data : "" //将之前编辑的列数据赋值
-                        });
                     }
                 }
-                cola = arrcol;
                 if (this.SelectColumn.length > 0) {
-                    for (let j = 0; j < cola.length; j++) {
+                    for (let j = 0; j < arrData1.length; j++) {
                         for (let n = 0; n < this.SelectColumn.length; n++) {
-                            if (
-                                cola[j].tablename == this.SelectColumn[n].tablename &&
-                                cola[j].edit == "1"
-                            ) {
-                                for (let m = 0; m < cola[j].data.length; m++) {
-                                    for (let k = 0; k < this.SelectColumn[n].data.length; k++) {
-                                        if (cola[j].data[m].column_name == this.SelectColumn[n].data[k].column_name) {
-                                            cola[j].data[m].is_get = this.SelectColumn[n].data[k].is_get,
-                                                cola[j].data[m].is_primary_key = this.SelectColumn[n].data[k].is_primary_key,
-                                                cola[j].data[m].column_ch_name = this.SelectColumn[n].data[k].column_ch_name
-                                        }
+                            /*   if (
+                                  arrData1[j].tablename == this.SelectColumn[n].tablename &&
+                                  arrData1[j].edit == "1"
+                              ) {
+                                  for (let m = 0; m < arrData1[j].data.length; m++) {
+                                      for (let k = 0; k < this.SelectColumn[n].data.length; k++) {
+                                          if (arrData1[j].data[m].column_name == this.SelectColumn[n].data[k].column_name) {
+                                              arrData1[j].data[m].is_get = this.SelectColumn[n].data[k].is_get,
+                                                  arrData1[j].data[m].is_primary_key = this.SelectColumn[n].data[k].is_primary_key,
+                                                  arrData1[j].data[m].column_ch_name = this.SelectColumn[n].data[k].column_ch_name
+                                          }
 
-                                    }
-                                }
-                            } else if (cola[j].tablename == this.SelectColumn[n].tablename) {
-                                cola[j].data = this.SelectColumn[n].data;
+                                      }
+                                  }
+                              } else */
+                            if (arrData1[j].tablename == this.SelectColumn[n].tablename) {
+                                arrData1[j].data = this.SelectColumn[n].data;
                             }
                         }
                     }
                 }
-                for (let m = 0; m < cola.length; m++) {
+                for (let m = 0; m < arrData1.length; m++) {
                     let a = [],
                         c = [];
-                    a = JSON.parse(JSON.stringify(cola[m].data));
-                    for (let i = 0; i < a.length; i++) {
-                        for (let key in a[i]) {
-                            a[i].tc_remark = (i + 1) + ''
-                            if (key == "is_get") {
-                                if (a[i][key] == true) {
-                                    a[i][key] = "1";
-                                } else if (a[i][key] == false) {
-                                    a[i][key] = "0";
+                    a = JSON.parse(JSON.stringify(arrData1[m].data));
+                    if (a.length > 0) {
+                        for (let i = 0; i < a.length; i++) {
+                            for (let key in a[i]) {
+                                a[i].tc_remark = (i + 1) + ''
+                                if (key == "is_get") {
+                                    if (a[i][key] == true) {
+                                        a[i][key] = "1";
+                                    } else if (a[i][key] == false) {
+                                        a[i][key] = "0";
+                                    }
                                 }
-                            }
-                            if (key == "column_ch_name") {
-                                if (a[i][key] == "") {
-                                    a[i][key] = a[i].column_name;
+                                if (key == "column_ch_name") {
+                                    if (a[i][key] == "") {
+                                        a[i][key] = a[i].column_name;
+                                    }
                                 }
-                            }
-                            if (key == "is_primary_key") {
-                                if (a[i][key] == true) {
-                                    a[i][key] = "1";
-                                } else if (a[i][key] == false) {
-                                    a[i][key] = "0";
+                                if (key == "is_primary_key") {
+                                    if (a[i][key] == true) {
+                                        a[i][key] = "1";
+                                    } else if (a[i][key] == false) {
+                                        a[i][key] = "0";
+                                    }
                                 }
                             }
                         }
                     }
                     collTbConfParamString.push({
-                        collColumnString: a.length != 0 ? JSON.stringify(a) : ""
+                        collColumnString: a.length > 0 ? JSON.stringify(a) : ""
                     });
                 }
                 let collstring = collTbConfParamString;
@@ -1963,25 +2137,19 @@ export default {
                 }
                 if (arrid.indexOf(this.tablename) != -1) {
                     arrid.length = 0;
-                    let params = {};
-                    params["colSetId"] = this.dbid;
-                    params["tableName"] = row.table_name;
-                    params["tableId"] = row.table_id;
-                    addTaskAllFun.getColumnsigleInfo(params).then(res => {
-                        console.log(res)
-                        this.disShow = res.data.editFlag == '1' ? true : false;
-                        for (let i = 0; i < this.SelectColumn.length; i++) {
-                            if (this.SelectColumn[i].tablename == this.tablename) {
-                                this.SelectColumnData = this.SelectColumn[i].data;
-                            }
+                    this.disShow = (row.table_id != '') ? true : false;
+                    console.log(this.disShow)
+                    for (let i = 0; i < this.SelectColumn.length; i++) {
+                        if (this.SelectColumn[i].tablename == this.tablename) {
+                            this.SelectColumnData = this.SelectColumn[i].data;
                         }
-                    })
+                    }
                 } else {
                     arrid.length = 0;
-                    this.SelectColumnShowFun(row.table_name, row.table_id);
+                    this.SelectColumnShowFun(row.table_name, row.table_id,row.collectState);
                 }
             } else {
-                this.SelectColumnShowFun(row.table_name, row.table_id);
+                this.SelectColumnShowFun(row.table_name, row.table_id,row.collectState);
             }
         },
         //第二个  选择列
@@ -1998,33 +2166,27 @@ export default {
                 }
                 if (arrid.indexOf(this.tablename) != -1) {
                     arrid.length = 0;
-                    let params = {};
-                    params["colSetId"] = this.dbid;
-                    params["tableName"] = row.table_name;
-                    params["tableId"] = row.table_id;
-                    addTaskAllFun.getColumnsigleInfo(params).then(res => {
-                        console.log(res)
-                        this.disShow = res.data.editFlag == '1' ? true : false;
-                        for (let i = 0; i < this.SelectColumn2.length; i++) {
-                            if (this.SelectColumn2[i].tablename == this.tablename) {
-                                this.SelectColumnData2 = this.SelectColumn2[i].data;
-                            }
+                    this.disShow = (row.collectState==false) ? true : false;
+                    for (let i = 0; i < this.SelectColumn2.length; i++) {
+                        if (this.SelectColumn2[i].tablename == this.tablename) {
+                            this.SelectColumnData2 = this.SelectColumn2[i].data;
                         }
-                    })
+                    }
                 } else {
                     arrid.length = 0;
-                    this.SelectColumnShowFun(row.table_name, row.table_id);
+                    this.SelectColumnShowFun2(row);
                 }
             } else {
-                this.SelectColumnShowFun(row.table_name, row.table_id);
+                this.SelectColumnShowFun2(row);
             }
         },
         //第一页 选择列弹框回显数据调接口
-        SelectColumnShowFun(name, id) {
+        SelectColumnShowFun(name, id,collectState) {
             let params = {};
             params["colSetId"] = this.dbid;
             params["tableName"] = name;
-            params["tableId"] = id;
+            params["tableId"] = id ? id : '';
+            console.log(params)
             addTaskAllFun.getColumnsigleInfo(params).then(res => {
                 console.log(res)
                 if (res.data.length == 0) {
@@ -2032,7 +2194,8 @@ export default {
                 } else {
                     this.coltable_name = "";
                     this.coltable_name = res.data.tableName ? res.data.tableName : "";
-                    this.disShow = res.data.editFlag == '1' ? true : false;
+                    this.disShow = (collectState==false) ? true : false;
+                    console.log(id, this.disShow)
                     let data = res.data.columnInfo ? res.data.columnInfo : [],
                         count = 0,
                         num = 0;
@@ -2081,65 +2244,120 @@ export default {
             });
         },
         //第二页 选择列弹框回显数据调接口
-        SelectColumnShowFun(name, id) {
-            let params = {};
-            params["colSetId"] = this.dbid;
-            params["tableName"] = name;
-            params["tableId"] = id;
-            addTaskAllFun.getColumnsigleInfo(params).then(res => {
-                console.log(res)
-                if (res.data.length == 0) {
-                    this.tableloadingInfo = "暂无数据";
+        SelectColumnShowFun2(row) {
+            let arrdata = [],sql=''
+            for (let i = 0; i < this.xsTypeArr2.length; i++) {
+                arrdata.push(this.xsTypeArr2[i].table_name)
+            }
+            if (row.table_id && row.table_id != '') {
+                if (arrdata.indexOf(row.table_name) == -1) {
+                    for (let i = 0; i < this.zdycallTable.length; i++) {
+                        if (this.zdycallTable[i].table_name == row.table_name) {
+                            if (this.zdycallTable[i].unload_type == row.unload_type) {
+                                sql = row.sql
+                                this.getSqlColumnDataFun(row, sql)
+                                //   break
+                            } else {
+                                this.$message({
+                                    showClose: true,
+                                    message: '请先为此表设置卸数方式sql语句',
+                                    type: "error"
+                                });
+                            }
+                        }
+                    }
                 } else {
-                    this.coltable_name = "";
-                    this.coltable_name = res.data.tableName ? res.data.tableName : "";
-                    this.disShow = res.data.editFlag == '1' ? true : false;
-                    let data = res.data.columnInfo ? res.data.columnInfo : [],
-                        count = 0,
-                        num = 0;
-                    for (let i = 0; i < data.length; i++) {
-                        if (data[i].is_get) {
-                            if (data[i].is_get == "1") {
-                                count++;
-                                data[i].is_get = true;
-                            } else {
-                                data[i].is_get = false;
-                            }
-                        } else {
-                            data[i].is_get = false;
-                        }
-                        if (data[i].is_primary_key) {
-                            if (data[i].is_primary_key == "1") {
-                                num++;
-                                data[i].is_primary_key = true;
-                            } else {
-                                data[i].is_primary_key = false;
-                            }
-                        } else {
-                            data[i].is_primary_key = false;
-                        }
-                        if (data[i].column_ch_name == '') {
-                            data[i].column_ch_name = data[i].column_name
+                    let sql = ''
+                    for (let i = 0; i < this.xsTypeArr2.length; i++) {
+                        if (this.xsTypeArr2[i].table_name == row.table_name) {
+                            sql = this.xsTypeArr2[i].sql
+                            // break;
                         }
                     }
-                    if (count == data.length && data) {
-                        this.Allis_SelectColumn = true;
-                        count = 0;
-                    } else {
-                        this.Allis_SelectColumn = false;
-                        count = 0;
+                    this.getSqlColumnDataFun(row, sql)
+                }
+            } else {
+                if (arrdata.indexOf(row.table_name) == -1) {
+                    this.$message({
+                        showClose: true,
+                        message: '请先为此表设置卸数方式sql语句',
+                        type: "error"
+                    });
+                } else {
+                    let sql = ''
+                    for (let i = 0; i < this.xsTypeArr2.length; i++) {
+                        if (this.xsTypeArr2[i].table_name == row.table_name) {
+                            sql = this.xsTypeArr2[i].sql
+                            // break;
+                        }
                     }
-                    if (num == data.length && data) {
-                        this.Alliskey_SelectColumn = true;
-                        num = 0;
-                    } else {
-                        this.Alliskey_SelectColumn = false;
-                        num = 0;
-                    }
-                    this.SelectColumnData2 = JSON.parse(JSON.stringify(data));
+                    this.getSqlColumnDataFun(row, sql)
                 }
 
-            });
+            }
+
+        },
+        // 第二页选择列调接口显示数据
+        getSqlColumnDataFun(row, sql) {
+            let params = {};
+            params["colSetId"] = this.dbid;
+            params["unloadType"] = this.xsTypeCode(row.unload_type);
+            params["sql"] =sql;
+            console.log(params)
+             addTaskAllFun.getSqlColumnData(params).then(res => {
+                 console.log(res)
+                  if (res.data.length == 0) {
+                          this.tableloadingInfo = "暂无数据";
+                      } else {
+                          this.coltable_name = "";
+                          this.coltable_name = row.table_name;
+                          console.log(row.collectState)
+                          this.disShow = (row.collectState==false) ? true : false;
+                          let data = res.data? res.data: [],
+                              count = 0,
+                              num = 0;
+                          for (let i = 0; i < data.length; i++) {
+                              data[i].is_get = true
+                              if (data[i].is_primary_key) {
+                                  if (data[i].is_primary_key == "1") {
+                                      num++;
+                                      data[i].is_primary_key = true;
+                                  } else {
+                                      data[i].is_primary_key = false;
+                                  }
+                              } else {
+                                  data[i].is_primary_key = false;
+                              }
+                              if (data[i].column_ch_name == '') {
+                                  data[i].column_ch_name = data[i].column_name
+                              }
+                          }
+                          if (count == data.length && data) {
+                              this.Allis_SelectColumn = true;
+                              count = 0;
+                          } else {
+                              this.Allis_SelectColumn = false;
+                              count = 0;
+                          }
+                          if (num == data.length && data) {
+                              this.Alliskey_SelectColumn = true;
+                              num = 0;
+                          } else {
+                              this.Alliskey_SelectColumn = false;
+                              num = 0;
+                          }
+                          this.SelectColumnData2 = JSON.parse(JSON.stringify(data));
+                          console.log(this.SelectColumnData2 )
+                      }
+             })
+        },
+        //根据卸数方式返回code值
+        xsTypeCode(unloadType){
+            for(let i=0;i<this.xsType.length;i++){
+                if(this.xsType[i].value==unloadType){
+                       return this.xsType[i].code
+                }
+            }
         },
         //第一页 选择列弹框确认
         SelectColumnSubmitFun() {
@@ -2149,40 +2367,100 @@ export default {
                 for (let i = 0; i < arrData.length; i++) {
                     if (arrData[i].is_primary_key == true) {
                         hasprimaryKey = true
+                        break;
                     }
                 }
-            } else {
-                hasprimaryKey = true
+            } else if (this.unloadType == '全量') {
+                for (let i = 0; i < arrData.length; i++) {
+                    if (arrData[i].is_primary_key == true) {
+                        hasprimaryKey = true
+                        break;
+                    }
+                }
             }
-            if (hasprimaryKey == true) {
-                if (this.SelectColumn.length > 0) {
-                    for (let i = 0; i < this.SelectColumn.length; i++) {
-                        if (this.SelectColumn[i].tablename == this.tablename) {
-                            this.SelectColumn.splice(i, 1);
-                            i--;
+            if (this.unloadType == '增量') {
+                if (hasprimaryKey == true) {
+                    if (this.SelectColumn.length > 0) {
+                        for (let i = 0; i < this.SelectColumn.length; i++) {
+                            if (this.SelectColumn[i].tablename == this.tablename) {
+                                this.SelectColumn.splice(i, 1);
+                                i--;
+                            }
                         }
+                        this.SelectColumn.push({
+                            tablename: this.tablename,
+                            data: this.SelectColumnData,
+                            unloadType: '增量',
+                            hasprimaryKey: true
+                        });
+                    } else {
+                        this.SelectColumn.push({
+                            tablename: this.tablename,
+                            data: this.SelectColumnData,
+                            unloadType: '增量',
+                            hasprimaryKey: true
+                        });
                     }
-                    this.SelectColumn.push({
-                        tablename: this.tablename,
-                        data: this.SelectColumnData,
-                        hasprimaryKey: true
-                    });
+                    this.dialogSelectColumn = false;
+                    this.tablename = "";
                 } else {
-                    this.SelectColumn.push({
-                        tablename: this.tablename,
-                        data: this.SelectColumnData,
-                        hasprimaryKey: true
+                    this.$message({
+                        showClose: true,
+                        message: '请选择至少一个主键',
+                        type: "error"
                     });
                 }
-                this.dialogSelectColumn = false;
-                this.tablename = "";
-            } else {
-                this.$message({
-                    showClose: true,
-                    message: '请选择至少一个主键',
-                    type: "error"
-                });
+            } else if (this.unloadType == '全量') {
+                if (hasprimaryKey == true) {
+                    if (this.SelectColumn.length > 0) {
+                        for (let i = 0; i < this.SelectColumn.length; i++) {
+                            if (this.SelectColumn[i].tablename == this.tablename) {
+                                this.SelectColumn.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        this.SelectColumn.push({
+                            tablename: this.tablename,
+                            data: this.SelectColumnData,
+                            unloadType: '全量',
+                            hasprimaryKey: true
+                        });
+                    } else {
+                        this.SelectColumn.push({
+                            tablename: this.tablename,
+                            data: this.SelectColumnData,
+                            unloadType: '全量',
+                            hasprimaryKey: true
+                        });
+                    }
+                    this.dialogSelectColumn = false;
+                } else {
+                    if (this.SelectColumn.length > 0) {
+                        for (let i = 0; i < this.SelectColumn.length; i++) {
+                            if (this.SelectColumn[i].tablename == this.tablename) {
+                                this.SelectColumn.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        this.SelectColumn.push({
+                            tablename: this.tablename,
+                            data: this.SelectColumnData,
+                            unloadType: '全量',
+                            hasprimaryKey: false
+                        });
+                    } else {
+                        this.SelectColumn.push({
+                            tablename: this.tablename,
+                            data: this.SelectColumnData,
+                            unloadType: '全量',
+                            hasprimaryKey: false
+                        });
+                    }
+                    this.dialogSelectColumn = false;
+                }
+
             }
+
             console.log(this.SelectColumn, this.SelectColumnData)
 
         },
@@ -2302,21 +2580,19 @@ export default {
         },
         //新增行
         addRow(tableData, event) {
+            //  this.disShow=false
             tableData.push({
+                isdisabled: false,
                 table_name: "",
                 table_ch_name: "",
                 unload_type: "",
                 is_md5: false,
-                is_parallel: ""
+                is_parallel: false
             });
+            console.log(tableData)
         },
         // 修改表名
         changetablechnameFun(chname, name) {
-            /*  for (let m = 0; m < this.allData.length; m++) {
-                 if (this.allData[m].table_name == name) {
-                     this.allData[m].table_ch_name = chname;
-                 }
-             } */
             for (let m = 0; m < this.allDataList.length; m++) {
                 if (this.allDataList[m].table_name == name) {
                     this.allDataList[m].table_ch_name = chname;
@@ -2346,37 +2622,11 @@ export default {
         sqlExtractDataSubmitFun(formName) {
             this.tableInfoArray = this.ruleForm.sqlExtractData; //
             this.sqlSubmit = true
-            /*  this.$refs[formName].validate(valid => {
-                 if (valid) {
-                     this.tableInfoArray = this.ruleForm.sqlExtractData;
-                     this.sqlSubmit = true
-                     console.log(this.ruleForm.sqlExtractData,2)
-                 }
-             }); */
         },
         //第一个页面打开卸数方式设置
         XSTypeFun(row) {
-            /*  this.Xstable_name = row.table_name
-             if (row.unload_type == '全量') {
-                 this.dialog_xsall = true
-             } else {
-                 this.xstypeadd.add_sql = ''
-                 this.xstypeadd.del_sql = ''
-                 this.xstypeadd.updata_sql = ''
-                 if (this.xsTypeArr.length > 0) {
-                     for (let i = 0; i < this.xsTypeArr.length; i++) {
-                         if (this.xsTypeArr[i].table_name == row.table_name) {
-                             this.xstypeadd.add_sql = this.xsTypeArr[i].sql.add_sql
-                             this.xstypeadd.del_sql = this.xsTypeArr[i].sql.del_sql
-                             this.xstypeadd.updata_sql = this.xsTypeArr[i].sql.updata_sql
-                         }
-                     }
-                 }
-                 this.dialog_xsadd = true
-             } */
-            // 
             this.Xstable_name = row.table_name
-            this.xstypeadd.add = ''
+            this.xstypeadd.insert = ''
             this.xstypeadd.delete = ''
             this.xstypeadd.update = ''
             let arrid = [];
@@ -2392,7 +2642,7 @@ export default {
                     if (this.xsTypeArr.length > 0) {
                         for (let i = 0; i < this.xsTypeArr.length; i++) {
                             if (this.xsTypeArr[i].table_name == row.table_name) {
-                                this.xstypeadd.add = this.xsTypeArr[i].sql
+                                this.xstypeadd.insert = this.xsTypeArr[i].sql
                             }
                         }
                     }
@@ -2402,7 +2652,7 @@ export default {
                     if (this.xsTypeArr.length > 0) {
                         for (let i = 0; i < this.xsTypeArr.length; i++) {
                             if (this.xsTypeArr[i].table_name == row.table_name) {
-                                this.xstypeadd.add = this.xsTypeArr[i].sql.add
+                                this.xstypeadd.insert = this.xsTypeArr[i].sql.insert
                                 this.xstypeadd.delete = this.xsTypeArr[i].sql.delete
                                 this.xstypeadd.update = this.xsTypeArr[i].sql.update
                             }
@@ -2430,7 +2680,7 @@ export default {
         XSTypeFun2(row) {
             console.log(row, this.xsTypeArr2)
             this.Xstable_name = row.table_name
-            this.xstypeadd2.add = ''
+            this.xstypeadd2.insert = ''
             this.xstypeadd2.delete = ''
             this.xstypeadd2.update = ''
             let arrid = [];
@@ -2446,7 +2696,7 @@ export default {
                     if (this.xsTypeArr2.length > 0) {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                this.xstypeadd2.add = this.xsTypeArr2[i].sql
+                                this.xstypeadd2.insert = this.xsTypeArr2[i].sql
                             }
                         }
                     }
@@ -2456,7 +2706,7 @@ export default {
                     if (this.xsTypeArr2.length > 0) {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                this.xstypeadd2.add = this.xsTypeArr2[i].sql.add
+                                this.xstypeadd2.insert = this.xsTypeArr2[i].sql.insert
                                 this.xstypeadd2.delete = this.xsTypeArr2[i].sql.delete
                                 this.xstypeadd2.update = this.xsTypeArr2[i].sql.update
                             }
@@ -2486,12 +2736,20 @@ export default {
             if (type == '全量') {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsall = true
-                    this.xstypeadd2.add = res.data.sql
+                    console.log(res)
+                    if (res.data.unload_type == '1') {
+                        this.xstypeadd2.insert = res.data.sql
+                    }
                 })
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsadd2 = true
-                    this.xstypeadd2 = JSON.parse(res.data.sql)
+                    console.log(res.data.sql)
+                    // if (res.data.unload_type == '2') {
+                        this.xstypeadd2 = JSON.parse(res.data.sql)
+                    console.log(this.xstypeadd2)
+
+                    // }
                 })
             }
 
@@ -2503,7 +2761,8 @@ export default {
             if (type == '全量') {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsall = true
-                    this.xstypeadd.add = res.data.sql
+                    this.xstypeadd.insert = res.data.sql
+                    console.log(res)
                 })
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
@@ -2587,21 +2846,21 @@ export default {
                 if (arr.indexOf(this.Xstable_name) != -1) {
                     this.xsTypeArr2.forEach((item) => {
                         if (item.table_name == this.Xstable_name) {
-                            item.sql = this.xstypeadd2.add
+                            item.sql = this.xstypeadd2.insert
                         }
                     })
                     arr = []
                 } else {
                     this.xsTypeArr2.push({
                         table_name: this.Xstable_name,
-                        sql: this.xstypeadd2.add
+                        sql: this.xstypeadd2.insert
                     })
                     arr = []
                 }
             } else {
                 this.xsTypeArr2.push({
                     table_name: this.Xstable_name,
-                    sql: this.xstypeadd2.add
+                    sql: this.xstypeadd2.insert
                 })
 
             }

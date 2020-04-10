@@ -185,6 +185,13 @@ export function checkTablePrimary(data) {
         params:data
     })
 }
+// 第二个页面的选择列当没有tableid时调的接口显示数据
+export function getSqlColumnData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getSqlColumnData',
+        params:data
+    })
+}
 //steps3
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
