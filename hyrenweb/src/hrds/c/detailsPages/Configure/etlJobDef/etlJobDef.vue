@@ -82,16 +82,16 @@
         </el-col>
     </el-row>
     <!-- 添加/修改任务模态框 -->
-    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'" :before-close="beforeClosechange">
+    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="70%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="150px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                    <el-input v-model="formAdd.etl_sys_cd" style="width:218px;" autocomplete="off" placeholder="工程编号" disabled></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="任务编号" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.sub_sys_cd" placeholder="数据库调度(i)" clearable>
+                <el-form-item label="任务编号" prop="sub_sys_cd" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.sub_sys_cd" placeholder="数据库调度(i)" clearable>
                         <el-option v-for="item in addSelect.project_no" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -99,17 +99,17 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业名称" prop="etl_job" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业描述" prop="etl_job_desc" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_job_desc" autocomplete="off" placeholder="作业描述"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job_desc" autocomplete="off" placeholder="作业描述"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业程序类型" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.pro_type" placeholder="--程序类型--" clearable>
+                <el-form-item label="作业程序类型" prop="pro_type" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.pro_type" placeholder="--程序类型--" clearable>
                         <el-option v-for="item in addSelect.proType" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -117,28 +117,28 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序目录" prop="pro_dic" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.pro_dic" autocomplete="off" placeholder="作业程序目录"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_dic" autocomplete="off" placeholder="作业程序目录"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序名称" prop="pro_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序参数" prop="pro_para">
-                    <el-input v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="日志目录" prop="log_dic" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.log_dic" autocomplete="off" placeholder="日志目录"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.log_dic" autocomplete="off" placeholder="日志目录"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="调度频率" :rules="filter_rules([{required: true}])">
+                <el-form-item label="调度频率" prop="disp_freq" :rules="rule.selected">
                     <el-select v-model="formAdd.disp_freq" placeholder="--频率选择--" clearable>
-                        <el-option v-for="item in addSelect.dispRate" :key="item.value" :label="item.label" :value="item.value">
+                        <el-option style="width:218px;" v-for="item in addSelect.dispRate" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -146,14 +146,14 @@
             <el-col :span="12">
                 <el-form-item label="调度时间位移" prop="disp_offset">
                     <div style="width:150px">
-                        <el-input v-model="formAdd.disp_offset" autocomplete="off" placeholder="0"></el-input>
+                        <el-input style="width:218px;" v-model="formAdd.disp_offset" autocomplete="off" placeholder="0"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="调度触发方式" :rules="filter_rules([{required: true}])">
+                <el-form-item label="调度触发方式" prop="disp_type" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
                             <el-option v-for="item in addSelect.dispType" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -163,7 +163,7 @@
             <el-col :span="12">
                 <el-form-item label="调度触发时间" prop="disp_time">
                     <div style="width:150px">
-                        <el-time-picker v-model="formAdd.disp_time" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}" placeholder="调度时间 hh:mm:ss" value-format="HH:mm:ss" format="HH:mm:ss">
+                        <el-time-picker style="width:218px;" v-model="formAdd.disp_time" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}" placeholder="调度时间 hh:mm:ss" value-format="HH:mm:ss" format="HH:mm:ss">
                         </el-time-picker>
                     </div>
                 </el-form-item>
@@ -171,14 +171,14 @@
             <el-col :span="12">
                 <el-form-item label="作业优先级" prop="job_priority">
                     <div style="width:150px">
-                        <el-input v-model="formAdd.job_priority" autocomplete="off" placeholder="0"></el-input>
+                        <el-input style="width:218px;" v-model="formAdd.job_priority" autocomplete="off" placeholder="0"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业有效标志" :rules="filter_rules([{required: true}])">
+                <el-form-item label="作业有效标志" prop="job_eff_flag" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
                             <el-option v-for="item in addSelect.jobEfflag" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -186,9 +186,9 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="当天是否调度" :rules="filter_rules([{required: true}])">
+                <el-form-item label="当天是否调度" prop="today_disp" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
                             <el-option v-for="item in addSelect.todayDisp" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -205,20 +205,20 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 添加/修改任务模态框1 -->
-    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_freq == 'F'" :before-close="beforeClosechange">
+    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="70%" v-if="this.formAdd.disp_freq == 'F'" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="150px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="任务编号" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.sub_sys_cd" placeholder="数据库调度(i)" clearable>
+                <el-form-item label="任务编号" prop="sub_sys_cd" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.sub_sys_cd" placeholder="数据库调度(i)" clearable>
                         <el-option v-for="item in addSelect.project_no" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -226,17 +226,17 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业名称" prop="etl_job" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业描述" prop="etl_job_desc" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_job_desc" autocomplete="off" placeholder="作业描述"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job_desc" autocomplete="off" placeholder="作业描述"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业程序类型" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.pro_type" placeholder="--程序类型--" clearable>
+                <el-form-item label="作业程序类型" prop="pro_type" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.pro_type" placeholder="--程序类型--" clearable>
                         <el-option v-for="item in addSelect.proType" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -244,76 +244,76 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序目录" prop="pro_dic" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.pro_dic" autocomplete="off" placeholder="作业程序目录"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_dic" autocomplete="off" placeholder="作业程序目录"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序名称" prop="pro_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序参数" prop="pro_para">
-                    <el-input v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="日志目录" prop="log_dic" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.log_dic" autocomplete="off" placeholder="日志目录"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.log_dic" autocomplete="off" placeholder="日志目录"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="调度频率" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.disp_freq" placeholder="--频率选择--" clearable @change="clears">
+                <el-form-item label="调度频率" prop="disp_freq" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.disp_freq" placeholder="--频率选择--" clearable @change="clears">
                         <el-option v-for="item in addSelect.dispRate" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="每隔(分)执行" prop="exe_frequency">
                     <div style="width:150px">
-                        <el-input v-model="formAdd.exe_frequency" autocomplete="off" placeholder="每隔(分)执行"></el-input>
+                        <el-input style="width:218px;" v-model="formAdd.exe_frequency" autocomplete="off" placeholder="每隔(分)执行"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="执行次数" prop="exe_num">
                     <div style="width:150px">
-                        <el-input v-model="formAdd.exe_num" autocomplete="off" placeholder="执行次数"></el-input>
+                        <el-input style="width:218px;" v-model="formAdd.exe_num" autocomplete="off" placeholder="执行次数"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="开始执行时间" prop="star_time" :rules="filter_rules([{required: true}])">
-                    <div style="width:150px">
-                        <el-date-picker v-model="formAdd.star_time" type="datetime" placeholder="开始执行时间 hh:mm:ss" value-format="yyyy-MM-dd HH:mm:ss">
+                    <div style="width:120px">
+                        <el-date-picker style="width:218px;" v-model="formAdd.star_time" type="datetime" placeholder="开始执行时间 hh:mm:ss" value-format="yyyy-MM-dd HH:mm:ss">
                         </el-date-picker>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="结束执行时间" prop="end_time" :rules="filter_rules([{required: true}])">
                     <div style="width:150px">
-                        <el-date-picker v-model="formAdd.end_time" type="datetime" placeholder="结束执行时间 hh:mm:ss" value-format="yyyy-MM-dd HH:mm:ss">
+                        <el-date-picker style="width:218px;" v-model="formAdd.end_time" type="datetime" placeholder="结束执行时间 hh:mm:ss" value-format="yyyy-MM-dd HH:mm:ss">
                         </el-date-picker>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
-                <el-form-item label="作业有效标志" :rules="filter_rules([{required: true}])">
+            <el-col :span="12">
+                <el-form-item label="作业有效标志" prop="job_eff_flag" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
                             <el-option v-for="item in addSelect.jobEfflag" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
-                <el-form-item label="当天是否调度" :rules="filter_rules([{required: true}])">
+            <el-col :span="12">
+                <el-form-item label="当天是否调度" prop="today_disp" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
                             <el-option v-for="item in addSelect.todayDisp" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -330,20 +330,20 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd1" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd1" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveAdd1('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 添加/修改任务模态框2 -->
-    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="78%" v-if="this.formAdd.disp_type == 'D'" :before-close="beforeClosechange">
+    <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="70%" v-if="this.formAdd.disp_type == 'D'" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-form-inline" :inline="true" label-width="170px">
             <el-col :span="12">
                 <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="任务编号" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.sub_sys_cd" placeholder="数据库调度(i)" clearable>
+                <el-form-item label="任务编号" prop="sub_sys_cd" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.sub_sys_cd" placeholder="数据库调度(i)" clearable>
                         <el-option v-for="item in addSelect.project_no" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -351,17 +351,17 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业名称" prop="etl_job" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业描述" prop="etl_job_desc" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.etl_job_desc" autocomplete="off" placeholder="作业描述"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job_desc" autocomplete="off" placeholder="作业描述"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业程序类型" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.pro_type" placeholder="--程序类型--" clearable>
+                <el-form-item label="作业程序类型" prop="pro_type" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.pro_type" placeholder="--程序类型--" clearable>
                         <el-option v-for="item in addSelect.proType" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -369,27 +369,27 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序目录" prop="pro_dic" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.pro_dic" autocomplete="off" placeholder="作业程序目录"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_dic" autocomplete="off" placeholder="作业程序目录"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序名称" prop="pro_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业程序参数" prop="pro_para">
-                    <el-input v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="日志目录" prop="log_dic" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="formAdd.log_dic" autocomplete="off" placeholder="日志目录"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.log_dic" autocomplete="off" placeholder="日志目录"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="调度频率" :rules="filter_rules([{required: true}])">
-                    <el-select v-model="formAdd.disp_freq" placeholder="--频率选择--" clearable>
+                <el-form-item label="调度频率" prop="disp_freq" :rules="rule.selected">
+                    <el-select style="width:218px;" v-model="formAdd.disp_freq" placeholder="--频率选择--" clearable>
                         <el-option v-for="item in addSelect.dispRate" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -398,68 +398,64 @@
             <el-col :span="12">
                 <el-form-item label="调度时间位移" prop="disp_offset">
                     <div style="width:150px">
-                        <el-input v-model="formAdd.disp_offset" autocomplete="off" placeholder="0"></el-input>
+                        <el-input style="width:218px;" v-model="formAdd.disp_offset" autocomplete="off" placeholder="0"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="调度触发方式" :rules="filter_rules([{required: true}])">
+                <el-form-item label="调度触发方式" prop="disp_type" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
                             <el-option v-for="item in addSelect.dispType" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="作业优先级" prop="job_priority">
                     <div style="width:150px">
-                        <el-input v-model="formAdd.job_priority" autocomplete="off" placeholder="0"></el-input>
+                        <el-input style="width:218px;" v-model="formAdd.job_priority" autocomplete="off" placeholder="0"></el-input>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
-                <el-form-item label="作业有效标志" :rules="filter_rules([{required: true}])">
+            <el-col :span="12">
+                <el-form-item label="作业有效标志" prop="job_eff_flag" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.job_eff_flag" placeholder="--有效选择--" clearable>
                             <el-option v-for="item in addSelect.jobEfflag" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
-                <el-form-item label="当天是否调度" :rules="filter_rules([{required: true}])">
+            <el-col :span="12">
+                <el-form-item label="当天是否调度" prop="today_disp" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
+                        <el-select style="width:218px;" v-model="formAdd.today_disp" placeholder="--调度选择--" clearable>
                             <el-option v-for="item in addSelect.todayDisp" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </div>
                 </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="12">
                 <el-form-item label="上游工程名称" prop="pre_etl_sys_cd">
-                    <div style="width:100px">
-                        <el-input v-model="formAdd.pre_etl_sys_cd" autocomplete="off" placeholder="0" disabled></el-input>
-                    </div>
+                    <el-input style="width:218px;" v-model="formAdd.pre_etl_sys_cd" autocomplete="off" placeholder="0" disabled></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="10">
+            <el-col :span="12">
                 <el-form-item label="上游作业名">
-                    <div style="150px">
-                        <el-select v-model="formAdd.pre_etl_job" multiple collapse-tags style="margin-left: 20px;" placeholder="上游作业名" @change="selectChange">
-                            <el-option v-for="item in addSelect.preJobName" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
+                    <el-select v-model="formAdd.pre_etl_job" multiple collapse-tags style="width:218px;" placeholder="上游作业名" @change="selectChange">
+                        <el-option v-for="item in addSelect.preJobName" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-form-item label="依赖是否有效">
                     <div style="width:150px">
-                        <el-select v-model="formAdd.status" placeholder="--有效选择--" clearable @change="selectChange">
+                        <el-select style="width:218px;" v-model="formAdd.status" placeholder="--有效选择--" clearable @change="selectChange">
                             <el-option v-for="item in addSelect.status" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -476,14 +472,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd2" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd2" size="mini">保存</el-button>
-        </div>
-    </el-dialog>
-    <!-- 删除任务模态框 -->
-    <el-dialog title="确定删除?" :visible.sync="dialogVisibleDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
-            <el-button type="primary" @click="saveDelete" size="mini">是</el-button>
+            <el-button type="primary" @click="saveAdd2('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -492,6 +481,8 @@
 <script>
 import * as etlJobDefAllFun from "./etlJobDef";
 import * as message from "@/utils/js/message";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 let arr = [];
 export default {
     data() {
@@ -512,9 +503,9 @@ export default {
             Dispatch_Frequency: [],
             jobTitle: '',
             temp: 'false',
+            rule: validator.default,
             multipleSelection: [],
             dialogFormVisibleAdd: false,
-            dialogVisibleDelete: false,
             formAdd: {
                 etl_sys_cd: '',
                 sub_sys_cd: '',
@@ -891,14 +882,14 @@ export default {
                 params["etl_sys_cd"] = this.sys_cd;
                 params["etl_job"] = arr;
                 etlJobDefAllFun.batchDeleteEtlJobDef(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('删除失败');
-                });
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
             }
         },
         //编辑按钮
@@ -936,9 +927,32 @@ export default {
         },
         //删除按钮
         handleDelete(index, row) {
-            this.dialogVisibleDelete = true;
             this.deleteForm.etl_sys_cd = row.etl_sys_cd;
             this.deleteForm.etl_job = row.etl_job;
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                let params = {};
+                params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
+                params["etl_job"] = this.deleteForm.etl_job;
+                etlJobDefAllFun.deleteEtlJobDef(params).then(res => {
+                    if (res.code == 200) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+
         },
 
         //新增/修改模态框取消按钮
@@ -946,181 +960,187 @@ export default {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.tempForm = {};
+            this.$refs.formAdd.resetFields();
         },
         beforeClosechange() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
+            this.$refs.formAdd.resetFields();
         },
         //新增/修改模态框保存按钮
-        saveAdd() {
-            if (this.formAdd.sub_sys_cd == '' || this.formAdd.etl_job == '' || this.formAdd.etl_job_desc == '' || this.formAdd.pro_type == '' || this.formAdd.pro_dic == '' || this.formAdd.pro_name == '' || this.formAdd.log_dic == '' || this.formAdd.disp_freq == '' || this.formAdd.disp_type == '' || this.formAdd.job_eff_flag == '' || this.formAdd.today_disp == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.sys_cd;
-                params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
-                params["etl_job"] = this.formAdd.etl_job;
-                params["etl_job_desc"] = this.formAdd.etl_job_desc;
-                params["pro_type"] = this.formAdd.pro_type;
-                params["pro_dic"] = this.formAdd.pro_dic;
-                params["pro_name"] = this.formAdd.pro_name;
-                params["pro_para"] = this.formAdd.pro_para;
-                params["log_dic"] = this.formAdd.log_dic;
-                params["disp_freq"] = this.formAdd.disp_freq;
-                params["disp_offset"] = this.formAdd.disp_offset;
-                params["disp_type"] = this.formAdd.disp_type;
-                params["disp_time"] = this.formAdd.disp_time;
-                params["job_priority"] = this.formAdd.job_priority;
-                params["job_eff_flag"] = this.formAdd.job_eff_flag;
-                params["today_disp"] = this.formAdd.today_disp;
-                params["comments"] = this.formAdd.comments;
-                params["old_disp_freq"] = this.tempForm.old_disp_freq;
-                params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
-                params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
-                if (this.jobTitle == '添加作业') {
-                    etlJobDefAllFun.saveEtlJobDef(params).then(res => {
-                        this.getTable();
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
-                    });
-                } else if (this.jobTitle == '修改作业') {
-                    etlJobDefAllFun.updateEtlJobDef(params).then(res => {
-                        this.getTable();
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
-                        this.tempForm = {};
-                    });
+        saveAdd(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
+                    params["etl_job"] = this.formAdd.etl_job;
+                    params["etl_job_desc"] = this.formAdd.etl_job_desc;
+                    params["pro_type"] = this.formAdd.pro_type;
+                    params["pro_dic"] = this.formAdd.pro_dic;
+                    params["pro_name"] = this.formAdd.pro_name;
+                    params["pro_para"] = this.formAdd.pro_para;
+                    params["log_dic"] = this.formAdd.log_dic;
+                    params["disp_freq"] = this.formAdd.disp_freq;
+                    params["disp_offset"] = this.formAdd.disp_offset;
+                    params["disp_type"] = this.formAdd.disp_type;
+                    params["disp_time"] = this.formAdd.disp_time;
+                    params["job_priority"] = this.formAdd.job_priority;
+                    params["job_eff_flag"] = this.formAdd.job_eff_flag;
+                    params["today_disp"] = this.formAdd.today_disp;
+                    params["comments"] = this.formAdd.comments;
+                    params["old_disp_freq"] = this.tempForm.old_disp_freq;
+                    params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
+                    params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
+                    if (this.jobTitle == '添加作业') {
+                        etlJobDefAllFun.saveEtlJobDef(params).then(res => {
+                            if (res && res.success) {
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.getTable();
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                            }
+                        });
+                    } else if (this.jobTitle == '修改作业') {
+                        etlJobDefAllFun.updateEtlJobDef(params).then(res => {
+                            if (res && res.success) {
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                                this.getTable();
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                                this.tempForm = {};
+                            }
+
+                        });
+                    }
                 }
-            }
+            })
         },
         //新增/修改模态框1取消按钮
         cancleAdd1() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
+            this.$refs.formAdd.resetFields();
         },
         //新增/修改模态框1保存按钮
-        saveAdd1() {
-            if (this.formAdd.sub_sys_cd == '' || this.formAdd.etl_job == '' || this.formAdd.etl_job_desc == '' || this.formAdd.pro_type == '' || this.formAdd.pro_dic == '' || this.formAdd.pro_name == '' || this.formAdd.log_dic == '' || this.formAdd.disp_freq == '' || this.formAdd.today_disp == '' || this.formAdd.star_time == '' || this.formAdd.end_time == '' || this.formAdd.job_eff_flag == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.sys_cd;
-                params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
-                params["etl_job"] = this.formAdd.etl_job;
-                params["etl_job_desc"] = this.formAdd.etl_job_desc;
-                params["pro_type"] = this.formAdd.pro_type;
-                params["pro_dic"] = this.formAdd.pro_dic;
-                params["pro_name"] = this.formAdd.pro_name;
-                params["pro_para"] = this.formAdd.pro_para;
-                params["log_dic"] = this.formAdd.log_dic;
-                params["disp_freq"] = this.formAdd.disp_freq;
-                params["exe_frequency"] = this.formAdd.exe_frequency;
-                params["exe_num"] = this.formAdd.exe_num;
-                params["star_time"] = this.formAdd.star_time;
-                params["end_time"] = this.formAdd.end_time;
-                params["job_eff_flag"] = this.formAdd.job_eff_flag;
-                params["today_disp"] = this.formAdd.today_disp;
-                params["comments"] = this.formAdd.comments;
-                params["old_disp_freq"] = this.tempForm.old_disp_freq;
-                params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
-                params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
-                if (this.jobTitle == '添加作业') {
-                    etlJobDefAllFun.saveEtlJobDef(params).then(res => {
-                        this.getTable();
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
-                    });
-                } else if (this.jobTitle == '修改作业') {
-                    etlJobDefAllFun.updateEtlJobDef(params).then(res => {
-                        this.getTable();
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
-                    });
+        saveAdd1(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
+                    params["etl_job"] = this.formAdd.etl_job;
+                    params["etl_job_desc"] = this.formAdd.etl_job_desc;
+                    params["pro_type"] = this.formAdd.pro_type;
+                    params["pro_dic"] = this.formAdd.pro_dic;
+                    params["pro_name"] = this.formAdd.pro_name;
+                    params["pro_para"] = this.formAdd.pro_para;
+                    params["log_dic"] = this.formAdd.log_dic;
+                    params["disp_freq"] = this.formAdd.disp_freq;
+                    params["exe_frequency"] = this.formAdd.exe_frequency;
+                    params["exe_num"] = this.formAdd.exe_num;
+                    params["star_time"] = this.formAdd.star_time;
+                    params["end_time"] = this.formAdd.end_time;
+                    params["job_eff_flag"] = this.formAdd.job_eff_flag;
+                    params["today_disp"] = this.formAdd.today_disp;
+                    params["comments"] = this.formAdd.comments;
+                    params["old_disp_freq"] = this.tempForm.old_disp_freq;
+                    params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
+                    params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
+                    if (this.jobTitle == '添加作业') {
+                        etlJobDefAllFun.saveEtlJobDef(params).then(res => {
+                            if (res && res.success) {
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.getTable();
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                            }
+
+                        });
+                    } else if (this.jobTitle == '修改作业') {
+                        etlJobDefAllFun.updateEtlJobDef(params).then(res => {
+                            if (res && res.success) {
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                                this.getTable();
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                            }
+
+                        });
+                    }
                 }
-            }
+            })
         },
         //新增/修改模态框2取消按钮
         cancleAdd2() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
+            this.$refs.formAdd.resetFields();
         },
         //新增/修改模态框2保存按钮
-        saveAdd2() {
-            if (this.formAdd.sub_sys_cd == '' || this.formAdd.etl_job == '' || this.formAdd.etl_job_desc == '' || this.formAdd.pro_type == '' || this.formAdd.pro_dic == '' || this.formAdd.pro_name == '' || this.formAdd.log_dic == '' || this.formAdd.disp_freq == '' || this.formAdd.disp_type == '' || this.formAdd.job_eff_flag == '' || this.formAdd.today_disp == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.sys_cd;
-                params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
-                params["etl_job"] = this.formAdd.etl_job;
-                params["etl_job_desc"] = this.formAdd.etl_job_desc;
-                params["pro_type"] = this.formAdd.pro_type;
-                params["pro_dic"] = this.formAdd.pro_dic;
-                params["pro_name"] = this.formAdd.pro_name;
-                params["pro_para"] = this.formAdd.pro_para;
-                params["log_dic"] = this.formAdd.log_dic;
-                params["disp_freq"] = this.formAdd.disp_freq;
-                params["disp_offset"] = this.formAdd.disp_offset;
-                params["disp_type"] = this.formAdd.disp_type;
-                params["job_priority"] = this.formAdd.job_priority;
-                params["job_eff_flag"] = this.formAdd.job_eff_flag;
-                params["today_disp"] = this.formAdd.today_disp;
-                params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
-                params["pre_etl_job"] = this.formAdd.pre_etl_job;
-                params["status"] = this.formAdd.status;
-                params["comments"] = this.formAdd.comments;
-                params["old_disp_freq"] = this.tempForm.old_disp_freq;
-                params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
-                params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
-                if (this.jobTitle == '添加作业') {
-                    etlJobDefAllFun.saveEtlJobDef(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '添加成功',
-                            type: 'success'
+        saveAdd2(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
+                    params["etl_job"] = this.formAdd.etl_job;
+                    params["etl_job_desc"] = this.formAdd.etl_job_desc;
+                    params["pro_type"] = this.formAdd.pro_type;
+                    params["pro_dic"] = this.formAdd.pro_dic;
+                    params["pro_name"] = this.formAdd.pro_name;
+                    params["pro_para"] = this.formAdd.pro_para;
+                    params["log_dic"] = this.formAdd.log_dic;
+                    params["disp_freq"] = this.formAdd.disp_freq;
+                    params["disp_offset"] = this.formAdd.disp_offset;
+                    params["disp_type"] = this.formAdd.disp_type;
+                    params["job_priority"] = this.formAdd.job_priority;
+                    params["job_eff_flag"] = this.formAdd.job_eff_flag;
+                    params["today_disp"] = this.formAdd.today_disp;
+                    params["pre_etl_sys_cd"] = this.formAdd.pre_etl_sys_cd;
+                    params["pre_etl_job"] = this.formAdd.pre_etl_job;
+                    params["status"] = this.formAdd.status;
+                    params["comments"] = this.formAdd.comments;
+                    params["old_disp_freq"] = this.tempForm.old_disp_freq;
+                    params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
+                    params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
+                    if (this.jobTitle == '添加作业') {
+                        etlJobDefAllFun.saveEtlJobDef(params).then(res => {
+                            if (res && res.success) {
+                                this.getTable();
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                            }
                         });
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
-                    });
-                } else if (this.jobTitle == '修改作业') {
-                    etlJobDefAllFun.updateEtlJobDef(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '修改成功',
-                            type: 'success'
+                    } else if (this.jobTitle == '修改作业') {
+                        etlJobDefAllFun.updateEtlJobDef(params).then(res => {
+                            if (res && res.success) {
+                                this.getTable();
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {}
+                            };
                         });
-                        this.dialogFormVisibleAdd = false;
-                        this.formAdd = {};
-                    });
-                }
-            }
-        },
-        //删除模态框取消按钮
-        cancleDelete() {
-            this.dialogVisibleDelete = false;
-        },
-        //删除模态框保存按钮
-        saveDelete() {
-            let params = {};
-            params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
-            params["etl_job"] = this.deleteForm.etl_job;
-            etlJobDefAllFun.deleteEtlJobDef(params).then(res => {
-                if (res.code == 200) {
-                    this.getTable();
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                    this.dialogVisibleDelete = false;
+                    }
                 }
             })
         },

@@ -1,5 +1,5 @@
 <template>
-<div class="step2">
+<div class="step3">
     <Step :active="active"></Step>
     <el-table :data="tableData" border size="medium">
         <el-table-column property label="序号" width="60px" align="center">
@@ -9,11 +9,21 @@
         </el-table-column>
         <el-table-column property="a" label="表名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="b" label="中文表名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column label="查看列" width="150px" align="center">
+        <el-table-column property="checkList1" width="84" label="是否转存" show-overflow-tooltip align="center">
             <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="watchText(scope.row)">查看列</el-button>
+                <el-checkbox :true-label="1" :false-label="0" v-model="scope.row.checkList1"></el-checkbox>
             </template>
         </el-table-column>
+        <el-table-column property="b" label="文件格式" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="is_head" width="94" label="是否有表头" show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+                <el-checkbox :true-label="1" :false-label="0" v-model="scope.row.is_head"></el-checkbox>
+            </template>
+        </el-table-column>
+        <el-table-column property="b" label="行分隔符" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" label="列分隔符" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" label="文件编码" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" label="源文件路径" show-overflow-tooltip align="center"></el-table-column>
     </el-table>
     <div class="step1Footer">
         <el-col :span="12">
@@ -26,26 +36,6 @@
             </div>
         </el-col>
     </div>
-    <!-- 查看列弹出框 -->
-    <el-dialog width="50%" :visible.sync="innerVisible" append-to-body>
-        <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">查看列信息</span>
-        </div>
-        <el-table :data="tableData" border size="medium">
-            <el-table-column property label="序号" width="60px" align="center">
-                <template slot-scope="scope">
-                    <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column property="a" label="列名" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column property="b" label="列中文名" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column label="类型" property="b" show-overflow-tooltip align="center"></el-table-column>
-        </el-table>
-        <div slot="footer">
-            <el-button size="mini" type="danger" @click="cancelWatch">取 消</el-button>
-            <el-button type="primary" size="mini" @click="selectWatch">保存</el-button>
-        </div>
-    </el-dialog>
 </div>
 </template>
 
@@ -58,17 +48,20 @@ export default {
     },
     data() {
         return {
-            active: 1,
+            active: 2,
             tableData: [{
                 a: "1",
-                b: "2"
+                b: "2",
+                checkList1: 1,
+                is_head: 0
             }, {
                 a: "1",
-                b: "2"
+                b: "2",
+                checkList1: 0,
+                is_head: 1
             }],
             pagesize: 5,
             currentPage: 1,
-            innerVisible: false,
         }
     },
     methods: {
@@ -80,10 +73,6 @@ export default {
         },
         // 获取表格数据
 
-        // 查看列数据
-        watchText(val) {
-            this.innerVisible = true;
-        },
         //取消查看列
         cancelWatch() {
             this.innerVisible = false;
@@ -95,18 +84,12 @@ export default {
         // 下一步
         // 接口
         nextSteps() {
-            this.$router.push({
-                name: "step3",
-                // query: {
-                //     agent_id: this.$route.query.agent_id,
-                //     id: this.$route.query.odc_id
-                // }
-            })
+
         },
         //上一步
         backSteps() {
             this.$router.push({
-                name: "collection4_1",
+                name: "step2",
                 // query: {
                 //     agent_id: this.$route.query.agent_id,
                 //     id: this.$route.query.odc_id
@@ -119,15 +102,15 @@ export default {
 
 <style scoped>
 /* 按钮设置 */
-.step2 .el-table {
+.step3 .el-table {
     margin-bottom: 20px;
 }
 
-.step2 .partFourDiv {
+.step3 .partFourDiv {
     float: right;
 }
 
-.step2 .partFourDiv .el-button {
+.step3 .partFourDiv .el-button {
     margin-bottom: 20px;
 }
 </style>

@@ -38,7 +38,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="是否为Hadoop客户端" prop="is_hadoopclient" :rules="rule.selected" label-width="180px">
+                <el-form-item label="是否支持外部表" prop="is_hadoopclient" :rules="rule.selected" label-width="150px">
                     <el-radio-group v-model="form.is_hadoopclient">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
