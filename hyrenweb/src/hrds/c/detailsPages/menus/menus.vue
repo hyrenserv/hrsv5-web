@@ -10,7 +10,7 @@
     </el-row>
     <div class="lines"></div>
     <!-- 导航 -->
-    <el-menu mode="horizontal" text-color="#000" active-text-color="rgba(255, 0, 0, 0.9)" background-color="#e5e5e5" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
+    <el-menu mode="horizontal" text-color="#000" active-text-color="rgba(255, 0, 0, 0.9)" background-color="#F5F7FA" :default-active="defaultActive" class="el-menu-vertical-demo" @select="handleSelect">
         <!--二级菜单循环-->
         <el-submenu v-for="items in menus" :key="items.name" :index="items.children[0].path">
             <template slot="title">{{items.title}}</template>

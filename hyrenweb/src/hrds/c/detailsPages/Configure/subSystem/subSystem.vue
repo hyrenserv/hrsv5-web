@@ -90,13 +90,6 @@
             <el-button type="primary" @click="saveModify" size="mini">保存</el-button>
         </div>
     </el-dialog>
-    <!-- 删除任务模态框 -->
-    <el-dialog title="确定删除该任务?" :visible.sync="dialogVisibleDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
-            <el-button type="primary" @click="saveDelete" size="mini">是</el-button>
-        </div>
-    </el-dialog>
 </div>
 </template>
 
@@ -114,7 +107,6 @@ export default {
             fileList: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleModify: false,
-            dialogVisibleDelete: false,
             formAdd: {
                 etl_sys_cd: '',
                 sub_sys_cd: '',
@@ -189,14 +181,14 @@ export default {
                 params["etl_sys_cd"] = this.sys_cd;
                 params["sub_sys_cd"] = arr;
                 subSystemAllFun.batchDeleteEtlSubSys(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('删除失败');
-                });
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
             }
         },
         //编辑按钮
@@ -206,9 +198,31 @@ export default {
         },
         //删除按钮
         handleDelete(index, row) {
-            this.dialogVisibleDelete = true;
             this.deleteForm.etl_sys_cd = row.etl_sys_cd;
             this.deleteForm.sub_sys_cd = row.sub_sys_cd;
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                let params = {};
+                params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
+                params["sub_sys_cd"] = this.deleteForm.sub_sys_cd;
+                subSystemAllFun.deleteEtlSubSys(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
         //模态框新增取消按钮
         cancleAdd() {
@@ -228,16 +242,17 @@ export default {
             params["sub_sys_desc"] = this.formAdd.sub_sys_desc;
             params["comments"] = this.formAdd.comments;
             subSystemAllFun.saveEtlSubSys(params).then(res => {
-                this.getTable();
-                this.$message({
-                    message: '保存成功',
-                    type: 'success'
-                });
-            }).catch(err => {
-                this.$message.error('保存失败');
-            });
-            this.dialogFormVisibleAdd = false;
-            this.formAdd = {};
+                if (res && res.success) {
+                    this.getTable();
+                    this.$message({
+                        message: '保存成功',
+                        type: 'success'
+                    });
+                    this.dialogFormVisibleAdd = false;
+                    this.formAdd = {};
+                }
+            })
+
         },
         //模态框修改取消按钮
         cancleModify() {
@@ -251,35 +266,16 @@ export default {
             params["sub_sys_desc"] = this.formModify.sub_sys_desc;
             params["comments"] = this.formModify.comments;
             subSystemAllFun.updateEtlSubSys(params).then(res => {
-                this.getTable();
-                this.$message({
-                    message: '保存成功',
-                    type: 'success'
-                });
-            }).catch(err => {
-                this.$message.error('保存失败');
-            });
-            this.dialogFormVisibleModify = false;
-        },
-        //模态框删除取消按钮
-        cancleDelete() {
-            this.dialogVisibleDelete = false;
-        },
-        //模态框删除保存按钮
-        saveDelete() {
-            let params = {};
-            params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
-            params["sub_sys_cd"] = this.deleteForm.sub_sys_cd;
-            subSystemAllFun.deleteEtlSubSys(params).then(res => {
-                this.getTable();
-                this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                });
-            }).catch(err => {
-                this.$message.error('删除失败');
-            });
-            this.dialogVisibleDelete = false;
+                if (res && res.success) {
+                    this.getTable();
+                    this.$message({
+                        message: '保存成功',
+                        type: 'success'
+                    });
+                    this.dialogFormVisibleModify = false;
+                    this.formModify = {};
+                }
+            })
         },
         //分页方法
         handleCurrentChange(cpage) {
