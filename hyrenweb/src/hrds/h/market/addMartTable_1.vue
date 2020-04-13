@@ -256,7 +256,6 @@
                             });
                             return false;
                         } else {
-                            debugger;
                             //新增
                             if (this.is_add == 0) {
                                 this.dm_datatable.dsl_id = this.dsl_id;

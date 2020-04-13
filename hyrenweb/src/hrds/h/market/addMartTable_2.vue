@@ -21,27 +21,25 @@
                 <el-tabs type="card">
                     <el-row>
                         <span>SQL查询</span>
+                        <el-col :span='10' style="float:right">
+                            <el-input placeholder="SQL参数" size="mini" v-model="sqlparameter">
+                            </el-input>
+                        </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="18">
-                            <el-input type="textarea" rows="5" autosize placeholder="请输入查询SQL" v-model="querysql"/>
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button class="query-sql-btn" type="primary"
-                                       @click="querydatadialogshow = true;getdatabysql()"
-                                       size="small">查询
-                            </el-button>
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button class="query-sql-btn" type="primary" @click="getcolumnbysql()"
-                                       size="small">确定
-                            </el-button>
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button class="query-sql-btn" type="primary" @click="getcolumnbysql()"
-                                       size="small">精准确定
-                            </el-button>
-                        </el-col>
+                        <hr>
+                    </el-row>
+                    <el-row>
+                        <el-input type="textarea" rows="5" autosize placeholder="请输入查询SQL" v-model="querysql"/>
+                    </el-row>
+                    <el-row>
+                        <hr>
+                    </el-row>
+                    <el-row class="partFour">
+                        <div class="elButton">
+                            <el-button type="primary" @click="getdatabysql()" size="medium">查询</el-button>
+                            <el-button type="primary" @click="getcolumnbysql()" size="medium">确定</el-button>
+                        </div>
                     </el-row>
                 </el-tabs>
             </el-col>
@@ -102,9 +100,6 @@
                     <el-table-column prop="process_para" label="处理方式参数" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <!--<el-input v-if="scope.row.field_proccess == 'map'" readonly-->
-                            <!--v-model="scope.row.process_para" autocomplete="off"-->
-                            <!--placeholder="处理方式参数"></el-input>-->
                             <el-input v-model="scope.row.process_para" autocomplete="off"
                                       placeholder="处理方式参数"></el-input>
                         </template>
@@ -135,16 +130,23 @@
                 <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
             </el-row>
         </el-tabs>
-
-
         <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
-            <el-table :data="databysql" border size="mini">
-                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item"
-                                 :prop="item">
-                    <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
-                    <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
-                </el-table-column>
-            </el-table>
+            <el-row>
+                <el-table :data="databysql" border size="mini">
+                    <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item"
+                                     :prop="item">
+                        <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                        <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row>
+                <el-button type="primary" size="medium" class="rightbtn"
+                           @click="querydatadialogshow = false ; getcolumnbysql()">确定
+                </el-button>
+                <el-button type="primary" size="medium" class="rightbtn" @click="querydatadialogshow = false">取消
+                </el-button>
+            </el-row>
         </el-dialog>
 
         <el-dialog title="Hbase的Rowkey排序" :visible.sync="ifhbasesort" width="30%" class='data_edit'>
@@ -162,8 +164,10 @@
                     <el-table-column label="操作" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="medium" @click="upcolumn(scope.$index,scope.row)">上移</el-button>
-                            <el-button type="primary" size="medium" @click="downcolumn(scope.$index,scope.row)">下移</el-button>
+                            <el-button type="primary" size="medium" @click="upcolumn(scope.$index,scope.row)">上移
+                            </el-button>
+                            <el-button type="primary" size="medium" @click="downcolumn(scope.$index,scope.row)">下移
+                            </el-button>
                         </template>
                     </el-table-column>
 
@@ -205,6 +209,7 @@
                 },
                 ifhbase: false,
                 ifhbasesort: false,
+                sqlparameter: "",
                 hbasesort: [],
             };
         },
@@ -285,15 +290,16 @@
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
                 } else {
                     let params = {
-                        querysql: this.querysql,
-                        "datatable_id": this.datatable_id
+                        "querysql": this.querysql,
+                        "datatable_id": this.datatable_id,
+                        "sqlparameter":this.sqlparameter
                     };
                     functionAll.getColumnBySql(params).then(((res) => {
-                        if (res && res.success) {
-                            this.columnbysql = res.data;
+                        if (res && res.data.success) {
+                            this.columnbysql = res.data.result;
                             let tmp_field_type = this.columnbysql[0].field_type;
-                            console.log(this.allfield_type);
                             let flag = true;
+                            //向allfield_type放入默认选中的类型
                             for (var i = 0; i < this.allfield_type.length; i++) {
                                 if (tmp_field_type == this.allfield_type[i].target_type) {
                                     flag = false;
@@ -304,7 +310,10 @@
                                 this.allfield_type.push({"target_type": tmp_field_type});
                             }
                         } else {
-                            this.$emit(res.message);
+                            this.$message({
+                                type: "error",
+                                message: res.data.message
+                            });
                         }
                     }))
                 }
@@ -314,8 +323,17 @@
                 if (this.querysql === '') {
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
                 } else {
-                    functionAll.getDataBySQL({'querysql': this.querysql}).then((res) => {
-                        this.databysql = res.data;
+                    this.querydatadialogshow = true;
+                    this.databysql = [];
+                    functionAll.getDataBySQL({'querysql': this.querysql,'sqlparameter':this.sqlparameter}).then((res) => {
+                        if (res && res.data.success) {
+                            this.databysql = res.data.result;
+                        } else {
+                            this.$message({
+                                type: "error",
+                                message: res.data.message
+                            });
+                        }
                     });
                 }
             },
@@ -331,7 +349,7 @@
                         }).then((res) => {
                             item.dsla_storelayer = res.data;
                         });
-                    })
+                    });
                     this.columnmore = res.data;
                 });
             },
@@ -376,9 +394,12 @@
                         }).catch(() => {
                         })
                     } else {
-                        functionAll.sortHbae({"hbasesort":JSON.stringify(this.hbasesort),"datatable_id": this.datatable_id}).then((res)=>{
+                        functionAll.sortHbae({
+                            "hbasesort": JSON.stringify(this.hbasesort),
+                            "datatable_id": this.datatable_id
+                        }).then((res) => {
                             this.hbasesort = res.data;
-                        })
+                        });
                         this.ifhbasesort = true;
                     }
                 } else {
@@ -386,10 +407,24 @@
                 }
             },
             next() {
+                if (this.querysql == "") {
+                    this.$message({
+                        type: "warning",
+                        message: "请填写sql"
+                    });
+                    return false;
+                }
+                if (this.columnbysql.length == 0) {
+                    this.$message({
+                        type: "warning",
+                        message: "请先点击确定 生成字段"
+                    });
+                    return false;
+                }
                 let dm_column_storage = [];
                 for (var i = 0; i < this.columnmore.length; i++) {
-                    var dslad_id = this.columnmore[i].dslad_id
-                    var dsla_storelayer = this.columnmore[i].dsla_storelayer
+                    var dslad_id = this.columnmore[i].dslad_id;
+                    var dsla_storelayer = this.columnmore[i].dsla_storelayer;
                     for (var j = 0; j < this.columnbysql.length; j++) {
                         var everydatatable_field_info = this.columnbysql[j];
                         if (everydatatable_field_info.hasOwnProperty(dsla_storelayer)) {
@@ -404,8 +439,8 @@
                     "datatable_id": this.datatable_id,
                     "dm_column_storage": JSON.stringify(dm_column_storage),
                     "querysql": this.querysql,
-                    "hbasesort":JSON.stringify(this.hbasesort)
-                }
+                    "hbasesort": JSON.stringify(this.hbasesort)
+                };
                 functionAll.addDFInfo(param).then((res) => {
                     if (res && res.success) {
                         this.$message({
@@ -434,14 +469,14 @@
                     field_process: this.allfield_process[0].code,
                     process_para: "",
                     field_desc: "",
-                }
+                };
                 this.columnbysql.push(param);
             },
             deletecolumn(row) {
                 let index = this.columnbysql.indexOf(row);
                 this.columnbysql.splice(index, 1);
             },
-            downcolumn(val,data) {
+            downcolumn(val, data) {
                 if (val + 1 === this.hbasesort.length) {
                     this.$message({
                         message: '已经是最后一条，不可下移',
@@ -453,7 +488,7 @@
                     this.hbasesort.splice(val, 0, downDate);
                 }
             },
-            upcolumn(val,data) {
+            upcolumn(val, data) {
                 if (val > 0) {
                     let upDate = this.hbasesort[val - 1];
                     this.hbasesort.splice(val - 1, 1);
@@ -472,6 +507,13 @@
     }
 </script>
 <style scoped>
+
+    /* 按钮样式 */
+    .elButton {
+        float: right;
+        margin-top: 20px;
+    }
+
     .borderStyle {
         border: 1px solid #e6e6e6;
         padding: 1%;

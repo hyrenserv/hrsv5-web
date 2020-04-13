@@ -24,6 +24,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" size="medium" class="rightbtn" @click="excutmartjob()" >执行</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="back()" >上一步</el-button>
         </div>
     </div>
 </template>
@@ -48,6 +49,16 @@
             this.getquerysql();
         },
         methods: {
+            back() {
+                this.$router.push({
+                    name: 'addMartTable_2',
+                    query: {
+                        data_mart_id: this.data_mart_id,
+                        datatable_id: this.datatable_id,
+                        is_add: 1
+                    }
+                });
+            },
             getquerysql(){
                 functionAll.getQuerySql({"datatable_id":this.datatable_id}).then((res) => {
                     if (res && res.success) {

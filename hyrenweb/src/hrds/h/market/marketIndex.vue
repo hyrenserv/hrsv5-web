@@ -10,7 +10,7 @@
         </el-row>
 
         <el-row class="bottomMargin">
-            <el-col :span="5" >
+            <el-col :span="5">
                 <el-tabs class="tabes" type="card">
                     <el-table :data="totalstorage" border style="width: 100%">
                         <el-table-column prop="sources" label="总数据存储量" width="344x" align='center'>
@@ -64,21 +64,31 @@
 
 
         <el-row class="bottomMargin">
-            <el-col :span="5" >
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="totalstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="集市名称" width="172px" align='center'>
-                        </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
+            <el-col :span="5">
+                <el-row>
+                    <el-tabs class="tabes" type="card">
+                        <span>数据集市</span>
+                    </el-tabs>
+                </el-row>
+                <el-row>
+                    <el-tabs class="tabes" type="card">
+                        <el-table :data="totalstoragetop3" border style="width: 100%">
+                            <el-table-column prop="mart_name" label="集市名称" width="172px" align='center'>
+                            </el-table-column>
+                            <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
+                            </el-table-column>
+                        </el-table>
+                    </el-tabs>
+                </el-row>
             </el-col>
             <el-col :span="5" :offset="1">
+                <el-row>
+                    <el-tabs class="tabes" type="card">
+                        <span>HIVE</span>
+                    </el-tabs>
+                </el-row>
                 <el-tabs class="tabes" type="card">
                     <el-table :data="hyrendbstoragetop3" border style="width: 100%">
-                        <el-table-column label="Hive" width="172px" align='center'>
-                        </el-table-column>
                         <el-table-column prop="mart_name" label="数据名称" width="172px" align='center'>
                         </el-table-column>
                         <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
@@ -88,10 +98,13 @@
             </el-col>
 
             <el-col :span="5" :offset="1">
+                <el-row>
+                    <el-tabs class="tabes" type="card">
+                        <span>HBASE</span>
+                    </el-tabs>
+                </el-row>
                 <el-tabs class="tabes" type="card">
                     <el-table :data="kvstoragetop3" border style="width: 100%">
-                        <el-table-column label="Hbase" width="172px" align='center'>
-                        </el-table-column>
                         <el-table-column prop="mart_name" label="数据名称" width="172px" align='center'>
                         </el-table-column>
                         <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
@@ -101,10 +114,13 @@
             </el-col>
 
             <el-col :span="5" :offset="1">
+                <el-row>
+                    <el-tabs class="tabes" type="card">
+                        <span>SOLR</span>
+                    </el-tabs>
+                </el-row>
                 <el-tabs class="tabes" type="card">
                     <el-table :data="solrdbstoragetop3" border style="width: 100%">
-                        <el-table-column label="Solr" width="172px" align='center'>
-                        </el-table-column>
                         <el-table-column prop="mart_name" label="数据名称" width="172px" align='center'>
                         </el-table-column>
                         <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
