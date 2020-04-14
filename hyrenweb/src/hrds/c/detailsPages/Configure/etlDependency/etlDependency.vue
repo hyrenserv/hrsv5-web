@@ -32,7 +32,7 @@
             </el-button>
         </div>
     </el-row>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
@@ -65,24 +65,24 @@
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <div style="width:193px">
-                    <el-input v-model="formAdd.etl_sys_cd" style="width:200px" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                    <el-input v-model="formAdd.etl_sys_cd" style="width:218px;" autocomplete="off" placeholder="工程编号" disabled></el-input>
                 </div>
             </el-form-item>
 
             <el-form-item v-if="this.dependTitle == '添加作业依赖'" prop="etl_job" label="作业名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.etl_job" placeholder="请选择作业名称" style="width:200px">
+                <el-select v-model="formAdd.etl_job" placeholder="请选择作业名称" style="width:218px;">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item v-if="this.dependTitle == '修改作业依赖'" prop="etl_job" label="作业名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.etl_job" disabled placeholder="请选择作业名称" style="width:200px">
+                <el-select v-model="formAdd.etl_job" disabled placeholder="请选择作业名称" style="width:218px;">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item v-if="this.dependTitle == '批量添加作业依赖'" prop="sub_sys_cd" label="任务名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.sub_sys_cd" placeholder="请选择任务名称" style="width:200px">
+                <el-select v-model="formAdd.sub_sys_cd" placeholder="请选择任务名称" style="width:218px;">
                     <el-option v-for="item in formSelect.proName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
@@ -90,25 +90,25 @@
 
             <el-form-item label="上游工程编号" prop="pre_etl_sys_cd">
                 <div style="width:193px">
-                    <el-input v-model="formAdd.pre_etl_sys_cd" autocomplete="off" style="width:200px" placeholder="上游工程编号" disabled></el-input>
+                    <el-input v-model="formAdd.pre_etl_sys_cd" autocomplete="off" style="width:218px;" placeholder="上游工程编号" disabled></el-input>
                 </div>
             </el-form-item>
             <el-form-item v-if="this.dependTitle != '批量添加作业依赖'" prop="pre_etl_job" label="上游作业名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.pre_etl_job" placeholder="请选择上游作业" style="width:200px">
+                <el-select v-model="formAdd.pre_etl_job" placeholder="请选择上游作业" style="width:218px;">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item v-if="this.dependTitle == '批量添加作业依赖'" prop="pre_sub_sys_cd" label="上游任务名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.pre_sub_sys_cd" placeholder="请选择上游任务" style="width:200px">
+                <el-select v-model="formAdd.pre_sub_sys_cd" placeholder="请选择上游任务" style="width:218px;">
                     <el-option v-for="item in formSelect.proName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label="状态" prop="status" :rules="rule.selected ">
-                <el-select v-model="formAdd.status" placeholder="请选择状态" style="width:200px">
+                <el-select v-model="formAdd.status" placeholder="请选择状态" style="width:218px;">
                     <el-option v-for="item in formSelect.statu" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
@@ -117,13 +117,6 @@
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
             <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
-        </div>
-    </el-dialog>
-    <!-- 删除任务模态框 -->
-    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
-            <el-button type="primary" @click="saveDelete" size="mini">是</el-button>
         </div>
     </el-dialog>
 </div>
@@ -332,26 +325,70 @@ export default {
                     type: 'warning'
                 });
             } else {
-                this.deleteTitle = '确定批量删除?';
-                this.dialogVisibleDelete = true;
+                let obj = {};
+                let arr = [];
+                this.multipleSelection.forEach((item) => {
+                    obj.etl_job = item.etl_job;
+                    obj.pre_etl_job = item.pre_etl_job;
+                    arr.push(obj);
+                    obj = {};
+                });
+                arr = JSON.stringify(arr);
+                let params = {};
+                params["etl_sys_cd"] = this.sys_cd;
+                params["pre_etl_sys_cd"] = this.multipleSelection[0].pre_etl_sys_cd;
+                params["batchEtlJob"] = arr;
+                etlDependencyAllFun.batchDeleteEtlDependency(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
             }
         },
         //编辑按钮
         handleEdit(index, row) {
             this.dialogFormVisibleAdd = true;
             this.dependTitle = '修改作业依赖';
-            this.formAdd = row;
+            this.formAdd = Object.assign({}, row);
             this.formOld.oldEtlJob = row.etl_job;
             this.formOld.oldPreEtlJob = row.pre_etl_job;
         },
         //删除按钮
         handleDelete(index, row) {
-            this.dialogVisibleDelete = true;
             this.formDelete.etl_sys_cd = row.etl_sys_cd;
             this.formDelete.etl_job = row.etl_job;
             this.formDelete.pre_etl_job = row.pre_etl_job;
             this.formDelete.pre_etl_sys_cd = row.pre_etl_sys_cd;
-            this.deleteTitle = '确定删除?';
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                let params = {};
+                params["etl_sys_cd"] = this.formDelete.etl_sys_cd;
+                params["etl_job"] = this.formDelete.etl_job;
+                params["pre_etl_job"] = this.formDelete.pre_etl_job;
+                params["pre_etl_sys_cd"] = this.formDelete.pre_etl_sys_cd;
+                etlDependencyAllFun.deleteEtlDependency(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+
         },
         //模态框添加/修改/批量添加取消按钮
         cancleAdd() {
@@ -380,6 +417,7 @@ export default {
                                 });
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
+                                this.$refs.formAdd.resetFields();
                             }
                         });
 
@@ -402,6 +440,7 @@ export default {
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
                                 this.formOld = {};
+                                this.$refs.formAdd.resetFields();
                             }
                         });
 
@@ -421,6 +460,7 @@ export default {
                                 });
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
+                                this.$refs.formAdd.resetFields();
                             }
                         });
 
@@ -432,54 +472,6 @@ export default {
             this.formAdd = {};
             this.$refs.formAdd.resetFields();
             this.dialogFormVisibleAdd = false;
-            this.dialogVisibleDelete = false;
-        },
-        //模态框删除取消按钮
-        cancleDelete() {
-            this.dialogVisibleDelete = false;
-            this.formDelete = {};
-        },
-        //模态框删除保存按钮
-        saveDelete() {
-            if (this.deleteTitle == '确定删除?') {
-                let params = {};
-                params["etl_sys_cd"] = this.formDelete.etl_sys_cd;
-                params["etl_job"] = this.formDelete.etl_job;
-                params["pre_etl_job"] = this.formDelete.pre_etl_job;
-                params["pre_etl_sys_cd"] = this.formDelete.pre_etl_sys_cd;
-                etlDependencyAllFun.deleteEtlDependency(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('删除失败');
-                });
-            } else if (this.deleteTitle == '确定批量删除?') {
-                let obj = {};
-                let arr = [];
-                this.multipleSelection.forEach((item) => {
-                    obj.etl_job = item.etl_job;
-                    obj.pre_etl_job = item.pre_etl_job;
-                    arr.push(obj);
-                    obj = {};
-                });
-                arr = JSON.stringify(arr);
-                let params = {};
-                params["etl_sys_cd"] = this.sys_cd;
-                params["pre_etl_sys_cd"] = this.multipleSelection[0].pre_etl_sys_cd;
-                params["batchEtlJob"] = arr;
-                etlDependencyAllFun.batchDeleteEtlDependency(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '批量删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('批量删除失败');
-                });
-            }
             this.dialogVisibleDelete = false;
         },
         //分页方法

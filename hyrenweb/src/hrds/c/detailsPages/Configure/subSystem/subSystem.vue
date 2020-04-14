@@ -18,7 +18,7 @@
         <el-button class="buttonStyle" size="mini" type="danger" @click="handleBatchDelete">批量删除
         </el-button>
     </div>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
@@ -64,7 +64,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 修改任务模态框 -->
@@ -87,7 +87,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleModify" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveModify" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveModify('formModify')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -194,7 +194,7 @@ export default {
         //编辑按钮
         handleEdit(index, row) {
             this.dialogFormVisibleModify = true;
-            this.formModify = row;
+            this.formModify = Object.assign({}, row);
         },
         //删除按钮
         handleDelete(index, row) {
@@ -235,45 +235,52 @@ export default {
             this.$refs.formAdd.resetFields();
         },
         //模态框新增保存按钮
-        saveAdd() {
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
-            params["sub_sys_desc"] = this.formAdd.sub_sys_desc;
-            params["comments"] = this.formAdd.comments;
-            subSystemAllFun.saveEtlSubSys(params).then(res => {
-                if (res && res.success) {
-                    this.getTable();
-                    this.$message({
-                        message: '保存成功',
-                        type: 'success'
-                    });
-                    this.dialogFormVisibleAdd = false;
-                    this.formAdd = {};
+        saveAdd(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["sub_sys_cd"] = this.formAdd.sub_sys_cd;
+                    params["sub_sys_desc"] = this.formAdd.sub_sys_desc;
+                    params["comments"] = this.formAdd.comments;
+                    subSystemAllFun.saveEtlSubSys(params).then(res => {
+                        if (res && res.success) {
+                            this.getTable();
+                            this.$message({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisibleAdd = false;
+                            this.formAdd = {};
+                        }
+                    })
                 }
             })
-
         },
         //模态框修改取消按钮
         cancleModify() {
             this.dialogFormVisibleModify = false;
         },
         //模态框修改保存按钮
-        saveModify() {
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["sub_sys_cd"] = this.formModify.sub_sys_cd;
-            params["sub_sys_desc"] = this.formModify.sub_sys_desc;
-            params["comments"] = this.formModify.comments;
-            subSystemAllFun.updateEtlSubSys(params).then(res => {
-                if (res && res.success) {
-                    this.getTable();
-                    this.$message({
-                        message: '保存成功',
-                        type: 'success'
-                    });
-                    this.dialogFormVisibleModify = false;
-                    this.formModify = {};
+        saveModify(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["sub_sys_cd"] = this.formModify.sub_sys_cd;
+                    params["sub_sys_desc"] = this.formModify.sub_sys_desc;
+                    params["comments"] = this.formModify.comments;
+                    subSystemAllFun.updateEtlSubSys(params).then(res => {
+                        if (res && res.success) {
+                            this.getTable();
+                            this.$message({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisibleModify = false;
+                            this.formModify = {};
+                        }
+                    })
                 }
             })
         },

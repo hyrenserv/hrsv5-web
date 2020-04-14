@@ -18,7 +18,7 @@
         <el-button class="buttonStyle" size="mini" type="danger" @click="handleBatchDelete">批量删除
         </el-button>
     </div>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center' disabled='true' :selectable="isDisabled">
         </el-table-column>
         <el-table-column prop="etl_sys_cd" label="工程编号" align='center'>
@@ -54,13 +54,13 @@
             <el-form-item label="资源类型" prop="resource_type" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.resource_type" autocomplete="off" placeholder="资源类型"></el-input>
             </el-form-item>
-            <el-form-item label="资源阀值" prop="resource_max" :rules="filter_rules([{required: true}])">
+            <el-form-item label="资源阀值" prop="resource_max" :rules="filter_rules([{required: true,dataType: 'number'}])">
                 <el-input v-model="formAdd.resource_max" autocomplete="off" placeholder="资源阀值"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 修改资源模态框 -->
@@ -72,27 +72,13 @@
             <el-form-item label="资源类型" prop="resource_type" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formModify.resource_type" autocomplete="off" placeholder="资源类型" disabled></el-input>
             </el-form-item>
-            <el-form-item label="资源阀值" prop="resource_max" :rules="filter_rules([{required: true}])">
+            <el-form-item label="资源阀值" prop="resource_max" :rules="filter_rules([{required: true,dataType: 'number'}])">
                 <el-input v-model="formModify.resource_max" autocomplete="off" placeholder="资源阀值"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleModify" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveModify" size="mini">保存</el-button>
-        </div>
-    </el-dialog>
-    <!-- 删除资源模态框 -->
-    <el-dialog title="确定删除该资源?" :visible.sync="dialogVisibleDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleDelete" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveDelete" size="mini">保存</el-button>
-        </div>
-    </el-dialog>
-    <!-- 批量删除资源模态框 -->
-    <el-dialog title="确定批量删除?" :visible.sync="dialogVisibleBatchDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleBatchDelete" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveBatchDelete" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveModify('formModify')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -112,7 +98,6 @@ export default {
             fileList: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleModify: false,
-            dialogVisibleDelete: false,
             dialogVisibleBatchDelete: false,
             formAdd: {
                 etl_sys_cd: '',
@@ -191,97 +176,122 @@ export default {
                     type: 'warning'
                 });
             } else {
-                this.dialogVisibleBatchDelete = true;
                 let arr = [];
                 this.multipleSelection.forEach((item) => {
                     arr.push(item.resource_type);
                 });
                 this.batchDeleteForm.etl_sys_cd = this.sys_cd;
                 this.batchDeleteForm.resource_type = arr;
+                let params = {};
+                params["etl_sys_cd"] = this.batchDeleteForm.etl_sys_cd;
+                params["resource_type"] = this.batchDeleteForm.resource_type;
+                resourcesAvailableAllFun.batchDeleteEtlResource(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+
+                })
             }
         },
         //编辑按钮
         handleEdit(index, row) {
             this.dialogFormVisibleModify = true;
-            this.formModify = row;
+            this.formModify = Object.assign({}, row);
         },
         //删除按钮
         handleDelete(index, row) {
-            this.dialogVisibleDelete = true;
             this.deleteForm.etl_sys_cd = row.etl_sys_cd;
             this.deleteForm.resource_type = row.resource_type;
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                let params = {};
+                params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
+                params["resource_type"] = this.deleteForm.resource_type;
+                resourcesAvailableAllFun.deleteEtlResource(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        this.deleteForm = {};
+                    }
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
         //模态框新增取消按钮
         cancleAdd() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
+            this.$refs.formAdd.resetFields();
         },
         beforeClosechange() {
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
         },
         //模态框新增保存按钮
-        saveAdd() {
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["resource_type"] = this.formAdd.resource_type;
-            params["resource_max"] = this.formAdd.resource_max;
-            resourcesAvailableAllFun.saveEtlResource(params).then(res => {
-                this.getTable();
-                this.formAdd = {};
-            });
-            this.dialogFormVisibleAdd = false;
+        saveAdd(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["resource_type"] = this.formAdd.resource_type;
+                    params["resource_max"] = this.formAdd.resource_max;
+                    resourcesAvailableAllFun.saveEtlResource(params).then(res => {
+                        if (res && res.success) {
+                            this.getTable();
+                            this.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
+                            this.formAdd = {};
+                            this.dialogFormVisibleAdd = false;
+                        }
+                    });
+                }
+            })
+
         },
         //模态框修改取消按钮
         cancleModify() {
+            // this.getTable();
             this.dialogFormVisibleModify = false;
         },
         //模态框修改保存按钮
-        saveModify() {
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["resource_type"] = this.formModify.resource_type;
-            params["resource_max"] = this.formModify.resource_max;
-            resourcesAvailableAllFun.updateEtlResource(params).then(res => {
-                this.getTable();
-                this.formModify = {};
-            });
-            this.dialogFormVisibleModify = false;
-        },
-        //模态框删除取消按钮
-        cancleDelete() {
-            this.dialogVisibleDelete = false;
-        },
-        //模态框删除保存按钮
-        saveDelete() {
-            let params = {};
-            params["etl_sys_cd"] = this.deleteForm.etl_sys_cd;
-            params["resource_type"] = this.deleteForm.resource_type;
-            resourcesAvailableAllFun.deleteEtlResource(params).then(res => {
-                this.getTable();
-                this.deleteForm = {};
-            });
-            this.dialogVisibleDelete = false;
-        },
-        //模态框批量删除取消按钮
-        cancleBatchDelete() {
-            this.dialogVisibleBatchDelete = false;
-        },
-        //模态框批量删除保存按钮
-        saveBatchDelete() {
-            let params = {};
-            params["etl_sys_cd"] = this.batchDeleteForm.etl_sys_cd;
-            params["resource_type"] = this.batchDeleteForm.resource_type;
-            resourcesAvailableAllFun.batchDeleteEtlResource(params).then(res => {
-                this.getTable();
-                this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                });
-            }).catch(err => {
-                this.$message.error('删除失败');
-            });
-            this.dialogVisibleBatchDelete = false;
+        saveModify(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["resource_type"] = this.formModify.resource_type;
+                    params["resource_max"] = this.formModify.resource_max;
+                    resourcesAvailableAllFun.updateEtlResource(params).then(res => {
+                        if (res && res.success) {
+                            this.getTable();
+                            this.$message({
+                                message: '修改成功',
+                                type: 'success'
+                            });
+                            this.formModify = {};
+                            this.dialogFormVisibleModify = false;
+                        }
+
+                    });
+
+                }
+            })
         },
         //分页方法
         handleCurrentChange(cpage) {
