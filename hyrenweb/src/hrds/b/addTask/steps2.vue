@@ -1016,13 +1016,16 @@ export default {
                     let tableData = this.tableData, //第一个页面所有表
                         sqlExtractData = this.ruleForm.sqlExtractData, //第二个页面所有表
                         rep_table = [], //两张表重复的表
-                        isparmi = [], //单表查询中增量存在的表
+                        isparmi = [],tableidArr1={},//单表查询中增量存在的表
                         isparmi2 = [], //sql抽取中增量存在的表
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     console.log(this.tableData, this.ruleForm.sqlExtractData)
                     for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
                         if (tableData[i].selectionState == true && tableData[i].unload_type == '增量') {
                             isparmi.push(tableData[i].table_name)
+                            if(tableData[i].table_id&&tableData[i].table_id!=''){
+                                tableidArr1[tableData[i].table_name]=tableData[i].table_id
+                            }
                         }
                         if (tableData[i].selectionState == true) {
                             istrue.push(tableData[i].table_name)
@@ -1034,6 +1037,7 @@ export default {
                             }
                         }
                     }
+                    console.log(tableidArr1,tableidArr1.length)
                     for (let j = 0; j < sqlExtractData.length; j++) {
                         if (sqlExtractData[j].unload_type == '增量') {
                             isparmi2.push(sqlExtractData[j].table_name)
@@ -1062,7 +1066,8 @@ export default {
                                 let params1 = {};
                                 params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
                                 params1["colSetId"] = parseInt(this.dbid);
-                                console.log(isparmi, 1111)
+                                params1['tableIds']=tableidArr1!={}?JSON.stringify(tableidArr1):''
+                                console.log(params1,isparmi, 1111)
                                 addTaskAllFun.checkTablePrimary(params1).then(res => {
                                     console.log(res, 1)
                                     let arrdata = res.data
@@ -1091,7 +1096,7 @@ export default {
                                                 this.isLoading = false
                                                 this.$message({
                                                     showClose: true,
-                                                    message: '单表查询中表' + arr + '未设置主键',
+                                                    message: '1单表查询中表' + arr + '未设置主键',
                                                     type: "error"
                                                 });
                                             } else { //不存在继续下面方法
@@ -1112,7 +1117,7 @@ export default {
                                             this.isLoading = false
                                             this.$message({
                                                 showClose: true,
-                                                message: '单表查询中表' + arr + '未设置主键',
+                                                message: '2单表查询中表' + arr + '未设置主键',
                                                 type: "error"
                                             });
                                         } else { //不存在未设置主键的表则继续下面整合数据方法
@@ -1311,7 +1316,7 @@ export default {
                 let params1 = {};
                 params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
                 params1["colSetId"] = parseInt(this.dbid);
-                params1["tableColumn"] = JSON.stringify(tableColumn);
+                params1["tableColumn"] = tableColumn.length>0?JSON.stringify(tableColumn):'';
                 console.log(params1)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == '200') {
