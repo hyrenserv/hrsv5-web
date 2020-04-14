@@ -126,7 +126,7 @@
                 filterText: '',
                 data_meta_info: {
                     table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '', create_date: '',
-                    meta_list: []
+                    meta_list: [], data_len: 0,
                 },
             }
         },
