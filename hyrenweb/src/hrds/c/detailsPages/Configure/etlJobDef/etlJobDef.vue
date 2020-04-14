@@ -43,7 +43,7 @@
             </el-button>
         </div>
     </el-row>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" width="88" align='center'>
@@ -957,6 +957,9 @@ export default {
 
         //新增/修改模态框取消按钮
         cancleAdd() {
+            if (this.jobTitle == "修改作业") {
+                this.getTable();
+            }
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.tempForm = {};
@@ -1024,6 +1027,9 @@ export default {
         },
         //新增/修改模态框1取消按钮
         cancleAdd1() {
+            if (this.jobTitle == "修改作业") {
+                this.getTable();
+            }
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.$refs.formAdd.resetFields();
@@ -1085,6 +1091,9 @@ export default {
         },
         //新增/修改模态框2取消按钮
         cancleAdd2() {
+            if (this.jobTitle == "修改作业") {
+                this.getTable();
+            }
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.$refs.formAdd.resetFields();

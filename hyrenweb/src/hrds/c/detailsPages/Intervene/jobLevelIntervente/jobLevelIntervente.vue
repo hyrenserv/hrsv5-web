@@ -33,7 +33,7 @@
     </el-row>
     <el-divider></el-divider>
     <div class="title">作业情况</div>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
@@ -85,7 +85,7 @@
     </el-row>
     <el-divider></el-divider>
     <div class="title">当前干预情况</div>
-    <el-table ref="multipleTable" :data="tableData1" tooltip-effect="dark" border style="width: 100%">
+    <el-table size="medium" ref="multipleTable" :data="tableData1" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
         <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center'>
@@ -111,7 +111,7 @@
     </el-row>
     <el-divider></el-divider>
     <div class="title">历史干预情况</div>
-    <el-table ref="multipleTable" :data="tableData2" tooltip-effect="dark" border style="width: 100%">
+    <el-table size="medium" ref="multipleTable" :data="tableData2" tooltip-effect="dark" border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
         <el-table-column prop="subsysname" show-overflow-tooltip label="任务名称" align='center'>

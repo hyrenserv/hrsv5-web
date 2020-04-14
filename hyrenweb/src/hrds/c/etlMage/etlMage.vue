@@ -10,7 +10,7 @@
     </el-row>
     <el-tabs class="tabes" v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="工程信息" name="first">
-            <el-table :data="tableData" border style="width: 100%">
+            <el-table size="medium" :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" width="70px" align='center'>
                 </el-table-column>
                 <el-table-column prop="etl_sys_cd" label="工程编号" width="110px" align='center'>

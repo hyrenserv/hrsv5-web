@@ -29,7 +29,7 @@
             </el-button>
         </div>
     </el-row>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" align='center'>
@@ -60,30 +60,30 @@
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <div style="width:193px">
-                    <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                    <el-input v-model="formAdd.etl_sys_cd" style="width:217px" autocomplete="off" placeholder="工程编号" disabled></el-input>
                 </div>
             </el-form-item>
-            <el-form-item label="作业名称" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.etl_job" placeholder="作业名称">
+            <el-form-item label="作业名称" prop="etl_job" :rules="rule.selected">
+                <el-select style="width:217px" v-model="formAdd.etl_job" placeholder="作业名称">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="资源类型" :rules="filter_rules([{required: true}])">
-                <el-select v-model="formAdd.resource_type" placeholder="作业名称">
+            <el-form-item label="资源类型" prop="resource_type" :rules="rule.selected">
+                <el-select style="width:217px" v-model="formAdd.resource_type" placeholder="作业名称">
                     <el-option v-for="item in formSelect.resourceType" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="资源需求数" prop="resource_req" :rules="filter_rules([{required: true}])">
+            <el-form-item label="资源需求数" prop="resource_req" :rules="filter_rules([{required: true,dataType: 'number'}])">
                 <div style="width:193px">
-                    <el-input v-model="formAdd.resource_req" autocomplete="off" placeholder="资源需求数"></el-input>
+                    <el-input style="width:217px" v-model="formAdd.resource_req" autocomplete="off" placeholder="资源需求数"></el-input>
                 </div>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 删除/批量删除资源模态框 -->
@@ -99,6 +99,8 @@
 <script>
 import * as resourcesUsageAllFun from "./resourcesUsage";
 import * as message from "@/utils/js/message";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 let arr = [];
 export default {
     data() {
@@ -114,6 +116,7 @@ export default {
             deleteTitle: '',
             multipleSelection: [],
             fileList: [],
+            rule: validator.default,
             dialogFormVisibleAdd: false,
             dialogVisibleDelete: false,
             formAdd: {
@@ -231,85 +234,6 @@ export default {
                     type: 'warning'
                 });
             } else {
-                this.deleteTitle = '确定批量删除?';
-                this.dialogVisibleDelete = true;
-            }
-        },
-        //编辑按钮
-        handleEdit(index, row) {
-            this.dialogFormVisibleAdd = true;
-            this.resourceTitle = '修改资源分配';
-            this.formAdd = row;
-        },
-        //删除按钮
-        handleDelete(index, row) {
-            this.dialogVisibleDelete = true;
-            this.formDelete.etl_job = row.etl_job;
-            this.deleteTitle = '确定删除?';
-        },
-        //模态框新增/修改取消按钮
-        cancleAdd() {
-            this.dialogFormVisibleAdd = false;
-            this.formAdd = {};
-        },
-        beforeClosechange() {
-            this.dialogFormVisibleAdd = false;
-            this.formAdd = {};
-        },
-        //模态框新增/修改保存按钮
-        saveAdd() {
-            if (this.formAdd.etl_job == '' || this.formAdd.resource_type == '' || this.formAdd.resource_req == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                params["etl_job"] = this.formAdd.etl_job;
-                params["resource_type"] = this.formAdd.resource_type;
-                params["resource_req"] = this.formAdd.resource_req;
-                if (this.resourceTitle == '添加资源分配') {
-                    resourcesUsageAllFun.saveEtlJobResourceRela(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '添加成功',
-                            type: 'success'
-                        });
-                    });
-                } else if (this.resourceTitle == '修改资源分配') {
-                    resourcesUsageAllFun.updateEtlJobResourceRela(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '修改成功',
-                            type: 'success'
-                        });
-                    });
-                }
-                this.dialogFormVisibleAdd = false;
-                this.formAdd = {};
-            }
-        },
-        //模态框删除/批量删除取消按钮
-        cancleDelete() {
-            this.dialogVisibleDelete = false;
-        },
-        //模态框删除/批量删除确定按钮
-        saveDelete() {
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["etl_job"] = this.formDelete.etl_job;
-            if (this.deleteTitle == '确定删除?') {
-                resourcesUsageAllFun.deleteEtlJobResourceRela(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('删除失败');
-                });
-            } else if (this.deleteTitle == '确定批量删除?') {
                 let arr = [];
                 this.multipleSelection.forEach((item) => {
                     arr.push(item.etl_job);
@@ -318,16 +242,100 @@ export default {
                 params["etl_sys_cd"] = this.sys_cd;
                 params["etl_job"] = arr;
                 resourcesUsageAllFun.batchDeleteEtlJobResourceRela(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '批量删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('批量删除失败');
-                });
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
             }
-            this.dialogVisibleDelete = false;
+        },
+        //编辑按钮
+        handleEdit(index, row) {
+            this.dialogFormVisibleAdd = true;
+            this.resourceTitle = '修改资源分配';
+            this.formAdd = Object.assign({}, row);
+        },
+        //删除按钮
+        handleDelete(index, row) {
+            this.formDelete.etl_job = row.etl_job;
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                let params = {};
+                params["etl_sys_cd"] = this.sys_cd;
+                params["etl_job"] = this.formDelete.etl_job;
+                resourcesUsageAllFun.deleteEtlJobResourceRela(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+
+        },
+        //模态框新增/修改取消按钮
+        cancleAdd() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
+            this.$refs.formAdd.resetFields();
+        },
+        beforeClosechange() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
+            this.$refs.formAdd.resetFields();
+        },
+        //模态框新增/修改保存按钮
+        saveAdd(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                    params["etl_job"] = this.formAdd.etl_job;
+                    params["resource_type"] = this.formAdd.resource_type;
+                    params["resource_req"] = this.formAdd.resource_req;
+                    if (this.resourceTitle == '添加资源分配') {
+                        resourcesUsageAllFun.saveEtlJobResourceRela(params).then(res => {
+                            if (res && res.success) {
+                                this.getTable();
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                                this.$refs.formAdd.resetFields();
+                            }
+                        });
+                    } else if (this.resourceTitle == '修改资源分配') {
+                        resourcesUsageAllFun.updateEtlJobResourceRela(params).then(res => {
+                            if (res && res.success) {
+                                this.getTable();
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                            }
+                            this.dialogFormVisibleAdd = false;
+                            this.formAdd = {};
+                            this.$refs.formAdd.resetFields();
+                        });
+                    }
+
+                }
+            })
         },
         //分页方法
         handleCurrentChange(cpage) {

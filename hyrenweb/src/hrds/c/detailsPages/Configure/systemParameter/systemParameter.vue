@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="subSystemdiv2">
-        <el-input size="mini" placeholder="变量名称" v-model="input">
+        <el-input size="mini" placeholder="变量名称" v-model="input" class="elinput">
             <el-button size="mini" slot="append" @click="searchBtn">搜索</el-button>
         </el-input>
     </div>
@@ -18,7 +18,7 @@
         <el-button class="buttonStyle" size="mini" type="danger" @click="handleBatchDelete">批量删除
         </el-button>
     </div>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" show-overflow-tooltip align='center' disabled='true' :selectable="isDisabled">
         </el-table-column>
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
@@ -32,7 +32,7 @@
         <el-table-column prop="para_desc" show-overflow-tooltip label="描述" align='center'>
         </el-table-column>
         <el-table-column label="操作" align='center'>
-              <template slot-scope="scope">
+            <template slot-scope="scope">
                 <el-button v-if="scope.row.etl_sys_cd != 'SYS'" size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
                 </el-button>
                 <el-button v-if="scope.row.etl_sys_cd != 'SYS'" size="mini" icon="el-icon-delete" title="删除" type="danger" @click="handleDelete(scope.$index, scope.row)">
@@ -50,14 +50,14 @@
     <el-dialog :title="systemTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClosechange">
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="120px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
+                <el-input v-model="formAdd.etl_sys_cd" style="width:300px;" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="变量名称" prop="para_cd" :rules="filter_rules([{required: true}])">
                 <div>
-                    <el-input v-if="this.systemTitle == '修改系统参数'" placeholder="变量名称" v-model="formAdd.para_cd" disabled>
+                    <el-input style="width:300px;" v-if="this.systemTitle == '修改系统参数'" placeholder="变量名称" v-model="formAdd.para_cd" disabled>
                         <template slot="prepend">!</template>
                     </el-input>
-                    <el-input v-if="this.systemTitle == '添加系统参数'" placeholder="变量名称" v-model="formAdd.para_cd">
+                    <el-input style="width:300px;" v-if="this.systemTitle == '添加系统参数'" placeholder="变量名称" v-model="formAdd.para_cd">
                         <template slot="prepend">!</template>
                     </el-input>
                     &nbsp;
@@ -66,35 +66,28 @@
                     </el-tooltip>
                 </div>
             </el-form-item>
-            <el-form-item label="变量类型" :rules="filter_rules([{required: true}])">
-                <div style="width:330px">
-                    <el-select v-model="formAdd.para_type" placeholder="变量类型">
+            <el-form-item label="变量类型" prop="para_type" :rules="rule.selected">
+                <div>
+                    <el-select style="width:300px;" v-model="formAdd.para_type" placeholder="变量类型">
                         <el-option v-for="item in formSelect.paraType" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
                 </div>
             </el-form-item>
             <el-form-item label="变量值" prop="para_val" :rules="filter_rules([{required: true}])">
-                <div style="width:193px">
-                    <el-input v-model="formAdd.para_val" autocomplete="off" placeholder="变量值"></el-input>
+                <div>
+                    <el-input style="width:300px;" v-model="formAdd.para_val" autocomplete="off" placeholder="变量值"></el-input>
                 </div>
             </el-form-item>
             <el-form-item label="描述" prop="para_desc">
                 <div style="width:330px">
-                    <el-input type="textarea" v-model="formAdd.para_desc" autocomplete="off" placeholder="描述"></el-input>
+                    <el-input style="width:300px;" type="textarea" v-model="formAdd.para_desc" autocomplete="off" placeholder="描述"></el-input>
                 </div>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveAdd" size="mini">保存</el-button>
-        </div>
-    </el-dialog>
-    <!-- 删除/批量删除系统模态框 -->
-    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
-            <el-button type="primary" @click="saveDelete" size="mini">是</el-button>
+            <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -103,6 +96,8 @@
 <script>
 import * as systemParameterAllFun from "./systemParameter";
 import * as message from "@/utils/js/message";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 let arr = [];
 export default {
     data() {
@@ -116,7 +111,7 @@ export default {
             fileList: [],
             paratype: [],
             dialogFormVisibleAdd: false,
-            dialogVisibleDelete: false,
+            rule: validator.default,
             formAdd: {
                 etl_sys_cd: '',
                 para_cd: '',
@@ -236,87 +231,6 @@ export default {
                     type: 'warning'
                 });
             } else {
-                this.deleteTitle = '确定批量删除?';
-                this.dialogVisibleDelete = true;
-            }
-        },
-        //编辑按钮
-        handleEdit(index, row) {
-            this.dialogFormVisibleAdd = true;
-            this.systemTitle = '修改系统参数';
-            this.formAdd = row;
-        },
-        //删除按钮
-        handleDelete(index, row) {
-            this.dialogVisibleDelete = true;
-            this.formDelete.para_cd = row.para_cd;
-            this.deleteTitle = '确定删除?';
-        },
-        //模态框新增/修改取消按钮
-        cancleAdd() {
-            this.dialogFormVisibleAdd = false;
-            this.formAdd = {};
-        },
-        beforeClosechange() {
-            this.dialogFormVisibleAdd = false;
-            this.formAdd = {};
-        },
-        //模态框新增/修改保存按钮
-        saveAdd() {
-            if (this.formAdd.para_cd == '' || this.formAdd.para_type == '' || this.formAdd.para_val == '') {
-                this.$message({
-                    message: '请输入完整信息',
-                    type: 'warning'
-                });
-            } else {
-                let params = {};
-                params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
-                params["para_cd"] = this.formAdd.para_cd;
-                params["para_val"] = this.formAdd.para_val;
-                params["para_type"] = this.formAdd.para_type;
-                params["para_desc"] = this.formAdd.para_desc;
-                if (this.systemTitle == '添加系统参数') {
-                    systemParameterAllFun.saveEtlPara(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '添加成功',
-                            type: 'success'
-                        });
-                    });
-                } else if (this.systemTitle == '修改系统参数') {
-                    systemParameterAllFun.updateEtlPara(params).then(res => {
-                        this.getTable();
-                        this.$message({
-                            message: '修改成功',
-                            type: 'success'
-                        });
-                    });
-                }
-                this.dialogFormVisibleAdd = false;
-                this.formAdd = {};
-            }
-        },
-        //模态框删除/批量删除取消按钮
-        cancleDelete() {
-            this.dialogVisibleDelete = false;
-            this.formDelete = {};
-        },
-        //模态框删除/批量删除保存按钮
-        saveDelete() {
-            let params = {};
-            params["etl_sys_cd"] = this.sys_cd;
-            params["para_cd"] = this.formDelete.para_cd;
-            if (this.deleteTitle == '确定删除?') {
-                systemParameterAllFun.deleteEtlPara(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('删除失败');
-                });
-            } else if (this.deleteTitle == '确定批量删除?') {
                 let arr = [];
                 this.multipleSelection.forEach((item) => {
                     arr.push(item.para_cd);
@@ -325,16 +239,101 @@ export default {
                 params["etl_sys_cd"] = this.sys_cd;
                 params["para_cd"] = arr;
                 systemParameterAllFun.batchDeleteEtlPara(params).then(res => {
-                    this.getTable();
-                    this.$message({
-                        message: '批量删除成功',
-                        type: 'success'
-                    });
-                }).catch(err => {
-                    this.$message.error('批量删除失败');
-                });
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
             }
-            this.dialogVisibleDelete = false;
+        },
+        //编辑按钮
+        handleEdit(index, row) {
+            this.dialogFormVisibleAdd = true;
+            this.systemTitle = '修改系统参数';
+            this.formAdd = Object.assign({}, row);
+        },
+        //删除按钮
+        handleDelete(index, row) {
+            this.formDelete.para_cd = row.para_cd;
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                let params = {};
+                params["etl_sys_cd"] = this.sys_cd;
+                params["para_cd"] = this.formDelete.para_cd;
+                systemParameterAllFun.deleteEtlPara(params).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        },
+        //模态框新增/修改取消按钮
+        cancleAdd() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
+            this.$refs.formAdd.resetFields();
+        },
+        beforeClosechange() {
+            this.dialogFormVisibleAdd = false;
+            this.formAdd = {};
+            this.$refs.formAdd.resetFields();
+        },
+        //模态框新增/修改保存按钮
+        saveAdd(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
+                    params["para_cd"] = this.formAdd.para_cd;
+                    params["para_val"] = this.formAdd.para_val;
+                    params["para_type"] = this.formAdd.para_type;
+                    params["para_desc"] = this.formAdd.para_desc;
+                    if (this.systemTitle == '添加系统参数') {
+                        systemParameterAllFun.saveEtlPara(params).then(res => {
+                            if (res && res.success) {
+                                this.getTable();
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                                this.$refs.formAdd.resetFields();
+                            }
+                        });
+                    } else if (this.systemTitle == '修改系统参数') {
+                        systemParameterAllFun.updateEtlPara(params).then(res => {
+                            if (res && res.success) {
+                                this.getTable();
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                                this.dialogFormVisibleAdd = false;
+                                this.formAdd = {};
+                                this.$refs.formAdd.resetFields();
+                            }
+                        });
+                    }
+
+                }
+            })
+
         },
         //分页方法
         handleCurrentChange(cpage) {
@@ -415,7 +414,7 @@ export default {
 </script>
 
 <style scoped>
-.el-input {
+.elinput {
     width: 330px;
     margin-bottom: 15px;
 }
@@ -425,7 +424,7 @@ export default {
 }
 
 .buttonStyle {
-    display: inline-block;
+    display: block;
     float: left;
     margin-right: 10px;
     margin-left: 0px;
