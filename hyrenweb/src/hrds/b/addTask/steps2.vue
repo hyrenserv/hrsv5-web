@@ -1562,9 +1562,12 @@ export default {
             addTaskAllFun.getColumnInfoByColSetId(params).then(res => {
                 console.log(res)
                 let colData = res.data ? res.data : [];
-                if (colData.length > 0) {
+                // if (colData.length > 0) {
                     for (let i = 0; i < arrData1.length; i++) {
+                        console.log(arrData1)
                         if (arrData1[i].selectionState == true) {
+                                console.log(colData)
+
                             for (let key in colData) {
                                 if (arrData1[i].table_name == key) {
                                     console.log(key,colData[key])
@@ -1574,7 +1577,8 @@ export default {
                             }
                         }
                     }
-                }
+                // }
+                console.log(arrData1,colData)
                 if (this.SelectColumn.length > 0) {
                     for (let j = 0; j < arrData1.length; j++) {
                         for (let n = 0; n < this.SelectColumn.length; n++) {
@@ -1584,7 +1588,6 @@ export default {
                         }
                     }
                 }
-                console.log(arrData1)
                 let arrData11=JSON.parse(JSON.stringify(arrData1))
                 for (let m = 0; m < arrData11.length; m++) {
                     if (arrData11[m].data) {
@@ -1691,7 +1694,8 @@ export default {
             params["tableName"] = name;
             addTaskAllFun.getSingleTableSQL(params).then(res => {
                 this.sqlFiltSetData_tablename = this.tablename;
-                if (res.data.length != 0) {
+                console.log(res.data)
+                if (res.data.length != 0&&res.data.unload_type=='1') {
                     this.sqlFiltSetData_SQL = res.data[0].sql ? res.data[0].sql : "";
                 }
             });
@@ -2829,15 +2833,13 @@ export default {
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsadd2 = true
-                    console.log(res.data.sql)
-                    // if (res.data.unload_type == '2') {
+                    console.log(res.data)
+                    if (res.data.unload_type == '2') {
                     this.xstypeadd2 = JSON.parse(res.data.sql)
                     console.log(this.xstypeadd2)
-
-                    // }
+                    }
                 })
             }
-
         },
         getTableSetUnloadDataFunfist(id, type) {
             console.log('d')
@@ -2846,17 +2848,22 @@ export default {
             if (type == '全量') {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsall = true
+                    if(res.data.unload_type=='1'){
                     this.xstypeadd.insert = res.data.sql
+                    }
                     console.log(res)
                 })
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
-                    this.dialog_xsadd = true
-                    let data=JSON.parse(res.data.sql)
+                    if(res.data.unload_type=='2'){
+                        let data=JSON.parse(res.data.sql)
                     this.xstypeadd.insert = data.add
                     this.xstypeadd.delete = data.delete
                     this.xstypeadd.update = data.update
-                    console.log(JSON.parse(res.data.sql))
+                    }
+                    this.dialog_xsadd = true
+                    
+                    console.log(res.data)
                 })
             }
 
@@ -2889,6 +2896,7 @@ export default {
                 })
 
             }
+             this.dialog_xsadd = false
             console.log(this.xsTypeArr)
         },
         //第2个页面面卸数方式增量的设置提交
