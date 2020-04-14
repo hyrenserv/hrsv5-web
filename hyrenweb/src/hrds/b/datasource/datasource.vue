@@ -107,7 +107,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+            <el-button @click="cancleAdd('0')" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="add('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
@@ -130,7 +130,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleAdd" size="mini" type="danger">取 消</el-button>
+            <el-button @click="cancleAdd('1')" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
         </div>
     </el-dialog>
@@ -223,7 +223,7 @@ export default {
         },
         // 点击编辑获取当前数据赋给表单
         handleEdit(index, row) {
-            this.form = row;
+            this.form = Object.assign({}, row);
             this.agentId = row.agent_id;
             this.agent_type = agentTupe;
             this.source_id = row.source_id;
@@ -254,17 +254,23 @@ export default {
             });
         },
         // 点击取消按钮
-        cancleAdd() {
-            // 表单清空
-            this.formAdd = {};
-            // 隐藏对话框
-            this.dialogFormVisible = false;
-            this.dialogFormVisibleview = false;
-            this.$refs.formAdd.resetFields();
+        cancleAdd(val) {
+            if (val == "0") {
+                // 表单清空
+                this.formAdd = {};
+                this.$refs.formAdd.resetFields();
+                // 隐藏对话框
+                this.dialogFormVisible = false;
+            } else if (val == "1") {
+                this.dialogFormVisibleview = false;
+                this.form = {};
+                this.$refs.form.resetFields();
+            }
         },
         // 关闭弹出框之前触发事件
         beforeClose() {
             this.$refs.formAdd.resetFields();
+            this.$refs.form.resetFields();
             this.dialogFormVisible = false;
         },
         // 点击不同的数据类型获取不同的数据
