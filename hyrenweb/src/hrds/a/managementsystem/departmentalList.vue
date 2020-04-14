@@ -145,7 +145,7 @@ export default {
         // 获取表格当前行数据
         handleEdit(index, row) {
             this.dep_id = row.dep_id;
-            this.formUpdate = row;
+            this.formUpdate = Object.assign({}, row);
         },
         //编辑部门信息
         updateDepartmentInfo(formName) {

@@ -180,7 +180,7 @@ export default {
         // 获取表格当前行数据
         handleEdit(index, row) {
             this.para_id = row.para_id;
-            this.formUpdate = row;
+            this.formUpdate = Object.assign({}, row);
             this.para_name = row.para_name;
         },
         //编辑部门信息
