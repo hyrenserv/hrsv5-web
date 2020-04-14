@@ -759,9 +759,9 @@ export default {
                 } else {
                     data[i].is_md5 = false;
                 }
-                if (data[i].unload_type != "1") {
+                if (data[i].unload_type == "1") {
                     data[i].unload_type = '全量';
-                } else if ((data[i].unload_type != "2")) {
+                } else if ((data[i].unload_type == "2")) {
                     data[i].unload_type = '增量';
                 }
             }
@@ -806,9 +806,9 @@ export default {
                     } else {
                         data[i].is_md5 = false;
                     }
-                    if (data[i].unload_type != "1") {
+                    if (data[i].unload_type == "1") {
                         data[i].unload_type = '全量';
-                    } else if ((data[i].unload_type != "2")) {
+                    } else if ((data[i].unload_type == "2")) {
                         data[i].unload_type = '增量';
                     }
                 }
