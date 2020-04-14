@@ -9,19 +9,19 @@
             </router-link>
         </el-row>
         <el-row>
-            <el-form :model="var_data" :inline="true">
+            <el-form :model="search_var_data" :inline="true">
                 <el-form-item label="变量名:" prop='var_name' size="mini">
-                    <el-input placeholder="变量名" v-model="var_data.var_name"/>
+                    <el-input placeholder="变量名" v-model="search_var_data.var_name"/>
                 </el-form-item>
                 <el-form-item label="变量值 : " prop='var_value' size="mini">
-                    <el-input placeholder="变量值" v-model="var_data.var_value"/>
+                    <el-input placeholder="变量值" v-model="search_var_data.var_value"/>
                 </el-form-item>
                 <el-form-item label="开始日期 : " prop='start_date' size="mini">
-                    <el-date-picker v-model="var_data.s_date" placeholder="开始日期" value-format="yyyyMMdd">
+                    <el-date-picker v-model="search_var_data.start_date" placeholder="开始日期" value-format="yyyyMMdd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="结束日期 : " prop='e_date' size="mini">
-                    <el-date-picker v-model="var_data.e_date" placeholder="结束日期" value-format="yyyyMMdd">
+                    <el-date-picker v-model="search_var_data.end_date" placeholder="结束日期" value-format="yyyyMMdd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
@@ -55,7 +55,7 @@
                            :total="var_data_s.length">
             </el-pagination>
             <!-- 添加的弹出表单 -->
-            <el-dialog title="新增系统变量" :visible.sync="sys_var_dialog">
+            <el-dialog title="新增和编辑系统变量" :visible.sync="sys_var_dialog">
                 <div slot="title"><span>{{title}}系统变量</span></div>
                 <el-form :model="form_var_data" ref="var_data_from">
                     <el-form-item label="变量名" prop="var_name">
@@ -76,7 +76,6 @@
 
 <script>
     import * as message from '../../../../utils/js/message';
-    import * as message1 from '';
     import * as vcFun from './variableConfig'
     import Loading from "../../../components/loading/index";
 
@@ -90,8 +89,8 @@
                 currentPage: 1,
                 pageSize: 10,
                 totalSize: 0,
-                var_data: {var_name: '', var_value: '', s_date: '', e_date: '', sys_var_id: ''},
-                form_var_data: {var_name: '', var_value: '', s_date: '', e_date: '', sys_var_id: ''},
+                search_var_data: {sys_var_id: '', var_name: '', var_value: '', start_date: '', end_date: '',},
+                form_var_data: {sys_var_id: '', var_name: '', var_value: '', start_date: '', end_date: '',},
                 var_data_s: [],
                 selectRow: [],
                 title: '',
@@ -115,7 +114,19 @@
             },
             //检索变量
             variableSearch() {
-                console.log(this.var_data);
+                console.log(this.search_var_data);
+                let var_name = this.search_var_data.var_name;
+                let var_value = this.search_var_data.var_value;
+                let start_date = this.search_var_data.start_date;
+                let end_date = this.search_var_data.end_date;
+                vcFun.searchVariableConfigData({
+                    "var_name": var_name,
+                    "var_value": var_value,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                }).then(res => {
+                    this.var_data_s = res.data;
+                })
             },
             //获取变量信息列表
             getVariableConfigDataInfos() {
@@ -135,7 +146,8 @@
                 this.title = '编辑';
                 this.sys_var_dialog = true;
                 this.operation_type = 'edit';
-                this.form_var_data = row;
+                //获取编辑的对象
+                this.form_var_data = Object.assign({}, row)
             },
             //保存变量
             saveVarData(var_data_from) {
