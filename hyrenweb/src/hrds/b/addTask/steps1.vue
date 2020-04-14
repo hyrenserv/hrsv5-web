@@ -343,7 +343,7 @@ export default {
         if (this.edit == "yes") {
             this.show = true;
             let params = {};
-            params["databaseId"] = this.sourceId;
+            params["databaseId"] = this.dbid;
             addTaskAllFun.getDBConfInfo(params).then(res => {
                 if (res.data) {
                     this.ruleForm = res.data[0];
