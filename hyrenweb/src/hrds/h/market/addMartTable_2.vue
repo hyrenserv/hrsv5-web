@@ -22,7 +22,7 @@
                     <el-row>
                         <span>SQL查询</span>
                         <el-col :span='10' style="float:right">
-                            <el-input placeholder="SQL参数" size="mini" v-model="sqlparameter">
+                            <el-input placeholder="参数如: 自定义名称=123;自定义名称2=456" size="mini" v-model="sqlparameter">
                             </el-input>
                         </el-col>
                     </el-row>
@@ -47,8 +47,8 @@
         <el-tabs type="card">
             <el-row>
                 <el-col :span='2' style="float:right">
-                    <el-button class="query-sql-btn" type="primary" @click="addcolumn()"
-                               size="small">新增字段
+                    <el-button class="elButton" type="primary" @click="addcolumn()"
+                               size="medium">新增字段
                     </el-button>
                 </el-col>
             </el-row>
@@ -511,7 +511,8 @@
     /* 按钮样式 */
     .elButton {
         float: right;
-        margin-top: 20px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .borderStyle {

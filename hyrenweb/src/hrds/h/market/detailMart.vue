@@ -3,17 +3,17 @@
         <el-row class='topTitle'>
             <i class="block_icon fa text-warning fa-globe blue"></i>
             <span>数据集市</span>
-            <el-button  type="primary" class="el1 els goIndex" tab-position="top" @click="adddmdatatable();" size="small">
-                <i class="el-icon-circle-plus-outline"></i>新增数据表
-            </el-button>
-            <router-link to="/dataMart">
-                <el-button type="primary" size="small" class="goIndex">
+            <div class="elButton ">
+                <el-button type="primary" @click="adddmdatatable()" size="medium">
+                    <i class="el-icon-circle-plus-outline"></i>新增数据表
+                </el-button>
+                <el-button type="primary" @click="back()" size="medium">
                     <i class="fa fa-home fa-lg"></i>返回首页
                 </el-button>
-            </router-link>
+            </div>
         </el-row>
 
-        <el-tabs class="tabes"  type="card" >
+        <el-tabs class="tabes" type="card">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" width="70px" align='center'>
                 </el-table-column>
@@ -31,9 +31,11 @@
                 </el-table-column>
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle type="primary">
+                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
+                                   type="primary">
                         </el-button>
-                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)" circle type="primary">
+                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)"
+                                   circle type="primary">
                         </el-button>
                     </template>
                 </el-table-column>
@@ -47,55 +49,62 @@
     import regular from "@/utils/js/regular";
     import * as functionAll from "./marketAction";
     import * as message from "@/utils/js/message";
+
     export default {
         data() {
             return {
                 data_mart_id: this.$route.query.data_mart_id,
-                tableData:[],
+                tableData: [],
             };
         },
-        mounted(){
+        mounted() {
             this.querydmdatatable(this.data_mart_id);
         },
         methods: {
-            adddmdatatable(){
+            back() {
+                this.$router.push({
+                    name: 'dataMart',
+                });
+            },
+            adddmdatatable() {
                 this.$router.push({
                     name: 'addMartTable_1',
                     query: {
                         data_mart_id: this.data_mart_id,
-                        is_add:0
+                        is_add: 0
                     }
                 });
             },
-            editdmdatatable(row){
+            editdmdatatable(row) {
                 this.$router.push({
                     name: 'addMartTable_1',
                     query: {
                         data_mart_id: this.data_mart_id,
                         datatable_id: row.datatable_id,
-                        is_add:1
+                        is_add: 1
                     }
                 });
             },
-            deletedmdatatable(row){
+            deletedmdatatable(row) {
                 message.confirmMsg('确定删除吗').then(res => {
-                    let param={
-                        "datatable_id":row.datatable_id
+                    let param = {
+                        "datatable_id": row.datatable_id
                     }
-                    functionAll.deleteDMDataTable(param).then((res)=>{
-                        if(res && res.success){
+                    functionAll.deleteDMDataTable(param).then((res) => {
+                        if (res && res.success) {
                             message.deleteSuccess(res);
                             location.reload();
                         }
                     })
-                }).catch(() => {})
+                }).catch(() => {
+                })
             },
-            querydmdatatable(data_mart_id){
+            querydmdatatable(data_mart_id) {
                 let param = {
-                    "data_mart_id":data_mart_id
+                    "data_mart_id": data_mart_id
                 }
-                functionAll.queryDMDataTableByDataMartID(param).then((res)=>{
-                    if(res && res.success){
+                functionAll.queryDMDataTableByDataMartID(param).then((res) => {
+                    if (res && res.success) {
                         res.data.forEach((item) => {
                             this.$Code.getValue({
                                 category: "TableLifeCycle",
@@ -116,6 +125,9 @@
 
 
 <style scoped>
-
+    /* 按钮样式 */
+    .elButton {
+        float: right;
+    }
 </style>
 

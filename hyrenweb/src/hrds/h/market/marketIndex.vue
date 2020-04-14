@@ -13,7 +13,7 @@
             <el-col :span="5">
                 <el-tabs class="tabes" type="card">
                     <el-table :data="totalstorage" border style="width: 100%">
-                        <el-table-column prop="sources" label="总数据存储量" width="344x" align='center'>
+                        <el-table-column prop="sources" label="总数据存储量" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
@@ -22,7 +22,7 @@
             <el-col :span="5" :offset="1">
                 <el-tabs class="tabes" type="card">
                     <el-table :data="hyrendbstorage" border style="width: 100%">
-                        <el-table-column prop="count" label="HIVE数据表数" width="344x" align='center'>
+                        <el-table-column prop="count" label="HIVE数据表数" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
@@ -31,7 +31,7 @@
             <el-col :span="5" :offset="1">
                 <el-tabs class="tabes" type="card">
                     <el-table :data="kvstorage" border style="width: 100%">
-                        <el-table-column prop="count" label="HBASE数据表数" width="344x" align='center'>
+                        <el-table-column prop="count" label="HBASE数据表数" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
@@ -40,42 +40,44 @@
             <el-col :span="5" :offset="1">
                 <el-tabs class="tabes" type="card">
                     <el-table :data="solrdbstorage" border style="width: 100%">
-                        <el-table-column prop="count" label="SOLR数据表数" width="344x" align='center'>
+                        <el-table-column prop="count" label="SOLR数据表数" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
             </el-col>
         </el-row>
-
-        <div class="dataSheetmain">
-            <div class="dataSheetmainDiv" v-for="(item,index) in marketinfo" :key="index">
-                <div @click="gotomartdetail(item.data_mart_id)">
-                    <i class="fa fa-bed"></i>
-                    <p>{{item.mart_name}}</p>
+        <el-row  class='topTitle'>
+            <span>集市列表</span>
+        </el-row>
+            <div class="dataSheetmain">
+                <div class="dataSheetmainDiv" v-for="(item,index) in marketinfo" :key="index">
+                    <div @click="gotomartdetail(item.data_mart_id)">
+                        <i class="fa fa-bed"></i>
+                        <p>{{item.mart_name}}</p>
+                    </div>
+                    <!--<div class="boxshletr">-->
+                    <!--<i class="fa fa-download fa-lg" @click="downloadData(item.data_mart_id)"></i>-->
+                    <!--<el-button type="text" class="delbtn" @click="dialogFormVisibleAdd = true;clickEditButton(index)">-->
+                    <!--<i class="fa fa-pencil fa-lg"></i>-->
+                    <!--</el-button>-->
+                    <!--</div>-->
                 </div>
-                <!--<div class="boxshletr">-->
-                <!--<i class="fa fa-download fa-lg" @click="downloadData(item.data_mart_id)"></i>-->
-                <!--<el-button type="text" class="delbtn" @click="dialogFormVisibleAdd = true;clickEditButton(index)">-->
-                <!--<i class="fa fa-pencil fa-lg"></i>-->
-                <!--</el-button>-->
-                <!--</div>-->
             </div>
-        </div>
 
 
         <el-row class="bottomMargin">
             <el-col :span="5">
-                <el-row>
+                <el-row >
                     <el-tabs class="tabes" type="card">
-                        <span>数据集市</span>
+                        <span>集市占用存储</span>
                     </el-tabs>
                 </el-row>
                 <el-row>
                     <el-tabs class="tabes" type="card">
                         <el-table :data="totalstoragetop3" border style="width: 100%">
-                            <el-table-column prop="mart_name" label="集市名称" width="172px" align='center'>
+                            <el-table-column prop="mart_name" label="集市名称" align='center'>
                             </el-table-column>
-                            <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
+                            <el-table-column prop="source_size" label="占用空间" align='center'>
                             </el-table-column>
                         </el-table>
                     </el-tabs>
@@ -84,14 +86,14 @@
             <el-col :span="5" :offset="1">
                 <el-row>
                     <el-tabs class="tabes" type="card">
-                        <span>HIVE</span>
+                        <span>HIVE占用存储前三表</span>
                     </el-tabs>
                 </el-row>
                 <el-tabs class="tabes" type="card">
                     <el-table :data="hyrendbstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="数据名称" width="172px" align='center'>
+                        <el-table-column prop="mart_name" label="数据名称" align='center'>
                         </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
+                        <el-table-column prop="source_size" label="占用空间" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
@@ -100,14 +102,14 @@
             <el-col :span="5" :offset="1">
                 <el-row>
                     <el-tabs class="tabes" type="card">
-                        <span>HBASE</span>
+                        <span>HBASE占用存储前三表</span>
                     </el-tabs>
                 </el-row>
                 <el-tabs class="tabes" type="card">
                     <el-table :data="kvstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="数据名称" width="172px" align='center'>
+                        <el-table-column prop="mart_name" label="数据名称" align='center'>
                         </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
+                        <el-table-column prop="source_size" label="占用空间" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>
@@ -116,14 +118,14 @@
             <el-col :span="5" :offset="1">
                 <el-row>
                     <el-tabs class="tabes" type="card">
-                        <span>SOLR</span>
+                        <span>SOLR占用存储前三表</span>
                     </el-tabs>
                 </el-row>
                 <el-tabs class="tabes" type="card">
                     <el-table :data="solrdbstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="数据名称" width="172px" align='center'>
+                        <el-table-column prop="mart_name" label="数据名称" align='center'>
                         </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" width="172px" align='center'>
+                        <el-table-column prop="source_size" label="占用空间" align='center'>
                         </el-table-column>
                     </el-table>
                 </el-tabs>

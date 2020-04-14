@@ -12,7 +12,7 @@
             </el-row>
             <el-row>
                 <el-form-item label="变量" :rules="rule.default">
-                    <el-input v-model="parameter" placeholder="变量"></el-input>
+                    <el-input v-model="parameter" placeholder="参数如: 自定义名称=123;自定义名称2=456"></el-input>
                 </el-form-item>
             </el-row>
             <el-row :span="10" >
@@ -63,8 +63,6 @@
                 functionAll.getQuerySql({"datatable_id":this.datatable_id}).then((res) => {
                     if (res && res.success) {
                         this.querysql = res.data[0].querysql;
-                    } else {
-                        this.$emit(response.message);
                     }
                 })
             },
@@ -78,8 +76,6 @@
                     debugger;
                     if (res && res.success) {
                         this.querysql = res.data.querysql;
-                    } else {
-                        this.$emit(response.message);
                     }
                 })
             }
