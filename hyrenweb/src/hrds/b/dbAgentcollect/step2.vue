@@ -107,10 +107,10 @@ export default {
         backSteps() {
             this.$router.push({
                 name: "collection4_1",
-                // query: {
-                //     agent_id: this.$route.query.agent_id,
-                //     id: this.$route.query.odc_id
-                // }
+                query: {
+                    agent_id: this.$route.query.agent_id,
+                    source_id: this.$route.query.sourceId
+                }
             })
         },
     },
