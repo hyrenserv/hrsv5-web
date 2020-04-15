@@ -421,6 +421,7 @@ export default {
                             data = {
                                 id: res.data,
                                 source_id: this.sourceId,
+                                agent_id: this.agentId,
                                 source_name: this.$Base64.encode(this.sourceName)
                             };
                         }

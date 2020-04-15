@@ -210,6 +210,7 @@ export default {
             let params = {};
             params["sourceId"] = id;
             params["agentType"] = type;
+            console.log(params)
             agentList.getAgentInfo(params).then(res => {
                 let arrdata = res.data ? res.data : [];
                 for (let i = 0; i < this.CollectType.length; i++) {

@@ -165,6 +165,12 @@ export default new Router({
                     title: 'db步骤3',
                     component: () => import('@/hrds/b/dbAgentcollect/step3.vue')
                 },
+               /*  {
+                    path: '/dbf_collection3',
+                    name: 'dbf_collection3',
+                    title: 'DB文件采集3',
+                    component: () => import('@/hrds/b/dbAgentcollect/step4.vue')
+                }, */
                 // 非结构化 Agent采集
                 {
                     path: '/collection2_1',
