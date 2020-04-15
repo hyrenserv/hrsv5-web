@@ -55,6 +55,15 @@ export function deleteClassifyInfo(data) {
         params:data
     })
 }
+/**(6)
+ * 保存数据文件的配置信息
+ */
+export function saveDataFile(data) {
+    return request({
+        url: '/B/agent/datafileconf/fileconf/saveDataFile',
+        params: data
+    })
+}
 //steps4
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
