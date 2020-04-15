@@ -729,16 +729,10 @@ export default {
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
+       
     },
-    mounted() {
-        // 获取进入页面的总数据
-        if (this.$route.query.edit == "yes") {
-            this.steps_getInitInfo();
-            this.editzdySQLFun()
-        } else {
-            this.tableloadingInfo = '暂无数据'
-        }
-        let params = {};
+    beforeMount(){
+          let params = {};
         params["colSetId"] = this.dbid;
         addTaskAllFun.getAllTableInfo(params).then(res => {
             console.log(res.data)
@@ -768,6 +762,12 @@ export default {
             console.log(data)
             this.allDataList = data;
         });
+    },
+    mounted() {
+        // 获取进入页面的总数据
+            this.steps_getInitInfo();
+            this.editzdySQLFun()
+       
     },
     computed: {
         address() {
@@ -1345,6 +1345,7 @@ export default {
                 data = {
                     id: this.dbid,
                     source_id: this.sourceId,
+                    agent_id: this.agentId,
                     source_name: this.$Base64.encode(this.sourceName)
                 };
             }

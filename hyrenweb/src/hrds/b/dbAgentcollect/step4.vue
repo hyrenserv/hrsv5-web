@@ -970,7 +970,6 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getCleanConfInfo(params).then(res => {
-                console.log(res.data)
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {

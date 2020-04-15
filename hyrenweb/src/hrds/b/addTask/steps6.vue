@@ -78,7 +78,7 @@
                 <el-col :span="8" v-else-if="TandZ=='2'">
                     <el-form-item label="上游作业" :rules="rule.default" prop="Upstream_operation">
                         <el-col :span="16">
-                            <el-select style="width:100%" v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @change="getUpstream_operationFun">
+                            <el-select style="width:100%" v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -321,12 +321,12 @@ export default {
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
         this.sName = this.$Base64.decode(this.$route.query.source_name);
-
+          this.getAgentPathFun() //获取目录
     },
     mounted() {
         //Dispatch_Frequency
-        this.getPreJobName() //获取上游作业名称
-        this.getAgentPathFun() //获取目录
+        // this.getPreJobName() //获取上游作业名称
+      
         if (this.$route.query.edit) {
             this.getEtlJobDataFun()//获取编辑任务下的作业信息
         } else {
@@ -416,7 +416,7 @@ export default {
                     params["ded_arr"] = ded_arr.join('^')
                     params["jobRelations"] = jobRelation
                     sendTask.saveJobDataToDatabase(params).then(res => {
-                        if (res.code == 200) {
+                        if (res.code&&res.code == 200) {
                             this.isLoading = false
                             this.active = 6;
                             this.finishDialogVisible = true
@@ -455,6 +455,7 @@ export default {
                 data = {
                     id: this.dbid,
                     source_id: this.sourId,
+                    agent_id: this.aId,
                     source_name: this.$Base64.encode(this.sName),
                 }
             }
@@ -573,11 +574,13 @@ export default {
         },
         // 获取上游作业下拉
         getPreJobName() {
+            console.log(this.ruleForm.Project_num)
             let arr = [];
             sendTask.searchEtlJob({
-                'etl_sys_cd': '111'
+                'etl_sys_cd': this.ruleForm.Project_num
             }).then(res => {
-                if (res !== undefined) {
+                console.log( this.ruleForm.Project_num,res)
+                if (res !== undefined&&res.data.length>0) {
                     res.data.forEach((item) => {
                         arr.push({
                             'value': item,

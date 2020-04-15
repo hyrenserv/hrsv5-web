@@ -705,6 +705,7 @@ export default {
             this.row_ml_name = name
             let arry = [],
                 path = '';
+                console.log(this.$route.query.agent_id,1)
             addTaskAllFun
                 .selectPath({
                     agent_id: this.$route.query.agent_id,
