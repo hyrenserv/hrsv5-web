@@ -9,11 +9,10 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="采集任务编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.database_number" placeholder="采集任务编号" :size="size"></el-input>
+                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
                 </el-form-item>
             </el-col>
-
             <el-col :span="12">
                 <el-form-item label="分类编号" :label-width="formLabelWidth" prop="classify_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.classify_name" disabled placeholder="分类编号" :size="size">
@@ -24,11 +23,6 @@
             <el-col :span="12">
                 <el-form-item label="分类名称" :label-width="formLabelWidth" prop="classify_num" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.classify_num" disabled placeholder="分类名称" :size="size"></el-input>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
                 </el-form-item>
             </el-col>
             <!-- <el-col :span="12">
@@ -91,7 +85,7 @@
                     <span @click="() => append(data)">{{ node.label }}</span>
                     <span>
                         <el-button class="netxNUM" type="text" @click="() => append(data)">
-                            点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                            点击获取下一级目录
                         </el-button>
                     </span>
                 </span>
@@ -202,15 +196,16 @@ export default {
         return {
             active: 0,
             form: {
-                run_way: '',
-                FileFormat: '',
+
             },
             formLabelWidth: "150px",
             size: "medium",
             showDiolag: false,
             pagesize: 5,
             currentPage: 1,
+            data2: [],
             radio: "1",
+            classify_id: '',
             addClassTask: {
 
             },
@@ -232,8 +227,8 @@ export default {
         }
     },
     mounted() {
-        this.getCategoryItems("DataBaseCode");
-        this.getCategoryItems("FileFormat");
+        // this.getCategoryItems("DataBaseCode");
+        // this.getCategoryItems("FileFormat");
         this.getAllInfo();
     },
     methods: {
@@ -330,6 +325,7 @@ export default {
                 if (this.radio != '') {
                     for (let i = 0; i < row.length; i++) {
                         if (row[i].classify_id == this.radio) {
+                            this.classify_id = row[i].classify_id;
                             this.showDiolag = false;
                             this.form.classify_name = row[i].classify_name;
                             this.form.classify_num = row[i].classify_num;
@@ -389,28 +385,59 @@ export default {
                 this.$set(data, 'children', []);
             }
             functionAll.selectPath({
-                    agent_id: this.$route.query.agent_id,
+                    // agent_id: this.$route.query.agent_id,
+                    agent_id: '1000000022',
                     path: data.path
                 })
                 .then(res => {
                     data.children = res.data
                 });
         },
+        // 获取目录结构
+        seletFilePath(data) {
+            let arry = [];
+            let path;
+            if (typeof (data) != "undefined") {
+                path = data.path;
+            }
+            functionAll
+                .selectPath({
+                    // agent_id: this.$route.query.agent_id,
+                    agent_id: '1000000022',
+                    path: path
+                })
+                .then(res => {
+                    if (typeof (data) == 'undefined') {
+                        this.data2 = res.data;
+                    }
+                });
+        },
+        //获取选中状态下的数据
+        handleCheckChange(data) {
+            this.form.plane_url = data.path;
+        },
         // 保存采集任务跳转下一步
         nextCollect(formName) {
-            // this.$refs[formName].validate(valid => {
-            //     if (valid) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.form['classify_id'] = this.classify_id;
+                    this.form['agent_id'] = this.$route.query.agent_id;
+                    let obj = this.form;
+                    delete obj.classify_name;
+                    delete obj.classify_num;
+                    functionAll.saveDataFile(this.form).then(res = {
 
-            //     }
-            // })
-            this.$router.push({
-                path: "/step2",
-                // query: {
-                //     fcs_id: res.data,
-                //     agent_id: this.$route.query.agent_id,
-                //     agent_name: this.$route.query.agent_name
-                // }
-            });
+                    })
+                }
+            })
+            // this.$router.push({
+            //     path: "/step2",
+            // query: {
+            //     fcs_id: res.data,
+            //     agent_id: this.$route.query.agent_id,
+            //     agent_name: this.$route.query.agent_name
+            // }
+            // });
         },
     },
 
@@ -420,7 +447,7 @@ export default {
 <style scoped>
 /* 采集任务表单 */
 .step1 .oneContent {
-    min-height: 226px;
+    min-height: 180px;
     border: 1px solid #e6e6e6;
     margin-bottom: 20px;
     padding: 2% 4% 2% 0;
@@ -434,6 +461,10 @@ export default {
 .step1>>>.el-input-group__prepend button.el-button {
     background-color: #D9534F;
     color: white;
+}
+
+.step1 .netxNUM {
+    color: transparent;
 }
 
 /* 数据分页 */
