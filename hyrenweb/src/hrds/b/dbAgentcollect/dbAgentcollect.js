@@ -9,20 +9,53 @@ export function getCategoryItems(data) {
         params: data
     })
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//steps3
+// step1
+/**(0)
+ * 获取DB采集配置页面初始化的值
+ */
+export function addDataFileData(data) {
+    return request({
+        url: '/B/agent/datafileconf/fileconf/addDataFileData',
+        params: data
+    })
+}
+/**(1)
+ * 根据数据源ID获取分类信息
+ */
+export function getClassifyInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/getClassifyInfo',
+        params:data
+    })
+}
+/**(2)
+ * 保存采集任务分类信息
+ */
+export function saveClassifyInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/saveClassifyInfo',
+        params:data
+    })
+}
+/**(3)
+ * 编辑更新后点击保存任务分类信息
+ */
+export function updateClassifyInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/updateClassifyInfo',
+        params:data
+    })
+}
+/**(4)
+ * 删除采集任务分类信息
+ */
+export function deleteClassifyInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/deleteClassifyInfo',
+        params:data
+    })
+}
+//steps4
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
     return request({
@@ -262,3 +295,151 @@ export function saveDataCleanConfig(data) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
+
+// 第五步  存储目的地
+
+export function stodegetInitInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getInitInfo',
+        params:data
+    })
+}
+// 存储目的地弹框
+export function getStoDestByTableId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getStoDestByTableId',
+        params:data
+    })
+}
+// 点击详情
+export function getStoDestDetail(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getStoDestDetail',
+        params:data
+    })
+}
+// 点击配置属性按钮
+export function getColumnStoInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getColumnStoInfo',
+        params:data
+    })
+}
+// getColumnHeader
+export function getColumnHeader(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getColumnHeader',
+        params:data
+    })
+}
+// 获取特殊字段id接口
+export function getDataStoreLayerAddedId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getDataStoreLayerAddedId',
+        params:data
+    })
+}
+// 配置字段属性的提交
+export function saveColStoInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/saveColStoInfo',
+        params:data
+    })
+}
+//配置字段属性弹框保存中文名称
+export function updateColumnZhName(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/updateColumnZhName',
+        params:data
+    })
+}
+// 存储目的地下一步保存
+export function saveTbStoInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/saveTbStoInfo',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+// 保存表名
+export function updateTableName(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/updateTableName',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+//编辑状态下获取目的地起初数据
+export function getTbStoDestByColSetId(data) {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getTbStoDestByColSetId',
+        params:data
+    })
+}
+
+//发送此次任务
+export function sendDBCollctTaskById(data) {
+    return request({
+        url: '/B/agent/sendDBCollctTaskById',
+        params:data
+    })
+}
+
+
+// 6
+export function selectPath(data) {
+   return request({
+       url: '/B/agent/unstructuredfilecollect/selectPath',
+       params: data
+   })
+}
+//查询作业名称信息
+export function searchEtlJob(data) {
+    return request({
+        url: '/C/jobconfig/searchEtlJob',
+        params: data
+    })
+}
+
+//获取工程信息
+export function getEtlSysData() {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlSysData',
+    })
+}
+//根据工程编号获取任务
+export function getEtlSubSysData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlSubSysData',
+        params: data
+    })
+ }
+// 获取目录路径
+export function getAgentPath(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getAgentPath',
+        params: data
+    })
+ }
+//获取任务下的作业信息
+
+export function getPreviewJob(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getPreviewJob',
+        params: data
+    })
+ }
+//编辑状态下获取作业信息
+export function getEtlJobData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlJobData',
+        params: data
+    })
+ }
+//  保存完成
+export function saveJobDataToDatabase(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/saveJobDataToDatabase',
+        params: data
+    })
+ }
