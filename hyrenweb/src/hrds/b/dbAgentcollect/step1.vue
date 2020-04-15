@@ -4,33 +4,34 @@
     <div class="oneContent">
         <el-form ref="form" :model="form" status-icon>
             <el-col :span="12">
-                <el-form-item label="采集任务名" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" placeholder="采集任务名" :size="size"></el-input>
+                <el-form-item label="采集任务名" :label-width="formLabelWidth" prop="task_name" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.task_name" placeholder="采集任务名" :size="size"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" placeholder="作业编号" :size="size"></el-input>
+                <el-form-item label="采集任务编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.database_number" placeholder="采集任务编号" :size="size"></el-input>
                 </el-form-item>
             </el-col>
+
             <el-col :span="12">
-                <el-form-item label="分类编号" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" disabled placeholder="分类编号" :size="size">
+                <el-form-item label="分类编号" :label-width="formLabelWidth" prop="classify_name" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.classify_name" disabled placeholder="分类编号" :size="size">
                         <el-button slot="append" @click="getNumber()" class="addButton"> <i class="el-icon-circle-plus-outline"></i></el-button>
                     </el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="分类名称" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" disabled placeholder="分类名称" :size="size"></el-input>
+                <el-form-item label="分类名称" :label-width="formLabelWidth" prop="classify_num" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.classify_num" disabled placeholder="分类名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="采集任务编码" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" placeholder="采集任务编码" :size="size"></el-input>
+                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <!-- <el-col :span="12">
                 <el-form-item label="文件格式" :label-width="formLabelWidth" prop="FileFormat" :rules="rule.selected">
                     <el-select v-model="form.FileFormat" placeholder="文件格式" clearable style="width: 100%;">
                         <el-option v-for="item in FileFormat" :key="item.value" :label="item.value" :value="item.FileFormat">
@@ -47,18 +48,27 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="数据分隔" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" placeholder="数据分隔" :size="size"></el-input>
+                <el-form-item label="数据分隔" :label-width="formLabelWidth" prop="database_separatorr" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.database_separatorr" placeholder="数据分隔" :size="size"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="换行符" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" placeholder="换行符" :size="size"></el-input>
+                <el-form-item label="换行符" :label-width="formLabelWidth" prop="row_separator" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.row_separator" placeholder="换行符" :size="size"></el-input>
                 </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="ftp_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.ftp_number" placeholder="数据字典文件" :size="size"></el-input>
+            </el-col> -->
+            <!-- <el-col :span="12">
+                <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="plane_url" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.plane_url" placeholder="数据字典文件" :size="size"></el-input>
+                </el-form-item>
+            </el-col> -->
+            <el-col :span="18">
+                <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="plane_url" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.plane_url" placeholder="数据字典文件" disabled :size="size">
+                        <template slot="prepend">
+                            <el-button :size="size" @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
+                        </template>
+                    </el-input>
                 </el-form-item>
             </el-col>
         </el-form>
@@ -73,6 +83,26 @@
             </div>
         </el-col>
     </div>
+    <!-- 选择目录弹出框 -->
+    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
+        <div class="mytree"  hight='200'>
+            <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+                <span class="span-ellipsis" slot-scope="{ node, data }">
+                    <span @click="() => append(data)">{{ node.label }}</span>
+                    <span>
+                        <el-button class="netxNUM" type="text" @click="() => append(data)">
+                            点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
+                        </el-button>
+                    </span>
+                </span>
+            </el-tree>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
     <!-- 选择编号弹出框 -->
     <el-dialog title="采集任务分类" :visible.sync="showDiolag" class="collTask">
         <div slot="title">
@@ -83,14 +113,14 @@
                 <span class="dialogtitle el-icon-caret-right">新增采集任务分类</span>
             </div>
             <el-form :model="addClassTask" ref="addClassTask">
-                <el-form-item label=" 分类编号" prop="class_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
-                    <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
+                <el-form-item label=" 分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
+                    <el-input v-model="addClassTask.classify_num" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default" :label-width="formLabelWidth">
-                    <el-input v-model="addClassTask.class_name" style="width:284px"></el-input>
+                <el-form-item label=" 分类名称" prop="classify_name" :rules="rule.default" :label-width="formLabelWidth">
+                    <el-input v-model="addClassTask.classify_name" style="width:284px"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" prop="class_des" :label-width="formLabelWidth">
-                    <el-input v-model="addClassTask.class_des" type="textarea" style="width:284px"></el-input>
+                <el-form-item label="备注" prop="remark" :label-width="formLabelWidth">
+                    <el-input v-model="addClassTask.remark" type="textarea" style="width:284px"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer">
@@ -113,7 +143,7 @@
                 <el-table-column property="classify_num" label="分类编号" show-overflow-tooltip align="center"></el-table-column>
                 <el-table-column property="classify_name" label="分类名称" show-overflow-tooltip align="center"></el-table-column>
                 <el-table-column property="remark" label="描述" show-overflow-tooltip align="center"></el-table-column>
-                <el-table-column label="操作" width="150px" align="center">
+                <el-table-column label="操作" width="120px" align="center">
                     <template slot-scope="scope">
                         <el-row>
                             <el-col :span="12" style="text-align: center;">
@@ -134,6 +164,27 @@
             </div>
         </div>
     </el-dialog>
+    <!-- 点击编辑弹层 -->
+    <el-dialog width="40%" title="修改采集任务分类" :visible.sync="ediltVisible" append-to-body>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">修改采集任务分类</span>
+        </div>
+        <el-form :model="editClassTask" ref="editClassTask">
+            <el-form-item label=" 分类编号" prop="classify_num" :rules="rule.default" :label-width="formLabelWidth" width="130">
+                <el-input v-model="editClassTask.classify_num" style="width:284px" disabled></el-input>
+            </el-form-item>
+            <el-form-item label=" 分类名称" prop="classify_name" :rules="rule.default" :label-width="formLabelWidth">
+                <el-input v-model="editClassTask.classify_name" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label="备注" prop="remark" :label-width="formLabelWidth">
+                <el-input v-model="editClassTask.remark" type="textarea" style="width:284px"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer">
+            <el-button size="mini" type="danger" @click="cancleEdit">取 消</el-button>
+            <el-button size="mini" type="primary" @click="editClassTaskSane('editClassTask')">保存</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -141,7 +192,8 @@
 import Step from "./step";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as functionAll from "./dbAgentcollect"
+import * as functionAll from "./dbAgentcollect";
+import * as message from "@/utils/js/message";
 export default {
     components: {
         Step
@@ -162,18 +214,27 @@ export default {
             addClassTask: {
 
             },
+            editClassTask: {
+
+            },
             CollTaskData: [],
+            defaultProps: {
+                children: "children",
+                label: "path"
+            },
             runWay: [],
             FileFormat: [],
             radio: null,
             innerVisible: false,
             ediltVisible: false,
+            dialogSelectfolder: false,
             rule: validator.default,
         }
     },
     mounted() {
         this.getCategoryItems("DataBaseCode");
         this.getCategoryItems("FileFormat");
+        this.getAllInfo();
     },
     methods: {
         // 返回上一级
@@ -184,26 +245,72 @@ export default {
         },
         //获取首页信息
         getAllInfo() {
-
+            functionAll.addDataFileData({
+                source_id: this.$route.query.source_id
+            }).then(res => {
+                if (res.data != {}) {
+                    this.form = res.data;
+                }
+            })
         },
         // 获取分类编号和分类名称
-        //一个查询接口
         getNumber() {
-            this.showDiolag = true;
+            functionAll.getClassifyInfo({
+                sourceId: this.$route.query.source_id
+            }).then(res => {
+                this.showDiolag = true;
+                this.CollTaskData = res.data;
+            });
         },
         //编辑任务分类
         editText(val) {
-
+            this.editClassTask = Object.assign({}, val);
+            this.ediltVisible = true;
+        },
+        // 编辑任务保存
+        editClassTaskSane(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.editClassTask["agent_id"] = this.$route.query.agent_id;
+                    this.editClassTask["sourceId"] = this.$route.query.source_id;
+                    let page = this.editClassTask;
+                    delete page.user_id;
+                    functionAll.updateClassifyInfo(this.editClassTask).then(res => {
+                        this.ediltVisible = false;
+                        message.updateSuccess(res);
+                        this.getNumber();
+                    });
+                }
+            })
+        },
+        // 取消编辑任务
+        cancleEdit() {
+            this.ediltVisible = false;
+            this.$refs.editClassTask.resetFields();
         },
         // 删除任务分类
-        deleteText(val) {
-
+        deleteText(row) {
+            message.confirmMsg('确定删除吗').then(res => {
+                let params = {};
+                params["classifyId"] = row.classify_id;
+                functionAll.deleteClassifyInfo(params).then(res => {
+                    message.deleteSuccess(res);
+                    this.getNumber();
+                });
+            }).catch(() => {})
         },
         // 保存新增任务
         addClassTaskFun(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-
+                    let params = {};
+                    this.addClassTask["agent_id"] = this.$route.query.agent_id;
+                    this.addClassTask["sourceId"] = this.$route.query.source_id;
+                    functionAll.saveClassifyInfo(this.addClassTask).then(res => {
+                        this.innerVisible = false;
+                        message.saveSuccess(res);
+                        this.getNumber();
+                    });
                 }
             })
         },
@@ -224,8 +331,8 @@ export default {
                     for (let i = 0; i < row.length; i++) {
                         if (row[i].classify_id == this.radio) {
                             this.showDiolag = false;
-                            this.ruleForm.classify_name = row[i].classify_name;
-                            this.ruleForm.classify_num = row[i].classify_num;
+                            this.form.classify_name = row[i].classify_name;
+                            this.form.classify_num = row[i].classify_num;
                         }
                     }
                 } else {
@@ -271,6 +378,24 @@ export default {
                 })
             }
         },
+        // 取消选择目录并且关闭弹出框
+        cancelSelect() {
+            this.form.child_file_path = "";
+            this.dialogSelectfolder = false;
+        },
+        //  获取目录下一级
+        append(data) {
+            if (!data.children) {
+                this.$set(data, 'children', []);
+            }
+            functionAll.selectPath({
+                    agent_id: this.$route.query.agent_id,
+                    path: data.path
+                })
+                .then(res => {
+                    data.children = res.data
+                });
+        },
         // 保存采集任务跳转下一步
         nextCollect(formName) {
             // this.$refs[formName].validate(valid => {
@@ -295,7 +420,7 @@ export default {
 <style scoped>
 /* 采集任务表单 */
 .step1 .oneContent {
-    min-height: 300px;
+    min-height: 226px;
     border: 1px solid #e6e6e6;
     margin-bottom: 20px;
     padding: 2% 4% 2% 0;
@@ -304,6 +429,11 @@ export default {
 /* 按钮设置 */
 .step1 .addButton {
     color: black
+}
+
+.step1>>>.el-input-group__prepend button.el-button {
+    background-color: #D9534F;
+    color: white;
 }
 
 /* 数据分页 */
