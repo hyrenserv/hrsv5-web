@@ -1066,7 +1066,7 @@ export default {
                                 let params1 = {};
                                 params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
                                 params1["colSetId"] = parseInt(this.dbid);
-                                params1['tableIds']=tableidArr1!={}?JSON.stringify(tableidArr1):''
+                                params1['tableIds']=JSON.stringify(tableidArr1) === '{}'?'':JSON.stringify(tableidArr1)
                                 console.log(params1,isparmi, 1111)
                                 addTaskAllFun.checkTablePrimary(params1).then(res => {
                                     console.log(res, 1)
