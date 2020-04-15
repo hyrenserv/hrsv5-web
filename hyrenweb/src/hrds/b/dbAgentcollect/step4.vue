@@ -628,7 +628,7 @@
 <script>
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as addTaskAllFun from "./addTask";
+import * as addTaskAllFun from "./dbAgentcollect";
 import * as message from "@/utils/js/message";
 import Step from "./step";
 import Loading from '../../components/loading'
