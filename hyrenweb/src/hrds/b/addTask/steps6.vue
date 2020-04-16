@@ -378,6 +378,7 @@ export default {
                     params["pro_dic"] = this.ruleForm.work_path;
                     params["log_dic"] = this.ruleForm.log_path;
                     params["sub_sys_cd"] = this.ruleForm.work_num;
+                    params["source_id"] = this.sourId;
                     let arrdata = this.ruleForm.startuptableData
                     let etlJobs = [],
                         type = this.ruleForm.Dispatching_mode,
