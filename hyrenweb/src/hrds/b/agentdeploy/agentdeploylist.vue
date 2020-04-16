@@ -1,6 +1,13 @@
 <template>
 <div class="agentdeploy">
-
+     <el-row class='topTitle'>
+        <span class='el-icon-location'>部署Agent</span>
+        <router-link to="/collectmonitor">
+            <el-button type="primary" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回首页
+            </el-button>
+        </router-link>
+    </el-row>
     <el-table :data="sourceData.filter(data => !search || data.datasource_name.toLowerCase().includes(search.toLowerCase()))" :default-sort="{prop: 'datasource_name', order: 'descending'}" max-height="50%" style="width: 100%">
         <el-table-column sortable prop="datasource_name" label="数据源"></el-table-column>
         <el-table-column label="数据库 Agent">

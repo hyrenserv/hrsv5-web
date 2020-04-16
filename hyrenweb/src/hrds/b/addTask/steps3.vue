@@ -1321,6 +1321,10 @@ export default {
         },
         // 点击表字符替换显示弹框
         table_zfthFun(index, tableid, compflags) {
+             this.table_zfth=[{
+                field: "",
+                replace_feild: ""
+            }],
             this.dialogTable_zfth = true;
             if (compflags != 0 || compflags) {
                 let params = {};

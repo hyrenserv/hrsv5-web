@@ -1,7 +1,7 @@
 <template>
 <div>
     <el-row class='topTitle'>
-        <span>标准元查看</span>
+        <span class='el-icon-location'>标准元查看</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
