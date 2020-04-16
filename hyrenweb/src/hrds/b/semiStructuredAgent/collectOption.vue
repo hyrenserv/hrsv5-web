@@ -664,7 +664,7 @@ export default {
 }
 
 .collectOption>>>.el-input-group__prepend button.el-button {
-    background-color: #D9534F;
+    background-color: #F56C6C;
     color: white;
 }
 

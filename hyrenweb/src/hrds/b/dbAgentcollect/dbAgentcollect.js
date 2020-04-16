@@ -64,6 +64,24 @@ export function saveDataFile(data) {
         params: data
     })
 }
+/**(7)
+ * 更新数据文件的配置信息
+ */
+export function updateDataFile(data) {
+    return request({
+        url: '/B/agent/datafileconf/fileconf/updateDataFile',
+        params: data
+    })
+}
+/**(8)
+ * 编辑数据文件采集
+ */
+export function getInitDataFileData(data) {
+    return request({
+        url: '/B/agent/datafileconf/fileconf/getInitDataFileData',
+        params: data
+    })
+}
 //steps4
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {

@@ -144,7 +144,7 @@
                                 <el-button type="text" circle @click="editText(scope.row)" class='editcolor'>编辑</el-button>
                             </el-col>
                             <el-col :span="12">
-                                <el-button class='delcolor' type="text" circle @click="deleteText(scope.row)" @row-click="chooseone">删除</el-button>
+                                <el-button class='delcolor' type="text" circle @click="deleteText(scope.row)">删除</el-button>
                             </el-col>
                         </el-row>
                     </template>
@@ -212,6 +212,8 @@ export default {
             editClassTask: {
 
             },
+            fileMark: '',
+            updateMark: '',
             CollTaskData: [],
             defaultProps: {
                 children: "children",
@@ -244,8 +246,20 @@ export default {
                 source_id: this.$route.query.source_id
             }).then(res => {
                 if (res.data != {}) {
+                    this.updateMark = "1";
+                    this.radio = res.data.classify_id;
+                    this.classify_id = res.data.classify_id;
                     this.form = res.data;
+                    this.fileMark = res.data.plane_url;
                 }
+            })
+        },
+        // 点击编辑获取的数据
+        getInitDataFileData() {
+            functionAll.getInitDataFileData({
+                // colSetId:
+            }).then(res => {
+
             })
         },
         // 获取分类编号和分类名称
@@ -348,6 +362,13 @@ export default {
                 });
             }
         },
+        // 分页显示
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage;
+        },
+        handleSizeChange(size) {
+            this.pagesize = size;
+        },
         // 获取代码项对应的值
         getCategoryItems(e) {
             if (e == "DataBaseCode") {
@@ -376,7 +397,13 @@ export default {
         },
         // 取消选择目录并且关闭弹出框
         cancelSelect() {
-            this.form.child_file_path = "";
+            console.log(this.fileMark)
+            if (this.fileMark != '') {
+                this.form.plane_url = this.fileMark;
+            } else {
+                this.form.plane_url = '';
+            }
+
             this.dialogSelectfolder = false;
         },
         //  获取目录下一级
@@ -425,19 +452,36 @@ export default {
                     let obj = this.form;
                     delete obj.classify_name;
                     delete obj.classify_num;
-                    functionAll.saveDataFile(this.form).then(res = {
-
-                    })
+                    if (this.updateMark == "1") {
+                        functionAll.updateDataFile(obj).then(res => {
+                            if (res && res.success) {
+                                this.$router.push({
+                                    path: "/step2",
+                                    query: {
+                                        colSetId: res.data,
+                                        agent_id: this.$route.query.agent_id,
+                                        sourceId: this.$route.query.source_id
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        functionAll.saveDataFile(obj).then(res => {
+                            if (res && res.success) {
+                                this.$router.push({
+                                    path: "/step2",
+                                    query: {
+                                        colSetId: res.data,
+                                        agent_id: this.$route.query.agent_id,
+                                        sourceId: this.$route.query.source_id
+                                    }
+                                })
+                            }
+                        })
+                    }
                 }
             })
-            // this.$router.push({
-            //     path: "/step2",
-            // query: {
-            //     fcs_id: res.data,
-            //     agent_id: this.$route.query.agent_id,
-            //     agent_name: this.$route.query.agent_name
-            // }
-            // });
+
         },
     },
 
@@ -459,7 +503,7 @@ export default {
 }
 
 .step1>>>.el-input-group__prepend button.el-button {
-    background-color: #D9534F;
+    background-color: #F56C6C;
     color: white;
 }
 
