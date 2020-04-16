@@ -1268,7 +1268,6 @@ export default {
 
                     }
                 }
-                //
                 let tableColumn = {}
                 if (this.SelectColumn2.length > 0) {
                     for (let j = 0; j < twotabledata2.length; j++) {
@@ -1282,6 +1281,7 @@ export default {
                         }
                     }
                     let twotabledata22 = JSON.parse(JSON.stringify(twotabledata2))
+                    console.log(twotabledata22)
                     for (let m = 0; m < twotabledata22.length; m++) {
                         if (twotabledata22[m].data.length > 0) {
                             for (let i = 0; i < twotabledata22[m].data.length; i++) {
@@ -1308,7 +1308,6 @@ export default {
                                     }
                                 }
                             }
-
                         }
                         tableColumn[twotabledata22[m].table_name] = twotabledata22[m].data
                     }
@@ -1316,7 +1315,7 @@ export default {
                 let params1 = {};
                 params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
                 params1["colSetId"] = parseInt(this.dbid);
-                params1["tableColumn"] = tableColumn.length>0?JSON.stringify(tableColumn):'';
+                params1["tableColumn"] = JSON.stringify(tableColumn)==='{}'?'':JSON.stringify(tableColumn);
                 console.log(params1)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == '200') {
@@ -2339,7 +2338,7 @@ export default {
                     if (row.unload_type == '增量') {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                sql = JSON.stringify(this.xsTypeArr2[i].sql)
+                                sql =this.xsTypeArr2[i].sql
                                 // break;
                             }
                         }
