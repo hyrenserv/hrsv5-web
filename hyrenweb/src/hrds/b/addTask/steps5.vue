@@ -489,6 +489,7 @@ export default {
             } else {
                 data = {
                     id: this.$route.query.id,
+                     agent_id: this.aId,
                     source_id: this.sourId,
                     source_name: this.$Base64.encode(this.sName)
                 };
