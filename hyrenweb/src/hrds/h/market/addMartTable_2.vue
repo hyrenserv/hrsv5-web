@@ -178,6 +178,31 @@
                 <el-button type="primary" size="medium" class="rightbtn" @click="dismissifhbasesort()">取消</el-button>
             </el-row>
         </el-dialog>
+
+        <el-dialog title="表字段" :visible.sync="iftablecolumn" width="30%" class='data_edit'>
+            <el-row>
+                <el-table :data="tablecolumn" border size="mini">
+                    <el-table-column width="100%" align="center">
+                        <template slot="header" slot-scope="scope">
+                            <el-checkbox @change="Allis_selectionStateFun()" v-model="Allis_selectionState"
+                                         :checked="Allis_selectionState"></el-checkbox>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-checkbox :checked="Allis_selectionState"
+                                         v-model="scope.row.selectionState"></el-checkbox>
+                        </template>
+                    </el-table-column>
+                    <el-table-column type="index" width="100%" label="序号" align='center'></el-table-column>
+                    <el-table-column prop="columnname" label="字段英文名" show-overflow-tooltip
+                                     align="center">
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row>
+                <el-button type="primary" size="medium" class="rightbtn" @click="changesql()">确定</el-button>
+                <el-button type="primary" size="medium" class="rightbtn" @click="dismissiftablecolumn()">取消</el-button>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -211,6 +236,11 @@
                 ifhbasesort: false,
                 sqlparameter: "",
                 hbasesort: [],
+                iftablecolumn: false,
+                tablecolumn: [],
+                Allis_selectionState: false,
+                sqltablename:""
+
             };
         },
         watch: {
@@ -244,6 +274,7 @@
                 // return this.checkBelongToChooseNode(value, data, node);
             },
             loadNode(node, resolve) {
+                debugger;
                 // this.searchResolve = resolve;
                 // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
                 if (node.level === 0) {
@@ -259,9 +290,14 @@
                             return resolve(res.data.tree_sources);
                         });
                     } else {
+                        this.sqltablename = node.data.tableName;
                         // 查询数据
-                        functionAll.queryDataBasedOnTableName({'tableName': 'sys_para', 'queryNum': 10}).then((res) => {
-                            this.dataByTableName = res.data;
+                        functionAll.queryAllColumnOnTableName({
+                            'source': node.data.source,
+                            'id': node.data.id
+                        }).then((res) => {
+                            this.tablecolumn = res.data;
+                            this.iftablecolumn = true;
                         });
                     }
                 }
@@ -292,7 +328,7 @@
                     let params = {
                         "querysql": this.querysql,
                         "datatable_id": this.datatable_id,
-                        "sqlparameter":this.sqlparameter
+                        "sqlparameter": this.sqlparameter
                     };
                     functionAll.getColumnBySql(params).then(((res) => {
                         if (res && res.data.success) {
@@ -325,7 +361,10 @@
                 } else {
                     this.querydatadialogshow = true;
                     this.databysql = [];
-                    functionAll.getDataBySQL({'querysql': this.querysql,'sqlparameter':this.sqlparameter}).then((res) => {
+                    functionAll.getDataBySQL({
+                        'querysql': this.querysql,
+                        'sqlparameter': this.sqlparameter
+                    }).then((res) => {
                         if (res && res.data.success) {
                             this.databysql = res.data.result;
                         } else {
@@ -502,6 +541,34 @@
             },
             dismissifhbasesort() {
                 this.ifhbasesort = false;
+            },
+            changesql() {
+                let sql = "select ";
+                for (let i = 0; i < this.tablecolumn.length; i++) {
+                    if(this.tablecolumn[i].selectionState == true){
+                        sql+=this.tablecolumn[i].columnname+","
+                    }
+                }
+                sql = sql.substr(0,sql.length-1);
+                sql+=" from "+this.sqltablename;
+                this.querysql = sql;
+                this.iftablecolumn = false;
+                this.Allis_selectionState = false;
+            },
+            dismissiftablecolumn() {
+                this.iftablecolumn = false;
+                this.Allis_selectionState = false;
+            },
+            Allis_selectionStateFun() {
+                if (this.Allis_selectionState) {
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        this.tablecolumn[i].selectionState = true;
+                    }
+                } else {
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        this.tablecolumn[i].selectionState = false;
+                    }
+                }
             },
         }
     }

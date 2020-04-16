@@ -254,7 +254,7 @@ export function getQuerySql(data) {
 //获取树菜单数据
 export function getTreeDataInfo(data) {
     return request({
-        url: '/B/websqlquery/getTreeDataInfo',
+        url: '/H/market/getTreeDataInfo',
         params: data
     })
 }
@@ -276,6 +276,14 @@ export function excutMartJob(data) {
     })
 }
 
+
+//查询所有字段
+export function queryAllColumnOnTableName(data) {
+    return request({
+        url: '/H/market/queryAllColumnOnTableName',
+        params: data
+    })
+}
 
 
 
