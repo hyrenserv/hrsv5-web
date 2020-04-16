@@ -2274,6 +2274,8 @@ export default {
         },
         //第二页 选择列弹框回显数据调接口
         SelectColumnShowFun2(row) {
+             this.coltable_name = "";
+                    this.coltable_name = row.table_name;
             let arrdata = [],
                 sql = ''
             if (row.unload_type == '增量') {
@@ -2285,7 +2287,7 @@ export default {
                     arrdata.push(this.xsTypeArr2All[i].table_name)
                 }
             }
-
+         console.log(this.xsTypeArr2,this.xsTypeArr2All)
             if (row.table_id && row.table_id != '') {
                 if (arrdata.indexOf(row.table_name) == -1) {
                     for (let i = 0; i < this.zdycallTable.length; i++) {
@@ -2337,7 +2339,7 @@ export default {
                     if (row.unload_type == '增量') {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                sql = this.xsTypeArr2[i].sql
+                                sql = JSON.stringify(this.xsTypeArr2[i].sql)
                                 // break;
                             }
                         }
@@ -2357,6 +2359,7 @@ export default {
         },
         // 第二页选择列调接口显示数据
         getSqlColumnDataFun(row, sql) {
+           
             let params = {};
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);
@@ -2367,8 +2370,7 @@ export default {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
-                    this.coltable_name = "";
-                    this.coltable_name = row.table_name;
+                    
                     console.log(row.collectState)
                     this.disShow = (row.collectState == false) ? true : false;
                     let data = res.data ? res.data : [],
