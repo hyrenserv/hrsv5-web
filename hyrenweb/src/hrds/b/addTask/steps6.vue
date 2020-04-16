@@ -125,7 +125,7 @@
                 <el-table-column label="作业名称" width="160" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job'" :rules="rule.default">
-                            <el-input v-model="scope.row.etl_job" placeholder="作业名称" size="medium"></el-input>
+                            <el-input v-model="scope.row.etl_job" placeholder="作业名称" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
@@ -139,41 +139,41 @@
                 <el-table-column label="调度频率" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_freq'" :rules="rule.default">
-                            <el-select style="width:100%" v-model="scope.row.disp_freq" placeholder="频率选择" clearable size="medium">
+                            <el-select style="width:100%" v-model="scope.row.disp_freq" placeholder="频率选择" clearable size="mini">
                                 <el-option v-for="item in Dispatch_Frequency" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="作业优先级" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="作业优先级" align="center" :show-overflow-tooltip="true" width="90">
                     <template slot-scope="scope">
-                        <el-form-item :prop="'startuptableData.'+scope.$index+'.job_priority'" :rules="rule.default">
-                            <el-input v-model="scope.row.job_priority" placeholder="作业优先级" size="medium"></el-input>
+                        <el-form-item  :prop="'startuptableData.'+scope.$index+'.job_priority'" :rules="rule.default">
+                            <el-input style="width:100%" v-model="scope.row.job_priority" placeholder="0" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
                 <el-table-column label="调度触发方式" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_type'" :rules="rule.default">
-                            <el-select style="width:100%" v-model="scope.row.disp_type" placeholder="调度触发方式" clearable>
+                            <el-select style="width:100%" v-model="scope.row.disp_type" placeholder="调度触发方式" size="mini" clearable>
                                 <el-option v-for="item in Dispatching_mode" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="调度时间位移" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="调度时间位移" align="center" :show-overflow-tooltip="true" width="90">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_offset'" :rules="rule.default" v-if="scope.row.disp_type==='T'||scope.row.disp_type==='Z'">
-                            <el-input v-model="scope.row.disp_offset" placeholder="调度时间位移" size="medium"></el-input>
+                            <el-input style="width:100%" v-model="scope.row.disp_offset" placeholder="0" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
                 <el-table-column label="调度触发时间" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_time'" :rules="rule.default" v-if="scope.row.disp_type==='T'||scope.row.disp_type==='Z'">
-                            <el-time-picker style="width:100%" v-model="scope.row.disp_time" size="medium" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}" placeholder="调度时间 hh:mm:ss" value-format="HH:mm:ss" format="HH:mm:ss">
+                            <el-time-picker style="width:100%" v-model="scope.row.disp_time" size="mini" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}" placeholder="hh:mm:ss" value-format="HH:mm:ss" format="HH:mm:ss">
                             </el-time-picker>
                         </el-form-item>
                     </template>
@@ -181,7 +181,7 @@
                 <el-table-column label="上游作业" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.pre_etl_job'" :rules="rule.default" v-if="scope.row.disp_type==='D'">
-                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="medium" placeholder="上游作业">
+                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业">
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -589,23 +589,31 @@ export default {
         // 获取上游作业下拉
         getPreJobName() {
             console.log(this.ruleForm.Project_num)
-            let arr = [];
-            sendTask.searchEtlJob({
-                'etl_sys_cd': this.ruleForm.Project_num
-            }).then(res => {
-                console.log(this.ruleForm.Project_num, res)
-                if (res !== undefined && res.data.length > 0) {
-                    res.data.forEach((item) => {
-                        arr.push({
-                            'value': item,
-                            'code': item
+              let arr = [];
+            if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
+                sendTask.searchEtlJob({
+                    'etl_sys_cd': this.ruleForm.Project_num
+                }).then(res => {
+                    console.log(this.ruleForm.Project_num, res)
+                    if (res !== undefined && res.data.length > 0) {
+                        res.data.forEach((item) => {
+                            arr.push({
+                                'value': item,
+                                'code': item
+                            });
                         });
-                    });
-                    this.preJobName = arr;
-                    console.log(arr)
-                }
+                        this.preJobName = arr;
+                        console.log(arr)
+                    }
 
-            });
+                });
+            } else {
+                this.$message({
+                    showClose: true,
+                    message: '工程编号未选择',
+                    type: "error"
+                });
+            }
         },
         // 选择工程弹框确定
         projNumSubmitFun() {
