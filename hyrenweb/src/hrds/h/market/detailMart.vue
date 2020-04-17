@@ -34,6 +34,12 @@
                         <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
                                    type="primary">
                         </el-button>
+                        <el-button size="mini" icon="el-icon-share" v-if="scope.row.isadd" title="生成作业" @click="producefun(scope.row)"
+                                   circle type="primary">
+                        </el-button>
+                        <el-button size="mini" icon="el-icon-caret-right" v-if="scope.row.isadd" title="立即执行" @click="pushtoaddmart3(scope.row)"
+                                   circle type="primary">
+                        </el-button>
                         <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)"
                                    circle type="primary">
                         </el-button>
@@ -41,6 +47,34 @@
                 </el-table-column>
             </el-table>
         </el-tabs>
+
+        <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
+            <div slot="title">
+                <span class="dialogtitle el-icon-caret-right">生成作业</span>
+            </div>
+            <el-form ref="separatorData" label-width="240px" text-align="center">
+                <el-form-item label="选择工程">
+                    <el-select placeholder="选择工程" v-model="selectedetlsys" @change="queryetltaskbyetlsys"
+                               style="width: 190px;" size="medium">
+                        <el-option v-for="(item,index) in alletlsys" :key="index" :label="item.etl_sys_cd"
+                                   :value="item.etl_sys_cd"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="选择任务">
+                    <el-select placeholder="选择任务" v-model="selectedetltask"
+                               style="width: 190px;" size="medium">
+                        <el-option v-for="(item,index) in alletltask" :key="index" :label="item.sub_sys_cd"
+                                   :value="item.sub_sys_cd"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="danger" size="mini" @click="dialogProdeceJobs = false">取 消</el-button>
+                <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
+            </div>
+        </el-dialog>
+
+
     </div>
 </template>
 
@@ -55,6 +89,12 @@
             return {
                 data_mart_id: this.$route.query.data_mart_id,
                 tableData: [],
+                dialogProdeceJobs: false,
+                alletlsys: [],
+                alletltask: [],
+                selectedetlsys: "",
+                selectedetltask: "",
+                selecteddatatable_id:""
             };
         },
         mounted() {
@@ -99,6 +139,24 @@
                 }).catch(() => {
                 })
             },
+            pushtoaddmart3(row) {
+                this.$router.push({
+                    name: 'addMartTable_3',
+                    query: {
+                        data_mart_id: this.data_mart_id,
+                        datatable_id: row.datatable_id,
+                    }
+                });
+            },
+            producefun(row){
+                this.dialogProdeceJobs = true;
+                this.selecteddatatable_id = row.datatable_id;
+                functionAll.queryAllEtlSys().then((res) => {
+                    if (res && res.success) {
+                        this.alletlsys = res.data;
+                    }
+                })
+            },
             querydmdatatable(data_mart_id) {
                 let param = {
                     "data_mart_id": data_mart_id
@@ -116,8 +174,24 @@
                         this.tableData = res.data;
                     }
                 })
-
-
+            },
+            queryetltaskbyetlsys() {
+                functionAll.queryEtlTaskByEtlSys({"etl_sys_cd": this.selectedetlsys}).then((res) => {
+                    if (res && res.success) {
+                        this.alletltask = res.data;
+                    }
+                })
+            },
+            savemartjobtoetl() {
+                let param ={
+                    "etl_sys_cd":this.selectedetlsys,
+                    "sub_sys_cd":this.selectedetltask,
+                    "datatable_id":this.selecteddatatable_id,
+                }
+                this.$message({
+                    type: "warning",
+                    message: "有待开发"
+                });
             }
         }
     };

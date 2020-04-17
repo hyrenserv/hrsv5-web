@@ -1,7 +1,8 @@
 <template>
     <div>
+        <Step :active="active"></Step>
         <el-row class='topTitle'>
-            <span>数据集市</span>
+            <span>配置SQL</span>
         </el-row>
         <el-row>
             <el-col class="borderStyle" :span="5" style="margin-right: 10px;">
@@ -9,7 +10,7 @@
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                 <div class='mytree'>
                     <el-tree empty-text="暂无数据" :expand-on-click-node="true" :indent='0' :props="treeProps"
-                             :load="loadNode" lazy
+                             :load="loadNode" lazy @node-click="showtablecolumn"
                              node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
                           <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
@@ -22,18 +23,12 @@
                     <el-row>
                         <span>SQL查询</span>
                         <el-col :span='10' style="float:right">
-                            <el-input placeholder="参数如: 自定义名称=123;自定义名称2=456" size="mini" v-model="sqlparameter">
+                            <el-input placeholder="参数如: 自定义名称=123;自定义名称2=456,中间用分号;隔开" size="mini" v-model="sqlparameter">
                             </el-input>
                         </el-col>
                     </el-row>
                     <el-row>
-                        <hr>
-                    </el-row>
-                    <el-row>
-                        <el-input type="textarea" rows="5" autosize placeholder="请输入查询SQL" v-model="querysql"/>
-                    </el-row>
-                    <el-row>
-                        <hr>
+                        <el-input class="inputframe" type="textarea" rows="5"  placeholder="请输入查询SQL" v-model="querysql"/>
                     </el-row>
                     <el-row class="partFour">
                         <div class="elButton">
@@ -181,19 +176,24 @@
 
         <el-dialog title="表字段" :visible.sync="iftablecolumn" width="30%" class='data_edit'>
             <el-row>
-                <el-table :data="tablecolumn" border size="mini">
-                    <el-table-column width="100%" align="center">
+                <el-table :data="tablecolumn" border size="mini" ref="filterTable">
+                    <el-table-column prop="selectionState" width="100%" align="center">
                         <template slot="header" slot-scope="scope">
-                            <el-checkbox @change="Allis_selectionStateFun()" v-model="Allis_selectionState"
+                            <el-checkbox @change="Allis_selectionStateFun(tablecolumn,Allis_selectionState)"
+                                         v-model="Allis_selectionState"
                                          :checked="Allis_selectionState"></el-checkbox>
                         </template>
                         <template slot-scope="scope">
-                            <el-checkbox :checked="Allis_selectionState"
+                            <el-checkbox :checked="scope.row.selectionState"
+                                         @change="evercheck(scope.row.selectionState,scope.row.columnname)"
                                          v-model="scope.row.selectionState"></el-checkbox>
                         </template>
                     </el-table-column>
                     <el-table-column type="index" width="100%" label="序号" align='center'></el-table-column>
                     <el-table-column prop="columnname" label="字段英文名" show-overflow-tooltip
+                                     align="center">
+                    </el-table-column>
+                    <el-table-column prop="columntype" label="字段类型" show-overflow-tooltip
                                      align="center">
                     </el-table-column>
                 </el-table>
@@ -203,16 +203,27 @@
                 <el-button type="primary" size="medium" class="rightbtn" @click="dismissiftablecolumn()">取消</el-button>
             </el-row>
         </el-dialog>
+
+        <transition name="fade">
+            <loading v-if="isLoading" />
+        </transition>
     </div>
 </template>
 <script>
     import * as functionAll from "./marketAction";
     import * as validator from "@/utils/js/validator";
     import * as message from "@/utils/js/message";
+    import Loading from '../../components/loading'
+    import Step from "./step";
 
     export default {
+        components: {
+            Step,
+            Loading
+        },
         data() {
             return {
+                active: 1,
                 rule: validator.default,
                 data_mart_id: this.$route.query.data_mart_id,
                 is_add: this.$route.query.is_add,
@@ -239,7 +250,8 @@
                 iftablecolumn: false,
                 tablecolumn: [],
                 Allis_selectionState: false,
-                sqltablename:""
+                sqltablename: "",
+                isLoading:false,
 
             };
         },
@@ -259,6 +271,19 @@
             this.getifhbase();
         },
         methods: {
+            showtablecolumn(node) {
+                if(!node.isParent){
+                    functionAll.queryAllColumnOnTableName({
+                        'source': node.source,
+                        'id': node.id
+                    }).then((res) => {
+                        this.tablecolumn = res.data.columnresult;
+                        this.sqltablename = res.data.tablename;
+                        this.iftablecolumn = true;
+                        this.Allis_selectionState = false;
+                    });
+                }
+            },
             getifhbase() {
                 functionAll.getIfHbase({"datatable_id": this.datatable_id}).then(((res) => {
                     this.ifhbae = res.data.result;
@@ -274,7 +299,6 @@
                 // return this.checkBelongToChooseNode(value, data, node);
             },
             loadNode(node, resolve) {
-                debugger;
                 // this.searchResolve = resolve;
                 // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
                 if (node.level === 0) {
@@ -290,15 +314,17 @@
                             return resolve(res.data.tree_sources);
                         });
                     } else {
-                        this.sqltablename = node.data.tableName;
-                        // 查询数据
-                        functionAll.queryAllColumnOnTableName({
-                            'source': node.data.source,
-                            'id': node.data.id
-                        }).then((res) => {
-                            this.tablecolumn = res.data;
-                            this.iftablecolumn = true;
-                        });
+                        // // 查询数据
+                        // debugger;
+                        // functionAll.queryAllColumnOnTableName({
+                        //     'source': node.data.source,
+                        //     'id': node.data.id
+                        // }).then((res) => {
+                        //     this.tablecolumn = res.data.columnresult;
+                        //     this.sqltablename = res.data.tablename;
+                        //     this.iftablecolumn = true;
+                        //     this.Allis_selectionState = false;
+                        // });
                     }
                 }
 
@@ -325,12 +351,14 @@
                 if (this.querysql === '') {
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
                 } else {
+                    this.isLoading = true;
                     let params = {
                         "querysql": this.querysql,
                         "datatable_id": this.datatable_id,
                         "sqlparameter": this.sqlparameter
                     };
                     functionAll.getColumnBySql(params).then(((res) => {
+                        this.isLoading = false;
                         if (res && res.data.success) {
                             this.columnbysql = res.data.result;
                             let tmp_field_type = this.columnbysql[0].field_type;
@@ -359,12 +387,14 @@
                 if (this.querysql === '') {
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
                 } else {
+                    this.isLoading = true;
                     this.querydatadialogshow = true;
                     this.databysql = [];
                     functionAll.getDataBySQL({
                         'querysql': this.querysql,
                         'sqlparameter': this.sqlparameter
                     }).then((res) => {
+                        this.isLoading = false;
                         if (res && res.data.success) {
                             this.databysql = res.data.result;
                         } else {
@@ -460,6 +490,7 @@
                     });
                     return false;
                 }
+                this.isLoading = true;
                 let dm_column_storage = [];
                 for (var i = 0; i < this.columnmore.length; i++) {
                     var dslad_id = this.columnmore[i].dslad_id;
@@ -481,6 +512,7 @@
                     "hbasesort": JSON.stringify(this.hbasesort)
                 };
                 functionAll.addDFInfo(param).then((res) => {
+                    this.isLoading = false;
                     if (res && res.success) {
                         this.$message({
                             type: "success",
@@ -545,12 +577,12 @@
             changesql() {
                 let sql = "select ";
                 for (let i = 0; i < this.tablecolumn.length; i++) {
-                    if(this.tablecolumn[i].selectionState == true){
-                        sql+=this.tablecolumn[i].columnname+","
+                    if (this.tablecolumn[i].selectionState == true) {
+                        sql += this.tablecolumn[i].columnname + ","
                     }
                 }
-                sql = sql.substr(0,sql.length-1);
-                sql+=" from "+this.sqltablename;
+                sql = sql.substr(0, sql.length - 1);
+                sql += " from " + this.sqltablename;
                 this.querysql = sql;
                 this.iftablecolumn = false;
                 this.Allis_selectionState = false;
@@ -559,7 +591,7 @@
                 this.iftablecolumn = false;
                 this.Allis_selectionState = false;
             },
-            Allis_selectionStateFun() {
+            Allis_selectionStateFun(items, e) {
                 if (this.Allis_selectionState) {
                     for (let i = 0; i < this.tablecolumn.length; i++) {
                         this.tablecolumn[i].selectionState = true;
@@ -567,6 +599,33 @@
                 } else {
                     for (let i = 0; i < this.tablecolumn.length; i++) {
                         this.tablecolumn[i].selectionState = false;
+                    }
+                }
+            },
+            evercheck(val, name) {
+                let count = 0
+                if (val == true) {
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        if (this.tablecolumn[i].selectionState == true) {
+                            count++
+                        }
+                    }
+                    if (count == this.tablecolumn.length) {
+                        this.Allis_selectionState = true
+                    } else {
+                        this.Allis_selectionState = false
+                    }
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        if (this.tablecolumn[i].columnname == name) {
+                            this.tablecolumn[i].selectionState = true;
+                        }
+                    }
+                } else {
+                    this.Allis_selectionState = false;
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        if (this.tablecolumn[i].columnname == name) {
+                            this.tablecolumn[i].selectionState = false;
+                        }
                     }
                 }
             },
@@ -605,6 +664,10 @@
         margin-top: 12px;
         float: left;
         margin: 15px;
+        margin-bottom: 10px;
+    }
+    .inputframe{
+        margin-top: 12px;
         margin-bottom: 10px;
     }
 </style>

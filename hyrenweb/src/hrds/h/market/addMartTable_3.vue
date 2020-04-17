@@ -1,48 +1,99 @@
 <template>
     <div>
-        <el-row class='topTitle'>
-            <span>数据集市</span>
+
+        <el-row>
+            <el-button type="primary" @click="backtodetail()" size="small" class="goIndex">
+                <i class="fa fa-home fa-lg"></i>返回
+            </el-button>
         </el-row>
-        <el-form  class="demo-form-inline" :inline="true" label-width="170px">
+        <Step :active="active"></Step>
+        <el-row class='topTitle'>
+            <span>配置完成</span>
+        </el-row>
+        <el-tabs type="card">
             <el-row>
                 <span>SQL</span>
             </el-row>
             <el-row>
-                <el-input type="textarea" rows="5" readonly="" autosize placeholder="请输入查询SQL" v-model="querysql"/>
+                <el-input class="inputframe" type="textarea" rows="3" placeholder="" v-model="querysql"/>
             </el-row>
             <el-row>
-                <el-form-item label="变量" :rules="rule.default">
-                    <el-input v-model="parameter" placeholder="参数如: 自定义名称=123;自定义名称2=456"></el-input>
-                </el-form-item>
+                <el-col :span="20">
+                    <el-row>
+                        <span>变量</span>
+                    </el-row>
+                    <el-input class="inputframe" v-model="parameter"
+                              placeholder="参数如: 自定义名称=123;自定义名称2=456,中间用分号;隔开"></el-input>
+                </el-col>
+                <el-col :span="3"  :offset="1">
+                    <el-row>
+                        <span>日期</span>
+                    </el-row>
+                    <el-date-picker class="inputframe" format="yyyy-MM-dd" type="date" v-model="date" align="right"
+                                    placeholder="选择日期"></el-date-picker>
+                </el-col>
             </el-row>
-            <el-row :span="10" >
-                <el-form-item label="日期"  :rules="rule.selected">
-                    <el-date-picker  format="yyyy-MM-dd" type="date" v-model="date"
-                                    align="right" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
-            </el-row>
-        </el-form>
+        </el-tabs>
+        <!--</el-form>-->
         <div slot="footer" class="dialog-footer">
-            <el-button type="primary" size="medium" class="rightbtn" @click="excutmartjob()" >执行</el-button>
-            <el-button type="primary" size="medium" class="rightbtn" @click="back()" >上一步</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="excutmartjob()">立即执行</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="producefun()">生成作业</el-button>
+            <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
         </div>
+
+        <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
+            <div slot="title">
+                <span class="dialogtitle el-icon-caret-right">生成作业</span>
+            </div>
+            <el-form ref="separatorData" label-width="240px" text-align="center">
+                <el-form-item label="选择工程">
+                    <el-select placeholder="选择工程" v-model="selectedetlsys" @change="queryetltaskbyetlsys"
+                                style="width: 190px;" size="medium">
+                        <el-option v-for="(item,index) in alletlsys" :key="index" :label="item.etl_sys_cd"
+                                   :value="item.etl_sys_cd"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="选择任务">
+                    <el-select placeholder="选择任务" v-model="selectedetltask"
+                               style="width: 190px;" size="medium">
+                        <el-option v-for="(item,index) in alletltask" :key="index" :label="item.sub_sys_cd"
+                                   :value="item.sub_sys_cd"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="danger" size="mini" @click="dialogProdeceJobs = false">取 消</el-button>
+                <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
     import * as functionAll from "./marketAction";
     import * as validator from "@/utils/js/validator";
     import * as message from "@/utils/js/message";
+    import Loading from '../../components/loading'
+    import Step from "./step";
 
     export default {
+        components: {
+            Step,
+            Loading
+        },
         data() {
             return {
+                dialogProdeceJobs: false,
+                active: 2,
                 rule: validator.default,
                 data_mart_id: this.$route.query.data_mart_id,
                 datatable_id: this.$route.query.datatable_id,
-                date:"",
-                parameter:"",
-                querysql:"",
-
+                date: "",
+                parameter: "",
+                querysql: "",
+                alletlsys: [],
+                alletltask: [],
+                selectedetlsys: "",
+                selectedetltask: ""
             };
         },
         mounted() {
@@ -59,18 +110,18 @@
                     }
                 });
             },
-            getquerysql(){
-                functionAll.getQuerySql({"datatable_id":this.datatable_id}).then((res) => {
+            getquerysql() {
+                functionAll.getQuerySql({"datatable_id": this.datatable_id}).then((res) => {
                     if (res && res.success) {
                         this.querysql = res.data[0].querysql;
                     }
                 })
             },
-            excutmartjob(){
-                let param={
-                    "datatable_id":this.datatable_id,
-                    "date":this.date,
-                    "parameter":this.parameter
+            excutmartjob() {
+                let param = {
+                    "datatable_id": this.datatable_id,
+                    "date": this.date,
+                    "parameter": this.parameter
                 }
                 functionAll.excutMartJob(param).then((res) => {
                     debugger;
@@ -78,6 +129,40 @@
                         this.querysql = res.data.querysql;
                     }
                 })
+            },
+            backtodetail() {
+                this.$router.push({
+                    name: 'detailMart',
+                    query: {
+                        data_mart_id: this.data_mart_id
+                    }
+                });
+            },
+            producefun() {
+                this.dialogProdeceJobs = true;
+                functionAll.queryAllEtlSys().then((res) => {
+                    if (res && res.success) {
+                        this.alletlsys = res.data;
+                    }
+                })
+            },
+            queryetltaskbyetlsys() {
+                functionAll.queryEtlTaskByEtlSys({"etl_sys_cd":this.selectedetlsys}).then((res) => {
+                    if (res && res.success) {
+                        this.alletltask = res.data;
+                    }
+                })
+            },
+            savemartjobtoetl() {
+                let param ={
+                    "etl_sys_cd":this.selectedetlsys,
+                    "sub_sys_cd":this.selectedetltask,
+                    "datatable_id":this.datatable_id,
+                }
+                this.$message({
+                    type: "warning",
+                    message: "有待开发"
+                });
             }
         }
     }
@@ -85,5 +170,24 @@
 <style scoped>
     .demo-form-inlines {
         height: 100px;
+    }
+
+    .rightbtn {
+        margin-top: 12px;
+        float: right;
+        margin: 15px;
+        margin-bottom: 10px;
+    }
+
+    .leftbtn {
+        margin-top: 12px;
+        float: left;
+        margin: 15px;
+        margin-bottom: 10px;
+    }
+
+    .inputframe {
+        margin-top: 12px;
+        margin-bottom: 10px;
     }
 </style>

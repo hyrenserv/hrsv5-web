@@ -1,10 +1,14 @@
 <template>
     <div id="marketIndex">
+
         <el-row>
-            <span>基础配置</span>
             <el-button type="primary" @click="back()" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回
             </el-button>
+        </el-row>
+        <Step :active="active"></Step>
+        <el-row class='topTitle'>
+            <span>基础配置</span>
         </el-row>
         <el-form :model="dm_datatable" ref="dm_datatable" class="demo-form-inline" :inline="true" label-width="170px">
             <el-col :span="10">
@@ -104,6 +108,7 @@
             </el-table-column>
         </el-table>
         <el-button type="primary" size="medium" class="rightbtn" @click="next('dm_datatable')">下一步</el-button>
+        <!--<el-button type="primary" size="medium" class="leftbtn" @click="back()"><i class="fa fa-home fa-lg"></i>返回</el-button>-->
         <!--<el-pagination @size-change="item_handleSizeChange" @current-change="item_handleCurrentChange" :current-page="currentPage" :page-size="pagesize" layout="total,prev, pager, next" :total="tableData.length" class='pagerigth'></el-pagination>-->
 
         <el-dialog title="数据存储层配置属性" :visible.sync="dataSaveConfigure" width="60%">
@@ -133,7 +138,9 @@
             </div>
         </el-dialog>
 
-
+        <transition name="fade">
+            <loading v-if="isLoading" />
+        </transition>
     </div>
 
 </template>
@@ -143,10 +150,17 @@
     import regular from "@/utils/js/regular";
     import * as functionAll from "./marketAction";
     import * as message from "@/utils/js/message";
+    import Loading from '../../components/loading'
+    import Step from "./step";
 
     export default {
+        components: {
+            Step,
+            Loading
+        },
         data() {
             return {
+                active: 0,
                 showData_date: false,
                 data_table_id: "",
                 rule: validator.default,
@@ -174,6 +188,8 @@
                 tableDataConfigure: [],
                 form: {},
                 fuzzyqueryitem: "",
+                isLoading:false,
+
                 // currentPage: 1,
                 // pagesize: 5,
 
@@ -256,11 +272,13 @@
                             });
                             return false;
                         } else {
+                            this.isLoading = true;
                             //新增
                             if (this.is_add == 0) {
                                 this.dm_datatable.dsl_id = this.dsl_id;
                                 this.dm_datatable.data_mart_id = this.data_mart_id;
                                 functionAll.addDMDataTable(this.dm_datatable).then((res) => {
+                                    this.isLoading = false;
                                     if (res && res.success) {
                                         this.datatable_id = res.data.datatable_id;
                                         this.$router.push({
@@ -278,6 +296,7 @@
                                 this.dm_datatable.dsl_id = this.dsl_id;
                                 this.dm_datatable.data_mart_id = this.data_mart_id;
                                 functionAll.updateDMDataTable(this.dm_datatable).then((res) => {
+                                    this.isLoading = false;
                                     if (res && res.success) {
                                         // this.datatable_id = res.data.datatable_id;
                                         this.$router.push({
@@ -391,6 +410,13 @@
         margin-top: 12px;
         margin-top: 12px;
         float: right;
+        margin: 15px;
+        margin-bottom: 10px;
+    }
+    .leftbtn {
+        margin-top: 12px;
+        margin-top: 12px;
+        float: left;
         margin: 15px;
         margin-bottom: 10px;
     }

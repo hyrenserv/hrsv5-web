@@ -285,6 +285,22 @@ export function queryAllColumnOnTableName(data) {
     })
 }
 
+//查询作业调度所有工程
+export function queryAllEtlSys(data) {
+    return request({
+        url: '/H/market/queryAllEtlSys',
+        params: data
+    })
+}
+
+
+//查询作业调度所有工程
+export function queryEtlTaskByEtlSys(data) {
+    return request({
+        url: '/H/market/queryEtlTaskByEtlSys',
+        params: data
+    })
+}
 
 
 
