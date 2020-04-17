@@ -720,7 +720,7 @@ export default {
             ParallelExtractionArr2: [], //第二个页面并行抽取保存数据
             callTable2: [],
             zdycallTable: [],
-            onclickAll:false,
+            onclickAll: false,
         };
     },
     created() {
@@ -729,10 +729,10 @@ export default {
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
-       
+
     },
-    beforeMount(){
-          let params = {};
+    beforeMount() {
+        let params = {};
         params["colSetId"] = this.dbid;
         addTaskAllFun.getAllTableInfo(params).then(res => {
             console.log(res.data)
@@ -765,9 +765,9 @@ export default {
     },
     mounted() {
         // 获取进入页面的总数据
-            this.steps_getInitInfo();
-            this.editzdySQLFun()
-       
+        this.steps_getInitInfo();
+        this.editzdySQLFun()
+
     },
     computed: {
         address() {
@@ -892,7 +892,7 @@ export default {
         },
         // 获取所有表信息
         getAllTableInfoFun() {
-            this.onclickAll=true
+            this.onclickAll = true
             this.Allis_selectionState = false;
             this.tableData.length = 0;
             this.isdata = JSON.parse(JSON.stringify(this.allDataList));
@@ -984,7 +984,45 @@ export default {
         },
         // 搜索
         schfilter(val) {
-            if (this.isdata.length != 0) {
+            if (val != '') {
+                let params = {};
+                params["colSetId"] = this.dbid;
+                params['inputString'] = val
+                this.tableloadingInfo = '数据加载中...'
+                addTaskAllFun.getTableInfo(params).then(res => {
+                    if (res.data.length > 0) {
+                        let data = res.data
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].table_id && data[i].table_id != '') {
+                                data[i].selectionState = true;
+                            } else {
+                                data[i].selectionState = false;
+                            }
+                            if (data[i].is_parallel != "0") {
+                                data[i].is_parallel = true;
+                            } else {
+                                data[i].is_parallel = false;
+                            }
+                            if (data[i].is_md5 != "0") {
+                                data[i].is_md5 = true;
+                            } else {
+                                data[i].is_md5 = false;
+                            }
+                            if (data[i].unload_type == "1") {
+                                data[i].unload_type = '全量';
+                            } else if ((data[i].unload_type == "2")) {
+                                data[i].unload_type = '增量';
+                            }
+                        }
+                        this.tableData = res.data
+                    } else {
+                        this.tableloadingInfo = '暂无数据'
+                    }
+
+                })
+            }
+
+            /* if (this.isdata.length != 0) {
                 this.tableData = this.allDataList.filter(
                     data =>
                     !val || data.table_name.toLowerCase().includes(val.toLowerCase())
@@ -1000,7 +1038,7 @@ export default {
                 if (this.tableData.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 }
-            }
+            } */
         },
         searchEnterFun(e) {
             var keyCode = window.event ? e.keyCode : e.which;
@@ -1016,15 +1054,16 @@ export default {
                     let tableData = this.tableData, //第一个页面所有表
                         sqlExtractData = this.ruleForm.sqlExtractData, //第二个页面所有表
                         rep_table = [], //两张表重复的表
-                        isparmi = [],tableidArr1={},//单表查询中增量存在的表
+                        isparmi = [],
+                        tableidArr1 = {}, //单表查询中增量存在的表
                         isparmi2 = [], //sql抽取中增量存在的表
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     console.log(this.tableData, this.ruleForm.sqlExtractData)
                     for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
                         if (tableData[i].selectionState == true && tableData[i].unload_type == '增量') {
                             isparmi.push(tableData[i].table_name)
-                            if(tableData[i].table_id&&tableData[i].table_id!=''){
-                                tableidArr1[tableData[i].table_name]=tableData[i].table_id
+                            if (tableData[i].table_id && tableData[i].table_id != '') {
+                                tableidArr1[tableData[i].table_name] = tableData[i].table_id
                             }
                         }
                         if (tableData[i].selectionState == true) {
@@ -1037,7 +1076,7 @@ export default {
                             }
                         }
                     }
-                    console.log(tableidArr1,tableidArr1.length)
+                    console.log(tableidArr1, tableidArr1.length)
                     for (let j = 0; j < sqlExtractData.length; j++) {
                         if (sqlExtractData[j].unload_type == '增量') {
                             isparmi2.push(sqlExtractData[j].table_name)
@@ -1066,8 +1105,8 @@ export default {
                                 let params1 = {};
                                 params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
                                 params1["colSetId"] = parseInt(this.dbid);
-                                params1['tableIds']=JSON.stringify(tableidArr1) === '{}'?'':JSON.stringify(tableidArr1)
-                                console.log(params1,isparmi, 1111)
+                                params1['tableIds'] = JSON.stringify(tableidArr1) === '{}' ? '' : JSON.stringify(tableidArr1)
+                                console.log(params1, isparmi, 1111)
                                 addTaskAllFun.checkTablePrimary(params1).then(res => {
                                     console.log(res, 1)
                                     let arrdata = res.data
@@ -1315,7 +1354,7 @@ export default {
                 let params1 = {};
                 params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
                 params1["colSetId"] = parseInt(this.dbid);
-                params1["tableColumn"] = JSON.stringify(tableColumn)==='{}'?'':JSON.stringify(tableColumn);
+                params1["tableColumn"] = JSON.stringify(tableColumn) === '{}' ? '' : JSON.stringify(tableColumn);
                 console.log(params1)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == '200') {
@@ -1367,20 +1406,20 @@ export default {
             params["colSetId"] = this.dbid;
             addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
                 // 遍历拿到所有勾选的数据
-                if( this.onclickAll==true){
+                if (this.onclickAll == true) {
                     for (let i = 0; i < this.allDataList.length; i++) {
-                    if (this.allDataList[i].selectionState == true) {
-                        arrData.push(this.allDataList[i]);
+                        if (this.allDataList[i].selectionState == true) {
+                            arrData.push(this.allDataList[i]);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < this.tableData.length; i++) {
+                        if (this.tableData[i].selectionState == true) {
+                            arrData.push(this.tableData[i]);
+                        }
                     }
                 }
-                }else{
-                   for (let i = 0; i < this.tableData.length; i++) {
-                    if (this.tableData[i].selectionState == true) {
-                        arrData.push(this.tableData[i]);
-                    }
-                }
-                }
-                
+
                 //对比要删除的数据
                 for (let i = 0; i < arrData.length; i++) {
                     for (let j = 0; j < this.callTable.length; j++) {
@@ -1568,22 +1607,22 @@ export default {
                 console.log(res)
                 let colData = res.data ? res.data : [];
                 // if (colData.length > 0) {
-                    for (let i = 0; i < arrData1.length; i++) {
-                        console.log(arrData1)
-                        if (arrData1[i].selectionState == true) {
-                                console.log(colData)
+                for (let i = 0; i < arrData1.length; i++) {
+                    console.log(arrData1)
+                    if (arrData1[i].selectionState == true) {
+                        console.log(colData)
 
-                            for (let key in colData) {
-                                if (arrData1[i].table_name == key) {
-                                    console.log(key,colData[key])
-                                    arrData1[i].data = colData[key];
-                                    arrData1[i].edit = "1";
-                                }
+                        for (let key in colData) {
+                            if (arrData1[i].table_name == key) {
+                                console.log(key, colData[key])
+                                arrData1[i].data = colData[key];
+                                arrData1[i].edit = "1";
                             }
                         }
                     }
+                }
                 // }
-                console.log(arrData1,colData)
+                console.log(arrData1, colData)
                 if (this.SelectColumn.length > 0) {
                     for (let j = 0; j < arrData1.length; j++) {
                         for (let n = 0; n < this.SelectColumn.length; n++) {
@@ -1593,7 +1632,7 @@ export default {
                         }
                     }
                 }
-                let arrData11=JSON.parse(JSON.stringify(arrData1))
+                let arrData11 = JSON.parse(JSON.stringify(arrData1))
                 for (let m = 0; m < arrData11.length; m++) {
                     if (arrData11[m].data) {
                         for (let i = 0; i < arrData11[m].data.length; i++) {
@@ -1701,7 +1740,7 @@ export default {
             addTaskAllFun.getSingleTableSQL(params).then(res => {
                 this.sqlFiltSetData_tablename = this.tablename;
                 console.log(res.data)
-                if (res.data.length != 0&&res.data.unload_type=='1') {
+                if (res.data.length != 0 && res.data.unload_type == '1') {
                     this.sqlFiltSetData_SQL = res.data[0].sql ? res.data[0].sql : "";
                 }
             });
@@ -2274,8 +2313,8 @@ export default {
         },
         //第二页 选择列弹框回显数据调接口
         SelectColumnShowFun2(row) {
-             this.coltable_name = "";
-                    this.coltable_name = row.table_name;
+            this.coltable_name = "";
+            this.coltable_name = row.table_name;
             let arrdata = [],
                 sql = ''
             if (row.unload_type == '增量') {
@@ -2287,7 +2326,7 @@ export default {
                     arrdata.push(this.xsTypeArr2All[i].table_name)
                 }
             }
-         console.log(this.xsTypeArr2,this.xsTypeArr2All)
+            console.log(this.xsTypeArr2, this.xsTypeArr2All)
             if (row.table_id && row.table_id != '') {
                 if (arrdata.indexOf(row.table_name) == -1) {
                     for (let i = 0; i < this.zdycallTable.length; i++) {
@@ -2339,7 +2378,7 @@ export default {
                     if (row.unload_type == '增量') {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                sql =this.xsTypeArr2[i].sql
+                                sql = this.xsTypeArr2[i].sql
                                 // break;
                             }
                         }
@@ -2359,7 +2398,7 @@ export default {
         },
         // 第二页选择列调接口显示数据
         getSqlColumnDataFun(row, sql) {
-           
+
             let params = {};
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);
@@ -2370,7 +2409,7 @@ export default {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
-                    
+
                     console.log(row.collectState)
                     this.disShow = (row.collectState == false) ? true : false;
                     let data = res.data ? res.data : [],
@@ -2843,8 +2882,8 @@ export default {
                     this.dialog_xsadd2 = true
                     console.log(res.data)
                     if (res.data.unload_type == '2') {
-                    this.xstypeadd2 = JSON.parse(res.data.sql)
-                    console.log(this.xstypeadd2)
+                        this.xstypeadd2 = JSON.parse(res.data.sql)
+                        console.log(this.xstypeadd2)
                     }
                 })
             }
@@ -2856,21 +2895,21 @@ export default {
             if (type == '全量') {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
                     this.dialog_xsall = true
-                    if(res.data.unload_type=='1'){
-                    this.xstypeadd.insert = res.data.sql
+                    if (res.data.unload_type == '1') {
+                        this.xstypeadd.insert = res.data.sql
                     }
                     console.log(res)
                 })
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
-                    if(res.data.unload_type=='2'){
-                        let data=JSON.parse(res.data.sql)
-                    this.xstypeadd.insert = data.add
-                    this.xstypeadd.delete = data.delete
-                    this.xstypeadd.update = data.update
+                    if (res.data.unload_type == '2') {
+                        let data = JSON.parse(res.data.sql)
+                        this.xstypeadd.insert = data.add
+                        this.xstypeadd.delete = data.delete
+                        this.xstypeadd.update = data.update
                     }
                     this.dialog_xsadd = true
-                    
+
                     console.log(res.data)
                 })
             }
@@ -2904,7 +2943,7 @@ export default {
                 })
 
             }
-             this.dialog_xsadd = false
+            this.dialog_xsadd = false
             console.log(this.xsTypeArr)
         },
         //第2个页面面卸数方式增量的设置提交
