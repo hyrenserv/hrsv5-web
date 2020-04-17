@@ -120,7 +120,7 @@
                     </el-row>
                     <el-row :gutter="20">
                         <el-col :span="6" style="text-align:right;">
-                            <el-button type="text" @click="testLink = true,testLinkFun('1')" size="medium">测试连接</el-button>
+                            <el-button type="text" @click="testLinkFun('1')" size="medium">测试连接</el-button>
                         </el-col>
                         <el-col :span="2">
                             <el-button type="text" @click="viewLog = true" size="medium">查看日志</el-button>
@@ -429,21 +429,21 @@ export default {
                             path: "/collection1_2",
                             query: data
                         });
-                    } else {
+                    } /* else {
                         this.$message({
                             showClose: true,
                             message: res.message,
                             type: "error"
                         });
-                    }
+                    } */
                 });
-            } else {
+            } /* else {
                 this.$message({
                     showClose: true,
                     message: "提交失败，请检查信息",
                     type: "error"
                 });
-            }
+            } */
         },
         pre() {
             this.$router.push({
@@ -635,6 +635,9 @@ export default {
             params["agent_id"] = parseInt(this.agentId);
             addTaskAllFun.testConnection(params).then(res => {
                 if (res.success == true) {
+                    if(n=='1'){
+                    this.testLink = true
+                    }
                     this.linkTip = "连接成功";
                     this.activelink = "true";
                 } else {

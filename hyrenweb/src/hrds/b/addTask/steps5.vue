@@ -511,6 +511,7 @@ export default {
                 };
             } else {
                 data = {
+                    agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
                     source_name: this.$Base64.encode(this.sName)

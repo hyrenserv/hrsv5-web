@@ -124,7 +124,9 @@ export function getAllSQLs(data) {
 export function saveAllSQL(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveAllSQL',
-        params:data
+        // params:data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 // 定义过滤
@@ -600,6 +602,8 @@ export function getEtlJobData(data) {
 export function saveJobDataToDatabase(data) {
     return request({
         url: '/B/agent/dbagentconf/startwayconf/saveJobDataToDatabase',
-        params: data
+        // params: data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
  }
