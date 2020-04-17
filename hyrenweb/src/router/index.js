@@ -149,39 +149,9 @@ export default new Router({
                 // db文件采集
                 {
                     path: '/collection4_1',
-                    name: 'collection4_1',
-                    title: 'db步骤1',
+                    name: 'ftpCollect',
+                    title: '采集ftp agent',
                     component: () => import('@/hrds/b/dbAgentcollect/step1.vue')
-                },
-                {
-                    path: '/step2',
-                    name: 'step2',
-                    title: 'db步骤2',
-                    component: () => import('@/hrds/b/dbAgentcollect/step2.vue')
-                },
-                {
-                    path: '/step3',
-                    name: 'step3',
-                    title: 'db步骤3',
-                    component: () => import('@/hrds/b/dbAgentcollect/step3.vue')
-                },
-                {
-                    path: '/dbf_collection4',
-                    name: 'dbf_collection4',
-                    title: 'DB文件采集4',
-                    component: () => import('@/hrds/b/dbAgentcollect/step4.vue')
-                },
-                {
-                    path: '/dbf_collection5',
-                    name: 'dbf_collection5',
-                    title: 'DB文件采集5',
-                    component: () => import('@/hrds/b/dbAgentcollect/step5.vue')
-                },
-                {
-                    path: '/dbf_collection6',
-                    name: 'dbf_collection6',
-                    title: 'DB文件采集6',
-                    component: () => import('@/hrds/b/dbAgentcollect/step6.vue')
                 },
                 // 非结构化 Agent采集
                 {
@@ -481,10 +451,40 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMartTable_2.vue')
                 },
                 {
-                    path: '/addMartTable_3',
-                    name: 'addMartTable_3',
-                    title: 'addMartTable_3',
-                    component: () => import('@/hrds/h/market/addMartTable_3.vue')
+                    path: '/serviceMage',
+                    name: 'serviceMage',
+                    title: '服务接口管理',
+                    component: () => import('@/hrds/g/serviceMage.vue')
+                },
+                {
+                    path: '/userManage',
+                    name: 'userManage',
+                    title: '用户管理',
+                    component: () => import('@/hrds/g/usermanage/userManage.vue')
+                },
+                {
+                    path: '/releaseManage',
+                    name: 'releaseManage',
+                    title: '发布管理',
+                    component: () => import('@/hrds/g/releasemanage/releaseManage.vue')
+                },
+                {
+                    path: '/dataRangeManage',
+                    name: 'dataRangeManage',
+                    title: '数据范围管理',
+                    component: () => import('@/hrds/g/datarangemanage/dataRangeManage.vue')
+                },
+                {
+                    path: '/interfaceUseMonitor',
+                    name: 'interfaceUseMonitor',
+                    title: '接口使用监控',
+                    component: () => import('@/hrds/g/interfaceusemonitor/interfaceUseMonitor.vue')
+                },
+                {
+                    path: '/serviceUser',
+                    name: 'serviceUser',
+                    title: '服务接口用户',
+                    component: () => import('@/hrds/g/serviceuser/serviceUser.vue')
                 },
             ]
         },
