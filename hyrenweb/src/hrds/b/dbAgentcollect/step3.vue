@@ -11,19 +11,38 @@
         <el-table-column property="b" label="中文表名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="checkList1" width="84" label="是否转存" show-overflow-tooltip align="center">
             <template slot-scope="scope">
-                <el-checkbox :true-label="1" :false-label="0" v-model="scope.row.checkList1"></el-checkbox>
+                <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.checkList1"></el-checkbox>
             </template>
         </el-table-column>
         <el-table-column property="b" label="文件格式" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="is_head" width="94" label="是否有表头" show-overflow-tooltip align="center">
             <template slot-scope="scope">
-                <el-checkbox :true-label="1" :false-label="0" v-model="scope.row.is_head"></el-checkbox>
+                <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_head"></el-checkbox>
             </template>
         </el-table-column>
         <el-table-column property="b" label="行分隔符" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="b" label="列分隔符" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="b" label="文件编码" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column property="b" label="源文件路径" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" width="94" label="源文件路径" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" label="换行符" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" label="数据分隔" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="b" width="138" label="数据字符集" show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+                <el-select placeholder="数据字符集" clearable style="width: 100%;">
+                    <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.run_way">
+                    </el-option>
+                </el-select>
+            </template>
+        </el-table-column>
+        <el-table-column property="b" width="124" label="文件格式" show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+                <el-select placeholder="文件格式" clearable style="width: 100%;">
+                    <el-option v-for="item in FileFormat" :key="item.value" :label="item.value" :value="item.FileFormat">
+                    </el-option>
+                </el-select>
+            </template>
+        </el-table-column>
+
     </el-table>
     <div class="step1Footer">
         <el-col :span="12">
@@ -52,14 +71,16 @@ export default {
             tableData: [{
                 a: "1",
                 b: "2",
-                checkList1: 1,
-                is_head: 0
+                checkList1: '1',
+                is_head: '1'
             }, {
                 a: "1",
                 b: "2",
-                checkList1: 0,
-                is_head: 1
+                checkList1: '1',
+                is_head: '0'
             }],
+            FileFormat: [],
+            runWay: [],
             pagesize: 5,
             currentPage: 1,
         }

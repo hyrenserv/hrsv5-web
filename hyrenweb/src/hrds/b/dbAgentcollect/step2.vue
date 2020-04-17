@@ -7,9 +7,14 @@
                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
             </template>
         </el-table-column>
+        <el-table-column property="is_sendok" width="96" label="是否为主键" show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+                <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_sendok"></el-checkbox>
+            </template>
+        </el-table-column>
         <el-table-column property="a" label="表名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="b" label="中文表名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column label="查看列" width="150px" align="center">
+        <el-table-column label="操作" width="120" align="center">
             <template slot-scope="scope">
                 <el-button type="text" size="mini" @click="watchText(scope.row)">查看列</el-button>
             </template>
@@ -61,10 +66,12 @@ export default {
             active: 1,
             tableData: [{
                 a: "1",
-                b: "2"
+                b: "2",
+                "is_sendok": '1'
             }, {
                 a: "1",
-                b: "2"
+                b: "2",
+                "is_sendok": '1'
             }],
             pagesize: 5,
             currentPage: 1,
