@@ -51,11 +51,6 @@
                     <el-input v-model="form.row_separator" placeholder="换行符" :size="size"></el-input>
                 </el-form-item>
             </el-col> -->
-            <!-- <el-col :span="12">
-                <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="plane_url" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.plane_url" placeholder="数据字典文件" :size="size"></el-input>
-                </el-form-item>
-            </el-col> -->
             <el-col :span="18">
                 <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="plane_url" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.plane_url" placeholder="数据字典文件" disabled :size="size">
@@ -242,6 +237,7 @@ export default {
         },
         //获取首页信息
         getAllInfo() {
+            // let database_id = this.$route.query.id;
             functionAll.addDataFileData({
                 source_id: this.$route.query.source_id
             }).then(res => {
