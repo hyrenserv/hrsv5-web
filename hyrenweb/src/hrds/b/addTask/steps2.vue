@@ -1283,7 +1283,7 @@ export default {
                     let twotabledata22 = JSON.parse(JSON.stringify(twotabledata2))
                     console.log(twotabledata22)
                     for (let m = 0; m < twotabledata22.length; m++) {
-                        if (twotabledata22[m].data.length > 0) {
+                        if (twotabledata22[m].data) {
                             for (let i = 0; i < twotabledata22[m].data.length; i++) {
                                 for (let key in twotabledata22[m].data[i]) {
                                     twotabledata22[m].data[i].tc_remark = (i + 1) + ''
@@ -1656,6 +1656,7 @@ export default {
                 data = {
                     id: this.dbid,
                     source_id: this.sourceId,
+                    agent_id: this.agentId,
                     source_name: this.$Base64.encode(this.sourceName)
                 };
             }

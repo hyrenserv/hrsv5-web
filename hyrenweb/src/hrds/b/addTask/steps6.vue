@@ -78,7 +78,7 @@
                 <el-col :span="8" v-else-if="ruleForm.Dispatching_mode=='D'">
                     <el-form-item label="上游作业" prop="Upstream_operation">
                         <el-col :span="16">
-                            <el-select style="width:100%" v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
+                            <el-select style="width:100%"  v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -181,7 +181,7 @@
                 <el-table-column label="上游作业" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.pre_etl_job'" :rules="rule.default" v-if="scope.row.disp_type==='D'">
-                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业">
+                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业"  @focus='getPreJobName'>
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -421,9 +421,10 @@ export default {
                             })
                         }
                     }
+                    console.log(JSON.stringify(jobRelation),jobRelation)
                     params["etlJobs"] = JSON.stringify(etlJobs)
                     params["ded_arr"] = ded_arr.join('^')
-                    params["jobRelations"] = jobRelation
+                    params["jobRelations"] = JSON.stringify(jobRelation)=='{}'?'':JSON.stringify(jobRelation)
                     console.log(params)
                     sendTask.saveJobDataToDatabase(params).then(res => {
                         if (res.code && res.code == 200) {
@@ -464,6 +465,7 @@ export default {
                 }
             } else {
                 data = {
+                    agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
                     agent_id: this.aId,
@@ -624,14 +626,20 @@ export default {
         },
         //点击任务编号按钮
         getwork_numFun() {
-            this.Worknumdialog = true
             //调接口显示内容
-            if (this.ruleForm.Project_num != '') {
+            if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
+            this.Worknumdialog = true
                 sendTask.getEtlSubSysData({
                     'etl_sys_cd': this.ruleForm.Project_num
                 }).then(res => {
                     this.WorknumData = res.data
                 })
+            }else{
+                 this.$message({
+                    showClose: true,
+                    message: '工程编号未选择',
+                    type: "error"
+                });
             }
 
         },

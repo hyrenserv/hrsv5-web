@@ -81,8 +81,8 @@
                     </el-select>
                 </template>
             </el-table-column>
-            <el-table-column label align="center">
-                <template slot="header">
+            <el-table-column label='数据列分隔符' align="center">
+               <!--  <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">
                             多行信息
@@ -90,7 +90,7 @@
                         </div>
                         <i class="el-icon-question" aria-hidden="true">数据列分隔符</i>
                     </el-tooltip>
-                </template>
+                </template> -->
                 <template slot-scope="scope">
                     <el-form-item v-if="scope.row.fdc==true" :prop="'unloadingFileData.'+scope.$index+'.fdc_database_separatorr'" :rules="rule.default" class='linefs'>
                         <el-input size="mini" v-model="scope.row.fdc_database_separatorr" style="margin-bottom: 8px;" placeholder="非定长数据列分隔符"></el-input>
@@ -253,7 +253,7 @@ export default {
             newlineCharacter: [{
                     value: "\\n",
                     code: "1",
-                    title: "\\n  (windows换行符)"
+                    title: "\\n  (Linux、Unix换行符)"
                 },
                 {
                     value: "\\r",
@@ -263,7 +263,7 @@ export default {
                 {
                     value: "\\r\\n",
                     code: "3",
-                    title: "\\r\\n  (Linux、Unix换行符)"
+                    title: "\\r\\n  (windows换行符)"
                 }
             ],
             AlltableisExData: [{
@@ -314,10 +314,10 @@ export default {
     },
     methods: {
         next(formName) {
-            this.isLoading = true
             var a = this.ruleForm.unloadingFileData;
             this.$refs[formName].validate(valid => {
                 if (valid) {
+            this.isLoading = true
                     let dataAll = a,
                         extractionDefString = [];
                     if (dataAll.length > 0) {
@@ -426,6 +426,7 @@ export default {
                 };
             } else {
                 data = {
+                    agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
                     source_name: this.$Base64.encode(this.sName)
