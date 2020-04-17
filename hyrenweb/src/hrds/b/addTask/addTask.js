@@ -77,6 +77,13 @@ export function saveDbConf(data) {
         params:data
     })
 }
+// 搜索接口
+export function getTableInfo(data) {
+    return request({
+        url: '/B/agent/dbagentconf/tableconf/getTableInfo',
+        params:data
+    })
+}
 // steps2
 // 获取初始信息
 export function steps_getInitInfo(data) {
