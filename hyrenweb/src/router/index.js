@@ -451,6 +451,12 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMartTable_2.vue')
                 },
                 {
+                    path: '/addMartTable_3',
+                    name: 'addMartTable_3',
+                    title: 'addMartTable_3',
+                    component: () => import('@/hrds/h/market/addMartTable_3.vue')
+                },
+                {
                     path: '/serviceMage',
                     name: 'serviceMage',
                     title: '服务接口管理',
