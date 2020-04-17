@@ -492,6 +492,54 @@ export default new Router({
                     title: '服务接口用户',
                     component: () => import('@/hrds/g/serviceuser/serviceUser.vue')
                 },
+                {
+                    path: '/getToken',
+                    name: 'getToken',
+                    title: '获取token值接口',
+                    component: () => import('@/hrds/g/serviceuser/api/getToken.vue')
+                },
+                {
+                    path: '/generalQuery',
+                    name: 'generalQuery',
+                    title: '单表普通查询接口',
+                    component: () => import('@/hrds/g/serviceuser/api/generalQuery.vue')
+                },
+                {
+                    path: '/sqlInterfaceSearch',
+                    name: 'sqlInterfaceSearch',
+                    title: 'sql查询接口',
+                    component: () => import('@/hrds/g/serviceuser/api/sqlInterfaceSearch.vue')
+                },
+                {
+                    path: '/rowKeySearch',
+                    name: 'rowKeySearch',
+                    title: 'rowkey查询接口',
+                    component: () => import('@/hrds/g/serviceuser/api/rowKeySearch.vue')
+                },
+                {
+                    path: '/fileAttributeSearch',
+                    name: 'fileAttributeSearch',
+                    title: '文件属性搜索接口',
+                    component: () => import('@/hrds/g/serviceuser/api/fileAttributeSearch.vue')
+                },
+                {
+                    path: '/tableStructureQuery',
+                    name: 'tableStructureQuery',
+                    title: '表结构查询接口',
+                    component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue')
+                },
+                {
+                    path: '/tableUsePermissions',
+                    name: 'tableUsePermissions',
+                    title: '表使用权限查询接口',
+                    component: () => import('@/hrds/g/serviceuser/api/tableUsePermissions.vue')
+                },
+                {
+                    path: '/uuidDownload',
+                    name: 'uuidDownload',
+                    title: 'UUID下载接口',
+                    component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue')
+                },
             ]
         },
 
