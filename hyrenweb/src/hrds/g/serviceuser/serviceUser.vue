@@ -37,7 +37,9 @@
             <el-table-column prop="use_valid_date" label="结束使用日期" align="center"/>
             <el-table-column label="接口使用API查看" align="center" prop="interface_name">
                 <template slot-scope="scope">
-                    <router-link :to="scope.row.url">
+                    <router-link
+                            :to="{path:scope.row.url,query:{interface_use_id:scope.row.interface_use_id,
+                            url:scope.row.url}}" :key="scope.row.interface_use_id">
                         <el-button size="medium" type="text" class='editcolor'>
                             {{scope.row.interface_name}}
                         </el-button>
@@ -128,6 +130,7 @@
                 interface_name: "",
                 sysreg_name: "",
                 tokenData: {
+                    interface_use_id: 0,
                     interface_name: '获取token值接口',
                     start_use_date: '-',
                     use_valid_date: '-',
@@ -176,6 +179,9 @@
             beforeViewFieldClose() {
                 this.dialogViewFieldFormVisible = false;
             },
+            // refreshPage(){
+            //     this.$router.go(0)
+            // }
         }
     }
 </script>

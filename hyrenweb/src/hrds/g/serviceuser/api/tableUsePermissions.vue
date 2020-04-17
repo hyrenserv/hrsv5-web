@@ -1,7 +1,7 @@
 <template>
 <div class="tableUsePermissions">
     <el-row>
-        <i class="el-icon-s-operation"><span>接口权限获取</span></i>
+        <i class="el-icon-s-operation"><span>表使用权限接口说明</span></i>
         <router-link to="/serviceUser">
             <el-button class="elButton" type="primary" size="medium" icon="el-icon-s-home">
                 返回首页

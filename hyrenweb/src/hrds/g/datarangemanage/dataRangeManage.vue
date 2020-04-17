@@ -157,7 +157,7 @@
             // 展示树数据
             searchDataUsageRangeInfoToTreeData() {
                 interfaceFunctionAll.searchDataUsageRangeInfoToTreeData().then(res => {
-                    this.treeData = res.data.interfaceTreeList;
+                    this.treeData = res.data;
                 })
             },
             // 查询用户信息
@@ -166,24 +166,13 @@
                     this.userData = res.data;
                 })
             },
-            // 查询表信息
-            searchCollectTableInfo(id, type, file_id) {
-                let params = {};
-                params["id"] = id;
-                params["dataSourceType"] = type;
-                params["file_id"] = file_id;
-                interfaceFunctionAll.searchCollectTableInfo(params).then(res => {
-                    this.tableData = res.data;
-                    this.totalSize = res.data.length;
-                })
-            },
             // 选择字段
             searchFieldById(row, index) {
+                console.log(row)
                 this.index = index;
                 this.dialogShowFieldFormVisible = true;
                 let params = {};
-                params["id"] = row.f;
-                params["dataSourceType"] = row.dataSourceType;
+                params["dataSourceType"] = row.data_layer;
                 params["file_id"] = row.file_id;
                 interfaceFunctionAll.searchFieldById(params).then(res => {
                     this.columnData = res.data;
@@ -218,7 +207,7 @@
                     tableDataInfos.push(param)
                 });
                 params["tableDataInfos"] = JSON.stringify(tableDataInfos);
-                params["dataSourceType"] = this.selectRow[0].dataSourceType;
+                params["dataSourceType"] = this.selectRow[0].data_layer;
                 params["user_id"] = this.form.user_id;
                 params["table_note"] = this.form.table_note;
                 this.$refs[formName].validate(valid => {
@@ -247,12 +236,14 @@
                 this.pageSize = pageSize;
                 this.searchInterfaceInfoByType("1", 1, pageSize);
             },
+            // 树节点触发
             handleNodeClick(data) {
-                this.NodeClick = 'true'
-                if (data.file_id != "") {
-                    this.searchCollectTableInfo("", data.data_layer, data.file_id)
-                } else if (data.classify_id != "") {
-                    this.searchCollectTableInfo(data.id, data.data_layer, "")
+                this.tableData = [];
+                if (data.file_id === "" && data.classify_id !== "") {
+                    if (typeof data.children !== "undefined")
+                        this.tableData = data.children;
+                } else if (data.file_id !== "") {
+                    this.tableData.push(data);
                 }
             },
             beforeShowFieldClose() {
@@ -381,6 +372,7 @@
     .button-save {
         margin-left: 800px;
     }
+
     .locationcenter {
         text-align: center;
         margin-top: 5px;

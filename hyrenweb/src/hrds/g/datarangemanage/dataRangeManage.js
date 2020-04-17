@@ -18,15 +18,7 @@ export function searchUserInfo() {
         url: '/G/releasemanage/searchUserInfo'
     })
 }
-/**
- * 查询Agent采集的所有表信息
- */
-export function searchCollectTableInfo(data) {
-    return request({
-        url: '/G/datarangemanage/searchCollectTableInfo',
-        params:data
-    })
-}
+
 /**
  * 根据ID查询列信息
  */
