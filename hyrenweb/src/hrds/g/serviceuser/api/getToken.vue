@@ -48,9 +48,9 @@
             </el-input>
         </el-row>
         <el-divider/>
-        <span style="color: #2196f3;font-size: 18px">正常显示如下</span>
         <el-row>
             <el-col :span="12">
+                <span style="color: #2196f3;font-size: 18px">正常响应字段明细</span>
                 <!--响应参数列表展示-->
                 <el-table :data="responseData" border>
                     <el-table-column prop="field" label="字段" align="center"/>
@@ -59,6 +59,7 @@
                 </el-table>
             </el-col>
             <el-col :span="12">
+                <span style="color: #2196f3;font-size: 18px">正常显示如下：</span>
                 <pre style="font-size: 16px;">
                     {
                         "message": {
@@ -71,9 +72,9 @@
             </el-col>
         </el-row>
         <el-divider/>
-        <span style="color: #2196f3;font-size: 18px">错误响应字段明细</span>
         <el-row>
             <el-col :span="12">
+                <span style="color: #2196f3;font-size: 18px">错误响应字段明细</span>
                 <!--响应参数列表展示-->
                 <el-table :data="errorData" border >
                     <el-table-column prop="state" label="状态字段名" align="center"/>
@@ -81,6 +82,7 @@
                 </el-table>
             </el-col>
             <el-col :span="12">
+                <span style="color: #2196f3;font-size: 18px">错误显示如下：</span>
                 <pre style="font-size: 16px;">
                     {
                         "status":404,
@@ -123,7 +125,7 @@
                     },
                     {
                         field: 'user_password',
-                        fieldType: 'token',
+                        fieldType: 'String',
                         remark: 'token的返回值',
                     },
                     {

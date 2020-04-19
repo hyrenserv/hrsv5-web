@@ -24,9 +24,98 @@
                 <span>请求URL</span>
             </el-row>
             <el-row>
-                <el-input value="" :disabled="true" style="width: 900px;margin-top: 10px;">
-                </el-input>
+                <el-input v-model="ipAndPort" :disabled="true" style="width: 900px;margin-top: 10px;"/>
             </el-row>
+        </el-col>
+    </el-row>
+    <el-divider/>
+    <span style="color: #2196f3;font-size: 18px">请求参数列表</span>
+    <el-row>
+        <!--请求参数列表展示-->
+        <el-table :data="tableData" border>
+            <el-table-column prop="field" label="字段" align="center"/>
+            <el-table-column prop="fieldType" label="类型" align="center"/>
+            <el-table-column prop="isRequired" label="是否必填" align="center"/>
+            <el-table-column prop="remark" label="描述" align="center"/>
+        </el-table>
+    </el-row>
+    <el-divider/>
+    <el-row>
+        <span style="color: #2196f3;font-size: 18px">使用方式如下</span>
+        <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px"
+                  :disabled="true"/>
+        <el-divider>或</el-divider>
+        <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
+    </el-row>
+    <el-divider/>
+    <el-row>
+        <el-col :span="12">
+            <span style="color: #2196f3;font-size: 18px">outType=stream, dataType=JSON 正常显示如下</span>
+            <pre style="font-size: 16px;">
+                   {
+                    "status":"NORMAL",
+                    "message":{
+                        "data":[
+                            {
+                                "age":30,
+                                "phone":123456789,
+                                "user_email":"1232313@aa.com",
+                                "sex":"nan"
+                            }
+                        ]
+                    }
+                }
+            </pre>
+        </el-col>
+        <el-col :span="12">
+            <span style="color: #2196f3;font-size: 18px">outType=stream, dataType=CSV 正常显示如下</span>
+            <pre style="font-size: 16px;">
+                age,phone,user_email,sex
+                30,123456789,1232313@aa.com,nan
+                30,123456789,112323@aa.com,nan
+                30,123456789,adsa3@aa.com,nan
+                30,123456789,12fasf3@aa.com,nan
+                30,123456789,1csa13@aa.com,nan
+                30,123456789,asf13@aa.com,nan
+                30,123456789,hssh313@aa.com,nan
+                30,123456789,1232313@aa.com,nan
+                30,123456789,1232313@aa.com,nan
+                30,123456789,1232313@aa.com,nan
+            </pre>
+        </el-col>
+    </el-row>
+    <el-divider/>
+    <el-row>
+        <span style="color: #2196f3;font-size: 18px">输出的数据形式(file)正常显示如下</span>
+        <pre style="font-size: 16px;">
+               {
+                    "message":{
+                        "dataType":"json",
+                        "uuid":"3e4a9b35-5b59-4349-a5b3-ea2cf21394a5",
+                        "outType":"file"
+                    },
+                    "status":"NORMAL"
+                }
+            </pre>
+    </el-row>
+    <el-divider/>
+    <el-row>
+        <el-col :span="12">
+            <span style="color: #2196f3;font-size: 18px">错误响应字段明细</span>
+            <!--响应参数列表展示-->
+            <el-table :data="errorData" border>
+                <el-table-column prop="state" label="状态字段名" align="center"/>
+                <el-table-column prop="description" label="状态说明" align="center"/>
+            </el-table>
+        </el-col>
+        <el-col :span="12">
+            <span style="color: #2196f3;font-size: 18px">错误响应如下：</span>
+                <pre style="font-size: 16px;">
+                    {
+                        "status":UNAUTHORIZED,
+                        "message":"账号或密码错误..."
+                    }
+                </pre>
         </el-col>
     </el-row>
 </div>
@@ -40,42 +129,126 @@
         data() {
             return {
                 ipAndPort: '',
+                requestAddressForToken: '',
                 requestAddress: '',
                 tableData: [
                     {
                         field: 'user_id',
                         fieldType: 'Long',
-                        isRequired: '必填',
+                        isRequired: '必填，与user_password同选',
                         remark: '用户ID',
                     },
                     {
                         field: 'user_password',
                         fieldType: 'String',
-                        isRequired: '必填',
+                        isRequired: '必填，与user_id同选',
                         remark: '密码',
                     },
-                ],
-                responseData: [
                     {
-                        field: 'status',
+                        field: 'token',
                         fieldType: 'String',
-                        remark: '返回状态',
+                        isRequired: '必填，和user_id,user_password选择一种模式',
+                        remark: 'token值',
                     },
                     {
-                        field: 'user_password',
-                        fieldType: 'token',
-                        remark: 'token的返回值',
+                        field: 'url',
+                        fieldType: 'String',
+                        isRequired: '必填',
+                        remark: '请求路径',
                     },
                     {
-                        field: 'expires_in',
+                        field: 'tableName',
                         fieldType: 'String',
-                        remark: 'token的有效时间',
+                        isRequired: '必填',
+                        remark: '要查询表名',
+                    },
+                    {
+                        field: 'selectColumn',
+                        fieldType: 'String',
+                        isRequired: '选填，需要查询的列名(selectColumn=column1,column2....等,号隔开)，如果没有，查询所有字段',
+                        remark: '查询字段',
+                    },
+                    {
+                        field: 'whereColumn',
+                        fieldType: 'String',
+                        isRequired: '查询条件(whereColumn=column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
+                        remark: '查询过滤条件',
+                    },
+                    {
+                        field: 'num',
+                        fieldType: 'String',
+                        isRequired: '选填，不填默认显示10条,填写方式如: num=10',
+                        remark: '显示条数',
+                    },
+                    {
+                        field: 'dataType',
+                        fieldType: 'String',
+                        isRequired: '必填 ( json / csv)只能选择一种',
+                        remark: '输出的数据类型',
+                    },
+                    {
+                        field: 'outType',
+                        fieldType: 'String',
+                        isRequired: '必填 ( stream / file)只能选择一种',
+                        remark: '输出的数据形式',
+                    },
+                    {
+                        field: 'asynType',
+                        fieldType: 'String',
+                        isRequired: '选填，如果使用此参数需注意以下事项\n' +
+                            'outType为file时使用下面参数：\n' +
+                            '0 - 表示同步返回\n' +
+                            '1 - 表示异步回调返回，此时需要backurl参数信息\n' +
+                            '2 - 表示异步通过轮询返回，此时需要filename，filepath参数信息',
+                        remark: '是否异步状态',
+                    },
+                    {
+                        field: 'backurl',
+                        fieldType: 'String',
+                        isRequired: '与参数asynType一起使用(如果asynType为1,则必填回调URL)',
+                        remark: '回调返回URL',
+                    },
+                    {
+                        field: 'filename',
+                        fieldType: 'String',
+                        isRequired: '与参数asynType一起使用(如果asynType为2,则必填轮询返回文件名称)',
+                        remark: '轮询返回文件名称',
+                    },
+                    {
+                        field: 'filename',
+                        fieldType: 'String',
+                        isRequired: '与参数asynType一起使用(如果asynType为2,则必填轮询返回文件名称)',
+                        remark: '轮询返回文件路径',
                     }
                 ],
                 errorData: [
                     {
                         state: 'UNAUTHORIZED',
                         description: '账号或密码错误',
+                    },
+                    {
+                        state: 'INTERFACE_STATE',
+                        description: '接口处于禁用状态',
+                    },
+                    {
+                        state: 'USE_VALIDDATE',
+                        description: '接口使用效期已过',
+                    },
+                    {
+                        state: 'TABLE_NOT_EXISTENT',
+                        description: '表名称不存在或为空',
+                    },
+                    {
+                        state: 'COLUMN_NOT_EXISTENT',
+                        description: '列名称错误或者为空',
+                    },
+                    {
+                        state: 'NO_PERMISSIONS',
+                        description: '没有接口使用权限',
+                    },
+                    {
+                        state: 'START_DATE_ERROR',
+                        description: '接口开始使用日期未到',
                     },
                     {
                         state: 'EXCEPTION',
@@ -99,7 +272,15 @@
                     .then(res => {
                         this.ipAndPort = "http://" + res.data.ipAndPort +
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
-                        this.requestAddress = this.ipAndPort + "?user_id=1015&uer_password=111111"
+                        this.requestAddressForToken =
+                            this.ipAndPort +
+                            "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
+                            "&selectColumn=column1,column2&whereColumn=user_name=zhangsan&num=10" +
+                            "&dataType=json&outType=file";
+                        this.requestAddress = this.ipAndPort +
+                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
+                            "&tableName=emp&selectColumn=column1,column2" +
+                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=file";
                     })
             },
         }
@@ -109,7 +290,7 @@
 <style scoped>
     .el-icon-s-operation {
         margin-bottom: 10px;
-        margin-right: 1000px;
+        margin-right: 980px;
         font-size: 20px;
         text-align: center;
         color: #2196f3;
