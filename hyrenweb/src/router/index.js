@@ -149,9 +149,39 @@ export default new Router({
                 // db文件采集
                 {
                     path: '/collection4_1',
-                    name: 'ftpCollect',
+                    name: 'ftpCollect1',
                     title: '采集ftp agent',
                     component: () => import('@/hrds/b/dbAgentcollect/step1.vue')
+                },
+                {
+                    path: '/collection4_2',
+                    name: 'ftpCollect2',
+                    title: '采集ftp agent',
+                    component: () => import('@/hrds/b/dbAgentcollect/step2.vue')
+                },
+                {
+                    path: '/collection4_3',
+                    name: 'ftpCollect3',
+                    title: '采集ftp agent',
+                    component: () => import('@/hrds/b/dbAgentcollect/step3.vue')
+                },
+                {
+                    path: '/collection4_4',
+                    name: 'ftpCollect4',
+                    title: '采集ftp agent',
+                    component: () => import('@/hrds/b/dbAgentcollect/step4.vue')
+                },
+                {
+                    path: '/collection4_5',
+                    name: 'ftpCollect5',
+                    title: '采集ftp agent',
+                    component: () => import('@/hrds/b/dbAgentcollect/step5.vue')
+                },
+                {
+                    path: '/collection4_6',
+                    name: 'ftpCollect6',
+                    title: '采集ftp agent',
+                    component: () => import('@/hrds/b/dbAgentcollect/step6.vue')
                 },
                 // 非结构化 Agent采集
                 {

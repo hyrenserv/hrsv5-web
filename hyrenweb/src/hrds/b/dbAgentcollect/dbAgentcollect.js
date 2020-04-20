@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 /**(0)
  * 获取非结构化采集配置页面初始化的值（代码项）
  */

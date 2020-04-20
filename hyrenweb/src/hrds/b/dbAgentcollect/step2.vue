@@ -102,22 +102,51 @@ export default {
         // 下一步
         // 接口
         nextSteps() {
+            let data = {}
+            if (this.$route.query.edit == 'yes') {
+                data = {
+                    agent_id: this.$route.query.agent_id,
+                    id: this.$route.query.id,
+                    sourceId: this.$route.query.sourceId,
+                    source_name: this.$route.query.source_name,
+                    edit: "yes"
+                }
+            } else {
+                data = {
+                    agent_id: this.$route.query.agent_id,
+                    id: this.$route.query.id,
+                    sourceId: this.$route.query.sourceId,
+                    source_name: this.$route.query.source_name,
+                }
+            }
             this.$router.push({
-                name: "step3",
-                // query: {
-                //     agent_id: this.$route.query.agent_id,
-                //     id: this.$route.query.odc_id
-                // }
+                path: "/collection4_3",
+                query: data
             })
+
         },
         //上一步
         backSteps() {
+             let data = {}
+            if (this.$route.query.edit == 'yes') {
+                data = {
+                    agent_id: this.$route.query.agent_id,
+                    id: this.$route.query.id,
+                    sourceId: this.$route.query.sourceId,
+                    source_name: this.$route.query.source_name,
+                    edit: "yes"
+                }
+            } else {
+                data = {
+                    agent_id: this.$route.query.agent_id,
+                    id: this.$route.query.id,
+                    sourceId: this.$route.query.sourceId,
+                    source_name: this.$route.query.source_name,
+                }
+            }
             this.$router.push({
                 name: "collection4_1",
-                query: {
-                    agent_id: this.$route.query.agent_id,
-                    source_id: this.$route.query.sourceId
-                }
+                query:data
             })
         },
     },

@@ -643,7 +643,7 @@ export default {
     },
     data() {
         return {
-            active: 2,
+            active: 3,
             isLoading:false,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
@@ -817,7 +817,7 @@ export default {
                     this.isLoading=false
                     if(res.code==200){
                            this.$router.push({
-                        path: "/collection1_4",
+                        path: "/collection4_5",
                         query: data
                     });
                     }
@@ -840,13 +840,14 @@ export default {
                 };
             } else {
                 data = {
+                    agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
                     source_name: this.$Base64.encode(this.sName)
                 };
             }
             this.$router.push({
-                path: "/collection1_2",
+                path: "/collection4_3",
                 query: data
             });
         },
@@ -868,7 +869,7 @@ export default {
                     } else if (key == "compflag") {
                         if (arr[i][key] == 0) {
                             arr[i][key] = false;
-                        } else if (arr[i][key] == "1") {
+                        } else {
                             arr[i][key] = true;
                         }
                         json.complementFlag = arr[i][key];
@@ -877,14 +878,14 @@ export default {
                     } else if (key == "replaceflag") {
                         if (arr[i][key] == 0) {
                             arr[i][key] = false;
-                        } else if (arr[i][key] == "1") {
+                        } else {
                             arr[i][key] = true;
                         }
                         json.replaceFlag = arr[i][key];
                     } else if (key == "trimflag") {
                         if (arr[i][key] == 0) {
                             arr[i][key] = false;
-                        } else if (arr[i][key] == "1") {
+                        } else{
                             arr[i][key] = true;
                         }
                         json.trimFlag = arr[i][key];
@@ -970,6 +971,7 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getCleanConfInfo(params).then(res => {
+                console.log(res.data)
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -1042,6 +1044,7 @@ export default {
             addTaskAllFun.saveAllTbCleanConfigInfo(params).then(res => {
                 message.saveSuccess(res);
                 this.colSetid = null;
+                this.cleantableDataFun()
             });
         },
         // 全表清洗优先级
@@ -1157,34 +1160,35 @@ export default {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
+                    console.log(res.data)
                     let arrdata = res.data;
                     for (let i = 0; i < arrdata.length; i++) {
-                        if (arrdata[i].codevalueflag == "1") {
+                        if (arrdata[i].codevalueflag != "0") {
                             arrdata[i].codevalueflag = true;
                         } else {
                             arrdata[i].codevalueflag = false;
                         }
-                        if (arrdata[i].compflag == "1") {
+                        if (arrdata[i].compflag != "0") {
                             arrdata[i].compflag = true;
                         } else {
                             arrdata[i].compflag = false;
                         }
-                        if (arrdata[i].formatflag == "1") {
+                        if (arrdata[i].formatflag != "0") {
                             arrdata[i].formatflag = true;
                         } else {
                             arrdata[i].formatflag = false;
                         }
-                        if (arrdata[i].replaceflag == "1") {
+                        if (arrdata[i].replaceflag != "0") {
                             arrdata[i].replaceflag = true;
                         } else {
                             arrdata[i].replaceflag = false;
                         }
-                        if (arrdata[i].splitflag == "1") {
+                        if (arrdata[i].splitflag != "0") {
                             arrdata[i].splitflag = true;
                         } else {
                             arrdata[i].splitflag = false;
                         }
-                        if (arrdata[i].trimflag == "1") {
+                        if (arrdata[i].trimflag != "0") {
                             arrdata[i].trimflag = true;
                         } else {
                             arrdata[i].trimflag = false;
@@ -1320,6 +1324,10 @@ export default {
         },
         // 点击表字符替换显示弹框
         table_zfthFun(index, tableid, compflags) {
+             this.table_zfth=[{
+                field: "",
+                replace_feild: ""
+            }],
             this.dialogTable_zfth = true;
             if (compflags != 0 || compflags) {
                 let params = {};

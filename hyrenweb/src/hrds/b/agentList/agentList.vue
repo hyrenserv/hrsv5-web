@@ -242,12 +242,12 @@ export default {
             params["agentId"] = row.agent_id;
             agentList.getTaskInfo(params).then(res => {
                 console.log(res)
-                let arrdata = res.data ? res.data : [];
+                let arrdata = res? res.data : [];
                 for (let i = 0; i < arrdata.length; i++) {
                     arrdata[i].agent_type = row.agent_type;
                 }
                 this.taskMang = arrdata;
-                if(res.data.length>0){
+                if(arrdata.length>0){
                 this.tableloadingInfo=''
                 }else{
                     this.tableloadingInfo='暂无数据'
