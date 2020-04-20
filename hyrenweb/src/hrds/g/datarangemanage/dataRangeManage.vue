@@ -218,6 +218,7 @@
                             }
                             this.$refs.multipleTable.clearSelection();
                             this.form = [];
+                            this.tableData=[];
                             this.searchUserInfo();
                             this.searchDataUsageRangeInfoToTreeData();
                         })
