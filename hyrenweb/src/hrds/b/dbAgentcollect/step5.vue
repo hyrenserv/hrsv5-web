@@ -337,6 +337,7 @@ export default {
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
+            console.log(res)
             if (res) {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
@@ -345,30 +346,50 @@ export default {
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-                        this.oldTbData = res ? res.data : [];
-                        for (var i = 0; i < arr.length; i++) {
-                            for (let j = 0; j < this.oldTbData.length; j++) {
-                                if (arr[i].table_id == this.oldTbData[j].tableId) {
-                                    if (this.oldTbData[j].dslIds.length > 0) {
-                                        arr[i].table_setting = true;
-                                    } else {
-                                        arr[i].table_setting = false;
+                        console.log(res)
+                        if (res) {
+                            this.oldTbData = res.data != '' ? res.data : [];
+                        }
+                        if (this.oldTbData.length > 0) {
+                            for (var i = 0; i < arr.length; i++) {
+                                for (let j = 0; j < this.oldTbData.length; j++) {
+                                    if (arr[i].table_id == this.oldTbData[j].tableId) {
+                                        if (this.oldTbData[j].dslIds.length > 0) {
+                                            arr[i].table_setting = true;
+                                        } else {
+                                            arr[i].table_setting = false;
+                                        }
                                     }
                                 }
+                                if (arr[i].is_zipper == "1") {
+                                    arr[i].is_zipper = true;
+                                } else {
+                                    arr[i].is_zipper = false;
+                                }
+                                if (!arr[i].storage_type) {
+                                    arr[i].storage_type = "";
+                                }
+                                if (!arr[i].storage_time) {
+                                    arr[i].storage_time = "";
+                                }
                             }
-                            if (arr[i].is_zipper == "1") {
-                                arr[i].is_zipper = true;
-                            } else {
-                                arr[i].is_zipper = false;
+                            this.ruleForm.ex_destinationData = arr;
+                        } else {
+                            for (var i = 0; i < arr.length; i++) {
+                                if (arr[i].is_zipper == "1") {
+                                    arr[i].is_zipper = true;
+                                } else {
+                                    arr[i].is_zipper = false;
+                                }
+                                if (!arr[i].storage_type) {
+                                    arr[i].storage_type = "";
+                                }
+                                if (!arr[i].storage_time) {
+                                    arr[i].storage_time = "";
+                                }
                             }
-                            if (!arr[i].storage_type) {
-                                arr[i].storage_type = "";
-                            }
-                            if (!arr[i].storage_time) {
-                                arr[i].storage_time = "";
-                            }
+                            this.ruleForm.ex_destinationData = arr;
                         }
-                        this.ruleForm.ex_destinationData = arr;
 
                     });
                 }
@@ -387,6 +408,10 @@ export default {
     },
 
     methods: {
+        //获取初始数据，数据抽取及入库
+        getTbStoDestByColSetIdFun() {
+
+        },
         next(formName) {
             let dataAll = this.ruleForm.ex_destinationData;
             this.$refs[formName].validate(valid => {
@@ -489,12 +514,13 @@ export default {
             } else {
                 data = {
                     id: this.$route.query.id,
+                    agent_id: this.aId,
                     source_id: this.sourId,
                     source_name: this.$Base64.encode(this.sName)
                 };
             }
             this.$router.push({
-                path: "/collection1_6",
+                path: "/collection4_6",
                 query: data
             });
         },
@@ -510,13 +536,14 @@ export default {
                 };
             } else {
                 data = {
+                    agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
                     source_name: this.$Base64.encode(this.sName)
                 };
             }
             this.$router.push({
-                path: "/collection1_4",
+                path: "/collection4_4",
                 query: data
             });
         },

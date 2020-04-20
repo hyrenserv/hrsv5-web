@@ -452,11 +452,12 @@ export default {
                         functionAll.updateDataFile(obj).then(res => {
                             if (res && res.success) {
                                 this.$router.push({
-                                    path: "/step2",
+                                    path: "/collection4_2",
                                     query: {
-                                        colSetId: res.data,
+                                        id: res.data,
                                         agent_id: this.$route.query.agent_id,
-                                        sourceId: this.$route.query.source_id
+                                        sourceId: this.$route.query.source_id,
+                                        source_name: this.$route.query.source_name,
                                     }
                                 })
                             }
@@ -464,13 +465,26 @@ export default {
                     } else {
                         functionAll.saveDataFile(obj).then(res => {
                             if (res && res.success) {
-                                this.$router.push({
-                                    path: "/step2",
-                                    query: {
-                                        colSetId: res.data,
+                                let data = {}
+                                if (this.$route.query.edit == 'yes') {
+                                    data = {
                                         agent_id: this.$route.query.agent_id,
-                                        sourceId: this.$route.query.source_id
+                                        id: this.$route.query.id,
+                                        sourceId: this.$route.query.sourceId,
+                                        source_name: this.$route.query.source_name,
+                                        edit: "yes"
                                     }
+                                } else {
+                                    data = {
+                                        agent_id: this.$route.query.agent_id,
+                                        id: this.$route.query.id,
+                                        sourceId: this.$route.query.sourceId,
+                                        source_name: this.$route.query.source_name,
+                                    }
+                                }
+                                this.$router.push({
+                                    path: "/collection4_2",
+                                    query: data
                                 })
                             }
                         })
