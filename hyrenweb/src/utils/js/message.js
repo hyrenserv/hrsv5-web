@@ -83,3 +83,12 @@ export function issueSuccess(data) {
         })
     }
 }
+export function sendSuccess(data) {
+    if (data && data.success) {
+        Message({
+            message: '发送成功',
+            type: 'success',
+            duration: 5 * 1000
+        })
+    }
+}
