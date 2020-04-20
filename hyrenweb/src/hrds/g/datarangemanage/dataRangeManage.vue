@@ -3,7 +3,7 @@
         <el-row>
             <i class="el-icon-s-data">数据使用范围</i>
             <router-link to="/serviceMage">
-                <el-button type="primary" size="medium" icon="el-icon-s-home">
+                <el-button type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
@@ -24,8 +24,8 @@
             </el-col>
             <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
                 <el-form ref="form" :model="form" label-width="100px" size="medium">
-                    <el-row><span>表信息列表
-                        <el-button class="button-save" type="success" size="medium"
+                    <el-row><span class="fontStyle">表信息列表
+                        <el-button class="button-save" type="success" size="mini"
                                    @click="saveTableData('form')">保存
                         </el-button>
                     </span></el-row>
@@ -134,7 +134,7 @@
                 selectRow: [],
                 tableData: [],
                 columnData: [],
-                selectColumn: [],
+                selectColumnRow: [],
                 userData: [],
                 treeData: [],
                 checkedAll: false,
@@ -168,11 +168,10 @@
             },
             // 选择字段
             searchFieldById(row, index) {
-                console.log(row)
                 this.index = index;
                 this.dialogShowFieldFormVisible = true;
                 let params = {};
-                params["dataSourceType"] = row.data_layer;
+                params["data_layer"] = row.data_layer;
                 params["file_id"] = row.file_id;
                 interfaceFunctionAll.searchFieldById(params).then(res => {
                     this.columnData = res.data;
@@ -181,10 +180,9 @@
             },
             // 保存表数据
             saveTableData(formName) {
-                console.log(this.selectRow)
                 let params = {};
                 let tableDataInfos = [];
-                if (this.selectRow.length == 0) {
+                if (this.selectRow.length === 0) {
                     this.$message({
                         message: "请至少选择一条数据",
                         type: 'warning'
@@ -195,7 +193,7 @@
                     let param = {};
                     let column_id = [];
                     let column_name = [];
-                    if (row.selectColumn != undefined) {
+                    if (row.selectColumn !== undefined) {
                         row.selectColumn.forEach(o => {
                             column_id.push(o.column_id);
                             column_name.push(o.field_en_name);
@@ -207,7 +205,7 @@
                     tableDataInfos.push(param)
                 });
                 params["tableDataInfos"] = JSON.stringify(tableDataInfos);
-                params["dataSourceType"] = this.selectRow[0].data_layer;
+                params["data_layer"] = this.selectRow[0].data_layer;
                 params["user_id"] = this.form.user_id;
                 params["table_note"] = this.form.table_note;
                 this.$refs[formName].validate(valid => {
@@ -215,10 +213,11 @@
                         // 处理参数
                         interfaceFunctionAll.saveTableData(params).then((res) => {
                             message.saveSuccess(res);
-                            this.$refs.multipleColumnTable.clearSelection();
+                            if (this.selectRow.selectColumn !== undefined) {
+                                this.$refs.multipleColumnTable.clearSelection();
+                            }
                             this.$refs.multipleTable.clearSelection();
                             this.form = [];
-                            this.tableData = []
                             this.searchUserInfo();
                             this.searchDataUsageRangeInfoToTreeData();
                         })
@@ -249,30 +248,20 @@
             beforeShowFieldClose() {
                 this.dialogShowFieldFormVisible = false;
             },
-            // 全选
+            // 表全选
             allSelect(all) {
                 this.selectRow = all
             },
-            // 复选框选中
+            // 表复选框选中
             selectionChange(selectTrue) {
                 this.selectRow = selectTrue
             },
             // 选择字段全选
             allColumnSelect(all) {
-                this.selectColumn.forEach(o => {
-                    if (all.indexOf(o) > -1) {
-                        all.splice(o, 1)
-                    }
-                });
                 this.tableData[this.index].selectColumn = all;
             },
             // 选择字段复选框选中
             columnSelectionChange(selectTrue) {
-                this.selectColumn.forEach(o => {
-                    if (selectTrue.indexOf(o) > -1) {
-                        selectTrue.splice(o, 1)
-                    }
-                });
                 this.tableData[this.index].selectColumn = selectTrue;
             },
             // 取消
@@ -282,8 +271,8 @@
             },
             // 确认
             addColumn() {
-                this.selectColumn = this.tableData[this.index].selectColumn;
-                this.dialogShowFieldFormVisible = false
+                this.$refs.multipleColumnTable.clearSelection();
+                this.dialogShowFieldFormVisible = false;
             },
             // 搜索过滤节点
             filterNode(value, data) {
@@ -363,8 +352,8 @@
 
     .el-icon-s-data {
         margin-bottom: 10px;
-        margin-right: 1050px;
-        font-size: 20px;
+        margin-right: 1100px;
+        font-size: 18px;
         text-align: center;
         color: #2196f3;
     }
@@ -372,7 +361,10 @@
     .button-save {
         margin-left: 800px;
     }
-
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
+    }
     .locationcenter {
         text-align: center;
         margin-top: 5px;

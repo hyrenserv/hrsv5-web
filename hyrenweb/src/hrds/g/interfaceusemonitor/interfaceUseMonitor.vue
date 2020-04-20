@@ -3,7 +3,7 @@
         <el-row>
             <i class="el-icon-s-check">接口使用监控</i>
             <router-link to="/serviceMage">
-                <el-button type="primary" size="medium" icon="el-icon-s-home">
+                <el-button type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
@@ -31,10 +31,10 @@
                 </span>
                     </el-col>
                     <el-col :span="8">
-                        <el-button type="success" size="medium" icon="el-icon-search"
+                        <el-button type="success" size="mini" icon="el-icon-search"
                                    @click="searchInterfaceInfoByIdOrDate">查询
                         </el-button>
-                        <el-button type="danger" size="medium" icon="el-icon-refresh"
+                        <el-button type="danger" size="mini" icon="el-icon-refresh"
                                    @click="resetInterfaceTable">重置
                         </el-button>
                     </el-col>
@@ -100,10 +100,10 @@
                         </span>
                     </el-col>
                     <el-col :span="8">
-                        <el-button type="success" size="medium" icon="el-icon-search"
+                        <el-button type="success" size="mini" icon="el-icon-search"
                                    @click="searchTableDataById">查询
                         </el-button>
-                        <el-button type="danger" size="medium" icon="el-icon-refresh"
+                        <el-button type="danger" size="mini" icon="el-icon-refresh"
                                    @click="resetDataTable">重置
                         </el-button>
                     </el-col>
@@ -393,8 +393,8 @@
 <style scoped>
     .el-icon-s-check {
         margin-bottom: 10px;
-        margin-right: 1050px;
-        font-size: 20px;
+        margin-right: 1100px;
+        font-size: 18px;
         text-align: center;
         color: #2196f3;
     }

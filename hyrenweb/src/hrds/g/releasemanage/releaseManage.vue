@@ -3,7 +3,7 @@
         <el-row>
             <i class="el-icon-menu">接口功能类</i>
             <router-link to="/serviceMage">
-                <el-button type="primary" size="medium" icon="el-icon-s-home">
+                <el-button type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
@@ -11,8 +11,8 @@
         <el-divider/>
         <el-form ref="form" :inline=true :model="form" label-width="100px" size="medium">
             <el-row>
-            <span>接口功能设置
-                <el-button class="button-save" type="success" size="medium"
+            <span class="fontStyle">接口功能设置
+                <el-button class="button-save" type="success" size="mini"
                            @click="saveInterfaceUseInfo('form')">保存
                 </el-button>
             </span>
@@ -271,8 +271,8 @@
 <style scoped>
     .el-icon-menu {
         margin-bottom: 10px;
-        margin-right: 1050px;
-        font-size: 20px;
+        margin-right: 1100px;
+        font-size: 18px;
         text-align: center;
         color: #2196f3;
     }
@@ -292,5 +292,9 @@
     .locationcenter {
         text-align: center;
         margin-top: 5px;
+    }
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
     }
 </style>

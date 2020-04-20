@@ -3,24 +3,24 @@
         <el-row>
             <i class="el-icon-user"><span>用户列表</span></i>
             <router-link to="/serviceMage">
-                <el-button class="elButton" type="primary" size="medium" icon="el-icon-s-home">
+                <el-button class="elButton" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
-            <el-button class="elButton" type="primary" size="medium" icon="el-icon-user-solid"
-                       @click="addUserFun()">
+            <el-button class="elButton" type="primary" size="mini" icon="el-icon-user-solid"
+                       @click="addUserButton()">
                 添加用户
             </el-button>
         </el-row>
         <el-divider/>
         <el-row style="margin-bottom:10px">
-            <span>用户名称：
+            <span >用户名称：
                  <el-input placeholder="请输入内容"  clearable size="medium" v-model="user_name">
                  </el-input>
-                <el-button type="success" size="medium" icon="el-icon-search"
+                <el-button type="success" size="mini" icon="el-icon-search"
                            @click="selectUserInfoByPage(1,10)">查询
                 </el-button>
-                <el-button type="danger" size="medium" icon="el-icon-refresh"
+                <el-button type="danger" size="mini" icon="el-icon-refresh"
                            @click="selectUserInfoByPage(1,10)">重置</el-button>
             </span>
         </el-row>
@@ -79,7 +79,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogAddUserFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addUserFun('addUserForm')">保 存</el-button>
+                <el-button type="primary" @click="addUser('addUserForm')">保 存</el-button>
             </div>
         </el-dialog>
         <!--编辑用户弹出框-->
@@ -106,7 +106,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogUpdateUserFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateUserFun('updateUserForm')">保 存</el-button>
+                <el-button type="primary" @click="updateUser('updateUserForm')">保 存</el-button>
             </div>
         </el-dialog>
     </div>
@@ -168,9 +168,11 @@
                     this.updateUserForm = res.data
                 });
             },
-            // 新增用户
-            addUserFun(formName) {
+            addUserButton(){
                 this.dialogAddUserFormVisible = true;
+            },
+            // 新增用户
+            addUser(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 处理参数
@@ -185,7 +187,7 @@
                 });
             },
             // 编辑更新用户
-            updateUserFun(formName) {
+            updateUser(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 处理参数
@@ -238,8 +240,8 @@
 <style scoped>
     .el-icon-user {
         margin-bottom: 10px;
-        margin-right: 960px;
-        font-size: 20px;
+        margin-right: 1020px;
+        font-size: 18px;
         text-align: center;
         color: #2196f3;
     }
@@ -257,7 +259,10 @@
         margin-right: 10px;
         width: 360px;
     }
-
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
+    }
     .locationcenter {
         text-align: center;
         margin-top: 5px;
