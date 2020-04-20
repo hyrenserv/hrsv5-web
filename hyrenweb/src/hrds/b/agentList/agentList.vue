@@ -104,7 +104,7 @@
                             <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
                         </el-col>
                         <el-col :span="5" class="sendmsg">
-                            <el-button type="text" class="sendcolor">发送</el-button>
+                            <el-button type="text" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
                         </el-col>
                         <el-col :span="9" class="sendmsg">
                             <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button>
@@ -241,6 +241,7 @@ export default {
             params["sourceId"] = row.source_id;
             params["agentId"] = row.agent_id;
             agentList.getTaskInfo(params).then(res => {
+                console.log(res)
                 let arrdata = res.data ? res.data : [];
                 for (let i = 0; i < arrdata.length; i++) {
                     arrdata[i].agent_type = row.agent_type;
@@ -353,6 +354,59 @@ export default {
                         agentList.deleteHalfStructTask(params).then(res => {
                             this.taskManagement(row);
                             message.deleteSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }
+                  
+                }
+            }
+        },
+        // 发送
+         taskSendBtn(type, row) {
+            for (let i = 0; i < this.CollectType.length; i++) {
+                if (this.CollectType[i].value == type) {
+                    if(this.CollectType[i].code=='1'){
+                        message.confirmMsg('确定发送吗').then(res => {
+                        let params = {};
+                        params["colSetId"] = row.id;
+                        agentList.sendDBCollctTaskById(params).then(res => {
+                            message.sendSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='2'){
+                    //文件系统agent--非结构化deleteNonStructTask
+                       message.confirmMsg('确定发送吗').then(res => {
+                        let params = {};
+                        params["colSetId"] = row.id;
+                        agentList.sendDBCollctTaskById(params).then(res => {
+                            message.sendSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='3'){
+                    //ftpagent
+                      message.confirmMsg('确定发送吗').then(res => {
+                        let params = {};
+                        params["colSetId"] = row.id;
+                        agentList.sendDBCollctTaskById(params).then(res => {
+                            message.sendSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='4'){
+                    //数据文件agent
+                       message.confirmMsg('确定发送吗').then(res => {
+                        let params = {};
+                        params["colSetId"] = row.id;
+                        agentList.sendDBCollctTaskById(params).then(res => {
+                            message.sendSuccess(res);
+                        });
+                    }).catch(() => {})
+                    }else if(this.CollectType[i].code=='5'){
+                    //对象agent--半结构化deleteHalfStructTask
+                       message.confirmMsg('确定发送吗').then(res => {
+                        let params = {};
+                        params["colSetId"] = row.id;
+                        agentList.sendDBCollctTaskById(params).then(res => {
+                            message.sendSuccess(res);
                         });
                     }).catch(() => {})
                     }
