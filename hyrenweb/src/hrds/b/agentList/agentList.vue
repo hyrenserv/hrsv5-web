@@ -305,6 +305,7 @@ export default {
         },
         //删除
         taskDelBtn(type, row) {
+            console.log(type, row)
             for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == type) {
                     if(this.CollectType[i].code=='1'){
