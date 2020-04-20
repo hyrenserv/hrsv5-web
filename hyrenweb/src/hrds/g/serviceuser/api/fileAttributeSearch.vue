@@ -9,10 +9,10 @@
             </router-link>
         </el-row>
         <el-divider/>
-        <el-row>
+        <el-row :gutter="20">
             <el-col :span="6">
                 <el-row>
-                    <span>请求方式</span>
+                    <span class="fontStyle">请求方式</span>
                 </el-row>
                 <el-row>
                     <el-input value="POST" :disabled="true" style="width: 260px;margin-top: 10px;">
@@ -21,7 +21,7 @@
             </el-col>
             <el-col :span="18">
                 <el-row>
-                    <span>请求URL</span>
+                    <span class="fontStyle">请求URL</span>
                 </el-row>
                 <el-row>
                     <el-input v-model="ipAndPort" :disabled="true" style="width: 900px;margin-top: 10px;"/>
@@ -29,7 +29,7 @@
             </el-col>
         </el-row>
         <el-divider/>
-        <span style="color: #2196f3;font-size: 18px">请求参数列表</span>
+        <span class="fontStyle">请求参数列表</span>
         <el-row>
             <!--请求参数列表展示-->
             <el-table :data="tableData" border>
@@ -40,61 +40,63 @@
             </el-table>
         </el-row>
         <el-divider/>
-        <el-row>
-            <span style="color: #2196f3;font-size: 18px">使用方式如下</span>
+        <el-row >
+            <span class="fontStyle">使用方式如下</span>
             <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px"
                       :disabled="true"/>
             <el-divider>或</el-divider>
             <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
         </el-row>
         <el-divider/>
-        <el-row>
-            <el-col :span="10">
-                <span style="color: #2196f3;font-size: 18px;margin-bottom: 20px">正常响应字段明细</span>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <span class="fontStyle">正常响应字段明细</span>
                 <!--请求参数列表展示-->
-                <el-table :data="responseData" border>
+                <el-table :data="responseData" border height="560px">
                     <el-table-column prop="field" label="响应字段" align="center"/>
                     <el-table-column prop="fieldType" label="字段类型" align="center"/>
                     <el-table-column prop="remark" label="描述" align="center"/>
                 </el-table>
             </el-col>
-            <el-col :span="14">
-                <span style="color: #2196f3;font-size: 18px;margin-bottom: 20px">正常显示如下：</span>
-                <pre style="font-size: 16px;width: 100%">
-                       {
-                            "status":"NORMAL",
-                            "message":[
-                                {
-                                    "source_path":"/test/文件采集/10265.docx",
-                                    "downloadpath":"http://xxx/downloadFileSDO.do?view_down_file_id=16100&view_down_file_name=10265.docx",
-                                    "file_suffix":"docx",
-                                    "file_id":"161009900000125958055591",
-                                    "storage_date":"20161009",
-                                    "storage_time":"125958",
-                                    "original_update_date":"20160922",
-                                    "original_update_time":"114526",
-                                    "file_md5":"ada1cde354c05f0e9240ecdb21961d1f",
-                                    "file_size":"15145.00",
-                                    "original_name":"10265.docx",
-                                    "fcs_name":"csss",
-                                    "collect_set_id":"1000000102",
-                                    "dep_id":"1000000102,100000201",
-                                    "datasource_name":"yuan",
-                                    "source_id":"1000000079",
-                                    "agent_name":"文件采集",
-                                    "agent_id":"1000000081",
-                                    "file_avro_path":"/hrds/395/B0/10/20161009/avro_1475988430834"
-                                    "file_avro_block":"368284464"
-                                }
-                            ]
-                        }
-                </pre>
+            <el-col :span="12" class="filtstyle">
+                <span class="fontStyle">正常显示如下：</span>
+                <scrollbar>
+                    <pre style="font-size: 16px;height: 530px">
+                           {
+                                "status":"NORMAL",
+                                "message":[
+                                    {
+                                        "source_path":"/test/文件采集/10265.docx",
+                                        "downloadpath":"http://xxx/downloadFileSDO.do?view_down_file_id=16100&view_down_file_name=10265.docx",
+                                        "file_suffix":"docx",
+                                        "file_id":"161009900000125958055591",
+                                        "storage_date":"20161009",
+                                        "storage_time":"125958",
+                                        "original_update_date":"20160922",
+                                        "original_update_time":"114526",
+                                        "file_md5":"ada1cde354c05f0e9240ecdb21961d1f",
+                                        "file_size":"15145.00",
+                                        "original_name":"10265.docx",
+                                        "fcs_name":"csss",
+                                        "collect_set_id":"1000000102",
+                                        "dep_id":"1000000102,100000201",
+                                        "datasource_name":"yuan",
+                                        "source_id":"1000000079",
+                                        "agent_name":"文件采集",
+                                        "agent_id":"1000000081",
+                                        "file_avro_path":"/hrds/395/B0/10/20161009/avro_1475988430834"
+                                        "file_avro_block":"368284464"
+                                    }
+                                ]
+                            }
+                    </pre>
+                </scrollbar>
             </el-col>
         </el-row>
         <el-divider/>
-        <el-row>
+        <el-row :gutter="20">
             <el-col :span="12">
-                <span style="color: #2196f3;font-size: 18px">错误响应字段明细</span>
+                <span class="fontStyle">错误响应字段明细</span>
                 <!--响应参数列表展示-->
                 <el-table :data="errorData" border>
                     <el-table-column prop="state" label="状态字段名" align="center"/>
@@ -102,7 +104,7 @@
                 </el-table>
             </el-col>
             <el-col :span="12">
-                <span style="color: #2196f3;font-size: 18px">错误响应如下：</span>
+                <span class="fontStyle">错误响应如下：</span>
                 <pre style="font-size: 16px;">
                     {
                         "status":UNAUTHORIZED,
@@ -115,9 +117,13 @@
 </template>
 <script>
     import * as interfaceFunctionAll from "./api";
+    import Scrollbar from '../../../components/scrollbar';
 
     export default {
         name: "fileAttributeSearch",
+        components: {
+            Scrollbar
+        },
         data() {
             return {
                 ipAndPort: '',
@@ -380,5 +386,14 @@
         font-size: 20px;
         text-align: center;
         color: #2196f3;
+    }
+
+    .filtstyle >>> .scrollbar-wrap .scrollbar__content {
+        position: relative;
+    }
+
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
     }
 </style>

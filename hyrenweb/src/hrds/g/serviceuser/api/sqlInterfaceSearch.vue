@@ -9,10 +9,10 @@
         </router-link>
     </el-row>
     <el-divider/>
-    <el-row>
+    <el-row :gutter="20">
         <el-col :span="6">
             <el-row>
-                <span>请求方式</span>
+                <span class="fontStyle">请求方式</span>
             </el-row>
             <el-row>
                 <el-input value="POST" :disabled="true" style="width: 260px;margin-top: 10px;">
@@ -21,7 +21,7 @@
         </el-col>
         <el-col :span="18">
             <el-row>
-                <span>请求URL</span>
+                <span class="fontStyle">请求URL</span>
             </el-row>
             <el-row>
                 <el-input v-model="ipAndPort" :disabled="true" style="width: 900px;margin-top: 10px;"/>
@@ -29,7 +29,7 @@
         </el-col>
     </el-row>
     <el-divider/>
-    <span style="color: #2196f3;font-size: 18px">请求参数列表</span>
+    <span class="fontStyle">请求参数列表</span>
     <el-row>
         <!--请求参数列表展示-->
         <el-table :data="tableData" border>
@@ -41,16 +41,16 @@
     </el-row>
     <el-divider/>
     <el-row>
-        <span style="color: #2196f3;font-size: 18px">使用方式如下</span>
+        <span class="fontStyle">使用方式如下</span>
         <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px"
                   :disabled="true"/>
         <el-divider>或</el-divider>
         <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
     </el-row>
     <el-divider/>
-    <el-row>
+    <el-row :gutter="20">
         <el-col :span="12">
-            <span style="color: #2196f3;font-size: 18px">outType=stream, dataType=JSON 正常显示如下</span>
+            <span class="fontStyle">outType=stream, dataType=JSON 正常显示如下</span>
             <pre style="font-size: 16px;">
                    {
                     "status":"NORMAL",
@@ -68,7 +68,7 @@
             </pre>
         </el-col>
         <el-col :span="12">
-            <span style="color: #2196f3;font-size: 18px">outType=stream, dataType=CSV 正常显示如下</span>
+            <span class="fontStyle">outType=stream, dataType=CSV 正常显示如下</span>
             <pre style="font-size: 16px;">
                 age,phone,user_email,sex
                 30,123456789,1232313@aa.com,nan
@@ -86,7 +86,7 @@
     </el-row>
     <el-divider/>
     <el-row>
-        <span style="color: #2196f3;font-size: 18px">输出的数据形式(file)正常显示如下</span>
+        <span class="fontStyle">输出的数据形式(file)正常显示如下</span>
         <pre style="font-size: 16px;">
                {
                     "message":{
@@ -99,9 +99,9 @@
             </pre>
     </el-row>
     <el-divider/>
-    <el-row>
+    <el-row :gutter="20">
         <el-col :span="12">
-            <span style="color: #2196f3;font-size: 18px">错误响应字段明细</span>
+            <span class="fontStyle">错误响应字段明细</span>
             <!--响应参数列表展示-->
             <el-table :data="errorData" border>
                 <el-table-column prop="state" label="状态字段名" align="center"/>
@@ -109,7 +109,7 @@
             </el-table>
         </el-col>
         <el-col :span="12">
-            <span style="color: #2196f3;font-size: 18px">错误响应如下：</span>
+            <span class="fontStyle">错误响应如下：</span>
                 <pre style="font-size: 16px;">
                     {
                         "status":UNAUTHORIZED,
@@ -261,5 +261,9 @@
         font-size: 20px;
         text-align: center;
         color: #2196f3;
+    }
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
     }
 </style>

@@ -9,10 +9,10 @@
             </router-link>
         </el-row>
         <el-divider/>
-        <el-row>
+        <el-row :gutter="20">
             <el-col :span="6">
                 <el-row>
-                    <span>请求方式</span>
+                    <span class="fontStyle">请求方式</span>
                 </el-row>
                 <el-row>
                     <el-input value="POST" :disabled="true" style="width: 260px;margin-top: 10px;">
@@ -21,7 +21,7 @@
             </el-col>
             <el-col :span="18">
                 <el-row>
-                    <span>请求URL</span>
+                    <span class="fontStyle">请求URL</span>
                 </el-row>
                 <el-row>
                     <el-input v-model="ipAndPort" :disabled="true"
@@ -31,7 +31,7 @@
             </el-col>
         </el-row>
         <el-divider/>
-        <span style="color: #2196f3;font-size: 18px">请求参数列表</span>
+        <span class="fontStyle">请求参数列表</span>
         <el-row>
             <!--请求参数列表展示-->
             <el-table :data="tableData" border>
@@ -43,15 +43,16 @@
         </el-row>
         <el-divider/>
         <el-row>
-            <span style="color: #2196f3;font-size: 18px">使用方式如下</span>
-            <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
+            <span class="fontStyle">使用方式如下</span>
+            <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px"
+                      :disabled="true"/>
             <el-divider>或</el-divider>
             <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
         </el-row>
         <el-divider/>
-        <el-row>
+        <el-row :gutter="20">
             <el-col :span="12">
-                <span style="color: #2196f3;font-size: 18px">错误响应字段明细</span>
+                <span class="fontStyle">错误响应字段明细</span>
                 <!--响应参数列表展示-->
                 <el-table :data="errorData" border>
                     <el-table-column prop="state" label="状态字段名" align="center"/>
@@ -59,7 +60,7 @@
                 </el-table>
             </el-col>
             <el-col :span="12">
-                <span style="color: #2196f3;font-size: 18px">错误显示如下：</span>
+                <span class="fontStyle">错误显示如下：</span>
                 <pre style="font-size: 16px;">
                     {
                         "status":404,
@@ -176,5 +177,10 @@
     .el-table {
         width: 100%;
         margin-top: 10px;
+    }
+
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
     }
 </style>
