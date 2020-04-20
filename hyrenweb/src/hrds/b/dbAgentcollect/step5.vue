@@ -29,27 +29,8 @@
                         <i class="el-icon-question" aria-hidden="true">选择目的地</i>
                     </el-tooltip>
                 </template>
-                <!--  <template slot="header">
-          <el-checkbox>
-            <span class="allclickColor">选择目的地</span>
-          </el-checkbox>
-          </template>-->
                 <template slot-scope="scope">
-                    <!--   <el-checkbox
-            @change="dialogChooseDestination=true"
-            key="1"
-            v-if="scope.row.data_extract_type=='1'"
-            disabled
-            v-model="scope.row.data_extract_type"
-          ></el-checkbox>
-          <el-checkbox
-            @change="ChooseDestination(scope.row,scope.$index)"
-            key="2"
-            v-if="scope.row.data_extract_type=='2'"
-            v-model="scope.row.data_extract_type"
-
-            ></el-checkbox>-->
-                    <span class="settingbtn" v-if="scope.row.data_extract_type=='2'" @click="ChooseDestination(scope.row,scope.$index)">
+                    <span class="settingbtn" v-if="scope.row.data_extract_type!='1'" @click="ChooseDestination(scope.row,scope.$index)">
                         <el-button type="success" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
                         <el-button type="warning" size="mini" v-else @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
                     </span>
@@ -62,7 +43,7 @@
                     </el-checkbox>
                 </template>
                 <template slot-scope="scope">
-                    <el-checkbox :checked="scope.row.is_zipper" v-model="scope.row.is_zipper" v-if="scope.row.data_extract_type=='2'" @change="is_zipperFun(scope.row)"></el-checkbox>
+                    <el-checkbox :checked="scope.row.is_zipper" v-model="scope.row.is_zipper" v-if="scope.row.data_extract_type!='1'" @change="is_zipperFun(scope.row)"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column label=" 存储方式" align="center">
@@ -84,7 +65,7 @@
                     </el-popover>
                 </template>
                 <template slot-scope="scope">
-                    <div v-if="scope.row.data_extract_type=='2'">
+                    <div v-if="scope.row.data_extract_typ!=='1'">
                         <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium" v-if="scope.row.is_zipper==false" disabled>
                             <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select>
@@ -114,7 +95,7 @@
                     </el-popover>
                 </template>
                 <template slot-scope="scope">
-                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.storage_time'" :rules="rule.default" v-if="scope.row.data_extract_type=='2'">
+                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.storage_time'" :rules="rule.default" v-if="scope.row.data_extract_type!='1'">
                         <el-input size="medium" v-model="scope.row.storage_time"></el-input>
                     </el-form-item>
                 </template>
@@ -167,9 +148,9 @@
         </div>
     </el-dialog>
     <!-- 查看详情 -->
-    <el-dialog title=" 关系型数据库" :visible.sync="dialogViewDetails" width="60%" class="alltable">
+    <el-dialog title=" 查看详情" :visible.sync="dialogViewDetails" width="60%" class="alltable">
         <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">关系型数据库</span>
+            <span class="dialogtitle el-icon-caret-right">查看详情</span>
         </div>
         <table v-if="viewDatilsData==''" class="mailTable" border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -428,7 +409,7 @@ export default {
                         }else{
                           arr[i].is_zipper = "0";
                         } */
-                        if (arr[i].data_extract_type == "2") {
+                        if (arr[i].data_extract_type != "1") {
                             tbStoInfoString.push({
                                 is_zipper: arr[i].is_zipper ? "1" : "0",
                                 storage_time: parseInt(arr[i].storage_time),
@@ -468,6 +449,7 @@ export default {
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
                         params["colSetId"] = parseInt(this.dbid);
                         params["dslIdString"] = JSON.stringify(dslIdString);
+                        console.log(params)
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
                                 this.submit_1 = true;
@@ -1121,7 +1103,7 @@ export default {
     margin-right: 4px;
     display: inline-block;
     position: absolute;
-    left: -6%;
+    left: -5%;
 }
 
 .steps5>>>.el-icon-question:before {

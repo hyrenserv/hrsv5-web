@@ -768,7 +768,7 @@ export default {
     created() {
         this.dbid = this.$route.query.id;
         this.aId = this.$route.query.agent_id;
-        this.sourId = this.$route.query.source_id;
+        this.sourId = this.$route.query.sourceId;
         this.sName = this.$Base64.decode(this.$route.query.source_name);
     },
     mounted() {
@@ -810,7 +810,7 @@ export default {
             if (tbCleanString.length > 0) {
                 let params = {};
                 params["tbCleanString"] = JSON.stringify(tbCleanString);
-                params["colSetId"] = this.databaseId;
+                params["colSetId"] = parseInt(this.databaseId);
                 console.log(params)
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     // this.dbid = res.data;
