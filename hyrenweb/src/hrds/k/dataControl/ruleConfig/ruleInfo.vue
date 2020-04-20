@@ -370,8 +370,6 @@
                 ed_rule_level_map: {},
                 not_range_num: '',
                 total_box: '',
-                //初始化数据
-                is_flag: [{'0': '否',}, {'1': '是'}],
                 //系统帮助提示信息
                 dq_help_info_s: [{help_info_id: '', help_info_desc: '', help_info_dtl: ''}],
                 dq_help_info_map: {
@@ -578,7 +576,6 @@
             },
             //保存规则信息
             saveRuleData(form_dq_data) {
-                console.log(form_dq_data);
                 this.$refs[form_dq_data].validate(valid => {
                     if (valid) {
                         if (this.operation_type === 'add') {
@@ -689,7 +686,14 @@
                 let case_type = this.form_dq_data.case_type;
                 let target_tab = this.form_dq_data.target_tab;
                 let opposite_tab = this.form_dq_data.opposite_tab;
-                let list_vals = this.form_dq_data.list_vals;
+                let check_list_filter = '';
+                if ('undefined' !== typeof this.form_dq_data.check_list_filter) {
+                    check_list_filter = this.form_dq_data.check_list_filter;
+                }
+                let list_vals = '';
+                if ('undefined' !== typeof this.form_dq_data.list_vals) {
+                    list_vals = this.form_dq_data.list_vals;
+                }
                 let target_key_fields = this.form_dq_data.target_key_fields;
                 let opposite_key_fields = this.form_dq_data.opposite_key_fields;
                 let range_min_val = this.form_dq_data.range_min_val;
@@ -703,8 +707,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t COUNT(1) AS index1,COUNT(1) \n FROM \n\t " + target_tab + " T1 \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -714,9 +718,9 @@
                     sql = sql.substr(0, sql.length - 4);
                     sql += ";";
                     //设置检查的总记录数
-                    sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t" + target_tab;
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "\n WHERE \n\t(" + this.form_dq_data.check_list_filter + ")";
+                    sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t " + target_tab;
+                    if ('' !== check_list_filter) {
+                        sql = sql + "\n WHERE \n\t (" + check_list_filter + ")";
                     }
                     sql += ";";
                 } else if ("COL FK" === case_type) {
@@ -724,8 +728,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t COUNT(1) AS index1,COUNT(1) \n FROM \n\t " + target_tab + " T1 \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -736,9 +740,9 @@
                     sql = sql.substr(0, sql.length - 4);
                     sql += ";";
                     //设置检查的总记录数
-                    sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t" + target_tab;
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "\n WHERE \n\t(" + this.form_dq_data.check_list_filter + ")";
+                    sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t " + target_tab;
+                    if ('' !== check_list_filter) {
+                        sql = sql + "\n WHERE \n\t(" + check_list_filter + ")";
                     }
                     sql += ";";
                 } else if ("COL PK" === case_type) {
@@ -755,8 +759,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t COUNT(1) AS index1, COUNT(1) \n FROM \n\t " + target_tab + " \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -768,8 +772,8 @@
                     sql += ";";
                     //设置检查的总记录数
                     sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t " + target_tab;
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "\n WHERE \n\t(" + this.form_dq_data.check_list_filter + ")";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "\n WHERE \n\t(" + check_list_filter + ")";
                     }
                     sql += ";";
                 } else if ("COL REGULAR" === case_type) {
@@ -777,8 +781,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t COUNT(1) AS index1,COUNT(1) \n FROM \n\t " + target_tab + " T1 \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -796,8 +800,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t COUNT(1) AS index1,COUNT(1) \n FROM \n\t " + target_tab + " \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -808,8 +812,8 @@
                     sql += ";";
                     //设置检查的总记录数
                     sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t " + target_tab;
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "\n WHERE \n\t (" + check_list_filter + ") \n AND \n\t";
                     }
                     sql += ";";
                 } else if ("TAB NAN" === case_type) {
@@ -817,8 +821,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t COUNT(1) AS index1 \n FROM \n\t " + target_tab;
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "\n WHERE \n\t(" + this.form_dq_data.check_list_filter + ")";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "\n WHERE \n\t(" + check_list_filter + ")";
                     }
                     sql += ";";
                     //设置检查的总记录数
@@ -831,7 +835,14 @@
                 let case_type = this.form_dq_data.case_type;
                 let target_tab = this.form_dq_data.target_tab;
                 let opposite_tab = this.form_dq_data.opposite_tab;
-                let list_vals = this.form_dq_data.list_vals;
+                let check_list_filter = '';
+                if ('undefined' !== typeof this.form_dq_data.check_list_filter) {
+                    check_list_filter = this.form_dq_data.check_list_filter;
+                }
+                let list_vals = '';
+                if ('undefined' !== typeof this.form_dq_data.list_vals) {
+                    list_vals = this.form_dq_data.list_vals;
+                }
                 let target_key_fields = this.form_dq_data.target_key_fields;
                 let opposite_key_fields = this.form_dq_data.opposite_key_fields;
                 let range_min_val = this.form_dq_data.range_min_val;
@@ -845,8 +856,8 @@
                     sql = "";
                     //问题数据sql
                     sql = " SELECT \n\t " + target_key_fields + " \n FROM \n\t " + target_tab + " T1 \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -860,8 +871,8 @@
                     sql = "";
                     //问题数据sql
                     sql = " SELECT \n\t " + target_key_fields + " \n FROM \n\t " + target_tab + " T1 \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -883,8 +894,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t " + target_key_fields + " \n FROM \n\t " + target_tab + " \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -899,8 +910,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t " + target_key_fields + " \n FROM \n\t " + target_tab + " T1 \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {
@@ -917,8 +928,8 @@
                     sql = "";
                     //设置不在范围内的记录数sql
                     sql = " SELECT \n\t * \n FROM \n\t " + target_tab + " \n WHERE \n\t";
-                    if ('' !== this.form_dq_data.check_list_filter) {
-                        sql = sql + "(" + this.form_dq_data.check_list_filter + ") \n AND \n\t";
+                    if ('' !== check_list_filter) {
+                        sql = sql + "(" + check_list_filter + ") \n AND \n\t";
                     }
                     if (fields.length > 0) {
                         fields.forEach(field => {

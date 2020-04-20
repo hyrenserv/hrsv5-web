@@ -69,8 +69,8 @@
                 <el-table-column prop="operate" label="操作" align="center" width="140px">
                     <template slot-scope="scope">
                         <el-col :span="4">
-                            <el-button @click="manualExe(scope.row)" icon="el-icon-caret-right" type="text"
-                                       size="medium" title="手工执行"/>
+                            <el-button @click="manual_execution_click(scope.row.reg_num)" icon="el-icon-caret-right"
+                                       type="text" size="medium" title="手工执行"/>
                         </el-col>
                         <el-col :span="4">
                             <el-button @click="editRuleData(scope.row,dq_rule_def_s,ed_rule_level_s)"
@@ -98,6 +98,19 @@
                            :total="rule_dqd_data_s.length">
             </el-pagination>
         </el-row>
+        <!-- 弹出手动执行模态框 start-->
+        <el-dialog title="请输入检查日期" :visible.sync="manual_execution_dialog">
+            <el-row>
+                <el-date-picker v-model="verify_date" placeholder="开始日期" value-format="yyyyMMdd"/>
+                <el-button type="primary" class="goIndex" size="mini"
+                           @click="manualExecution()">确定
+                </el-button>
+                <el-button type="danger" class="goIndex" size="mini" @click="manual_execution_dialog=false"
+                           style="margin-right: 5px">取消
+                </el-button>
+            </el-row>
+        </el-dialog>
+        <!-- 弹出手动执行模态框 end-->
     </div>
 </template>
 <script>
@@ -120,6 +133,9 @@
                 job_eff_flag_map: {},
                 ed_rule_level_s: [],
                 ed_rule_level_map: {},
+                manual_execution_reg_num: '',
+                manual_execution_dialog: false,
+                verify_date: '',
             }
         },
         created() {
@@ -190,9 +206,23 @@
                     });
                 })
             },
+            //手动执行点击触发
+            manual_execution_click(reg_num) {
+                this.manual_execution_dialog = true;
+                this.manual_execution_reg_num = reg_num;
+            },
             //手工执行
-            manualExe(row) {
-                console.log(row)
+            manualExecution() {
+                rcFun.manualExecution({
+                    'reg_num': this.manual_execution_reg_num,
+                    'verify_date': this.verify_date
+                }).then(res => {
+                    if (res.success) {
+                        this.$router.push({
+                            name: '',
+                        });
+                    }
+                });
             },
             //新增规则信息
             addRuleData(dq_rule_def_s, ed_rule_level_s) {
@@ -221,6 +251,7 @@
             },
             //查看规则调度状态
             viewRuleSchedulingStatus() {
+
             },
             //删除规则
             delRuleData() {
