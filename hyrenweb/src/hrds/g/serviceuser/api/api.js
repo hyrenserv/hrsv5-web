@@ -7,15 +7,6 @@ import request from '@/utils/request'
  */
 export function getIpAndPort() {
     return request({
-        url: '/G/serviceuser/impl/getIpAndPort',
-    })
-}
-/**
- * 获取token值
- */
-export function getToken(data) {
-    return request({
-        url: '/G/serviceuser/impl/getToken',
-        params:data
+        url: '/G/serviceuser/getIpAndPort',
     })
 }
