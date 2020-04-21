@@ -538,13 +538,15 @@ export default {
                 params["job_priority"] = 0;
                 params["batchEtlJob"] = arr;
                 jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统批量干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统批量干预成功！',
+                            type: 'success'
+                        });
+                    }
                 });
             } else {
                 let code = 'SS';
@@ -555,18 +557,21 @@ export default {
                 params["curr_bath_date"] = this.tempForm.curr_bath_date;
                 params["job_priority"] = 0;
                 jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统干预成功！',
+                            type: 'success'
+                        });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleStop = false;
+                    }
                 });
             }
-            this.tempForm = {};
-            this.multipleSelection = [];
-            this.dialogVisibleStop = false;
+
         },
         //跳过保存按钮
         savePass() {
@@ -588,13 +593,15 @@ export default {
                 params["job_priority"] = 0;
                 params["batchEtlJob"] = arr;
                 jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统批量干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统批量干预成功！',
+                            type: 'success'
+                        });
+                    }
                 });
             } else {
                 let code = 'JJ';
@@ -605,18 +612,21 @@ export default {
                 params["curr_bath_date"] = this.tempForm.curr_bath_date;
                 params["job_priority"] = 0;
                 jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统干预成功！',
+                            type: 'success'
+                        });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisiblePass = false;
+                    }
                 });
             }
-            this.tempForm = {};
-            this.multipleSelection = [];
-            this.dialogVisiblePass = false;
+
         },
         //重跑保存按钮
         saveRefresh() {
@@ -638,13 +648,15 @@ export default {
                 params["job_priority"] = 0;
                 params["batchEtlJob"] = arr;
                 jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统批量干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统批量干预成功！',
+                            type: 'success'
+                        });
+                    }
                 });
             } else {
                 let code = 'SO';
@@ -655,18 +667,21 @@ export default {
                 params["curr_bath_date"] = this.tempForm.curr_bath_date;
                 params["job_priority"] = 0;
                 jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统干预成功！',
+                            type: 'success'
+                        });
+                    }
+                    this.tempForm = {};
+                    this.multipleSelection = [];
+                    this.dialogVisibleRefresh = false;
                 });
             }
-            this.tempForm = {};
-            this.multipleSelection = [];
-            this.dialogVisibleRefresh = false;
+
         },
         //强制执行保存按钮
         saveForce() {
@@ -688,13 +703,15 @@ export default {
                 params["job_priority"] = 0;
                 params["batchEtlJob"] = arr;
                 jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统批量干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统批量干预成功！',
+                            type: 'success'
+                        });
+                    }
                 });
             } else {
                 let code = 'JT';
@@ -705,18 +722,20 @@ export default {
                 params["curr_bath_date"] = this.tempForm.curr_bath_date;
                 params["job_priority"] = 0;
                 jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统干预成功！',
+                            type: 'success'
+                        });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleForce = false;
+                    }
                 });
             }
-            this.tempForm = {};
-            this.multipleSelection = [];
-            this.dialogVisibleForce = false;
         },
         //调整优先级保存按钮
         saveAdjust() {
@@ -738,13 +757,16 @@ export default {
                 params["job_priority"] = this.formAdjust.currentLevel;
                 params["batchEtlJob"] = arr;
                 jobLevelInterventeAllFun.batchJobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统批量干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统批量干预成功！',
+                            type: 'success'
+                        });
+                    }
+
                 });
             } else {
                 let code = 'JP';
@@ -755,19 +777,21 @@ export default {
                 params["curr_bath_date"] = this.tempForm.curr_bath_date;
                 params["job_priority"] = this.formAdjust.currentLevel;
                 jobLevelInterventeAllFun.jobLevelInterventionOperate(params).then(res => {
-                    this.getJobInfo();
-                    this.getCurrInfo();
-                    this.getHistoryInfo();
-                    this.$message({
-                        message: '系统干预成功！',
-                        type: 'success'
-                    });
+                    if (res && res.success) {
+                        this.getJobInfo();
+                        this.getCurrInfo();
+                        this.getHistoryInfo();
+                        this.$message({
+                            message: '系统干预成功！',
+                            type: 'success'
+                        });
+                        this.tempForm = {};
+                        this.formAdjust = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleAdjust = false;
+                    }
                 });
             }
-            this.tempForm = {};
-            this.formAdjust = {};
-            this.multipleSelection = [];
-            this.dialogVisibleAdjust = false;
         },
         //分页方法1
         handleCurrentChange1(cpage) {
