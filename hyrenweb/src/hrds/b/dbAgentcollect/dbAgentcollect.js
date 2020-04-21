@@ -82,6 +82,52 @@ export function getInitDataFileData(data) {
         params: data
     })
 }
+// step2
+/**(0)
+ * 获取表格信息
+ */
+export function getTableData(data) {
+    return request({
+        url: '/B/agent/datafileconf/tableconf/getTableData',
+        params: data
+    })
+}
+/**(1)
+ * 根据表ID获取列信息
+ */
+export function getTableColumnByTableId(data) {
+    return request({
+        url: '/B/agent/datafileconf/tableconf/getTableColumnByTableId',
+        params: data
+    })
+}
+/**(2)
+ * 根据表名称获取列信息
+ */
+export function getTableColumnByTableName(data) {
+    return request({
+        url: '/B/agent/datafileconf/tableconf/getTableColumnByTableName',
+        params: data
+    })
+}
+/**(3)
+ * 保存数据文件的表和列信息
+ */
+export function saveTableData(data) {
+    return request({
+        url: '/B/agent/datafileconf/tableconf/saveTableData',
+        params: data
+    })
+}
+/**(4)
+ * 根据表的ID更新列的信息
+ */
+export function updateColumnByTableId(data) {
+    return request({
+        url: '/B/agent/datafileconf/tableconf/updateColumnByTableId',
+        params: data
+    })
+}
 //steps4
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {

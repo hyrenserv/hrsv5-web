@@ -260,15 +260,17 @@ export default {
             params["etl_hand_type"] = code;
             params["curr_bath_date"] = this.batchDate;
             sysLevelInterventeAllFun.sysLevelInterventionOperate(params).then(res => {
-                this.getSystemInfo();
-                this.getCurrInfo();
-                this.getHistoryInfo();
-                this.$message({
-                    message: '系统干预成功！',
-                    type: 'success'
-                });
+                if (res && res.success) {
+                    this.getSystemInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                    this.dialogVisiblePause = false;
+                }
             });
-            this.dialogVisiblePause = false;
         },
         //续跑保存按钮
         savePlay() {
@@ -278,15 +280,17 @@ export default {
             params["etl_hand_type"] = code;
             params["curr_bath_date"] = this.batchDate;
             sysLevelInterventeAllFun.sysLevelInterventionOperate(params).then(res => {
-                this.getSystemInfo();
-                this.getCurrInfo();
-                this.getHistoryInfo();
-                this.$message({
-                    message: '系统干预成功！',
-                    type: 'success'
-                });
+                if (res && res.success) {
+                    this.getSystemInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                    this.dialogVisiblePlay = false;
+                }
             });
-            this.dialogVisiblePlay = false;
         },
         //重跑保存按钮
         saveRefresh() {
@@ -296,15 +300,17 @@ export default {
             params["etl_hand_type"] = code;
             params["curr_bath_date"] = this.batchDate;
             sysLevelInterventeAllFun.sysLevelInterventionOperate(params).then(res => {
-                this.getSystemInfo();
-                this.getCurrInfo();
-                this.getHistoryInfo();
-                this.$message({
-                    message: '系统干预成功！',
-                    type: 'success'
-                });
+                if (res && res.success) {
+                    this.getSystemInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                    this.dialogVisibleRefresh = false;
+                }
             });
-            this.dialogVisibleRefresh = false;
         },
         //日切保存按钮
         saveNext() {
@@ -314,15 +320,17 @@ export default {
             params["etl_hand_type"] = code;
             params["curr_bath_date"] = this.batchDate;
             sysLevelInterventeAllFun.sysLevelInterventionOperate(params).then(res => {
-                this.getSystemInfo();
-                this.getCurrInfo();
-                this.getHistoryInfo();
-                this.$message({
-                    message: '系统干预成功！',
-                    type: 'success'
-                });
+                if (res && res.success) {
+                    this.getSystemInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                    this.dialogVisibleNext = false;
+                }
             });
-            this.dialogVisibleNext = false;
         },
         //停止保存按钮
         saveStop() {
@@ -332,15 +340,17 @@ export default {
             params["etl_hand_type"] = code;
             params["curr_bath_date"] = this.batchDate;
             sysLevelInterventeAllFun.sysLevelInterventionOperate(params).then(res => {
-                this.getSystemInfo();
-                this.getCurrInfo();
-                this.getHistoryInfo();
-                this.$message({
-                    message: '系统干预成功！',
-                    type: 'success'
-                });
+                if (res && res.success) {
+                    this.getSystemInfo();
+                    this.getCurrInfo();
+                    this.getHistoryInfo();
+                    this.$message({
+                        message: '系统干预成功！',
+                        type: 'success'
+                    });
+                    this.dialogVisibleStop = false;
+                }
             });
-            this.dialogVisibleStop = false;
         },
         //分页方法
         handleCurrentChange(cpage) {
