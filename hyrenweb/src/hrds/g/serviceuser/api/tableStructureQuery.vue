@@ -167,7 +167,8 @@
                     .then(res => {
                         this.ipAndPort = "http://" + res.data.ipAndPort +
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
-                        this.requestAddressForToken = this.ipAndPort + "?user_id=1015&uer_password=111111"
+                        this.requestAddressForToken = this.ipAndPort + "?token=abcdef&tableName=dsd&url=" +
+                            this.$route.query.url;
                         this.requestAddress = this.ipAndPort +
                             "?user_id=1005&user_password=111111&tableName=dsd&url=" + this.$route.query.url
                     })
@@ -189,6 +190,7 @@
         width: 100%;
         margin-top: 10px;
     }
+
     .fontStyle {
         color: #2196f3;
         font-size: 18px;
