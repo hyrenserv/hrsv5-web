@@ -118,7 +118,7 @@
     import * as interfaceFunctionAll from "./api";
 
     export default {
-        name: "sqlInterfaceSearch",
+        name: "rowKeySearch",
         data() {
             return {
                 ipAndPort: '',
