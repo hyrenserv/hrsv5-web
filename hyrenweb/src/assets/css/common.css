@@ -557,3 +557,8 @@
 .el-select .el-tag__close.el-icon-close{
     right: -1px !important;
 }
+/* 翻页条居中 */
+.locationcenter {
+    text-align: center;
+    margin-top: 5px;
+}
