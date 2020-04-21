@@ -341,6 +341,13 @@ export default new Router({
                     title: '规则配置',
                     component: () => import('@/hrds/k/dataControl/ruleConfig/ruleInfo.vue')
                 },
+                //规则检测详情
+                {
+                    path: '/ruleDetectionDetail',
+                    name: 'ruleDetectionDetail',
+                    title: '规则配置',
+                    component: () => import('@/hrds/k/dataControl/ruleConfig/ruleDetectionDetail.vue')
+                },
                 //规则结果
                 {
                     path: '/ruleResults',
