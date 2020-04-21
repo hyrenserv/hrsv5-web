@@ -12,8 +12,8 @@
                 <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_sendok"></el-checkbox>
             </template>
         </el-table-column>
-        <el-table-column property="a" label="表名" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column property="b" label="中文表名" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="table_name" label="表名" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column property="table_ch_name" label="中文表名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
             <template slot-scope="scope">
                 <el-button type="text" size="mini" @click="watchText(scope.row)">查看列</el-button>
@@ -25,9 +25,9 @@
             <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
         </el-col>
         <el-col :span="12">
-            <div >
-                <el-button type="primary" @click="backSteps" size="medium" disabled>上一步</el-button>
-                <el-button type="primary"  @click="nextSteps" size="medium"> 下一步</el-button>
+            <div class="partFourDiv">
+                <el-button type="primary" style="float:left" @click="backSteps" size="medium">上一步</el-button>
+                <el-button type="primary" style="float:right" @click="nextSteps" size="medium"> 下一步</el-button>
             </div>
         </el-col>
     </div>
@@ -36,7 +36,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">查看列信息</span>
         </div>
-        <el-table :data="tableData" border size="medium">
+        <el-table :data="tableDataDialog" border size="medium">
             <el-table-column property label="序号" width="60px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -64,15 +64,8 @@ export default {
     data() {
         return {
             active: 1,
-            tableData: [{
-                a: "1",
-                b: "2",
-                "is_sendok": '1'
-            }, {
-                a: "1",
-                b: "2",
-                "is_sendok": '1'
-            }],
+            tableData: [],
+            tableDataDialog: [],
             pagesize: 5,
             currentPage: 1,
             innerVisible: false,
@@ -98,6 +91,21 @@ export default {
         },
         // 查看列数据
         watchText(val) {
+            if (val.table_id == undefined) {
+                functionAll.getTableColumnByTableName({
+                    colSetId: this.$route.query.id,
+                    table_name: val.table_name
+                }).then(res => {
+                    this.tableDataDialog = res.data;
+                })
+            } else {
+                functionAll.getTableColumnByTableId({
+                    colSetId: this.$route.query.id,
+                    table_id: val.table_id
+                }).then(res => {
+                    this.tableDataDialog = res.data;
+                })
+            }
             this.innerVisible = true;
         },
         //取消查看列

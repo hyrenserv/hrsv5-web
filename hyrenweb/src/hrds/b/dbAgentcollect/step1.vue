@@ -418,8 +418,8 @@ export default {
                 this.$set(data, 'children', []);
             }
             functionAll.selectPath({
-                    // agent_id: this.$route.query.agent_id,
-                    agent_id: '1000000022',
+                    agent_id: this.$route.query.agent_id,
+                    // agent_id: '1000000022',
                     path: data.path
                 })
                 .then(res => {
@@ -435,8 +435,8 @@ export default {
             }
             functionAll
                 .selectPath({
-                    // agent_id: this.$route.query.agent_id,
-                    agent_id: '1000000022',
+                    agent_id: this.$route.query.agent_id,
+                    // agent_id: '1000000022',
                     path: path
                 })
                 .then(res => {
