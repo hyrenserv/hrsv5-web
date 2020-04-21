@@ -166,7 +166,7 @@ export default {
         },
         // 获取表格数据
         getInitDataTransferFun() {
-            functionAll.getTableData({
+            functionAll.getInitDataTransfer({
                 colSetId: this.$route.query.id
             }).then(res => {
                 console.log(res)
