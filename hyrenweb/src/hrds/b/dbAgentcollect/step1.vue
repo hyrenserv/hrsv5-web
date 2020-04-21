@@ -238,8 +238,26 @@ export default {
         //获取首页信息
         getAllInfo() {
             // let database_id = this.$route.query.id;
-            functionAll.addDataFileData({
-                source_id: this.$route.query.source_id
+            if (this.$route.query.edit == 'yes') {
+                this.getInitDataFileData();
+            } else {
+                functionAll.addDataFileData({
+                    source_id: this.$route.query.source_id
+                }).then(res => {
+                    if (res.data != {}) {
+                        this.updateMark = "1";
+                        this.radio = res.data.classify_id;
+                        this.classify_id = res.data.classify_id;
+                        this.form = res.data;
+                        this.fileMark = res.data.plane_url;
+                    }
+                })
+            }
+        },
+        // 点击编辑获取的数据
+        getInitDataFileData() {
+            functionAll.getInitDataFileData({
+                colSetId: this.$route.query.id
             }).then(res => {
                 if (res.data != {}) {
                     this.updateMark = "1";
@@ -248,14 +266,6 @@ export default {
                     this.form = res.data;
                     this.fileMark = res.data.plane_url;
                 }
-            })
-        },
-        // 点击编辑获取的数据
-        getInitDataFileData() {
-            functionAll.getInitDataFileData({
-                // colSetId:
-            }).then(res => {
-
             })
         },
         // 获取分类编号和分类名称
@@ -469,7 +479,7 @@ export default {
                                 if (this.$route.query.edit == 'yes') {
                                     data = {
                                         agent_id: this.$route.query.agent_id,
-                                        id: this.$route.query.id,
+                                        id: res.data,
                                         sourceId: this.$route.query.sourceId,
                                         source_name: this.$route.query.source_name,
                                         edit: "yes"
@@ -477,7 +487,7 @@ export default {
                                 } else {
                                     data = {
                                         agent_id: this.$route.query.agent_id,
-                                        id: this.$route.query.id,
+                                        id: res.data,
                                         sourceId: this.$route.query.sourceId,
                                         source_name: this.$route.query.source_name,
                                     }
@@ -491,7 +501,6 @@ export default {
                     }
                 }
             })
-
         },
     },
 

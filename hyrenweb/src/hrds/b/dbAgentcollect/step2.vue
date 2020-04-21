@@ -78,6 +78,9 @@ export default {
             innerVisible: false,
         }
     },
+    mounted() {
+        this.getTableData();
+    },
     methods: {
         // 返回上一级
         goBackQuit() {
@@ -86,7 +89,13 @@ export default {
             })
         },
         // 获取表格数据
-
+        getTableData() {
+            functionAll.getTableData({
+                colSetId: this.$route.query.id
+            }).then(res => {
+                this.tableData = res.data;
+            })
+        },
         // 查看列数据
         watchText(val) {
             this.innerVisible = true;
@@ -127,12 +136,12 @@ export default {
         },
         //上一步
         backSteps() {
-             let data = {}
+            let data = {}
             if (this.$route.query.edit == 'yes') {
                 data = {
                     agent_id: this.$route.query.agent_id,
                     id: this.$route.query.id,
-                    sourceId: this.$route.query.sourceId,
+                    source_id: this.$route.query.sourceId,
                     source_name: this.$route.query.source_name,
                     edit: "yes"
                 }
@@ -140,13 +149,13 @@ export default {
                 data = {
                     agent_id: this.$route.query.agent_id,
                     id: this.$route.query.id,
-                    sourceId: this.$route.query.sourceId,
+                    source_id: this.$route.query.sourceId,
                     source_name: this.$route.query.source_name,
                 }
             }
             this.$router.push({
-                name: "collection4_1",
-                query:data
+                path: "collection4_1",
+                query: data
             })
         },
     },
