@@ -25,9 +25,9 @@
             <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
         </el-col>
         <el-col :span="12">
-            <div class="partFourDiv">
-                <el-button type="primary" style="float:left" @click="backSteps" size="medium">上一步</el-button>
-                <el-button type="primary" style="float:right" @click="nextSteps" size="medium"> 下一步</el-button>
+            <div >
+                <el-button type="primary" @click="backSteps" size="medium" disabled>上一步</el-button>
+                <el-button type="primary"  @click="nextSteps" size="medium"> 下一步</el-button>
             </div>
         </el-col>
     </div>

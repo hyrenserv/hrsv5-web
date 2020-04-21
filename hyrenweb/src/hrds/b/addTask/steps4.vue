@@ -176,8 +176,15 @@
             <el-button type="primary" @click="AllTable_SeparatorSubmitFun('separatorData')" size="mini">确 定</el-button>
         </div>
     </el-dialog>
-    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
+     <el-row>
+     <el-col :span="12">
+            <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
+        </el-col>
+        <el-col :span="12" >
+            <el-button type="primary" size="medium" class='rightbtn'  @click="next('ruleForm')">下一步</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
+        </el-col>
+    </el-row>
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
         <div slot="title">
@@ -313,6 +320,11 @@ export default {
         });
     },
     methods: {
+          backFun() {
+            this.$router.push({
+                path: "/agentList"
+            });
+        },
         next(formName) {
             var a = this.ruleForm.unloadingFileData;
             this.$refs[formName].validate(valid => {

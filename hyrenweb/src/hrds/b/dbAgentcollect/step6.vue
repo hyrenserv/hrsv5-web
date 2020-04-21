@@ -78,7 +78,7 @@
                 <el-col :span="8" v-else-if="ruleForm.Dispatching_mode=='D'">
                     <el-form-item label="上游作业" prop="Upstream_operation">
                         <el-col :span="16">
-                            <el-select style="width:100%"  v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
+                            <el-select style="width:100%" v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -129,7 +129,7 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="作业描述" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="作业描述" align="center">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job_desc'" :rules="rule.default">
                             <el-input v-model="scope.row.etl_job_desc" type="textarea" placeholder="作业描述" size="mini"></el-input>
@@ -148,7 +148,7 @@
                 </el-table-column>
                 <el-table-column label="作业优先级" align="center" :show-overflow-tooltip="true" width="90">
                     <template slot-scope="scope">
-                        <el-form-item  :prop="'startuptableData.'+scope.$index+'.job_priority'" :rules="rule.default">
+                        <el-form-item :prop="'startuptableData.'+scope.$index+'.job_priority'" :rules="rule.default">
                             <el-input style="width:100%" v-model="scope.row.job_priority" placeholder="0" size="mini"></el-input>
                         </el-form-item>
                     </template>
@@ -181,7 +181,7 @@
                 <el-table-column label="上游作业" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.pre_etl_job'" :rules="rule.default" v-if="scope.row.disp_type==='D'">
-                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业"  @focus='getPreJobName'>
+                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业" @focus='getPreJobName'>
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -192,8 +192,15 @@
         </div>
     </el-form>
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.startuptableData.length" class="locationcenter"></el-pagination>
-    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">完成</el-button>
+    <el-row>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
+        </el-col>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
+        </el-col>
+    </el-row>
     <!-- 选择工程编号 -->
     <el-dialog title="选择工程编号" :visible.sync="Projectnumdialog">
         <div slot="title">
@@ -368,6 +375,11 @@ export default {
         });
     },
     methods: {
+        backFun() {
+            this.$router.push({
+                path: "/agentList"
+            });
+        },
         next(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -402,7 +414,7 @@ export default {
                                 'pro_para': arrdata[i].pro_para,
                                 'etl_sys_cd': this.ruleForm.Project_num,
                             })
-                        jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join('^');
+                            jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join('^');
                         } else {
                             etlJobs.push({
                                 'pro_type': this.ruleForm.work_type,
@@ -413,7 +425,7 @@ export default {
                                 'sub_sys_cd': this.ruleForm.work_num,
                                 'etl_job': arrdata[i].etl_job,
                                 'etl_job_desc': arrdata[i].etl_job_desc,
-                                'disp_freq':arrdata[i].disp_freq,
+                                'disp_freq': arrdata[i].disp_freq,
                                 'job_priority': parseInt(arrdata[i].job_priority),
                                 'disp_offset': parseInt(arrdata[i].disp_offset),
                                 'disp_time': arrdata[i].disp_time,
@@ -421,10 +433,10 @@ export default {
                             })
                         }
                     }
-                    console.log(JSON.stringify(jobRelation),jobRelation)
+                    console.log(JSON.stringify(jobRelation), jobRelation)
                     params["etlJobs"] = JSON.stringify(etlJobs)
                     params["ded_arr"] = ded_arr.join('^')
-                    params["jobRelations"] = JSON.stringify(jobRelation)=='{}'?'':JSON.stringify(jobRelation)
+                    params["jobRelations"] = JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation)
                     console.log(params)
                     sendTask.saveJobDataToDatabase(params).then(res => {
                         if (res.code && res.code == 200) {
@@ -591,7 +603,7 @@ export default {
         // 获取上游作业下拉
         getPreJobName() {
             console.log(this.ruleForm.Project_num)
-              let arr = [];
+            let arr = [];
             if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
                 sendTask.searchEtlJob({
                     'etl_sys_cd': this.ruleForm.Project_num
@@ -628,14 +640,14 @@ export default {
         getwork_numFun() {
             //调接口显示内容
             if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
-            this.Worknumdialog = true
+                this.Worknumdialog = true
                 sendTask.getEtlSubSysData({
                     'etl_sys_cd': this.ruleForm.Project_num
                 }).then(res => {
                     this.WorknumData = res.data
                 })
-            }else{
-                 this.$message({
+            } else {
+                this.$message({
                     showClose: true,
                     message: '工程编号未选择',
                     type: "error"
@@ -651,12 +663,12 @@ export default {
         // 调度频率改变时
         Dispatching_frequencyFun() {
             let code = this.ruleForm.Dispatching_frequency
-           /*  this.Dispatch_Frequency.forEach((item) => {
-                if (item.code == code) {
-                    this.getstartuptableData(item.value)
-                }
-            }) */
-             this.getstartuptableData(code)
+            /*  this.Dispatch_Frequency.forEach((item) => {
+                 if (item.code == code) {
+                     this.getstartuptableData(item.value)
+                 }
+             }) */
+            this.getstartuptableData(code)
         },
         //遍历全表改变对应列值--调度频率
         getstartuptableData(key) {

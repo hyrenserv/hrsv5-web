@@ -166,8 +166,15 @@
             <el-pagination @size-change="sqlex_handleSizeChange" @current-change="sqlex_handleCurrentChange" :current-page.sync="sqlexcurrentPage" :page-size="sqlexpagesize" layout="total, prev, pager, next" :total="ruleForm.sqlExtractData.length" class="locationcenter"></el-pagination>
         </el-tab-pane>
     </el-tabs>
-    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+    <el-row>
+     <el-col :span="12">
+            <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
+        </el-col>
+        <el-col :span="12" >
+            <el-button type="primary" size="medium" class='rightbtn'  @click="next()">下一步</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
+        </el-col>
+    </el-row>
     <!-- 测试弹框 -->
     <el-dialog title="测试sql" :visible.sync="testDialogVisible" width="30%">
         <div slot="title">
@@ -1045,6 +1052,11 @@ export default {
             if (keyCode == 13 && this.search) {
                 this.schfilter(this.search);
             }
+        },
+          backFun() {
+            this.$router.push({
+                path: "/agentList"
+            });
         },
         next() {
             // if (this.handleactive == true) { //切换过第二个页面
