@@ -294,6 +294,7 @@
             </el-row>
         </el-dialog>
         <!-- 弹出数据源选择模态框 end-->
+
         <!-- 弹出字段选择选择模态框 start-->
         <el-dialog title="选择数据表字段" :visible.sync="table_fields_dialog">
             <el-row>
@@ -314,6 +315,7 @@
             </el-row>
         </el-dialog>
         <!-- 弹出字段选择选择模态框 end-->
+
         <!-- 弹出检测结果模态框 start-->
         <el-dialog title="检测结果展示" :visible.sync="test_result_dialog">
             <el-row>
@@ -370,6 +372,7 @@
                 ed_rule_level_map: {},
                 not_range_num: '',
                 total_box: '',
+                form_dq_data_reg_num: '',
                 //系统帮助提示信息
                 dq_help_info_s: [{help_info_id: '', help_info_desc: '', help_info_dtl: ''}],
                 dq_help_info_map: {
@@ -396,36 +399,26 @@
         },
         created() {
             //获取操作类型 新增,编辑
-            if ('undefined' !== typeof this.$route.params.ruleTitle
-                && 'undefined' !== typeof this.$route.params.operation_type) {
-                this.ruleTitle = this.$route.params.ruleTitle;
-                this.operation_type = this.$route.params.operation_type;
-            } else {
+            if ('edit' === this.$route.query.operation_type) {
+                this.ruleTitle = "编辑";
+                this.operation_type = this.$route.query.operation_type;
+            } else if ('add' === this.$route.query.operation_type) {
                 this.ruleTitle = '新增';
-                this.operation_type = 'add';
-            }
-            //获取页面初始化数据
-            if ('undefined' !== typeof this.$route.params.form_dq_data) {
-                this.form_dq_data = this.$route.params.form_dq_data;
-            } else {
-                this.form_dq_data.flags = '0';
-            }
-            //获取规则类型数据
-            if ('undefined' !== typeof this.$route.params.dq_rule_def_s) {
-                this.dq_rule_def_s = this.$route.params.dq_rule_def_s;
-            } else {
-                this.dq_rule_def_s = this.getDqRuleDef();
-            }
-            //获取规则级别标志
-            if ('undefined' !== typeof this.$route.params.ed_rule_level_s) {
-                this.ed_rule_level_s = this.$route.params.ed_rule_level_s;
-            } else {
-                this.ed_rule_level_s = this.getEdRuleLevel();
             }
         },
         mounted() {
             //获取系统帮助提示信息
             this.getDqHelpInfo();
+            //获取规则类型数据
+            this.getDqRuleDef();
+            //获取规则级别标志
+            this.getEdRuleLevel();
+            //获取页面初始化数据
+            if ('undefined' !== typeof this.$route.query.reg_num) {
+                this.getDqDefinition(this.$route.query.reg_num);
+            } else {
+                this.form_dq_data.flags = '0';
+            }
         },
         methods: {
             //获取系统帮助提示信息
@@ -468,6 +461,12 @@
                         this.dq_rule_def_map[row.case_type] = row.case_type_desc;
                     });
                 })
+            },
+            //获取页面初始化数据
+            getDqDefinition(reg_num) {
+                rcFun.getDqDefinition({"reg_num": reg_num}).then(res => {
+                    this.form_dq_data = res.data;
+                });
             },
             //点击数据源列表
             showDataSource(type, isShow) {

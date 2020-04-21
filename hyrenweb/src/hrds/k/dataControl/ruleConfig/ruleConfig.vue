@@ -41,7 +41,7 @@
                     <el-button type="primary" @click="searchDqData()">搜索</el-button>
                 </el-form-item>
                 <el-form-item size="mini">
-                    <el-button type="primary" @click="addRuleData(dq_rule_def_s,ed_rule_level_s)">新增</el-button>
+                    <el-button type="primary" @click="addRuleData()">新增</el-button>
                 </el-form-item>
             </el-form>
         </el-row>
@@ -73,7 +73,7 @@
                                        type="text" size="medium" title="手工执行"/>
                         </el-col>
                         <el-col :span="4">
-                            <el-button @click="editRuleData(scope.row,dq_rule_def_s,ed_rule_level_s)"
+                            <el-button @click="editRuleData(scope.row.reg_num)"
                                        icon="el-icon-edit" type="text" size="medium" title="编辑"/>
                         </el-col>
                         <el-col :span="4">
@@ -116,12 +116,16 @@
 <script>
     import * as message from '../../../../utils/js/message';
     import * as rcFun from './ruleConfig'
+    import Loading from "../../../components/loading/index";
 
     export default {
         name: 'ruleConfig',
-        components: {},
+        components: {
+            Loading,
+        },
         data() {
             return {
+                isLoading: false,
                 currentPage: 1,
                 pageSize: 10,
                 totalSize: 0,
@@ -211,43 +215,28 @@
                 this.manual_execution_dialog = true;
                 this.manual_execution_reg_num = reg_num;
             },
-            //手工执行
+            //手工执行确定
             manualExecution() {
+                this.isLoading = true;
                 rcFun.manualExecution({
                     'reg_num': this.manual_execution_reg_num,
                     'verify_date': this.verify_date
                 }).then(res => {
-                    if (res.success) {
-                        this.$router.push({
-                            name: '',
-                        });
+                    if (!res.success) {
+                        this.isLoading = true;
+                        this.$router.push({name: 'ruleDetectionDetail', query: {'task_id': res.data,}});
+                    } else {
+                        this.isLoading = false;
                     }
                 });
             },
             //新增规则信息
-            addRuleData(dq_rule_def_s, ed_rule_level_s) {
-                this.$router.push({
-                    name: 'ruleInfo',
-                    params: {
-                        'ruleTitle': '新增',
-                        'operation_type': 'add',
-                        'dq_rule_def_s': dq_rule_def_s,
-                        'ed_rule_level_s': ed_rule_level_s,
-                    }
-                });
+            addRuleData() {
+                this.$router.push({name: 'ruleInfo', query: {'operation_type': 'add',}});
             },
             //编辑规则信息
-            editRuleData(row, dq_rule_def_s, ed_rule_level_s) {
-                this.$router.push({
-                    name: 'ruleInfo',
-                    params: {
-                        'ruleTitle': '编辑',
-                        'operation_type': 'edit',
-                        'dq_rule_def_s': dq_rule_def_s,
-                        'ed_rule_level_s': ed_rule_level_s,
-                        'form_dq_data': row,
-                    }
-                });
+            editRuleData(reg_num) {
+                this.$router.push({name: 'ruleInfo', query: {'operation_type': 'edit', 'reg_num': reg_num,}});
             },
             //查看规则调度状态
             viewRuleSchedulingStatus() {
