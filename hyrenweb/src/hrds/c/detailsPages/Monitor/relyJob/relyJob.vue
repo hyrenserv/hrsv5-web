@@ -21,11 +21,10 @@
     </el-row>
 </div>
 </template>
-
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
-import * as jsmind from "@/utils/js/jsmind.js";
+import * as jsmind from "../../../../../assets/js/jsmind.js";
 import '@/assets/css/jsmind.css';
 let _jm = null;
 let flag = 0;
