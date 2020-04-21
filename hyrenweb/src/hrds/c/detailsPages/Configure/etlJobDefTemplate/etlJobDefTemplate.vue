@@ -116,15 +116,15 @@ export default {
             params["etl_temp_id"] = id;
             params["etl_job_temp_para"] = arr;
             etlJobDefTemplateAllFun.saveEtlJobTemp(params).then(res => {
-                this.$message({
-                    message: '保存成功',
-                    type: 'success'
-                });
-            }).catch((err) => {
-                this.$message.error('保存失败');
+                if (res && res.success) {
+                    this.$message({
+                        message: '保存成功',
+                        type: 'success'
+                    });
+                    this.formUpload = {};
+                    this.dialogFormVisibleUpload = false;
+                }
             })
-            this.formUpload = {};
-            this.dialogFormVisibleUpload = false;
         },
     },
 };
