@@ -128,6 +128,21 @@ export function updateColumnByTableId(data) {
         params: data
     })
 }
+// steps3
+// 获取初始数据
+export function getInitDataTransfer(data) {
+    return request({
+        url: '/B/agent/datafileconf/datatransfer/getInitDataTransfer',
+        params: data
+    })
+}
+// 保存数据
+export function saveDataTransferData(data) {
+    return request({
+        url: '/B/agent/datafileconf/datatransfer/saveDataTransferData',
+        params: data
+    })
+}
 //steps4
 // 清洗规则配置页面初始信息
 export function getCleanConfInfo(data) {
