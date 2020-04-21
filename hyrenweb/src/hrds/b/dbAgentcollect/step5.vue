@@ -103,8 +103,15 @@
         </el-table>
     </el-form>
     <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.ex_destinationData.length" class="locationcenter"></el-pagination>
-    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
+    <el-row>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
+        </el-col>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
+        </el-col>
+    </el-row>
     <!-- 选择目的地弹框 -->
     <el-dialog title=" 选择目的地" :visible.sync="dialogChooseDestination" width="70%" class="alltable">
         <div slot="title">
@@ -389,6 +396,11 @@ export default {
     },
 
     methods: {
+        backFun() {
+            this.$router.push({
+                path: "/agentList"
+            });
+        },
         //获取初始数据，数据抽取及入库
         getTbStoDestByColSetIdFun() {
 

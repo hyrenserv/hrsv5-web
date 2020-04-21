@@ -192,8 +192,15 @@
         </div>
     </el-form>
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.startuptableData.length" class="locationcenter"></el-pagination>
-    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">上一步</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">完成</el-button>
+     <el-row>
+     <el-col :span="12">
+            <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
+        </el-col>
+        <el-col :span="12" >
+            <el-button type="primary" size="medium" class='rightbtn'  @click="next('ruleForm')">完成</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
+        </el-col>
+    </el-row>
     <!-- 选择工程编号 -->
     <el-dialog title="选择工程编号" :visible.sync="Projectnumdialog">
         <div slot="title">
@@ -368,6 +375,11 @@ export default {
         });
     },
     methods: {
+          backFun() {
+            this.$router.push({
+                path: "/agentList"
+            });
+        },
         next(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {

@@ -244,8 +244,15 @@
             <div>贴源登记</div>
         </el-tab-pane>
     </el-tabs>
-    <el-button type="primary" size="medium" class="leftbtn" @click="pre()">返回</el-button>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next('ruleForm')">下一步</el-button>
+    <el-row>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
+        </el-col>
+        <el-col :span="12" >
+            <el-button type="primary" size="medium" class='rightbtn'  @click="next('ruleForm')">下一步</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' disabled>上一步</el-button>
+        </el-col>
+    </el-row>
     <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
@@ -402,7 +409,7 @@ export default {
                 params["database_pad"] = this.ruleForm.database_pad;
                 params["jdbc_url"] = this.ruleForm.jdbc_url;
                 // if (this.edit == "yes") {
-                    params["database_id"] = this.dbid;
+                params["database_id"] = this.dbid;
                 // }
                 params["agent_id"] = this.agentId;
                 addTaskAllFun.saveDbConf(params).then(res => {
@@ -429,23 +436,25 @@ export default {
                             path: "/collection1_2",
                             query: data
                         });
-                    } /* else {
-                        this.$message({
-                            showClose: true,
-                            message: res.message,
-                            type: "error"
-                        });
-                    } */
+                    }
+                    /* else {
+                                           this.$message({
+                                               showClose: true,
+                                               message: res.message,
+                                               type: "error"
+                                           });
+                                       } */
                 });
-            } /* else {
-                this.$message({
-                    showClose: true,
-                    message: "提交失败，请检查信息",
-                    type: "error"
-                });
-            } */
+            }
+            /* else {
+                           this.$message({
+                               showClose: true,
+                               message: "提交失败，请检查信息",
+                               type: "error"
+                           });
+                       } */
         },
-        pre() {
+        backFun() {
             this.$router.push({
                 path: "/agentList"
             });
@@ -635,8 +644,8 @@ export default {
             params["agent_id"] = parseInt(this.agentId);
             addTaskAllFun.testConnection(params).then(res => {
                 if (res.success == true) {
-                    if(n=='1'){
-                    this.testLink = true
+                    if (n == '1') {
+                        this.testLink = true
                     }
                     this.linkTip = "连接成功";
                     this.activelink = "true";
