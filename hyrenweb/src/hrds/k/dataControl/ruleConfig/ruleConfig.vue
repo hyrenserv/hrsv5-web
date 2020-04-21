@@ -73,8 +73,8 @@
                                        type="text" size="medium" title="手工执行"/>
                         </el-col>
                         <el-col :span="4">
-                            <el-button @click="editRuleData(scope.row.reg_num)"
-                                       icon="el-icon-edit" type="text" size="medium" title="编辑"/>
+                            <el-button @click="editRuleData(scope.row.reg_num)" icon="el-icon-edit" type="text"
+                                       size="medium" title="编辑"/>
                         </el-col>
                         <el-col :span="4">
                             <el-button @click="viewRuleSchedulingStatus(scope.row)" icon="el-icon-s-unfold" type="text"
@@ -85,8 +85,8 @@
                                        size="medium" title="删除"/>
                         </el-col>
                         <el-col :span="4">
-                            <el-button @click="delRuleData(scope.row)" icon="el-icon-share" type="text"
-                                       size="medium" title="发布"/>
+                            <el-button @click="delRuleData(scope.row)" icon="el-icon-share" type="text" size="medium"
+                                       title="发布"/>
                         </el-col>
                     </template>
                 </el-table-column>
@@ -102,8 +102,7 @@
         <el-dialog title="请输入检查日期" :visible.sync="manual_execution_dialog">
             <el-row>
                 <el-date-picker v-model="verify_date" placeholder="开始日期" value-format="yyyyMMdd"/>
-                <el-button type="primary" class="goIndex" size="mini"
-                           @click="manualExecution()">确定
+                <el-button type="primary" class="goIndex" size="mini" @click="manualExecution()">确定
                 </el-button>
                 <el-button type="danger" class="goIndex" size="mini" @click="manual_execution_dialog=false"
                            style="margin-right: 5px">取消
@@ -113,6 +112,7 @@
         <!-- 弹出手动执行模态框 end-->
     </div>
 </template>
+
 <script>
     import * as message from '../../../../utils/js/message';
     import * as rcFun from './ruleConfig'
@@ -174,14 +174,19 @@
             },
             //获取规则信息列表
             getDqDefinitionInfos() {
-                rcFun.getDqDefinitionInfos({'currPage': this.currPage, "pageSize": this.pageSize}).then(res => {
+                rcFun.getDqDefinitionInfos({
+                    'currPage': this.currPage,
+                    "pageSize": this.pageSize
+                }).then(res => {
                     this.rule_dqd_data_s = res.data;
                 })
             },
             //获取代码项信息-ETl作业有效标志
             getJobEffectiveFlag() {
                 //获取ETl作业有效标志
-                this.$Code.getCategoryItems({'category': 'Job_Effective_Flag'}).then(res => {
+                this.$Code.getCategoryItems({
+                    'category': 'Job_Effective_Flag'
+                }).then(res => {
                     this.job_eff_flag_s = res.data;
                     //处理作业有效标志信息为map类型,显示
                     this.job_eff_flag_s.forEach(row => {
@@ -192,7 +197,9 @@
             //获取代码项信息-规则级别标志
             getEdRuleLevel() {
                 //获取规则级别标志
-                this.$Code.getCategoryItems({'category': 'EdRuleLevel'}).then(res => {
+                this.$Code.getCategoryItems({
+                    'category': 'EdRuleLevel'
+                }).then(res => {
                     this.ed_rule_level_s = res.data;
                     //处理规则级别标志信息为map类型,显示
                     this.ed_rule_level_s.forEach(row => {
@@ -224,7 +231,12 @@
                 }).then(res => {
                     if (!res.success) {
                         this.isLoading = true;
-                        this.$router.push({name: 'ruleDetectionDetail', query: {'task_id': res.data,}});
+                        this.$router.push({
+                            name: 'ruleDetectionDetail',
+                            query: {
+                                'task_id': res.data,
+                            }
+                        });
                     } else {
                         this.isLoading = false;
                     }
@@ -232,11 +244,22 @@
             },
             //新增规则信息
             addRuleData() {
-                this.$router.push({name: 'ruleInfo', query: {'operation_type': 'add',}});
+                this.$router.push({
+                    name: 'ruleInfo',
+                    query: {
+                        'operation_type': 'add',
+                    }
+                });
             },
             //编辑规则信息
             editRuleData(reg_num) {
-                this.$router.push({name: 'ruleInfo', query: {'operation_type': 'edit', 'reg_num': reg_num,}});
+                this.$router.push({
+                    name: 'ruleInfo',
+                    query: {
+                        'operation_type': 'edit',
+                        'reg_num': reg_num,
+                    }
+                });
             },
             //查看规则调度状态
             viewRuleSchedulingStatus() {
