@@ -151,7 +151,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button type="danger" size="mini" @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" size="mini" @click="saveAgentDeploy('agentDeploy')">确 定</el-button>
+            <el-button type="primary" size="mini" :loading="loading" @click="saveAgentDeploy('agentDeploy')">确 定</el-button>
         </div>
     </el-dialog>
 </div>
@@ -184,7 +184,8 @@ export default {
             requestData: {
                 agent_type: '',
                 source_id: ''
-            }
+            },
+            loading : false
         }
     },
     mounted() {
@@ -251,6 +252,7 @@ export default {
             })
         },
         saveAgentDeploy(formName) {
+            this.loading = true;
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.agentDeploy['customPath'] = this.customPath;
@@ -258,10 +260,15 @@ export default {
                     this.agentDeploy['oldAgentDir'] = this.oldAgentDir;
                     this.agentDeploy['oldLogPath'] = this.oldLogPath;
                     agentDeployFun.saveAgentDownInfo(this.agentDeploy).then(res => {
-                        if (res.success) {
+                        if (typeof res != 'undefined' && res.success) {
                             this.$Msg.customizTitle("部署完成");
                             this.dialogFormVisible = false;
+                            this.loading = false;
                         }
+                        else {
+                            this.loading = false;
+                        }
+                        
                     })
                 } else {
                     return;
