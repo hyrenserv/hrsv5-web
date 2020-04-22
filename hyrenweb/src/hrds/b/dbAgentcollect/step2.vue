@@ -76,7 +76,8 @@ export default {
             tableDataDialogAll: [],
             table_id: '',
             table_name: '',
-            tableColumns: []
+            tableColumns: [],
+            tableColumn: {}
         }
     },
     mounted() {
@@ -144,6 +145,7 @@ export default {
             if (this.table_id == undefined) {
                 let obj = {};
                 obj[this.table_name] = this.tableDataDialog;
+                this.tableColumn[this.table_name] = this.tableDataDialog;
                 if (this.tableColumns.length > 0) {
                     for (let index = 0; index < this.tableColumns.length; index++) {
                         if (JSON.stringify(obj) == JSON.stringify(this.tableColumns[index])) {
@@ -155,12 +157,12 @@ export default {
                 } else {
                     this.tableColumns.push(obj);
                 }
-                console.log(this.tableColumns)
+                console.log(this.tableColumn)
                 this.innerVisible = false;
             } else {
                 let obj = {};
                 obj.colSetId = this.$route.query.id;
-                obj['tableColumns'] = this.tableDataDialog;
+                obj['tableColumns'] = this.tableColumn;
                 functionAll.updateColumnByTableId(obj).then(res => {
                     if (res && res.success) {
                         this.innerVisible = false;
@@ -175,10 +177,18 @@ export default {
             paramas.colSetId = this.$route.query.id;
             paramas.tableInfos = JSON.stringify(this.tableData);
             if (this.tableColumns.length > 0) {
-                paramas.tableColumns = JSON.stringify(this.tableColumns);
+                paramas.tableColumns = JSON.stringify(this.tableColumn);
             }
             functionAll.saveTableData(paramas).then(res => {
-
+                if (res && res.success) {
+                    this.$router.push({
+                        path: "/collection4_3",
+                        query: {
+                            agent_id: this.$route.query.agent_id,
+                            id:res.data,
+                        }
+                    })
+                }
             })
             // let data = {}
             // if (this.$route.query.edit == 'yes') {
