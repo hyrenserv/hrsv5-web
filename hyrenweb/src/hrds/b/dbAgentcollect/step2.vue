@@ -76,13 +76,11 @@ export default {
             tableDataDialogAll: [],
             table_id: '',
             table_name: '',
-            tableColumns: [],
             tableColumn: {}
         }
     },
     mounted() {
         this.getTableData();
-        this.tableColumns = [];
     },
     methods: {
         // 返回上一级
@@ -125,18 +123,22 @@ export default {
                     colSetId: this.$route.query.id,
                     table_id: val.table_id
                 }).then(res => {
-
-                    // this.tableDataDialog = res.data;
-
+                    res.data.forEach((item, index) => {
+                        if (item.column_name.toUpperCase() == 'HYREN_S_DATE') {
+                            res.data.splice(index, 1)
+                        } else if (item.column_name.toUpperCase() == 'HYREN_E_DATE') {
+                            res.data.splice(index, 1)
+                        } else if (item.column_name.toUpperCase() == 'HYREN_MD5_VAL') {
+                            res.data.splice(index, 1)
+                        }
+                    })
+                    this.tableDataDialog = res.data;
                 })
             }
             this.innerVisible = true;
         },
         //取消查看列
         cancelWatch() {
-            if (this.table_id == undefined) {
-                this.tableColumns = [];
-            }
             this.innerVisible = false;
             this.tableDataDialog = [];
         },
@@ -146,18 +148,6 @@ export default {
                 let obj = {};
                 obj[this.table_name] = this.tableDataDialog;
                 this.tableColumn[this.table_name] = this.tableDataDialog;
-                if (this.tableColumns.length > 0) {
-                    for (let index = 0; index < this.tableColumns.length; index++) {
-                        if (JSON.stringify(obj) == JSON.stringify(this.tableColumns[index])) {
-                            break
-                        } else {
-                            this.tableColumns.push(obj);
-                        }
-                    }
-                } else {
-                    this.tableColumns.push(obj);
-                }
-                console.log(this.tableColumn)
                 this.innerVisible = false;
             } else {
                 let obj = {};
@@ -176,8 +166,8 @@ export default {
             let paramas = {};
             paramas.colSetId = this.$route.query.id;
             paramas.tableInfos = JSON.stringify(this.tableData);
-            if (this.tableColumns.length > 0) {
-                paramas.tableColumns = JSON.stringify(this.tableColumn);
+            if (JSON.stringify(this.tableColumn) != '{}') {
+                paramas.tableColumns = this.tableColumn;
             }
             functionAll.saveTableData(paramas).then(res => {
                 if (res && res.success) {
@@ -185,32 +175,12 @@ export default {
                         path: "/collection4_3",
                         query: {
                             agent_id: this.$route.query.agent_id,
-                            id:res.data,
+                            id: res.data,
+                            sourceId: this.$route.query.sourceId,
                         }
                     })
                 }
             })
-            // let data = {}
-            // if (this.$route.query.edit == 'yes') {
-            //     data = {
-            //         agent_id: this.$route.query.agent_id,
-            //         id: this.$route.query.id,
-            //         sourceId: this.$route.query.sourceId,
-            //         source_name: this.$route.query.source_name,
-            //         edit: "yes"
-            //     }
-            // } else {
-            //     data = {
-            //         agent_id: this.$route.query.agent_id,
-            //         id: this.$route.query.id,
-            //         sourceId: this.$route.query.sourceId,
-            //         source_name: this.$route.query.source_name,
-            //     }
-            // }
-            // this.$router.push({
-            //     path: "/collection4_3",
-            //     query: data
-            // })
         },
         //上一步
         backSteps() {
