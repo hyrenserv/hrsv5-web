@@ -159,10 +159,14 @@
                     "sub_sys_cd":this.selectedetltask,
                     "datatable_id":this.datatable_id,
                 }
-                this.$message({
-                    type: "warning",
-                    message: "有待开发"
-                });
+                functionAll.generateMartJobToEtl(param).then((res) => {
+                    if (res && res.success) {
+                        this.$message({
+                            type: "success",
+                            message: "成功"
+                        });
+                    }
+                })
             }
         }
     }

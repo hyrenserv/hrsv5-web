@@ -392,7 +392,8 @@
                     this.databysql = [];
                     functionAll.getDataBySQL({
                         'querysql': this.querysql,
-                        'sqlparameter': this.sqlparameter
+                        'sqlparameter': this.sqlparameter,
+                        'datatable_id':this.datatable_id
                     }).then((res) => {
                         this.isLoading = false;
                         if (res && res.data.success) {

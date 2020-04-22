@@ -303,4 +303,25 @@ export function queryEtlTaskByEtlSys(data) {
 }
 
 
+//查询作业调度所有工程
+export function generateMartJobToEtl(data) {
+    return request({
+        url: '/H/market/generateMartJobToEtl',
+        params: data
+    })
+}
 
+
+
+//查询作业调度所有工程
+export function downLoadMart(data) {
+    return request({
+        url: '/H/market/downLoadMart',
+        method: 'post',
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}

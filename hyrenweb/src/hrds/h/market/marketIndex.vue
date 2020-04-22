@@ -2,11 +2,11 @@
     <div id="marketIndex">
         <el-row class='topTitle'>
             <!--<i class="block_icon fa text-warning fa-globe blue"></i>-->
-            <span >数据集市</span>
-            <el-button type="primary" class="el1 els goIndex" tab-position="top" @click="dialogofmarketadd = true;"
-                       size="small">
-                <i class="el-icon-circle-plus-outline"></i>新增集市
-            </el-button>
+            <span>数据集市</span>
+            <!--<el-button type="primary" class="el1 els goIndex" tab-position="top" @click="dialogofmarketadd = true;"-->
+            <!--size="small">-->
+            <!--<i class="el-icon-circle-plus-outline"></i>新增集市-->
+            <!--</el-button>-->
         </el-row>
 
         <el-row class="bottomMargin">
@@ -46,30 +46,41 @@
                 </el-tabs>
             </el-col>
         </el-row>
-        <el-row  class='top3style'>
+        <el-row class='top3style'>
             <span class="top3title">集市列表</span>
+            <div class="elButton">
+                <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;"
+                           size="small">
+                    <i class="el-icon-circle-plus-outline"></i>新增集市
+                </el-button>
+                <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;"
+                           size="small">
+                    <i class="el-icon-circle-plus-outline"></i>导入集市
+                </el-button>
+            </div>
         </el-row>
-            <div class="dataSheetmain">
-                <div class="dataSheetmainDiv" v-for="(item,index) in marketinfo" :key="index">
+        <div class="dataSheetmain">
+            <div class="dataSheetmainDiv" v-for="(item,index) in marketinfo" :key="index">
+                <el-row>
                     <div @click="gotomartdetail(item.data_mart_id)">
                         <i class="fa fa-folder-open-o fa-3x"></i>
                         <p>{{item.mart_name}}</p>
                     </div>
-                    <!--<div class="boxshletr">-->
-                    <!--<i class="fa fa-download fa-lg" @click="downloadData(item.data_mart_id)"></i>-->
-                    <!--<el-button type="text" class="delbtn" @click="dialogFormVisibleAdd = true;clickEditButton(index)">-->
-                    <!--<i class="fa fa-pencil fa-lg"></i>-->
-                    <!--</el-button>-->
-                    <!--</div>-->
-                </div>
+                </el-row>
+                <el-row class="boxshletr">
+                    <el-col>
+                        <i class="fa fa-download fa-lg" @click="downloadmart(item.mart_name,item.data_mart_id)"></i>
+                    </el-col>
+                </el-row>
             </div>
+        </div>
 
 
         <el-row class="bottomMargin">
-            <el-col :span="5" >
+            <el-col :span="5">
                 <el-row type="flex" justify="center">
                     <el-tabs class="tabes" type="card">
-                        <span class="top3title" >集市占用存储</span>
+                        <span class="top3title">集市占用存储</span>
                     </el-tabs>
                 </el-row>
                 <el-row>
@@ -153,6 +164,23 @@
                 <el-button type="primary" @click="addmarket('formAdd')" size="mini">保存</el-button>
             </div>
         </el-dialog>
+
+        <!--<el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">-->
+            <!--<el-form>-->
+                <!--<el-form-item label="上传要导入的数据源" :label-width="formLabelWidth">-->
+                    <!--<el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange">-->
+                        <!--<el-button size="small" type="primary">选择上传文件</el-button>-->
+                    <!--</el-upload>-->
+                    <!--<el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">-->
+                        <!--<i class="fa fa-question-circle " aria-hidden="true"></i>-->
+                    <!--</el-tooltip>-->
+                <!--</el-form-item>-->
+            <!--</el-form>-->
+            <!--<div slot="footer" class="dialog-footer">-->
+                <!--<el-button @click="cancleImport" size="mini" type="danger">取 消</el-button>-->
+                <!--<el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>-->
+            <!--</div>-->
+        <!--</el-dialog>-->
     </div>
 
 </template>
@@ -166,6 +194,7 @@
     export default {
         data() {
             return {
+                dialogFormVisibleImport:false,
                 SumTotal: [],
                 formLabelWidth: "150px",
                 totalstorage: [],
@@ -284,7 +313,45 @@
                 this.dialogofmarketadd = false;
                 this.$refs.formAdd.resetFields();
             },
+            downloadmart(mart_name, data_mart_id) {
+                let that = this;
+                functionAll.downLoadMart({
+                    data_mart_id: data_mart_id
+                }).then(res => {
+                    debugger;
+                    // if (res && res.success) {
+                    let filename = mart_name + ".hrds"
+                    const blob = new Blob([res]);
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, filename);
+                    } else {
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        // document.body.appendChild(aTag);
+                        aTag.download = filename;
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
+                    }
+                    // } else {
+                    //     this.$message({
+                    //         type: "error",
+                    //         message: "下载集市工程失败"
+                    //     });
+                    // }
+                })
+            },
+            deletemart() {
 
+            }
         }
     };
 </script>
@@ -299,7 +366,8 @@
         overflow: hidden;
     }
 
-    .dataSheetmainDiv:hover .boxshletr {
+    .boxshletr {
+        margin-top: 10px;
         display: block;
     }
 
@@ -458,7 +526,8 @@
         margin-bottom: 1%;
         margin-left: 40px;
     }
-    .top3title{
+
+    .top3title {
         /*border-bottom: 1px solid #e6e3e3;*/
         margin-bottom: 10px;
         /*margin-left: px;*/
@@ -466,5 +535,11 @@
         height: 40px;
         line-height: 40px;
         color: #2196f3;
+    }
+
+    .elButton {
+        float: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 </style>
