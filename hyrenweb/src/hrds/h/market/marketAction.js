@@ -313,7 +313,7 @@ export function generateMartJobToEtl(data) {
 
 
 
-//查询作业调度所有工程
+//下载集市工程
 export function downLoadMart(data) {
     return request({
         url: '/H/market/downLoadMart',
@@ -323,5 +323,14 @@ export function downLoadMart(data) {
         headers: {
             'Content-Type': 'application/json'
         }
+    })
+}
+
+//导入集市工程
+export function uploadFile(data) {
+    return request({
+        url: '/H/market/uploadFile',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }

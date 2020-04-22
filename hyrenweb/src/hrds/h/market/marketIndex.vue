@@ -53,7 +53,7 @@
                            size="small">
                     <i class="el-icon-circle-plus-outline"></i>新增集市
                 </el-button>
-                <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;"
+                <el-button type="primary" tab-position="top" @click="dialogFormVisibleImport = true;"
                            size="small">
                     <i class="el-icon-circle-plus-outline"></i>导入集市
                 </el-button>
@@ -165,22 +165,28 @@
             </div>
         </el-dialog>
 
-        <!--<el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">-->
-            <!--<el-form>-->
-                <!--<el-form-item label="上传要导入的数据源" :label-width="formLabelWidth">-->
-                    <!--<el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange">-->
-                        <!--<el-button size="small" type="primary">选择上传文件</el-button>-->
-                    <!--</el-upload>-->
-                    <!--<el-tooltip class="item" effect="dark" content="在本系统中要上传的数据源，后缀名为hrds的加密文件" placement="right">-->
-                        <!--<i class="fa fa-question-circle " aria-hidden="true"></i>-->
+        <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">
+            <el-form :model="formImport" ref="formImport">
+                <el-form-item label="上传要导入的集市工程">
+                    <el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action=""
+                               :auto-upload="false" :on-change="handleChange">
+                        <el-button size="small" type="primary">选择上传文件</el-button>
+                    </el-upload>
+                    <!--<el-tooltip class="item" effect="dark" content="在本系统中要上传的集市工程文件，后缀名为hrds的加密文件" placement="right">-->
+                    <!--<i class="fa fa-question-circle " aria-hidden="true"></i>-->
                     <!--</el-tooltip>-->
-                <!--</el-form-item>-->
-            <!--</el-form>-->
-            <!--<div slot="footer" class="dialog-footer">-->
-                <!--<el-button @click="cancleImport" size="mini" type="danger">取 消</el-button>-->
-                <!--<el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>-->
-            <!--</div>-->
-        <!--</el-dialog>-->
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisibleImport = false" size="mini" type="danger">取 消</el-button>
+                <el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>
+            </div>
+        </el-dialog>
+
+        <transition name="fade">
+            <loading v-if="isLoading" />
+        </transition>
+
     </div>
 
 </template>
@@ -190,11 +196,16 @@
     import regular from "@/utils/js/regular";
     import * as functionAll from "./marketAction";
     import * as message from "@/utils/js/message";
+    import Loading from '../../components/loading'
 
     export default {
+        components: {
+            Loading
+        },
         data() {
             return {
-                dialogFormVisibleImport:false,
+                fileList: [],
+                dialogFormVisibleImport: false,
                 SumTotal: [],
                 formLabelWidth: "150px",
                 totalstorage: [],
@@ -212,7 +223,9 @@
                     mart_number: "",
                     mart_desc: ""
                 },
-                rule: validator.default
+                rule: validator.default,
+                formImport: {},
+                isLoading:false,
             };
         },
         mounted() {
@@ -224,6 +237,11 @@
             this.getMarketTakesUpTop3Storage();
         },
         methods: {
+            handleChange(file, fileList) {
+                if (fileList.length > 0) {
+                    this.fileList = [fileList[fileList.length - 1]]
+                }
+            },
             getTotalStorage() {
                 functionAll.getTotalStorage().then(res => {
                     this.totalstorage = res.data;
@@ -314,44 +332,64 @@
                 this.$refs.formAdd.resetFields();
             },
             downloadmart(mart_name, data_mart_id) {
-                let that = this;
-                functionAll.downLoadMart({
-                    data_mart_id: data_mart_id
-                }).then(res => {
-                    debugger;
-                    // if (res && res.success) {
-                    let filename = mart_name + ".hrds"
-                    const blob = new Blob([res]);
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // 兼容IE10
-                        navigator.msSaveBlob(blob, filename);
-                    } else {
-                        //  chrome/firefox
-                        let aTag = document.createElement("a");
-                        // document.body.appendChild(aTag);
-                        aTag.download = filename;
-                        aTag.href = URL.createObjectURL(blob);
-                        if (aTag.all) {
-                            aTag.click();
+                message.confirmMsg('确定导出吗').then(res => {
+                    let that = this;
+                    functionAll.downLoadMart({
+                        data_mart_id: data_mart_id
+                    }).then(res => {
+                        debugger;
+                        // if (res && res.success) {
+                        let filename = mart_name + ".hrds"
+                        const blob = new Blob([res]);
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // 兼容IE10
+                            navigator.msSaveBlob(blob, filename);
                         } else {
-                            //  兼容firefox
-                            var evt = document.createEvent("MouseEvents");
-                            evt.initEvent("click", true, true);
-                            aTag.dispatchEvent(evt);
+                            //  chrome/firefox
+                            let aTag = document.createElement("a");
+                            // document.body.appendChild(aTag);
+                            aTag.download = filename;
+                            aTag.href = URL.createObjectURL(blob);
+                            if (aTag.all) {
+                                aTag.click();
+                            } else {
+                                //  兼容firefox
+                                var evt = document.createEvent("MouseEvents");
+                                evt.initEvent("click", true, true);
+                                aTag.dispatchEvent(evt);
+                            }
+                            URL.revokeObjectURL(aTag.href);
                         }
-                        URL.revokeObjectURL(aTag.href);
-                    }
-                    // } else {
-                    //     this.$message({
-                    //         type: "error",
-                    //         message: "下载集市工程失败"
-                    //     });
-                    // }
+                    })
+                }).catch(() => {
                 })
             },
-            deletemart() {
-
-            }
+            upload(formName) {
+                this.isLoading = true;
+                this.$refs[formName].validate(valid => {
+                    console.log(this.fileList[0]);
+                    if (valid) {
+                        let param = new FormData() // 创建form对象
+                        param.append('file', this.fileList[0].raw);
+                        functionAll.uploadFile(param).then(res => {
+                            this.isLoading = false;
+                            if (res && res.success) {
+                                this.$message({
+                                    type: "success",
+                                    message: "上传成功!"
+                                });
+                                // 隐藏对话框
+                                this.dialogFormVisibleImport = false;
+                                // 表单清空
+                                this.formImport = {};
+                                location.reload();
+                            } else {
+                                this.$emit(response.message);
+                            }
+                        });
+                    }
+                })
+            },
         }
     };
 </script>

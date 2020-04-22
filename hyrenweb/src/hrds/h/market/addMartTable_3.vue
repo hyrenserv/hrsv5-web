@@ -15,7 +15,7 @@
                 <span>SQL</span>
             </el-row>
             <el-row>
-                <el-input class="inputframe" type="textarea" rows="3" placeholder="" v-model="querysql"/>
+                <el-input class="inputframe" type="textarea" rows="3" readonly="true" v-model="querysql"/>
             </el-row>
             <el-row>
                 <el-col :span="20">
@@ -66,6 +66,12 @@
                 <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
             </div>
         </el-dialog>
+
+
+        <transition name="fade">
+            <loading v-if="isLoading" />
+        </transition>
+
     </div>
 </template>
 <script>
@@ -82,6 +88,7 @@
         },
         data() {
             return {
+                isLoading:false,
                 dialogProdeceJobs: false,
                 active: 2,
                 rule: validator.default,
@@ -118,15 +125,19 @@
                 })
             },
             excutmartjob() {
+                this.isLoading = ture;
                 let param = {
                     "datatable_id": this.datatable_id,
                     "date": this.date,
                     "parameter": this.parameter
                 }
                 functionAll.excutMartJob(param).then((res) => {
-                    debugger;
+                    this.isLoading = false;
                     if (res && res.success) {
-                        this.querysql = res.data.querysql;
+                        this.$message({
+                            type: "success",
+                            message: "执行成功!"
+                        });
                     }
                 })
             },
