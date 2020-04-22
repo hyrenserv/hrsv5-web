@@ -180,7 +180,15 @@ export default {
                 paramas.tableColumns = JSON.stringify(this.tableColumn);
             }
             functionAll.saveTableData(paramas).then(res => {
-
+                if (res && res.success) {
+                    this.$router.push({
+                        path: "/collection4_3",
+                        query: {
+                            agent_id: this.$route.query.agent_id,
+                            id:res.data,
+                        }
+                    })
+                }
             })
             // let data = {}
             // if (this.$route.query.edit == 'yes') {
