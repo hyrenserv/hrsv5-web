@@ -152,7 +152,7 @@
                         field: 'url',
                         fieldType: 'String',
                         isRequired: '必填',
-                        remark: '请求路径',
+                        remark: '请求路径（fileAttributeSearch）',
                     },
                     {
                         field: 'ds_name',
