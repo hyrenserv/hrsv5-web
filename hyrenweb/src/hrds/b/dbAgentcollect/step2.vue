@@ -7,16 +7,11 @@
                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
             </template>
         </el-table-column>
-        <el-table-column property="is_sendok" width="96" label="是否为主键" show-overflow-tooltip align="center">
-            <template slot-scope="scope">
-                <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_sendok"></el-checkbox>
-            </template>
-        </el-table-column>
         <el-table-column property="table_name" label="表名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column property="table_ch_name" label="中文表名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
             <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="watchText(scope.row)">查看列</el-button>
+                <el-button type="text" size="mini" @click="watchText(scope.row,scope.$index)">查看列</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -32,20 +27,29 @@
         </el-col>
     </div>
     <!-- 查看列弹出框 -->
-    <el-dialog width="50%" :visible.sync="innerVisible" append-to-body>
+    <el-dialog width="50%" :visible.sync="innerVisible">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">查看列信息</span>
         </div>
-        <el-table :data="tableDataDialog" border size="medium">
+        <el-table :data="tableDataDialog.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium">
             <el-table-column property label="序号" width="60px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column property="a" label="列名" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column property="b" label="列中文名" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column label="类型" property="b" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column property="is_primary_key" width="96" label="是否为主键" align="center">
+                <template slot-scope="scope">
+                    <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_primary_key"></el-checkbox>
+                </template>
+            </el-table-column>
+            <el-table-column property="column_name" label="列名" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column property="column_ch_name" label="列中文名" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="类型" property="column_type" show-overflow-tooltip align="center"></el-table-column>
         </el-table>
+        <div class="pageDiv">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" style="float:right;" :total="tableDataDialog.length"></el-pagination>
+        </div>
+
         <div slot="footer">
             <el-button size="mini" type="danger" @click="cancelWatch">取 消</el-button>
             <el-button type="primary" size="mini" @click="selectWatch">保存</el-button>
@@ -69,10 +73,15 @@ export default {
             pagesize: 5,
             currentPage: 1,
             innerVisible: false,
+            tableDataDialogAll: [],
+            table_id: '',
+            table_name: '',
+            tableColumns: []
         }
     },
     mounted() {
         this.getTableData();
+        this.tableColumns = [];
     },
     methods: {
         // 返回上一级
@@ -90,12 +99,24 @@ export default {
             })
         },
         // 查看列数据
-        watchText(val) {
+        watchText(val, index) {
+            this.table_id = val.table_id;
+            this.table_name = val.table_name;
             if (val.table_id == undefined) {
                 functionAll.getTableColumnByTableName({
                     colSetId: this.$route.query.id,
                     table_name: val.table_name
                 }).then(res => {
+                    this.tableDataDialogAll = res.data;
+                    res.data.forEach((item, index) => {
+                        if (item.column_name.toUpperCase() == 'HYREN_S_DATE') {
+                            res.data.splice(index, 1)
+                        } else if (item.column_name.toUpperCase() == 'HYREN_E_DATE') {
+                            res.data.splice(index, 1)
+                        } else if (item.column_name.toUpperCase() == 'HYREN_MD5_VAL') {
+                            res.data.splice(index, 1)
+                        }
+                    })
                     this.tableDataDialog = res.data;
                 })
             } else {
@@ -103,44 +124,83 @@ export default {
                     colSetId: this.$route.query.id,
                     table_id: val.table_id
                 }).then(res => {
-                    this.tableDataDialog = res.data;
+
+                    // this.tableDataDialog = res.data;
+
                 })
             }
             this.innerVisible = true;
         },
         //取消查看列
         cancelWatch() {
+            if (this.table_id == undefined) {
+                this.tableColumns = [];
+            }
             this.innerVisible = false;
+            this.tableDataDialog = [];
         },
         // 保存查看列
         selectWatch() {
+            if (this.table_id == undefined) {
+                let obj = {};
+                obj[this.table_name] = this.tableDataDialog;
+                if (this.tableColumns.length > 0) {
+                    for (let index = 0; index < this.tableColumns.length; index++) {
+                        if (JSON.stringify(obj) == JSON.stringify(this.tableColumns[index])) {
+                            break
+                        } else {
+                            this.tableColumns.push(obj);
+                        }
+                    }
+                } else {
+                    this.tableColumns.push(obj);
+                }
+                console.log(this.tableColumns)
+                this.innerVisible = false;
+            } else {
+                let obj = {};
+                obj.colSetId = this.$route.query.id;
+                obj['tableColumns'] = this.tableDataDialog;
+                functionAll.updateColumnByTableId(obj).then(res => {
+                    if (res && res.success) {
+                        this.innerVisible = false;
+                    }
+                })
+            }
 
         },
         // 下一步
-        // 接口
         nextSteps() {
-            let data = {}
-            if (this.$route.query.edit == 'yes') {
-                data = {
-                    agent_id: this.$route.query.agent_id,
-                    id: this.$route.query.id,
-                    sourceId: this.$route.query.sourceId,
-                    source_name: this.$route.query.source_name,
-                    edit: "yes"
-                }
-            } else {
-                data = {
-                    agent_id: this.$route.query.agent_id,
-                    id: this.$route.query.id,
-                    sourceId: this.$route.query.sourceId,
-                    source_name: this.$route.query.source_name,
-                }
+            let paramas = {};
+            paramas.colSetId = this.$route.query.id;
+            paramas.tableInfos = JSON.stringify(this.tableData);
+            if (this.tableColumns.length > 0) {
+                paramas.tableColumns = JSON.stringify(this.tableColumns);
             }
-            this.$router.push({
-                path: "/collection4_3",
-                query: data
-            })
+            functionAll.saveTableData(paramas).then(res => {
 
+            })
+            // let data = {}
+            // if (this.$route.query.edit == 'yes') {
+            //     data = {
+            //         agent_id: this.$route.query.agent_id,
+            //         id: this.$route.query.id,
+            //         sourceId: this.$route.query.sourceId,
+            //         source_name: this.$route.query.source_name,
+            //         edit: "yes"
+            //     }
+            // } else {
+            //     data = {
+            //         agent_id: this.$route.query.agent_id,
+            //         id: this.$route.query.id,
+            //         sourceId: this.$route.query.sourceId,
+            //         source_name: this.$route.query.source_name,
+            //     }
+            // }
+            // this.$router.push({
+            //     path: "/collection4_3",
+            //     query: data
+            // })
         },
         //上一步
         backSteps() {
@@ -166,6 +226,13 @@ export default {
                 query: data
             })
         },
+        // 分页显示
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage;
+        },
+        handleSizeChange(size) {
+            this.pagesize = size;
+        },
     },
 }
 </script>
@@ -182,5 +249,10 @@ export default {
 
 .step2 .partFourDiv .el-button {
     margin-bottom: 20px;
+}
+
+/* 数据分页 */
+.step2 .pageDiv {
+    height: 10px;
 }
 </style>
