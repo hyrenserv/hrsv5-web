@@ -177,16 +177,16 @@
         <el-dialog title="表字段" :visible.sync="iftablecolumn" width="30%" class='data_edit'>
             <el-row>
                 <el-table :data="tablecolumn" border size="mini" ref="filterTable">
-                    <el-table-column prop="selectionState" width="100%" align="center">
+                    <el-table-column prop="selectionstate" width="100%" align="center">
                         <template slot="header" slot-scope="scope">
-                            <el-checkbox @change="Allis_selectionStateFun(tablecolumn,Allis_selectionState)"
-                                         v-model="Allis_selectionState"
-                                         :checked="Allis_selectionState"></el-checkbox>
+                            <el-checkbox @change="Allis_selectionstateFun()"
+                                         v-model="Allis_selectionstate"
+                                         :checked="Allis_selectionstate"></el-checkbox>
                         </template>
                         <template slot-scope="scope">
-                            <el-checkbox :checked="scope.row.selectionState"
-                                         @change="evercheck(scope.row.selectionState,scope.row.columnname)"
-                                         v-model="scope.row.selectionState"></el-checkbox>
+                            <el-checkbox :checked="scope.row.selectionstate"
+                                         @change="evercheck(scope.row.selectionstate,scope.row.columnname)"
+                                         v-model="scope.row.selectionstate"></el-checkbox>
                         </template>
                     </el-table-column>
                     <el-table-column type="index" width="100%" label="序号" align='center'></el-table-column>
@@ -249,7 +249,7 @@
                 hbasesort: [],
                 iftablecolumn: false,
                 tablecolumn: [],
-                Allis_selectionState: false,
+                Allis_selectionstate: false,
                 sqltablename: "",
                 isLoading:false,
 
@@ -280,7 +280,7 @@
                         this.tablecolumn = res.data.columnresult;
                         this.sqltablename = res.data.tablename;
                         this.iftablecolumn = true;
-                        this.Allis_selectionState = false;
+                        this.Allis_selectionstate = false;
                     });
                 }
             },
@@ -323,7 +323,7 @@
                         //     this.tablecolumn = res.data.columnresult;
                         //     this.sqltablename = res.data.tablename;
                         //     this.iftablecolumn = true;
-                        //     this.Allis_selectionState = false;
+                        //     this.Allis_selectionstate = false;
                         // });
                     }
                 }
@@ -388,7 +388,6 @@
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
                 } else {
                     this.isLoading = true;
-                    this.querydatadialogshow = true;
                     this.databysql = [];
                     functionAll.getDataBySQL({
                         'querysql': this.querysql,
@@ -397,6 +396,7 @@
                     }).then((res) => {
                         this.isLoading = false;
                         if (res && res.data.success) {
+                            this.querydatadialogshow = true;
                             this.databysql = res.data.result;
                         } else {
                             this.$message({
@@ -578,7 +578,7 @@
             changesql() {
                 let sql = "select ";
                 for (let i = 0; i < this.tablecolumn.length; i++) {
-                    if (this.tablecolumn[i].selectionState == true) {
+                    if (this.tablecolumn[i].selectionstate == true) {
                         sql += this.tablecolumn[i].columnname + ","
                     }
                 }
@@ -586,48 +586,38 @@
                 sql += " from " + this.sqltablename;
                 this.querysql = sql;
                 this.iftablecolumn = false;
-                this.Allis_selectionState = false;
+                this.Allis_selectionstate = false;
             },
             dismissiftablecolumn() {
                 this.iftablecolumn = false;
-                this.Allis_selectionState = false;
+                this.Allis_selectionstate = false;
             },
-            Allis_selectionStateFun(items, e) {
-                if (this.Allis_selectionState) {
-                    for (let i = 0; i < this.tablecolumn.length; i++) {
-                        this.tablecolumn[i].selectionState = true;
-                    }
+            Allis_selectionstateFun() {
+                if (this.Allis_selectionstate) {
+                    this.tablecolumn.forEach(data => {
+                        data.selectionstate = true;
+                    });
                 } else {
-                    for (let i = 0; i < this.tablecolumn.length; i++) {
-                        this.tablecolumn[i].selectionState = false;
-                    }
+                    this.tablecolumn.forEach(data => {
+                        data.selectionstate = false;
+                    });
                 }
             },
             evercheck(val, name) {
                 let count = 0
-                if (val == true) {
+                if (this.Allis_selectionstate == true) {
                     for (let i = 0; i < this.tablecolumn.length; i++) {
-                        if (this.tablecolumn[i].selectionState == true) {
+                        if (this.tablecolumn[i].selectionstate == true) {
                             count++
                         }
                     }
                     if (count == this.tablecolumn.length) {
-                        this.Allis_selectionState = true
+                        this.Allis_selectionstate = true
                     } else {
-                        this.Allis_selectionState = false
-                    }
-                    for (let i = 0; i < this.tablecolumn.length; i++) {
-                        if (this.tablecolumn[i].columnname == name) {
-                            this.tablecolumn[i].selectionState = true;
-                        }
+                        this.Allis_selectionstate = false
                     }
                 } else {
-                    this.Allis_selectionState = false;
-                    for (let i = 0; i < this.tablecolumn.length; i++) {
-                        if (this.tablecolumn[i].columnname == name) {
-                            this.tablecolumn[i].selectionState = false;
-                        }
-                    }
+                    this.Allis_selectionstate = false;
                 }
             },
         }
