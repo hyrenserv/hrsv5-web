@@ -86,12 +86,8 @@
                                         :rules="filter_rules([{required: true}])"/>
                     </template>
                 </el-table-column>
-                <el-table-column prop="interface_state" label="接口状态" align="center" :filters="interfaceState"
-                                 :filter-multiple="false" column-key='interfaceState'>
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.interface_state==='1'">禁用</span>
-                        <span v-else>启用</span>
-                    </template>
+                <el-table-column prop="interface_state" label="接口状态" align="center">
+                    <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}</template>
                 </el-table-column>
             </el-table>
             <!-- 分页内容 -->
@@ -122,6 +118,7 @@
                 userData: [],
                 interfaceType: [],
                 interfaceState: [],
+                interfaceStateObj: {},
                 start_use_date_s: "",
                 use_valid_date_s: "",
                 start_date: "",
@@ -134,31 +131,45 @@
             }
         },
         created() {
-            // 获取接口类型代码项
-            this.$Code.getCategoryItems({
-                'category': 'InterfaceType'
-            }).then(res => {
-                this.interfaceType = res.data
-            });
-            this.$Code.getCategoryItems({
-                'category': 'InterfaceState'
-            }).then(res => {
-                this.interfaceState = res.data
-            })
+            this.getInterfaceType();
+            this.getInterfaceState();
         },
         mounted() {
             this.searchInterfaceInfoByType("1");
             this.searchUserInfo();
         },
         methods: {
+            // 获取接口类型代码项
+            getInterfaceType() {
+                this.$Code.getCategoryItems({
+                    'category': 'InterfaceType'
+                }).then(res => {
+                    res.data.forEach(row => {
+                        this.interfaceType = res.data;
+                    })
+                })
+            },
+            // 获取接口状态代码项
+            getInterfaceState() {
+                this.$Code.getCategoryItems({
+                    'category': 'InterfaceState'
+                }).then(res => {
+                    this.interfaceState = res.data;
+                    res.data.forEach(row => {
+                        this.interfaceStateObj[row.code] = row.value;
+                    })
+                })
+            },
+            // 根据接口类型查看接口信息
             searchInterfaceInfoByType(interface_type) {
-                let params = {}
+                let params = {};
                 params["interface_type"] = interface_type;
                 interfaceFunctionAll.searchInterfaceInfoByType(params).then(res => {
                     this.tableData = res.data;
                     this.totalSize = res.data.length;
                 })
             },
+            // 获取接口用户信息
             searchUserInfo() {
                 interfaceFunctionAll.searchUserInfo().then(res => {
                     this.userData = res.data;
@@ -201,7 +212,7 @@
                     param["use_valid_date"] = o.use_valid_date_s;
                     interfaceUseInfos.push(param);
                 });
-                if (this.selectRow.length !==interfaceUseInfos.length) {
+                if (this.selectRow.length !== interfaceUseInfos.length) {
                     this.$message({
                         message: "选择列与选中日期列长度不一致",
                         type: 'error',
@@ -220,7 +231,7 @@
                             this.$refs.multipleTable.clearSelection();
                             this.searchUserInfo();
                             this.searchInterfaceInfoByType("1");
-                            this.currPage=1;
+                            this.currPage = 1;
                         })
                     }
                 });
@@ -236,8 +247,10 @@
                 this.pageSize = pageSize;
                 this.searchInterfaceInfoByType("1");
             },
+            // 接口类型转换
             handleClick(tab) {
                 this.$refs.multipleTable.clearSelection();
+                this.currPage = 1;
                 if (tab.paneName === "0") {
                     this.searchInterfaceInfoByType("1");
                 } else if (tab.paneName === "1") {
@@ -294,6 +307,7 @@
         text-align: center;
         margin-top: 5px;
     }
+
     .fontStyle {
         color: #2196f3;
         font-size: 18px;

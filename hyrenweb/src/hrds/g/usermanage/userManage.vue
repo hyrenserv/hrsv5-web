@@ -14,8 +14,8 @@
         </el-row>
         <el-divider/>
         <el-row style="margin-bottom:10px">
-            <span >用户名称：
-                 <el-input placeholder="请输入内容"  clearable size="medium" v-model="user_name">
+            <span>用户名称：
+                 <el-input placeholder="请输入内容" clearable size="medium" v-model="user_name">
                  </el-input>
                 <el-button type="success" size="mini" icon="el-icon-search"
                            @click="selectUserInfoByPage(1,10)">查询
@@ -55,58 +55,34 @@
                            :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper"
                            :total="totalSize" class='locationcenter'/>
         </el-row>
-        <!--新增用户弹出框-->
-        <el-dialog title="新增用户" :visible.sync="dialogAddUserFormVisible" :before-close="beforeClose">
-            <el-form :model="addUserForm" ref="addUserForm" label-width="180px">
+        <!--新增/编辑用户弹出框-->
+        <el-dialog :title="customTitle" :visible.sync="dialogUserFormVisible"
+                   :before-close="beforeClose">
+            <el-form :model="userForm" ref="userForm" label-width="180px">
                 <el-form-item label="用户名称:" prop="user_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="addUserForm.user_name" autocomplete="off" clearable placeholder="用户名称"
-                    />
+                    <el-input v-model="userForm.user_name" clearable placeholder="用户名称"/>
                 </el-form-item>
                 <el-form-item label="用户密码:" prop="user_password"
                               :rules="filter_rules([{required: true,dataType:'password'}])">
-                    <el-input v-model="addUserForm.user_password" show-password autocomplete="off" clearable
-                              placeholder="用户密码"/>
+                    <el-input v-model="userForm.user_password" show-password clearable placeholder="用户密码"/>
                 </el-form-item>
                 <el-form-item label="邮箱地址:" prop="user_email"
                               :rules="filter_rules([{required: true,dataType: 'email'}])">
-                    <el-input v-model="addUserForm.user_email" autocomplete="off" clearable
-                              placeholder="邮箱地址"/>
+                    <el-input v-model="userForm.user_email" clearable placeholder="邮箱地址"/>
                 </el-form-item>
                 <el-form-item label="备注:">
-                    <el-input v-model="addUserForm.user_remark" type="textarea" autosize autocomplete="off"
-                              clearable placeholder="备注" style="width: 360px;"/>
+                    <el-input v-model="userForm.user_remark" type="textarea" autosize clearable
+                              placeholder="备注" style="width: 360px;"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogAddUserFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addUser('addUserForm')">保 存</el-button>
-            </div>
-        </el-dialog>
-        <!--编辑用户弹出框-->
-        <el-dialog title="编辑用户" :visible.sync="dialogUpdateUserFormVisible" :before-close="beforeUpdateClose">
-            <el-form :model="updateUserForm" ref="updateUserForm" label-width="120px">
-                <el-form-item label="用户名称:" prop="user_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="updateUserForm.user_name" autocomplete="off" clearable
-                              placeholder="用户名称"/>
-                </el-form-item>
-                <el-form-item label="用户密码:" prop="user_password"
-                              :rules="filter_rules([{required: true,dataType:'password'}])">
-                    <el-input v-model="updateUserForm.user_password" show-password autocomplete="off"
-                              clearable placeholder="用户密码"/>
-                </el-form-item>
-                <el-form-item label="邮箱地址:" prop="user_email"
-                              :rules="filter_rules([{required: true,dataType: 'email'}])">
-                    <el-input v-model="updateUserForm.user_email" autocomplete="off" clearable
-                              placeholder="邮箱地址"/>
-                </el-form-item>
-                <el-form-item label="备注:">
-                    <el-input v-model="updateUserForm.user_remark" type="textarea" autosize autocomplete="off"
-                              clearable placeholder="备注" style="width: 360px;"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogUpdateUserFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateUser('updateUserForm')">保 存</el-button>
+                <el-button @click="dialogUserFormVisible = false" size="mini">取 消</el-button>
+                <el-button type="primary" size="mini" v-if="isEditor"
+                           @click="updateUser('userForm')">更 新
+                </el-button>
+                <el-button type="primary" size="mini" v-else
+                           @click="addUser('userForm')">保 存
+                </el-button>
             </div>
         </el-dialog>
     </div>
@@ -125,16 +101,11 @@
                 pageSize: 10,
                 totalSize: 0,
                 tableData: [],
+                customTitle: '',
+                isEditor: false,
                 user_name: "",
-                dialogAddUserFormVisible: false,
-                dialogUpdateUserFormVisible: false,
-                addUserForm: {
-                    user_name: "",
-                    user_password: "",
-                    user_email: "",
-                    user_remark: "",
-                },
-                updateUserForm: {
+                dialogUserFormVisible: false,
+                userForm: {
                     user_name: "",
                     user_password: "",
                     user_email: "",
@@ -150,7 +121,7 @@
             selectUserInfoByPage(currPage, pageSize) {
                 this.currPage = currPage;
                 this.pageSize = pageSize;
-                let params = {}
+                let params = {};
                 params["currPage"] = currPage;
                 params["pageSize"] = pageSize;
                 params["user_name"] = this.user_name;
@@ -159,29 +130,35 @@
                     this.totalSize = res.data[0].totalSize
                 });
             },
-            // 根据用户名分页查询用户信息
+            // 根据用户ID查询用户信息
             selectUserById(row) {
-                this.dialogUpdateUserFormVisible = true;
+                this.dialogUserFormVisible = true;
+                this.customTitle = "修改用户";
+                this.isEditor = true;
                 let params = {}
                 params["user_id"] = row.user_id;
                 interfaceFunctionAll.selectUserById(params).then(res => {
-                    this.updateUserForm = res.data
+                    this.userForm = res.data
                 });
             },
-            addUserButton(){
-                this.dialogAddUserFormVisible = true;
+            addUserButton() {
+                // 表单清空
+                this.userForm = {};
+                this.isEditor = false;
+                this.dialogUserFormVisible = true;
+                this.customTitle = "新增用户";
             },
             // 新增用户
             addUser(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 处理参数
-                        interfaceFunctionAll.addUser(this.addUserForm).then((res) => {
+                        interfaceFunctionAll.addUser(this.userForm).then((res) => {
                             message.saveSuccess(res)
                             this.selectUserInfoByPage(1, 10);
-                            this.dialogAddUserFormVisible = false;
+                            this.dialogUserFormVisible = false;
                             // 表单清空
-                            this.addUserForm = {};
+                            this.userForm = {};
                         })
                     }
                 });
@@ -191,19 +168,19 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 处理参数
-                        interfaceFunctionAll.updateUser(this.updateUserForm).then((res) => {
+                        interfaceFunctionAll.updateUser(this.userForm).then((res) => {
                             message.updateSuccess(res);
                             this.selectUserInfoByPage(1, 10);
-                            this.dialogUpdateUserFormVisible = false;
+                            this.dialogUserFormVisible = false;
                             // 表单清空
-                            this.updateUserForm = {};
+                            this.userForm = {};
                         })
                     }
                 });
             },
             // 删除用户
             deleteUser(row) {
-                let params = {}
+                let params = {};
                 params["user_id"] = row.user_id;
                 message.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteUser(params).then((res) => {
@@ -215,12 +192,8 @@
             },
             // 关闭弹出框之前触发事件
             beforeClose() {
-                this.$refs.addUserForm.resetFields();
-                this.dialogAddUserFormVisible = false;
-            },
-            beforeUpdateClose() {
-                this.$refs.updateUserForm.resetFields();
-                this.dialogUpdateUserFormVisible = false;
+                this.$refs.userForm.resetFields();
+                this.dialogUserFormVisible = false;
             },
             //用户列表数据实现分页功能
             handleCurrentChangeList(currPage) {
@@ -259,10 +232,12 @@
         margin-right: 10px;
         width: 360px;
     }
+
     .fontStyle {
         color: #2196f3;
         font-size: 18px;
     }
+
     .locationcenter {
         text-align: center;
         margin-top: 5px;

@@ -153,7 +153,7 @@
             </div>
         </el-dialog>
         <!--查看字段弹出框-->
-        <el-dialog title="接口修改" :visible.sync="dialogViewFieldFormVisible"
+        <el-dialog title="查看字段列表" :visible.sync="dialogViewFieldFormVisible"
                    :before-close="beforeViewFieldClose">
             <el-table :data="fieldData" border style="width: 100%">
                 <el-table-column label="序号" align="center">
@@ -212,7 +212,7 @@
             this.searchInterfaceInfo();
         },
         methods: {
-            // 获取接口类型代码项
+            // 获取接口状态代码项
             getUseState() {
                 this.$Code.getCategoryItems({
                     'category': 'InterfaceState'

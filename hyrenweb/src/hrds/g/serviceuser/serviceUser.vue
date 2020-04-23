@@ -89,7 +89,7 @@
                            :total="totalDataSize" class='locationcenter'/>
         </el-row>
         <!--查看字段弹出框-->
-        <el-dialog title="接口修改" :visible.sync="dialogViewFieldFormVisible"
+        <el-dialog title="表列名信息" :visible.sync="dialogViewFieldFormVisible"
                    :before-close="beforeViewFieldClose">
             <el-table :data="filedData" border style="width: 100%">
                 <el-table-column label="序号" align="center">
@@ -179,9 +179,6 @@
             beforeViewFieldClose() {
                 this.dialogViewFieldFormVisible = false;
             },
-            // refreshPage(){
-            //     this.$router.go(0)
-            // }
         }
     }
 </script>
