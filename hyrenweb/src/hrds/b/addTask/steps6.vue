@@ -129,14 +129,14 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="作业描述" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="作业描述" align="center" >
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job_desc'" :rules="rule.default">
                             <el-input v-model="scope.row.etl_job_desc" type="textarea" placeholder="作业描述" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="调度频率" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="调度频率" align="center" >
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_freq'" :rules="rule.default">
                             <el-select style="width:100%" v-model="scope.row.disp_freq" placeholder="频率选择" clearable size="mini">
@@ -153,7 +153,7 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="调度触发方式" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="调度触发方式" align="center" >
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_type'" :rules="rule.default">
                             <el-select style="width:100%" v-model="scope.row.disp_type" placeholder="调度触发方式" size="mini" clearable>
@@ -170,7 +170,7 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="调度触发时间" align="center" :show-overflow-tooltip="true">
+                <el-table-column label="调度触发时间" align="center" >
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_time'" :rules="rule.default" v-if="scope.row.disp_type==='T'||scope.row.disp_type==='Z'">
                             <el-time-picker style="width:100%" v-model="scope.row.disp_time" size="mini" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}" placeholder="hh:mm:ss" value-format="HH:mm:ss" format="HH:mm:ss">

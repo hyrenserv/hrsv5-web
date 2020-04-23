@@ -545,18 +545,17 @@
     border-bottom: 1px solid #f1eaea;
 }
 /*  */
-.el-tag.el-tag--info{
-    width: 90%;
+/* .el-tag.el-tag--info{
+    max-width: 88%;
 }
 .el-select__tags-text{
     display: inline-flex;
-    /* white-space: pre-wrap; */
     overflow: hidden;
     width: 90%;
 }
 .el-select .el-tag__close.el-icon-close{
     right: -1px !important;
-}
+} */
 /* 翻页条居中 */
 .locationcenter {
     text-align: center;
