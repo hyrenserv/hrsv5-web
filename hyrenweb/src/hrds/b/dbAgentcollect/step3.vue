@@ -266,13 +266,16 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.isLoading = true
-                    let dataExtractionDefs = []
+                    let dataExtractionDefs = [],
+                        table_info = []
                     for (let i = 0; i < this.ruleForm.tableData.length; i++) {
                         if (this.ruleForm.tableData[i].table_id) {
-                            dataExtractionDefs.push({
+                            table_info.push({
                                 'table_id': this.ruleForm.tableData[i].table_id,
                                 'table_name': this.ruleForm.tableData[i].table_name,
-                                'table_cn_name': this.ruleForm.tableData[i].table_cn_name,
+                                'table_ch_name': this.ruleForm.tableData[i].table_cn_name,
+                            })
+                            dataExtractionDefs.push({
                                 'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
                                 'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
                                 'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
@@ -280,9 +283,13 @@ export default {
                                 'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
                                 'plane_url': this.ruleForm.tableData[i].plane_url,
                                 'database_code': this.ruleForm.tableData[i].database_code,
-                                'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
+                                // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
                             })
                         } else {
+                            table_info.push({
+                                'table_name': this.ruleForm.tableData[i].table_name,
+                                'table_cn_name': this.ruleForm.tableData[i].table_cn_name,
+                            })
                             dataExtractionDefs.push({
                                 'table_name': this.ruleForm.tableData[i].table_name,
                                 'table_cn_name': this.ruleForm.tableData[i].table_cn_name,
@@ -293,7 +300,7 @@ export default {
                                 'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
                                 'plane_url': this.ruleForm.tableData[i].plane_url,
                                 'database_code': this.ruleForm.tableData[i].database_code,
-                                'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
+                                // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
                             })
                         }
 
@@ -301,6 +308,7 @@ export default {
                     let params = {};
                     params["colSetId"] = parseInt(this.$route.query.id);
                     params["dataExtractionDefs"] = JSON.stringify(dataExtractionDefs);
+                    params["tableInfos"] = JSON.stringify(table_info);
                     console.log(params)
                     functionAll.saveDataTransferData(params).then(res => {
                         console.log(res)

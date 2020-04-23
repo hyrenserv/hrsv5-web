@@ -337,7 +337,7 @@ export default {
         this.dbid = this.$route.query.id;
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
-        this.sName = this.$Base64.decode(this.$route.query.source_name);
+        // this.sName = this.$Base64.decode(this.$route.query.source_name);
         this.getAgentPathFun() //获取目录
     },
     mounted() {
@@ -472,7 +472,7 @@ export default {
                     agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
-                    source_name: this.$Base64.encode(this.sName),
+                    source_name:this.$route.query.source_name,
                     edit: "yes"
                 }
             } else {
@@ -481,7 +481,7 @@ export default {
                     id: this.dbid,
                     source_id: this.sourId,
                     agent_id: this.aId,
-                    source_name: this.$Base64.encode(this.sName),
+                    source_name:this.$route.query.source_name,
                 }
             }
             this.$router.push({
