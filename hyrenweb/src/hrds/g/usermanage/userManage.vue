@@ -156,7 +156,7 @@
                 params["user_name"] = this.user_name;
                 interfaceFunctionAll.selectUserInfoByPage(params).then(res => {
                     this.tableData = res.data;
-                    this.totalSize = res.data.totalSize
+                    this.totalSize = res.data[0].totalSize
                 });
             },
             // 根据用户名分页查询用户信息

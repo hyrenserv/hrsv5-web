@@ -7,6 +7,6 @@ import request from '@/utils/request'
  */
 export function interfaceResponseTime() {
     return request({
-        url: '/G//interfaceResponseTime',
+        url: '/G/interfaceResponseTime',
     })
 }

@@ -53,14 +53,14 @@ module.exports = {
                     '^/H': '/H/action/hrds/h/biz'
                 }
             },
-			// '/G': {
-			// 	target: process.env.VUE_APP_HRDS_G_API, // 目标 API 地址
-			// 	changeOrigin: true, // 允许websockets跨域
-			// 	ws: true,
-			// 	pathRewrite: {
-			// 		'^/G': '/G/action/hrds/g/biz'
-			// 	}
-			// }
+			'/G': {
+				target: process.env.VUE_APP_HRDS_G_API, // 目标 API 地址
+				changeOrigin: true, // 允许websockets跨域
+				ws: true,
+				pathRewrite: {
+					'^/G': '/G/action/hrds/g/biz'
+				}
+			}
 	    }
 	  }
 };

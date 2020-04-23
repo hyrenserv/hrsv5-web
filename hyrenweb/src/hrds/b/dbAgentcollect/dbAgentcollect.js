@@ -140,7 +140,8 @@ export function getInitDataTransfer(data) {
 export function saveDataTransferData(data) {
     return request({
         url: '/B/agent/datafileconf/datatransfer/saveDataTransferData',
-        params: data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 //steps4
