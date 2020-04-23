@@ -25,32 +25,7 @@
                     <el-input v-model="form.classify_num" disabled placeholder="分类名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
-            <!-- <el-col :span="12">
-                <el-form-item label="文件格式" :label-width="formLabelWidth" prop="FileFormat" :rules="rule.selected">
-                    <el-select v-model="form.FileFormat" placeholder="文件格式" clearable style="width: 100%;">
-                        <el-option v-for="item in FileFormat" :key="item.value" :label="item.value" :value="item.FileFormat">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="数据字符集" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
-                    <el-select v-model="form.run_way" placeholder="数据字符集" clearable style="width: 100%;">
-                        <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.run_way">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="数据分隔" :label-width="formLabelWidth" prop="database_separatorr" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.database_separatorr" placeholder="数据分隔" :size="size"></el-input>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="换行符" :label-width="formLabelWidth" prop="row_separator" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.row_separator" placeholder="换行符" :size="size"></el-input>
-                </el-form-item>
-            </el-col> -->
+
             <el-col :span="18">
                 <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="plane_url" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.plane_url" placeholder="数据字典文件" disabled :size="size">
@@ -214,8 +189,6 @@ export default {
                 children: "children",
                 label: "path"
             },
-            runWay: [],
-            FileFormat: [],
             radio: null,
             innerVisible: false,
             ediltVisible: false,
@@ -224,8 +197,6 @@ export default {
         }
     },
     mounted() {
-        // this.getCategoryItems("DataBaseCode");
-        // this.getCategoryItems("FileFormat");
         this.getAllInfo();
     },
     methods: {
@@ -375,32 +346,6 @@ export default {
         handleSizeChange(size) {
             this.pagesize = size;
         },
-        // 获取代码项对应的值
-        getCategoryItems(e) {
-            if (e == "DataBaseCode") {
-                functionAll.getCategoryItems({
-                    category: e
-                }).then((res) => {
-                    if (res && res.success) {
-                        res.data.forEach((item => {
-                            item['run_way'] = item.code;
-                        }))
-                        this.runWay = res.data;
-                    }
-                })
-            } else if (e == "FileFormat") {
-                functionAll.getCategoryItems({
-                    category: e
-                }).then((res) => {
-                    if (res && res.success) {
-                        res.data.forEach((item) => {
-                            item['FileFormat'] = item.code;
-                        })
-                        this.FileFormat = res.data;
-                    }
-                })
-            }
-        },
         // 取消选择目录并且关闭弹出框
         cancelSelect() {
             console.log(this.fileMark)
@@ -419,7 +364,6 @@ export default {
             }
             functionAll.selectPath({
                     agent_id: this.$route.query.agent_id,
-                    // agent_id: '1000000022',
                     path: data.path
                 })
                 .then(res => {
@@ -436,7 +380,6 @@ export default {
             functionAll
                 .selectPath({
                     agent_id: this.$route.query.agent_id,
-                    // agent_id: '1000000022',
                     path: path
                 })
                 .then(res => {

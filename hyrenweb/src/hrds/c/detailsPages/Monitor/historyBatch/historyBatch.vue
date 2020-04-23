@@ -100,9 +100,6 @@ export default {
         };
 
     },
-    // created() {
-    //     this.monitorHistoryBatchInfo('2019-12-12')
-    // },
     methods: {
         // 获取历史批量详情
         monitorHistoryBatchInfo(val) {

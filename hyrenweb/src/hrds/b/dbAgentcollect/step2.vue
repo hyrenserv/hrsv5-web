@@ -159,7 +159,6 @@ export default {
                     }
                 })
             }
-
         },
         // 下一步
         nextSteps() {
@@ -171,13 +170,26 @@ export default {
             }
             functionAll.saveTableData(paramas).then(res => {
                 if (res && res.success) {
-                    this.$router.push({
-                        path: "/collection4_3",
-                        query: {
+                    let data = {}
+                    if (this.$route.query.edit == 'yes') {
+                        data = {
                             agent_id: this.$route.query.agent_id,
                             id: res.data,
-                            sourceId: this.$route.query.sourceId,
+                            source_id: this.$route.query.sourceId,
+                            source_name: this.$route.query.source_name,
+                            edit: "yes"
                         }
+                    } else {
+                        data = {
+                            agent_id: this.$route.query.agent_id,
+                            id: res.data,
+                            source_id: this.$route.query.sourceId,
+                            source_name: this.$route.query.source_name,
+                        }
+                    }
+                    this.$router.push({
+                        path: "collection4_3",
+                        query: data
                     })
                 }
             })
