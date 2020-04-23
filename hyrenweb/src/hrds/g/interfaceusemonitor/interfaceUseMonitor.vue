@@ -52,20 +52,16 @@
                     <el-table-column prop="user_name" label="使用用户" align="center"/>
                     <el-table-column prop="start_use_date" label="开始日期" align="center"/>
                     <el-table-column prop="use_valid_date" label="结束日期" align="center"/>
-                    <el-table-column prop="interface_state" label="接口状态" align="center"
-                                     :filters="interfaceState"
-                                     :filter-multiple="false" column-key='interfaceState'>
-                        <template slot-scope="scope">
-                            <span v-if="scope.row.interface_state==='1'">禁用</span>
-                            <span v-else>启用</span>
-                        </template>
+                    <el-table-column prop="use_state" label="接口使用状态" align="center">
+                        <template slot-scope="scope">{{useState[scope.row.use_state]}}</template>
                     </el-table-column>
                     <el-table-column label="操作" align="center">
-                        <template slot-scope="scope" :filters="interfaceState">
+                        <template slot-scope="scope">
                             <el-button size="medium" type="text" class='sendcolor'
                                        @click="interfaceDisableEnable(scope.row)">
-                                <span v-if="scope.row.interface_state==='1'">启用</span>
-                                <span v-else>禁用</span>
+                                <!--如果是启用那么显示禁用-->
+                                <span v-if="scope.row.use_state==='1'">禁用</span>
+                                <span v-else>启用</span>
                             </el-button>
                             <el-button size="medium" type="text" class='editcolor'
                                        @click="searchInterfaceUseInfoById(scope.row)">
@@ -179,15 +175,8 @@
     import * as interfaceFunctionAll from "./interfaceUseMonitor";
     import * as validator from "@/utils/js/validator";
     import * as message from "@/utils/js/message";
-    import Scrollbar from '../../components/scrollbar';
-    import Loading from "../../components/loading/index";
 
     export default {
-        components: {
-            Scrollbar,
-            Loading
-        },
-        props: ['data', 'options', 'tip'],
         //写定义的变量数据方法等
         data() {
             return {
@@ -201,7 +190,7 @@
                 selectColumn: [],
                 userData: [],
                 fieldData: [],
-                interfaceState: [],
+                useState: {},
                 interface_use_id: '',
                 dialogUpdateFormVisible: false,
                 dialogViewFieldFormVisible: false,
@@ -215,19 +204,24 @@
                 }
             }
         },
-        create() {
-            // 获取接口类型代码项
-            this.$Code.getCategoryItems({
-                'category': 'InterfaceState'
-            }).then(res => {
-                this.interfaceState = res.data
-            })
+        created() {
+            this.getUseState();
         },
         mounted() {
             this.searchUserInfo();
             this.searchInterfaceInfo();
         },
         methods: {
+            // 获取接口类型代码项
+            getUseState() {
+                this.$Code.getCategoryItems({
+                    'category': 'InterfaceState'
+                }).then(res => {
+                    res.data.forEach(row => {
+                        this.useState[row.code] = row.value;
+                    })
+                })
+            },
             // 查看接口信息
             searchInterfaceInfo() {
                 interfaceFunctionAll.searchInterfaceInfo().then(res => {
@@ -281,7 +275,6 @@
             },
             // 编辑
             updateInterfaceUseInfo(formName) {
-                console.log(this.form)
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         interfaceFunctionAll.updateInterfaceUseInfo(this.form).then((res) => {
@@ -296,11 +289,12 @@
             interfaceDisableEnable(row) {
                 let params = {}
                 params["interface_use_id"] = row.interface_use_id;
-                params["use_state"] = row.use_state;
                 let confirmMessage;
-                if (row.use_state == "1") {
+                if (row.use_state === "1") {
+                    params["use_state"] = "2";
                     confirmMessage = "确定禁用" + row.interface_name + "接口吗？"
                 } else {
+                    params["use_state"] = "1";
                     confirmMessage = "确定启用" + row.interface_name + "接口吗？"
                 }
                 message.confirmMsg(confirmMessage).then(res => {

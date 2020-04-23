@@ -34,9 +34,9 @@
         <div style="margin: 20px 0;"></div>
         <!--接口响应时间列表-->
         <el-row class="fontStyle">
-            <i class="el-icon-time"><span>接口响应时间列表</span></i>
+            <i class="el-icon-time"><span>接口响应时间图</span></i>
         </el-row>
-        <!--接口响应时间列表图 -->
+        <!--接口响应时间图 -->
         <el-row id="myChart" style="height:500px;border: #e6e6e6 solid 1px"/>
     </div>
 </template>
