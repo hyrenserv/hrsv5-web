@@ -33,7 +33,7 @@
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="用户选择" :rules="filter_rules([{required: true}])">
-                                <el-select v-model="form.user_id" multiple clearable placeholder="请选择"
+                                <el-select v-model="form.user_id" multiple clearable filterable placeholder="请选择"
                                            style="width: 260px;">
                                     <el-option
                                             v-for="item in userData"

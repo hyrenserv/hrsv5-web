@@ -21,7 +21,7 @@
             <el-row>
                 <el-col :span="11">
                     <el-form-item label="用户名称" :rules="filter_rules([{required: true}])">
-                        <el-select v-model="form.user_id" multiple clearable placeholder="请选择">
+                        <el-select v-model="form.user_id" multiple filterable clearable placeholder="请选择">
                             <el-option
                                     v-for="item in userData"
                                     :label="item.user_name"
@@ -220,6 +220,7 @@
                             this.$refs.multipleTable.clearSelection();
                             this.searchUserInfo();
                             this.searchInterfaceInfoByType("1");
+                            this.currPage=1;
                         })
                     }
                 });

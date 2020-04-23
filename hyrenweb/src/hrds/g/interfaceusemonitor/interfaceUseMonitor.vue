@@ -21,7 +21,7 @@
                     </el-col>
                     <el-col :span="8">
                 <span>用户选择：
-                <el-select v-model="user_id" clearable placeholder="请选择">
+                <el-select v-model="user_id" filterable clearable placeholder="请选择">
                     <el-option
                             v-for="item in userData"
                             :label="item.user_name"
@@ -90,7 +90,7 @@
                 <el-row style="margin-bottom:10px">
                     <el-col :span="8">
                         <span>用户选择：
-                        <el-select v-model="user_id" clearable placeholder="请选择">
+                        <el-select v-model="user_id" filterable clearable placeholder="请选择">
                             <el-option
                                     v-for="item in userData"
                                     :label="item.user_name"
