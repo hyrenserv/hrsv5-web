@@ -280,6 +280,7 @@ export default {
                                 'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
                                 'plane_url': this.ruleForm.tableData[i].plane_url,
                                 'database_code': this.ruleForm.tableData[i].database_code,
+                                'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
                             })
                         } else {
                             dataExtractionDefs.push({
@@ -292,6 +293,7 @@ export default {
                                 'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
                                 'plane_url': this.ruleForm.tableData[i].plane_url,
                                 'database_code': this.ruleForm.tableData[i].database_code,
+                                'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
                             })
                         }
 
