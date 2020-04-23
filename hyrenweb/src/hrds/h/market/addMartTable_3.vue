@@ -15,7 +15,7 @@
                 <span>SQL</span>
             </el-row>
             <el-row>
-                <el-input class="inputframe" type="textarea" rows="3" readonly="true" v-model="querysql"/>
+                <el-input class="inputframe" type="textarea" rows="3" readonly v-model="querysql"/>
             </el-row>
             <el-row>
                 <el-col :span="20">
@@ -29,7 +29,7 @@
                     <el-row>
                         <span>日期</span>
                     </el-row>
-                    <el-date-picker class="inputframe" format="yyyy-MM-dd" type="date" v-model="date" align="right"
+                    <el-date-picker class="inputframe" v-model="date" align="right" value-format="yyyyMMdd"
                                     placeholder="选择日期"></el-date-picker>
                 </el-col>
             </el-row>
@@ -131,6 +131,7 @@
                     "date": this.date,
                     "parameter": this.parameter
                 }
+                debugger;
                 functionAll.excutMartJob(param).then((res) => {
                     this.isLoading = false;
                     if (res && res.success) {

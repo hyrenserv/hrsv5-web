@@ -70,7 +70,7 @@
 
             <el-col :span="10" v-if="showData_date">
                 <el-form-item label="数据表到期日期" prop="datatable_due_date" :rules="rule.selected">
-                    <el-date-picker v-model="dm_datatable.datatable_due_date" format="yyyy-MM-dd" type="date"
+                    <el-date-picker v-model="dm_datatable.datatable_due_date" value-format="yyyyMMdd"
                                     align="right" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
             </el-col>

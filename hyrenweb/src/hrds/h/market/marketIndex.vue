@@ -68,9 +68,11 @@
                     </div>
                 </el-row>
                 <el-row class="boxshletr">
-                    <el-col>
-                        <i class="fa fa-download fa-lg" @click="downloadmart(item.mart_name,item.data_mart_id)"></i>
-                    </el-col>
+                    <el-button size="mini" title="导出工程" @click="downloadmart(item.mart_name,item.data_mart_id)"><i
+                            class="fa fa-download "></i></el-button>
+                    <el-button size="mini" title="删除工程" @click="deletemart(item.data_mart_id)"><i class="fa fa-trash"></i>
+                    </el-button>
+
                 </el-row>
             </div>
         </div>
@@ -184,7 +186,7 @@
         </el-dialog>
 
         <transition name="fade">
-            <loading v-if="isLoading" />
+            <loading v-if="isLoading"/>
         </transition>
 
     </div>
@@ -225,7 +227,7 @@
                 },
                 rule: validator.default,
                 formImport: {},
-                isLoading:false,
+                isLoading: false,
             };
         },
         mounted() {
@@ -334,10 +336,9 @@
             downloadmart(mart_name, data_mart_id) {
                 message.confirmMsg('确定导出吗').then(res => {
                     let that = this;
-                    functionAll.downLoadMart({
+                    functionAll.downloadMart({
                         data_mart_id: data_mart_id
                     }).then(res => {
-                        debugger;
                         // if (res && res.success) {
                         let filename = mart_name + ".hrds"
                         const blob = new Blob([res]);
@@ -390,6 +391,29 @@
                     }
                 })
             },
+            deletemart(data_mart_id) {
+                message.confirmMsg('确定删除吗').then(res => {
+                    this.isLoading = true;
+                    functionAll.deleteMart({"data_mart_id":data_mart_id}).then(res => {
+                        this.isLoading = false;
+                        if(res && res.success){
+                            if(!res.data.status){
+                                this.$message({
+                                    type: "warning",
+                                    message: "工程下还存在表，请先删除表"
+                                });
+                            }else{
+                                this.$message({
+                                    type: "success",
+                                    message: "删除成功"
+                                });
+                                location.reload();
+                            }
+                        }
+                    });
+                }).catch(() => {
+                })
+            }
         }
     };
 </script>

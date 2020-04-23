@@ -25,6 +25,10 @@
                 </el-table-column>
                 <el-table-column prop="datatable_lifecycle" label="生命周期" width="150px" align='center'>
                 </el-table-column>
+                <el-table-column prop="etl_date" label="跑批日期" width="150px" align='center'>
+                </el-table-column>
+                <el-table-column prop="is_successful" label="执行状态" width="150px" align='center'>
+                </el-table-column>
                 <el-table-column prop="datatable_create_date" label="创建日期" width="150px" align='center'>
                 </el-table-column>
                 <el-table-column prop="datatable_due_date" label="数据表到期日期" width="150px" align='center'>
@@ -38,6 +42,9 @@
                                    circle type="primary">
                         </el-button>
                         <el-button size="mini" icon="el-icon-caret-right" v-if="scope.row.isadd" title="立即执行" @click="pushtoaddmart3(scope.row)"
+                                   circle type="primary">
+                        </el-button>
+                        <el-button size="mini" icon="el-icon-download" v-if="scope.row.isadd" title="导出表" @click="downloaddmdatatable(scope.row)"
                                    circle type="primary">
                         </el-button>
                         <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)"
@@ -148,6 +155,42 @@
                     }
                 });
             },
+            downloaddmdatatable(row){
+                let datatable_id = row.datatable_id;
+                let datatable_en_name = row.datatable_en_name;
+                message.confirmMsg('确定导出吗').then(res => {
+                    let that = this;
+                    functionAll.downloadDmDatatable({
+                        datatable_id: datatable_id
+                    }).then(res => {
+                        // if (res && res.success) {
+                        let filename = datatable_en_name + ".xlsx"
+                        const blob = new Blob([res]);
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // 兼容IE10
+                            navigator.msSaveBlob(blob, filename);
+                        } else {
+                            //  chrome/firefox
+                            let aTag = document.createElement("a");
+                            // document.body.appendChild(aTag);
+                            aTag.download = filename;
+                            aTag.href = URL.createObjectURL(blob);
+                            if (aTag.all) {
+                                aTag.click();
+                            } else {
+                                //  兼容firefox
+                                var evt = document.createEvent("MouseEvents");
+                                evt.initEvent("click", true, true);
+                                aTag.dispatchEvent(evt);
+                            }
+                            URL.revokeObjectURL(aTag.href);
+                        }
+                    })
+                }).catch(() => {
+                })
+
+
+            },
             producefun(row){
                 this.dialogProdeceJobs = true;
                 this.selecteddatatable_id = row.datatable_id;
@@ -169,6 +212,12 @@
                                 code: item.datatable_lifecycle
                             }).then((res) => {
                                 item.datatable_lifecycle = res.data;
+                            });
+                            this.$Code.getValue({
+                                category: "JobExecuteState",
+                                code: item.is_successful
+                            }).then((res) => {
+                                item.is_successful = res.data;
                             });
                         })
                         this.tableData = res.data;

@@ -270,6 +270,7 @@ export function getIfHbase(data) {
 
 //获取是否是数据进入Hbase
 export function excutMartJob(data) {
+    debugger;
     return request({
         url: '/H/market/excutMartJob',
         params: data
@@ -314,9 +315,9 @@ export function generateMartJobToEtl(data) {
 
 
 //下载集市工程
-export function downLoadMart(data) {
+export function downloadMart(data) {
     return request({
-        url: '/H/market/downLoadMart',
+        url: '/H/market/downloadMart',
         method: 'post',
         params: data,
         responseType: 'blob',
@@ -326,11 +327,33 @@ export function downLoadMart(data) {
     })
 }
 
+//下载集市数据表
+export function downloadDmDatatable(data) {
+    return request({
+        url: '/H/market/downloadDmDatatable',
+        method: 'post',
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+
 //导入集市工程
 export function uploadFile(data) {
     return request({
         url: '/H/market/uploadFile',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
+//删除集市工程
+export function deleteMart(data) {
+    return request({
+        url: '/H/market/deleteMart',
+        params: data
     })
 }
