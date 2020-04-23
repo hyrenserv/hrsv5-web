@@ -125,7 +125,7 @@
                 })
             },
             excutmartjob() {
-                this.isLoading = ture;
+                this.isLoading = true;
                 let param = {
                     "datatable_id": this.datatable_id,
                     "date": this.date,
