@@ -590,6 +590,12 @@ export default new Router({
                     title: 'UUID下载接口',
                     component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue')
                 },
+                {
+                    path: '/logReview',
+                    name: 'logReview',
+                    title: 'UUID下载接口',
+                    component: () => import('@/hrds/a/logreview/logReview.vue')
+                },
             ]
         },
 
