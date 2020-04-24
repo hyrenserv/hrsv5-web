@@ -15,6 +15,7 @@
             </template>
         </el-table-column>
     </el-table>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class="locationcenter"></el-pagination>
     <div class="step1Footer">
         <el-col :span="12">
             <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
