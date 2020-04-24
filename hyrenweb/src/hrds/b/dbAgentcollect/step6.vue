@@ -472,7 +472,8 @@ export default {
                     agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
-                    source_name:this.$route.query.source_name,
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                     edit: "yes"
                 }
             } else {
@@ -481,7 +482,8 @@ export default {
                     id: this.dbid,
                     source_id: this.sourId,
                     agent_id: this.aId,
-                    source_name:this.$route.query.source_name,
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                 }
             }
             this.$router.push({

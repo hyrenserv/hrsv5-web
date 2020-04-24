@@ -411,6 +411,7 @@ export default {
                                         agent_id: this.$route.query.agent_id,
                                         sourceId: this.$route.query.source_id,
                                         source_name: this.$route.query.source_name,
+                                        edit: "yes"
                                     }
                                 })
                             }

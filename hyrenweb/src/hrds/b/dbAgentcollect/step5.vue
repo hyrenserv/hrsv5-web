@@ -503,6 +503,7 @@ export default {
                     id: this.$route.query.id,
                     source_id: this.sourId,
                     source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                     edit: "yes"
                 };
             } else {
@@ -510,7 +511,8 @@ export default {
                     id: this.$route.query.id,
                     agent_id: this.aId,
                     source_id: this.sourId,
-                    source_name: this.$route.query.source_name
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                 };
             }
             this.$router.push({
@@ -526,6 +528,7 @@ export default {
                     id: this.dbid,
                     source_id: this.sourId,
                     source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                     edit: "yes"
                 };
             } else {
@@ -533,13 +536,22 @@ export default {
                     agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
-                    source_name: this.$route.query.source_name
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                 };
             }
-            this.$router.push({
-                path: "/collection4_4",
-                query: data
-            });
+            if (this.$route.query.is_archived == 'no') {
+                this.$router.push({
+                    path: "/collection4_3",
+                    query: data
+                });
+            } else {
+                this.$router.push({
+                    path: "/collection4_4",
+                    query: data
+                });
+            }
+
         },
         /*   // 获取编辑状态下原有存储数据
         getSaveDataFun() {
