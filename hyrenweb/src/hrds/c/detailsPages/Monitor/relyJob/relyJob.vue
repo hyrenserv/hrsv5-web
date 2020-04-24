@@ -25,8 +25,8 @@
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
-let jsmind = require('../../../../../assets/js/jsmind.js');
-import '@/assets/css/jsmind.css';
+const jsmind = require('../../../../../assets/js/jsmind.js');
+require('@/assets/css/jsmind.css');
 let _jm = null;
 let flag = 0;
 require('echarts/dist/extension/dataTool.js')
@@ -46,6 +46,7 @@ export default {
             this.form.etl_job = this.$route.query.etl_job;
         }
         this.getJobName();
+        flag = 0;
     },
     methods: {
         // 单作业搜索
@@ -62,10 +63,11 @@ export default {
                     if (flag == 0) {
                         this.open_empty();
                         this.tree(data)
+                        flag = 1;
                     } else {
                         this.tree(data)
                     }
-                    flag = 1;
+
                 })
             } else {
                 message.customizTitle('作业名称不能为空', 'warning');
@@ -108,6 +110,7 @@ export default {
                 editable: false //是否启用编辑
             }
             _jm = jsmind.show(options);
+            console.log(_jm)
         },
         tree(data) {
             var mind = {
