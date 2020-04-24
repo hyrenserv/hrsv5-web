@@ -9,10 +9,10 @@
                 </template>
             </el-table-column>
             <el-table-column property="table_name" label="表名" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column property="table_cn_name" label="中文表名" show-overflow-tooltip align="center">
+            <el-table-column property="table_ch_name" label="中文表名" show-overflow-tooltip align="center">
                 <template slot-scope="scope">
-                    <el-form-item :prop="'tableData.'+scope.$index+'.table_cn_name'" :rules="rule.default">
-                        <el-input size="mini" v-model="scope.row.table_cn_name" style="margin-bottom: 8px;" placeholder="中文表名"></el-input>
+                    <el-form-item :prop="'tableData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
+                        <el-input size="mini" v-model="scope.row.table_ch_name" style="margin-bottom: 8px;" placeholder="中文表名"></el-input>
                     </el-form-item>
                 </template>
             </el-table-column>
@@ -267,15 +267,20 @@ export default {
                 if (valid) {
                     this.isLoading = true
                     let dataExtractionDefs = [],
-                        table_info = []
+                        table_info = [],
+                        count = 0
                     for (let i = 0; i < this.ruleForm.tableData.length; i++) {
+                        if (this.ruleForm.tableData[i].is_archived == true) {
+                            count++
+                        }
                         if (this.ruleForm.tableData[i].table_id) {
                             table_info.push({
                                 'table_id': this.ruleForm.tableData[i].table_id,
                                 'table_name': this.ruleForm.tableData[i].table_name,
-                                'table_ch_name': this.ruleForm.tableData[i].table_cn_name,
+                                'table_ch_name': this.ruleForm.tableData[i].table_ch_name,
                             })
                             dataExtractionDefs.push({
+                                'table_id': this.ruleForm.tableData[i].table_id,
                                 'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
                                 'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
                                 'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
@@ -288,11 +293,9 @@ export default {
                         } else {
                             table_info.push({
                                 'table_name': this.ruleForm.tableData[i].table_name,
-                                'table_cn_name': this.ruleForm.tableData[i].table_cn_name,
+                                'table_ch_name': this.ruleForm.tableData[i].table_ch_name,
                             })
                             dataExtractionDefs.push({
-                                'table_name': this.ruleForm.tableData[i].table_name,
-                                'table_cn_name': this.ruleForm.tableData[i].table_cn_name,
                                 'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
                                 'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
                                 'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
@@ -331,10 +334,18 @@ export default {
                                     source_name: this.$route.query.source_name,
                                 }
                             }
-                            this.$router.push({
-                                path: "/collection4_4",
-                                query: data
-                            })
+                            if (count > 0) {
+                                this.$router.push({
+                                    path: "/collection4_4",
+                                    query: data
+                                })
+                            } else {
+                                this.$router.push({
+                                    path: "/collection4_5",
+                                    query: data
+                                })
+                            }
+
                         }
                     })
 
