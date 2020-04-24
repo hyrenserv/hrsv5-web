@@ -221,14 +221,12 @@ export default {
                 functionAll.addDataFileData({
                     source_id: this.$route.query.source_id
                 }).then(res => {
-                    if (res.data != {}) {
+                    if (JSON.stringify(res.data) != "{}") {
                         this.updateMark = "1";
                         this.radio = res.data.classify_id;
                         this.classify_id = res.data.classify_id;
                         this.form = res.data;
                         this.fileMark = res.data.plane_url;
-                    } else {
-                        this.updateMark = "0";
                     }
                 })
             }
@@ -238,14 +236,12 @@ export default {
             functionAll.getInitDataFileData({
                 colSetId: this.$route.query.id
             }).then(res => {
-                if (res.data != {}) {
+                if (JSON.stringify(res.data) != "{}") {
                     this.updateMark = "1";
                     this.radio = res.data.classify_id;
                     this.classify_id = res.data.classify_id;
                     this.form = res.data;
                     this.fileMark = res.data.plane_url;
-                } else {
-                    this.updateMark = "0";
                 }
             })
         },
@@ -413,8 +409,8 @@ export default {
                     delete obj.classify_num;
                     if (this.updateMark == "1") {
                         functionAll.updateDataFile(obj).then(res => {
+                            this.isLoading = false;
                             if (res && res.success) {
-                                this.isLoading = false;
                                 let data = {}
                                 if (this.$route.query.edit == 'yes') {
                                     data = {
@@ -436,14 +432,12 @@ export default {
                                     path: "/collection4_2",
                                     query: data
                                 })
-                            } else {
-                                setTimeout(this.isLoading = false, 2000)
                             }
                         })
                     } else {
                         functionAll.saveDataFile(obj).then(res => {
+                            this.isLoading = false;
                             if (res && res.success) {
-                                this.isLoading = false;
                                 let data = {}
                                 if (this.$route.query.edit == 'yes') {
                                     data = {
@@ -465,8 +459,6 @@ export default {
                                     path: "/collection4_2",
                                     query: data
                                 })
-                            } else {
-                                setTimeout(this.isLoading = false, 2000)
                             }
                         })
                     }
