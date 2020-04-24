@@ -215,7 +215,6 @@ export default {
                     source_id: this.$route.query.source_id
                 }).then(res => {
                     if (res.data != {}) {
-                        this.updateMark = "1";
                         this.radio = res.data.classify_id;
                         this.classify_id = res.data.classify_id;
                         this.form = res.data;
@@ -235,6 +234,8 @@ export default {
                     this.classify_id = res.data.classify_id;
                     this.form = res.data;
                     this.fileMark = res.data.plane_url;
+                } else {
+                    this.updateMark = "0";
                 }
             })
         },
@@ -426,7 +427,7 @@ export default {
                             }
                         })
                     } else {
-                        functionAll.saveDataFile(obj).then(res => {
+                        functionAll.saveDataFile(obj).then(res => { 
                             if (res && res.success) {
                                 let data = {}
                                 if (this.$route.query.edit == 'yes') {
