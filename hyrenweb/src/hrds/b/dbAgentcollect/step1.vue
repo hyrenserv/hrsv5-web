@@ -149,6 +149,10 @@
             <el-button size="mini" type="primary" @click="editClassTaskSane('editClassTask')">保存</el-button>
         </div>
     </el-dialog>
+    <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -158,9 +162,11 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as functionAll from "./dbAgentcollect";
 import * as message from "@/utils/js/message";
+import Loading from '../../components/loading'
 export default {
     components: {
-        Step
+        Step,
+        Loading
     },
     data() {
         return {
@@ -175,6 +181,7 @@ export default {
             currentPage: 1,
             data2: [],
             radio: "1",
+            isLoading: false,
             classify_id: '',
             addClassTask: {
 
@@ -215,10 +222,13 @@ export default {
                     source_id: this.$route.query.source_id
                 }).then(res => {
                     if (res.data != {}) {
+                        this.updateMark = "1";
                         this.radio = res.data.classify_id;
                         this.classify_id = res.data.classify_id;
                         this.form = res.data;
                         this.fileMark = res.data.plane_url;
+                    } else {
+                        this.updateMark = "0";
                     }
                 })
             }
@@ -395,6 +405,7 @@ export default {
         nextCollect(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    this.isLoading = true;
                     this.form['classify_id'] = this.classify_id;
                     this.form['agent_id'] = this.$route.query.agent_id;
                     let obj = this.form;
@@ -403,6 +414,7 @@ export default {
                     if (this.updateMark == "1") {
                         functionAll.updateDataFile(obj).then(res => {
                             if (res && res.success) {
+                                this.isLoading = false;
                                 let data = {}
                                 if (this.$route.query.edit == 'yes') {
                                     data = {
@@ -424,11 +436,14 @@ export default {
                                     path: "/collection4_2",
                                     query: data
                                 })
+                            } else {
+                                setTimeout(this.isLoading = false, 2000)
                             }
                         })
                     } else {
-                        functionAll.saveDataFile(obj).then(res => { 
+                        functionAll.saveDataFile(obj).then(res => {
                             if (res && res.success) {
+                                this.isLoading = false;
                                 let data = {}
                                 if (this.$route.query.edit == 'yes') {
                                     data = {
@@ -450,6 +465,8 @@ export default {
                                     path: "/collection4_2",
                                     query: data
                                 })
+                            } else {
+                                setTimeout(this.isLoading = false, 2000)
                             }
                         })
                     }
