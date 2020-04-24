@@ -203,7 +203,7 @@ export default {
                 data = {
                     agent_id: this.$route.query.agent_id,
                     id: this.$route.query.id,
-                    source_id: this.$route.query.sourceId,
+                    source_id: this.$route.query.source_id,
                     source_name: this.$route.query.source_name,
                     edit: "yes"
                 }
@@ -211,7 +211,7 @@ export default {
                 data = {
                     agent_id: this.$route.query.agent_id,
                     id: this.$route.query.id,
-                    source_id: this.$route.query.sourceId,
+                    source_id: this.$route.query.source_id,
                     source_name: this.$route.query.source_name,
                 }
             }
