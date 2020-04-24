@@ -167,11 +167,11 @@
         </el-tab-pane>
     </el-tabs>
     <el-row>
-     <el-col :span="12">
+        <el-col :span="12">
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
         </el-col>
-        <el-col :span="12" >
-            <el-button type="primary" size="medium" class='rightbtn'  @click="next()">下一步</el-button>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class='rightbtn' @click="next()">下一步</el-button>
             <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
         </el-col>
     </el-row>
@@ -1053,7 +1053,7 @@ export default {
                 this.schfilter(this.search);
             }
         },
-          backFun() {
+        backFun() {
             this.$router.push({
                 path: "/agentList"
             });
@@ -2163,7 +2163,13 @@ export default {
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
             console.log(this.is_parallel)
-            for (let j = 0; j < this.tableData.length; j++) {
+            for (let i = 0; i < this.allDataList.length; i++) {
+                if (this.allDataList[i].table_name == this.EXtable_name) {
+                    this.allDataList[i].is_parallel = false;
+                }
+            }
+            this.dialogTableVisible = false;
+            /* for (let j = 0; j < this.tableData.length; j++) {
                 if (this.tableData[j].table_name == this.EXtable_name) {
                     if (this.is_parallel == false) {
                         this.tableData[j].is_parallel = true;
@@ -2185,20 +2191,21 @@ export default {
 
                     this.EXtable_name = "";
                 }
-            }
+            } */
         },
         // 第二
         testParallelExtractionCloseFun2() {
             for (let j = 0; j < this.ruleForm.sqlExtractData.length; j++) {
                 if (this.ruleForm.sqlExtractData[j].table_name == this.EXtable_name) {
-                    if (this.is_parallel == false) {
-                        this.ruleForm.sqlExtractData[j].is_parallel = true;
-                        this.dialogdyfysql = false;
-                    } else {
-                        this.ruleForm.sqlExtractData[j].is_parallel = false;
-                        this.dialogdyfysql = false;
-                    }
-
+                    /*  if (this.is_parallel == false) {
+                         this.ruleForm.sqlExtractData[j].is_parallel = true;
+                         this.dialogdyfysql = false;
+                     } else {
+                         this.ruleForm.sqlExtractData[j].is_parallel = false;
+                         this.dialogdyfysql = false;
+                     } */
+                    this.ruleForm.sqlExtractData[j].is_parallel = false;
+                    this.dialogdyfysql = false;
                     this.EXtable_name = "";
                 }
             }

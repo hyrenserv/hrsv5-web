@@ -325,7 +325,6 @@ export default {
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
-            console.log(res)
             if (res) {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
@@ -334,7 +333,6 @@ export default {
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-                        console.log(res)
                         if (res) {
                             this.oldTbData = res.data != '' ? res.data : [];
                         }
@@ -461,11 +459,9 @@ export default {
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
                         params["colSetId"] = parseInt(this.dbid);
                         params["dslIdString"] = JSON.stringify(dslIdString);
-                        console.log(params)
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
                                 this.submit_1 = true;
-                                // this.dbid = res.data;
                             }
                         });
                     } else {

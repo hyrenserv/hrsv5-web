@@ -191,7 +191,7 @@
             <span class="dialogtitle el-icon-caret-right">选择目录</span>
         </div>
         <div class="mytree"  hight='200'>
-            <el-tree ref='tree' :data="data2" :empty-text="treenloadingInfo" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
+            <el-tree ref='tree' :data="data2" :check-strictly="true" :empty-text="treenloadingInfo" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span>{{ node.label }}</span>
                 </span>
@@ -744,10 +744,11 @@ export default {
             if (checked === true) {
                 this.checkedId = data.name;
                 this.path = data.path
-                // this.$refs.tree.setCheckedKeys([data.name]);
+                this.$refs.tree.setCheckedKeys([data.name]);
             } else {
+                // console.log(2)
                 if (this.checkedId == data.name) {
-                    // this.$refs.tree.setCheckedKeys([data.name]);
+                    this.$refs.tree.setCheckedKeys([data.name]);
                 }
             }
         },

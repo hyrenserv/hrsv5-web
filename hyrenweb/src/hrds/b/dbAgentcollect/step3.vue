@@ -2,7 +2,7 @@
 <div>
     <Step :active="active"></Step>
     <el-form ref="ruleForm" :model="ruleForm">
-        <el-table class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium">
+        <el-table class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium" :empty-text="tableloadingInfo">
             <el-table-column property label="序号" width="60px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -131,6 +131,7 @@ export default {
             active: 2,
             isLoading: false,
             rule: validator.default,
+            tableloadingInfo: "数据加载中...",
             // dialogtransferSettings: false,
             ruleForm: {
                 tableData: [],
@@ -175,14 +176,13 @@ export default {
     },
     methods: {
         // 返回上一级
-        goBackQuit() {
+        backFun() {
             this.$router.push({
-                name: "agentList"
-            })
+                path: "/agentList"
+            });
         },
         // 文件格式改变
         getFormatFun(row) {
-            console.log(row.dbfile_format)
             for (let i = 0; i < row.storage.length; i++) {
                 if (row.storage[i].dbfile_format == row.dbfile_format) {
                     row.database_separatorr = row.storage[i].database_separatorr
@@ -198,8 +198,6 @@ export default {
             let params = {};
             params["category"] = "FileFormat";
             this.$Code.getCategoryItems(params).then(res => {
-                console.log(res.data)
-
                 if (res.data) {
                     this.ExtractDataType = res.data;
                 }
@@ -210,8 +208,6 @@ export default {
 
             for (let i = 0; i < this.ExtractDataType.length; i++) {
                 if (this.ExtractDataType[i].code == code) {
-                    console.log(this.ExtractDataType[i].code, code)
-
                     return this.ExtractDataType[i].value
                 }
             }
@@ -228,30 +224,33 @@ export default {
         },
         // 获取表格数据
         getInitDataTransferFun() {
+            this.tableloadingInfo = '数据加载中...'
             functionAll.getInitDataTransfer({
                 colSetId: this.$route.query.id
             }).then(res => {
-                console.log(res, this.$route.query.id)
-                let getData = res.data
-                // this.ruleForm.tableData = res.data
-                for (let i = 0; i < getData.length; i++) {
-                    getData[i].DataExtractType = []
-                    getData[i].dbfile_format = getData[i].storage[0].dbfile_format
-                    getData[i].is_header = getData[i].storage[0].is_header == '1' ? true : false
-                    getData[i].row_separator = getData[i].storage[0].row_separator
-                    getData[i].database_separatorr = getData[i].storage[0].database_separatorr
-                    getData[i].plane_url = getData[i].storage[0].plane_url
-                    getData[i].database_code = getData[i].storage[0].database_code
-                    getData[i].is_archived = getData[i].is_archived == '1' ? true : false
-                    for (let j = 0; j < getData[i].storage.length; j++) {
-                        getData[i].DataExtractType.push({
-                            'code': getData[i].storage[j].dbfile_format,
-                            'value': this.getFileFormatValue(getData[i].storage[j].dbfile_format)
-                        })
+                if (res.data.length > 0) {
+                    let getData = res.data
+                    for (let i = 0; i < getData.length; i++) {
+                        getData[i].DataExtractType = []
+                        getData[i].dbfile_format = getData[i].storage[0].dbfile_format
+                        getData[i].is_header = getData[i].storage[0].is_header == '1' ? true : false
+                        getData[i].row_separator = getData[i].storage[0].row_separator
+                        getData[i].database_separatorr = getData[i].storage[0].database_separatorr
+                        getData[i].plane_url = getData[i].storage[0].plane_url
+                        getData[i].database_code = getData[i].storage[0].database_code
+                        getData[i].is_archived = getData[i].is_archived == '1' ? true : false
+                        for (let j = 0; j < getData[i].storage.length; j++) {
+                            getData[i].DataExtractType.push({
+                                'code': getData[i].storage[j].dbfile_format,
+                                'value': this.getFileFormatValue(getData[i].storage[j].dbfile_format)
+                            })
+                        }
                     }
+                    this.ruleForm.tableData = getData
+                } else {
+                    this.tableloadingInfo = '暂无数据'
                 }
-                this.ruleForm.tableData = getData
-                console.log(getData, this.ruleForm.tableData)
+
             })
         },
         handleSizeChange(size) {
@@ -343,12 +342,8 @@ export default {
                     params["colSetId"] = parseInt(this.$route.query.id);
                     params["dataExtractionDefs"] = JSON.stringify(dataExtractionDefs);
                     params["tableInfos"] = JSON.stringify(table_info);
-                    console.log(params)
                     functionAll.saveDataTransferData(params).then(res => {
-                        console.log(res)
                         this.isLoading = false
-                        console.log(count)
-
                         if (res.code == 200) {
                             let data = {}
                             if (this.$route.query.edit == 'yes') {
