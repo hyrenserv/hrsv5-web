@@ -161,22 +161,19 @@
     </el-row>
     <!-- 选择目录弹出框 -->
     <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">选择目录</span>
+        </div>
         <div class="mytree"  hight='200'>
-            <el-tree :data="data2" show-checkbox :props="defaultProps" @check-change="handleCheckChange">
+            <el-tree ref='tree' :data="data2" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
-                    <span @click="() => append(data)">{{ node.label }}</span>
-                    <span>
-                        <el-button class="netxNUM" type="text" @click="() => append(data)">
-                            点击获取下一级目录，回去对应的不同目录下的不同目录展示出来。
-                        </el-button>
-                    </span>
+                    <span>{{ node.label }}</span>
                 </span>
             </el-tree>
         </div>
-
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="dialogSelectfolder = false" size="mini">保存</el-button>
+            <el-button type="primary" @click="dialogSelectfolder = false;" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 添加ftp采集成功后选择下一步的弹出框 -->
@@ -440,36 +437,52 @@ export default {
             }
         },
         // 获取目录结构
-        seletFilePath(data) {
-            let arry = [];
-            let path;
-            if (typeof (data) != "undefined") {
-                path = data.path;
-            }
+        seletFilePath() {
+            this.dialogSelectfolder = true;
+            let arry = [],
+                path = '';
             functionAll
                 .selectPath({
                     agent_id: this.$route.query.agent_id,
                     path: path
                 })
                 .then(res => {
-                    if (typeof (data) == 'undefined') {
+                    if (res.data && res.data.length > 0) {
+                        for (let i = 0; i < res.data.length; i++) {
+                            if (res.data[i].isFolder == 'true') {
+                                res.data[i].children = [{}]
+                            }
+                        }
                         this.data2 = res.data;
+                    } else {
+                        this.treenloadingInfo = '暂无数据'
                     }
+
                 });
         },
         //  获取目录下一级
-        append(data) {
-            if (!data.children) {
-                this.$set(data, 'children', []);
+        loadNode(node, resolve) {
+            if (node.level > 0) {
+                let path = node.data.path,
+                    id = this.$route.query.agent_id;
+                setTimeout(() => {
+                    functionAll
+                        .selectPath({
+                            agent_id: id,
+                            path: path
+                        })
+                        .then(res => {
+                            for (let i = 0; i < res.data.length; i++) {
+                                if (res.data[i].isFolder == 'true') {
+                                    res.data[i].children = [{}]
+                                }
+                            }
+                            resolve(res.data);
+                        });
+
+                }, 500);
             }
-            functionAll
-                .selectPath({
-                    agent_id: this.$route.query.agent_id,
-                    path: data.path
-                })
-                .then(res => {
-                    data.children = res.data
-                });
+
         },
         //获取选中状态下的数据
         handleCheckChange(data) {
@@ -477,7 +490,7 @@ export default {
         },
         // 取消选择目录并且关闭弹出框
         cancelSelect() {
-            this.form.child_file_path = "";
+            this.form.local_path = "";
             this.dialogSelectfolder = false;
         },
         // 检查表单有没有填写完整
