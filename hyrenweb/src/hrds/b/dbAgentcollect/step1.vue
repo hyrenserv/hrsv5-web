@@ -208,7 +208,6 @@ export default {
         },
         //获取首页信息
         getAllInfo() {
-            // let database_id = this.$route.query.id;
             if (this.$route.query.edit == 'yes') {
                 this.getInitDataFileData();
             } else {
@@ -348,7 +347,6 @@ export default {
         },
         // 取消选择目录并且关闭弹出框
         cancelSelect() {
-            console.log(this.fileMark)
             if (this.fileMark != '') {
                 this.form.plane_url = this.fileMark;
             } else {
@@ -402,7 +400,6 @@ export default {
                     delete obj.classify_name;
                     delete obj.classify_num;
                     if (this.updateMark == "1") {
-                        console.log(1)
                         functionAll.updateDataFile(obj).then(res => {
                             if (res && res.success) {
                                 let data = {}
