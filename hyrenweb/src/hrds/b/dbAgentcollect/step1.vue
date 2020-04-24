@@ -402,17 +402,29 @@ export default {
                     delete obj.classify_name;
                     delete obj.classify_num;
                     if (this.updateMark == "1") {
+                        console.log(1)
                         functionAll.updateDataFile(obj).then(res => {
                             if (res && res.success) {
-                                this.$router.push({
-                                    path: "/collection4_2",
-                                    query: {
-                                        id: res.data,
+                                let data = {}
+                                if (this.$route.query.edit == 'yes') {
+                                    data = {
                                         agent_id: this.$route.query.agent_id,
+                                        id: res.data,
                                         sourceId: this.$route.query.source_id,
                                         source_name: this.$route.query.source_name,
                                         edit: "yes"
                                     }
+                                } else {
+                                    data = {
+                                        agent_id: this.$route.query.agent_id,
+                                        id: res.data,
+                                        sourceId: this.$route.query.source_id,
+                                        source_name: this.$route.query.source_name,
+                                    }
+                                }
+                                this.$router.push({
+                                    path: "/collection4_2",
+                                    query: data
                                 })
                             }
                         })
@@ -424,7 +436,7 @@ export default {
                                     data = {
                                         agent_id: this.$route.query.agent_id,
                                         id: res.data,
-                                        sourceId: this.$route.query.sourceId,
+                                        sourceId: this.$route.query.source_id,
                                         source_name: this.$route.query.source_name,
                                         edit: "yes"
                                     }
@@ -432,7 +444,7 @@ export default {
                                     data = {
                                         agent_id: this.$route.query.agent_id,
                                         id: res.data,
-                                        sourceId: this.$route.query.sourceId,
+                                        sourceId: this.$route.query.source_id,
                                         source_name: this.$route.query.source_name,
                                     }
                                 }
