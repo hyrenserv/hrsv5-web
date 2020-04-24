@@ -279,32 +279,63 @@ export default {
                                 'table_name': this.ruleForm.tableData[i].table_name,
                                 'table_ch_name': this.ruleForm.tableData[i].table_ch_name,
                             })
-                            dataExtractionDefs.push({
-                                'table_id': this.ruleForm.tableData[i].table_id,
-                                'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
-                                'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
-                                'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
-                                'row_separator': this.ruleForm.tableData[i].row_separator,
-                                'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
-                                'plane_url': this.ruleForm.tableData[i].plane_url,
-                                'database_code': this.ruleForm.tableData[i].database_code,
-                                // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
-                            })
+                            if (this.ruleForm.tableData[i].ded_id) {
+                                dataExtractionDefs.push({
+                                    'table_id': this.ruleForm.tableData[i].table_id,
+                                    'ded_id': this.ruleForm.tableData[i].ded_id,
+                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
+                                    'row_separator': this.ruleForm.tableData[i].row_separator,
+                                    'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
+                                    'plane_url': this.ruleForm.tableData[i].plane_url,
+                                    'database_code': this.ruleForm.tableData[i].database_code,
+                                    // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
+                                })
+                            } else {
+                                dataExtractionDefs.push({
+                                    'table_id': this.ruleForm.tableData[i].table_id,
+                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
+                                    'row_separator': this.ruleForm.tableData[i].row_separator,
+                                    'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
+                                    'plane_url': this.ruleForm.tableData[i].plane_url,
+                                    'database_code': this.ruleForm.tableData[i].database_code,
+                                    // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
+                                })
+                            }
+
                         } else {
                             table_info.push({
                                 'table_name': this.ruleForm.tableData[i].table_name,
                                 'table_ch_name': this.ruleForm.tableData[i].table_ch_name,
                             })
-                            dataExtractionDefs.push({
-                                'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
-                                'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
-                                'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
-                                'row_separator': this.ruleForm.tableData[i].row_separator,
-                                'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
-                                'plane_url': this.ruleForm.tableData[i].plane_url,
-                                'database_code': this.ruleForm.tableData[i].database_code,
-                                // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
-                            })
+                            if (this.ruleForm.tableData[i].ded_id) {
+                                dataExtractionDefs.push({
+                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
+                                    'ded_id': this.ruleForm.tableData[i].ded_id,
+                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
+                                    'row_separator': this.ruleForm.tableData[i].row_separator,
+                                    'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
+                                    'plane_url': this.ruleForm.tableData[i].plane_url,
+                                    'database_code': this.ruleForm.tableData[i].database_code,
+                                    // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
+                                })
+                            } else {
+                                dataExtractionDefs.push({
+                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
+                                    'row_separator': this.ruleForm.tableData[i].row_separator,
+                                    'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
+                                    'plane_url': this.ruleForm.tableData[i].plane_url,
+                                    'database_code': this.ruleForm.tableData[i].database_code,
+                                    // 'data_extract_type':this.ruleForm.tableData[i].is_archived ? '3' : '2'
+                                })
+                            }
+
                         }
 
                     }
