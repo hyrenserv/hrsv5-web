@@ -60,7 +60,8 @@
 
 <script>
 import Step from "./step";
-import * as functionAll from "./dbAgentcollect"
+import * as functionAll from "./dbAgentcollect";
+import * as message from "@/utils/js/message";
 export default {
     components: {
         Step
@@ -73,7 +74,6 @@ export default {
             pagesize: 5,
             currentPage: 1,
             innerVisible: false,
-            tableDataDialogAll: [],
             table_id: '',
             table_name: '',
             tableColumn: {}
@@ -106,7 +106,6 @@ export default {
                     colSetId: this.$route.query.id,
                     table_name: val.table_name
                 }).then(res => {
-                    this.tableDataDialogAll = res.data;
                     res.data.forEach((item, index) => {
                         if (item.column_name.toUpperCase() == 'HYREN_S_DATE') {
                             res.data.splice(index, 1)
@@ -149,13 +148,16 @@ export default {
                 obj[this.table_name] = this.tableDataDialog;
                 this.tableColumn[this.table_name] = this.tableDataDialog;
                 this.innerVisible = false;
+                message.customizTitle("列保存成功", "success")
             } else {
                 let obj = {};
-                obj.colSetId = this.$route.query.id;
-                obj['tableColumns'] = this.tableColumn;
+                obj.table_id = this.table_id;
+                obj['tableColumns'] = JSON.stringify(this.tableDataDialog);
                 functionAll.updateColumnByTableId(obj).then(res => {
                     if (res && res.success) {
                         this.innerVisible = false;
+                        message.customizTitle("列保存成功", "success");
+                        this.tableDataDialog = [];
                     }
                 })
             }
