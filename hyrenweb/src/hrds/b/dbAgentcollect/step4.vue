@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="dialogalltableClean=true;alltableClean(databaseId)">所有表清洗设置</el-button>
         <el-button size="mini" type="success" @click="dialogtableClean=true;allTableCleanPriorityFun(databaseId)">全表清洗优先级</el-button>
     </div>
-    <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%"  border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)">
+    <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)">
         <el-table-column label="序号" align="center" width="60">
             <template slot-scope="scope">
                 <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
@@ -616,16 +616,16 @@
             <el-button type="primary" @click="dialogcolSelectData= false;colSelectSubmitFun()" size="mini">确 定</el-button>
         </div>
     </el-dialog>
-     <el-row>
-     <el-col :span="12">
+    <el-row>
+        <el-col :span="12">
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
         </el-col>
-        <el-col :span="12" >
-            <el-button type="primary" size="medium" class='rightbtn'  @click="next()">下一步</el-button>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class='rightbtn' @click="next()">下一步</el-button>
             <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
         </el-col>
     </el-row>
-       <!-- 加载过度 -->
+    <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
     </transition>
@@ -651,7 +651,7 @@ export default {
     data() {
         return {
             active: 3,
-            isLoading:false,
+            isLoading: false,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
             checkAll: false,
@@ -775,7 +775,7 @@ export default {
     created() {
         this.dbid = this.$route.query.id;
         this.aId = this.$route.query.agent_id;
-        this.sourId = this.$route.query.sourceId;
+        this.sourId = this.$route.query.source_id;
         // this.sName = this.$Base64.decode(this.$route.query.source_name);
     },
     mounted() {
@@ -791,7 +791,7 @@ export default {
         this.priorityDataFun();
     },
     methods: {
-          backFun() {
+        backFun() {
             this.$router.push({
                 path: "/agentList"
             });
@@ -800,7 +800,7 @@ export default {
             return row.column_id;
         },
         next() {
-            this.isLoading=true
+            this.isLoading = true
             let tbCleanString = this.dataCleanConfigFun();
             let data = {};
             if (this.$route.query.edit == "yes") {
@@ -809,6 +809,7 @@ export default {
                     id: this.dbid,
                     source_id: this.sourId,
                     source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                     edit: "yes"
                 };
             } else {
@@ -816,7 +817,8 @@ export default {
                     id: this.dbid,
                     source_id: this.sourId,
                     agent_id: this.aId,
-                    source_name: this.$route.query.source_name
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                 };
             }
             if (tbCleanString.length > 0) {
@@ -826,17 +828,17 @@ export default {
                 console.log(params)
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     // this.dbid = res.data;
-                    this.isLoading=false
-                    if(res.code==200){
-                           this.$router.push({
-                        path: "/collection4_5",
-                        query: data
-                    });
+                    this.isLoading = false
+                    if (res.code == 200) {
+                        this.$router.push({
+                            path: "/collection4_5",
+                            query: data
+                        });
                     }
-                  
+
                 });
             } else {
-                this.isLoading=false
+                this.isLoading = false
             }
 
         },
@@ -847,7 +849,8 @@ export default {
                     agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
-                    source_name:this.$route.query.source_name,
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                     edit: "yes"
                 };
             } else {
@@ -855,7 +858,8 @@ export default {
                     agent_id: this.aId,
                     id: this.dbid,
                     source_id: this.sourId,
-                    source_name:this.$route.query.source_name
+                    source_name: this.$route.query.source_name,
+                    is_archived: this.$route.query.is_archived,
                 };
             }
             this.$router.push({
@@ -897,7 +901,7 @@ export default {
                     } else if (key == "trimflag") {
                         if (arr[i][key] == 0) {
                             arr[i][key] = false;
-                        } else{
+                        } else {
                             arr[i][key] = true;
                         }
                         json.trimFlag = arr[i][key];
@@ -1336,11 +1340,11 @@ export default {
         },
         // 点击表字符替换显示弹框
         table_zfthFun(index, tableid, compflags) {
-             this.table_zfth=[{
-                field: "",
-                replace_feild: ""
-            }],
-            this.dialogTable_zfth = true;
+            this.table_zfth = [{
+                    field: "",
+                    replace_feild: ""
+                }],
+                this.dialogTable_zfth = true;
             if (compflags != 0 || compflags) {
                 let params = {};
                 params["tableId"] = tableid;
@@ -2067,5 +2071,3 @@ export default {
     margin-left: 10px;
 }
 </style>
-
-

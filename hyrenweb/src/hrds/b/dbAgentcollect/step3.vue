@@ -231,18 +231,18 @@ export default {
             functionAll.getInitDataTransfer({
                 colSetId: this.$route.query.id
             }).then(res => {
-                console.log(res)
+                console.log(res, this.$route.query.id)
                 let getData = res.data
                 // this.ruleForm.tableData = res.data
                 for (let i = 0; i < getData.length; i++) {
                     getData[i].DataExtractType = []
                     getData[i].dbfile_format = getData[i].storage[0].dbfile_format
-                    getData[i].is_header = getData[i].storage[0].is_header ? true : false
+                    getData[i].is_header = getData[i].storage[0].is_header == '1' ? true : false
                     getData[i].row_separator = getData[i].storage[0].row_separator
                     getData[i].database_separatorr = getData[i].storage[0].database_separatorr
                     getData[i].plane_url = getData[i].storage[0].plane_url
                     getData[i].database_code = getData[i].storage[0].database_code
-                    getData[i].is_archived = getData[i].is_archived ? true : false
+                    getData[i].is_archived = getData[i].is_archived == '1' ? true : false
                     for (let j = 0; j < getData[i].storage.length; j++) {
                         getData[i].DataExtractType.push({
                             'code': getData[i].storage[j].dbfile_format,
@@ -347,22 +347,48 @@ export default {
                     functionAll.saveDataTransferData(params).then(res => {
                         console.log(res)
                         this.isLoading = false
+                        console.log(count)
+
                         if (res.code == 200) {
                             let data = {}
                             if (this.$route.query.edit == 'yes') {
-                                data = {
-                                    agent_id: this.$route.query.agent_id,
-                                    id: this.$route.query.id,
-                                    sourceId: this.$route.query.sourceId,
-                                    source_name: this.$route.query.source_name,
-                                    edit: "yes"
+                                if (count > 0) {
+                                    data = {
+                                        agent_id: this.$route.query.agent_id,
+                                        id: this.$route.query.id,
+                                        source_id: this.$route.query.source_id,
+                                        source_name: this.$route.query.source_name,
+                                        is_archived: 'yes',
+                                        edit: "yes"
+                                    }
+                                } else {
+                                    data = {
+                                        agent_id: this.$route.query.agent_id,
+                                        id: this.$route.query.id,
+                                        source_id: this.$route.query.source_id,
+                                        source_name: this.$route.query.source_name,
+                                        is_archived: 'no',
+                                        edit: "yes"
+                                    }
                                 }
+
                             } else {
-                                data = {
-                                    agent_id: this.$route.query.agent_id,
-                                    id: this.$route.query.id,
-                                    sourceId: this.$route.query.sourceId,
-                                    source_name: this.$route.query.source_name,
+                                if (count > 0) {
+                                    data = {
+                                        agent_id: this.$route.query.agent_id,
+                                        id: this.$route.query.id,
+                                        source_id: this.$route.query.source_id,
+                                        source_name: this.$route.query.source_name,
+                                        is_archived: 'yes',
+                                    }
+                                } else {
+                                    data = {
+                                        agent_id: this.$route.query.agent_id,
+                                        id: this.$route.query.id,
+                                        source_id: this.$route.query.source_id,
+                                        source_name: this.$route.query.source_name,
+                                        is_archived: 'no',
+                                    }
                                 }
                             }
                             if (count > 0) {
@@ -391,7 +417,7 @@ export default {
                 data = {
                     agent_id: this.$route.query.agent_id,
                     id: this.$route.query.id,
-                    sourceId: this.$route.query.sourceId,
+                    source_id: this.$route.query.source_id,
                     source_name: this.$route.query.source_name,
                     edit: "yes"
                 }
@@ -399,7 +425,7 @@ export default {
                 data = {
                     agent_id: this.$route.query.agent_id,
                     id: this.$route.query.id,
-                    sourceId: this.$route.query.sourceId,
+                    source_id: this.$route.query.source_id,
                     source_name: this.$route.query.source_name,
                 }
             }
