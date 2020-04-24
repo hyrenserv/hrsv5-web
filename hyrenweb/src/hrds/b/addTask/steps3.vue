@@ -823,7 +823,6 @@ export default {
                 let params = {};
                 params["tbCleanString"] = JSON.stringify(tbCleanString);
                 params["colSetId"] = this.databaseId;
-                console.log(params)
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     // this.dbid = res.data;
                     this.isLoading=false
@@ -865,7 +864,6 @@ export default {
         },
         dataCleanConfigFun() {
             let arr = JSON.parse(JSON.stringify(this.cleantableData));
-            console.log(arr)
             let arr3 = [];
             let json = {
                 tableId: "",
@@ -983,7 +981,6 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getCleanConfInfo(params).then(res => {
-                console.log(res.data)
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -1172,7 +1169,6 @@ export default {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
-                    console.log(res.data)
                     let arrdata = res.data;
                     for (let i = 0; i < arrdata.length; i++) {
                         if (arrdata[i].codevalueflag != "0") {

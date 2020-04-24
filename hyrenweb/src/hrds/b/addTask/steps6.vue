@@ -433,11 +433,9 @@ export default {
                             })
                         }
                     }
-                    console.log(JSON.stringify(jobRelation),jobRelation)
                     params["etlJobs"] = JSON.stringify(etlJobs)
                     params["ded_arr"] = ded_arr.join('^')
                     params["jobRelations"] = JSON.stringify(jobRelation)=='{}'?'':JSON.stringify(jobRelation)
-                    console.log(params)
                     sendTask.saveJobDataToDatabase(params).then(res => {
                         if (res.code && res.code == 200) {
                             this.isLoading = false
@@ -452,7 +450,6 @@ export default {
         },
         //通过触发方式value值遍历得到code
         getDispatch_FrequencycodeFun(value) {
-            console.log(value, this.Dispatch_Frequency)
             for (let i = 0; i < this.Dispatch_Frequency.length; i++) {
                 if (this.Dispatch_Frequency[i].value == value) {
                     return this.Dispatch_Frequency[i].code
@@ -494,7 +491,6 @@ export default {
             sendTask.getEtlJobData({
                 'colSetId': this.dbid
             }).then(res => {
-                console.log(res)
                 if (res.data.length > 0) {
                     this.ruleForm.startuptableData = res.data
                 } else {
@@ -518,7 +514,6 @@ export default {
             sendTask.getAgentPath({
                 colSetId: this.dbid
             }).then(res => {
-                console.log(res)
                 this.ruleForm.work_name = res.data.pro_name
                 this.ruleForm.work_type = res.data.pro_type
                 this.ruleForm.log_path = res.data.log_dic
@@ -532,7 +527,6 @@ export default {
             sendTask.getPreviewJob({
                 colSetId: this.dbid
             }).then(res => {
-                console.log(res)
                 if (res.data.length > 0) {
                     this.ruleForm.startuptableData = res.data
                 } else {
@@ -602,13 +596,11 @@ export default {
         },
         // 获取上游作业下拉
         getPreJobName() {
-            console.log(this.ruleForm.Project_num)
               let arr = [];
             if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
                 sendTask.searchEtlJob({
                     'etl_sys_cd': this.ruleForm.Project_num
                 }).then(res => {
-                    console.log(this.ruleForm.Project_num, res)
                     if (res !== undefined && res.data.length > 0) {
                         res.data.forEach((item) => {
                             arr.push({
@@ -617,7 +609,6 @@ export default {
                             });
                         });
                         this.preJobName = arr;
-                        console.log(arr)
                     }
 
                 });
@@ -679,7 +670,6 @@ export default {
         // 作业优先级发生改变
         getwork_proFun() {
             let value = this.ruleForm.work_pro
-            console.log(this.ruleForm.work_pro)
             this.ruleForm.startuptableData.forEach((item) => {
                 this.$set(item, 'job_priority', value)
             })
