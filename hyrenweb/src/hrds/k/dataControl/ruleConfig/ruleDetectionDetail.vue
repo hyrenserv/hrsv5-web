@@ -10,7 +10,7 @@
             <el-row>规则检测信息</el-row>
             <el-form v-model="form_dq_result" :inline="true" size="mini" label-position="right" title="规则检测详细信息">
                 <el-row>
-                    <el-col :span="6" :offset=1>
+                    <el-col :span="6" :offset=2>
                         <el-form-item label="任务编号 :" prop="task_id">
                             <el-input v-model="form_dq_result.task_id" disabled/>
                         </el-form-item>
@@ -27,7 +27,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="6" :offset=1>
+                    <el-col :span="6" :offset=2>
                         <el-form-item label="执行方式 :" prop="exec_mode">
                             <el-input v-model="dq_rule_def_map[form_dq_result.case_type]" disabled/>
                         </el-form-item>
@@ -44,7 +44,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="6" :offset=1>
+                    <el-col :span="6" :offset=2>
                         <el-form-item label="检测字段 :" prop="target_key_fields">
                             <el-input v-model="form_dq_result.target_key_fields" disabled/>
                         </el-form-item>
@@ -56,7 +56,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="6" :offset=1>
+                    <el-col :span="6" :offset=2>
                         <el-form-item label="开始时间 :" prop="start_date_time">
                             <el-input v-model="form_dq_result.start_date + ' '+ form_dq_result.start_time" disabled/>
                         </el-form-item>
@@ -73,7 +73,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="6" :offset=1>
+                    <el-col :span="6" :offset=2>
                         <el-form-item label="指标结果1 :" prop="check_index1">
                             <el-input v-model="form_dq_result.check_index1" disabled/>
                         </el-form-item>
@@ -101,7 +101,7 @@
         </el-row>
         <el-row>同规则历史执行信息</el-row>
         <el-row>
-            <el-col :span="19" :offset=1>
+            <el-col :span="20" :offset=2>
                 <el-table :data="dq_result_s" border size="mini">
                     <el-table-column type="index" prop="date" label="序号" align="center" width="80px">
                         <template slot-scope="scope">{{scope.$index+(currPage - 1) * pageSize + 1}}</template>
