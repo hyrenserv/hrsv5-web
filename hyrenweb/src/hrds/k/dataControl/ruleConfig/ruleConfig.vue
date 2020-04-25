@@ -45,9 +45,7 @@
                 </el-form-item>
             </el-form>
         </el-row>
-        <el-row>
-            <hr>
-        </el-row>
+        <el-divider/>
         <el-row>
             <el-table :data="rule_dqd_data_s.slice((currentPage-1) * pageSize,currentPage * pageSize)" size="mini">
                 <el-table-column type="index" prop="date" label="序号" align="center" width="80px">
@@ -77,27 +75,28 @@
                                        size="medium" title="编辑"/>
                         </el-col>
                         <el-col :span="4">
-                            <el-button @click="viewRuleSchedulingStatus(scope.row)" icon="el-icon-s-unfold" type="text"
-                                       size="medium" title="查看调度状态"/>
+                            <el-button @click="viewRuleSchedulingStatus(scope.row.reg_num)" icon="el-icon-s-unfold"
+                                       type="text" size="medium" title="查看调度状态"/>
                         </el-col>
                         <el-col :span="4">
-                            <el-button @click="delRuleData(scope.row)" icon="el-icon-delete-solid" type="text"
+                            <el-button @click="delRuleData(scope.row.reg_num)" icon="el-icon-delete-solid" type="text"
                                        size="medium" title="删除"/>
                         </el-col>
                         <el-col :span="4">
-                            <el-button @click="delRuleData(scope.row)" icon="el-icon-share" type="text" size="medium"
-                                       title="发布"/>
+                            <el-button @click="releaseTrigger(scope.row.reg_num)" icon="el-icon-share" type="text"
+                                       size="medium" title="发布"/>
                         </el-col>
                     </template>
                 </el-table-column>
             </el-table>
             <!-- 分页 -->
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                           :current-page="currentPage" :page-sizes="[10, 50, 100, 500]" :page-size="pageSize"
+                           :current-page="currentPage" :page-sizes="[5, 10, 50, 100, 500]" :page-size="pageSize"
                            layout="total, sizes, prev, pager, next, jumper" style="text-align: center"
-                           :total="rule_dqd_data_s.length">
+                           :total="totalSize">
             </el-pagination>
         </el-row>
+
         <!-- 弹出手动执行模态框 start-->
         <el-dialog title="请输入检查日期" :visible.sync="manual_execution_dialog">
             <el-row>
@@ -110,6 +109,30 @@
             </el-row>
         </el-dialog>
         <!-- 弹出手动执行模态框 end-->
+
+        <!-- 弹出发布到工程调度模态框 start-->
+        <el-dialog title="发布到工程调度" :visible.sync="release_trigger_dialog" width="400px">
+            <el-form :model="save_etl_form">
+                <el-form-item label="选择工程">
+                    <el-select v-model="save_etl_form.etl_sys_cd" placeholder="选择工程" size="mini"
+                               @change="selectProjectTrigger">
+                        <el-option v-for="i in etl_sys_s" :label="i.etl_sys_name" :value="i.etl_sys_cd"/>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="选择任务">
+                    <el-select v-model="save_etl_form.sub_sys_cd" placeholder="选择任务" size="mini">
+                        <el-option v-for="i in sub_sys_s" :label="i.sub_sys_desc" :value="i.sub_sys_cd"/>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" class="goIndex" size="mini" @click="saveETLJob">保存</el-button>
+                    <el-button type="danger" class="goIndex" size="mini" @click="release_trigger_dialog=false"
+                               style="margin-right: 5px">取消
+                    </el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!-- 弹出发布到工程调度模态框 end-->
     </div>
 </template>
 
@@ -127,7 +150,7 @@
             return {
                 isLoading: false,
                 currentPage: 1,
-                pageSize: 10,
+                pageSize: 5,
                 totalSize: 0,
                 search_dq_data: {},
                 rule_dqd_data_s: [],
@@ -139,7 +162,12 @@
                 ed_rule_level_map: {},
                 manual_execution_reg_num: '',
                 manual_execution_dialog: false,
+                release_trigger_reg_num: '',
+                release_trigger_dialog: false,
                 verify_date: '',
+                save_etl_form: {etl_sys_cd: '', sub_sys_cd: '',},
+                etl_sys_s: [],
+                sub_sys_s: [],
             }
         },
         created() {
@@ -150,7 +178,6 @@
             //获取代码项信息-规则级别标志
             this.getEdRuleLevel();
         },
-        watch: {},
         mounted() {
             //获取规则信息列表
             this.getDqDefinitionInfos();
@@ -166,19 +193,18 @@
             },
             //检索规则信息
             searchDqData() {
-                rcFun.searchDqDefinitionInfos(this.search_dq_data).then(res => {
+                rcFun.searchDqDefinitionInfos(this.search_dq_data,).then(res => {
                     if (res.success) {
-                        this.rule_dqd_data_s = res.data;
+                        this.rule_dqd_data_s = res.data.rule_dqd_data_s;
+                        this.totalSize = res.data.totalSize;
                     }
                 })
             },
             //获取规则信息列表
             getDqDefinitionInfos() {
-                rcFun.getDqDefinitionInfos({
-                    'currPage': this.currPage,
-                    "pageSize": this.pageSize
-                }).then(res => {
-                    this.rule_dqd_data_s = res.data;
+                rcFun.getDqDefinitionInfos().then(res => {
+                    this.rule_dqd_data_s = res.data.rule_dqd_data_s;
+                    this.totalSize = res.data.totalSize;
                 })
             },
             //获取代码项信息-ETl作业有效标志
@@ -224,22 +250,19 @@
             },
             //手工执行确定
             manualExecution() {
-                this.isLoading = true;
                 rcFun.manualExecution({
                     'reg_num': this.manual_execution_reg_num,
                     'verify_date': this.verify_date
                 }).then(res => {
-                    if (!res.success) {
-                        this.isLoading = true;
+                    if (res.success) {
                         this.$router.push({
                             name: 'ruleDetectionDetail',
                             query: {
                                 'task_id': res.data,
                             }
                         });
-                    } else {
-                        this.isLoading = false;
                     }
+
                 });
             },
             //新增规则信息
@@ -262,14 +285,65 @@
                 });
             },
             //查看规则调度状态
-            viewRuleSchedulingStatus() {
-
+            viewRuleSchedulingStatus(reg_num) {
+                this.$router.push({
+                    name: 'ruleETLStatus',
+                    query: {
+                        'reg_num': reg_num,
+                    }
+                });
             },
             //删除规则
-            delRuleData() {
+            delRuleData(reg_num) {
+                this.$confirm('确认删除吗?').then(() => {
+                    rcFun.deleteDqDefinition({'reg_num': reg_num}).then(res => {
+                        message.deleteSuccess(res);
+                        //获取最新数据
+                        this.getDqDefinitionInfos();
+                    })
+                }).catch(() => {
+                    message.customizTitle("已取消删除申请!")
+                });
             },
-            //发布,发布到调度平台
+            //发布触发
+            releaseTrigger(reg_num) {
+                this.save_etl_form = {};
+                this.release_trigger_dialog = true;
+                this.release_trigger_reg_num = reg_num;
+                //获取工程信息
+                rcFun.getProInfos().then(res => {
+                    this.etl_sys_s = res.data;
+                });
+            },
+            //选择工程触发
+            selectProjectTrigger() {
+                this.sub_sys_s = [];
+                //获取工程下任务信息
+                rcFun.getTaskInfo({'etl_sys_cd': this.save_etl_form.etl_sys_cd}).then(res => {
+                    this.sub_sys_s = res.data;
+                });
+            },
+            //保存到调度平台
             saveETLJob() {
+                if ('' === this.save_etl_form.etl_sys_cd) {
+                    this.$message.error('请选择工程!');
+                    return;
+                }
+                if ('' === this.save_etl_form.sub_sys_cd) {
+                    this.$message.error('请选择任务!');
+                    return;
+                }
+                //保存作业信息
+                rcFun.saveETLJob({
+                    'pro_id': this.save_etl_form.etl_sys_cd,
+                    'task_id': this.save_etl_form.sub_sys_cd,
+                    'reg_num': this.release_trigger_reg_num,
+                }).then(res => {
+                    if (res.success) {
+                        message.saveSuccess(res);
+                        this.release_trigger_dialog = false;
+                    }
+                });
             },
         },
     }

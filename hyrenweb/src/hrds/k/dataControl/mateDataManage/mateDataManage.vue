@@ -12,7 +12,7 @@
             <el-col :span="6">
                 <el-tabs v-model="mdmActiveName" type="border-card" @tab-click="tagHandleClick">
                     <el-tab-pane label="源数据列表" name="mdm">
-                        <div class="mytree" height='260'>
+                        <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0' @node-click="mdmHandleClick"
                                      :default-expand-all="true" :filter-node-method="filterNode" ref="tree1">
@@ -23,7 +23,7 @@
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="数据回收站" name="drb">
-                        <div class="mytree" height='260'>
+                        <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="drbTreeList" :indent='0' @node-click="drbHandleClick"
                                      :default-expand-all="true" :filter-node-method="filterNode" ref="tree2">
@@ -169,7 +169,6 @@
             },
             //点击源数据管理树节点触发
             mdmHandleClick(data) {
-                console.log(data);
                 if (data.file_id !== '') {
                     mdmFun.getMDMTableColumnInfo({
                         "data_layer": data.data_layer, "file_id": data.file_id,
@@ -181,8 +180,8 @@
             },
             //点击回收站树节点触发
             drbHandleClick(data) {
-                if (data.id !== '') {
-                    mdmFun.getDRBTableColumnInfo({"failure_table_id": data.id}).then(res => {
+                if (data.file_id !== '') {
+                    mdmFun.getDRBTableColumnInfo({"failure_table_id": data.file_id}).then(res => {
                         this.data_meta_info = res.data;
                     })
                 }

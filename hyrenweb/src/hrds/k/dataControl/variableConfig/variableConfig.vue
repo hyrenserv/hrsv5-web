@@ -114,7 +114,6 @@
             },
             //检索变量
             variableSearch() {
-                console.log(this.search_var_data);
                 let var_name = this.search_var_data.var_name;
                 let var_value = this.search_var_data.var_value;
                 let start_date = this.search_var_data.start_date;

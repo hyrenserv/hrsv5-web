@@ -31,3 +31,11 @@ export function getRuleExecuteHistoryInfo(data) {
         params: data,
     })
 }
+
+//获取指标3的数据集
+export function getCheckIndex3(data) {
+    return request({
+        url: '/K/dm/ruleconfig/getCheckIndex3',
+        params: data,
+    })
+}

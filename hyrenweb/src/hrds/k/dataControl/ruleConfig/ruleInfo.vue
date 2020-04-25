@@ -265,10 +265,9 @@
         <el-dialog title="选择数据表" :visible.sync="data_source_dialog">
             <el-row>
                 <el-col :span="8">
-                    <div class="mytree" height='260'>
-                        <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0'
-                                 @node-click="handleNodeClick"
-                                 default-expand-all>
+                    <div class="mytree">
+                        <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' default-expand-all
+                                 @node-click="handleNodeClick">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="data.description">{{node.label}}</span>
                         </span>
@@ -404,15 +403,18 @@
                 this.operation_type = this.$route.query.operation_type;
             } else if ('add' === this.$route.query.operation_type) {
                 this.ruleTitle = '新增';
+                this.operation_type = this.$route.query.operation_type;
+            } else {
+                this.$message({type: 'info', message: '操作类型错误!'});
             }
-        },
-        mounted() {
             //获取系统帮助提示信息
             this.getDqHelpInfo();
             //获取规则类型数据
             this.getDqRuleDef();
             //获取规则级别标志
             this.getEdRuleLevel();
+        },
+        mounted() {
             //获取页面初始化数据
             if ('undefined' !== typeof this.$route.query.reg_num) {
                 this.getDqDefinition(this.$route.query.reg_num);
@@ -580,7 +582,7 @@
                         if (this.operation_type === 'add') {
                             rcFun.addDqDefinition(this.form_dq_data).then(res => {
                                 if (res.success) {
-                                    message.saveSuccess(res.message);
+                                    message.saveSuccess(res);
                                     //添加成功后跳转到规则配置页面
                                     this.$router.push({name: 'ruleConfig',});
                                 }
@@ -588,7 +590,7 @@
                         } else if (this.operation_type === 'edit') {
                             rcFun.updateDqDefinition(this.form_dq_data).then(res => {
                                 if (res.success) {
-                                    message.saveSuccess(res.message);
+                                    message.saveSuccess(res);
                                     //添加成功后跳转到规则配置页面
                                     this.$router.push({name: 'ruleConfig',});
                                 }
