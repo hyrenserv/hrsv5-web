@@ -76,10 +76,8 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-col :span="13" :offset="11">
-            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+            <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
             </el-pagination>
-        </el-col>
     </el-row>
     <!-- 添加/修改任务模态框 -->
     <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="70%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'" :before-close="beforeClosechange">

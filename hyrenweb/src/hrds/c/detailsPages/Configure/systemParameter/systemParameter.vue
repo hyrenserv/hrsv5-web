@@ -41,10 +41,8 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-col :span="13" :offset="11">
-            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
-            </el-pagination>
-        </el-col>
+        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+        </el-pagination>
     </el-row>
     <!-- 添加/修改系统模态框 -->
     <el-dialog :title="systemTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClosechange">

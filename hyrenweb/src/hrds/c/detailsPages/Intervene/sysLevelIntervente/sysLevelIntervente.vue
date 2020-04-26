@@ -67,10 +67,8 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-col :span="13" :offset="11">
-            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+            <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
             </el-pagination>
-        </el-col>
     </el-row>
     <!-- 暂停模态框 -->
     <el-dialog title="确定执行该操作?" :visible.sync="dialogVisiblePause" width="20%">
