@@ -1001,7 +1001,7 @@ export default {
                 filePath: val.storage_property_val
             }).then((res) => {
                 this.filename = val.storage_property_key;
-                const blob = new Blob([res]);
+                const blob = new Blob([res.data]);
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10
                     navigator.msSaveBlob(blob, this.filename);
