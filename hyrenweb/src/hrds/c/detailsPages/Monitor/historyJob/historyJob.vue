@@ -431,7 +431,7 @@ export default {
                     curr_bath_date: this.formAdd.curr_bath_date
                 }).then(res => {
                     // this.filename = this.data[index].source_id;
-                    const blob = new Blob([res]);
+                    const blob = new Blob([res.data]);
                     if (window.navigator.msSaveOrOpenBlob) {
                         // 兼容IE10
                         navigator.msSaveBlob(blob, this.filename);

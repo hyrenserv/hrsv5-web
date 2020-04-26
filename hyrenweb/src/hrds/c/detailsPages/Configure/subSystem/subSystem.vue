@@ -336,7 +336,7 @@ export default {
                 fileName: val
             }).then(res => {
                 this.filename = val;
-                const blob = new Blob([res]);
+                const blob = new Blob([res.data]);
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10
                     navigator.msSaveBlob(blob, this.filename);
