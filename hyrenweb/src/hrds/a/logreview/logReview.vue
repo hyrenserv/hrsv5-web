@@ -100,7 +100,9 @@
             downloadSystemLog() {
                 message.confirmMsg('如果未填写过滤用户和请求日期,则下载全部日志信息').then(res => {
                     logReviewFunctionAll.downloadSystemLog(this.formInline).then(res => {
-                        const blob = new Blob([res], {type: "application/msword"});
+                        let header = res.headers['content-disposition'];
+                        this.filename = this.$Base64.decode(header.substring(header.indexOf("filename=") + 9));
+                        const blob = new Blob([res.data], {type: "application/msword"});
                         if (window.navigator.msSaveOrOpenBlob) {
                             // 兼容IE10
                             navigator.msSaveBlob(blob, this.filename);
@@ -108,7 +110,8 @@
                             //  chrome/firefox
                             let aTag = document.createElement("a");
                             // document.body.appendChild(aTag);
-                            aTag.download = "SystemOperation";
+                            // aTag.download = "SystemOperation";
+                            aTag.download = this.filename;
                             aTag.href = URL.createObjectURL(blob);
                             if (aTag.all) {
                                 aTag.click();
