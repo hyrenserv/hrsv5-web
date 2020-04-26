@@ -10,7 +10,7 @@
                     <el-button size="mini" type="success" icon="el-icon-search" @click="schfilter(search)">查询</el-button>
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
-                <div class='singleTableinner'>
+                <div class="singleTableinner">
                     <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" :empty-text="tableloadingInfo" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
@@ -25,8 +25,7 @@
                                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true">
-                        </el-table-column>
+                        <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="table_ch_name" label="表中文名" width="160" align="center" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
                                 <el-input v-model="scope.row.table_ch_name" placeholder="中文名" @change="changetablechnameFun(scope.row.table_ch_name,scope.row.table_name)"></el-input>
@@ -47,12 +46,12 @@
                                         </el-select>
                                         <el-select placeholder="卸数方式" v-else disabled v-model="scope.row.unload_type" size="medium" @change="oneunloadTypeFun(scope.row)">
                                             <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
-                                        </el-select> -->
+                    </el-select>-->
                                     <!-- </el-col> -->
                                     <!--  <el-col :span="3">
                                         <el-button type="text" style='font-weight: bold;' disabled v-if="scope.row.unload_type=='全量'||scope.row.collectState==false">设置</el-button>
                                         <el-button type="text" style='font-weight: bold;' v-else  @click="XSTypeFun(scope.row)">设置</el-button>
-                                    </el-col> -->
+                    </el-col>-->
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -63,7 +62,6 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
-
                             <template slot-scope="scope">
                                 <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
                                 <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
@@ -71,7 +69,6 @@
                         </el-table-column>
 
                         <el-table-column prop="sqlFiltering" label="SQL过滤" align="center">
-
                             <template slot-scope="scope">
                                 <el-button size="mini" disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" type="success">定义过滤</el-button>
                                 <el-button size="mini" v-else @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
@@ -114,7 +111,7 @@
                     </el-table-column>
                     <el-table-column label="卸数方式" align="center">
                         <template slot-scope="scope">
-                            <el-row class='twopageradior'>
+                            <el-row class="twopageradior">
                                 <!-- <el-col :span="19"> -->
                                 <el-form-item :prop="'sqlExtractData.'+scope.$index+'.unload_type'" :rules="rule.selected">
                                     <el-radio-group v-model="scope.row.unload_type" v-if="scope.row.collectState==false">
@@ -128,13 +125,13 @@
                                         </el-select>
                                         <el-select placeholder="卸数方式" v-else  v-model="scope.row.unload_type" size="medium">
                                             <el-option size="medium" v-for="(item,index) in xsType" :key="index" :label="item.value" :value="item.value"></el-option>
-                                        </el-select> -->
+                    </el-select>-->
                                 </el-form-item>
                                 <!-- </el-col> -->
                                 <!--  <el-col :span="3">
                                     <el-button type="text"  disabled style='font-weight: bold;' v-if="scope.row.collectState==false" > 设置</el-button>
                                     <el-button type="text" style='font-weight: bold;' v-else  @click="XSTypeFun2(scope.row)">设置</el-button>
-                                </el-col> -->
+                  </el-col>-->
                             </el-row>
                         </template>
                     </el-table-column>
@@ -158,7 +155,7 @@
                     </el-table-column>
                     <el-table-column label="操作" align="center" width="90px">
                         <template slot-scope="scope">
-                            <el-button class='delcolor' type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
+                            <el-button class="delcolor" type="text" circle @click="DelRowFun(scope.$index, ruleForm.sqlExtractData)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -171,8 +168,8 @@
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button type="primary" size="medium" class='rightbtn' @click="next()">下一步</el-button>
-            <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="next()">下一步</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="pre()">上一步</el-button>
         </el-col>
     </el-row>
     <!-- 测试弹框 -->
@@ -205,7 +202,7 @@
                         <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
                             <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
                         </el-select>
-                    </el-form-item> -->
+            </el-form-item>-->
                 </el-col>
             </el-row>
             <el-row type="flex" justify="center">
@@ -213,7 +210,6 @@
                     <el-form-item prop="table_des">
                         <el-input v-model="sqlFiltSetData_SQL" type="textarea"></el-input>
                     </el-form-item>
-
                 </el-col>
             </el-row>
         </el-form>
@@ -232,9 +228,7 @@
             </span>
         </div>
         <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
-
             <el-table-column label="选择列" align="center">
-
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn"></el-checkbox>&nbsp;选择列
@@ -247,10 +241,9 @@
             </el-table-column>
 
             <el-table-column label="主键定义" align="center">
-
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
-                    <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn"></el-checkbox> 主键定义
+                    <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData,Alliskey_SelectColumn)" v-model="Alliskey_SelectColumn" :checked="Alliskey_SelectColumn"></el-checkbox>主键定义
                 </template>
                 <template slot-scope="scope">
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
@@ -262,7 +255,6 @@
 
             <el-table-column property="column_type" label="字段类型" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="column_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
-
                 <template slot-scope="scope">
                     <el-input v-model="scope.row.column_ch_name" placeholder="中文名" size="medium"></el-input>
                 </template>
@@ -329,7 +321,7 @@
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
-        <el-form :model="xstypeadd2" ref='xstypeadd2' status-icon label-width="30%">
+        <el-form :model="xstypeadd2" ref="xstypeadd2" status-icon label-width="30%">
             <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
                 <el-row type="flex" justify="center">
                     <el-col>
@@ -390,7 +382,7 @@
         <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
             <el-row type="flex" style="text-align:right;padding-right:10px;">
                 <el-col :span="24">
-                    <el-button type="warning" v-if='ruleForm_ParallelEx.issql=="1"' size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                    <el-button type="warning" v-if="ruleForm_ParallelEx.issql=='1'" size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
                 </el-col>
             </el-row>
             <el-form-item label="自定义SQL" prop="EXtable_sql">
@@ -477,7 +469,7 @@
             <el-button type="danger" size="mini" @click="dialogTableVisible_zdy=false">取 消</el-button>
             <el-button type="primary" size="mini" @click="dialogTableVisible_zdy=false">确 定</el-button>
         </div>
-    </el-dialog> -->
+    </el-dialog>-->
     <!--第二个页面定义分页抽取sql  -->
     <el-dialog title :visible.sync="dialogdyfysql" width="50%" class="alltable">
         <div slot="title">
@@ -523,9 +515,7 @@
             </span>
         </div>
         <el-table :data="SelectColumnData2" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
-
             <el-table-column label="选择列" align="center">
-
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
                     <el-checkbox v-else @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" disabled></el-checkbox>&nbsp;选择列
@@ -538,10 +528,9 @@
             </el-table-column>
 
             <el-table-column label="主键定义" align="center">
-
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2" v-if="disShow==true" disabled></el-checkbox>
-                    <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2"></el-checkbox> 主键定义
+                    <el-checkbox v-else @change="Alliskey_SelectColumnFun(SelectColumnData2,Alliskey_SelectColumn2)" v-model="Alliskey_SelectColumn2" :checked="Alliskey_SelectColumn2"></el-checkbox>主键定义
                 </template>
                 <template slot-scope="scope">
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
@@ -553,7 +542,6 @@
 
             <el-table-column property="column_type" label="字段类型" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="column_ch_name" label="列中文名" align="center" :show-overflow-tooltip="true">
-
                 <template slot-scope="scope">
                     <el-input v-model="scope.row.column_ch_name" placeholder="中文名" size="medium"></el-input>
                 </template>
@@ -593,7 +581,7 @@ import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
-import Loading from '../../components/loading'
+import Loading from "../../components/loading";
 
 export default {
     components: {
@@ -638,24 +626,24 @@ export default {
             },
 
             ruleForm_ParallelEx: {
-                issql: '',
+                issql: "",
                 EXtable_sql: "",
                 db_allnum: "",
                 everDay_addnum: "",
                 pageExnum: 5
             },
             xstypeadd: {
-                delete: '',
-                insert: '',
-                update: ''
+                delete: "",
+                insert: "",
+                update: ""
             },
             xstypeadd2: {
-                delete: '',
-                insert: '',
-                update: ''
+                delete: "",
+                insert: "",
+                update: ""
             },
             xstypeadd2q: {
-                insert: '',
+                insert: ""
             },
             dbid: null,
             agentId: null,
@@ -685,49 +673,49 @@ export default {
             disShow: false,
             sqlSubmit: false,
             sqlfiltVar: [{
-                    value: '当前跑批日',
-                    code: '1'
+                    value: "当前跑批日",
+                    code: "1"
                 },
                 {
-                    value: '后一跑批日',
-                    code: '2'
+                    value: "后一跑批日",
+                    code: "2"
                 },
                 {
-                    value: '前一跑批日',
-                    code: '3'
+                    value: "前一跑批日",
+                    code: "3"
                 }
             ],
             xsType: [{
-                    value: '全量',
-                    code: '1'
+                    value: "全量",
+                    code: "1"
                 },
                 {
-                    value: '增量',
-                    code: '2'
-                },
+                    value: "增量",
+                    code: "2"
+                }
             ],
             YesNo: [{
-                    value: '是',
-                    code: '1'
+                    value: "是",
+                    code: "1"
                 },
                 {
-                    value: '否',
-                    code: '0'
-                },
+                    value: "否",
+                    code: "0"
+                }
             ],
             // handleactive: false,
             dialog_xsadd: false,
             dialog_xsall: false,
             dialog_xsadd2: false,
             isLoading: false,
-            Xstable_name: '', //卸数方式存放表名
+            Xstable_name: "", //卸数方式存放表名
             xsTypeArr: [], //第一个页面卸数增量是存放数据
             xsTypeArr2: [], //第二个页面卸数增量是存放数据
             xsTypeArr2All: [], //第二个页面卸数全量是存放数据
             ParallelExtractionArr2: [], //第二个页面并行抽取保存数据
             callTable2: [],
             zdycallTable: [],
-            onclickAll: false,
+            onclickAll: false
         };
     },
     created() {
@@ -736,15 +724,14 @@ export default {
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
-
     },
     beforeMount() {
         let params = {};
         params["colSetId"] = this.dbid;
         addTaskAllFun.getAllTableInfo(params).then(res => {
-            let data = res.data
+            let data = res.data;
             for (let i = 0; i < data.length; i++) {
-                if (data[i].table_id && data[i].table_id != '') {
+                if (data[i].table_id && data[i].table_id != "") {
                     data[i].selectionState = true;
                 } else {
                     data[i].selectionState = false;
@@ -760,9 +747,11 @@ export default {
                     data[i].is_md5 = false;
                 }
                 if (data[i].unload_type == "1") {
-                    data[i].unload_type = '全量';
-                } else if ((data[i].unload_type == "2")) {
-                    data[i].unload_type = '增量';
+                    data[i].unload_type = "全量";
+                } else if (data[i].unload_type == "2") {
+                    data[i].unload_type = "增量";
+                } else {
+                    data[i].unload_type = "";
                 }
             }
             this.allDataList = data;
@@ -771,8 +760,7 @@ export default {
     mounted() {
         // 获取进入页面的总数据
         this.steps_getInitInfo();
-        this.editzdySQLFun()
-
+        this.editzdySQLFun();
     },
     computed: {
         address() {
@@ -812,13 +800,13 @@ export default {
                         data[i].is_md5 = false;
                     }
                     if (data[i].unload_type == "1") {
-                        data[i].unload_type = '全量';
-                    } else if ((data[i].unload_type == "2")) {
-                        data[i].unload_type = '增量';
+                        data[i].unload_type = "全量";
+                    } else if (data[i].unload_type == "2") {
+                        data[i].unload_type = "增量";
                     }
                 }
                 this.ruleForm.sqlExtractData = data ? data : [];
-                this.zdycallTable = JSON.parse(JSON.stringify(data))
+                this.zdycallTable = JSON.parse(JSON.stringify(data));
             });
         },
         //编辑状态获得初始化信息
@@ -848,15 +836,16 @@ export default {
                             data[i].is_md5 = false;
                         }
                         if (data[i].unload_type == "1") {
-                            data[i].unload_type = '全量';
+                            data[i].unload_type = "全量";
+                        } else if (data[i].unload_type == "2") {
+                            data[i].unload_type = "增量";
                         } else {
-                            data[i].unload_type = '增量';
+                            data[i].unload_type = "";
                         }
-
                     }
                     this.tableData = data;
-                    this.callTable = JSON.parse(JSON.stringify(data)) //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
-                    this.callTable2 = JSON.parse(JSON.stringify(data))
+                    this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
+                    this.callTable2 = JSON.parse(JSON.stringify(data));
                     // this.Allis_selectionState = true;
                 }
             });
@@ -894,7 +883,7 @@ export default {
         },
         // 获取所有表信息
         getAllTableInfoFun() {
-            this.onclickAll = true
+            this.onclickAll = true;
             this.Allis_selectionState = false;
             this.tableData.length = 0;
             this.isdata = JSON.parse(JSON.stringify(this.allDataList));
@@ -902,18 +891,17 @@ export default {
         },
         // 全表点击单个复选框
         evercheck(val, name) {
-            let count = 0
+            let count = 0;
             if (val == true) {
                 for (let i = 0; i < this.tableData.length; i++) {
                     if (this.tableData[i].selectionState == true) {
-                        count++
-
+                        count++;
                     }
                 }
                 if (count == this.tableData.length) {
-                    this.Allis_selectionState = true
+                    this.Allis_selectionState = true;
                 } else {
-                    this.Allis_selectionState = false
+                    this.Allis_selectionState = false;
                 }
                 for (let i = 0; i < this.allDataList.length; i++) {
                     if (this.allDataList[i].table_name == name) {
@@ -924,7 +912,7 @@ export default {
                 for (let i = 0; i < this.tableData.length; i++) {
                     if (this.tableData[i].selectionState == false) {
                         if (count < this.tableData.length) {
-                            this.Allis_selectionState = false
+                            this.Allis_selectionState = false;
                         }
                     }
                 }
@@ -941,44 +929,43 @@ export default {
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_get == true) {
-                        count++
+                        count++;
                     }
-
                 }
                 if (count == alldata.length) {
-                    this.Allis_SelectColumn = true
+                    this.Allis_SelectColumn = true;
                 } else {
-                    this.Allis_SelectColumn = false
+                    this.Allis_SelectColumn = false;
                 }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_get == false) {
                         if (count < alldata.length) {
-                            this.Allis_SelectColumn = false
+                            this.Allis_SelectColumn = false;
                         }
                     }
                 }
             }
         },
-        // 
+        //
         every_Selectkeyfun(val, alldata) {
-            let count = 0
+            let count = 0;
             if (val == true) {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_primary_key == true) {
-                        count++
+                        count++;
                     }
                 }
                 if (count == alldata.length) {
-                    this.Alliskey_SelectColumn = true
+                    this.Alliskey_SelectColumn = true;
                 } else {
-                    this.Alliskey_SelectColumn = false
+                    this.Alliskey_SelectColumn = false;
                 }
             } else {
                 for (let i = 0; i < alldata.length; i++) {
                     if (alldata[i].is_primary_key == false) {
                         if (count < alldata.length) {
-                            this.Alliskey_SelectColumn = false
+                            this.Alliskey_SelectColumn = false;
                         }
                     }
                 }
@@ -986,16 +973,16 @@ export default {
         },
         // 搜索
         schfilter(val) {
-            if (val != '') {
+            if (val != "") {
                 let params = {};
                 params["colSetId"] = this.dbid;
-                params['inputString'] = val
-                this.tableloadingInfo = '数据加载中...'
+                params["inputString"] = val;
+                this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
                     if (res.data.length > 0) {
-                        let data = res.data
+                        let data = res.data;
                         for (let i = 0; i < data.length; i++) {
-                            if (data[i].table_id && data[i].table_id != '') {
+                            if (data[i].table_id && data[i].table_id != "") {
                                 data[i].selectionState = true;
                             } else {
                                 data[i].selectionState = false;
@@ -1011,36 +998,17 @@ export default {
                                 data[i].is_md5 = false;
                             }
                             if (data[i].unload_type == "1") {
-                                data[i].unload_type = '全量';
-                            } else if ((data[i].unload_type == "2")) {
-                                data[i].unload_type = '增量';
+                                data[i].unload_type = "全量";
+                            } else if (data[i].unload_type == "2") {
+                                data[i].unload_type = "增量";
                             }
                         }
-                        this.tableData = res.data
+                        this.tableData = res.data;
                     } else {
-                        this.tableloadingInfo = '暂无数据'
+                        this.tableloadingInfo = "暂无数据";
                     }
-
-                })
+                });
             }
-
-            /* if (this.isdata.length != 0) {
-                this.tableData = this.allDataList.filter(
-                    data =>
-                    !val || data.table_name.toLowerCase().includes(val.toLowerCase())
-                );
-                if (this.tableData.length == 0) {
-                    this.tableloadingInfo = "暂无数据";
-                }
-            } else {
-                this.tableData = this.callTable.filter(
-                    data =>
-                    !val || data.table_name.toLowerCase().includes(val.toLowerCase())
-                );
-                if (this.tableData.length == 0) {
-                    this.tableloadingInfo = "暂无数据";
-                }
-            } */
         },
         searchEnterFun(e) {
             var keyCode = window.event ? e.keyCode : e.which;
@@ -1055,9 +1023,9 @@ export default {
         },
         next() {
             // if (this.handleactive == true) { //切换过第二个页面
-            this.$refs['ruleForm'].validate(valid => {
+            this.$refs["ruleForm"].validate(valid => {
                 if (valid) {
-                    this.isLoading = true
+                    this.isLoading = true;
                     let tableData = this.tableData, //第一个页面所有表
                         sqlExtractData = this.ruleForm.sqlExtractData, //第二个页面所有表
                         rep_table = [], //两张表重复的表
@@ -1065,57 +1033,72 @@ export default {
                         tableidArr1 = {}, //单表查询中增量存在的表
                         isparmi2 = [], //sql抽取中增量存在的表
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
-                    for (let i = 0; i < tableData.length; i++) { //判断两个页面数据有无重复数据
-                        if (tableData[i].selectionState == true && tableData[i].unload_type == '增量') {
-                            isparmi.push(tableData[i].table_name)
-                            if (tableData[i].table_id && tableData[i].table_id != '') {
-                                tableidArr1[tableData[i].table_name] = tableData[i].table_id
+                    for (let i = 0; i < tableData.length; i++) {
+                        //判断两个页面数据有无重复数据
+                        if (
+                            tableData[i].selectionState == true &&
+                            tableData[i].unload_type == "增量"
+                        ) {
+                            isparmi.push(tableData[i].table_name);
+                            if (tableData[i].table_id && tableData[i].table_id != "") {
+                                tableidArr1[tableData[i].table_name] = tableData[i].table_id;
                             }
                         }
                         if (tableData[i].selectionState == true) {
-                            istrue.push(tableData[i].table_name)
+                            istrue.push(tableData[i].table_name);
                         }
                         for (let j = 0; j < sqlExtractData.length; j++) {
-                            if (tableData[i].table_name == sqlExtractData[j].table_name && tableData[i].selectionState == true) {
-                                rep_table.push(tableData[i].table_name)
+                            if (
+                                tableData[i].table_name == sqlExtractData[j].table_name &&
+                                tableData[i].selectionState == true
+                            ) {
+                                rep_table.push(tableData[i].table_name);
                             }
                         }
                     }
                     for (let j = 0; j < sqlExtractData.length; j++) {
-                        if (sqlExtractData[j].unload_type == '增量') {
-                            isparmi2.push(sqlExtractData[j].table_name)
+                        if (sqlExtractData[j].unload_type == "增量") {
+                            isparmi2.push(sqlExtractData[j].table_name);
                         }
-                        istrue.push(sqlExtractData[j].table_name)
+                        istrue.push(sqlExtractData[j].table_name);
                     }
-                    if (istrue.length == 0) { //判断第二步整体有没有表存在
-                        this.isLoading = false
+                    if (istrue.length == 0) {
+                        //判断第二步整体有没有表存在
+                        this.isLoading = false;
                         this.$message({
                             showClose: true,
-                            message: '至少选择一张表',
+                            message: "至少选择一张表",
                             type: "error"
                         });
                     } else {
-                        //checkTablePrimary 
-                        if (rep_table.length > 0) { //有重复表
-                            this.isLoading = false
+                        //checkTablePrimary
+                        if (rep_table.length > 0) {
+                            //有重复表
+                            this.isLoading = false;
                             this.$message({
                                 showClose: true,
-                                message: '单表查询和sql抽取数据中存在表' + rep_table + '重复,请修改',
+                                message: "单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改",
                                 type: "error"
                             });
-                        } else { //没有重复表
-                            if (isparmi.length > 0) { //第一个页面卸数方式是增量存在的
+                        } else {
+                            //没有重复表
+                            if (isparmi.length > 0) {
+                                //第一个页面卸数方式是增量存在的
                                 let params1 = {};
                                 params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
                                 params1["colSetId"] = parseInt(this.dbid);
-                                params1['tableIds'] = JSON.stringify(tableidArr1) === '{}' ? '' : JSON.stringify(tableidArr1)
+                                params1["tableIds"] =
+                                    JSON.stringify(tableidArr1) === "{}" ?
+                                    "" :
+                                    JSON.stringify(tableidArr1);
                                 addTaskAllFun.checkTablePrimary(params1).then(res => {
-                                    let arrdata = res.data
+                                    let arrdata = res.data;
                                     if (this.SelectColumn.length > 0) {
                                         if (arrdata.length > 0) {
                                             for (let key in arrdata) {
                                                 for (let j = 0; j < this.SelectColumn.length; j++) {
-                                                    if (key == this.SelectColumn[j].tablename) { //判断手动保存的列当时是true或者false,true则删除
+                                                    if (key == this.SelectColumn[j].tablename) {
+                                                        //判断手动保存的列当时是true或者false,true则删除
                                                         if (this.SelectColumn[j].hasprimaryKey == true) {
                                                             delete arrdata[key];
                                                         }
@@ -1126,121 +1109,61 @@ export default {
 
                                         // arrdata删除本次设置了主键的剩余的做判断
                                         if (arrdata.length > 0) {
-                                            let arr = []
+                                            let arr = [];
                                             for (let key in arrdata) {
                                                 if (arrdata[key] == false) {
-                                                    arr.push(key)
+                                                    arr.push(key);
                                                 }
                                             }
-                                            if (arr.length > 0) { //存在未设置主键
-                                                this.isLoading = false
+                                            if (arr.length > 0) {
+                                                //存在未设置主键
+                                                this.isLoading = false;
                                                 this.$message({
                                                     showClose: true,
-                                                    message: '1单表查询中表' + arr + '未设置主键',
+                                                    message: "单表查询中表" + arr + "未设置主键",
                                                     type: "error"
                                                 });
-                                            } else { //不存在继续下面方法
+                                            } else {
+                                                //不存在继续下面方法
                                                 this.saveTableConfFun(); //处理第一个页面数据
                                             }
                                         } else {
-                                            this.saveTableConfFun()
+                                            this.saveTableConfFun();
                                         }
-                                    } else { //手动没有保存的选择列信息，只需要判断从接口获取的原本的
-                                        let arr = []
+                                    } else {
+                                        //手动没有保存的选择列信息，只需要判断从接口获取的原本的
+                                        let arr = [];
                                         for (let key in arrdata) {
                                             if (arrdata[key] == false) {
-                                                arr.push(key)
+                                                arr.push(key);
                                             }
                                         }
-                                        if (arr.length > 0) { //存在未设置主键的表
-                                            this.isLoading = false
+                                        if (arr.length > 0) {
+                                            //存在未设置主键的表
+                                            this.isLoading = false;
                                             this.$message({
                                                 showClose: true,
-                                                message: '2单表查询中表' + arr + '未设置主键',
+                                                message: "单表查询中表" + arr + "未设置主键",
                                                 type: "error"
                                             });
-                                        } else { //不存在未设置主键的表则继续下面整合数据方法
+                                        } else {
+                                            //不存在未设置主键的表则继续下面整合数据方法
                                             this.saveTableConfFun(); //处理第一个页面数据
                                         }
-
                                     }
-
                                 });
-                            } else { //第一个页面无增量的卸数存在直接进整理数据方法
+                            } else {
+                                //第一个页面无增量的卸数存在直接进整理数据方法
                                 this.saveTableConfFun(); //处理第一个页面数据
                             }
                             // 第二个页面
-                            this.sqlFun()
-                            /* if (isparmi2.length > 0) { //第一个页面卸数方式是增量存在的
-                                let params2 = {};
-                                params2["tableNames"] = isparmi2; //勾选表并且卸数方式是增量
-                                params2["colSetId"] = parseInt(this.dbid);
-                                console.log(params2)
-                                addTaskAllFun.checkTablePrimary(params2).then(res => {
-                                    console.log(res, 1)
-                                    let arrdata = res.data
-                                    if (this.SelectColumn2.length > 0) {
-                                        for (let key in arrdata) {
-                                            for (let j = 0; j < this.SelectColumn2.length; j++) {
-                                                if (key == this.SelectColumn2[j].tablename) { //判断手动保存的列当时是true或者false,true则删除
-                                                    if (this.SelectColumn2[j].hasprimaryKey == true) {
-                                                        delete arrdata[key];
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        // arrdata删除本次设置了主键的剩余的做判断
-                                        if (arrdata.length > 0) {
-                                            let arr = []
-                                            for (let key in arrdata) {
-                                                if (arrdata[key] == false) {
-                                                    arr.push(key)
-                                                }
-                                            }
-                                            if (arr.length > 0) { //存在未设置主键
-                                                this.isLoading = false
-                                                this.$message({
-                                                    showClose: true,
-                                                    message: 'SQl抽取数据中表' + arr + '未设置主键',
-                                                    type: "error"
-                                                });
-                                            } else { //不存在继续下面方法
-                                                this.sqlFun(); //处理第二个页面数据
-                                            }
-                                        }
-                                    } else { //手动没有保存的选择列信息，只需要判断从接口获取的原本的
-                                        let arr = []
-                                        for (let key in arrdata) {
-                                            if (arrdata[key] == false) {
-                                                arr.push(key)
-                                            }
-                                        }
-                                        if (arr.length > 0) { //存在未设置主键的表
-                                            this.isLoading = false
-                                            this.$message({
-                                                showClose: true,
-                                                message: 'SQl抽取数据中表' + arr + '未设置主键',
-                                                type: "error"
-                                            });
-                                        } else { //不存在未设置主键的表则继续下面整合数据方法
-                                            this.sqlFun(); //处理第二个页面数据
-                                        }
-
-                                    }
-
-                                });
-                            } else { //第一个页面无增量的卸数存在直接进整理数据方法
-                                this.sqlFun(); //处理第二个页面数据
-                            } */
+                            this.sqlFun();
                         }
-
                     }
-
                 } else {
-                    this.activeName = 'second'
+                    this.activeName = "second";
                 }
             });
-
         },
         sqlFun() {
             // console.log(this.ruleForm.sqlExtractData, '第二个页面数据')
@@ -1250,63 +1173,81 @@ export default {
             // console.log(this.SelectColumn2, '第二个页面选择列保存数据')
             let delold = [],
                 twotabledata = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData)),
-                twotabledata2 = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData))
+                twotabledata2 = JSON.parse(
+                    JSON.stringify(this.ruleForm.sqlExtractData)
+                );
             if (twotabledata.length > 0) {
                 if (this.zdycallTable.length > 0) {
                     for (let i = 0; i < twotabledata.length; i++) {
                         for (let j = 0; j < this.zdycallTable.length; j++) {
-                            if (twotabledata[i].table_name == this.zdycallTable[j].table_name) {
-                                if (twotabledata[i].unload_type == this.zdycallTable[j].unload_type) {
-                                    twotabledata[i].sql = this.zdycallTable[j].sql
+                            if (
+                                twotabledata[i].table_name == this.zdycallTable[j].table_name
+                            ) {
+                                if (
+                                    twotabledata[i].unload_type == this.zdycallTable[j].unload_type
+                                ) {
+                                    twotabledata[i].sql = this.zdycallTable[j].sql;
                                 }
                             }
                         }
                     }
                 }
                 for (let i = 0; i < twotabledata.length; i++) {
-                    if (twotabledata[i].unload_type == '增量') {
+                    if (twotabledata[i].unload_type == "增量") {
                         for (let j = 0; j < this.xsTypeArr2.length; j++) {
-                            if (twotabledata[i].table_name = this.xsTypeArr2[j].table_name) {
-                                twotabledata[i].sql = this.xsTypeArr2[j].sql
+                            if (
+                                (twotabledata[i].table_name == this.xsTypeArr2[j].table_name)
+                            ) {
+                                twotabledata[i].sql = this.xsTypeArr2[j].sql;
                             }
                         }
                     } else {
                         for (let j = 0; j < this.xsTypeArr2All.length; j++) {
-                            if (twotabledata[i].table_name = this.xsTypeArr2All[j].table_name) {
-                                twotabledata[i].sql = this.xsTypeArr2All[j].sql
+                            if (
+                                (twotabledata[i].table_name == this.xsTypeArr2All[j].table_name)
+                            ) {
+                                twotabledata[i].sql = this.xsTypeArr2All[j].sql;
                             }
-
                         }
                     }
-
                 }
                 for (let i = 0; i < twotabledata.length; i++) {
-                    if (twotabledata[i].unload_type == '增量') {
-                        twotabledata[i].unload_type = '2'
+                    if (twotabledata[i].unload_type == "增量") {
+                        twotabledata[i].unload_type = "2";
                     } else {
-                        twotabledata[i].unload_type = '1'
+                        twotabledata[i].unload_type = "1";
                     }
                     if (twotabledata[i].is_md5 == false) {
-                        twotabledata[i].is_md5 = '0'
+                        twotabledata[i].is_md5 = "0";
                     } else {
-                        twotabledata[i].is_md5 = '1'
+                        twotabledata[i].is_md5 = "1";
                     }
                     if (twotabledata[i].is_parallel == false) {
-                        twotabledata[i].is_parallel = '0'
+                        twotabledata[i].is_parallel = "0";
                     } else {
-                        twotabledata[i].is_parallel = '1'
+                        twotabledata[i].is_parallel = "1";
                     }
                     for (let j = 0; j < this.ParallelExtractionArr2.length; j++) {
-                        if (twotabledata[i].table_name == this.ParallelExtractionArr2[j].tablename) {
-                            twotabledata[i].dataincrement = parseInt(this.ParallelExtractionArr2[j].dataincrement)
-                            twotabledata[i].pageparallels = this.ParallelExtractionArr2[j].pageparallels != '' ? parseInt(this.ParallelExtractionArr2[j].pageparallels) : 0
-                            twotabledata[i].table_count = this.ParallelExtractionArr2[j].table_count + ''
-                            twotabledata[i].rec_num_date = this.ParallelExtractionArr2[j].rec_num_date
+                        if (
+                            twotabledata[i].table_name ==
+                            this.ParallelExtractionArr2[j].tablename
+                        ) {
+                            twotabledata[i].dataincrement = parseInt(
+                                this.ParallelExtractionArr2[j].dataincrement
+                            );
+                            twotabledata[i].pageparallels =
+                                this.ParallelExtractionArr2[j].pageparallels != "" ?
+                                parseInt(this.ParallelExtractionArr2[j].pageparallels) :
+                                0;
+                            twotabledata[i].table_count =
+                                this.ParallelExtractionArr2[j].table_count + "";
+                            twotabledata[i].rec_num_date = this.ParallelExtractionArr2[
+                                j
+                            ].rec_num_date;
                         }
-
                     }
                 }
-                let tableColumn = {}
+                let tableColumn = {};
                 if (this.SelectColumn2.length > 0) {
                     for (let j = 0; j < twotabledata2.length; j++) {
                         for (let n = 0; n < this.SelectColumn2.length; n++) {
@@ -1314,16 +1255,15 @@ export default {
                                 twotabledata2[j].table_name == this.SelectColumn2[n].tablename
                             ) {
                                 twotabledata2[j].data = this.SelectColumn2[n].data;
-
                             }
                         }
                     }
-                    let twotabledata22 = JSON.parse(JSON.stringify(twotabledata2))
+                    let twotabledata22 = JSON.parse(JSON.stringify(twotabledata2));
                     for (let m = 0; m < twotabledata22.length; m++) {
                         if (twotabledata22[m].data) {
                             for (let i = 0; i < twotabledata22[m].data.length; i++) {
                                 for (let key in twotabledata22[m].data[i]) {
-                                    twotabledata22[m].data[i].tc_remark = (i + 1) + ''
+                                    twotabledata22[m].data[i].tc_remark = i + 1 + "";
                                     if (key == "is_get") {
                                         if (twotabledata22[m].data[i][key] == true) {
                                             twotabledata22[m].data[i][key] = "1";
@@ -1333,7 +1273,8 @@ export default {
                                     }
                                     if (key == "column_ch_name") {
                                         if (twotabledata22[m].data[i][key] == "") {
-                                            twotabledata22[m].data[i][key] = twotabledata22[m].data[i].column_name;
+                                            twotabledata22[m].data[i][key] =
+                                                twotabledata22[m].data[i].column_name;
                                         }
                                     }
                                     if (key == "is_primary_key") {
@@ -1346,18 +1287,22 @@ export default {
                                 }
                             }
                         }
-                        tableColumn[twotabledata22[m].table_name] = twotabledata22[m].data
+                        tableColumn[twotabledata22[m].table_name] = twotabledata22[m].data;
                     }
                 }
                 let params1 = {};
-                params1["tableInfoArray"] = twotabledata.length > 0 ? JSON.stringify(twotabledata) : '';
+                params1["tableInfoArray"] =
+                    twotabledata.length > 0 ? JSON.stringify(twotabledata) : "";
                 params1["colSetId"] = parseInt(this.dbid);
-                params1["tableColumn"] = JSON.stringify(tableColumn) === '{}' ? '' : JSON.stringify(tableColumn);
+                params1["tableColumn"] =
+                    JSON.stringify(tableColumn) === "{}" ?
+                    "" :
+                    JSON.stringify(tableColumn);
                 addTaskAllFun.saveAllSQL(params1).then(res => {
-                    if (res.code == '200') {
+                    if (res.code == "200") {
                         this.activeSec = true;
                     } else {
-                        this.isLoading = false
+                        this.isLoading = false;
                     }
                 });
             } else {
@@ -1365,7 +1310,7 @@ export default {
             }
         },
         nextlinkFun() {
-            this.isLoading = false
+            this.isLoading = false;
             let data = {};
             if (this.$route.query.edit == "yes") {
                 data = {
@@ -1420,27 +1365,31 @@ export default {
                 for (let i = 0; i < arrData.length; i++) {
                     for (let j = 0; j < this.callTable.length; j++) {
                         if (arrData[i].table_name == this.callTable[j].table_name) {
-                            this.callTable.splice(j, 1)
-                            j--
+                            this.callTable.splice(j, 1);
+                            j--;
                         }
                     }
                 }
                 for (let j = 0; j < this.callTable.length; j++) {
                     delJson.push({
-                        'tableId': this.callTable[j].table_id //存储删除的表id
-                    })
+                        tableId: this.callTable[j].table_id //存储删除的表id
+                    });
                 }
                 if (this.callTable2.length > 0) {
-                    for (let i = 0; i < arrData.length; i++) { //已勾选的表
+                    for (let i = 0; i < arrData.length; i++) {
+                        //已勾选的表
                         //与原接口数据对比
-                        for (let j = 0; j < this.callTable2.length; j++) { //之前编辑的表
+                        for (let j = 0; j < this.callTable2.length; j++) {
+                            //之前编辑的表
                             if (arrData[i].table_name == this.callTable2[j].table_name) {
                                 //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
                                 if (this.callTable2[j].dataincrement) {
                                     arrData[i].dataincrement = this.callTable2[j].dataincrement; //每日数据增量
                                 }
                                 if (this.callTable2[j].is_customize_sql) {
-                                    arrData[i].is_customize_sql = this.callTable2[j].is_customize_sql; //并行抽取的自定义sql
+                                    arrData[i].is_customize_sql = this.callTable2[
+                                        j
+                                    ].is_customize_sql; //并行抽取的自定义sql
                                 }
                                 if (this.callTable2[j].page_sql) {
                                     arrData[i].page_sql = this.callTable2[j].page_sql; //分页sql
@@ -1454,30 +1403,36 @@ export default {
                                 if (this.callTable2[j].table_count) {
                                     arrData[i].table_count = this.callTable2[j].table_count; //数据总量
                                 }
-
                             }
-                            if (arrData[i].table_name == this.callTable2[j].table_name && arrData[i].unload_type == this.callTable2[j].unload_type) {
+                            if (
+                                arrData[i].table_name == this.callTable2[j].table_name &&
+                                arrData[i].unload_type == this.callTable2[j].unload_type
+                            ) {
                                 if (this.callTable2[j].sql) {
                                     arrData[i].sql = this.callTable2[j].sql; //过滤的sql或者卸数为增量的sql
                                 }
                             }
-
                         }
                     }
                 }
-                if (this.ParallelExtractionArr.length > 0) { //本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
+                if (this.ParallelExtractionArr.length > 0) {
+                    //本次并行抽取数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.ParallelExtractionArr.length; jj++) {
                             if (
                                 arrData[j].table_name ==
                                 this.ParallelExtractionArr[jj].tablename
                             ) {
-                                arrData[j].is_customize_sql = this.ParallelExtractionArr[jj].is_customize_sql;
+                                arrData[j].is_customize_sql = this.ParallelExtractionArr[
+                                    jj
+                                ].is_customize_sql;
                                 if (this.ParallelExtractionArr[jj].page_sql) {
                                     arrData[j].page_sql = this.ParallelExtractionArr[jj].page_sql;
                                 }
                                 if (this.ParallelExtractionArr[jj].rec_num_date) {
-                                    arrData[j].rec_num_date = this.ParallelExtractionArr[jj].rec_num_date;
+                                    arrData[j].rec_num_date = this.ParallelExtractionArr[
+                                        jj
+                                    ].rec_num_date;
                                 }
                                 if (this.ParallelExtractionArr[jj].pageparallels) {
                                     arrData[j].pageparallels = this.ParallelExtractionArr[
@@ -1498,10 +1453,14 @@ export default {
                         }
                     }
                 }
-                if (this.sqlFiltArr.length > 0) { //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
+                if (this.sqlFiltArr.length > 0) {
+                    //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.sqlFiltArr.length; jj++) {
-                            if (arrData[j].table_name == this.sqlFiltArr[jj].tablename && arrData[j].unload_type == '全量') {
+                            if (
+                                arrData[j].table_name == this.sqlFiltArr[jj].tablename &&
+                                arrData[j].unload_type == "全量"
+                            ) {
                                 if (this.sqlFiltArr[jj].sql) {
                                     arrData[j].sql = this.sqlFiltArr[jj].sql;
                                 }
@@ -1510,10 +1469,14 @@ export default {
                     }
                 }
                 //   xsTypeArr
-                if (this.xsTypeArr.length > 0) { //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
+                if (this.xsTypeArr.length > 0) {
+                    //本次sql过滤数据与表对比，有相同表名的，将本次新的数据赋值
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.xsTypeArr.length; jj++) {
-                            if (arrData[j].table_name == this.xsTypeArr[jj].table_name && arrData[j].unload_type == '增量') {
+                            if (
+                                arrData[j].table_name == this.xsTypeArr[jj].table_name &&
+                                arrData[j].unload_type == "增量"
+                            ) {
                                 if (this.xsTypeArr[jj].sql) {
                                     arrData[j].sql = JSON.stringify(this.xsTypeArr[jj].sql);
                                 }
@@ -1522,69 +1485,70 @@ export default {
                     }
                 }
                 for (let k = 0; k < arrData.length; k++) {
-                    if (arrData[k].unload_type == '增量') {
+                    if (arrData[k].unload_type == "增量") {
                         tableInfoString.push({
                             database_id: this.dbid,
-                            table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                            table_id: arrData[k].table_id ?
+                                parseInt(arrData[k].table_id) : "",
                             is_parallel: "0",
                             is_md5: arrData[k].is_md5 ? "1" : "0",
                             table_ch_name: arrData[k].table_ch_name,
                             table_name: arrData[k].table_name,
-                            sql: arrData[k].sql ? arrData[k].sql : '',
-                            unload_type: '2'
+                            sql: arrData[k].sql ? arrData[k].sql : "",
+                            unload_type: "2"
                         });
                     } else {
                         if (arrData[k].is_parallel == true) {
-                            if (arrData[k].is_customize_sql == '1') {
-
+                            if (arrData[k].is_customize_sql == "1") {
                                 tableInfoString.push({
                                     database_id: this.dbid,
-                                    table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                                    table_id: arrData[k].table_id ?
+                                        parseInt(arrData[k].table_id) : "",
                                     is_parallel: "1",
-                                    unload_type: '1',
+                                    unload_type: "1",
                                     is_customize_sql: "1",
                                     is_md5: arrData[k].is_md5 ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
-                                    sql: arrData[k].sql ? arrData[k].sql : '',
+                                    sql: arrData[k].sql ? arrData[k].sql : ""
                                 });
                             } else {
                                 tableInfoString.push({
                                     database_id: this.dbid,
-                                    unload_type: '1',
-                                    table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                                    unload_type: "1",
+                                    table_id: arrData[k].table_id ?
+                                        parseInt(arrData[k].table_id) : "",
                                     is_parallel: "1",
                                     is_customize_sql: "0",
                                     is_md5: arrData[k].is_md5 ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
-                                    sql: arrData[k].sql ? arrData[k].sql : '',
+                                    sql: arrData[k].sql ? arrData[k].sql : "",
                                     pageparallels: arrData[k].pageparallels ?
                                         parseInt(arrData[k].pageparallels) : null,
                                     dataincrement: arrData[k].dataincrement ?
                                         parseInt(arrData[k].dataincrement) : null,
                                     table_count: arrData[k].table_count ?
                                         "" + arrData[k].table_count : "",
-                                    rec_num_date: arrData[k].rec_num_date ? arrData[k].rec_num_date : ''
+                                    rec_num_date: arrData[k].rec_num_date ?
+                                        arrData[k].rec_num_date : ""
                                 });
                             }
-
                         } else {
                             tableInfoString.push({
                                 database_id: this.dbid,
-                                unload_type: '1',
-                                table_id: arrData[k].table_id ? parseInt(arrData[k].table_id) : "",
+                                unload_type: "1",
+                                table_id: arrData[k].table_id ?
+                                    parseInt(arrData[k].table_id) : "",
                                 is_parallel: "0",
                                 is_md5: arrData[k].is_md5 ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
                                 table_name: arrData[k].table_name,
-                                sql: arrData[k].sql ? arrData[k].sql : '',
+                                sql: arrData[k].sql ? arrData[k].sql : ""
                             });
                         }
-
                     }
-
                 }
                 this.tablein = tableInfoString;
                 this.saveTableInfofun(arrData, delJson);
@@ -1594,7 +1558,7 @@ export default {
             let collTbConfParamString = [],
                 params = {},
                 params2 = {},
-                arrData1 = JSON.parse(JSON.stringify(arrData))
+                arrData1 = JSON.parse(JSON.stringify(arrData));
             params["colSetId"] = this.dbid;
             addTaskAllFun.getColumnInfoByColSetId(params).then(res => {
                 let colData = res.data ? res.data : [];
@@ -1619,12 +1583,12 @@ export default {
                         }
                     }
                 }
-                let arrData11 = JSON.parse(JSON.stringify(arrData1))
+                let arrData11 = JSON.parse(JSON.stringify(arrData1));
                 for (let m = 0; m < arrData11.length; m++) {
                     if (arrData11[m].data) {
                         for (let i = 0; i < arrData11[m].data.length; i++) {
                             for (let key in arrData11[m].data[i]) {
-                                arrData11[m].data[i].tc_remark = (i + 1) + ''
+                                arrData11[m].data[i].tc_remark = i + 1 + "";
                                 if (key == "is_get") {
                                     if (arrData11[m].data[i][key] == true) {
                                         arrData11[m].data[i][key] = "1";
@@ -1648,20 +1612,22 @@ export default {
                         }
                     }
                     collTbConfParamString.push({
-                        collColumnString: arrData11[m].data ? JSON.stringify(arrData11[m].data) : ""
+                        collColumnString: arrData11[m].data ?
+                            JSON.stringify(arrData11[m].data) : ""
                     });
                 }
                 let collstring = collTbConfParamString;
                 params2["colSetId"] = parseInt(this.dbid);
                 params2["tableInfoString"] = JSON.stringify(this.tablein);
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
-                params2["delTbString"] = delJson.length > 0 ? JSON.stringify(delJson) : '';
+                params2["delTbString"] =
+                    delJson.length > 0 ? JSON.stringify(delJson) : "";
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;
                         // this.dbid = res.data;
                     } else {
-                        this.isLoading = false
+                        this.isLoading = false;
                     }
                 });
             });
@@ -1724,7 +1690,7 @@ export default {
             params["tableName"] = name;
             addTaskAllFun.getSingleTableSQL(params).then(res => {
                 this.sqlFiltSetData_tablename = this.tablename;
-                if (res.data.length != 0 && res.data.unload_type == '1') {
+                if (res.data.length != 0 && res.data.unload_type == "1") {
                     this.sqlFiltSetData_SQL = res.data[0].sql ? res.data[0].sql : "";
                 }
             });
@@ -1746,7 +1712,7 @@ export default {
             } else {
                 this.sqlFiltArr.push({
                     tablename: this.tablename,
-                    sql: this.sqlFiltSetData_SQL,
+                    sql: this.sqlFiltSetData_SQL
                     // sqlFiltvar:this.sqlFiltSetData_var
                 });
             }
@@ -1758,10 +1724,10 @@ export default {
         },
         //第二个页面 自定义是否抽取sql
         checkedis_zdyparallelFun(row) {
-            let a = row.is_parallel
-            this.EXtable_name = row.table_name
+            let a = row.is_parallel;
+            this.EXtable_name = row.table_name;
             this.is_parallel = a;
-            this.dialogdyfysql = true
+            this.dialogdyfysql = true;
             this.ruleForm_ParallelEx.pageExnum = "";
             this.ruleForm_ParallelEx.db_allnum = "";
             this.ruleForm_ParallelEx.everDay_addnum = "";
@@ -1776,13 +1742,17 @@ export default {
                     arrid.length = 0;
                     for (let i = 0; i < this.ParallelExtractionArr2.length; i++) {
                         if (this.ParallelExtractionArr2[i].tablename == this.EXtable_name) {
-                            if (this.ParallelExtractionArr2[i].is_customize_sql == '1') {
-                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr2[i].is_customize_sql;
+                            if (this.ParallelExtractionArr2[i].is_customize_sql == "1") {
+                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr2[
+                                    i
+                                ].is_customize_sql;
                                 this.ruleForm_ParallelEx.EXtable_sql = this.ParallelExtractionArr2[
                                     i
                                 ].page_sql;
                             } else {
-                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr2[i].is_customize_sql;
+                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr2[
+                                    i
+                                ].is_customize_sql;
                                 this.ruleForm_ParallelEx.db_allnum = this.ParallelExtractionArr2[
                                     i
                                 ].table_count;
@@ -1793,7 +1763,6 @@ export default {
                                     i
                                 ].dataincrement;
                             }
-
                         }
                     }
                 } else {
@@ -1815,7 +1784,9 @@ export default {
                 if (valid) {
                     if (this.ParallelExtractionArr2.length != 0) {
                         for (let i = 0; i < this.ParallelExtractionArr2.length; i++) {
-                            if (this.ParallelExtractionArr2[i].tablename == this.EXtable_name) {
+                            if (
+                                this.ParallelExtractionArr2[i].tablename == this.EXtable_name
+                            ) {
                                 this.ParallelExtractionArr2.splice(i, 1);
                                 i--;
                             }
@@ -1825,7 +1796,7 @@ export default {
                             table_count: this.ruleForm_ParallelEx.db_allnum,
                             pageparallels: this.ruleForm_ParallelEx.pageExnum,
                             dataincrement: this.ruleForm_ParallelEx.everDay_addnum,
-                            rec_num_date: this.ruleForm_ParallelEx.rec_num_date,
+                            rec_num_date: this.ruleForm_ParallelEx.rec_num_date
                         });
                     } else {
                         this.ParallelExtractionArr2.push({
@@ -1833,27 +1804,29 @@ export default {
                             table_count: this.ruleForm_ParallelEx.db_allnum,
                             pageparallels: this.ruleForm_ParallelEx.pageExnum,
                             dataincrement: this.ruleForm_ParallelEx.everDay_addnum,
-                            rec_num_date: this.ruleForm_ParallelEx.rec_num_date,
+                            rec_num_date: this.ruleForm_ParallelEx.rec_num_date
                         });
                     }
                     for (let j = 0; j < this.ruleForm.sqlExtractData.length; j++) {
-                        if (this.ruleForm.sqlExtractData[j].table_name == this.EXtable_name) {
+                        if (
+                            this.ruleForm.sqlExtractData[j].table_name == this.EXtable_name
+                        ) {
                             this.ruleForm.sqlExtractData[j].is_parallel = true;
                             this.EXtable_name = "";
                         }
                     }
                     this.dialogdyfysql = false;
                 }
-            })
+            });
         },
 
         //第一个页面 是否抽取sql弹框
         checkedis_parallelFun(row) {
-            let a = JSON.parse(JSON.stringify(row.is_parallel))
+            let a = JSON.parse(JSON.stringify(row.is_parallel));
             this.dialogTableVisible = true;
             this.EXtable_name = row.table_name;
             this.is_parallel = a;
-            this.ruleForm_ParallelEx.issql = ''
+            this.ruleForm_ParallelEx.issql = "";
             this.ruleForm_ParallelEx.EXtable_sql = "";
             this.ruleForm_ParallelEx.pageExnum = "";
             this.ruleForm_ParallelEx.db_allnum = "";
@@ -1868,13 +1841,17 @@ export default {
                     arrid.length = 0;
                     for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
                         if (this.ParallelExtractionArr[i].tablename == this.EXtable_name) {
-                            if (this.ParallelExtractionArr[i].is_customize_sql == '1') {
-                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[i].is_customize_sql;
+                            if (this.ParallelExtractionArr[i].is_customize_sql == "1") {
+                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[
+                                    i
+                                ].is_customize_sql;
                                 this.ruleForm_ParallelEx.EXtable_sql = this.ParallelExtractionArr[
                                     i
                                 ].page_sql;
                             } else {
-                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[i].is_customize_sql;
+                                this.ruleForm_ParallelEx.issql = this.ParallelExtractionArr[
+                                    i
+                                ].is_customize_sql;
                                 this.ruleForm_ParallelEx.db_allnum = this.ParallelExtractionArr[
                                     i
                                 ].table_count;
@@ -1885,7 +1862,6 @@ export default {
                                     i
                                 ].dataincrement;
                             }
-
                         }
                     }
                 } else {
@@ -1908,16 +1884,15 @@ export default {
             params["tableId"] = id;
             addTaskAllFun.getPageSQL(params).then(res => {
                 if (res.data) {
-                    if (res.data[0].is_customize_sql == '1') {
-                        this.ruleForm_ParallelEx.issql = res.data[0].is_customize_sql //是否
+                    if (res.data[0].is_customize_sql == "1") {
+                        this.ruleForm_ParallelEx.issql = res.data[0].is_customize_sql; //是否
                         this.ruleForm_ParallelEx.EXtable_sql = res.data[0].page_sql; //自定义sql
                     } else {
-                        this.ruleForm_ParallelEx.issql = res.data[0].is_customize_sql //是否
+                        this.ruleForm_ParallelEx.issql = res.data[0].is_customize_sql; //是否
                         this.ruleForm_ParallelEx.pageExnum = res.data[0].pageparallels; //分页行数
                         this.ruleForm_ParallelEx.db_allnum = res.data[0].table_count; //数据总量
                         this.ruleForm_ParallelEx.everDay_addnum = res.data[0].dataincrement; //每日数据增量
                     }
-
                 }
             });
         },
@@ -1964,19 +1939,22 @@ export default {
                 let date = {
                     year: nowDate.getFullYear(),
                     month: nowDate.getMonth() + 1,
-                    date: nowDate.getDate(),
-                }
-                this.ruleForm_ParallelEx.db_allnum = res.data ? res.data : "";
-                this.ruleForm_ParallelEx.rec_num_date = date.year + (date.month < 9 ? ('0' + date.month) : date.month) + (date.date < 9 ? ('0' + date.date) : date.date);
+                    date: nowDate.getDate()
+                };
+                this.ruleForm_ParallelEx.db_allnum = res.data;
+                this.ruleForm_ParallelEx.rec_num_date =
+                    date.year +
+                    (date.month < 9 ? "0" + date.month : date.month) +
+                    (date.date < 9 ? "0" + date.date : date.date);
             });
         },
         // 是否抽取sql弹框确定提交
         testParallelExtractionSubmitFun(formName) {
-            let that = this
+            let that = this;
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    let tablename = this.EXtable_name
-                    if (that.ruleForm_ParallelEx.issql == '1') {
+                    let tablename = this.EXtable_name;
+                    if (that.ruleForm_ParallelEx.issql == "1") {
                         let params = {};
                         params["colSetId"] = this.dbid;
                         params["pageSql"] = this.ruleForm_ParallelEx.EXtable_sql;
@@ -1992,13 +1970,13 @@ export default {
                                     this.ParallelExtractionArr.push({
                                         tablename: tablename,
                                         is_customize_sql: this.ruleForm_ParallelEx.issql,
-                                        page_sql: this.ruleForm_ParallelEx.EXtable_sql,
+                                        page_sql: this.ruleForm_ParallelEx.EXtable_sql
                                     });
                                 } else {
                                     this.ParallelExtractionArr.push({
                                         tablename: tablename,
                                         is_customize_sql: this.ruleForm_ParallelEx.issql,
-                                        page_sql: this.ruleForm_ParallelEx.EXtable_sql,
+                                        page_sql: this.ruleForm_ParallelEx.EXtable_sql
                                     });
                                 }
                                 for (let j = 0; j < this.tableData.length; j++) {
@@ -2015,8 +1993,7 @@ export default {
                                 this.dialogTableVisible = false;
                             }
                         });
-
-                    } else if (that.ruleForm_ParallelEx.issql == '0') {
+                    } else if (that.ruleForm_ParallelEx.issql == "0") {
                         if (this.ParallelExtractionArr.length != 0) {
                             for (let i = 0; i < this.ParallelExtractionArr.length; i++) {
                                 if (this.ParallelExtractionArr[i].tablename == tablename) {
@@ -2129,40 +2106,40 @@ export default {
             }
             this.dialogTableVisible = false;
             /* for (let j = 0; j < this.tableData.length; j++) {
-                if (this.tableData[j].table_name == this.EXtable_name) {
-                    if (this.is_parallel == false) {
-                        this.tableData[j].is_parallel = true;
-                        for (let i = 0; i < this.allDataList.length; i++) {
-                            if (this.allDataList[i].table_name == this.EXtable_name) {
-                                this.allDataList[i].is_parallel = true;
-                            }
-                        }
-                        this.dialogTableVisible = false;
-                    } else {
-                        this.tableData[j].is_parallel = false;
-                        for (let i = 0; i < this.allDataList.length; i++) {
-                            if (this.allDataList[i].table_name == this.EXtable_name) {
-                                this.allDataList[i].is_parallel = false;
-                            }
-                        }
-                        this.dialogTableVisible = false;
-                    }
+                            if (this.tableData[j].table_name == this.EXtable_name) {
+                                if (this.is_parallel == false) {
+                                    this.tableData[j].is_parallel = true;
+                                    for (let i = 0; i < this.allDataList.length; i++) {
+                                        if (this.allDataList[i].table_name == this.EXtable_name) {
+                                            this.allDataList[i].is_parallel = true;
+                                        }
+                                    }
+                                    this.dialogTableVisible = false;
+                                } else {
+                                    this.tableData[j].is_parallel = false;
+                                    for (let i = 0; i < this.allDataList.length; i++) {
+                                        if (this.allDataList[i].table_name == this.EXtable_name) {
+                                            this.allDataList[i].is_parallel = false;
+                                        }
+                                    }
+                                    this.dialogTableVisible = false;
+                                }
 
-                    this.EXtable_name = "";
-                }
-            } */
+                                this.EXtable_name = "";
+                            }
+                        } */
         },
         // 第二
         testParallelExtractionCloseFun2() {
             for (let j = 0; j < this.ruleForm.sqlExtractData.length; j++) {
                 if (this.ruleForm.sqlExtractData[j].table_name == this.EXtable_name) {
                     /*  if (this.is_parallel == false) {
-                         this.ruleForm.sqlExtractData[j].is_parallel = true;
-                         this.dialogdyfysql = false;
-                     } else {
-                         this.ruleForm.sqlExtractData[j].is_parallel = false;
-                         this.dialogdyfysql = false;
-                     } */
+                                             this.ruleForm.sqlExtractData[j].is_parallel = true;
+                                             this.dialogdyfysql = false;
+                                         } else {
+                                             this.ruleForm.sqlExtractData[j].is_parallel = false;
+                                             this.dialogdyfysql = false;
+                                         } */
                     this.ruleForm.sqlExtractData[j].is_parallel = false;
                     this.dialogdyfysql = false;
                     this.EXtable_name = "";
@@ -2173,7 +2150,7 @@ export default {
         selectCol(value, row) {
             this.dialogSelectColumn = true;
             this.tablename = row.table_name;
-            this.unloadType = row.unload_type
+            this.unloadType = row.unload_type;
             this.tableloadingInfo = "数据加载中...";
             // this.disShow = false
             if (this.SelectColumn.length != 0) {
@@ -2183,7 +2160,7 @@ export default {
                 }
                 if (arrid.indexOf(this.tablename) != -1) {
                     arrid.length = 0;
-                    this.disShow = (row.table_id != '') ? true : false;
+                    this.disShow = row.table_id != "" ? true : false;
                     for (let i = 0; i < this.SelectColumn.length; i++) {
                         if (this.SelectColumn[i].tablename == this.tablename) {
                             this.SelectColumnData = this.SelectColumn[i].data;
@@ -2191,17 +2168,25 @@ export default {
                     }
                 } else {
                     arrid.length = 0;
-                    this.SelectColumnShowFun(row.table_name, row.table_id, row.collectState);
+                    this.SelectColumnShowFun(
+                        row.table_name,
+                        row.table_id,
+                        row.collectState
+                    );
                 }
             } else {
-                this.SelectColumnShowFun(row.table_name, row.table_id, row.collectState);
+                this.SelectColumnShowFun(
+                    row.table_name,
+                    row.table_id,
+                    row.collectState
+                );
             }
         },
         //第二个  选择列
         selectCol2(value, row) {
             this.dialogSelectColumn2 = true;
             this.tablename = row.table_name;
-            this.unloadType = row.unload_type
+            this.unloadType = row.unload_type;
             this.tableloadingInfo = "数据加载中...";
             // this.disShow = false
             if (this.SelectColumn2.length != 0) {
@@ -2211,7 +2196,7 @@ export default {
                 }
                 if (arrid.indexOf(this.tablename) != -1) {
                     arrid.length = 0;
-                    this.disShow = (row.collectState == false) ? true : false;
+                    this.disShow = row.collectState == false ? true : false;
                     for (let i = 0; i < this.SelectColumn2.length; i++) {
                         if (this.SelectColumn2[i].tablename == this.tablename) {
                             this.SelectColumnData2 = this.SelectColumn2[i].data;
@@ -2230,14 +2215,14 @@ export default {
             let params = {};
             params["colSetId"] = this.dbid;
             params["tableName"] = name;
-            params["tableId"] = id ? id : '';
+            params["tableId"] = id ? id : "";
             addTaskAllFun.getColumnsigleInfo(params).then(res => {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
                     this.coltable_name = "";
                     this.coltable_name = res.data.tableName ? res.data.tableName : "";
-                    this.disShow = (collectState == false) ? true : false;
+                    this.disShow = collectState == false ? true : false;
                     let data = res.data.columnInfo ? res.data.columnInfo : [],
                         count = 0,
                         num = 0;
@@ -2253,7 +2238,10 @@ export default {
                             data[i].is_get = false;
                         }
                         if (data[i].is_primary_key) {
-                            if (data[i].is_primary_key == "true" || data[i].is_primary_key == "1") {
+                            if (
+                                data[i].is_primary_key == "true" ||
+                                data[i].is_primary_key == "1"
+                            ) {
                                 num++;
                                 data[i].is_primary_key = true;
                             } else {
@@ -2262,8 +2250,8 @@ export default {
                         } else {
                             data[i].is_primary_key = false;
                         }
-                        if (data[i].column_ch_name == '') {
-                            data[i].column_ch_name = data[i].column_name
+                        if (data[i].column_ch_name == "") {
+                            data[i].column_ch_name = data[i].column_name;
                         }
                     }
                     if (count == data.length && data) {
@@ -2282,7 +2270,6 @@ export default {
                     }
                     this.SelectColumnData = JSON.parse(JSON.stringify(data));
                 }
-
             });
         },
         //第二页 选择列弹框回显数据调接口
@@ -2290,86 +2277,83 @@ export default {
             this.coltable_name = "";
             this.coltable_name = row.table_name;
             let arrdata = [],
-                sql = ''
-            if (row.unload_type == '增量') {
+                sql = "";
+            if (row.unload_type == "增量") {
                 for (let i = 0; i < this.xsTypeArr2.length; i++) {
-                    arrdata.push(this.xsTypeArr2[i].table_name)
+                    arrdata.push(this.xsTypeArr2[i].table_name);
                 }
             } else {
                 for (let i = 0; i < this.xsTypeArr2All.length; i++) {
-                    arrdata.push(this.xsTypeArr2All[i].table_name)
+                    arrdata.push(this.xsTypeArr2All[i].table_name);
                 }
             }
-            if (row.table_id && row.table_id != '') {
+            if (row.table_id && row.table_id != "") {
                 if (arrdata.indexOf(row.table_name) == -1) {
                     for (let i = 0; i < this.zdycallTable.length; i++) {
                         if (this.zdycallTable[i].table_name == row.table_name) {
                             if (this.zdycallTable[i].unload_type == row.unload_type) {
-                                sql = row.sql
-                                this.getSqlColumnDataFun(row, sql)
+                                sql = row.sql;
+                                this.getSqlColumnDataFun(row, sql);
                                 //   break
                             } else {
                                 this.$message({
                                     showClose: true,
-                                    message: '请先为此表设置卸数方式sql语句',
+                                    message: "请先为此表设置卸数方式sql语句",
                                     type: "error"
                                 });
                             }
                         }
                     }
                 } else {
-                    let sql = ''
-                    if (row.unload_type == '增量') {
+                    let sql = "";
+                    if (row.unload_type == "增量") {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                sql = this.xsTypeArr2[i].sql
+                                sql = this.xsTypeArr2[i].sql;
                                 // break;
                             }
                         }
                     } else {
                         for (let i = 0; i < this.xsTypeArr2All.length; i++) {
                             if (this.xsTypeArr2All[i].table_name == row.table_name) {
-                                sql = this.xsTypeArr2All[i].sql
+                                sql = this.xsTypeArr2All[i].sql;
                                 // break;
                             }
                         }
                     }
 
-                    this.getSqlColumnDataFun(row, sql)
+                    this.getSqlColumnDataFun(row, sql);
                 }
             } else {
                 if (arrdata.indexOf(row.table_name) == -1) {
                     this.$message({
                         showClose: true,
-                        message: '请先为此表设置卸数方式sql语句',
+                        message: "请先为此表设置卸数方式sql语句",
                         type: "error"
                     });
                 } else {
-                    let sql = ''
-                    if (row.unload_type == '增量') {
+                    let sql = "";
+                    if (row.unload_type == "增量") {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                sql = this.xsTypeArr2[i].sql
+                                sql = this.xsTypeArr2[i].sql;
                                 // break;
                             }
                         }
                     } else {
                         for (let i = 0; i < this.xsTypeArr2All.length; i++) {
                             if (this.xsTypeArr2All[i].table_name == row.table_name) {
-                                sql = this.xsTypeArr2All[i].sql
+                                sql = this.xsTypeArr2All[i].sql;
                                 // break;
                             }
                         }
                     }
-                    this.getSqlColumnDataFun(row, sql)
+                    this.getSqlColumnDataFun(row, sql);
                 }
-
             }
-
         },
         // 第二页选择列调接口显示数据
         getSqlColumnDataFun(row, sql) {
-
             let params = {};
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);
@@ -2378,14 +2362,17 @@ export default {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
-                    this.disShow = (row.collectState == false) ? true : false;
+                    this.disShow = row.collectState == false ? true : false;
                     let data = res.data ? res.data : [],
                         count = 0,
                         num = 0;
                     for (let i = 0; i < data.length; i++) {
-                        data[i].is_get = true
+                        data[i].is_get = true;
                         if (data[i].is_primary_key) {
-                            if (data[i].is_primary_key == "true" || data[i].is_primary_key == "1") {
+                            if (
+                                data[i].is_primary_key == "true" ||
+                                data[i].is_primary_key == "1"
+                            ) {
                                 num++;
                                 data[i].is_primary_key = true;
                             } else {
@@ -2394,8 +2381,8 @@ export default {
                         } else {
                             data[i].is_primary_key = false;
                         }
-                        if (data[i].column_ch_name == '') {
-                            data[i].column_ch_name = data[i].column_name
+                        if (data[i].column_ch_name == "") {
+                            data[i].column_ch_name = data[i].column_name;
                         }
                     }
                     if (count == data.length && data) {
@@ -2414,13 +2401,13 @@ export default {
                     }
                     this.SelectColumnData2 = JSON.parse(JSON.stringify(data));
                 }
-            })
+            });
         },
         //根据卸数方式返回code值
         xsTypeCode(unloadType) {
             for (let i = 0; i < this.xsType.length; i++) {
                 if (this.xsType[i].value == unloadType) {
-                    return this.xsType[i].code
+                    return this.xsType[i].code;
                 }
             }
         },
@@ -2428,22 +2415,22 @@ export default {
         SelectColumnSubmitFun() {
             let arrData = this.SelectColumnData,
                 hasprimaryKey = false;
-            if (this.unloadType == '增量') {
+            if (this.unloadType == "增量") {
                 for (let i = 0; i < arrData.length; i++) {
                     if (arrData[i].is_primary_key == true) {
-                        hasprimaryKey = true
+                        hasprimaryKey = true;
                         break;
                     }
                 }
-            } else if (this.unloadType == '全量') {
+            } else if (this.unloadType == "全量") {
                 for (let i = 0; i < arrData.length; i++) {
                     if (arrData[i].is_primary_key == true) {
-                        hasprimaryKey = true
+                        hasprimaryKey = true;
                         break;
                     }
                 }
             }
-            if (this.unloadType == '增量') {
+            if (this.unloadType == "增量") {
                 if (hasprimaryKey == true) {
                     if (this.SelectColumn.length > 0) {
                         for (let i = 0; i < this.SelectColumn.length; i++) {
@@ -2455,14 +2442,14 @@ export default {
                         this.SelectColumn.push({
                             tablename: this.tablename,
                             data: this.SelectColumnData,
-                            unloadType: '增量',
+                            unloadType: "增量",
                             hasprimaryKey: true
                         });
                     } else {
                         this.SelectColumn.push({
                             tablename: this.tablename,
                             data: this.SelectColumnData,
-                            unloadType: '增量',
+                            unloadType: "增量",
                             hasprimaryKey: true
                         });
                     }
@@ -2471,11 +2458,11 @@ export default {
                 } else {
                     this.$message({
                         showClose: true,
-                        message: '请选择至少一个主键',
+                        message: "请选择至少一个主键",
                         type: "error"
                     });
                 }
-            } else if (this.unloadType == '全量') {
+            } else if (this.unloadType == "全量") {
                 if (hasprimaryKey == true) {
                     if (this.SelectColumn.length > 0) {
                         for (let i = 0; i < this.SelectColumn.length; i++) {
@@ -2487,14 +2474,14 @@ export default {
                         this.SelectColumn.push({
                             tablename: this.tablename,
                             data: this.SelectColumnData,
-                            unloadType: '全量',
+                            unloadType: "全量",
                             hasprimaryKey: true
                         });
                     } else {
                         this.SelectColumn.push({
                             tablename: this.tablename,
                             data: this.SelectColumnData,
-                            unloadType: '全量',
+                            unloadType: "全量",
                             hasprimaryKey: true
                         });
                     }
@@ -2510,34 +2497,33 @@ export default {
                         this.SelectColumn.push({
                             tablename: this.tablename,
                             data: this.SelectColumnData,
-                            unloadType: '全量',
+                            unloadType: "全量",
                             hasprimaryKey: false
                         });
                     } else {
                         this.SelectColumn.push({
                             tablename: this.tablename,
                             data: this.SelectColumnData,
-                            unloadType: '全量',
+                            unloadType: "全量",
                             hasprimaryKey: false
                         });
                     }
                     this.dialogSelectColumn = false;
                 }
-
             }
         },
         //第二页 选择列弹框确认
         SelectColumnSubmitFun2() {
             let arrData = this.SelectColumnData2,
                 hasprimaryKey = false;
-            if (this.unloadType == '增量') {
+            if (this.unloadType == "增量") {
                 for (let i = 0; i < arrData.length; i++) {
                     if (arrData[i].is_primary_key == true) {
-                        hasprimaryKey = true
+                        hasprimaryKey = true;
                     }
                 }
             } else {
-                hasprimaryKey = true
+                hasprimaryKey = true;
             }
             if (hasprimaryKey == true) {
                 if (this.SelectColumn2.length > 0) {
@@ -2564,7 +2550,7 @@ export default {
             } else {
                 this.$message({
                     showClose: true,
-                    message: '请选择至少一个主键',
+                    message: "请选择至少一个主键",
                     type: "error"
                 });
             }
@@ -2632,11 +2618,12 @@ export default {
         },
         //删除
         DelRowFun(index, rows) {
-
-            message.confirmMsg('确定删除吗').then(res => {
-                rows.splice(index, 1);
-            }).catch(() => {})
-
+            message
+                .confirmMsg("确定删除吗")
+                .then(res => {
+                    rows.splice(index, 1);
+                })
+                .catch(() => {});
         },
         //新增行
         addRow(tableData, event) {
@@ -2670,7 +2657,7 @@ export default {
         // 使用SQL抽取数据
         handleClick(tab) {
             if (tab.name == "first") {
-                this.sqlExtractDataSubmitFun('ruleForm')
+                this.sqlExtractDataSubmitFun("ruleForm");
             } else if (tab.name == "second") {
                 if (this.sqlSubmit == true) {
                     this.ruleForm.sqlExtractData = this.tableInfoArray;
@@ -2680,16 +2667,16 @@ export default {
         // 使用SQL抽取数据确定
         sqlExtractDataSubmitFun(formName) {
             this.tableInfoArray = this.ruleForm.sqlExtractData; //
-            this.sqlSubmit = true
+            this.sqlSubmit = true;
         },
         //第一个页面打开卸数方式设置
         XSTypeFun(row, e) {
-            row.unload_type = e
-            if (row.unload_type == '增量') {
-                this.Xstable_name = row.table_name
-                this.xstypeadd.insert = ''
-                this.xstypeadd.delete = ''
-                this.xstypeadd.update = ''
+            row.unload_type = e;
+            if (row.unload_type == "增量") {
+                this.Xstable_name = row.table_name;
+                this.xstypeadd.insert = "";
+                this.xstypeadd.delete = "";
+                this.xstypeadd.update = "";
                 let arrid = [];
                 if (this.xsTypeArr.length > 0) {
                     for (let i = 0; i < this.xsTypeArr.length; i++) {
@@ -2698,52 +2685,51 @@ export default {
                 }
                 if (arrid.length > 0 && arrid.indexOf(row.table_name) != -1) {
                     arrid.length = 0;
-                    if (row.unload_type == '全量') {
+                    if (row.unload_type == "全量") {
                         if (this.xsTypeArr.length > 0) {
                             for (let i = 0; i < this.xsTypeArr.length; i++) {
                                 if (this.xsTypeArr[i].table_name == row.table_name) {
-                                    this.xstypeadd.insert = this.xsTypeArr[i].sql
+                                    this.xstypeadd.insert = this.xsTypeArr[i].sql;
                                 }
                             }
                         }
-                        this.dialog_xsall = true
+                        this.dialog_xsall = true;
                     } else {
                         if (this.xsTypeArr.length > 0) {
                             for (let i = 0; i < this.xsTypeArr.length; i++) {
                                 if (this.xsTypeArr[i].table_name == row.table_name) {
-                                    this.xstypeadd.insert = this.xsTypeArr[i].sql.insert
-                                    this.xstypeadd.delete = this.xsTypeArr[i].sql.delete
-                                    this.xstypeadd.update = this.xsTypeArr[i].sql.update
+                                    this.xstypeadd.insert = this.xsTypeArr[i].sql.insert;
+                                    this.xstypeadd.delete = this.xsTypeArr[i].sql.delete;
+                                    this.xstypeadd.update = this.xsTypeArr[i].sql.update;
                                 }
                             }
                         }
-                        this.dialog_xsadd = true
+                        this.dialog_xsadd = true;
                     }
                 } else {
-                    if (row.table_id && row.table_id != '') {
-                        this.getTableSetUnloadDataFunfist(row.table_id, row.unload_type)
+                    if (row.table_id && row.table_id != "") {
+                        this.getTableSetUnloadDataFunfist(row.table_id, row.unload_type);
                     } else {
-                        if (row.unload_type == '全量') {
-                            this.dialog_xsall = true
+                        if (row.unload_type == "全量") {
+                            this.dialog_xsall = true;
                         } else {
-                            this.dialog_xsadd = true
+                            this.dialog_xsadd = true;
                         }
                     }
                 }
             }
 
-            // 
+            //
         },
         //第二个页面打开卸数方式设置
         XSTypeFun2(row, e) {
-            this.Xstable_name = row.table_name
-            row.unload_type = e
-
+            this.Xstable_name = row.table_name;
+            row.unload_type = e;
             let arrid = [];
-            if (row.unload_type == '增量') {
-                this.xstypeadd2.insert = ''
-                this.xstypeadd2.delete = ''
-                this.xstypeadd2.update = ''
+            if (row.unload_type == "增量") {
+                this.xstypeadd2.insert = "";
+                this.xstypeadd2.delete = "";
+                this.xstypeadd2.update = "";
                 if (this.xsTypeArr2.length > 0) {
                     for (let i = 0; i < this.xsTypeArr2.length; i++) {
                         arrid.push(this.xsTypeArr2[i].table_name);
@@ -2751,39 +2737,29 @@ export default {
                 }
                 if (arrid.length > 0 && arrid.indexOf(row.table_name) != -1) {
                     arrid.length = 0;
-                    /* if (row.unload_type == '全量') {
-                        if (this.xsTypeArr2.length > 0) {
-                            for (let i = 0; i < this.xsTypeArr2.length; i++) {
-                                if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                    this.xstypeadd2 = this.xsTypeArr2[i].sql
-                                }
-                            }
-                        }
-                        this.dialog_xsall = true
-                    }  */
                     if (this.xsTypeArr2.length > 0) {
                         for (let i = 0; i < this.xsTypeArr2.length; i++) {
                             if (this.xsTypeArr2[i].table_name == row.table_name) {
-                                this.xstypeadd2.insert = this.xsTypeArr2[i].sql.insert
-                                this.xstypeadd2.delete = this.xsTypeArr2[i].sql.delete
-                                this.xstypeadd2.update = this.xsTypeArr2[i].sql.update
+                                this.xstypeadd2.insert = this.xsTypeArr2[i].sql.insert;
+                                this.xstypeadd2.delete = this.xsTypeArr2[i].sql.delete;
+                                this.xstypeadd2.update = this.xsTypeArr2[i].sql.update;
                             }
                         }
                     }
-                    this.dialog_xsadd2 = true
+                    this.dialog_xsadd2 = true;
                 } else {
-                    if (row.table_id && row.table_id != '') {
-                        this.getTableSetUnloadDataFun(row.table_id, row.unload_type)
+                    if (row.table_id && row.table_id != "") {
+                        this.getTableSetUnloadDataFun(row.table_id, row.unload_type);
                     } else {
-                        if (row.unload_type == '全量') {
-                            this.dialog_xsall = true
+                        if (row.unload_type == "全量") {
+                            this.dialog_xsall = true;
                         } else {
-                            this.dialog_xsadd2 = true
+                            this.dialog_xsadd2 = true;
                         }
                     }
                 }
             } else {
-                this.xstypeadd2q.insert = ''
+                this.xstypeadd2q.insert = "";
                 if (this.xsTypeArr2All.length > 0) {
                     for (let i = 0; i < this.xsTypeArr2All.length; i++) {
                         arrid.push(this.xsTypeArr2All[i].table_name);
@@ -2794,19 +2770,19 @@ export default {
                     if (this.xsTypeArr2All.length > 0) {
                         for (let i = 0; i < this.xsTypeArr2All.length; i++) {
                             if (this.xsTypeArr2All[i].table_name == row.table_name) {
-                                this.xstypeadd2q.insert = this.xsTypeArr2All[i].sql
+                                this.xstypeadd2q.insert = this.xsTypeArr2All[i].sql;
                             }
                         }
                     }
-                    this.dialog_xsall = true
+                    this.dialog_xsall = true;
                 } else {
-                    if (row.table_id && row.table_id != '') {
-                        this.getTableSetUnloadDataFun(row.table_id, row.unload_type)
+                    if (row.table_id && row.table_id != "") {
+                        this.getTableSetUnloadDataFun(row.table_id, row.unload_type);
                     } else {
-                        if (row.unload_type == '全量') {
-                            this.dialog_xsall = true
+                        if (row.unload_type == "全量") {
+                            this.dialog_xsall = true;
                         } else {
-                            this.dialog_xsadd2 = true
+                            this.dialog_xsadd2 = true;
                         }
                     }
                 }
@@ -2816,142 +2792,137 @@ export default {
         getTableSetUnloadDataFun(id, type) {
             let params = {};
             params["table_id"] = id;
-            if (type == '全量') {
+            if (type == "全量") {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
-                    this.dialog_xsall = true
-                    if (res.data.unload_type == '1') {
-                        this.xstypeadd2q.insert = res.data.sql
+                    this.dialog_xsall = true;
+                    if (res.data.unload_type == "1") {
+                        this.xstypeadd2q.insert = res.data.sql;
                     }
-                })
+                });
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
-                    this.dialog_xsadd2 = true
-                    if (res.data.unload_type == '2') {
-                        this.xstypeadd2 = JSON.parse(res.data.sql)
+                    this.dialog_xsadd2 = true;
+                    if (res.data.unload_type == "2") {
+                        this.xstypeadd2 = JSON.parse(res.data.sql);
                     }
-                })
+                });
             }
         },
         getTableSetUnloadDataFunfist(id, type) {
             let params = {};
             params["table_id"] = id;
-            if (type == '全量') {
+            if (type == "全量") {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
-                    this.dialog_xsall = true
-                    if (res.data.unload_type == '1') {
-                        this.xstypeadd.insert = res.data.sql
+                    this.dialog_xsall = true;
+                    if (res.data.unload_type == "1") {
+                        this.xstypeadd.insert = res.data.sql;
                     }
-                })
+                });
             } else {
                 addTaskAllFun.getTableSetUnloadData(params).then(res => {
-                    if (res.data.unload_type == '2') {
-                        let data = JSON.parse(res.data.sql)
-                        this.xstypeadd.insert = data.add
-                        this.xstypeadd.delete = data.delete
-                        this.xstypeadd.update = data.update
+                    if (res.data.unload_type == "2") {
+                        let data = JSON.parse(res.data.sql);
+                        this.xstypeadd.insert = data.add;
+                        this.xstypeadd.delete = data.delete;
+                        this.xstypeadd.update = data.update;
                     }
-                    this.dialog_xsadd = true
-                })
+                    this.dialog_xsadd = true;
+                });
             }
-
         },
         //第一个页面面卸数方式增量的设置提交
         xsaddSubmitFun() {
             if (this.xsTypeArr.length > 0) {
-                let arr = []
-                this.xsTypeArr.forEach((item) => {
-                    arr.push(item.table_name)
-                })
+                let arr = [];
+                this.xsTypeArr.forEach(item => {
+                    arr.push(item.table_name);
+                });
                 if (arr.indexOf(this.Xstable_name) != -1) {
-                    this.xsTypeArr.forEach((item) => {
+                    this.xsTypeArr.forEach(item => {
                         if (item.table_name == this.Xstable_name) {
-                            item.sql = JSON.parse(JSON.stringify(this.xstypeadd))
+                            item.sql = JSON.parse(JSON.stringify(this.xstypeadd));
                         }
-                    })
-                    arr = []
+                    });
+                    arr = [];
                 } else {
                     this.xsTypeArr.push({
                         table_name: this.Xstable_name,
                         sql: JSON.parse(JSON.stringify(this.xstypeadd))
-                    })
-                    arr = []
+                    });
+                    arr = [];
                 }
             } else {
                 this.xsTypeArr.push({
                     table_name: this.Xstable_name,
                     sql: JSON.parse(JSON.stringify(this.xstypeadd))
-                })
-
+                });
             }
-            this.dialog_xsadd = false
+            this.dialog_xsadd = false;
         },
         //第2个页面面卸数方式增量的设置提交
         xsaddSubmittwoFun(xstypeadd2) {
             this.$refs[xstypeadd2].validate(valid => {
                 if (valid) {
                     if (this.xsTypeArr2.length > 0) {
-                        let arr = []
-                        this.xsTypeArr2.forEach((item) => {
-                            arr.push(item.table_name)
-                        })
+                        let arr = [];
+                        this.xsTypeArr2.forEach(item => {
+                            arr.push(item.table_name);
+                        });
                         if (arr.indexOf(this.Xstable_name) != -1) {
-                            this.xsTypeArr2.forEach((item) => {
+                            this.xsTypeArr2.forEach(item => {
                                 if (item.table_name == this.Xstable_name) {
-                                    item.sql = JSON.parse(JSON.stringify(this.xstypeadd2))
+                                    item.sql = JSON.parse(JSON.stringify(this.xstypeadd2));
                                 }
-                            })
-                            arr = []
+                            });
+                            arr = [];
                         } else {
                             this.xsTypeArr2.push({
                                 table_name: this.Xstable_name,
                                 sql: JSON.parse(JSON.stringify(this.xstypeadd2))
-                            })
-                            arr = []
+                            });
+                            arr = [];
                         }
                     } else {
                         this.xsTypeArr2.push({
                             table_name: this.Xstable_name,
                             sql: JSON.parse(JSON.stringify(this.xstypeadd2))
-                        })
-
+                        });
                     }
-                    this.dialog_xsadd2 = false
+                    this.dialog_xsadd2 = false;
                 }
-            })
+            });
         },
         xsallSubmitFun(xstypeadd2q) {
             this.$refs[xstypeadd2q].validate(valid => {
                 if (valid) {
                     if (this.xsTypeArr2All.length > 0) {
-                        let arr = []
-                        this.xsTypeArr2All.forEach((item) => {
-                            arr.push(item.table_name)
-                        })
+                        let arr = [];
+                        this.xsTypeArr2All.forEach(item => {
+                            arr.push(item.table_name);
+                        });
                         if (arr.indexOf(this.Xstable_name) != -1) {
-                            this.xsTypeArr2All.forEach((item) => {
+                            this.xsTypeArr2All.forEach(item => {
                                 if (item.table_name == this.Xstable_name) {
-                                    item.sql = this.xstypeadd2q.insert
+                                    item.sql = this.xstypeadd2q.insert;
                                 }
-                            })
-                            arr = []
+                            });
+                            arr = [];
                         } else {
                             this.xsTypeArr2All.push({
                                 table_name: this.Xstable_name,
                                 sql: this.xstypeadd2q.insert
-                            })
-                            arr = []
+                            });
+                            arr = [];
                         }
                     } else {
                         this.xsTypeArr2All.push({
                             table_name: this.Xstable_name,
                             sql: this.xstypeadd2q.insert
-                        })
-
+                        });
                     }
-                    this.dialog_xsall = false
+                    this.dialog_xsall = false;
                 }
-            })
-
+            });
         }
     }
 };
@@ -2981,7 +2952,6 @@ export default {
 .singleTableinner>>>.el-radio {
     color: #3d8dd2;
     margin: 6px 0 0 0;
-    ;
 }
 
 .twopageradior>>>.el-radio {
