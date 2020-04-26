@@ -126,12 +126,6 @@
         <el-table-column prop="resource_req" label="需求数" align='center'>
         </el-table-column>
     </el-table>
-    <el-row :gutter="20" class="tabBtns">
-        <el-col :span="4" :offset="20">
-            <el-pagination background layout="prev, pager, next" :total="1">
-            </el-pagination>
-        </el-col>
-    </el-row>
 </div>
 </template>
 
