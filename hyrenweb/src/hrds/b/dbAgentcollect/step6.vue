@@ -531,11 +531,11 @@ export default {
             })
         },
         finishSubmit() {
-            this.finishDialogVisible = false
             sendTask.sendDBCollctTaskById({
                 colSetId: this.dbid
             }).then(res => {
                 if (res.success) {
+                    this.finishDialogVisible = false
                     this.$router.push({
                         path: "/agentList"
                     });
