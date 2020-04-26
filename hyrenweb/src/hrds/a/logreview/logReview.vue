@@ -50,6 +50,7 @@
 <script>
     import * as logReviewFunctionAll from "./logReview"
     import * as message from "@/utils/js/message";
+    import * as interfaceFunctionAll from "../../g/usermanage/userManage";
 
     export default {
         name: "logReview",
@@ -97,27 +98,30 @@
             },
             // 下载系统日志
             downloadSystemLog() {
-                logReviewFunctionAll.downloadSystemLog(this.formInline).then(res => {
-                    const blob = new Blob([res], {type: "application/msword"});
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // 兼容IE10
-                        navigator.msSaveBlob(blob, this.filename);
-                    } else {
-                        //  chrome/firefox
-                        let aTag = document.createElement("a");
-                        // document.body.appendChild(aTag);
-                        aTag.download =  "SystemOperation";
-                        aTag.href = URL.createObjectURL(blob);
-                        if (aTag.all) {
-                            aTag.click();
+                message.confirmMsg('如果未填写过滤用户和请求日期,则下载全部日志信息').then(res => {
+                    logReviewFunctionAll.downloadSystemLog(this.formInline).then(res => {
+                        const blob = new Blob([res], {type: "application/msword"});
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // 兼容IE10
+                            navigator.msSaveBlob(blob, this.filename);
                         } else {
-                            //  兼容firefox
-                            var evt = document.createEvent("MouseEvents");
-                            evt.initEvent("click", true, true);
-                            aTag.dispatchEvent(evt);
+                            //  chrome/firefox
+                            let aTag = document.createElement("a");
+                            // document.body.appendChild(aTag);
+                            aTag.download = "SystemOperation";
+                            aTag.href = URL.createObjectURL(blob);
+                            if (aTag.all) {
+                                aTag.click();
+                            } else {
+                                //  兼容firefox
+                                var evt = document.createEvent("MouseEvents");
+                                evt.initEvent("click", true, true);
+                                aTag.dispatchEvent(evt);
+                            }
+                            URL.revokeObjectURL(aTag.href);
                         }
-                        URL.revokeObjectURL(aTag.href);
-                    }
+                    })
+                }).catch(() => {
                 })
             },
             //用户列表数据实现分页功能
