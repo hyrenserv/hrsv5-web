@@ -23,12 +23,14 @@
                     <el-row>
                         <span>SQL查询</span>
                         <el-col :span='10' style="float:right">
-                            <el-input placeholder="参数如: 自定义名称=123;自定义名称2=456,中间用分号;隔开" size="mini" v-model="sqlparameter">
+                            <el-input placeholder="参数如: 自定义名称=123;自定义名称2=456,中间用分号;隔开" size="mini"
+                                      v-model="sqlparameter">
                             </el-input>
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-input class="inputframe" type="textarea" rows="5"  placeholder="请输入查询SQL" v-model="querysql"/>
+                        <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入查询SQL"
+                                  v-model="querysql"/>
                     </el-row>
                     <el-row class="partFour">
                         <div class="elButton">
@@ -205,7 +207,7 @@
         </el-dialog>
 
         <transition name="fade">
-            <loading v-if="isLoading" />
+            <loading v-if="isLoading"/>
         </transition>
     </div>
 </template>
@@ -251,7 +253,7 @@
                 tablecolumn: [],
                 Allis_selectionstate: false,
                 sqltablename: "",
-                isLoading:false,
+                isLoading: false,
 
             };
         },
@@ -272,7 +274,7 @@
         },
         methods: {
             showtablecolumn(node) {
-                if(!node.isParent){
+                if (!node.isParent) {
                     functionAll.queryAllColumnOnTableName({
                         'source': node.source,
                         'id': node.id
@@ -392,7 +394,7 @@
                     functionAll.getDataBySQL({
                         'querysql': this.querysql,
                         'sqlparameter': this.sqlparameter,
-                        'datatable_id':this.datatable_id
+                        'datatable_id': this.datatable_id
                     }).then((res) => {
                         this.isLoading = false;
                         if (res && res.data.success) {
@@ -491,6 +493,28 @@
                     });
                     return false;
                 }
+                for(var i =0;i<this.columnbysql.length;i++){
+                    var field_type = this.columnbysql[i].field_type;
+                    if(field_type == "decimal" || field_type == "varchar"){
+                        if(!this.columnbysql[i].hasOwnProperty("field_length")){
+                            this.$message({
+                                type: "warning",
+                                message: "第"+(i+1)+"行字段类型为"+field_type+"且没有长度，请填写长度"
+                            });
+                            return false;
+                        }
+                        else{
+                            var field_length = this.columnbysql[i].field_length;
+                            if(field_length ==""){
+                                this.$message({
+                                    type: "warning",
+                                    message: "第"+(i+1)+"行字段类型为"+field_type+"且没有长度，请填写长度"
+                                });
+                                return false;
+                            }
+                        }
+                    }
+                }
                 this.isLoading = true;
                 let dm_column_storage = [];
                 for (var i = 0; i < this.columnmore.length; i++) {
@@ -515,18 +539,25 @@
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
                     if (res && res.success) {
-                        this.$message({
-                            type: "success",
-                            message: "保存成功!"
-                        });
-                        this.ifhbasesort = false;
-                        this.$router.push({
-                            name: 'addMartTable_3',
-                            query: {
-                                data_mart_id: this.data_mart_id,
-                                datatable_id: this.datatable_id
-                            }
-                        });
+                        if (res.data.success) {
+                            this.$message({
+                                type: "success",
+                                message: "保存成功!"
+                            });
+                            this.ifhbasesort = false;
+                            this.$router.push({
+                                name: 'addMartTable_3',
+                                query: {
+                                    data_mart_id: this.data_mart_id,
+                                    datatable_id: this.datatable_id
+                                }
+                            });
+                        } else {
+                            this.$message({
+                                type: "warning",
+                                message: "集市表运行中，不允许修改"
+                            });
+                        }
                     } else {
                         this.$emit(res.message);
                     }
@@ -657,7 +688,8 @@
         margin: 15px;
         margin-bottom: 10px;
     }
-    .inputframe{
+
+    .inputframe {
         margin-top: 12px;
         margin-bottom: 10px;
     }

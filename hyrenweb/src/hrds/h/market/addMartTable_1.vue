@@ -139,7 +139,7 @@
         </el-dialog>
 
         <transition name="fade">
-            <loading v-if="isLoading" />
+            <loading v-if="isLoading"/>
         </transition>
     </div>
 
@@ -188,7 +188,7 @@
                 tableDataConfigure: [],
                 form: {},
                 fuzzyqueryitem: "",
-                isLoading:false,
+                isLoading: false,
 
                 // currentPage: 1,
                 // pagesize: 5,
@@ -280,14 +280,21 @@
                                 functionAll.addDMDataTable(this.dm_datatable).then((res) => {
                                     this.isLoading = false;
                                     if (res && res.success) {
-                                        this.datatable_id = res.data.datatable_id;
-                                        this.$router.push({
-                                            name: 'addMartTable_2',
-                                            query: {
-                                                data_mart_id: this.data_mart_id,
-                                                datatable_id: this.datatable_id
-                                            }
-                                        });
+                                        if (res.data.success) {
+                                            this.datatable_id = res.data.datatable_id;
+                                            this.$router.push({
+                                                name: 'addMartTable_2',
+                                                query: {
+                                                    data_mart_id: this.data_mart_id,
+                                                    datatable_id: this.datatable_id
+                                                }
+                                            });
+                                        } else {
+                                            this.$message({
+                                                type: "warning",
+                                                message: "集市表运行中，不允许修改"
+                                            });
+                                        }
                                     }
                                 })
                             }
@@ -298,14 +305,21 @@
                                 functionAll.updateDMDataTable(this.dm_datatable).then((res) => {
                                     this.isLoading = false;
                                     if (res && res.success) {
-                                        // this.datatable_id = res.data.datatable_id;
-                                        this.$router.push({
-                                            name: 'addMartTable_2',
-                                            query: {
-                                                data_mart_id: this.data_mart_id,
-                                                datatable_id: this.datatable_id
-                                            }
-                                        });
+                                        if (res.data.success) {
+                                            // this.datatable_id = res.data.datatable_id;
+                                            this.$router.push({
+                                                name: 'addMartTable_2',
+                                                query: {
+                                                    data_mart_id: this.data_mart_id,
+                                                    datatable_id: this.datatable_id
+                                                }
+                                            });
+                                        } else {
+                                            this.$message({
+                                                type: "warning",
+                                                message: "集市表运行中，不允许修改"
+                                            });
+                                        }
                                     }
                                 })
                             }
@@ -413,6 +427,7 @@
         margin: 15px;
         margin-bottom: 10px;
     }
+
     .leftbtn {
         margin-top: 12px;
         margin-top: 12px;
