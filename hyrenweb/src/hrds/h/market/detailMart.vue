@@ -163,6 +163,7 @@
                     functionAll.downloadDmDatatable({
                         datatable_id: datatable_id
                     }).then(res => {
+                        debugger;
                         // if (res && res.success) {
                         let filename = datatable_en_name + ".xlsx"
                         const blob = new Blob([res]);
@@ -244,6 +245,7 @@
                             message: "成功"
                         });
                     }
+                    this.dialogProdeceJobs = false;
                 })
             }
         }

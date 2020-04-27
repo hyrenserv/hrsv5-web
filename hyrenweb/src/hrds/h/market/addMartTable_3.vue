@@ -178,6 +178,7 @@
                             message: "成功"
                         });
                     }
+                    this.dialogProdeceJobs = false;
                 })
             }
         }
