@@ -531,7 +531,7 @@ export default {
             })
         },
         finishSubmit() {
-            sendTask.sendDBCollctTaskById({
+            sendTask.sendDBCollectTaskById({
                 colSetId: this.dbid
             }).then(res => {
                 if (res.success) {

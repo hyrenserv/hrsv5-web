@@ -81,10 +81,17 @@ export function getCategoryItems(data) {
         params:data
     })
 }
-//发送此次任务
-export function sendDBCollctTaskById(data) {
+//发送此次任务--数据库采集
+export function sendJDBCCollectTaskById(data) {
     return request({
-        url: '/B/agent/sendDBCollctTaskById',
+        url: '/B/agent/sendJDBCCollectTaskById',
+        params:data
+    })
+}
+//发送此次任务--db文件发送
+export function sendDBCollectTaskById (data) {
+    return request({
+        url: '/B/agent/sendDBCollectTaskById ',
         params:data
     })
 }
