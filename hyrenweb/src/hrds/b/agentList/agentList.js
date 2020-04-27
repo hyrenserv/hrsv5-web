@@ -68,12 +68,20 @@ export function downloadTaskLog(data) {
         params:data
     })
 }
-// getProjectInfo
-/* export function getProjectInfo() {
+//获取工程信息
+ export function getProjectInfo() {
     return request({
         url: '/B/agent/getProjectInfo',
     })
-} */
+} 
+//根据工程id获取任务信息
+export function getTaskInfoByTaskId(data) {
+    return request({
+        url: '/B/agent/getTaskInfoByTaskId',
+        params:data
+    })
+}
+
 // 获取编码项
 export function getCategoryItems(data) {
     return request({
@@ -89,9 +97,9 @@ export function sendJDBCCollectTaskById(data) {
     })
 }
 //发送此次任务--db文件发送
-export function sendDBCollectTaskById (data) {
+export function sendDBCollectTaskById(data) {
     return request({
-        url: '/B/agent/sendDBCollectTaskById ',
+        url: '/B/agent/sendDBCollectTaskById',
         params:data
     })
 }

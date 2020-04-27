@@ -84,6 +84,13 @@ export function getTableInfo(data) {
         params:data
     })
 }
+// 查看日志 
+export function viewLog(data) {
+    return request({
+        url: '/B/agent/dbagentconf/dbconf/viewLog',
+        params:data
+    })
+}
 // steps2
 // 获取初始信息
 export function steps_getInitInfo(data) {
