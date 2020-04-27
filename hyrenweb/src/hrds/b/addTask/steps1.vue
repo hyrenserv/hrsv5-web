@@ -231,7 +231,7 @@
                     <div class="logseach">
                         <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select" size="mini">
 
-                            <el-button slot="append" icon="el-icon-search"></el-button>
+                            <el-button slot="append" icon="el-icon-search" @click='getviewlog()'></el-button>
                         </el-input>
                     </div>
                     <div>
@@ -248,8 +248,8 @@
         <el-col :span="12">
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
         </el-col>
-        <el-col :span="12" >
-            <el-button type="primary" size="medium" class='rightbtn'  @click="next('ruleForm')">下一步</el-button>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
             <el-button type="primary" size="medium" class='rightbtn' disabled>上一步</el-button>
         </el-col>
     </el-row>
@@ -457,6 +457,15 @@ export default {
         backFun() {
             this.$router.push({
                 path: "/agentList"
+            });
+        },
+        getviewlog() {
+            let params = {};
+            params["sourceId"] = this.sourceId;
+            params["readNum"] = this.input0;
+            console.log(params)
+            addTaskAllFun.getClassifyInfo(params).then(res => {
+                console.log(res)
             });
         },
         handleSizeChange(size) {

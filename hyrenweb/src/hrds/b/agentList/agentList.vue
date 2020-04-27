@@ -42,7 +42,7 @@
     </el-table>
     <!-- 点击任务配置显示弹框-->
     <el-dialog title :visible.sync="dialogTableVisible" width="80%">
-        <div slot="title" >
+        <div slot="title">
             <span class="dialogtitle el-icon-caret-right">数据源名称:{{ sourceName }}</span>
             <span class="dialogtoptxt">采集类型: <p class="dialogtopname">{{agentType }}</p></span>
         </div>
@@ -52,18 +52,18 @@
 
             <el-table-column property="agent_port" label="Agent端口" align="center"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
-            <el-table-column  label="Agent连接状态" align="center">
+            <el-table-column label="Agent连接状态" align="center">
                 <template slot-scope="scope">
-                      <span v-if="scope.row.agent_status=='未连接'" class='unlink'>{{scope.row.agent_status}}</span>
-                      <span v-else-if="scope.row.agent_status=='已连接'" class='successlink'>{{scope.row.agent_status}}</span>
-                      <span v-else class='linking'>{{scope.row.agent_status}}</span>
+                    <span v-if="scope.row.agent_status=='未连接'" class='unlink'>{{scope.row.agent_status}}</span>
+                    <span v-else-if="scope.row.agent_status=='已连接'" class='successlink'>{{scope.row.agent_status}}</span>
+                    <span v-else class='linking'>{{scope.row.agent_status}}</span>
                 </template>
             </el-table-column>
 
             <el-table-column property="AgentOpt" label="操作" width="350px" align="center">
                 <template slot-scope="scope">
                     <el-row class='optheight'>
-                        <el-col :span="8" >
+                        <el-col :span="8">
                             <el-button type="success" size="mini" @click="addtask(scope.row,sourceName)" icon='el-icon-plus'>新增任务</el-button>
                         </el-col>
                         <el-col :span="8">
@@ -83,9 +83,9 @@
     </el-dialog>
     <!-- 点击任务管理出现弹层 -->
     <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="60%" class="taskEx">
-          <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">数据采集任务</span>
-    </div>
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">数据采集任务</span>
+        </div>
         <el-button type="success" size="mini" style="margin: 10px 0;">全部发送</el-button>
         <el-table :data="taskMang" border size="medium" :empty-text="tableloadingInfo">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
@@ -118,25 +118,25 @@
         </div>
     </el-dialog>
     <!--生成作业  -->
-     <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
-          <div slot="title" >
-                    <span class="dialogtitle el-icon-caret-right">生成作业</span>
-    </div>
+    <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">生成作业</span>
+        </div>
         <el-form ref="separatorData" :model="ProdeceJobsData" label-width="240px" text-align="center">
             <el-form-item label="选择工程" prop="project" :rules="rule.selected">
-                <el-select placeholder="选择工程" v-model="ProdeceJobsData.project" style="width: 190px;" size="medium" >
-                    <el-option v-for="(item,index) in Allproject" :key="index" :label="item.value" :value="item.value"></el-option>
+                <el-select placeholder="选择工程" v-model="ProdeceJobsData.project" style="width: 190px;" size="medium">
+                    <el-option v-for="(item,index) in Allproject" :key="index" :label="item.etl_sys_cd" :value="item.etl_sys_name"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="选择任务"  prop="task" :rules="rule.selected">
-                <el-select placeholder="选择任务" v-model="ProdeceJobsData.task" style="width: 190px;" size="medium" >
+            <el-form-item label="选择任务" prop="task" :rules="rule.selected">
+                <el-select placeholder="选择任务" v-model="ProdeceJobsData.task" style="width: 190px;" size="medium" @focus="getbyidworkFun()">
                     <el-option v-for="(item,index) in Alltask" :key="index" :label="item.value" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button  type="danger" size="mini">取 消</el-button>
-            <el-button type="primary" size="mini">确 定</el-button>
+            <el-button type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" size="mini" @click="workSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
 </div>
@@ -154,30 +154,24 @@ export default {
             AgenttableData: [],
             gridData2: [],
             taskMang: [],
-            tableloadingInfo:'数据加载中...',
+            tableloadingInfo: '数据加载中...',
             rule: validator.default,
             dialogTableVisible: false,
-            dialogProdeceJobs:false,
+            dialogProdeceJobs: false,
             agentType: "",
             sourceName: "",
             agentStatus: "",
             dialogTableTask: false,
             CollectType: [],
             AgentStatus: [],
-            ProdeceJobsData:{
-                  project:'',
-                  task:''
+            ProdeceJobsData: {
+                project: '',
+                task: ''
             },
-            Allproject:[
-                {
-                    value:'1'
-                }
-            ],
-            Alltask:[
-                 {
-                    value:'2'
-                }
-            ]
+            Allproject: [],
+            Alltask: [{
+                value: '2'
+            }]
         };
     },
     mounted() {
@@ -201,7 +195,7 @@ export default {
         getStatus() {
             let params = {};
             params["category"] = "AgentStatus";
-             this.$Code.getCategoryItems(params).then(res => {
+            this.$Code.getCategoryItems(params).then(res => {
                 this.AgentStatus = res.data ? res.data : [];
             });
         },
@@ -242,15 +236,15 @@ export default {
             params["agentId"] = row.agent_id;
             agentList.getTaskInfo(params).then(res => {
                 console.log(res)
-                let arrdata = res? res.data : [];
+                let arrdata = res ? res.data : [];
                 for (let i = 0; i < arrdata.length; i++) {
                     arrdata[i].agent_type = row.agent_type;
                 }
                 this.taskMang = arrdata;
-                if(arrdata.length>0){
-                this.tableloadingInfo=''
-                }else{
-                    this.tableloadingInfo='暂无数据'
+                if (arrdata.length > 0) {
+                    this.tableloadingInfo = ''
+                } else {
+                    this.tableloadingInfo = '暂无数据'
                 }
             });
         },
@@ -265,7 +259,7 @@ export default {
                             agent_id: row.agent_id,
                             id: row.id,
                             source_id: row.source_id,
-                            rowName:this.$Base64.encode(rowName),
+                            rowName: this.$Base64.encode(rowName),
                             source_name: this.$Base64.encode(sourceName),
                             edit: "yes"
                         }
@@ -281,7 +275,7 @@ export default {
                     this.$router.push({
                         path: "collection" + this.CollectType[i].code + "_1",
                         query: {
-                            agent_name:this.$Base64.encode(row.agent_name),
+                            agent_name: this.$Base64.encode(row.agent_name),
                             agent_id: row.agent_id,
                             source_id: row.source_id,
                             source_name: this.$Base64.encode(sourceName),
@@ -291,7 +285,13 @@ export default {
             }
         },
         tasklogFun(row) {
-            for (let i = 0; i < this.CollectType.length; i++) {
+                this.$router.push({
+                        path: "/taskLog",
+                        query: {
+                            agent_id: row.agent_id,
+                        }
+                    });
+            /* for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == row.agent_type) {
                     this.$router.push({
                         path: "taskLog" + this.CollectType[i].code,
@@ -301,122 +301,157 @@ export default {
                     });
                 }
 
-            }
+            } */
         },
         //删除
         taskDelBtn(type, row) {
             console.log(type, row)
             for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == type) {
-                    if(this.CollectType[i].code=='1'){
+                    if (this.CollectType[i].code == '1') {
                         message.confirmMsg('确定删除吗').then(res => {
-                        let params = {};
-                        params["collectSetId"] = row.id;
-                        agentList.deleteDBTask(params).then(res => {
-                            this.taskManagement(row);
-                            message.deleteSuccess(res);
-                        });
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='2'){
-                    //文件系统agent--非结构化deleteNonStructTask
-                       message.confirmMsg('确定删除吗').then(res => {
-                        let params = {};
-                        params["collectSetId"] = row.id;
-                        agentList.deleteNonStructTask(params).then(res => {
-                            this.taskManagement(row);
-                            message.deleteSuccess(res);
-                        });
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='3'){
-                    //ftpagent
-                      message.confirmMsg('确定删除吗').then(res => {
-                        let params = {};
-                        params["collectSetId"] = row.id;
-                        agentList.deleteFTPTask(params).then(res => {
-                            this.taskManagement(row);
-                            message.deleteSuccess(res);
-                        });
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='4'){
-                    //数据文件agent
-                       message.confirmMsg('确定删除吗').then(res => {
-                        let params = {};
-                        params["collectSetId"] = row.id;
-                        agentList.deleteDFTask(params).then(res => {
-                            this.taskManagement(row);
-                            message.deleteSuccess(res);
-                        });
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='5'){
-                    //对象agent--半结构化deleteHalfStructTask
-                       message.confirmMsg('确定删除吗').then(res => {
-                        let params = {};
-                        params["collectSetId"] = row.id;
-                        agentList.deleteHalfStructTask(params).then(res => {
-                            this.taskManagement(row);
-                            message.deleteSuccess(res);
-                        });
-                    }).catch(() => {})
+                            let params = {};
+                            params["collectSetId"] = row.id;
+                            agentList.deleteDBTask(params).then(res => {
+                                this.taskManagement(row);
+                                message.deleteSuccess(res);
+                            });
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '2') {
+                        //文件系统agent--非结构化deleteNonStructTask
+                        message.confirmMsg('确定删除吗').then(res => {
+                            let params = {};
+                            params["collectSetId"] = row.id;
+                            agentList.deleteNonStructTask(params).then(res => {
+                                this.taskManagement(row);
+                                message.deleteSuccess(res);
+                            });
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '3') {
+                        //ftpagent
+                        message.confirmMsg('确定删除吗').then(res => {
+                            let params = {};
+                            params["collectSetId"] = row.id;
+                            agentList.deleteFTPTask(params).then(res => {
+                                this.taskManagement(row);
+                                message.deleteSuccess(res);
+                            });
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '4') {
+                        //数据文件agent
+                        message.confirmMsg('确定删除吗').then(res => {
+                            let params = {};
+                            params["collectSetId"] = row.id;
+                            agentList.deleteDFTask(params).then(res => {
+                                this.taskManagement(row);
+                                message.deleteSuccess(res);
+                            });
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '5') {
+                        //对象agent--半结构化deleteHalfStructTask
+                        message.confirmMsg('确定删除吗').then(res => {
+                            let params = {};
+                            params["collectSetId"] = row.id;
+                            agentList.deleteHalfStructTask(params).then(res => {
+                                this.taskManagement(row);
+                                message.deleteSuccess(res);
+                            });
+                        }).catch(() => {})
                     }
-                  
+
                 }
             }
         },
         // 发送
-         taskSendBtn(type, row) {
+        taskSendBtn(type, row) {
             for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == type) {
-                    if(this.CollectType[i].code=='1'){
+                    if (this.CollectType[i].code == '1') {
                         message.confirmMsg('确定发送吗').then(res => {
-                        let params = {};
-                        params["colSetId"] = row.id;
-                        agentList.sendJDBCCollectTaskById(params).then(res => {
-                            message.sendSuccess(res);
-                        });
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='2'){
-                    //文件系统agent--非结构化deleteNonStructTask
-                       message.confirmMsg('确定发送吗').then(res => {
-                        let params = {};
-                        params["colSetId"] = row.id;
-                      /*   agentList.sendDBCollctTaskById(params).then(res => {
-                            message.sendSuccess(res);
-                        }); */
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='3'){
-                    //ftpagent
-                      message.confirmMsg('确定发送吗').then(res => {
-                        let params = {};
-                        params["colSetId"] = row.id;
-                      /*   agentList.sendDBCollctTaskById(params).then(res => {
-                            message.sendSuccess(res);
-                        }); */
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='4'){
-                    //数据文件agent
-                       message.confirmMsg('确定发送吗').then(res => {
-                        let params = {};
-                        params["colSetId"] = row.id;
-                        agentList.sendDBCollectTaskById(params).then(res => {
-                            message.sendSuccess(res);
-                        });
-                    }).catch(() => {})
-                    }else if(this.CollectType[i].code=='5'){
-                    //对象agent--半结构化deleteHalfStructTask
-                       message.confirmMsg('确定发送吗').then(res => {
-                        let params = {};
-                        params["colSetId"] = row.id;
-                      /*   agentList.sendDBCollctTaskById(params).then(res => {
-                            message.sendSuccess(res);
-                        }); */
-                    }).catch(() => {})
+                            let params = {};
+                            params["colSetId"] = row.id;
+                            agentList.sendJDBCCollectTaskById(params).then(res => {
+                                message.sendSuccess(res);
+                            });
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '2') {
+                        //文件系统agent--非结构化deleteNonStructTask
+                        message.confirmMsg('确定发送吗').then(res => {
+                            let params = {};
+                            params["colSetId"] = row.id;
+                            /*   agentList.sendDBCollctTaskById(params).then(res => {
+                                  message.sendSuccess(res);
+                              }); */
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '3') {
+                        //ftpagent
+                        message.confirmMsg('确定发送吗').then(res => {
+                            let params = {};
+                            params["colSetId"] = row.id;
+                            /*   agentList.sendDBCollctTaskById(params).then(res => {
+                                  message.sendSuccess(res);
+                              }); */
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '4') {
+                        //数据文件agent
+                        message.confirmMsg('确定发送吗').then(res => {
+                            let params = {};
+                            params["colSetId"] = row.id;
+                            agentList.sendDBCollectTaskById(params).then(res => {
+                                message.sendSuccess(res);
+                            });
+                        }).catch(() => {})
+                    } else if (this.CollectType[i].code == '5') {
+                        //对象agent--半结构化deleteHalfStructTask
+                        message.confirmMsg('确定发送吗').then(res => {
+                            let params = {};
+                            params["colSetId"] = row.id;
+                            /*   agentList.sendDBCollctTaskById(params).then(res => {
+                                  message.sendSuccess(res);
+                              }); */
+                        }).catch(() => {})
                     }
-                  
+
                 }
             }
         },
-        ProdeceJobsFun(){
-            this.dialogProdeceJobs=true
+        ProdeceJobsFun() {
+            this.dialogProdeceJobs = true
+            agentList.getProjectInfo().then(res => {
+                console.log(res)
+                this.Allproject = res.data
+            });
+        },
+        //点击任务编号按钮
+        getbyidworkFun() {
+            //调接口显示内容
+            if (this.ProdeceJobsData.project != undefined && this.ProdeceJobsData.project != '') {
+                agentList.getTaskInfoByTaskId({
+                    'taskId': this.getIDByAllproject(this.ProdeceJobsData.project)
+                }).then(res => {
+                    // console.log(res.data)
+                    // this.Alltask = res.data
+                })
+            } else {
+                this.$message({
+                    showClose: true,
+                    message: '工程编号未选择',
+                    type: "error"
+                });
+            }
+
+        },
+        // 根据工程name获取工程对应id
+        getIDByAllproject(value) {
+            for (let i = 0; i < this.Allproject.length; i++) {
+                if (this.Allproject[i].etl_sys_name == value) {
+                    return this.Allproject[i].etl_sys_cd
+                }
+            }
+        },
+        // 生成作业提交按钮
+        workSubmitFun() {
+
         }
     }
 };
@@ -449,7 +484,7 @@ export default {
     color: #000;
 }
 
-.optheight{
+.optheight {
     height: 20px;
     line-height: 20px;
 }

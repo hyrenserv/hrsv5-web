@@ -93,7 +93,7 @@ export default new Router({
                     component: () => import('@/hrds/b/agentList/agentList.vue')
                 },
                 {
-                    path: '/taskLog1',
+                    path: '/taskLog',
                     name: 'taskLog',
                     title: 'taskLog日志查看',
                     component: () => import('@/hrds/b/agentList/taskLog.vue')
