@@ -33,17 +33,20 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="2">
-                    <!-- <el-form-item label> -->
+                   <el-form-item>
                     <el-input v-model="formInline.lognum" placeholder="日志行数" size="mini">
-                        <!-- <el-button type="primary" @click="onSubmit()" size="mini" slot="append">查看</el-button> -->
                     </el-input>
-                    <!-- </el-form-item> -->
+                    </el-form-item>
                 </el-col>
                 <el-col :span="2">
+                    <el-form-item>
                     <el-button type="primary" @click="onSubmit()" size="mini">查看</el-button>
+                     </el-form-item>
                 </el-col>
                 <el-col :span="1">
+                     <el-form-item label>
                     <el-button type="success" size="mini" icon="el-icon-download" @click="downloadTaskLog()"></el-button>
+                    </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
