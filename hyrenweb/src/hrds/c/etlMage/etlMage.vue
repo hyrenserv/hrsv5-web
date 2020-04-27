@@ -503,6 +503,7 @@ export default {
             this.formAdd = {};
             // 隐藏对话框
             this.getTable();
+            this.$refs.formAdd.resetFields();
             this.dialogFormVisibleAdd = false;
         },
         //部署Agent工程模态框保存按钮
@@ -536,6 +537,7 @@ export default {
         cancleDeploy() {
             this.dialogFormVisibleDeploy = false;
             this.formDeploy = {};
+            this.$refs.formDeploy.resetFields();
         },
         //启动CONTROL模态框启动按钮
         startCON(formName) {
@@ -588,6 +590,7 @@ export default {
         cancleTRI() {
             this.dialogFormVisibleStartTRI = false;
             this.formStartTRI = {};
+            this.$refs.formStartTRI.resetFields();
         },
         //CONTROL日志查看按钮
         onViewCON() {
