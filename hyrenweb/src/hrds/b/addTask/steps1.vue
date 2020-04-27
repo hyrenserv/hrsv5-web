@@ -463,7 +463,6 @@ export default {
             let params = {};
             params["sourceId"] = this.sourceId;
             params["readNum"] = this.input0;
-            console.log(params)
             addTaskAllFun.getClassifyInfo(params).then(res => {
                 console.log(res)
             });
@@ -531,6 +530,7 @@ export default {
             let params = {};
             params["sourceId"] = this.sourceId;
             addTaskAllFun.getClassifyInfo(params).then(res => {
+                console.log(res.data, 111)
                 if (res.data) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
@@ -565,22 +565,22 @@ export default {
         },
         // 点击任务采集-删除
         colltaskDeleBtn(row) {
-
+            let that = this
             message.confirmMsg('确定删除吗').then(res => {
                 let params = {};
                 params["classifyId"] = row.classify_id;
                 addTaskAllFun.deleteClassifyInfo(params).then(res => {
                     message.deleteSuccess(res);
-                    this.collTaskClassFun();
+                    that.collTaskClassFun();
                 });
             }).catch(() => {})
 
         },
         // 点击新增
         addClassNumBtn() {
-            (this.addClassTask.class_num = ""),
-            (this.addClassTask.class_name = ""),
-            (this.addClassTask.class_des = "");
+            this.addClassTask.class_num = "",
+                this.addClassTask.class_name = "",
+                this.addClassTask.class_des = "";
         },
         // 点击新增后的弹框保存
         addClassTaskFun(data) {
