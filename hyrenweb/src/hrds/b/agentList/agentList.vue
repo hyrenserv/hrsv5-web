@@ -370,7 +370,7 @@ export default {
                         message.confirmMsg('确定发送吗').then(res => {
                         let params = {};
                         params["colSetId"] = row.id;
-                        agentList.sendDBCollctTaskById(params).then(res => {
+                        agentList.sendJDBCCollectTaskById(params).then(res => {
                             message.sendSuccess(res);
                         });
                     }).catch(() => {})
@@ -379,25 +379,25 @@ export default {
                        message.confirmMsg('确定发送吗').then(res => {
                         let params = {};
                         params["colSetId"] = row.id;
-                        agentList.sendDBCollctTaskById(params).then(res => {
+                      /*   agentList.sendDBCollctTaskById(params).then(res => {
                             message.sendSuccess(res);
-                        });
+                        }); */
                     }).catch(() => {})
                     }else if(this.CollectType[i].code=='3'){
                     //ftpagent
                       message.confirmMsg('确定发送吗').then(res => {
                         let params = {};
                         params["colSetId"] = row.id;
-                        agentList.sendDBCollctTaskById(params).then(res => {
+                      /*   agentList.sendDBCollctTaskById(params).then(res => {
                             message.sendSuccess(res);
-                        });
+                        }); */
                     }).catch(() => {})
                     }else if(this.CollectType[i].code=='4'){
                     //数据文件agent
                        message.confirmMsg('确定发送吗').then(res => {
                         let params = {};
                         params["colSetId"] = row.id;
-                        agentList.sendDBCollctTaskById(params).then(res => {
+                        agentList.sendDBCollectTaskById(params).then(res => {
                             message.sendSuccess(res);
                         });
                     }).catch(() => {})
@@ -406,9 +406,9 @@ export default {
                        message.confirmMsg('确定发送吗').then(res => {
                         let params = {};
                         params["colSetId"] = row.id;
-                        agentList.sendDBCollctTaskById(params).then(res => {
+                      /*   agentList.sendDBCollctTaskById(params).then(res => {
                             message.sendSuccess(res);
-                        });
+                        }); */
                     }).catch(() => {})
                     }
                   

@@ -467,13 +467,12 @@ export function getTbStoDestByColSetId(data) {
 }
 
 //发送此次任务
-export function sendDBCollctTaskById(data) {
+export function sendDBCollectTaskById(data) {
     return request({
-        url: '/B/agent/sendDBCollctTaskById',
+        url: '/B/agent/sendDBCollectTaskById',
         params:data
     })
 }
-
 
 // 6
 export function selectPath(data) {
