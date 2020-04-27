@@ -473,6 +473,7 @@ export default {
                                 });
                                 this.dialogFormVisibleAdd = false;
                                 this.getTable();
+                                this.formAdd = {};
                             }
 
                         });
@@ -489,10 +490,10 @@ export default {
                                 });
                                 this.dialogFormVisibleAdd = false;
                                 this.getTable();
+                                this.formAdd = {};
                             }
                         });
                     }
-                    this.formAdd = {};
                 }
             })
 

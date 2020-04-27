@@ -14,7 +14,7 @@
     <el-row class="partTwo">
         <el-form ref="form" :model="form" status-icon>
             <el-col :span="12">
-                <el-form-item label="半结构化设置编号" :label-width="formLabelWidth" prop="obj_number" :rules="filter_rules([{required: true,dataType: 'confignum'}])">
+                <el-form-item label="半结构化设置编号" :label-width="formLabelWidth" prop="obj_number" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.obj_number" placeholder="半结构化设置编号"></el-input>
                 </el-form-item>
             </el-col>
