@@ -218,6 +218,7 @@ export function getAllField_Type(data) {
 
 //新增datafiels_info信息
 export function addDFInfo(data) {
+    debugger;
     return request({
         url: '/H/market/addDFInfo',
         data: Qs.stringify(data),
@@ -238,6 +239,15 @@ export function sortHbae(data) {
 export function getColumnFromDatabase(data) {
     return request({
         url: '/H/market/getColumnFromDatabase',
+        params: data
+    })
+}
+
+
+//根据集市表ID,获取所有来源字段值
+export function getFromColumnList(data) {
+    return request({
+        url: '/H/market/getFromColumnList',
         params: data
     })
 }

@@ -94,13 +94,28 @@
                             </el-select>
                         </template>
                     </el-table-column>
+
+
+
+                    <el-table-column prop="process_para" label="来源值" show-overflow-tooltip
+                                     align="center">
+                        <template slot-scope="scope">
+                            <el-select v-if="scope.row.field_process == '3'" v-model="scope.row.field_seq" placeholder="请选择">
+                                <el-option v-for="item in allfromcolumn" :key="item.value"
+                                           :label="item.value"
+                                           :value="item.code"></el-option>
+                            </el-select>
+                        </template>
+                    </el-table-column>
+
                     <el-table-column prop="process_para" label="处理方式参数" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.process_para" autocomplete="off"
+                            <el-input v-if="scope.row.field_process != '3'" v-model="scope.row.process_para" autocomplete="off"
                                       placeholder="处理方式参数"></el-input>
                         </template>
                     </el-table-column>
+
                     <el-table-column prop="field_desc" label="描述" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
@@ -116,8 +131,12 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" show-overflow-tooltip
-                                     align="center">
+                                     align="center" width="400%">
                         <template slot-scope="scope">
+                            <el-button type="primary" size="medium" @click="upcolumn(scope.$index,scope.row)">上移
+                            </el-button>
+                            <el-button type="primary" size="medium" @click="downcolumn(scope.$index,scope.row)">下移
+                            </el-button>
                             <el-button type="primary" size="medium" @click="deletecolumn(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -161,9 +180,9 @@
                     <el-table-column label="操作" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="medium" @click="upcolumn(scope.$index,scope.row)">上移
+                            <el-button type="primary" size="medium" @click="hbaseupcolumn(scope.$index,scope.row)">上移
                             </el-button>
-                            <el-button type="primary" size="medium" @click="downcolumn(scope.$index,scope.row)">下移
+                            <el-button type="primary" size="medium" @click="hbasedowncolumn(scope.$index,scope.row)">下移
                             </el-button>
                         </template>
                     </el-table-column>
@@ -238,6 +257,7 @@
                 columnmore: [],
                 allfield_type: [],
                 allfield_process: [],
+                allfromcolumn:[],
                 databysql: [],
                 filterText: '',
                 treeProps: {id: 'id', label: 'name', children: 'children',},
@@ -271,6 +291,7 @@
             this.getcolumnfromdatabase();
             this.getquerysql();
             this.getifhbase();
+            this.getfromcolumnlist();
         },
         methods: {
             showtablecolumn(node) {
@@ -349,6 +370,14 @@
                     this.columnbysql = res.data;
                 })
             },
+            getfromcolumnlist(){
+                let params = {
+                    "datatable_id": this.datatable_id,
+                };
+                functionAll.getFromColumnList(params).then((res) => {
+                    this.allfromcolumn = res.data;
+                })
+            },
             getcolumnbysql() {
                 if (this.querysql === '') {
                     this.$message({type: 'warning', message: '查询sql不能为空!'});
@@ -362,6 +391,9 @@
                     functionAll.getColumnBySql(params).then(((res) => {
                         this.isLoading = false;
                         if (res && res.data.success) {
+                            this.allfromcolumn = res.data.columnlist;
+                            console.log(this.allfromcolumn);
+                            debugger;
                             this.columnbysql = res.data.result;
                             let tmp_field_type = this.columnbysql[0].field_type;
                             let flag = true;
@@ -516,6 +548,7 @@
                     }
                 }
                 this.isLoading = true;
+                debugger;
                 let dm_column_storage = [];
                 for (var i = 0; i < this.columnmore.length; i++) {
                     var dslad_id = this.columnmore[i].dslad_id;
@@ -536,6 +569,7 @@
                     "querysql": this.querysql,
                     "hbasesort": JSON.stringify(this.hbasesort)
                 };
+                debugger;
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
                     if (res && res.success) {
@@ -579,7 +613,7 @@
                 let index = this.columnbysql.indexOf(row);
                 this.columnbysql.splice(index, 1);
             },
-            downcolumn(val, data) {
+            hbasedowncolumn(val, data) {
                 if (val + 1 === this.hbasesort.length) {
                     this.$message({
                         message: '已经是最后一条，不可下移',
@@ -591,11 +625,35 @@
                     this.hbasesort.splice(val, 0, downDate);
                 }
             },
-            upcolumn(val, data) {
+            downcolumn(val, data) {
+                if (val + 1 === this.columnbysql.length) {
+                    this.$message({
+                        message: '已经是最后一条，不可下移',
+                        type: 'warning',
+                    });
+                } else {
+                    let downDate = this.columnbysql[val + 1];
+                    this.columnbysql.splice(val + 1, 1);
+                    this.columnbysql.splice(val, 0, downDate);
+                }
+            },
+            hbaseupcolumn(val, data) {
                 if (val > 0) {
                     let upDate = this.hbasesort[val - 1];
                     this.hbasesort.splice(val - 1, 1);
                     this.hbasesort.splice(val, 0, upDate);
+                } else {
+                    this.$message({
+                        message: '已经是第一条，不可上移',
+                        type: 'warning',
+                    });
+                }
+            },
+            upcolumn(val, data) {
+                if (val > 0) {
+                    let upDate = this.columnbysql[val - 1];
+                    this.columnbysql.splice(val - 1, 1);
+                    this.columnbysql.splice(val, 0, upDate);
                 } else {
                     this.$message({
                         message: '已经是第一条，不可上移',
