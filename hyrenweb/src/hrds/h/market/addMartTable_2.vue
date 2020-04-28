@@ -460,12 +460,13 @@
                     this.columnmore = res.data;
                 });
             },
-            // changecolumnfiledproccess(row) {
-            //     debugger;
-            //     if (row.field_process != '3') {
-            //         row.process_para = "";
-            //     }
-            // },
+            changecolumnfiledproccess(row) {
+                if (row.field_process != '3') {
+                    row.process_para = "";
+                }else{
+                    row.process_para = 0;
+                }
+            },
             getallfield_type() {
                 functionAll.getAllField_Type({
                     "datatable_id": this.datatable_id
