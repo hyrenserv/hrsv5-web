@@ -87,7 +87,8 @@
                     <el-table-column prop="field_process" label="处理方式" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-select v-model="scope.row.field_process" placeholder="请选择">
+                            <el-select v-model="scope.row.field_process" @change="changecolumnfiledproccess(scope.row)"
+                                       placeholder="请选择">
                                 <el-option v-for="item in allfield_process" :key="item.value"
                                            :label="item.value"
                                            :value="item.code"></el-option>
@@ -95,26 +96,29 @@
                         </template>
                     </el-table-column>
 
-
-
                     <el-table-column prop="process_para" label="来源值" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-select v-if="scope.row.field_process == '3'" v-model="scope.row.field_seq" placeholder="请选择">
+                            <el-select v-if="scope.row.field_process == '3'" v-model="scope.row.process_para"
+                                       placeholder="请选择">
                                 <el-option v-for="item in allfromcolumn" :key="item.value"
                                            :label="item.value"
                                            :value="item.code"></el-option>
                             </el-select>
+
+                            <el-input v-else v-model="scope.row.process_para" autocomplete="off"
+                                      placeholder="处理方式参数"></el-input>
+
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="process_para" label="处理方式参数" show-overflow-tooltip
-                                     align="center">
-                        <template slot-scope="scope">
-                            <el-input v-if="scope.row.field_process != '3'" v-model="scope.row.process_para" autocomplete="off"
-                                      placeholder="处理方式参数"></el-input>
-                        </template>
-                    </el-table-column>
+                    <!--<el-table-column prop="process_para" label="处理方式参数" show-overflow-tooltip-->
+                    <!--align="center">-->
+                    <!--<template slot-scope="scope">-->
+                    <!--<el-input v-if="scope.row.field_process != '3'" v-model="scope.row.process_para" autocomplete="off"-->
+                    <!--placeholder="处理方式参数"></el-input>-->
+                    <!--</template>-->
+                    <!--</el-table-column>-->
 
                     <el-table-column prop="field_desc" label="描述" show-overflow-tooltip
                                      align="center">
@@ -257,7 +261,7 @@
                 columnmore: [],
                 allfield_type: [],
                 allfield_process: [],
-                allfromcolumn:[],
+                allfromcolumn: [],
                 databysql: [],
                 filterText: '',
                 treeProps: {id: 'id', label: 'name', children: 'children',},
@@ -370,7 +374,7 @@
                     this.columnbysql = res.data;
                 })
             },
-            getfromcolumnlist(){
+            getfromcolumnlist() {
                 let params = {
                     "datatable_id": this.datatable_id,
                 };
@@ -391,9 +395,8 @@
                     functionAll.getColumnBySql(params).then(((res) => {
                         this.isLoading = false;
                         if (res && res.data.success) {
-                            this.allfromcolumn = res.data.columnlist;
-                            console.log(this.allfromcolumn);
                             debugger;
+                            this.allfromcolumn = res.data.columnlist;
                             this.columnbysql = res.data.result;
                             let tmp_field_type = this.columnbysql[0].field_type;
                             let flag = true;
@@ -457,6 +460,12 @@
                     this.columnmore = res.data;
                 });
             },
+            // changecolumnfiledproccess(row) {
+            //     debugger;
+            //     if (row.field_process != '3') {
+            //         row.process_para = "";
+            //     }
+            // },
             getallfield_type() {
                 functionAll.getAllField_Type({
                     "datatable_id": this.datatable_id
@@ -525,22 +534,21 @@
                     });
                     return false;
                 }
-                for(var i =0;i<this.columnbysql.length;i++){
+                for (var i = 0; i < this.columnbysql.length; i++) {
                     var field_type = this.columnbysql[i].field_type;
-                    if(field_type == "decimal" || field_type == "varchar"){
-                        if(!this.columnbysql[i].hasOwnProperty("field_length")){
+                    if (field_type == "decimal" || field_type == "varchar") {
+                        if (!this.columnbysql[i].hasOwnProperty("field_length")) {
                             this.$message({
                                 type: "warning",
-                                message: "第"+(i+1)+"行字段类型为"+field_type+"且没有长度，请填写长度"
+                                message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度"
                             });
                             return false;
-                        }
-                        else{
+                        } else {
                             var field_length = this.columnbysql[i].field_length;
-                            if(field_length ==""){
+                            if (field_length == "") {
                                 this.$message({
                                     type: "warning",
-                                    message: "第"+(i+1)+"行字段类型为"+field_type+"且没有长度，请填写长度"
+                                    message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度"
                                 });
                                 return false;
                             }
@@ -548,7 +556,6 @@
                     }
                 }
                 this.isLoading = true;
-                debugger;
                 let dm_column_storage = [];
                 for (var i = 0; i < this.columnmore.length; i++) {
                     var dslad_id = this.columnmore[i].dslad_id;
@@ -569,7 +576,6 @@
                     "querysql": this.querysql,
                     "hbasesort": JSON.stringify(this.hbasesort)
                 };
-                debugger;
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
                     if (res && res.success) {

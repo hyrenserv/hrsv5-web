@@ -218,7 +218,6 @@ export function getAllField_Type(data) {
 
 //新增datafiels_info信息
 export function addDFInfo(data) {
-    debugger;
     return request({
         url: '/H/market/addDFInfo',
         data: Qs.stringify(data),
@@ -280,7 +279,6 @@ export function getIfHbase(data) {
 
 //获取是否是数据进入Hbase
 export function excutMartJob(data) {
-    debugger;
     return request({
         url: '/H/market/excutMartJob',
         params: data
