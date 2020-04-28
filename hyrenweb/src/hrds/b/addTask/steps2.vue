@@ -726,36 +726,7 @@ export default {
         this.edit = this.$route.query.edit;
     },
     beforeMount() {
-        let params = {};
-        params["colSetId"] = this.dbid;
-        addTaskAllFun.getAllTableInfo(params).then(res => {
-            let data = res.data;
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].table_id && data[i].table_id != "") {
-                    data[i].selectionState = true;
-                } else {
-                    data[i].selectionState = false;
-                }
-                if (data[i].is_parallel != "0") {
-                    data[i].is_parallel = true;
-                } else {
-                    data[i].is_parallel = false;
-                }
-                if (data[i].is_md5 != "0") {
-                    data[i].is_md5 = true;
-                } else {
-                    data[i].is_md5 = false;
-                }
-                if (data[i].unload_type == "1") {
-                    data[i].unload_type = "全量";
-                } else if (data[i].unload_type == "2") {
-                    data[i].unload_type = "增量";
-                } else {
-                    data[i].unload_type = "";
-                }
-            }
-            this.allDataList = data;
-        });
+        this.getAllTableInfo()
     },
     mounted() {
         // 获取进入页面的总数据
@@ -782,6 +753,38 @@ export default {
         }
     },
     methods: {
+        getAllTableInfo() {
+            let params = {};
+            params["colSetId"] = this.dbid;
+            addTaskAllFun.getAllTableInfo(params).then(res => {
+                let data = res.data;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].table_id && data[i].table_id != "") {
+                        data[i].selectionState = true;
+                    } else {
+                        data[i].selectionState = false;
+                    }
+                    if (data[i].is_parallel != "0") {
+                        data[i].is_parallel = true;
+                    } else {
+                        data[i].is_parallel = false;
+                    }
+                    if (data[i].is_md5 != "0") {
+                        data[i].is_md5 = true;
+                    } else {
+                        data[i].is_md5 = false;
+                    }
+                    if (data[i].unload_type == "1") {
+                        data[i].unload_type = "全量";
+                    } else if (data[i].unload_type == "2") {
+                        data[i].unload_type = "增量";
+                    } else {
+                        data[i].unload_type = "";
+                    }
+                }
+                this.allDataList = data;
+            });
+        },
         //编辑状态获取第二个页面值
         editzdySQLFun() {
             let params0 = {};
@@ -886,6 +889,9 @@ export default {
             this.onclickAll = true;
             this.Allis_selectionState = false;
             this.tableData.length = 0;
+            if (this.allDataList.length == 0) {
+                this.getAllTableInfo()
+            }
             this.isdata = JSON.parse(JSON.stringify(this.allDataList));
             this.tableData = JSON.parse(JSON.stringify(this.allDataList));
         },

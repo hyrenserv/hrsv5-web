@@ -120,10 +120,10 @@
                     </el-row>
                     <el-row :gutter="20">
                         <el-col :span="6" style="text-align:right;">
-                            <el-button type="text" @click="testLinkFun('1')" size="medium">测试连接</el-button>
+                            <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
                         </el-col>
                         <el-col :span="2">
-                            <el-button type="text" @click="viewLog = true" size="medium">查看日志</el-button>
+                            <el-button type="success" @click="viewLog = true" size="mini">查看日志</el-button>
                         </el-col>
                     </el-row>
                 </el-form>
@@ -281,6 +281,7 @@ export default {
             radio: null,
             linkTip: "",
             isLoading: false,
+            linkloading:false,
             CollTaskData: [],
             currentPage: 1,
             pagesize: 10,
@@ -644,6 +645,8 @@ export default {
         },
         // 点击测试连接
         testLinkFun(n) {
+             if (n == '1') {
+            this.linkloading=true}
             let params = {};
             params["database_drive"] = this.ruleForm.database_drive;
             params["user_name"] = this.ruleForm.user_name;
@@ -654,12 +657,14 @@ export default {
             addTaskAllFun.testConnection(params).then(res => {
                 if (res.success == true) {
                     if (n == '1') {
-                        this.testLink = true
+                        // this.testLink = true
+                        this.linkloading=false
+                        this.$Msg.customizTitle('连接成功');
                     }
-                    this.linkTip = "连接成功";
+                    // this.linkTip = "连接成功";
                     this.activelink = "true";
                 } else {
-                    this.linkTip = res.message;
+                    // this.linkTip = res.message;
                     this.activelink = "false";
                     this.isLoading = false
                 }
