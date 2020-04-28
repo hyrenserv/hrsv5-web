@@ -131,12 +131,12 @@
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
-                this.selectUserInfoByPage(currPage, this.pageSize);
+                this.searchSystemLogByPage(currPage, this.pageSize);
             },
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.selectUserInfoByPage(this.currPage, pageSize);
+                this.searchSystemLogByPage(this.currPage, pageSize);
             },
         }
     }
