@@ -292,7 +292,7 @@
                                         } else {
                                             this.$message({
                                                 type: "warning",
-                                                message: "集市表运行中，不允许修改"
+                                                message: "集市表已经生成或者正在运行中，不允许修改"
                                             });
                                         }
                                     }
