@@ -25,32 +25,32 @@
             </el-table-column>
             <el-table-column label="落地目录" align="center" width="260">
                 <template slot-scope="scope">
-                    <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" disabled placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" readonly placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'fdc')">选择目录<span class='exDataColor'>(非定长)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.dc" v-model="scope.row.dc_ml" disabled placeholder="定长落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.dc" v-model="scope.row.dc_ml" readonly placeholder="定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'dc')">选择目录<span class='exDataColor'>(定长)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.orc" v-model="scope.row.orc_ml" disabled placeholder="ORC落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.orc" v-model="scope.row.orc_ml" readonly placeholder="ORC落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'orc')">选择目录<span class='exDataColor'>(ORC)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.par" v-model="scope.row.par_ml" disabled placeholder="PAR落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.par" v-model="scope.row.par_ml" readonly placeholder="PAR落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'par')">选择目录<span class='exDataColor'>(PAR)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.csv" v-model="scope.row.csv_ml" disabled placeholder="CSV落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.csv" v-model="scope.row.csv_ml" readonly placeholder="CSV落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'csv')">选择目录<span class='exDataColor'>(CSV)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.seq" v-model="scope.row.seq_ml" disabled placeholder="SEQ落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.seq" v-model="scope.row.seq_ml" readonly placeholder="SEQ落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'seq')">选择目录<span class='exDataColor'>(SEQ)</span></el-button>
                         </template>
@@ -127,7 +127,7 @@
 
         </el-table>
     </el-form>
-    <el-pagination @size-change="unloading_handleSizeChange" @current-change="unloading_handleCurrentChange" :current-page="unloadingcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="unloadingpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.unloadingFileData.length" class="locationcenter"></el-pagination>
+    <el-pagination @size-change="unloading_handleSizeChange" @current-change="unloading_handleCurrentChange" :current-page="unloadingcurrentPage" :page-sizes="[50, 100, 150, 200]" :page-size="unloadingpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.unloadingFileData.length" class="locationcenter"></el-pagination>
     <!--所有表分隔符设置  -->
     <el-dialog title="所有表分隔符设置" :visible.sync="dialogAllTableSeparatorSettings" width="50%" class="alltable" @close="AllTable_SeparatorCloseFun()">
         <div slot="title">
