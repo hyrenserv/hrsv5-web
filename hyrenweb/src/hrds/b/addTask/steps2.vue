@@ -80,7 +80,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <el-pagination @size-change="sig1_handleSizeChange" @current-change="sig1_handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"></el-pagination>
+                    <el-pagination @size-change="sig1_handleSizeChange" @current-change="sig1_handleCurrentChange" :current-page="currentPage" :page-sizes="[50, 100, 150, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"></el-pagination>
                 </div>
             </div>
         </el-tab-pane>
@@ -382,7 +382,7 @@
         <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
             <el-row type="flex" style="text-align:right;padding-right:10px;">
                 <el-col :span="24">
-                    <el-button type="warning" v-if="ruleForm_ParallelEx.issql=='1'" size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
+                    <el-button type="warning" :loading="linkloading" v-if="ruleForm_ParallelEx.issql=='1'" size="mini" @click="testParallelExtractionFun('test')">测试分页SQL</el-button>
                 </el-col>
             </el-row>
             <el-form-item label="自定义SQL" prop="EXtable_sql">
@@ -672,6 +672,7 @@ export default {
             edit: false,
             disShow: false,
             sqlSubmit: false,
+            linkloading: false,
             sqlfiltVar: [{
                     value: "当前跑批日",
                     code: "1"
@@ -1234,9 +1235,7 @@ export default {
                         twotabledata[i].is_parallel = "1";
                     }
                     for (let j = 0; j < this.ParallelExtractionArr2.length; j++) {
-                        if (
-                            twotabledata[i].table_name ==
-                            this.ParallelExtractionArr2[j].tablename
+                        if (twotabledata[i].is_parallel=='1'&&twotabledata[i].table_name ==this.ParallelExtractionArr2[j].tablename
                         ) {
                             twotabledata[i].dataincrement = parseInt(
                                 this.ParallelExtractionArr2[j].dataincrement
@@ -1426,8 +1425,7 @@ export default {
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.ParallelExtractionArr.length; jj++) {
                             if (
-                                arrData[j].table_name ==
-                                this.ParallelExtractionArr[jj].tablename
+                                arrData[j].is_parallel==true&&arrData[j].table_name ==this.ParallelExtractionArr[jj].tablename
                             ) {
                                 arrData[j].is_customize_sql = this.ParallelExtractionArr[
                                     jj
@@ -1905,34 +1903,47 @@ export default {
         // 测试
         testParallelExtractionFun(n) {
             if (n == "test") {
-                this.testDialogVisible = true;
+                // this.testDialogVisible = true;
+                this.linkloading = true
             }
             this.ParallelExtractionLink = false;
             if (this.ruleForm_ParallelEx.EXtable_sql == undefined) {
+                this.linkloading = false
                 this.$message({
                     showClose: true,
                     message: "sql为空",
                     type: "error"
                 });
             } else {
-                let params = {};
-                params["colSetId"] = this.dbid;
-                params["pageSql"] = this.ruleForm_ParallelEx.EXtable_sql;
-                addTaskAllFun.testParallelExtraction(params).then(res => {
-                    if (res.success == true) {
-                        res.message = "测试成功";
-                        this.ParallelExtractionLink = "true";
-                        this.testLinkReturn = res.message;
-                        if (n == "submit") {
-                            this.subExFun();
+                if (this.ruleForm_ParallelEx.EXtable_sql != '') {
+                    let params = {};
+                    params["colSetId"] = this.dbid;
+                    params["pageSql"] = this.ruleForm_ParallelEx.EXtable_sql;
+                    addTaskAllFun.testParallelExtraction(params).then(res => {
+                        this.linkloading = false
+                        if (res.success == true) {
+                            this.$Msg.customizTitle('测试成功');
+                            this.ParallelExtractionLink = "true";
+                            // this.testLinkReturn = res.message;
+                            if (n == "submit") {
+                                this.subExFun();
+                            }
+                        } else {
+                            // this.testLinkReturn = res.message;
+                            if (n == "submit") {
+                                this.subExFun();
+                            }
                         }
-                    } else {
-                        this.testLinkReturn = res.message;
-                        if (n == "submit") {
-                            this.subExFun();
-                        }
-                    }
-                });
+                    });
+                } else {
+                    this.linkloading = false
+                    this.$message({
+                        showClose: true,
+                        message: "sql为空",
+                        type: "error"
+                    });
+                }
+
             }
         },
         // 获取数据总量
@@ -2105,6 +2116,11 @@ export default {
         },
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
+            for (let j = 0; j < this.tableData.length; j++) {
+                 if (this.tableData[j].table_name == this.EXtable_name) {
+                     this.tableData[j].is_parallel = false;
+                 }
+            }
             for (let i = 0; i < this.allDataList.length; i++) {
                 if (this.allDataList[i].table_name == this.EXtable_name) {
                     this.allDataList[i].is_parallel = false;

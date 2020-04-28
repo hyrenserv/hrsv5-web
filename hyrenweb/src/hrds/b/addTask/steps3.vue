@@ -49,7 +49,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination @size-change="clean_handleSizeChange" @current-change="clean_handleCurrentChange" :current-page="cleancurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="cleanpagesize" layout="total, sizes, prev, pager, next, jumper" :total="cleantableData.length" class="locationcenter"></el-pagination>
+    <el-pagination @size-change="clean_handleSizeChange" @current-change="clean_handleCurrentChange" :current-page="cleancurrentPage" :page-sizes="[50, 100, 150, 200]" :page-size="cleanpagesize" layout="total, sizes, prev, pager, next, jumper" :total="cleantableData.length" class="locationcenter"></el-pagination>
     <!-- 表-字符补齐 -->
     <el-dialog title="字符补齐" :visible.sync="dialogTable_zfbq" width="50%" class="alltable" @close="Table_zfbqclose()">
         <div slot="title">
