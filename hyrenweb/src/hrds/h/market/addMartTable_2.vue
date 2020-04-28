@@ -535,6 +535,46 @@
                     return false;
                 }
                 for (var i = 0; i < this.columnbysql.length; i++) {
+                    var field_en_name = this.columnbysql[i].field_en_name;
+                    if(field_en_name === "" || field_en_name == undefined ){
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行字段英文名为空"
+                        });
+                        return false;
+                    }
+                    var field_cn_name = this.columnbysql[i].field_cn_name;
+                    if(field_cn_name === "" || field_cn_name == undefined ){
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行字段中文名为空"
+                        });
+                        return false;
+                    }
+                    var field_type = this.columnbysql[i].field_type;
+                    if(field_type === "" || field_type == undefined ){
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行字段类型名为空"
+                        });
+                        return false;
+                    }
+                    var field_process = this.columnbysql[i].field_process;
+                    if(field_process === "" || field_process == undefined ){
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行字段处理方式为空"
+                        });
+                        return false;
+                    }
+                    var process_para = this.columnbysql[i].process_para;
+                    if(process_para === '' || process_para == undefined ){
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行来源值为空"
+                        });
+                        return false;
+                    }
                     var field_type = this.columnbysql[i].field_type;
                     if (field_type == "decimal" || field_type == "varchar") {
                         if (!this.columnbysql[i].hasOwnProperty("field_length")) {
@@ -554,6 +594,7 @@
                             }
                         }
                     }
+
                 }
                 this.isLoading = true;
                 let dm_column_storage = [];
