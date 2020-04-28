@@ -664,6 +664,7 @@ export default {
                     // this.linkTip = "连接成功";
                     this.activelink = "true";
                 } else {
+                     this.linkloading=false
                     // this.linkTip = res.message;
                     this.activelink = "false";
                     this.isLoading = false
