@@ -356,18 +356,18 @@ export default {
             saveNum1 = '';
             if (row.useris_admin == 0) {
                 saveType0 = row.user_type;
-                saveData0 = Object.assign({}, row);
+                saveData0 = row;
                 saveNum0 = index
             } else if (row.useris_admin == 1) {
                 saveType1 = row.user_type;
-                saveData1 = Object.assign({}, row);
+                saveData1 = row;
                 saveNum1 = index;
             }
             this.formUpdate = {};
             this.user_id = row.user_id;
             this.getUserFunctionMenu(row.useris_admin);
             this.getDepartmentInfo();
-            let json = Object.assign({}, row);
+            let json = row;
             json['usertype_group'] = arryCode[index].split(",")
             this.formUpdate = json;
         },

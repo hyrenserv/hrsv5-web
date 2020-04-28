@@ -25,7 +25,7 @@
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
-const jsmind = require('../../../../../assets/js/jsmind.js');
+const jsmind = require('../../../../../utils/js/jsmind.js');
 require('@/assets/css/jsmind.css');
 let _jm = null;
 let flag = 0;
@@ -110,7 +110,6 @@ export default {
                 editable: false //是否启用编辑
             }
             _jm = jsmind.show(options);
-            console.log(_jm)
         },
         tree(data) {
             var mind = {
