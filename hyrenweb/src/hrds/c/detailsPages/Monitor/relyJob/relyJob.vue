@@ -25,7 +25,7 @@
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
-const jsmind = require('../../../../../utils/js/jsmind.js');
+let jsmind = require('@/utils/js/jsmind.js');
 require('@/assets/css/jsmind.css');
 let _jm = null;
 let flag = 0;
