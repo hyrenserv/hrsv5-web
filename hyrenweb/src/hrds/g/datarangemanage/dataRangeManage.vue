@@ -24,7 +24,7 @@
             <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
                 <el-form ref="form" :model="form" label-width="100px" size="medium">
                     <span class="fontStyle">表信息列表
-                        <el-button class="goIndex" type="success" size="mini"
+                        <el-button class="saveButton" type="success" size="mini"
                                    @click="saveTableData('form')">保存
                         </el-button>
                     </span>
@@ -353,6 +353,10 @@
     .fontStyle {
         color: #2196f3;
         font-size: 18px;
+    }
+
+    .saveButton {
+        float: right;
     }
 
     .locationcenter {

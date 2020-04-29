@@ -9,8 +9,9 @@
             </router-link>
         </el-row>
         <el-form ref="form" :inline=true :model="form" label-width="100px" size="medium">
-            <span>接口功能设置
-                <el-button type="success" size="mini" class="goIndex" @click="saveInterfaceUseInfo('form')">保存
+            <span class="fontStyle">接口功能设置
+                <el-button type="success" size="mini" class="saveButton"
+                           @click="saveInterfaceUseInfo('form')">保存
                 </el-button>
             </span>
             <el-divider/>
@@ -289,6 +290,15 @@
 
     .el-input {
         width: 300px;
+    }
+
+    .saveButton {
+        float: right;
+    }
+
+    .fontStyle {
+        color: #2196f3;
+        font-size: 16px;
     }
 
     .locationcenter {
