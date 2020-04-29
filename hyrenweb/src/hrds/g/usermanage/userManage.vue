@@ -18,10 +18,10 @@
                  <el-input placeholder="请输入内容" clearable size="medium" v-model="user_name">
                  </el-input>
                 <el-button type="success" size="mini" icon="el-icon-search"
-                           @click="selectUserInfoByPage(1,10)">查询
+                           @click="selectUserInfo">查询
                 </el-button>
                 <el-button type="danger" size="mini" icon="el-icon-refresh"
-                           @click="selectUserInfoByPage(1,10)">重置</el-button>
+                           @click="selectUserInfo">重置</el-button>
             </span>
         </el-row>
         <!--用户信息列表展示-->
@@ -115,14 +115,14 @@
             }
         },
         mounted() {
-            this.selectUserInfoByPage()
+            this.selectUserInfo()
         },
         methods: {
             //分页查询获取用户管理首页数据
-            selectUserInfoByPage() {
+            selectUserInfo() {
                 let params = {};
                 params["user_name"] = this.user_name;
-                interfaceFunctionAll.selectUserInfoByPage(params).then(res => {
+                interfaceFunctionAll.selectUserInfo(params).then(res => {
                     this.tableData = res.data;
                     this.totalSize = res.data.length;
                 });
@@ -152,7 +152,7 @@
                         // 处理参数
                         interfaceFunctionAll.addUser(this.userForm).then((res) => {
                             message.saveSuccess(res)
-                            this.selectUserInfoByPage(1, 10);
+                            this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
                             this.userForm = {};
@@ -167,7 +167,7 @@
                         // 处理参数
                         interfaceFunctionAll.updateUser(this.userForm).then((res) => {
                             message.updateSuccess(res);
-                            this.selectUserInfoByPage(1, 10);
+                            this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
                             this.userForm = {};
@@ -182,7 +182,7 @@
                 message.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteUser(params).then((res) => {
                         message.deleteSuccess(res);
-                        this.selectUserInfoByPage();
+                        this.selectUserInfo();
                     })
                 }).catch(() => {
                 })
@@ -196,12 +196,12 @@
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
-                this.selectUserInfoByPage();
+                this.selectUserInfo();
             },
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.selectUserInfoByPage();
+                this.selectUserInfo();
             },
         },
     };
