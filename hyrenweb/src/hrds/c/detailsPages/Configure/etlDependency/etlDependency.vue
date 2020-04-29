@@ -55,8 +55,8 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-            <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
-            </el-pagination>
+        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+        </el-pagination>
     </el-row>
     <!-- 添加/修改/批量添加作业模态框 -->
     <el-dialog :title="dependTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
@@ -228,16 +228,13 @@ export default {
                 this.pageLength = res.data.totalSize;
                 dates.forEach((item) => {
                     //状态
-                    (function () {
-                        let params = {};
-                        params["category"] = "Status";
-                        params["code"] = item.status;
-                        etlDependencyAllFun.getValue(params).then(res => {
-                            item.statu = res.data;
-                        });
-                    })();
+                    this.statusNum.forEach(val => {
+                        if (item.status == val.code) {
+                            item.statu = val.value;
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData = dates, 200);
+                this.tableData = dates;
             });
         },
         //获取作业名称/上游作业名称下拉框数据
