@@ -25,7 +25,8 @@
             </span>
         </el-row>
         <!--用户信息列表展示-->
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)" border
+                  style="width: 100%">
             <el-table-column label="序号" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
@@ -114,20 +115,16 @@
             }
         },
         mounted() {
-            this.selectUserInfoByPage(1, 10)
+            this.selectUserInfoByPage()
         },
         methods: {
             //分页查询获取用户管理首页数据
-            selectUserInfoByPage(currPage, pageSize) {
-                this.currPage = currPage;
-                this.pageSize = pageSize;
+            selectUserInfoByPage() {
                 let params = {};
-                params["currPage"] = currPage;
-                params["pageSize"] = pageSize;
                 params["user_name"] = this.user_name;
                 interfaceFunctionAll.selectUserInfoByPage(params).then(res => {
                     this.tableData = res.data;
-                    this.totalSize = res.data[0].totalSize
+                    this.totalSize = res.data.length;
                 });
             },
             // 根据用户ID查询用户信息
@@ -185,7 +182,7 @@
                 message.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteUser(params).then((res) => {
                         message.deleteSuccess(res);
-                        this.selectUserInfoByPage(1, 10);
+                        this.selectUserInfoByPage();
                     })
                 }).catch(() => {
                 })
@@ -199,12 +196,12 @@
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
-                this.selectUserInfoByPage(currPage, this.pageSize);
+                this.selectUserInfoByPage();
             },
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.selectUserInfoByPage(this.currPage, pageSize);
+                this.selectUserInfoByPage();
             },
         },
     };
