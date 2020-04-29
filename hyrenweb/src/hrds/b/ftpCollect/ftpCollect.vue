@@ -20,7 +20,7 @@
 
             <el-col :span="11">
                 <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date" :rules="rule.selected">
-                    <el-date-picker type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
+                    <el-date-picker format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                     <el-input v-model="DifferenceValue" v-if="hidden = false"></el-input>
                 </el-form-item>
             </el-col>
@@ -33,7 +33,7 @@
 
             <el-col :span="11">
                 <el-form-item label="结束日期" :label-width="formLabelWidth" prop="end_date" :rules="rule.selected">
-                    <el-date-picker type="date" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
+                    <el-date-picker format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
@@ -240,8 +240,6 @@ export default {
             dialogSelectOk: false,
             rule: validator.default,
             formLabelWidth: "150px",
-            oldstart: '',
-            oldend: ''
         };
     },
     created() {
@@ -279,18 +277,6 @@ export default {
                     agent_id: this.$route.query.agent_id
                 }).then((res) => {
                     this.form = res.data;
-                    let year = res.data.start_date.substring(0, 4);
-                    let month = res.data.start_date.substring(4, 6);
-                    let day = res.data.start_date.substring(6, 9);
-                    let dateStart = year + "-" + month + "-" + day;
-                    this.form.start_date = dateStart;
-                    let yearEnd = res.data.end_date.substring(0, 4);
-                    let monthEnd = res.data.end_date.substring(4, 6);
-                    let dayEnd = res.data.end_date.substring(6, 9);
-                    let dateEnd = yearEnd + "-" + monthEnd + "-" + dayEnd;
-                    this.form.end_date = dateEnd;
-                    this.oldstart = dateStart;
-                    this.oldend = dateEnd;
                 })
             }
         },
@@ -349,25 +335,6 @@ export default {
             let ftp_id = this.$route.query.id;
             this.form["agent_id"] = this.$route.query.agent_id;
             if (this.$route.query.id) {
-                function changeData(num) {
-                    return num > 9 ? (num + "") : ("0" + num);
-                }
-                // 处理开始时间
-                if (typeof (this.form.start_date) == "string") {
-                    let s_date = JSON.stringify(this.form.start_date).replace(/\-/g, '');
-                    this.form["start_date"] = s_date;
-                } else if (typeof (this.form.start_date) == "object") {
-                    let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
-                    this.form["start_date"] = s_date;
-                };
-                // 处理结束时间
-                if (typeof (this.form.end_date) == "string") {
-                    let e_date = JSON.stringify(this.form.end_date).replace(/\-/g, '');
-                    this.form["end_date"] = e_date;
-                } else if (typeof (this.form.end_date) == "object") {
-                    let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
-                    this.form["end_date"] = e_date;
-                }
                 this.form["ftp_id"] = this.$route.query.id;
                 functionAll.updateFtp_collect(this.form).then(res => {
                     if (res && res.success) {
@@ -378,22 +345,9 @@ export default {
                         this.$router.push({
                             name: "agentList"
                         });
-                    } else {
-                        this.form["start_date"] = this.oldstart;
-                        this.form["end_date"] = this.oldend;
                     }
                 });
             } else {
-                this.oldstart = this.form.start_date;
-                this.oldend = this.form.end_date;
-
-                function changeData(num) {
-                    return num > 9 ? (num + "") : ("0" + num);
-                }
-                let s_date = (this.form.start_date.getFullYear() + '-' + changeData((this.form.start_date.getMonth() + 1)) + '-' + changeData(this.form.start_date.getDate())).replace(/\-/g, '');
-                this.form["start_date"] = s_date;
-                let e_date = (this.form.end_date.getFullYear() + '-' + changeData((this.form.end_date.getMonth() + 1)) + '-' + changeData(this.form.end_date.getDate())).replace(/\-/g, '');
-                this.form["end_date"] = e_date;
                 functionAll.addFtp_collect(this.form).then(res => {
                     if (res && res.success) {
                         this.$message({
@@ -403,9 +357,6 @@ export default {
                         this.$router.push({
                             name: "agentList"
                         });
-                    } else {
-                        this.form["start_date"] = this.oldstart;
-                        this.form["end_date"] = this.oldend;
                     }
                 });
             }
@@ -495,8 +446,6 @@ export default {
         },
         // 检查表单有没有填写完整
         submitForm(formName) {
-            this.oldstart = this.form.start_date;
-            this.oldend = this.form.end_date;
             if (this.DifferenceValue < 0) {
                 this.$message({
                     showClose: true,
@@ -508,9 +457,6 @@ export default {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         this.dialogSelectOk = true
-                    } else {
-                        this.form["start_date"] = this.oldstart;
-                        this.form["end_date"] = this.oldend;
                     }
                 });
             }
@@ -568,7 +514,6 @@ export default {
 /* 提示信息 */
 .ftpCollect .item {
     float: right;
-    /* margin-top: 12px; */
     margin-top: 24%;
 }
 </style>

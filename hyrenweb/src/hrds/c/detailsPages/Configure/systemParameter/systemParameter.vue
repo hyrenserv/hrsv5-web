@@ -142,6 +142,10 @@ export default {
             params["para_cd"] = '';
             params["currPage"] = this.currpage;
             params["pageSize"] = this.pagesize;
+            this.searchEtlParaByPage(params);
+        },
+        // 获取表格数据封装
+        searchEtlParaByPage(params) {
             systemParameterAllFun.searchEtlParaByPage(params).then(res => {
                 let dates = res.data.etlParaList;
                 this.pageLength = res.data.totalSize;
@@ -194,22 +198,7 @@ export default {
             params["para_cd"] = this.input;
             params["currPage"] = this.currpage;
             params["pageSize"] = this.pagesize;
-            systemParameterAllFun.searchEtlParaByPage(params).then(res => {
-                let dates = res.data.etlParaList;
-                this.pageLength = res.data.totalSize;
-                dates.forEach((item) => {
-                    //变量类型
-                    (function () {
-                        let params = {};
-                        params["category"] = "ParamType";
-                        params["code"] = item.para_type;
-                        systemParameterAllFun.getValue(params).then(res => {
-                            item.paraType = res.data;
-                        });
-                    })();
-                });
-                setTimeout(() => this.tableData = dates, 200);
-            });
+            this.searchEtlParaByPage(params);
         },
         //选中的数据
         handleSelectionChange(val) {
