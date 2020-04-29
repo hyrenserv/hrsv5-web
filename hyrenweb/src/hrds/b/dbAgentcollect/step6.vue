@@ -78,7 +78,7 @@
                 <el-col :span="8" v-else-if="ruleForm.Dispatching_mode=='D'">
                     <el-form-item label="上游作业" prop="Upstream_operation">
                         <el-col :span="16">
-                            <el-select style="width:100%" v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
+                            <el-select filterable style="width:100%" v-model="ruleForm.Upstream_operation" multiple placeholder="上游作业" @focus='getPreJobName' @change="getUpstream_operationFun">
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -181,7 +181,7 @@
                 <el-table-column label="上游作业" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.pre_etl_job'" :rules="rule.default" v-if="scope.row.disp_type==='D'">
-                            <el-select style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业" @focus='getPreJobName'>
+                            <el-select filterable style="width:100%" v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业" @focus='getPreJobName'>
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code">
                                 </el-option>
                             </el-select>
@@ -786,5 +786,16 @@ export default {
 
 .fdcColor>>>.el-input__inner {
     color: #f19b00;
+}
+#steps6>>>.el-tag.el-tag--info{
+    max-width: 88%;
+}
+#steps6>>>.el-select__tags-text{
+    display: inline-flex;
+    overflow: hidden;
+    max-width: 90%;
+}
+#steps6>>>.el-select .el-tag__close.el-icon-close{
+    right: -1px !important;
 }
 </style>
