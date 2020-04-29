@@ -1,34 +1,32 @@
 <template>
     <div class="interfaceUseInfo">
-        <el-row>
-            <i class="el-icon-s-check">接口使用监控</i>
+        <el-row class="topTitle">
+            <span class="el-icon-s-check">接口使用监控</span>
             <router-link to="/serviceMage">
-                <el-button type="primary" size="mini" icon="el-icon-s-home">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
         </el-row>
-        <el-divider/>
         <el-tabs type="border-card" @tab-click="handleClick">
             <el-tab-pane label="接口信息">
-                <el-row style="margin-bottom:10px">
+                <el-row :gutter="10">
                     <el-col :span="8">
-                <span>
-                    有效日期：
-                <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
-                                v-model="use_valid_date"/>
-                </span>
+                        <span>有效日期：
+                        <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
+                                        v-model="use_valid_date" size="small"/>
+                        </span>
                     </el-col>
                     <el-col :span="8">
-                <span>用户选择：
-                <el-select v-model="user_id" filterable clearable placeholder="请选择">
-                    <el-option
-                            v-for="item in userData"
-                            :label="item.user_name"
-                            :value="item.user_id">
-                    </el-option>
-                </el-select>
-                </span>
+                        <span>用户选择：
+                            <el-select v-model="user_id" size="small" filterable clearable placeholder="请选择">
+                                <el-option
+                                        v-for="item in userData"
+                                        :label="item.user_name"
+                                        :value="item.user_id">
+                                </el-option>
+                            </el-select>
+                         </span>
                     </el-col>
                     <el-col :span="8">
                         <el-button type="success" size="mini" icon="el-icon-search"
@@ -57,17 +55,17 @@
                     </el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button size="medium" type="text" class='sendcolor'
+                            <el-button size="mini" type="text" class='sendcolor'
                                        @click="interfaceDisableEnable(scope.row)">
                                 <!--如果是启用那么显示禁用-->
                                 <span v-if="scope.row.use_state==='1'">禁用</span>
                                 <span v-else>启用</span>
                             </el-button>
-                            <el-button size="medium" type="text" class='editcolor'
+                            <el-button size="mini" type="text" class='editcolor'
                                        @click="searchInterfaceUseInfoById(scope.row)">
                                 编辑
                             </el-button>
-                            <el-button size="medium" type="text" class='delcolor'
+                            <el-button size="mini" type="text" class='delcolor'
                                        @click="deleteInterfaceUseInfo(scope.row)">删除
                             </el-button>
                         </template>
@@ -86,7 +84,7 @@
                 <el-row style="margin-bottom:10px">
                     <el-col :span="8">
                         <span>用户选择：
-                        <el-select v-model="user_id" filterable clearable placeholder="请选择">
+                        <el-select v-model="user_id" size="small" filterable clearable placeholder="请选择">
                             <el-option
                                     v-for="item in userData"
                                     :label="item.user_name"
@@ -116,11 +114,11 @@
                     <el-table-column prop="user_name" label="使用用户" align="center"/>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
-                            <el-button size="medium" type="text" class='editcolor'
+                            <el-button size="mini" type="text" class='editcolor'
                                        @click="searchFieldInfoById(scope.row)">
                                 查看字段
                             </el-button>
-                            <el-button size="medium" type="text" class='delcolor'
+                            <el-button size="mini" type="text" class='delcolor'
                                        @click="deleteDataTableUseInfo(scope.row)">删除
                             </el-button>
                         </template>
@@ -140,11 +138,11 @@
             <el-form :model="form" ref="form" label-width="120px">
                 <el-form-item label="开始日期:" prop="start_use_date" :rules="filter_rules([{required: true}])">
                     <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
-                                    v-model="form.start_use_date" size="medium" style="width:450px"/>
+                                    v-model="form.start_use_date" size="small"/>
                 </el-form-item>
                 <el-form-item label="有效截止日期:" prop="use_valid_date" :rules="filter_rules([{required: true}])">
                     <el-date-picker type="date" placeholder="有效截止日期" value-format="yyyyMMdd"
-                                    v-model="form.use_valid_date" size="medium" style="width:450px"/>
+                                    v-model="form.use_valid_date" size="small"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -385,16 +383,12 @@
     };
 </script>
 <style scoped>
-    .el-icon-s-check {
-        margin-bottom: 10px;
-        margin-right: 1100px;
-        font-size: 18px;
-        text-align: center;
-        color: #2196f3;
-    }
-
     .locationcenter {
         text-align: center;
         margin-top: 5px;
+    }
+
+    .el-table {
+        margin-top: 10px;
     }
 </style>

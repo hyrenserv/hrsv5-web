@@ -1,22 +1,18 @@
 <template>
     <div class="releaseManage">
-        <el-row>
-            <i class="el-icon-menu">接口功能类</i>
+        <el-row class="topTitle">
+            <span class="el-icon-menu">接口功能类</span>
             <router-link to="/serviceMage">
-                <el-button type="primary" size="mini" icon="el-icon-s-home">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
         </el-row>
-        <el-divider/>
         <el-form ref="form" :inline=true :model="form" label-width="100px" size="medium">
-            <el-row>
-            <span class="fontStyle">接口功能设置
-                <el-button class="button-save" type="success" size="mini"
-                           @click="saveInterfaceUseInfo('form')">保存
+            <span>接口功能设置
+                <el-button type="success" size="mini" class="goIndex" @click="saveInterfaceUseInfo('form')">保存
                 </el-button>
             </span>
-            </el-row>
             <el-divider/>
             <el-row>
                 <el-col :span="11">
@@ -56,7 +52,8 @@
             </el-form-item>
             <el-tabs type="border-card" @tab-click="handleClick">
                 <el-tab-pane v-for="item in interfaceType" value="item.code" v-model="item.code">
-                    <span slot="label">{{item.value}}接口</span></el-tab-pane>
+                    <span slot="label">{{item.value}}接口</span>
+                </el-tab-pane>
             </el-tabs>
             <!--接口信息列表展示-->
             <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)"
@@ -75,19 +72,22 @@
                 <el-table-column prop="start_use_date_s" label="开始日期" align="center">
                     <template slot-scope="scope">
                         <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
-                                        v-model="scope.row.start_use_date_s" size="small" style="width:100%"
+                                        v-model="scope.row.start_use_date_s" size="small"
+                                        style="width:100%"
                                         :rules="filter_rules([{required: true}])"/>
                     </template>
                 </el-table-column>
                 <el-table-column prop="use_valid_date_s" label="结束日期" align="center">
                     <template slot-scope="scope">
                         <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
-                                        v-model="scope.row.use_valid_date_s" size="small" style="width: 100%"
+                                        v-model="scope.row.use_valid_date_s" size="small"
+                                        style="width: 100%"
                                         :rules="filter_rules([{required: true}])"/>
                     </template>
                 </el-table-column>
                 <el-table-column prop="interface_state" label="接口状态" align="center">
-                    <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}</template>
+                    <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}
+                    </template>
                 </el-table-column>
             </el-table>
             <!-- 分页内容 -->
@@ -283,18 +283,6 @@
     };
 </script>
 <style scoped>
-    .el-icon-menu {
-        margin-bottom: 10px;
-        margin-right: 1100px;
-        font-size: 18px;
-        text-align: center;
-        color: #2196f3;
-    }
-
-    .button-save {
-        margin-left: 1120px;
-    }
-
     .el-select {
         width: 300px;
     }
@@ -308,8 +296,4 @@
         margin-top: 5px;
     }
 
-    .fontStyle {
-        color: #2196f3;
-        font-size: 18px;
-    }
 </style>

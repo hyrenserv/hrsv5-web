@@ -1,44 +1,33 @@
 <template>
     <div class="tableStructureQuery">
-        <el-row>
-            <i class="el-icon-s-operation"><span>表结构查询接口说明</span></i>
+        <el-row class="topTitle">
+            <span class="el-icon-s-operation">表结构查询接口说明</span>
             <router-link to="/serviceUser">
-                <el-button class="elButton" type="primary" size="medium" icon="el-icon-s-home">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
         </el-row>
-        <el-divider/>
         <el-row :gutter="20">
             <el-col :span="6">
-                <el-row>
-                    <span class="fontStyle">请求方式</span>
-                </el-row>
-                <el-row>
-                    <el-input value="POST" :disabled="true" style="width: 260px;margin-top: 10px;">
-                    </el-input>
-                </el-row>
+                <span class="fontStyle">请求方式</span>
+                <el-input value="POST" :disabled="true">
+                </el-input>
             </el-col>
             <el-col :span="18">
-                <el-row>
-                    <span class="fontStyle">请求URL</span>
-                </el-row>
-                <el-row>
-                    <el-input v-model="ipAndPort" :disabled="true" style="width: 900px;margin-top: 10px;"/>
-                </el-row>
+                <span class="fontStyle">请求URL</span>
+                <el-input v-model="ipAndPort" :disabled="true"/>
             </el-col>
         </el-row>
         <el-divider/>
         <span class="fontStyle">请求参数列表</span>
-        <el-row>
-            <!--请求参数列表展示-->
-            <el-table :data="tableData" border>
-                <el-table-column prop="field" label="字段" align="center"/>
-                <el-table-column prop="fieldType" label="类型" align="center"/>
-                <el-table-column prop="isRequired" label="是否必填" align="center"/>
-                <el-table-column prop="remark" label="描述" align="center"/>
-            </el-table>
-        </el-row>
+        <!--请求参数列表展示-->
+        <el-table :data="tableData" border>
+            <el-table-column prop="field" label="字段" align="center"/>
+            <el-table-column prop="fieldType" label="类型" align="center"/>
+            <el-table-column prop="isRequired" label="是否必填" align="center"/>
+            <el-table-column prop="remark" label="描述" align="center"/>
+        </el-table>
         <el-divider/>
         <el-row>
             <span class="fontStyle">使用方式如下</span>
@@ -178,16 +167,12 @@
 </script>
 
 <style scoped>
-    .el-icon-s-operation {
-        margin-bottom: 10px;
-        margin-right: 1000px;
-        font-size: 20px;
-        text-align: center;
-        color: #2196f3;
-    }
-
     .el-table {
         width: 100%;
+        margin-top: 10px;
+    }
+
+    .el-input {
         margin-top: 10px;
     }
 

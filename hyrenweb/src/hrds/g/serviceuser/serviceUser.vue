@@ -1,29 +1,21 @@
 <template>
     <div class="interfaceInfo">
-        <el-row class="borderStyle">
-            <el-col :span="13">
-                <el-button class="elButton" type="info" icon="el-icon-s-data">
-                    <p class="textUse">数据使用信息</p>
-                </el-button>
-            </el-col>
-            <el-col :span="11">
-                <el-button class="elButton" type="info" icon="el-icon-s-operation">
-                    <p class="textUse">接口使用信息</p>
-                </el-button>
-            </el-col>
-        </el-row>
-        <el-divider/>
-        <el-row>
-            <i class="el-icon-s-operation"><span>接口使用信息</span></i>
-            <router-link to="/interfaceTest">
-                <el-button type="success" size="mini">接口测试</el-button>
-            </router-link>
-            <el-input placeholder="请输入接口名称" clearable v-model="interface_name" class="input-with-select">
-                <el-button slot="append" @click="searchInterfaceInfo" icon="el-icon-search">查询
-                </el-button>
-            </el-input>
-        </el-row>
-        <el-divider/>
+        <el-form :inline="true">
+            <el-form-item>
+                <span class="el-icon-s-operation">接口使用信息</span>
+            </el-form-item>
+            <el-form-item>
+                <router-link to="/interfaceTest">
+                    <el-button type="success" size="mini">接口测试</el-button>
+                </router-link>
+            </el-form-item>
+            <el-form-item class="search">
+                <el-input placeholder="请输入接口名称" clearable v-model="interface_name">
+                    <el-button slot="append" @click="searchInterfaceInfo" icon="el-icon-search">查询
+                    </el-button>
+                </el-input>
+            </el-form-item>
+        </el-form>
         <!--接口使用信息列表展示-->
         <el-table :data="interfaceUseData.slice((currPage - 1) * pageSize,currPage * pageSize)"
                   border style="width: 100%">
@@ -55,13 +47,17 @@
                            :total="totalSize" class='locationcenter'/>
         </el-row>
         <el-divider/>
-        <el-row>
-            <i class="el-icon-s-data"><span>数据使用信息</span></i>
-            <el-input placeholder="请输入表名称" clearable v-model="sysreg_name" class="input-data-select">
-                <el-button slot="append" @click="searchDataTableInfo" icon="el-icon-search">查询</el-button>
-            </el-input>
-        </el-row>
-        <el-divider/>
+        <!--数据使用信息功能-->
+        <el-form :inline="true">
+            <el-form-item>
+                <span class="el-icon-s-data">数据使用信息</span>
+            </el-form-item>
+            <el-form-item class="search">
+                <el-input placeholder="请输入表名称" clearable v-model="sysreg_name">
+                    <el-button slot="append" @click="searchDataTableInfo" icon="el-icon-search">查询</el-button>
+                </el-input>
+            </el-form-item>
+        </el-form>
         <!--数据使用信息列表展示-->
         <el-table :data="dataUseData.slice((currPage - 1) * pageSize,currPage * pageSize)"
                   border style="width: 100%">
@@ -83,8 +79,8 @@
         </el-table>
         <!-- 分页内容 -->
         <el-row class="pagination">
-            <el-pagination @current-change="handleCurrentChangeList" :current-page="currDataPage"
-                           @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]"
+            <el-pagination @current-change="handleCurrentDataChangeList" :current-page="currDataPage"
+                           @size-change="handleSizeDataChange" :page-sizes="[5, 10, 50, 100,500]"
                            :page-size="pageDataSize" layout=" total,sizes,prev, pager, next,jumper"
                            :total="totalDataSize" class='locationcenter'/>
         </el-row>
@@ -135,7 +131,9 @@
                     start_use_date: '-',
                     use_valid_date: '-',
                     url: 'getToken'
-                }
+                },
+                interfaceInline: {},
+                dataInLine: {}
             }
         },
         mounted() {
@@ -167,14 +165,23 @@
                 })
             },
 
-            //表数据实现分页功能
+            //接口信息实现分页功能
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
             },
-            // 改变每页显示条数
+            // 改变接口信息每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
+            },
+            //表数据实现分页功能
+            handleCurrentDataChangeList(currPage) {
+                //把val赋给当前页面
+                this.currDataPage = currPage;
+            },
+            // 改变表数据每页显示条数
+            handleSizeDataChange(pageSize) {
+                this.pageDataSize = pageSize;
             },
             beforeViewFieldClose() {
                 this.dialogViewFieldFormVisible = false;
@@ -191,44 +198,25 @@
     }
 
     .elButton {
-        margin-left: 200px;
-        margin-right: 60px;
-        width: 160px;
-        height: 110px;
+        margin-left: 150px;
+        width: 180px;
+        height: 120px;
         text-align: center;
-        font-size: 50px;
-    }
-
-    .textUse {
-        text-align: center;
-        font-size: 20px;
-        margin-top: 10px;
+        font-size: 18px;
     }
 
     .el-icon-s-operation {
-        margin-bottom: 10px;
-        margin-right: 10px;
-        font-size: 16px;
-        text-align: center;
+        font-size: 18px;
         color: #2196f3;
     }
 
     .el-icon-s-data {
-        margin-bottom: 10px;
-        margin-right: 10px;
-        font-size: 16px;
-        text-align: center;
+        font-size: 18px;
         color: #2196f3;
     }
 
-    .input-with-select {
-        margin-left: 735px;
-        width: 360px;
-    }
-
-    .input-data-select {
-        margin-left: 820px;
-        width: 360px;
+    .search {
+        float: right;
     }
 
     .locationcenter {
