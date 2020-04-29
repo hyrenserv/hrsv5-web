@@ -108,7 +108,7 @@
 
             <el-col :span="12" v-if="showData_date">
                 <el-form-item label="数据日期" :label-width="formLabelWidth" prop="data_date" :rules="rule.selected">
-                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyymmdd" placeholder="选择结束日期" v-model="form.data_date" style="width:100%;"></el-date-picker>
+                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择结束日期" v-model="form.data_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-col>
 
