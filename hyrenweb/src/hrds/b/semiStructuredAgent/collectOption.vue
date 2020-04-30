@@ -166,7 +166,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="table_name" show-overflow-tooltip label="表名" align="center"></el-table-column>
-            <el-table-column prop="table_ch_name" show-overflow-tooltip label="表中文名" align="center"></el-table-column>
+            <el-table-column prop="table_cn_name" show-overflow-tooltip label="表中文名" align="center"></el-table-column>
         </el-table>
         <div class="pageDiv">
             <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" :total="tableData.length"></el-pagination>

@@ -25,7 +25,6 @@
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
-// let chartMind = require('../../../../../utils/js/jsmind.js');
 import * as chartMind from 'jsmind';
 require('@/assets/css/jsmind.css');
 let _jm = null;

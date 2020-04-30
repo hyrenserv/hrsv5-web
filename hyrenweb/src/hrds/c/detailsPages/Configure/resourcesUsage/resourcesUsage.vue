@@ -84,13 +84,6 @@
             <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
-    <!-- 删除/批量删除资源模态框 -->
-    <el-dialog :title="deleteTitle" :visible.sync="dialogVisibleDelete" width="40%">
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleDelete" size="mini" type="danger">否</el-button>
-            <el-button type="primary" @click="saveDelete" size="mini">是</el-button>
-        </div>
-    </el-dialog>
 </div>
 </template>
 
@@ -111,7 +104,6 @@ export default {
             listDatas: [],
             tableData: [],
             resourceTitle: '',
-            deleteTitle: '',
             multipleSelection: [],
             fileList: [],
             rule: validator.default,
