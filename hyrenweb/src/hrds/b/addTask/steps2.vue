@@ -716,7 +716,8 @@ export default {
             ParallelExtractionArr2: [], //第二个页面并行抽取保存数据
             callTable2: [],
             zdycallTable: [],
-            onclickAll: false
+            onclickAll: false,
+            alltableact:false,
         };
     },
     created() {
@@ -725,9 +726,10 @@ export default {
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
+        this.getAllTableInfo()
+
     },
     beforeMount() {
-        this.getAllTableInfo()
     },
     mounted() {
         // 获取进入页面的总数据
@@ -758,6 +760,9 @@ export default {
             let params = {};
             params["colSetId"] = this.dbid;
             addTaskAllFun.getAllTableInfo(params).then(res => {
+                if(res.code==200){
+                  this.alltableact=true
+                }
                 let data = res.data;
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].table_id && data[i].table_id != "") {
@@ -780,7 +785,8 @@ export default {
                     } else if (data[i].unload_type == "2") {
                         data[i].unload_type = "增量";
                     } else {
-                        data[i].unload_type = "";
+                        // data[i].unload_type = "";
+                         data[i].unload_type = "全量";
                     }
                 }
                 this.allDataList = data;
@@ -890,11 +896,10 @@ export default {
             this.onclickAll = true;
             this.Allis_selectionState = false;
             this.tableData.length = 0;
-            if (this.allDataList.length == 0) {
-                this.getAllTableInfo()
-            }
-            this.isdata = JSON.parse(JSON.stringify(this.allDataList));
+            if(this.alltableact==true){
+                 this.isdata = JSON.parse(JSON.stringify(this.allDataList));
             this.tableData = JSON.parse(JSON.stringify(this.allDataList));
+            }
         },
         // 全表点击单个复选框
         evercheck(val, name) {
@@ -1386,7 +1391,7 @@ export default {
                         //与原接口数据对比
                         for (let j = 0; j < this.callTable2.length; j++) {
                             //之前编辑的表
-                            if (arrData[i].table_name == this.callTable2[j].table_name) {
+                            if (arrData[i].table_name == this.callTable2[j].table_name &&this.callTable2[j].is_parallel==true) {
                                 //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
                                 if (this.callTable2[j].dataincrement) {
                                     arrData[i].dataincrement = this.callTable2[j].dataincrement; //每日数据增量
@@ -1495,7 +1500,7 @@ export default {
                             table_id: arrData[k].table_id ?
                                 parseInt(arrData[k].table_id) : "",
                             is_parallel: "0",
-                            is_md5: arrData[k].is_md5 ? "1" : "0",
+                            is_md5: arrData[k].is_md5==true ? "1" : "0",
                             table_ch_name: arrData[k].table_ch_name,
                             table_name: arrData[k].table_name,
                             sql: arrData[k].sql ? arrData[k].sql : "",
@@ -1511,7 +1516,7 @@ export default {
                                     is_parallel: "1",
                                     unload_type: "1",
                                     is_customize_sql: "1",
-                                    is_md5: arrData[k].is_md5 ? "1" : "0",
+                                    is_md5: arrData[k].is_md5==true ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
@@ -1525,7 +1530,7 @@ export default {
                                         parseInt(arrData[k].table_id) : "",
                                     is_parallel: "1",
                                     is_customize_sql: "0",
-                                    is_md5: arrData[k].is_md5 ? "1" : "0",
+                                    is_md5: arrData[k].is_md5==true ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     sql: arrData[k].sql ? arrData[k].sql : "",
@@ -1546,7 +1551,7 @@ export default {
                                 table_id: arrData[k].table_id ?
                                     parseInt(arrData[k].table_id) : "",
                                 is_parallel: "0",
-                                is_md5: arrData[k].is_md5 ? "1" : "0",
+                                is_md5: arrData[k].is_md5==true ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
                                 table_name: arrData[k].table_name,
                                 sql: arrData[k].sql ? arrData[k].sql : ""
@@ -1629,7 +1634,7 @@ export default {
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;
-                        // this.dbid = res.data;
+                        this.dbid = res.data;
                     } else {
                         this.isLoading = false;
                     }
@@ -1694,7 +1699,7 @@ export default {
             params["tableName"] = name;
             addTaskAllFun.getSingleTableSQL(params).then(res => {
                 this.sqlFiltSetData_tablename = this.tablename;
-                if (res.data.length != 0 && res.data.unload_type == "1") {
+                if (res.data.length != 0 && res.data[0].unload_type == "1") {
                     this.sqlFiltSetData_SQL = res.data[0].sql ? res.data[0].sql : "";
                 }
             });
