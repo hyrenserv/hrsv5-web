@@ -188,27 +188,31 @@
             <el-tooltip class="dialogtoptxt" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
             </el-tooltip>
+             <span class="dialogtoptxt">
+                        表名:
+                        <p class="dialogtopname">{{sqlFiltSetData_tablename}}</p>
+                    </span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form ref="addClassTask">
-            <el-row type="flex">
+          <!--   <el-row type="flex">
                 <el-col :span="10">
                     <el-form-item label=" 表名: " prop="table_name" class="bordernone">
                         <span>{{sqlFiltSetData_tablename}}</span>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <!--   <el-form-item label=" 变量名: " prop="Variable_name">
+                      <el-form-item label=" 变量名: " prop="Variable_name">
                         <el-select placeholder="变量名" v-model="sqlFiltSetData_var" style="width:150px" size="mini">
                             <el-option :label="item.value" :value="item.code" v-for="(item,index) in sqlfiltVar" :key='index'></el-option>
                         </el-select>
-            </el-form-item>-->
+            </el-form-item>
                 </el-col>
-            </el-row>
+            </el-row> -->
             <el-row type="flex" justify="center">
                 <el-col :span="24">
                     <el-form-item prop="table_des">
-                        <el-input v-model="sqlFiltSetData_SQL" type="textarea"></el-input>
+                        <el-input v-model="sqlFiltSetData_SQL" type="textarea" placeholder="自定义SQL"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
