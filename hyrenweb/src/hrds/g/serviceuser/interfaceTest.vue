@@ -1,30 +1,29 @@
 <template>
     <div class="interfaceTest">
-        <el-row>
-            <i class="el-icon-s-help"><span>接口测试</span></i>
+        <el-row class="topTitle">
+            <span class="el-icon-s-help">接口测试</span>
             <router-link to="/serviceUser">
-                <el-button class="elButton" type="primary" size="medium" icon="el-icon-s-home">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
         </el-row>
-        <el-divider/>
-        <el-row>
-            <el-form :inline="true" :model="tokenForm" class="demo-form-inline">
-                <el-form-item label="用户名">
-                    <el-input v-model="tokenForm.user_id" clearable placeholder="请输入用户名"/>
-                </el-form-item>
-                <el-form-item label="密码" style="margin-left: 66px">
-                    <el-input v-model="tokenForm.user_password" clearable placeholder="请输入密码"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="success" style="margin-left: 20px" @click="getToken">获取token</el-button>
-                </el-form-item>
-            </el-form>
-        </el-row>
-        <el-row>
+        <el-form :inline="true" :model="tokenForm" class="demo-form-inline">
+            <el-form-item label="用户名">
+                <el-input v-model="tokenForm.user_id" clearable placeholder="请输入用户名"/>
+            </el-form-item>
+            <el-form-item label="密码" style="margin-left: 66px">
+                <el-input v-model="tokenForm.user_password" clearable placeholder="请输入密码"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="success" size="mini" style="margin-left: 50px" @click="getToken">
+                    获取token
+                </el-button>
+            </el-form-item>
+        </el-form>
+        <el-row :gutter="50">
             <el-col :span="9">
-                <el-form :label-position="labelPosition" label-width="120px" :model="testForm">
+                <el-form :label-position="labelPosition" label-width="100px" :model="testForm">
                     <el-form-item label="token">
                         <el-input v-model="testForm.token" clearable placeholder="请输入token"/>
                     </el-form-item>
@@ -221,27 +220,15 @@
 <style scoped>
     .borderStyle {
         width: 100%;
-        border: #e6e6e6 solid 2px;
-    }
-
-    .el-icon-s-help {
-        margin-bottom: 10px;
-        margin-right: 1100px;
-        font-size: 20px;
-        text-align: center;
-        color: #2196f3;
+        border: #e6e6e6 solid 1px;
     }
 
     .demo-form-inline {
-        margin-left: 66px;
+        margin-left: 45px;
     }
 
     .fontStyle {
         color: #2196f3;
         font-size: 18px;
-    }
-
-    .el-input {
-        width: 300px;
     }
 </style>

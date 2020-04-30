@@ -25,11 +25,11 @@
 <script>
 import * as functionAll from "./relyJob";
 import * as message from "@/utils/js/message";
-let jsmind = require('@/utils/js/jsmind.js');
+import * as chartMind from 'jsmind';
 require('@/assets/css/jsmind.css');
 let _jm = null;
 let flag = 0;
-require('echarts/dist/extension/dataTool.js')
+require('echarts/dist/extension/dataTool.js');
 export default {
     data() {
         return {
@@ -109,7 +109,7 @@ export default {
                 theme: 'primary',
                 editable: false //是否启用编辑
             }
-            _jm = jsmind.show(options);
+            _jm = chartMind.show(options);
         },
         tree(data) {
             var mind = {

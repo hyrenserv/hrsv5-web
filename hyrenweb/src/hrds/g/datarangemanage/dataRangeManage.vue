@@ -1,14 +1,13 @@
 <template>
     <div class="dataRangeManage">
-        <el-row>
-            <i class="el-icon-s-data">数据使用范围</i>
+        <el-row class="topTitle">
+            <span class="el-icon-s-data">数据使用范围</span>
             <router-link to="/serviceMage">
-                <el-button type="primary" size="mini" icon="el-icon-s-home">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
         </el-row>
-        <el-divider/>
         <el-row :gutter='20'>
             <el-col :span='6'>
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini">
@@ -24,17 +23,17 @@
             </el-col>
             <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
                 <el-form ref="form" :model="form" label-width="100px" size="medium">
-                    <el-row><span class="fontStyle">表信息列表
-                        <el-button class="button-save" type="success" size="mini"
+                    <span class="fontStyle">表信息列表
+                        <el-button class="saveButton" type="success" size="mini"
                                    @click="saveTableData('form')">保存
                         </el-button>
-                    </span></el-row>
+                    </span>
                     <el-divider/>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="用户选择" :rules="filter_rules([{required: true}])">
-                                <el-select v-model="form.user_id" multiple clearable filterable placeholder="请选择"
-                                           style="width: 260px;">
+                                <el-select v-model="form.user_id" multiple clearable filterable
+                                           placeholder="请选择" size="small">
                                     <el-option
                                             v-for="item in userData"
                                             :label="item.user_name"
@@ -45,7 +44,7 @@
                         </el-col>
                         <el-col :span="10">
                             <el-form-item label="备注">
-                                <el-input v-model="form.table_note" placeholder="备注" clearable/>
+                                <el-input v-model="form.table_note" size="small" placeholder="备注" clearable/>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -218,7 +217,7 @@
                             }
                             this.$refs.multipleTable.clearSelection();
                             this.form = [];
-                            this.tableData=[];
+                            this.tableData = [];
                             this.searchUserInfo();
                             this.searchDataUsageRangeInfoToTreeData();
                         })
@@ -229,12 +228,12 @@
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
-                this.searchInterfaceInfoByType("1", currPage, this.pageSize);
+                this.searchInterfaceInfoByType("1");
             },
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.searchInterfaceInfoByType("1", 1, pageSize);
+                this.searchInterfaceInfoByType("1");
             },
             // 树节点触发
             handleNodeClick(data) {
@@ -351,21 +350,15 @@
         }
     }
 
-    .el-icon-s-data {
-        margin-bottom: 10px;
-        margin-right: 1100px;
-        font-size: 18px;
-        text-align: center;
-        color: #2196f3;
-    }
-
-    .button-save {
-        margin-left: 800px;
-    }
     .fontStyle {
         color: #2196f3;
         font-size: 18px;
     }
+
+    .saveButton {
+        float: right;
+    }
+
     .locationcenter {
         text-align: center;
         margin-top: 5px;

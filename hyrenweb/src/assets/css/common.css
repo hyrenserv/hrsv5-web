@@ -544,14 +544,14 @@
 .el-dialog__header{
     border-bottom: 1px solid #f1eaea;
 }
-/*  */
+/* select 多选溢出样式 */
 /* .el-tag.el-tag--info{
     max-width: 88%;
 }
 .el-select__tags-text{
     display: inline-flex;
     overflow: hidden;
-    width: 90%;
+    max-width: 90%;
 }
 .el-select .el-tag__close.el-icon-close{
     right: -1px !important;

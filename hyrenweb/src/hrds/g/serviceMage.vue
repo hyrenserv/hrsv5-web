@@ -5,28 +5,28 @@
             <el-col :span="6">
                 <router-link to="/userManage">
                     <el-button class="elButton" type="primary" icon="el-icon-user">
-                        <p class="textManage">用户管理</p>
+                        用户管理
                     </el-button>
                 </router-link>
             </el-col>
             <el-col :span="6">
                 <router-link to="/releaseManage">
                     <el-button class="elButton" type="warning" icon="el-icon-menu">
-                        <p class="textManage">发布管理</p>
+                        发布管理
                     </el-button>
                 </router-link>
             </el-col>
             <el-col :span="6">
                 <router-link to="/dataRangeManage">
                     <el-button class="elButton" type="success" icon="el-icon-s-data">
-                        <p class="textManage">数据范围管理</p>
+                        数据范围管理
                     </el-button>
                 </router-link>
             </el-col>
             <el-col :span="6">
                 <router-link to="/interfaceUseMonitor">
                     <el-button class="elButton" type="info" icon="el-icon-s-check">
-                        <p class="textManage">接口使用监控</p>
+                        接口使用监控
                     </el-button>
                 </router-link>
             </el-col>
@@ -34,7 +34,7 @@
         <div style="margin: 20px 0;"></div>
         <!--接口响应时间列表-->
         <el-row class="fontStyle">
-            <i class="el-icon-time"><span>接口响应时间图</span></i>
+            <span class="el-icon-time">接口响应时间图</span>
         </el-row>
         <!--接口响应时间图 -->
         <el-row id="myChart" style="height:500px;border: #e6e6e6 solid 1px"/>
@@ -105,15 +105,15 @@
                             text: '单位/ms',
                             x: 'left',
                             y: '5%',
-                            textStyle:{
+                            textStyle: {
                                 //字体粗细 'normal','bold','bolder','lighter'
-                                fontWeight:'bold',
+                                fontWeight: 'bold',
                                 //字体大小
-                                fontSize:14
+                                fontSize: 14
                             }
                         },
                         // 控制legend颜色
-                        color:['#FF0000','#2db7f5','#80FF80'],
+                        color: ['#FF0000', '#2db7f5', '#80FF80'],
                         // 模块
                         legend: {
                             data: ['最大响应时间', '最小响应时间', '平均响应时间']
@@ -173,7 +173,7 @@
         border: 1px solid #e6e6e6;
         padding-top: 20px;
         width: 100%;
-        height: 150px;
+        height: 140px;
         text-align: center;
     }
 
@@ -185,13 +185,9 @@
 
     .elButton {
         width: 160px;
-        height: 110px;
-        font-size: 50px;
+        height: 100px;
+        font-size: 16px;
         text-align: center;
     }
 
-    .textManage {
-        font-size: 18px;
-        text-align: center;
-    }
 </style>

@@ -5,9 +5,9 @@ import request from '@/utils/request'
 /**
  * 获取用户管理首页的数据
  */
-export function selectUserInfoByPage(data) {
+export function selectUserInfo(data) {
     return request({
-        url: '/G/usermanage/selectUserInfoByPage',
+        url: '/G/usermanage/selectUserInfo',
         params: data
     })
 }

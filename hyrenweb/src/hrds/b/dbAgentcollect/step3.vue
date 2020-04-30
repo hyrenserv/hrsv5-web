@@ -189,7 +189,7 @@ export default {
                     row.database_code = row.storage[i].database_code
                     row.plane_url = row.storage[i].plane_url
                     row.row_separator = row.storage[i].row_separator
-                    row.is_header = row.storage[i].is_header ? true : false
+                    row.is_header = row.storage[i].is_header== '1'? true : false
                 }
             }
         },
@@ -282,8 +282,8 @@ export default {
                                 dataExtractionDefs.push({
                                     'table_id': this.ruleForm.tableData[i].table_id,
                                     'ded_id': this.ruleForm.tableData[i].ded_id,
-                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
-                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -294,8 +294,8 @@ export default {
                             } else {
                                 dataExtractionDefs.push({
                                     'table_id': this.ruleForm.tableData[i].table_id,
-                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
-                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -312,9 +312,9 @@ export default {
                             })
                             if (this.ruleForm.tableData[i].ded_id) {
                                 dataExtractionDefs.push({
-                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
                                     'ded_id': this.ruleForm.tableData[i].ded_id,
-                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -324,8 +324,8 @@ export default {
                                 })
                             } else {
                                 dataExtractionDefs.push({
-                                    'is_header': this.ruleForm.tableData[i].is_header ? '1' : '0',
-                                    'is_archived': this.ruleForm.tableData[i].is_archived ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,

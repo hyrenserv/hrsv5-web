@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="etljob">
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
@@ -66,7 +66,7 @@
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="todayDisp" label="当天是否调度" width="110" align='center'>
         </el-table-column>
-        <el-table-column label="操作" align='center' width="120">
+        <el-table-column label="操作" align='center' width="125">
             <template slot-scope="scope">
                 <el-button size="mini" icon="el-icon-edit" title="编辑" type="primary" @click="handleEdit(scope.$index, scope.row)">
                 </el-button>
@@ -76,8 +76,8 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-            <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
-            </el-pagination>
+        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+        </el-pagination>
     </el-row>
     <!-- 添加/修改任务模态框 -->
     <el-dialog :title="jobTitle" :visible.sync="dialogFormVisibleAdd" width="70%" v-if="this.formAdd.disp_freq != 'F' && this.formAdd.disp_type != 'D'" :before-close="beforeClosechange">
@@ -444,7 +444,7 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="上游作业名">
-                    <el-select v-model="formAdd.pre_etl_job" multiple collapse-tags style="width:218px;" placeholder="上游作业名" @change="selectChange">
+                    <el-select v-model="formAdd.pre_etl_job" multiple :collapse-tags='true' style="width:218px;" placeholder="上游作业名" @change="selectChange">
                         <el-option v-for="item in addSelect.preJobName" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -729,37 +729,7 @@ export default {
             params["sub_sys_cd"] = '';
             params["currPage"] = this.currpage;
             params["pageSize"] = this.pagesize;
-            etlJobDefAllFun.searchEtlJobDefByPage(params).then(res => {
-                let dates = res.data.etlJobDefList;
-                this.pageLength = res.data.totalSize;
-                dates.forEach((item) => {
-                    //调度频率
-                    this.Dispatch_Frequency.forEach(val => {
-                        if (item.disp_freq == val.code) {
-                            item.dispFreq = val.value;
-                        }
-                    })
-                    //调度触发方式
-                    this.Dispatch_Type.forEach(val2 => {
-                        if (item.disp_type == val2.code) {
-                            item.dispType = val2.value;
-                        }
-                    })
-                    //作业有效标志
-                    this.Job_Effective_Flag.forEach(val3 => {
-                        if (item.job_eff_flag == val3.code) {
-                            item.jobEffFlag = val3.value;
-                        }
-                    })
-                    //当天是否调度
-                    this.Today_Dispatch_Flag.forEach(val4 => {
-                        if (item.today_disp == val4.code) {
-                            item.todayDisp = val4.value;
-                        }
-                    })
-                });
-                this.tableData = dates;
-            });
+            this.searchEtlJobDefByPage(params);
         },
         // 获取表格代码项
         getCodeItems(val) {
@@ -804,52 +774,42 @@ export default {
             params["sub_sys_cd"] = this.form.sub_sys_cd;
             params["currPage"] = this.currpage;
             params["pageSize"] = this.pagesize;
+            this.searchEtlJobDefByPage(params);
+        },
+        // 获取表格数据封装
+        searchEtlJobDefByPage(params) {
             etlJobDefAllFun.searchEtlJobDefByPage(params).then(res => {
                 let dates = res.data.etlJobDefList;
                 this.pageLength = res.data.totalSize;
+                //作业有效标志
                 dates.forEach((item) => {
+                    this.Job_Effective_Flag.forEach(val => {
+                        if (item.job_eff_flag == val.code) {
+                            item.jobEffFlag = val.value;
+                        }
+                    });
+
                     //调度频率
-                    (function () {
-                        let params = {};
-                        params["category"] = "Dispatch_Frequency";
-                        params["code"] = item.disp_freq;
-                        etlJobDefAllFun.getValue(params).then(res => {
-                            item.dispFreq = res.data;
-                        });
-                    })();
+                    this.Dispatch_Frequency.forEach(val => {
+                        if (item.disp_freq == val.code) {
+                            item.dispFreq = val.value;
+                        }
+                    })
+
                     //调度触发方式
-                    if (item.disp_type != 'F') {
-                        (function () {
-                            let params = {};
-                            params["category"] = "Dispatch_Type";
-                            params["code"] = item.disp_type;
-                            etlJobDefAllFun.getValue(params).then(res => {
-                                item.dispType = res.data;
-                            });
-                        })();
-                    } else {
-                        item.dispType = '';
-                    }
-                    //作业有效标志
-                    (function () {
-                        let params = {};
-                        params["category"] = "Job_Effective_Flag";
-                        params["code"] = item.job_eff_flag;
-                        etlJobDefAllFun.getValue(params).then(res => {
-                            item.jobEffFlag = res.data;
-                        });
-                    })();
-                    //当天是否调度
-                    (function () {
-                        let params = {};
-                        params["category"] = "Today_Dispatch_Flag";
-                        params["code"] = item.today_disp;
-                        etlJobDefAllFun.getValue(params).then(res => {
-                            item.todayDisp = res.data;
-                        });
-                    })();
+                    this.Dispatch_Type.forEach(val => {
+                        if (item.disp_type == val.code) {
+                            item.dispType = val.value;
+                        }
+                    })
+                    //是否当天调度
+                    this.Today_Dispatch_Flag.forEach(val => {
+                        if (item.today_disp == val.code) {
+                            item.todayDisp = val.value;
+                        }
+                    })
                 });
-                setTimeout(() => this.tableData = dates, 200);
+                this.tableData = dates;
             });
         },
         //选中的数据
@@ -983,9 +943,16 @@ export default {
                     params["pro_para"] = this.formAdd.pro_para;
                     params["log_dic"] = this.formAdd.log_dic;
                     params["disp_freq"] = this.formAdd.disp_freq;
+                    if (this.formAdd.disp_offset == '') {
+                        this.formAdd.disp_offset = null;
+                    }
                     params["disp_offset"] = this.formAdd.disp_offset;
                     params["disp_type"] = this.formAdd.disp_type;
                     params["disp_time"] = this.formAdd.disp_time;
+                    console.log(this.formAdd.job_priority)
+                    if (this.formAdd.job_priority == '') {
+                        this.formAdd.job_priority = null;
+                    }
                     params["job_priority"] = this.formAdd.job_priority;
                     params["job_eff_flag"] = this.formAdd.job_eff_flag;
                     params["today_disp"] = this.formAdd.today_disp;
@@ -1003,6 +970,7 @@ export default {
                                 this.getTable();
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
+                                this.$refs.formAdd.resetFields();
                             }
                         });
                     } else if (this.jobTitle == '修改作业') {
@@ -1016,8 +984,8 @@ export default {
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
                                 this.tempForm = {};
+                                this.$refs.formAdd.resetFields();
                             }
-
                         });
                     }
                 }
@@ -1111,8 +1079,14 @@ export default {
                     params["pro_para"] = this.formAdd.pro_para;
                     params["log_dic"] = this.formAdd.log_dic;
                     params["disp_freq"] = this.formAdd.disp_freq;
+                    if (this.formAdd.disp_offset == '') {
+                        this.formAdd.disp_offset = null;
+                    }
                     params["disp_offset"] = this.formAdd.disp_offset;
                     params["disp_type"] = this.formAdd.disp_type;
+                    if (this.formAdd.job_priority == '') {
+                        this.formAdd.job_priority = null;
+                    }
                     params["job_priority"] = this.formAdd.job_priority;
                     params["job_eff_flag"] = this.formAdd.job_eff_flag;
                     params["today_disp"] = this.formAdd.today_disp;
@@ -1252,5 +1226,10 @@ export default {
 
 .searchBtn {
     margin-left: 10px;
+}
+
+.etljob>>>.el-select__tags {
+    white-space: nowrap;
+    overflow: hidden;
 }
 </style>

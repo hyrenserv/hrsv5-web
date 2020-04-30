@@ -50,7 +50,6 @@
 <script>
     import * as logReviewFunctionAll from "./logReview"
     import * as message from "@/utils/js/message";
-    import * as interfaceFunctionAll from "../../g/usermanage/userManage";
 
     export default {
         name: "logReview",

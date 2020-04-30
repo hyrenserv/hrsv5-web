@@ -1,31 +1,33 @@
 <template>
     <div class="userManage">
-        <el-row>
-            <i class="el-icon-user"><span>用户列表</span></i>
+        <el-row class="topTitle">
+            <span class="el-icon-user">用户列表</span>
             <router-link to="/serviceMage">
-                <el-button class="elButton" type="primary" size="mini" icon="el-icon-s-home">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
                 </el-button>
             </router-link>
-            <el-button class="elButton" type="primary" size="mini" icon="el-icon-user-solid"
-                       @click="addUserButton()">
+            <el-button class="goIndex" type="primary" size="mini" icon="el-icon-user-solid"
+                       @click="addUserButton()" style="margin-right: 20px">
                 添加用户
             </el-button>
         </el-row>
-        <el-divider/>
-        <el-row style="margin-bottom:10px">
-            <span>用户名称：
-                 <el-input placeholder="请输入内容" clearable size="medium" v-model="user_name">
-                 </el-input>
-                <el-button type="success" size="mini" icon="el-icon-search"
-                           @click="selectUserInfoByPage(1,10)">查询
+        <el-form :inline=true :model="searchForm" ref="searchForm" label-width="80px">
+            <el-form-item label="用户名称:" prop="user_name">
+                <el-input v-model="searchForm.user_name" size="small" clearable placeholder="请输入用户名称"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="success" size="mini" icon="el-icon-search" @click="selectUserInfo()">查询
                 </el-button>
-                <el-button type="danger" size="mini" icon="el-icon-refresh"
-                           @click="selectUserInfoByPage(1,10)">重置</el-button>
-            </span>
-        </el-row>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="danger" size="mini" icon="el-icon-refresh" @click="resetUser()">重置
+                </el-button>
+            </el-form-item>
+        </el-form>
         <!--用户信息列表展示-->
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)" border
+                  style="width: 100%">
             <el-table-column label="序号" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
@@ -58,7 +60,7 @@
         <!--新增/编辑用户弹出框-->
         <el-dialog :title="customTitle" :visible.sync="dialogUserFormVisible"
                    :before-close="beforeClose">
-            <el-form :model="userForm" ref="userForm" label-width="180px">
+            <el-form :model="userForm" ref="userForm" label-width="120px">
                 <el-form-item label="用户名称:" prop="user_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="userForm.user_name" clearable placeholder="用户名称"/>
                 </el-form-item>
@@ -72,7 +74,7 @@
                 </el-form-item>
                 <el-form-item label="备注:">
                     <el-input v-model="userForm.user_remark" type="textarea" autosize clearable
-                              placeholder="备注" style="width: 360px;"/>
+                              placeholder="备注" style="width: 300px"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -110,25 +112,29 @@
                     user_password: "",
                     user_email: "",
                     user_remark: "",
+                },
+                searchForm: {
+                    user_name: ""
                 }
             }
         },
         mounted() {
-            this.selectUserInfoByPage(1, 10)
+            this.selectUserInfo()
         },
         methods: {
-            //分页查询获取用户管理首页数据
-            selectUserInfoByPage(currPage, pageSize) {
-                this.currPage = currPage;
-                this.pageSize = pageSize;
+            //查询获取用户管理首页数据
+            selectUserInfo() {
                 let params = {};
-                params["currPage"] = currPage;
-                params["pageSize"] = pageSize;
-                params["user_name"] = this.user_name;
-                interfaceFunctionAll.selectUserInfoByPage(params).then(res => {
+                params["user_name"] = this.searchForm.user_name;
+                interfaceFunctionAll.selectUserInfo(params).then(res => {
                     this.tableData = res.data;
-                    this.totalSize = res.data[0].totalSize
+                    this.totalSize = res.data.length;
                 });
+            },
+            // 重置
+            resetUser() {
+                this.searchForm.user_name = "";
+                this.selectUserInfo();
             },
             // 根据用户ID查询用户信息
             selectUserById(row) {
@@ -155,7 +161,7 @@
                         // 处理参数
                         interfaceFunctionAll.addUser(this.userForm).then((res) => {
                             message.saveSuccess(res)
-                            this.selectUserInfoByPage(1, 10);
+                            this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
                             this.userForm = {};
@@ -170,7 +176,7 @@
                         // 处理参数
                         interfaceFunctionAll.updateUser(this.userForm).then((res) => {
                             message.updateSuccess(res);
-                            this.selectUserInfoByPage(1, 10);
+                            this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
                             this.userForm = {};
@@ -185,7 +191,7 @@
                 message.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteUser(params).then((res) => {
                         message.deleteSuccess(res);
-                        this.selectUserInfoByPage(1, 10);
+                        this.selectUserInfo();
                     })
                 }).catch(() => {
                 })
@@ -199,47 +205,24 @@
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
-                this.selectUserInfoByPage(currPage, this.pageSize);
+                this.selectUserInfo();
             },
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.selectUserInfoByPage(this.currPage, pageSize);
+                this.selectUserInfo();
             },
         },
     };
 </script>
 
 <style scoped>
-    .el-icon-user {
-        margin-bottom: 10px;
-        margin-right: 1020px;
-        font-size: 18px;
-        text-align: center;
-        color: #2196f3;
-    }
-
-    .elButton {
-        margin-right: 5px;
-    }
-
-    .el-icon-search {
-        margin-right: 10px;
-        width: 260px;
-    }
-
-    .el-input {
-        margin-right: 10px;
-        width: 360px;
-    }
-
-    .fontStyle {
-        color: #2196f3;
-        font-size: 18px;
-    }
-
     .locationcenter {
         text-align: center;
         margin-top: 5px;
+    }
+
+    .el-input {
+        width: 300px;
     }
 </style>

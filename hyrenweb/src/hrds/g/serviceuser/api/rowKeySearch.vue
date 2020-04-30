@@ -1,36 +1,25 @@
 <template>
-<div class="rowKeySearch">
-    <el-row>
-        <i class="el-icon-s-operation"><span>rowKey查询接口说明</span></i>
-        <router-link to="/serviceUser">
-            <el-button class="elButton" type="primary" size="medium" icon="el-icon-s-home">
-                返回首页
-            </el-button>
-        </router-link>
-    </el-row>
-    <el-divider/>
-    <el-row :gutter="20">
-        <el-col :span="6">
-            <el-row>
+    <div class="rowKeySearch">
+        <el-row class="topTitle">
+            <span class="el-icon-s-operation">rowKey查询接口说明</span>
+            <router-link to="/serviceUser">
+                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
+                    返回首页
+                </el-button>
+            </router-link>
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="6">
                 <span class="fontStyle">请求方式</span>
-            </el-row>
-            <el-row>
-                <el-input value="POST" :disabled="true" style="width: 260px;margin-top: 10px;">
-                </el-input>
-            </el-row>
-        </el-col>
-        <el-col :span="18">
-            <el-row>
+                <el-input value="POST" :disabled="true"/>
+            </el-col>
+            <el-col :span="18">
                 <span class="fontStyle">请求URL</span>
-            </el-row>
-            <el-row>
-                <el-input v-model="ipAndPort" :disabled="true" style="width: 900px;margin-top: 10px;"/>
-            </el-row>
-        </el-col>
-    </el-row>
-    <el-divider/>
-    <span class="fontStyle">请求参数列表</span>
-    <el-row>
+                <el-input v-model="ipAndPort" :disabled="true"/>
+            </el-col>
+        </el-row>
+        <el-divider/>
+        <span class="fontStyle">请求参数列表</span>
         <!--请求参数列表展示-->
         <el-table :data="tableData" border>
             <el-table-column prop="field" label="字段" align="center"/>
@@ -38,20 +27,18 @@
             <el-table-column prop="isRequired" label="是否必填" align="center"/>
             <el-table-column prop="remark" label="描述" align="center"/>
         </el-table>
-    </el-row>
-    <el-divider/>
-    <el-row>
-        <span class="fontStyle">使用方式如下</span>
-        <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px"
-                  :disabled="true"/>
-        <el-divider>或</el-divider>
-        <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
-    </el-row>
-    <el-divider/>
-    <el-row :gutter="20">
-        <el-col :span="12">
-            <span class="fontStyle">outType=stream, dataType=JSON 正常显示如下</span>
-            <pre style="font-size: 16px;">
+        <el-divider/>
+        <el-row>
+            <span class="fontStyle">使用方式如下</span>
+            <el-input v-model="requestAddressForToken" :disabled="true"/>
+            <el-divider>或</el-divider>
+            <el-input v-model="requestAddress" :disabled="true"/>
+        </el-row>
+        <el-divider/>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <span class="fontStyle">outType=stream, dataType=JSON 正常显示如下</span>
+                <pre style="font-size: 16px;">
                    {
                         "status":"NORMAL",
                         "message":{
@@ -59,10 +46,10 @@
                         }
                     }
             </pre>
-        </el-col>
-        <el-col :span="12">
-            <span class="fontStyle">outType=stream, dataType=CSV 正常显示如下</span>
-            <pre style="font-size: 16px;">
+            </el-col>
+            <el-col :span="12">
+                <span class="fontStyle">outType=stream, dataType=CSV 正常显示如下</span>
+                <pre style="font-size: 16px;">
                 age,phone,user_email,sex
                 30,123456789,1232313@aa.com,nan
                 30,123456789,112323@aa.com,nan
@@ -75,12 +62,12 @@
                 30,123456789,1232313@aa.com,nan
                 30,123456789,1232313@aa.com,nan
             </pre>
-        </el-col>
-    </el-row>
-    <el-divider/>
-    <el-row>
-        <span class="fontStyle">输出的数据形式(file)正常显示如下</span>
-        <pre style="font-size: 16px;">
+            </el-col>
+        </el-row>
+        <el-divider/>
+        <el-row>
+            <span class="fontStyle">输出的数据形式(file)正常显示如下</span>
+            <pre style="font-size: 16px;">
                {
                     "message":{
                         "dataType":"json",
@@ -90,28 +77,28 @@
                     "status":"NORMAL"
                 }
             </pre>
-    </el-row>
-    <el-divider/>
-    <el-row :gutter="20">
-        <el-col :span="12">
-            <span class="fontStyle">错误响应字段明细</span>
-            <!--响应参数列表展示-->
-            <el-table :data="errorData" border>
-                <el-table-column prop="state" label="状态字段名" align="center"/>
-                <el-table-column prop="description" label="状态说明" align="center"/>
-            </el-table>
-        </el-col>
-        <el-col :span="12">
-            <span class="fontStyle">错误响应如下：</span>
+        </el-row>
+        <el-divider/>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <span class="fontStyle">错误响应字段明细</span>
+                <!--响应参数列表展示-->
+                <el-table :data="errorData" border>
+                    <el-table-column prop="state" label="状态字段名" align="center"/>
+                    <el-table-column prop="description" label="状态说明" align="center"/>
+                </el-table>
+            </el-col>
+            <el-col :span="12">
+                <span class="fontStyle">错误响应如下：</span>
                 <pre style="font-size: 16px;">
                     {
                         "status":UNAUTHORIZED,
                         "message":"账号或密码错误..."
                     }
                 </pre>
-        </el-col>
-    </el-row>
-</div>
+            </el-col>
+        </el-row>
+    </div>
 </template>
 
 <script>
@@ -268,13 +255,14 @@
 </script>
 
 <style scoped>
-    .el-icon-s-operation {
-        margin-bottom: 10px;
-        margin-right: 980px;
-        font-size: 20px;
-        text-align: center;
-        color: #2196f3;
+    .el-table {
+        margin-top: 10px;
     }
+
+    .el-input {
+        margin-top: 10px;
+    }
+
     .fontStyle {
         color: #2196f3;
         font-size: 18px;

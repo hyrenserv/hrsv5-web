@@ -421,7 +421,7 @@ export default {
                         } */
                         if (arr[i].data_extract_type != "1") {
                             tbStoInfoString.push({
-                                is_zipper: arr[i].is_zipper ? "1" : "0",
+                                is_zipper: arr[i].is_zipper==true ? "1" : "0",
                                 storage_time: parseInt(arr[i].storage_time),
                                 storage_type: arr[i].storage_type,
                                 table_id: arr[i].table_id
