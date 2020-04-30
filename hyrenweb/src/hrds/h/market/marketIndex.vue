@@ -53,14 +53,15 @@
                     <div>
                         <p>{{item.dsl_name}}</p>
                         <el-table :data="item.result">
-                            <el-table-column label="aaa" prop="datatable_en_name">
+                            <el-table-column label="表名" prop="datatable_en_name">
                                 <template slot-scope="scope">
-                                    <p>表名：{{item2.datatable_en_name}}</p>
+                                    <p>{{scope.row.datatable_en_name}}</p>
+                                    <!--<p>表名：{{item2.datatable_en_name}}</p>-->
                                 </template>
                             </el-table-column>
-                            <el-table-column label="aaa">
-                                <template slot-scope="scope" prop="soruce_size">
-                                    <p>大小：{{item2.soruce_size}}</p>
+                            <el-table-column label="大小"  prop="soruce_size">
+                                <template slot-scope="scope">
+                                    <p>{{scope.row.soruce_size}}</p>
                                 </template>
                             </el-table-column>
                         </el-table>
