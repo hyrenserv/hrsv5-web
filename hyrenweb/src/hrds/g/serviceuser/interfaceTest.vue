@@ -94,7 +94,7 @@
                         <el-input v-model="testForm.directory" clearable placeholder="请输入文件目录"/>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="success" @click="getInterfaceData">提交</el-button>
+                        <el-button type="success" size="mini" @click="getInterfaceData">提交</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
