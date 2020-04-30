@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="etljob">
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
@@ -444,7 +444,7 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="上游作业名">
-                    <el-select v-model="formAdd.pre_etl_job" multiple style="width:218px;" placeholder="上游作业名" @change="selectChange">
+                    <el-select v-model="formAdd.pre_etl_job" multiple :collapse-tags='true' style="width:218px;" placeholder="上游作业名" @change="selectChange">
                         <el-option v-for="item in addSelect.preJobName" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -943,9 +943,16 @@ export default {
                     params["pro_para"] = this.formAdd.pro_para;
                     params["log_dic"] = this.formAdd.log_dic;
                     params["disp_freq"] = this.formAdd.disp_freq;
+                    if (this.formAdd.disp_offset == '') {
+                        this.formAdd.disp_offset = null;
+                    }
                     params["disp_offset"] = this.formAdd.disp_offset;
                     params["disp_type"] = this.formAdd.disp_type;
                     params["disp_time"] = this.formAdd.disp_time;
+                    console.log(this.formAdd.job_priority)
+                    if (this.formAdd.job_priority == '') {
+                        this.formAdd.job_priority = null;
+                    }
                     params["job_priority"] = this.formAdd.job_priority;
                     params["job_eff_flag"] = this.formAdd.job_eff_flag;
                     params["today_disp"] = this.formAdd.today_disp;
@@ -1072,8 +1079,14 @@ export default {
                     params["pro_para"] = this.formAdd.pro_para;
                     params["log_dic"] = this.formAdd.log_dic;
                     params["disp_freq"] = this.formAdd.disp_freq;
+                    if (this.formAdd.disp_offset == '') {
+                        this.formAdd.disp_offset = null;
+                    }
                     params["disp_offset"] = this.formAdd.disp_offset;
                     params["disp_type"] = this.formAdd.disp_type;
+                    if (this.formAdd.job_priority == '') {
+                        this.formAdd.job_priority = null;
+                    }
                     params["job_priority"] = this.formAdd.job_priority;
                     params["job_eff_flag"] = this.formAdd.job_eff_flag;
                     params["today_disp"] = this.formAdd.today_disp;
@@ -1213,5 +1226,10 @@ export default {
 
 .searchBtn {
     margin-left: 10px;
+}
+
+.etljob>>>.el-select__tags {
+    white-space: nowrap;
+    overflow: hidden;
 }
 </style>
