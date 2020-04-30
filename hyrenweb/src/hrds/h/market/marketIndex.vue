@@ -49,23 +49,22 @@
         <span class="top3title">存储层表top5</span>
         <div class="dataSheetmain">
             <div class="dataSheetmainDiv3" v-for="(item,index) in tabletop5indsl" :key="index">
+                <el-row justify="center">
+                    <span class="top3title"> <p>{{item.dsl_name}}</p></span>
+                </el-row>
                 <el-row>
-                    <div>
-                        <p>{{item.dsl_name}}</p>
-                        <el-table :data="item.result">
-                            <el-table-column label="表名" prop="datatable_en_name">
-                                <template slot-scope="scope">
-                                    <p>{{scope.row.datatable_en_name}}</p>
-                                    <!--<p>表名：{{item2.datatable_en_name}}</p>-->
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="大小"  prop="soruce_size">
-                                <template slot-scope="scope">
-                                    <p>{{scope.row.soruce_size}}</p>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
+                    <el-table :data="item.result" border="true" size="medium ">
+                        <el-table-column label="集市数据表名" prop="datatable_en_name" align="center">
+                            <template slot-scope="scope">
+                                <p>{{scope.row.datatable_en_name}}</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="占用空间大小" prop="soruce_size"  align="center">
+                            <template slot-scope="scope">
+                                <p>{{scope.row.soruce_size}}</p>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-row>
             </div>
         </div>
@@ -103,9 +102,6 @@
                                :auto-upload="false" :on-change="handleChange">
                         <el-button size="small" type="primary">选择上传文件</el-button>
                     </el-upload>
-                    <!--<el-tooltip class="item" effect="dark" content="在本系统中要上传的集市工程文件，后缀名为hrds的加密文件" placement="right">-->
-                    <!--<i class="fa fa-question-circle " aria-hidden="true"></i>-->
-                    <!--</el-tooltip>-->
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -349,11 +345,15 @@
         position: relative;
     }
 
+    .el-tabs {
+        margin-top: 0px
+    }
+
     .dataSheetmainDiv3 {
         margin-bottom: 50px;
-        padding-top: 10px;
-        width: 200px;
-        height: 400px;
+        /*padding-top: 10px;*/
+        width: 400px;
+        height: 300px;
         /*background: #337ab7;*/
         border-radius: 10px;
         margin-right: 82px;
@@ -502,7 +502,7 @@
 
     .top3title {
         /*border-bottom: 1px solid #e6e3e3;*/
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         /*margin-left: px;*/
         width: 100%;
         height: 40px;
