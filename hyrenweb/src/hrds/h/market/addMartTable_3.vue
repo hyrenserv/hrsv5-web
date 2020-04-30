@@ -8,7 +8,7 @@
         </el-row>
         <Step :active="active"></Step>
         <el-row class='topTitle'>
-            <span>配置完成</span>
+            <span>配置完成，表名：{{tablename}}</span>
         </el-row>
         <el-tabs type="card">
             <el-row>
@@ -88,6 +88,7 @@
         },
         data() {
             return {
+                tablename:"",
                 isLoading:false,
                 dialogProdeceJobs: false,
                 active: 2,
@@ -105,6 +106,7 @@
         },
         mounted() {
             this.getquerysql();
+            this.gettablename();
         },
         methods: {
             back() {
@@ -124,6 +126,13 @@
                     }
                 })
             },
+            gettablename() {
+                functionAll.getTableName({"datatable_id": this.datatable_id}).then((res) => {
+                    if (res && res.success) {
+                        this.tablename = res.data[0].datatable_en_name;
+                    }
+                })
+            },
             excutmartjob() {
                 this.isLoading = true;
                 let param = {
@@ -131,7 +140,6 @@
                     "date": this.date,
                     "parameter": this.parameter
                 }
-                debugger;
                 functionAll.excutMartJob(param).then((res) => {
                     this.isLoading = false;
                     if (res && res.success) {

@@ -2,78 +2,11 @@ import request from '@/utils/request'
 import Qs from 'qs'
 
 /**
- * 获取登录用户集市所有表加起来的存储量大小
+ * 获取登录用户数据集市首页信息
  */
-export function getTotalStorage() {
+export function getAllDslInMart() {
     return request({
-        url: '/H/market/getTotalStorage'
-    })
-}
-
-/**
- * 获取登录用户集市的所有Hbase表的个数
- */
-export function getHbaseStorage() {
-    return request({
-        url: '/H/market/getHbaseStorage'
-    })
-}
-
-/**
- * 获取登录用户集市的所有Hive表的个数
- */
-export function getHyRenDBStorage() {
-    return request({
-        url: '/H/market/getHyRenDBStorage'
-    })
-}
-
-
-
-/**
- * 获取登录用户集市的所有Solr表的个数
- */
-export function getSolrDBStorage() {
-    return request({
-        url: '/H/market/getSolrDBStorage'
-    })
-}
-
-
-/**
- * 获取登录用户集市占用存储量前三的集市工程名和存储量大小
- */
-export function getMarketTakesUpTop3Storage() {
-    return request({
-        url: '/H/market/getMarketTakesUpTop3Storage'
-    })
-}
-
-/**
- * 获取登录用户集市Hbase表占用存储前三的集市工程
- */
-export function getMarketHbaseTop3Storage() {
-    return request({
-        url: '/H/market/getMarketHbaseTop3Storage'
-    })
-}
-
-/**
- * 获取登录用户集市Hive表占用存储前三的集市工程
- */
-export function getMarketHyRenDbTop3Storage() {
-    return request({
-        url: '/H/market/getMarketHyRenDbTop3Storage'
-    })
-}
-
-
-/**
- * 获取登录用户集市Solr表占用存储前三的集市工程
- */
-export function getMarketSolrDBTop3Storage() {
-    return request({
-        url: '/H/market/getMarketSolrDBTop3Storage'
+        url: '/H/market/getAllDslInMart'
     })
 }
 
@@ -365,3 +298,21 @@ export function deleteMart(data) {
         params: data
     })
 }
+
+//获取表名
+export function getTableName(data) {
+    return request({
+        url: '/H/market/getTableName',
+        params: data
+    })
+}
+
+
+//获取各个存储层中表大小的前五名
+export function getTableTop5InDsl(data) {
+    return request({
+        url: '/H/market/getTableTop5InDsl',
+        params: data
+    })
+}
+

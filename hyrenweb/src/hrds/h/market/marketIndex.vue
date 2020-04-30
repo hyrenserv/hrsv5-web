@@ -1,51 +1,20 @@
 <template>
     <div id="marketIndex">
         <el-row class='topTitle'>
-            <!--<i class="block_icon fa text-warning fa-globe blue"></i>-->
             <span>数据集市</span>
-            <!--<el-button type="primary" class="el1 els goIndex" tab-position="top" @click="dialogofmarketadd = true;"-->
-            <!--size="small">-->
-            <!--<i class="el-icon-circle-plus-outline"></i>新增集市-->
-            <!--</el-button>-->
         </el-row>
-
-        <el-row class="bottomMargin">
-            <el-col :span="5">
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="totalstorage" border style="width: 100%">
-                        <el-table-column prop="sources" label="总数据存储量" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
-
-            <el-col :span="5" :offset="1">
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="hyrendbstorage" border style="width: 100%">
-                        <el-table-column prop="count" label="HIVE数据表数" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
-
-            <el-col :span="5" :offset="1">
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="kvstorage" border style="width: 100%">
-                        <el-table-column prop="count" label="HBASE数据表数" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
-
-            <el-col :span="5" :offset="1">
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="solrdbstorage" border style="width: 100%">
-                        <el-table-column prop="count" label="SOLR数据表数" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
-        </el-row>
+        <span class="top3title">存储层表数量</span>
+        <div class="dataSheetmain">
+            <div class="dataSheetmainDiv2" v-for="(item,index) in alldslinfomart" :key="index">
+                <el-row>
+                    <div>
+                        <i class="fa fa-database fa-3x"></i>
+                        <p>{{item.dsl_name}}</p>
+                        <p>数量：{{item.count}}</p>
+                    </div>
+                </el-row>
+            </div>
+        </div>
         <el-row class='top3style'>
             <span class="top3title">集市列表</span>
             <div class="elButton">
@@ -70,79 +39,38 @@
                 <el-row class="boxshletr">
                     <el-button size="mini" title="导出工程" @click="downloadmart(item.mart_name,item.data_mart_id)"><i
                             class="fa fa-download "></i></el-button>
-                    <el-button size="mini" title="删除工程" @click="deletemart(item.data_mart_id)"><i class="fa fa-trash"></i>
+                    <el-button size="mini" title="删除工程" @click="deletemart(item.data_mart_id)"><i
+                            class="fa fa-trash"></i>
                     </el-button>
 
                 </el-row>
             </div>
         </div>
-
-
-        <el-row class="bottomMargin">
-            <el-col :span="5">
-                <el-row type="flex" justify="center">
-                    <el-tabs class="tabes" type="card">
-                        <span class="top3title">集市占用存储</span>
-                    </el-tabs>
-                </el-row>
+        <span class="top3title">存储层表top5</span>
+        <div class="dataSheetmain">
+            <div class="dataSheetmainDiv3" v-for="(item,index) in tabletop5indsl" :key="index">
                 <el-row>
-                    <el-tabs class="tabes" type="card">
-                        <el-table :data="totalstoragetop3" border style="width: 100%">
-                            <el-table-column prop="mart_name" label="集市名称" align='center'>
+                    <div>
+                        <p>{{item.dsl_name}}</p>
+                        <el-table :data="item.result">
+                            <el-table-column label="aaa" prop="datatable_en_name">
+                                <template slot-scope="scope">
+                                    <p>表名：{{item2.datatable_en_name}}</p>
+                                </template>
                             </el-table-column>
-                            <el-table-column prop="source_size" label="占用空间" align='center'>
+                            <el-table-column label="aaa">
+                                <template slot-scope="scope" prop="soruce_size">
+                                    <p>大小：{{item2.soruce_size}}</p>
+                                </template>
                             </el-table-column>
                         </el-table>
-                    </el-tabs>
+                    </div>
                 </el-row>
-            </el-col>
-            <el-col :span="5" :offset="1">
-                <el-row type="flex" justify="center">
-                    <el-tabs class="tabes" type="card">
-                        <span class="top3title">HIVE占用存储前三表</span>
-                    </el-tabs>
-                </el-row>
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="hyrendbstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="数据名称" align='center'>
-                        </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
+            </div>
+        </div>
 
-            <el-col :span="5" :offset="1">
-                <el-row type="flex" justify="center">
-                    <el-tabs class="tabes" type="card">
-                        <span class="top3title">HBASE占用存储前三表</span>
-                    </el-tabs>
-                </el-row>
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="kvstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="数据名称" align='center'>
-                        </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
+        <el-row class="bottomMargin">
 
-            <el-col :span="5" :offset="1">
-                <el-row type="flex" justify="center">
-                    <el-tabs class="tabes" type="card">
-                        <span class="top3title">SOLR占用存储前三表</span>
-                    </el-tabs>
-                </el-row>
-                <el-tabs class="tabes" type="card">
-                    <el-table :data="solrdbstoragetop3" border style="width: 100%">
-                        <el-table-column prop="mart_name" label="数据名称" align='center'>
-                        </el-table-column>
-                        <el-table-column prop="source_size" label="占用空间" align='center'>
-                        </el-table-column>
-                    </el-table>
-                </el-tabs>
-            </el-col>
         </el-row>
 
 
@@ -210,14 +138,7 @@
                 dialogFormVisibleImport: false,
                 SumTotal: [],
                 formLabelWidth: "150px",
-                totalstorage: [],
-                totalstoragetop3: [],
-                kvstorage: [],
-                kvstoragetop3: [],
-                hyrendbstorage: [],
-                hyrendbstoragetop3: [],
-                solrdbstorage: [],
-                solrdbstoragetop3: [],
+                alldslinfomart: [],
                 marketinfo: {},
                 dialogofmarketadd: false,
                 formAdd: {
@@ -228,67 +149,30 @@
                 rule: validator.default,
                 formImport: {},
                 isLoading: false,
+                tabletop5indsl: [],
             };
         },
         mounted() {
-            this.getTotalStorage();
-            this.getHyRenDBStorage();
-            this.getKVStorage();
-            this.getSolrDBStorage();
+            this.getAllDslInMart();
             this.getMarketInfo();
-            this.getMarketTakesUpTop3Storage();
+            this.getTableTop5InDsl();
         },
         methods: {
+            getAllDslInMart() {
+                functionAll.getAllDslInMart().then(res => {
+                    this.alldslinfomart = res.data;
+                })
+            },
+            getTableTop5InDsl() {
+                functionAll.getTableTop5InDsl().then(res => {
+                    this.tabletop5indsl = res.data;
+                })
+            },
             handleChange(file, fileList) {
                 if (fileList.length > 0) {
                     this.fileList = [fileList[fileList.length - 1]]
                 }
             },
-            getTotalStorage() {
-                functionAll.getTotalStorage().then(res => {
-                    this.totalstorage = res.data;
-                })
-            },
-            getKVStorage() {
-                functionAll.getHbaseStorage().then(res => {
-                    this.kvstorage = res.data;
-                })
-            },
-            getHyRenDBStorage() {
-                functionAll.getHyRenDBStorage().then(res => {
-                    this.hyrendbstorage = res.data;
-                })
-            },
-            getSolrDBStorage() {
-                functionAll.getSolrDBStorage().then(res => {
-                    this.solrdbstorage = res.data;
-                })
-            },
-
-            getMarketTakesUpTop3Storage() {
-                functionAll.getMarketTakesUpTop3Storage().then(res => {
-                    this.totalstoragetop3 = res.data;
-                })
-            },
-
-            getMarketHyRenDbTop3Storage() {
-                functionAll.getMarketHyRenDbTop3Storage().then(res => {
-                    this.kvstoragetop3 = res.data;
-                })
-            },
-
-            getMarketKeyValueTop3Storage() {
-                functionAll.getMarketHbaseTop3Storage().then(res => {
-                    this.hyrendbstoragetop3 = res.data;
-                })
-            },
-
-            getMarketSolrDBTop3Storage() {
-                functionAll.getMarketSolrDBTop3Storage().then(res => {
-                    this.solrdbstoragetop3 = res.data;
-                })
-            },
-
             getMarketInfo() {
                 functionAll.getMarketInfo().then(res => {
                     this.marketinfo = res.data;
@@ -394,15 +278,15 @@
             deletemart(data_mart_id) {
                 message.confirmMsg('确定删除吗').then(res => {
                     this.isLoading = true;
-                    functionAll.deleteMart({"data_mart_id":data_mart_id}).then(res => {
+                    functionAll.deleteMart({"data_mart_id": data_mart_id}).then(res => {
                         this.isLoading = false;
-                        if(res && res.success){
-                            if(!res.data.status){
+                        if (res && res.success) {
+                            if (!res.data.status) {
                                 this.$message({
                                     type: "warning",
                                     message: "工程下还存在表，请先删除表"
                                 });
-                            }else{
+                            } else {
                                 this.$message({
                                     type: "success",
                                     message: "删除成功"
@@ -444,6 +328,32 @@
         width: 100px;
         height: 80px;
         background: #337ab7;
+        border-radius: 10px;
+        margin-right: 82px;
+        text-align: center;
+        float: left;
+        position: relative;
+    }
+
+    .dataSheetmainDiv2 {
+        margin-bottom: 50px;
+        padding-top: 10px;
+        width: 130px;
+        height: 100px;
+        background: #337ab7;
+        border-radius: 10px;
+        margin-right: 82px;
+        text-align: center;
+        float: left;
+        position: relative;
+    }
+
+    .dataSheetmainDiv3 {
+        margin-bottom: 50px;
+        padding-top: 10px;
+        width: 200px;
+        height: 400px;
+        /*background: #337ab7;*/
         border-radius: 10px;
         margin-right: 82px;
         text-align: center;
