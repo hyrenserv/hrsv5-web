@@ -1153,6 +1153,7 @@ export default {
                     if (res.code == 200) {
                         message.customizTitle("文件上传成功", "success");
                         this.getTable();
+                        this.fileList = [];
                     }
                 });
             } else {
