@@ -13,20 +13,20 @@
             <el-table size="medium" :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" width="70px" align='center'>
                 </el-table-column>
-                <el-table-column prop="etl_sys_cd" label="工程编号" width="110px" align='center'>
+                <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="details(scope.$index, scope.row)">
                             {{scope.row.etl_sys_cd}}
                         </el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="etl_sys_name" label="工程名称" width="150px" align='center'>
+                <el-table-column prop="etl_sys_name" show-overflow-tooltip label="工程名称" align='center'>
                 </el-table-column>
-                <el-table-column prop="comments" label="工程描述" width="220px" align='center'>
+                <el-table-column prop="comments" show-overflow-tooltip label="工程描述" align='center'>
                 </el-table-column>
-                <el-table-column prop="curr_bath_date" label="当前批量日期" width="200px" align='center'>
+                <el-table-column prop="curr_bath_date" show-overflow-tooltip label="当前批量日期" align='center'>
                 </el-table-column>
-                <el-table-column label="操作" align='center'>
+                <el-table-column label="操作" align='center' width="300px">
                     <template slot-scope="scope">
                         <el-button size="mini" icon="el-icon-edit" title="编辑" circle type="primary" @click="handleEdit(scope.$index, scope.row)">
                         </el-button>
