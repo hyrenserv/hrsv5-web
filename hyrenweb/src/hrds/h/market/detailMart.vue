@@ -163,10 +163,9 @@
                     functionAll.downloadDmDatatable({
                         datatable_id: datatable_id
                     }).then(res => {
-                        debugger;
                         // if (res && res.success) {
                         let filename = datatable_en_name + ".xlsx"
-                        const blob = new Blob([res]);
+                        const blob = new Blob([res.data]);
                         if (window.navigator.msSaveOrOpenBlob) {
                             // 兼容IE10
                             navigator.msSaveBlob(blob, filename);
