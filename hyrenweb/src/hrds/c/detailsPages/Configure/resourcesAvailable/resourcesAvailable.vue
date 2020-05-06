@@ -40,10 +40,9 @@
     </el-table>
     <el-row :gutter="20" class="tabBtns">
 
-      
-            <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" style="float:right" @size-change="handleSizeChange">
-            </el-pagination>
-       
+        <el-pagination background layout="prev, pager, next, sizes, total, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" style="float:right" @size-change="handleSizeChange">
+        </el-pagination>
+
     </el-row>
     <!-- 添加资源模态框 -->
     <el-dialog title="添加资源定义" :visible.sync="dialogFormVisibleAdd" width="42%" :before-close="beforeClosechange">
@@ -320,6 +319,7 @@ export default {
                 resourcesAvailableAllFun.uploadExcelFile(param).then(res => {
                     if (res.code == 200) {
                         message.customizTitle("文件上传成功", "success");
+                        this.getTable();
                     }
                 });
             } else {
