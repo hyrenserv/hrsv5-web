@@ -354,6 +354,7 @@ export default {
                 resourcesUsageAllFun.uploadExcelFile(param).then(res => {
                     if (res.code == 200) {
                         message.customizTitle("文件上传成功", "success");
+                        this.getTable();
                     }
                 });
             } else {
