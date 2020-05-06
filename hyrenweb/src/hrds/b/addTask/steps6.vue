@@ -109,7 +109,7 @@
             </el-row>
         </div>
         <div class="steps4">
-            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)">
+            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
                 <el-table-column label="序号" align="center" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
