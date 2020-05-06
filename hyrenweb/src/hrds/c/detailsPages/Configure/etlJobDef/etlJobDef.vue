@@ -1232,4 +1232,9 @@ export default {
     white-space: nowrap;
     overflow: hidden;
 }
+</style><style>
+.el-autocomplete-suggestion li {
+    overflow: visible;
+    /* text-overflow: ellipsis; */
+}
 </style>

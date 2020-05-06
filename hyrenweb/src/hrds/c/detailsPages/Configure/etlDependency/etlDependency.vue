@@ -571,4 +571,9 @@ export default {
     float: right;
     margin-bottom: 14px;
 }
+</style><style>
+.el-autocomplete-suggestion li {
+    overflow: visible;
+    /* text-overflow: ellipsis; */
+}
 </style>

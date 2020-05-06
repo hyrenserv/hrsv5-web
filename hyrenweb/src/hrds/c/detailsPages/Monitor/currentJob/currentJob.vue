@@ -393,4 +393,9 @@ export default {
 .itemformel {
     margin-bottom: 0;
 }
+</style><style>
+.el-autocomplete-suggestion li {
+    overflow: visible;
+    /* text-overflow: ellipsis; */
+}
 </style>

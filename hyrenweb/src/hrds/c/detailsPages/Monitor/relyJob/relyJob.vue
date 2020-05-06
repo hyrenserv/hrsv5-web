@@ -232,4 +232,9 @@ export default {
 .relyJob .elformItem {
     margin-bottom: 0px;
 }
+</style><style>
+.el-autocomplete-suggestion li {
+    overflow: visible;
+    /* text-overflow: ellipsis; */
+}
 </style>
