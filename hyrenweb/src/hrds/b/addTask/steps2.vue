@@ -1448,19 +1448,13 @@ export default {
                                     ].rec_num_date;
                                 }
                                 if (this.ParallelExtractionArr[jj].pageparallels) {
-                                    arrData[j].pageparallels = this.ParallelExtractionArr[
-                                        jj
-                                    ].pageparallels;
+                                    arrData[j].pageparallels = this.ParallelExtractionArr[jj].pageparallels;
                                 }
                                 if (this.ParallelExtractionArr[jj].dataincrement) {
-                                    arrData[j].dataincrement = this.ParallelExtractionArr[
-                                        jj
-                                    ].dataincrement;
+                                    arrData[j].dataincrement = this.ParallelExtractionArr[jj].dataincrement;
                                 }
                                 if (this.ParallelExtractionArr[jj].table_count) {
-                                    arrData[j].table_count = this.ParallelExtractionArr[
-                                        jj
-                                    ].table_count;
+                                    arrData[j].table_count = this.ParallelExtractionArr[jj].table_count;
                                 }
                             }
                         }
@@ -1539,9 +1533,9 @@ export default {
                                     table_name: arrData[k].table_name,
                                     sql: arrData[k].sql ? arrData[k].sql : "",
                                     pageparallels: arrData[k].pageparallels ?
-                                        parseInt(arrData[k].pageparallels) : null,
+                                        parseInt(arrData[k].pageparallels) : 0,
                                     dataincrement: arrData[k].dataincrement ?
-                                        parseInt(arrData[k].dataincrement) : null,
+                                        parseInt(arrData[k].dataincrement) : 0,
                                     table_count: arrData[k].table_count ?
                                         "" + arrData[k].table_count : "",
                                     rec_num_date: arrData[k].rec_num_date ?
