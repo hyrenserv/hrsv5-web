@@ -415,6 +415,7 @@ export default {
         nextCollect(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    let object = Object.assign({}, this.form)
                     this.isLoading = true;
                     this.form['classify_id'] = this.classify_id;
                     this.form['agent_id'] = this.$route.query.agent_id;
@@ -446,6 +447,8 @@ export default {
                                     path: "/collection4_2",
                                     query: data
                                 })
+                            } else {
+                                this.form = object;
                             }
                         })
                     } else {
@@ -473,6 +476,8 @@ export default {
                                     path: "/collection4_2",
                                     query: data
                                 })
+                            } else {
+                                this.form = object;
                             }
                         })
                     }
