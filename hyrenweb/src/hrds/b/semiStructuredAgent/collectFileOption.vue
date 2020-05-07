@@ -89,7 +89,7 @@
         <el-row class="rowDioloag">
             <el-col :span="8" class="colContent" v-if="showORhidden">
                 <div class="mytree"  hight='200'>
-                    <el-tree :data="data2" show-checkbox @check-change="handleCheckChange">
+                    <el-tree :data="data2" :check-strictly="true" show-checkbox @check-change="handleCheckChange">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span @click="() => append(data)">{{ node.label }}</span>
                             <span>
