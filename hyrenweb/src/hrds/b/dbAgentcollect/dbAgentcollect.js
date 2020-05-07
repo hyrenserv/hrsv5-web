@@ -116,7 +116,8 @@ export function getTableColumnByTableName(data) {
 export function saveTableData(data) {
     return request({
         url: '/B/agent/datafileconf/tableconf/saveTableData',
-        params: data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 /**(4)
