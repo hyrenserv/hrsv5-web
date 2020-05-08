@@ -67,9 +67,9 @@
                                       placeholder="字段中文名"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="field_type" label="字段类型" show-overflow-tooltip
+                    <el-table-column prop="field_type" label="字段类型" width="140" show-overflow-tooltip
                                      align="center">
-                        <template slot-scope="scope">
+                        <template slot-scope="scope" width="140">
                             <el-select v-model="scope.row.field_type" placeholder="请选择">
                                 <el-option v-for="item in allfield_type" :key="item.target_type"
                                            :label="item.target_type"
@@ -77,16 +77,16 @@
                             </el-select>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="field_length" label="字段长度" show-overflow-tooltip
+                    <el-table-column prop="field_length" label="字段长度" width="90" show-overflow-tooltip
                                      align="center">
-                        <template slot-scope="scope">
-                            <el-input v-model="scope.row.field_length" autocomplete="off"
+                        <template slot-scope="scope" >
+                            <el-input width="90" v-model="scope.row.field_length" autocomplete="off"
                                       placeholder="字段长度"></el-input>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="field_process" label="处理方式" show-overflow-tooltip
+                    <el-table-column prop="field_process" label="处理方式" width="100" show-overflow-tooltip
                                      align="center">
-                        <template slot-scope="scope">
+                        <template slot-scope="scope" width="100">
                             <el-select v-model="scope.row.field_process" @change="changecolumnfiledproccess(scope.row)"
                                        placeholder="请选择">
                                 <el-option v-for="item in allfield_process" :key="item.value"
@@ -135,13 +135,22 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" show-overflow-tooltip
-                                     align="center" width="400%">
+                                     align="center" width="150">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="medium" @click="upcolumn(scope.$index,scope.row)">上移
+                            <el-button size="mini" icon="el-icon-arrow-up" title="上移" @click="upcolumn(scope.$index,scope.row)"
+                                       circle type="primary">
                             </el-button>
-                            <el-button type="primary" size="medium" @click="downcolumn(scope.$index,scope.row)">下移
+                            <el-button size="mini" icon="el-icon-arrow-down" title="下移" @click="downcolumn(scope.$index,scope.row)"
+                                       circle type="primary">
                             </el-button>
-                            <el-button type="primary" size="medium" @click="deletecolumn(scope.row)">删除</el-button>
+                            <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletecolumn(scope.$index)"
+                                       circle type="primary">
+                            </el-button>
+                            <!--<el-button type="primary" size="mini" @click="upcolumn(scope.$index,scope.row)">上移-->
+                            <!--</el-button>-->
+                            <!--<el-button type="primary" size="mini" @click="downcolumn(scope.$index,scope.row)">下移-->
+                            <!--</el-button>-->
+                            <!--<el-button type="primary" size="mini" @click="deletecolumn(scope.row)">删除</el-button>-->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -202,7 +211,7 @@
         <el-dialog title="表字段" :visible.sync="iftablecolumn" width="30%" class='data_edit'>
             <el-row>
                 <el-table :data="tablecolumn" border size="mini" ref="filterTable">
-                    <el-table-column prop="selectionstate" width="100%" align="center">
+                    <el-table-column prop="selectionstate" width="50" align="center">
                         <template slot="header" slot-scope="scope">
                             <el-checkbox @change="Allis_selectionstateFun()"
                                          v-model="Allis_selectionstate"
@@ -214,7 +223,7 @@
                                          v-model="scope.row.selectionstate"></el-checkbox>
                         </template>
                     </el-table-column>
-                    <el-table-column type="index" width="100%" label="序号" align='center'></el-table-column>
+                    <el-table-column type="index" label="序号" align='center'></el-table-column>
                     <el-table-column prop="columnname" label="字段英文名" show-overflow-tooltip
                                      align="center">
                     </el-table-column>
