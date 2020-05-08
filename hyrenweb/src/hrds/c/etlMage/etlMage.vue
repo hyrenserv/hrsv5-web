@@ -334,7 +334,8 @@ export default {
             },
             tableData: [],
             EtlSysInfo: [],
-            listdata: []
+            listdata: [],
+            online: {},
         };
     },
     mounted() {
@@ -657,7 +658,11 @@ export default {
         //表格部署按钮
         handleDeploy(index, row) {
             this.formDeploy.etl_sys_cd = row.etl_sys_cd;
-            this.getEtlSys(row.etl_sys_cd);
+            etlMageAllFun.searchEtlSysById({
+                "etl_sys_cd": row.etl_sys_cd
+            }).then(res => {
+                this.formDeploy = res.data;
+            });
             this.dialogFormVisibleDeploy = true;
         },
         //表格启动CONTROL按钮
