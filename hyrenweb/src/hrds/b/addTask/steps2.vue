@@ -11,7 +11,7 @@
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
                 <div class="singleTableinner">
-                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" :empty-text="tableloadingInfo" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
+                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}"  style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -231,7 +231,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table :data="SelectColumnData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+        <el-table :data="SelectColumnData" border size="medium" highlight-current-row >
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
@@ -518,7 +518,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table :data="SelectColumnData2" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+        <el-table :data="SelectColumnData2" border size="medium" highlight-current-row >
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
