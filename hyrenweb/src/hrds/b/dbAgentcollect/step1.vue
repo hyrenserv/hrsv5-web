@@ -216,6 +216,7 @@ export default {
                 this.getInitDataFileData();
             } else {
                 functionAll.addDataFileData({
+                    agent_id: this.$route.query.agent_id,
                     source_id: this.$route.query.source_id
                 }).then(res => {
                     if (JSON.stringify(res.data) != "{}") {
@@ -231,6 +232,7 @@ export default {
         // 点击编辑获取的数据
         getInitDataFileData() {
             functionAll.getInitDataFileData({
+                agent_id: this.$route.query.agent_id,
                 colSetId: this.$route.query.id
             }).then(res => {
                 if (JSON.stringify(res.data) != "{}") {
