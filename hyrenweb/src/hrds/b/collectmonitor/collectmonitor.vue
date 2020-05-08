@@ -28,12 +28,12 @@
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ item.agent_type }}</span>
                 </el-option>
             </el-select>
-            <el-divider direction="vertical"></el-divider>
+            <!-- <el-divider direction="vertical"></el-divider>
             <span>成功 {{suceess}}</span>
             <el-divider direction="vertical"></el-divider>
             <span>失败 {{failure}}</span>
             <el-divider direction="vertical"></el-divider>
-            <span>运行中 {{running}}</span>
+            <span>运行中 {{running}}</span> -->
         </el-col>
     </el-row>
     <el-row :gutter="20">
