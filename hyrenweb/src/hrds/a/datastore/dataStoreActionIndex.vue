@@ -133,7 +133,7 @@
                 </el-col>
                 <span class="saveDataSpan">数据存储层配置属性</span>
                 <el-button size="medium" class="partTwoBtn" type="success" @click="addTableDataRow">增加行</el-button>
-                <el-table :data="form.tableDataConfigure" border stripe size="medium" height="300">
+                <el-table :data="form.tableDataConfigure" border stripe size="medium">
                     <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
 
                     <el-table-column label="key" align="center" :key="2">

@@ -78,7 +78,7 @@
             <el-button size="mini" type="danger" @click="handleBatchIntervene">批量干预
             </el-button>
         </el-col>
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize1" :total="pageLength1" @current-change="handleCurrentChange1" @size-change="handleSizeChange1">
+        <el-pagination layout="total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize1" :total="pageLength1" @current-change="handleCurrentChange1" @size-change="handleSizeChange1">
         </el-pagination>
     </el-row>
     <el-divider></el-divider>
@@ -102,7 +102,7 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize2" :total="pageLength2" @current-change="handleCurrentChange2" @size-change="handleSizeChange2">
+        <el-pagination layout="total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize2" :total="pageLength2" @current-change="handleCurrentChange2" @size-change="handleSizeChange2">
         </el-pagination>
     </el-row>
     <el-divider></el-divider>
@@ -124,7 +124,7 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize3" :total="pageLength3" @current-change="handleCurrentChange3" @size-change="handleSizeChange3">
+        <el-pagination layout="total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize3" :total="pageLength3" @current-change="handleCurrentChange3" @size-change="handleSizeChange3">
         </el-pagination>
     </el-row>
     <!-- 停止模态框 -->

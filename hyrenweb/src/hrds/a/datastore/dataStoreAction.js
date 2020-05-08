@@ -176,3 +176,12 @@ export function deleteDataTypeContrastInfo(data) {
         params: data
     })
 }
+/**(14)
+ * 根据存储层类型获取数据存储层配置
+ */
+export function getDataLayerAttrKey(data) {
+    return request({
+        url: '/A/datastore/getDataLayerAttrKey',
+        params: data
+    })
+}
