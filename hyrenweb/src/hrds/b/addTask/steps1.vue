@@ -153,7 +153,7 @@
                         </div>
                     </el-dialog>
                     <div slot="footer" class="dialog-footer">
-                        <el-table :empty-text="tableloadingInfo" :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" highlight-current-row @current-change="handleSelectionChange" @row-click="chooseone">
+                        <el-table  :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" highlight-current-row @current-change="handleSelectionChange" @row-click="chooseone">
                             <el-table-column property label="选择" width="60px" type="index" align="center">
                                 <template slot-scope="scope">
                                     <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>

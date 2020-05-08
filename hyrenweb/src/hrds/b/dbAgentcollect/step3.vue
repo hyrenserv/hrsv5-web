@@ -2,7 +2,7 @@
 <div>
     <Step :active="active"></Step>
     <el-form ref="ruleForm" :model="ruleForm">
-        <el-table class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium" :empty-text="tableloadingInfo">
+        <el-table class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium" >
             <el-table-column property label="序号" width="60px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>

@@ -107,32 +107,38 @@ export default {
                     colSetId: this.$route.query.id,
                     table_name: val.table_name
                 }).then(res => {
+                    let arry = [];
                     res.data.forEach((item, index) => {
                         if (item.column_name.toUpperCase() == 'HYREN_S_DATE') {
-                            res.data.splice(index, 1)
-                        } else if (item.column_name.toUpperCase() == 'HYREN_E_DATE') {
-                            res.data.splice(index, 1)
+                            return false;
+                        } else if (item.column_name.toUpperCase() == "HYREN_E_DATE") {
+                            return false;
                         } else if (item.column_name.toUpperCase() == 'HYREN_MD5_VAL') {
-                            res.data.splice(index, 1)
+                            return false;
+                        } else {
+                            arry.push(item)
                         }
                     })
-                    this.tableDataDialog = res.data;
+                    this.tableDataDialog = arry;
                 })
             } else {
                 functionAll.getTableColumnByTableId({
                     colSetId: this.$route.query.id,
                     table_id: val.table_id
                 }).then(res => {
+                    let arry = [];
                     res.data.forEach((item, index) => {
                         if (item.column_name.toUpperCase() == 'HYREN_S_DATE') {
-                            res.data.splice(index, 1)
-                        } else if (item.column_name.toUpperCase() == 'HYREN_E_DATE') {
-                            res.data.splice(index, 1)
+                            return false;
+                        } else if (item.column_name.toUpperCase() == "HYREN_E_DATE") {
+                            return false;
                         } else if (item.column_name.toUpperCase() == 'HYREN_MD5_VAL') {
-                            res.data.splice(index, 1)
+                            return false;
+                        } else {
+                            arry.push(item)
                         }
                     })
-                    this.tableDataDialog = res.data;
+                    this.tableDataDialog = arry;
                 })
             }
             this.innerVisible = true;

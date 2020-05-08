@@ -107,7 +107,8 @@
                             <el-button type="text" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
                         </el-col>
                         <el-col :span="9" class="sendmsg">
-                            <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button>
+                            <!-- <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button> -->
+                            <el-button type="text" class="workcolor" >生成作业</el-button>
                         </el-col>
                     </el-row>
                 </template>

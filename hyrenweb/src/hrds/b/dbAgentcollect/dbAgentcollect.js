@@ -126,7 +126,8 @@ export function saveTableData(data) {
 export function updateColumnByTableId(data) {
     return request({
         url: '/B/agent/datafileconf/tableconf/updateColumnByTableId',
-        params: data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 // steps3

@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="AllTable_SeparatorFun()" class="alltables">所有表分隔符设置</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
-        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
+        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
             <el-table-column label="序号" align="center" width="60">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
@@ -191,7 +191,7 @@
             <span class="dialogtitle el-icon-caret-right">选择目录</span>
         </div>
         <div class="mytree"  hight='200'>
-            <el-tree ref='tree' :data="data2" :check-strictly="true" :empty-text="treenloadingInfo" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
+            <el-tree ref='tree' :data="data2" :check-strictly="true"  show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span>{{ node.label }}</span>
                 </span>

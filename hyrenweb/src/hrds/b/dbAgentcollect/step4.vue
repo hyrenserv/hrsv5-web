@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="dialogalltableClean=true;alltableClean(databaseId)">所有表清洗设置</el-button>
         <el-button size="mini" type="success" @click="dialogtableClean=true;allTableCleanPriorityFun(databaseId)">全表清洗优先级</el-button>
     </div>
-    <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)">
+    <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)">
         <el-table-column label="序号" align="center" width="60">
             <template slot-scope="scope">
                 <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
@@ -113,7 +113,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">全表清洗优先级</span>
         </div>
-        <el-table :data="tableCleanData" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+        <el-table :data="tableCleanData" border size="medium" highlight-current-row >
             <el-table-column property="SelectCol" type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column property="value" label="内容" align="center"></el-table-column>
             <el-table-column label="操作" width="160px" align="center">
@@ -208,7 +208,7 @@
             <el-button size="mini" type="success" @click="allTableOrd">整表优先级</el-button>
         </div>
         <div slot="footer" class="dialog-footer">
-            <el-table :data="colCleanData.slice((colClean_currentPage - 1) * colClean_pagesize, colClean_currentPage * colClean_pagesize)" border :empty-text="tableloadingInfo" size="medium" highlight-current-row :default-sort="{prop: 'date', order: 'descending'}">
+            <el-table :data="colCleanData.slice((colClean_currentPage - 1) * colClean_pagesize, colClean_currentPage * colClean_pagesize)" border  size="medium" highlight-current-row :default-sort="{prop: 'date', order: 'descending'}">
                 <el-table-column property label="序号" width="60px" align="center">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(colClean_currentPage - 1) * colClean_pagesize + 1}}</span>
@@ -543,7 +543,7 @@
             </span>
         </div>
         <el-button type="success" size="mini" width="20" @click="columnMerge_addRow(columnMerge)" class="addline">新增行</el-button>
-        <el-table :data="columnMerge" border size="medium" highlight-current-row :empty-text="tableloadingInfo">
+        <el-table :data="columnMerge" border size="medium" highlight-current-row >
             <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
             <el-table-column label="选择" align="center">
                 <template slot-scope="scope">
@@ -598,7 +598,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">列信息</span>
         </div>
-        <el-table :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)" border :empty-text="tableloadingInfo" size="medium" highlight-current-row ref="multipleTable" :row-key="getRowKey">
+        <el-table :data="colSelectData.slice((colSelect_currentPage - 1) * colSelect_pagesize, colSelect_currentPage * colSelect_pagesize)" border  size="medium" highlight-current-row ref="multipleTable" :row-key="getRowKey">
             <el-table-column width="55" align="center" prop="selectionState">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_colselectionStateFun(colSelectData,Allis_colselectionState)" v-model="Allis_colselectionState" :checked="Allis_colselectionState"></el-checkbox>
