@@ -7,7 +7,7 @@
                 <el-col :span="8">
                     <el-form-item label="工程编号" prop="Project_num" :rules="filter_rules([{required: true}])">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.Project_num" size="medium" disabled placeholder="工程编号">
+                            <el-input v-model="ruleForm.Project_num" size="medium" readonly placeholder="工程编号">
                                 <el-button slot="append" icon="el-icon-zoom-in" @click="Projectnumdialog=true;getEtlSysDataFun()"></el-button>
                             </el-input>
                         </el-col>
@@ -16,7 +16,7 @@
                 <el-col :span="8">
                     <el-form-item label="任务编号" prop="work_num" :rules="filter_rules([{required: true}])">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.work_num" size="medium" disabled placeholder="任务编号">
+                            <el-input v-model="ruleForm.work_num" size="medium" readonly placeholder="任务编号">
                                 <el-button slot="append" icon="el-icon-zoom-in" @click="getwork_numFun()"></el-button>
                             </el-input>
                         </el-col>
@@ -25,7 +25,7 @@
                 <el-col :span="8">
                     <el-form-item label="作业程序类型" prop="work_type" :rules="rule.default">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.work_type" size="medium" disabled placeholder="作业程序类型"></el-input>
+                            <el-input v-model="ruleForm.work_type" size="medium" readonly placeholder="作业程序类型"></el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
@@ -34,7 +34,7 @@
                 <el-col :span="8">
                     <el-form-item label="作业程序名称" prop="work_name">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.work_name" size="medium" disabled></el-input>
+                            <el-input v-model="ruleForm.work_name" size="medium" readonly></el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
@@ -546,6 +546,11 @@ export default {
                 .then(res => {
                     if (res.success) {
                         this.finishDialogVisible = false;
+                         this.$message({
+                                    showClose: true,
+                                    message: '发送成功',
+                                    type: "success"
+                                });
                         this.$router.push({
                             path: "/agentList"
                         });
@@ -645,12 +650,17 @@ export default {
                 this.ruleForm.Project_num != ""
             ) {
                 this.Worknumdialog = true;
+                 this.tableloadingInfo='数据加载中...'
                 sendTask
                     .getEtlSubSysData({
                         etl_sys_cd: this.ruleForm.Project_num
                     })
                     .then(res => {
+                        if(res.data.length>0){
                         this.WorknumData = res.data;
+                        }else{
+                          this.tableloadingInfo='暂无数据'
+                        }
                     });
             } else {
                 this.$message({

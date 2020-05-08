@@ -54,7 +54,7 @@
             <el-table-column property="plane_url" label="源文件路径" show-overflow-tooltip align="center">
                 <template slot-scope="scope">
                     <!-- <el-form-item :prop="'tableData.'+scope.$index+'.plane_url'" :rules="rule.default"> -->
-                    <el-input size="mini" v-model="scope.row.plane_url" style="margin-bottom: 8px;" disabled placeholder="源文件路径"></el-input>
+                    <el-input size="mini" v-model="scope.row.plane_url" style="margin-bottom: 8px;" readonly placeholder="源文件路径"></el-input>
                     <!-- </el-form-item> -->
                 </template>
             </el-table-column>
@@ -228,6 +228,7 @@ export default {
             functionAll.getInitDataTransfer({
                 colSetId: this.$route.query.id
             }).then(res => {
+                console.log(res.data)
                 if (res.data.length > 0) {
                     let getData = res.data
                     for (let i = 0; i < getData.length; i++) {

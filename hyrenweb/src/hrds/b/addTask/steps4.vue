@@ -462,6 +462,7 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getInitInfo(params).then(res => {
+                console.log(res.data)
                 if (res) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
