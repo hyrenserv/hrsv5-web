@@ -116,7 +116,7 @@
             </el-row>
         </div>
         <div class="steps4">
-            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :empty-text="tableloadingInfo" :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
+            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
                 <el-table-column label="序号" align="center" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -206,7 +206,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">选择工程编号</span>
         </div>
-        <el-table :empty-text="tableloadingInfo" :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
+        <el-table  :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="projnum_radio" :label="scope.row">&thinsp;</el-radio>
@@ -235,7 +235,7 @@
                 <p class="dialogtopname">{{ruleForm.Project_name}}</p>
             </span>
         </div>
-        <el-table :empty-text="tableloadingInfo" :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
+        <el-table  :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="worknum_radio" :label="scope.row.sub_sys_cd">&thinsp;</el-radio>
