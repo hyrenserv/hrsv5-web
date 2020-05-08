@@ -55,7 +55,7 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+        <el-pagination layout="total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
         </el-pagination>
     </el-row>
     <!-- 添加/修改/批量添加作业模态框 -->
