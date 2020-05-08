@@ -48,25 +48,32 @@
         </div>
         <span class="top3title">存储层表top5</span>
         <div class="dataSheetmain">
-            <div class="dataSheetmainDiv3" v-for="(item,index) in tabletop5indsl" :key="index">
-                <el-row justify="center">
-                    <span class="top3title"> <p>{{item.dsl_name}}</p></span>
-                </el-row>
-                <el-row>
-                    <el-table :data="item.result" border="true" size="medium ">
-                        <el-table-column label="集市数据表名" prop="datatable_en_name" align="center">
-                            <template slot-scope="scope">
-                                <p>{{scope.row.datatable_en_name}}</p>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="占用空间大小" prop="soruce_size"  align="center">
-                            <template slot-scope="scope">
-                                <p>{{scope.row.soruce_size}}</p>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-row>
-            </div>
+            <el-row>
+                <el-col :span="8" v-for="(item,index) in tabletop5indsl" :key="index">
+                    <div class="">
+                        <el-row >
+                            <el-col :span="6" :offset="10">
+                                <span class="top3title"> <p>{{item.dsl_name}}</p></span>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-table :data="item.result" border="true" size="medium ">
+                                <el-table-column label="集市数据表名" prop="datatable_en_name" align="center">
+                                    <template slot-scope="scope">
+                                        <p>{{scope.row.datatable_en_name}}</p>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="占用空间大小" prop="soruce_size" align="center">
+                                    <template slot-scope="scope">
+                                        <p>{{scope.row.soruce_size}}</p>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-row>
+                    </div>
+                </el-col>
+            </el-row>
+
         </div>
 
         <el-row class="bottomMargin">
@@ -303,6 +310,7 @@
 
     .dataSheetmain {
         padding-left: 44px;
+        padding-right: 44px;
         border: 1px solid #dddddd;
         min-height: 124px;
         padding-top: 30px;
@@ -349,7 +357,7 @@
         margin-top: 0px
     }
 
-    .dataSheetmainDiv3 {
+    .dataSheetmainDiv34 {
         margin-bottom: 50px;
         /*padding-top: 10px;*/
         width: 400px;

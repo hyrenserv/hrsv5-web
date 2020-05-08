@@ -15,25 +15,25 @@
 
         <el-tabs class="tabes" type="card">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号" width="70px" align='center'>
+                <el-table-column type="index" label="序号"  align='center'>
                 </el-table-column>
-                <el-table-column prop="datatable_id" label="作业参数" width="150px" align='center'>
+                <el-table-column prop="datatable_id" label="作业参数"  align='center'>
                 </el-table-column>
-                <el-table-column prop="datatable_en_name" label="英文表名" width="150px" align='center'>
+                <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
                 </el-table-column>
-                <el-table-column prop="datatable_cn_name" label="中文表名" width="150px" align='center'>
+                <el-table-column prop="datatable_cn_name" label="中文表名"  show-overflow-tooltip align='center'>
                 </el-table-column>
-                <el-table-column prop="datatable_lifecycle" label="生命周期" width="150px" align='center'>
+                <el-table-column prop="datatable_lifecycle" label="生命周期"   align='center'>
                 </el-table-column>
-                <el-table-column prop="etl_date" label="跑批日期" width="150px" align='center'>
+                <el-table-column prop="etl_date" label="跑批日期"   align='center'>
                 </el-table-column>
-                <el-table-column prop="is_successful" label="执行状态" width="150px" align='center'>
+                <el-table-column prop="is_successful" label="执行状态"  align='center'>
                 </el-table-column>
-                <el-table-column prop="datatable_create_date" label="创建日期" width="150px" align='center'>
+                <el-table-column prop="datatable_create_date" label="创建日期"   align='center'>
                 </el-table-column>
-                <el-table-column prop="datatable_due_date" label="数据表到期日期" width="150px" align='center'>
+                <el-table-column prop="datatable_due_date" label="数据到期日期"   align='center'>
                 </el-table-column>
-                <el-table-column label="操作" align='center'>
+                <el-table-column label="操作"  width="300" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
                                    type="primary">
