@@ -11,7 +11,7 @@
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
                 <div class="singleTableinner">
-                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}"  style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
+                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -188,14 +188,14 @@
             <el-tooltip class="dialogtoptxt" effect="dark" content="填写的过滤字段如果为日期类型,参数可以是固定值或变量名.如果为别的类型请填写明确的参数值" placement="right">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
             </el-tooltip>
-             <span class="dialogtoptxt">
-                        表名:
-                        <p class="dialogtopname">{{sqlFiltSetData_tablename}}</p>
-                    </span>
+            <span class="dialogtoptxt">
+                表名:
+                <p class="dialogtopname">{{sqlFiltSetData_tablename}}</p>
+            </span>
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form ref="addClassTask">
-          <!--   <el-row type="flex">
+            <!--   <el-row type="flex">
                 <el-col :span="10">
                     <el-form-item label=" 表名: " prop="table_name" class="bordernone">
                         <span>{{sqlFiltSetData_tablename}}</span>
@@ -231,7 +231,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table :data="SelectColumnData" border size="medium" highlight-current-row >
+        <el-table :data="SelectColumnData" border size="medium" highlight-current-row>
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
@@ -518,7 +518,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table :data="SelectColumnData2" border size="medium" highlight-current-row >
+        <el-table :data="SelectColumnData2" border size="medium" highlight-current-row>
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
@@ -721,7 +721,7 @@ export default {
             callTable2: [],
             zdycallTable: [],
             onclickAll: false,
-            alltableact:false,
+            alltableact: false,
         };
     },
     created() {
@@ -733,8 +733,7 @@ export default {
         this.getAllTableInfo()
 
     },
-    beforeMount() {
-    },
+    beforeMount() {},
     mounted() {
         // 获取进入页面的总数据
         this.steps_getInitInfo();
@@ -764,8 +763,8 @@ export default {
             let params = {};
             params["colSetId"] = this.dbid;
             addTaskAllFun.getAllTableInfo(params).then(res => {
-                if(res.code==200){
-                  this.alltableact=true
+                if (res.code == 200) {
+                    this.alltableact = true
                 }
                 let data = res.data;
                 for (let i = 0; i < data.length; i++) {
@@ -790,7 +789,7 @@ export default {
                         data[i].unload_type = "增量";
                     } else {
                         // data[i].unload_type = "";
-                         data[i].unload_type = "全量";
+                        data[i].unload_type = "全量";
                     }
                 }
                 this.allDataList = data;
@@ -900,9 +899,9 @@ export default {
             this.onclickAll = true;
             this.Allis_selectionState = false;
             this.tableData.length = 0;
-            if(this.alltableact==true){
-                 this.isdata = JSON.parse(JSON.stringify(this.allDataList));
-            this.tableData = JSON.parse(JSON.stringify(this.allDataList));
+            if (this.alltableact == true) {
+                this.isdata = JSON.parse(JSON.stringify(this.allDataList));
+                this.tableData = JSON.parse(JSON.stringify(this.allDataList));
             }
         },
         // 全表点击单个复选框
@@ -1244,8 +1243,7 @@ export default {
                         twotabledata[i].is_parallel = "1";
                     }
                     for (let j = 0; j < this.ParallelExtractionArr2.length; j++) {
-                        if (twotabledata[i].is_parallel=='1'&&twotabledata[i].table_name ==this.ParallelExtractionArr2[j].tablename
-                        ) {
+                        if (twotabledata[i].is_parallel == '1' && twotabledata[i].table_name == this.ParallelExtractionArr2[j].tablename) {
                             twotabledata[i].dataincrement = parseInt(
                                 this.ParallelExtractionArr2[j].dataincrement
                             );
@@ -1395,7 +1393,7 @@ export default {
                         //与原接口数据对比
                         for (let j = 0; j < this.callTable2.length; j++) {
                             //之前编辑的表
-                            if (arrData[i].table_name == this.callTable2[j].table_name &&this.callTable2[j].is_parallel==true) {
+                            if (arrData[i].table_name == this.callTable2[j].table_name && this.callTable2[j].is_parallel == true) {
                                 //本次勾选的表与之前已存的表数据对比，有相同的吧之前的数据先赋值给现在的
                                 if (this.callTable2[j].dataincrement) {
                                     arrData[i].dataincrement = this.callTable2[j].dataincrement; //每日数据增量
@@ -1434,7 +1432,7 @@ export default {
                     for (let j = 0; j < arrData.length; j++) {
                         for (let jj = 0; jj < this.ParallelExtractionArr.length; jj++) {
                             if (
-                                arrData[j].is_parallel==true&&arrData[j].table_name ==this.ParallelExtractionArr[jj].tablename
+                                arrData[j].is_parallel == true && arrData[j].table_name == this.ParallelExtractionArr[jj].tablename
                             ) {
                                 arrData[j].is_customize_sql = this.ParallelExtractionArr[
                                     jj
@@ -1498,7 +1496,7 @@ export default {
                             table_id: arrData[k].table_id ?
                                 parseInt(arrData[k].table_id) : "",
                             is_parallel: "0",
-                            is_md5: arrData[k].is_md5==true ? "1" : "0",
+                            is_md5: arrData[k].is_md5 == true ? "1" : "0",
                             table_ch_name: arrData[k].table_ch_name,
                             table_name: arrData[k].table_name,
                             sql: arrData[k].sql ? arrData[k].sql : "",
@@ -1514,7 +1512,7 @@ export default {
                                     is_parallel: "1",
                                     unload_type: "1",
                                     is_customize_sql: "1",
-                                    is_md5: arrData[k].is_md5==true ? "1" : "0",
+                                    is_md5: arrData[k].is_md5 == true ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
@@ -1528,7 +1526,7 @@ export default {
                                         parseInt(arrData[k].table_id) : "",
                                     is_parallel: "1",
                                     is_customize_sql: "0",
-                                    is_md5: arrData[k].is_md5==true ? "1" : "0",
+                                    is_md5: arrData[k].is_md5 == true ? "1" : "0",
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     sql: arrData[k].sql ? arrData[k].sql : "",
@@ -1549,7 +1547,7 @@ export default {
                                 table_id: arrData[k].table_id ?
                                     parseInt(arrData[k].table_id) : "",
                                 is_parallel: "0",
-                                is_md5: arrData[k].is_md5==true ? "1" : "0",
+                                is_md5: arrData[k].is_md5 == true ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
                                 table_name: arrData[k].table_name,
                                 sql: arrData[k].sql ? arrData[k].sql : ""
@@ -2120,9 +2118,9 @@ export default {
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
             for (let j = 0; j < this.tableData.length; j++) {
-                 if (this.tableData[j].table_name == this.EXtable_name) {
-                     this.tableData[j].is_parallel = false;
-                 }
+                if (this.tableData[j].table_name == this.EXtable_name) {
+                    this.tableData[j].is_parallel = false;
+                }
             }
             for (let i = 0; i < this.allDataList.length; i++) {
                 if (this.allDataList[i].table_name == this.EXtable_name) {
@@ -2185,7 +2183,7 @@ export default {
                 }
                 if (arrid.indexOf(this.tablename) != -1) {
                     arrid.length = 0;
-                    this.disShow = row.table_id != "" ? true : false;
+                    this.disShow = (row.collectState == false) ? true : false;
                     for (let i = 0; i < this.SelectColumn.length; i++) {
                         if (this.SelectColumn[i].tablename == this.tablename) {
                             this.SelectColumnData = this.SelectColumn[i].data;
@@ -2247,7 +2245,7 @@ export default {
                 } else {
                     this.coltable_name = "";
                     this.coltable_name = res.data.tableName ? res.data.tableName : "";
-                    this.disShow = collectState == false ? true : false;
+                    this.disShow = (collectState == false) ? true : false;
                     let data = res.data.columnInfo ? res.data.columnInfo : [],
                         count = 0,
                         num = 0;
