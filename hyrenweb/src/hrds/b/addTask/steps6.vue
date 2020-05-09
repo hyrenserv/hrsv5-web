@@ -109,7 +109,7 @@
             </el-row>
         </div>
         <div class="steps4">
-            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
+            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
                 <el-table-column label="序号" align="center" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -171,7 +171,7 @@
                 <el-table-column label="上游作业" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.pre_etl_job'" :rules="rule.default" v-if="scope.row.disp_type==='D'">
-                            <el-select style="width:100%" filterable v-model="scope.row.pre_etl_job"  multiple size="mini" placeholder="上游作业" @focus="getPreJobName">
+                            <el-select style="width:100%" filterable v-model="scope.row.pre_etl_job" multiple size="mini" placeholder="上游作业" @focus="getPreJobName">
                                 <el-option v-for="item in preJobName" :key="item.value" :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </el-form-item>
@@ -195,7 +195,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">选择工程编号</span>
         </div>
-        <el-table  :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
+        <el-table :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="projnum_radio" :label="scope.row">&thinsp;</el-radio>
@@ -224,7 +224,7 @@
                 <p class="dialogtopname">{{ruleForm.Project_name}}</p>
             </span>
         </div>
-        <el-table  :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
+        <el-table :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="worknum_radio" :label="scope.row.sub_sys_cd">&thinsp;</el-radio>
@@ -424,6 +424,7 @@ export default {
                                 job_priority: parseInt(arrdata[i].job_priority),
                                 disp_offset: parseInt(arrdata[i].disp_offset),
                                 disp_time: arrdata[i].disp_time,
+                                pro_para: arrdata[i].pro_para,
                                 etl_sys_cd: this.ruleForm.Project_num
                             });
                         }
@@ -546,11 +547,11 @@ export default {
                 .then(res => {
                     if (res.success) {
                         this.finishDialogVisible = false;
-                         this.$message({
-                                    showClose: true,
-                                    message: '发送成功',
-                                    type: "success"
-                                });
+                        this.$message({
+                            showClose: true,
+                            message: '发送成功',
+                            type: "success"
+                        });
                         this.$router.push({
                             path: "/agentList"
                         });
@@ -650,16 +651,16 @@ export default {
                 this.ruleForm.Project_num != ""
             ) {
                 this.Worknumdialog = true;
-                 this.tableloadingInfo='数据加载中...'
+                this.tableloadingInfo = '数据加载中...'
                 sendTask
                     .getEtlSubSysData({
                         etl_sys_cd: this.ruleForm.Project_num
                     })
                     .then(res => {
-                        if(res.data.length>0){
-                        this.WorknumData = res.data;
-                        }else{
-                          this.tableloadingInfo='暂无数据'
+                        if (res.data.length > 0) {
+                            this.WorknumData = res.data;
+                        } else {
+                            this.tableloadingInfo = '暂无数据'
                         }
                     });
             } else {
@@ -816,15 +817,18 @@ export default {
 .fdcColor>>>.el-input__inner {
     color: #f19b00;
 }
-#steps6>>>.el-tag.el-tag--info{
+
+#steps6>>>.el-tag.el-tag--info {
     max-width: 88%;
 }
-#steps6>>>.el-select__tags-text{
+
+#steps6>>>.el-select__tags-text {
     display: inline-flex;
     overflow: hidden;
     max-width: 90%;
 }
-#steps6>>>.el-select .el-tag__close.el-icon-close{
+
+#steps6>>>.el-select .el-tag__close.el-icon-close {
     right: -1px !important;
 }
 </style>
