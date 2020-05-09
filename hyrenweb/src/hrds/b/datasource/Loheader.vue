@@ -51,7 +51,7 @@
     <!-- 添加的弹出表单 -->
     <el-dialog title="添加数据源" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
         <el-form :model="formAdd" ref="formAdd">
-            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
+            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
