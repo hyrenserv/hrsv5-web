@@ -16,7 +16,7 @@
             <hr>
         </el-row>
         <el-row>
-            <el-table :data="applyData.slice((currentPage - 1) * pageSize, currentPage * pageSize)">
+            <el-table :data="apply_rs.slice((currentPage - 1) * pageSize, currentPage * pageSize)">
                 <el-table-column type="index" prop="date" label="序号" align="center" width="80px">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
@@ -30,8 +30,8 @@
                         </el-popover>
                     </template>
                 </el-table-column>
-                <el-table-column prop="file_size" label="文件大小" align="center"></el-table-column>
-                <el-table-column prop="file_suffix" label="文件后缀名" align="center"></el-table-column>
+                <el-table-column prop="file_size" label="文件大小" align="center"/>
+                <el-table-column prop="file_suffix" label="文件后缀名" align="center"/>
                 <el-table-column label="文件类型" align="center">
                     <template slot-scope="scope">
                         <template v-for="item in FileType">
@@ -57,7 +57,7 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                            :current-page="currentPage" :page-sizes="[5, 10, 50, 100, 500]"
                            :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                           :total="applyData.length">
+                           :total="apply_rs.length">
             </el-pagination>
         </el-row>
     </div>
@@ -72,7 +72,7 @@
                 currentPage: 1,
                 pageSize: 5,
                 totalSize: 0,
-                applyData: [],
+                apply_rs: [],
                 apply_type: 2,
                 category: '',
                 FileType: [],
@@ -102,8 +102,7 @@
                 'apply_type': this.$route.params.apply_type,
             }).then((res) => {
                 if (res.success) {
-                    //res = fileOperations.getResTestData();
-                    this.applyData = res.data.apply_rs;
+                    this.apply_rs = res.data.apply_rs;
                     this.apply_type = res.data.apply_type;
                 } else this.$message({type: 'error', message: res.message,})
             })
@@ -127,7 +126,7 @@
                         if (res.success) {
                             dataQuery.getApplyData({'apply_type': apply_type,}).then((res) => {
                                 if (res.success) {
-                                    this.applyData = res.data.apply_rs;
+                                    this.apply_rs = res.data.apply_rs;
                                 } else this.$message({type: 'error', message: res.message,})
                             })
                         } else this.$message({type: 'error', message: res.message,})

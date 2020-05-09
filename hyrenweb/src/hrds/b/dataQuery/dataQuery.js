@@ -76,7 +76,6 @@ export function viewFile(data) {
     })
 }
 
-
 //获取申请数据
 export function getApplyData(data) {
     return request({
@@ -101,10 +100,18 @@ export function myApplyRecord(data) {
     })
 }
 
-//获取WEB SQL控制台树菜单数据
+//获取WEB SQL控制台树菜单数据 (不推荐使用)
 export function getTreeDataInfo(data) {
     return request({
         url: '/B/websqlquery/getTreeDataInfo',
+        params: data
+    })
+}
+
+//获取WEB SQL控制台树菜单数据
+export function getWebSQLTreeData(data) {
+    return request({
+        url: '/B/websqlquery/getWebSQLTreeData',
         params: data
     })
 }

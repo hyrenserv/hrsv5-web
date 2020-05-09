@@ -12,7 +12,7 @@
         <el-row class="borderStyle bottomMargin" style="width: 80%; margin-left: 10%">
             <el-form :inline="true" ref="form" :model="myApplyRecordForm" label-width="100px" size="medium">
                 <el-form-item label="文件名称">
-                    <el-input v-model="myApplyRecordForm.original_name" clearable></el-input>
+                    <el-input v-model="myApplyRecordForm.original_name" clearable/>
                 </el-form-item>
                 <el-form-item label="申请日期">
                     <el-date-picker v-model="myApplyRecordForm.apply_date" type="date" placeholder="申请日期"
@@ -21,12 +21,12 @@
                 </el-form-item>
                 <el-form-item label="申请类型">
                     <el-select v-model="myApplyRecordForm.apply_type" clearable placeholder="选择申请类型">
-                        <el-option v-for="item in ApplyType" :label="item.value" :value="item.code"></el-option>
+                        <el-option v-for="item in ApplyType" :label="item.value" :value="item.code"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="审核状态">
                     <el-select v-model="myApplyRecordForm.auth_type" clearable placeholder="选择审核状态">
-                        <el-option v-for="item in AuthType" :label="item.value" :value="item.code"></el-option>
+                        <el-option v-for="item in AuthType" :label="item.value" :value="item.code"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -54,7 +54,7 @@
                         </el-popover>
                     </template>
                 </el-table-column>
-                <el-table-column prop="file_suffix" label="文件后缀名" align="center"></el-table-column>
+                <el-table-column prop="file_suffix" label="文件后缀名" align="center"/>
                 <el-table-column label="文件类型" align="center">
                     <template slot-scope="scope">
                         <template v-for="item in FileType">
@@ -164,7 +164,6 @@
             /* 初始化显示数据 */
             dataQuery.myApplyRecord(this.myApplyRecordForm).then((res) => {
                 if (res.success) {
-                    res = fileOperations.getMyApplyRecord();
                     this.myApplyRecordData = res.data.file_rs;
                 } else this.$message({type: 'error', message: res.message,})
             });
@@ -185,7 +184,6 @@
                 console.log(this.myApplyRecordForm.currPage);
                 dataQuery.myApplyRecord(this.myApplyRecordForm).then((res) => {
                     if (res.success) {
-                        res = fileOperations.getMyApplyRecord();
                         this.myApplyRecordData = res.data.file_rs;
                     } else this.$message({type: 'error', message: res.message,})
                 });
@@ -201,7 +199,6 @@
                         if (res.success) {
                             dataQuery.myApplyRecord(this.myApplyRecordForm).then((res) => {
                                 if (res.success) {
-                                    res = fileOperations.getMyApplyRecord();
                                     this.myApplyRecordData = res.data.file_rs;
                                 } else this.$message({type: 'error', message: res.message,})
                             })
@@ -222,7 +219,6 @@
             },
             /* 下载文件 */
             downloadFile(file_id, original_name) {
-                console.log(file_id, original_name);
                 dataQuery.downloadFile({'fileId': file_id, 'fileName': original_name}).then((res) => {
                     if (res.success) {
                         // 转换数据流为文件
