@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="AllTable_SeparatorFun()" class="alltables">所有表分隔符设置</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
-        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
+        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
             <el-table-column label="序号" align="center" width="60">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
@@ -25,32 +25,32 @@
             </el-table-column>
             <el-table-column label="落地目录" align="center" width="260">
                 <template slot-scope="scope">
-                    <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" readonly placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.fdc" v-model="scope.row.fdc_ml" placeholder="非定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'fdc')">选择目录<span class='exDataColor'>(非定长)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.dc" v-model="scope.row.dc_ml" readonly placeholder="定长落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.dc" v-model="scope.row.dc_ml" placeholder="定长落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'dc')">选择目录<span class='exDataColor'>(定长)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.orc" v-model="scope.row.orc_ml" readonly placeholder="ORC落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.orc" v-model="scope.row.orc_ml" placeholder="ORC落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'orc')">选择目录<span class='exDataColor'>(ORC)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.par" v-model="scope.row.par_ml" readonly placeholder="PAR落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.par" v-model="scope.row.par_ml" placeholder="PAR落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'par')">选择目录<span class='exDataColor'>(PAR)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.csv" v-model="scope.row.csv_ml" readonly placeholder="CSV落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.csv" v-model="scope.row.csv_ml" placeholder="CSV落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'csv')">选择目录<span class='exDataColor'>(CSV)</span></el-button>
                         </template>
                     </el-input>
-                    <el-input v-show="scope.row.seq" v-model="scope.row.seq_ml" readonly placeholder="SEQ落地目录" size="mini" style="margin-bottom: 8px;">
+                    <el-input v-show="scope.row.seq" v-model="scope.row.seq_ml" placeholder="SEQ落地目录" size="mini" style="margin-bottom: 8px;">
                         <template slot="prepend">
                             <el-button size="mini" @click="seletFilePath(scope.row.table_id,'seq')">选择目录<span class='exDataColor'>(SEQ)</span></el-button>
                         </template>
@@ -60,7 +60,7 @@
             <el-table-column label=" 换行符" align="center">
                 <template slot-scope="scope">
                     <el-form-item v-if="scope.row.fdc==true" :prop="'unloadingFileData.'+scope.$index+'.fdc_row_separator'" :rules="rule.selected" class='linefs'>
-                        <el-select placeholder="非定长换行符" v-model="scope.row.fdc_row_separator" style="margin-bottom: 8px" size="mini" >
+                        <el-select placeholder="非定长换行符" v-model="scope.row.fdc_row_separator" style="margin-bottom: 8px" size="mini">
                             <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
                         </el-select>
                     </el-form-item>
@@ -82,7 +82,7 @@
                 </template>
             </el-table-column>
             <el-table-column label='数据列分隔符' align="center">
-               <!--  <template slot="header">
+                <!--  <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">
                             多行信息
@@ -98,7 +98,7 @@
                     <el-input v-show="scope.row.dc" size="mini" v-model="scope.row.dc_database_separatorr" style="margin-bottom: 8px;" placeholder="定长数据列分隔符"></el-input>
                     <el-input v-show="scope.row.orc" disabled size="mini" v-model="scope.row.orc_database_separatorr" style="margin-bottom: 8px;" placeholder="ORC数据列分隔符"></el-input>
                     <el-input v-show="scope.row.par" disabled size="mini" v-model="scope.row.par_database_separatorr" style="margin-bottom: 8px;" placeholder="PAR数据列分隔符"></el-input>
-                    <el-input v-show="scope.row.csv" size="mini" v-model="scope.row.csv_database_separatorr" style="margin-bottom: 8px;" placeholder="CSV数据列分隔符"></el-input>
+                    <el-input v-show="scope.row.csv" disabled size="mini" v-model="scope.row.csv_database_separatorr" style="margin-bottom: 8px;" placeholder="CSV数据列分隔符"></el-input>
                     <el-input v-show="scope.row.seq" disabled size="mini" v-model="scope.row.seq_database_separatorr" style="margin-bottom: 8px;" placeholder="SEQ数据列分隔符"></el-input>
                 </template>
             </el-table-column>
@@ -160,7 +160,7 @@
                 <el-input :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'" v-model="separatorData.Datacolumnseparator" placeholder="数据列分隔符" style="width:190px" size="medium"></el-input>
             </el-form-item>
             <el-form-item label="数据列分隔符" key="4" v-else>
-                <el-input :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'" v-model="separatorData.Datacolumnseparator" placeholder="数据列分隔符" style="width:190px" size="medium"></el-input>
+                <el-input :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'||separatorData.Extractformat=='CSV'" v-model="separatorData.Datacolumnseparator" placeholder="数据列分隔符" style="width:190px" size="medium"></el-input>
             </el-form-item>
             <el-form-item label="数据字符集">
                 <template>
@@ -176,12 +176,12 @@
             <el-button type="primary" @click="AllTable_SeparatorSubmitFun('separatorData')" size="mini">确 定</el-button>
         </div>
     </el-dialog>
-     <el-row>
-     <el-col :span="12">
+    <el-row>
+        <el-col :span="12">
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
         </el-col>
-        <el-col :span="12" >
-            <el-button type="primary" size="medium" class='rightbtn'  @click="next('ruleForm')">下一步</el-button>
+        <el-col :span="12">
+            <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
             <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
         </el-col>
     </el-row>
@@ -191,7 +191,7 @@
             <span class="dialogtitle el-icon-caret-right">选择目录</span>
         </div>
         <div class="mytree"  hight='200'>
-            <el-tree ref='tree' :data="data2" :check-strictly="true"  show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
+            <el-tree ref='tree' :data="data2" :check-strictly="true" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span>{{ node.label }}</span>
                 </span>
@@ -320,7 +320,7 @@ export default {
         });
     },
     methods: {
-          backFun() {
+        backFun() {
             this.$router.push({
                 path: "/agentList"
             });
@@ -329,7 +329,7 @@ export default {
             var a = this.ruleForm.unloadingFileData;
             this.$refs[formName].validate(valid => {
                 if (valid) {
-            this.isLoading = true
+                    this.isLoading = true
                     let dataAll = a,
                         extractionDefString = [];
                     if (dataAll.length > 0) {
@@ -408,7 +408,7 @@ export default {
                                 } else {
                                     data = {
                                         id: this.dbid,
-                                         agent_id: this.aId,
+                                        agent_id: this.aId,
                                         source_id: this.sourId,
                                         source_name: this.$Base64.encode(this.sName)
                                     };
@@ -462,7 +462,6 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getInitInfo(params).then(res => {
-                console.log(res.data)
                 if (res) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
@@ -551,73 +550,91 @@ export default {
                         alldata[i].seq = false
                         alldata[i].par = false
                         alldata[i].csv = false
-                        alldata[i].dbfile_format=''//抽取方式
-                        alldata[i].dc_database_code=''//字符集
-                        alldata[i].dc_database_separatorr = '' //数据列分隔符
-                        alldata[i].dc_row_separator = '' //换行符
-                        alldata[i].dc_ml = this.separatorData.ml //目录
-                        alldata[i].fdc_database_code = '' //字符集
+                         delete alldata[i].dbfile_format //抽取方式
+                         delete alldata[i].dc_database_code//字符集
+                         delete alldata[i].dc_database_separatorr//数据列分隔符
+                         delete alldata[i].dc_row_separator//换行符
+                         delete alldata[i].dc_ml//目录
+                        delete alldata[i].fdc_database_code //字符集
                         delete alldata[i].fdc_database_separatorr //数据列分隔符
                         delete alldata[i].fdc_row_separator //换行符
-                        alldata[i].fdc_ml = '' //目录
-                        alldata[i].orc_database_code = '' //字符集
-                        alldata[i].orc_database_separatorr = '' //数据列分隔符
-                        alldata[i].orc_row_separator = '' //换行符
-                        alldata[i].orc_ml = '' //目录
-                        alldata[i].seq_database_code = '' //字符集
-                        alldata[i].seq_database_separatorr = '' //数据列分隔符
-                        alldata[i].seq_row_separator = '' //换行符
-                        alldata[i].seq_ml = '' //目录
-                        alldata[i].cvs_database_code = '' //字符集
-                        alldata[i].cvs_database_separatorr = '' //数据列分隔符
-                        alldata[i].cvs_row_separator = '' //换行符
-                        alldata[i].cvs_ml = '' //目录
-                        alldata[i].par_database_code = '' //字符集
-                        alldata[i].par_database_separatorr = '' //数据列分隔符
-                        alldata[i].par_row_separator = '' //换行符
-                        alldata[i].par_ml = '' //目录
+                        delete  alldata[i].fdc_ml //目录
+                        // alldata[i].fdc_ml = '' //目录
+                        delete alldata[i].orc_database_code //字符集
+                         delete alldata[i].orc_database_separatorr  //数据列分隔符
+                         delete alldata[i].orc_row_separator//换行符
+                         delete alldata[i].orc_ml //目录
+                         delete alldata[i].seq_database_code //字符集
+                         delete alldata[i].seq_database_separatorr  //数据列分隔符
+                         delete alldata[i].seq_row_separator  //换行符
+                         delete alldata[i].seq_ml //目录
+                         delete alldata[i].csv_database_code  //字符集
+                         delete alldata[i].csv_database_separatorr //数据列分隔符
+                         delete alldata[i].csv_row_separator//换行符
+                         delete alldata[i].csv_ml //目录
+                         delete alldata[i].par_database_code//字符集
+                         delete alldata[i].par_database_separatorr //数据列分隔符
+                         delete alldata[i].par_row_separator//换行符
+                         delete alldata[i].par_ml//目录
                         if (this.separatorData.Extractformat == '定长') {
                             alldata[i].dc = true
-                            alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            alldata[i].dc_database_code = this.separatorData.Datacharacterset //字符集
-                            alldata[i].dc_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
-                            alldata[i].dc_row_separator = this.separatorData.Newlinecharacte //换行符
-                            alldata[i].dc_ml = this.separatorData.ml //目录
+                            this.$set(alldata[i], 'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
+                            this.$set(alldata[i], 'dc_database_code', this.separatorData.Datacharacterset) //字符集
+                            this.$set(alldata[i], 'dc_database_separatorr', this.separatorData.Datacolumnseparator) //数据列分隔符
+                            this.$set(alldata[i], 'dc_row_separator', this.separatorData.Newlinecharacte) //换行符
+                            this.$set(alldata[i], 'dc_ml', this.separatorData.ml) //目录
+                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] 
+                            // alldata[i].dc_database_code = this.separatorData.Datacharacterset 
+                            // alldata[i].dc_database_separatorr = this.separatorData.Datacolumnseparator 
+                            // alldata[i].dc_row_separator = this.separatorData.Newlinecharacte 
+                            // alldata[i].dc_ml = this.separatorData.ml 
                         } else if (this.separatorData.Extractformat == '非定长') {
                             alldata[i].fdc = true
-                            this.$set(alldata[i],'fdc_database_separatorr',this.separatorData.Datacolumnseparator)
-                            this.$set(alldata[i],'fdc_row_separator',this.separatorData.Newlinecharacte)
-                            alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            alldata[i].fdc_database_code = this.separatorData.Datacharacterset //字符集
-                            alldata[i].fdc_ml = this.separatorData.ml //目录
+                            this.$set(alldata[i],'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
+                            this.$set(alldata[i],'fdc_database_code',this.separatorData.Datacharacterset) //字符集
+                            this.$set(alldata[i],'fdc_database_separatorr',this.separatorData.Datacolumnseparator) //数据列分隔符
+                            this.$set(alldata[i],'fdc_row_separator',this.separatorData.Newlinecharacte) //换行符
+                            this.$set(alldata[i],'fdc_ml',this.separatorData.ml) //目录
+                            /*  alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
+                             alldata[i].fdc_database_code = this.separatorData.Datacharacterset //字符集
+                             alldata[i].fdc_ml = this.separatorData.ml //目录 */
                         } else if (this.separatorData.Extractformat == 'ORC') {
                             alldata[i].orc = true
+                            this.$set(alldata[i], 'orc_ml', this.separatorData.ml) //目录
+                            this.$set(alldata[i], 'orc_database_code', this.separatorData.Datacharacterset) //字符集
                             alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            alldata[i].orc_database_code = this.separatorData.Datacharacterset //字符集
+                            // alldata[i].orc_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].orc_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].orc_row_separator = this.separatorData.Newlinecharacte //换行符
-                            alldata[i].orc_ml = this.separatorData.ml //目录
+                            // alldata[i].orc_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'SEQUENCEFILE') {
                             alldata[i].seq = true
+                            this.$set(alldata[i], 'seq_ml', this.separatorData.ml) //目录
+                            this.$set(alldata[i], 'seq_database_code', this.separatorData.Datacharacterset) //字符集
                             alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            alldata[i].seq_database_code = this.separatorData.Datacharacterset //字符集
+                            // alldata[i].seq_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].seq_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].seq_row_separator = this.separatorData.Newlinecharacte //换行符
-                            alldata[i].seq_ml = this.separatorData.ml //目录
-                        } else if (this.separatorData.Extractformat == 'CVS') {
-                            alldata[i].cvs = true
+                            // alldata[i].seq_ml = this.separatorData.ml //目录
+                        } else if (this.separatorData.Extractformat == 'CSV') {
+                            alldata[i].csv = true
+                            this.$set(alldata[i], 'csv_ml', this.separatorData.ml) //目录
+                            this.$set(alldata[i], 'csv_database_code', this.separatorData.Datacharacterset) //字符集
+                            this.$set(alldata[i], 'csv_row_separator', this.separatorData.Newlinecharacte) //换行符
                             alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            alldata[i].cvs_database_code = this.separatorData.Datacharacterset //字符集
-                            alldata[i].cvs_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
-                            alldata[i].cvs_row_separator = this.separatorData.Newlinecharacte //换行符
-                            alldata[i].cvs_ml = this.separatorData.ml //目录
+                            // alldata[i].csv_database_code = this.separatorData.Datacharacterset //字符集
+                            alldata[i].csv_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
+                            // alldata[i].csv_row_separator = this.separatorData.Newlinecharacte //换行符
+                            // alldata[i].csv_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'PARQUET') {
                             alldata[i].par = true
+                            this.$set(alldata[i], 'par_ml', this.separatorData.ml) //目录
+                            this.$set(alldata[i], 'par_database_code', this.separatorData.Datacharacterset) //字符集
                             alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            alldata[i].par_database_code = this.separatorData.Datacharacterset //字符集
+                            // alldata[i].par_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].par_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].par_row_separator = this.separatorData.Newlinecharacte //换行符
-                            alldata[i].par_ml = this.separatorData.ml //目录
+                            // alldata[i].par_ml = this.separatorData.ml //目录
                         }
                     }
                     this.separatorData = {
@@ -781,41 +798,51 @@ export default {
             if (this.row_ml_name == 'fdc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        item.fdc_ml = path
+                        // item.fdc_ml = path
+                        this.$set(item,'fdc_ml',path)
                     }
                 })
             } else if (this.row_ml_name == 'dc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        item.dc_ml = path
+                        // item.dc_ml = path
+                        this.$set(item,'dc_ml',path)
+
                     }
                 })
             } else if (this.row_ml_name == 'csv') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        item.csv_ml = path
+                        // item.csv_ml = path
+                        this.$set(item,'csv_ml',path)
+
                     }
                 })
             } else if (this.row_ml_name == 'seq') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        item.seq_ml = path
+                        // item.seq_ml = path
+                        this.$set(item,'seq_ml',path)
+
                     }
                 })
             } else if (this.row_ml_name == 'par') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        item.par_ml = path
+                        // item.par_ml = path
+                         this.$set(item,'par_ml',path)
                     }
                 })
             } else if (this.row_ml_name == 'orc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        item.orc_ml = path
+                        // item.orc_ml = path
+                        this.$set(item,'orc_ml',path)
                     }
                 })
             } else if (this.row_ml_name == 'all') {
-                this.separatorData.ml = path
+                // this.separatorData.ml = path
+                this.$set(this.separatorData,'ml',path)
             }
         },
 
@@ -883,9 +910,11 @@ export default {
     left: 4%;
     z-index: 1
 }
-.linefs>>>.el-form-item__content{
+
+.linefs>>>.el-form-item__content {
     line-height: 23px !important;
 }
+
 .steps4>>>.el-form-item__content::before {
     content: "*";
     color: #f56c6c;
