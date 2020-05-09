@@ -323,7 +323,7 @@
         },
         methods: {
             showtablecolumn(node) {
-                if (node.file_id !== '') {
+                if (this.checkiftable(node)) {
                     functionAll.queryAllColumnOnTableName({
                         'source': node.data_layer,
                         'id': node.id
@@ -333,6 +333,22 @@
                         this.iftablecolumn = true;
                         this.Allis_selectionstate = false;
                     });
+                }
+            },
+            checkiftable(node){
+                if(!node.hasOwnProperty("children")){
+                    if(node.data_layer == "DCL" && node.file_id != ""){
+                        return true;
+                    }
+                    else if(node.data_layer == "DML" && node.datatable_id != ""){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                else{
+                    return false;
                 }
             },
             getifhbase() {
