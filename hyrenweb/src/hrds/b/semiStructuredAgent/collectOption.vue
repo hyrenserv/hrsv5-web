@@ -114,7 +114,7 @@
 
             <el-col :span="18">
                 <el-form-item label="选择采集路径" :label-width="formLabelWidth" prop="file_path" :rules="rule.selected">
-                    <el-input v-model="form.file_path" :disabled="disabled">
+                    <el-input v-model="form.file_path" :disabled="false">
                         <template slot="prepend">
                             <el-button @click="dialogSelectfolder = true;seletFilePath()">选择文件夹</el-button>
                         </template>

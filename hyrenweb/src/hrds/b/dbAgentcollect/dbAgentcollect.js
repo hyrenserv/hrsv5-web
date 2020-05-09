@@ -476,13 +476,14 @@ export function sendDBCollectTaskById(data) {
     })
 }
 
-// 6
+// 获取数据字典文件
 export function selectPath(data) {
    return request({
-       url: '/B/agent/unstructuredfilecollect/selectPath',
+       url: '/B/agent/datafileconf/fileconf/selectPath',
        params: data
    })
 }
+
 //查询作业名称信息
 export function searchEtlJob(data) {
     return request({

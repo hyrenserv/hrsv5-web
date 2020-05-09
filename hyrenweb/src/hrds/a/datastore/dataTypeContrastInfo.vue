@@ -226,7 +226,7 @@ export default {
             this.pos = 0;
             this.spanArr2 = [];
             this.pos2 = 0;
-            tableData.forEach((item, index) => {
+            for (let index = 0; index < tableData.length; index++) {
                 if (index === 0) {
                     this.spanArr.push(1);
                     this.pos = 0;
@@ -240,7 +240,7 @@ export default {
                         this.spanArr.push(1);
                         this.pos = index;
                     };
-                    if (tableData[index].dtcs_name === tableData[index - 1].dtcs_name) {
+                    if (tableData[index].dtcs_id === tableData[index - 1].dtcs_id) {
                         this.spanArr2[this.pos2] += 1;
                         this.spanArr2.push(0);
                     } else {
@@ -248,8 +248,7 @@ export default {
                         this.pos2 = index;
                     };
                 }
-
-            });
+            }
         },
         // 合并行
         arraySpanMethod({

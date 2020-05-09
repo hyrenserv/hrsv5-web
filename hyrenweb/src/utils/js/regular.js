@@ -16,6 +16,7 @@ const regular = {
     password: { regex: /^[a-zA-Z]\w{5,17}$/, error: '密码不合法(以字母开头，长度在6~18字符之间，只能包含字母、数字和下划线)', title: '密码' },
     dataScourenum: { regex: /^[a-zA-Z][a-zA-z0-9]{3}$/, error: '编号不合法(以字母开头的不超过四位数的字母数字组合)', title: '编号' },
     confignum: { regex: /^[a-zA-z0-9]{1,4}$/, error: '编号不合法(1-4位数的数字或字母组合)', title: '任务编号' },
+    noLengthVaild: { regex: /^[a-zA-Z]\w*$/, error: '编号不合法(以字母开头)', title: '任务编号' },
     ip_verification: { regex: /^(\d|[1-9]\d|1\d{2}|2[0-5][0-5])\.(\d|[1-9]\d|1\d{2}|2[0-5][0-5])\.(\d|[1-9]\d|1\d{2}|2[0-5][0-5])\.(\d|[1-9]\d|1\d{2}|2[0-5][0-5])$/, error: '无效IP地址', title: 'ip地址' },
     port_verification: { regex: /^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$/, error: '端口不合法，正确范围1024-65535', title: 'agent端口' }
 }

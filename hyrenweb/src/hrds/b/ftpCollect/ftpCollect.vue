@@ -75,7 +75,7 @@
 
             <el-col :span="18">
                 <el-form-item label="agent机器目录" :label-width="formLabelWidth" prop="local_path" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.local_path" placeholder="agent机器目录" :disabled="disabled" :size="size">
+                    <el-input v-model="form.local_path" placeholder="agent机器目录" :disabled="false" :size="size">
                         <template slot="prepend">
                             <el-button @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
                         </template>
