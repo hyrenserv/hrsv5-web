@@ -12,7 +12,7 @@
             <el-table-column prop="file_source_path" label="选择文件源路径" width="126" align="center">
                 <template slot-scope="scope">
                     <el-button size="mini" type="success" @click="dialogSelectfolder = true;seletFilePath();handleEdit(scope.$index, scope.row)" v-if="showButton">选择文件夹</el-button>
-                    <el-input v-model="scope.row.file_source_path" v-if="showInput" disabled></el-input>
+                    <el-input v-model="scope.row.file_source_path" v-if="showInput"></el-input>
                 </template>
             </el-table-column>
 
@@ -20,7 +20,7 @@
                 <template slot-scope="scope">
                     <el-form ref="form" :model="scope.row">
                         <el-form-item class="ruleFormItem" prop="file_source_path" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="scope.row.file_source_path" disabled size="mini" placeholder="按钮选择"></el-input>
+                            <el-input v-model="scope.row.file_source_path" size="mini" placeholder="选择或填写"></el-input>
                         </el-form-item>
                     </el-form>
 
