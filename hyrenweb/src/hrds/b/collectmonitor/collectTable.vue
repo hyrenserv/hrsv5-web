@@ -130,9 +130,9 @@ export default {
     };
   },
   watch: {
-    tableData: function() {
+    tableData() {
       this.collectTableData = this.tableData.collectTableData;
-      console.log(this.collectTableData)
+
     }
   }
 };

@@ -247,6 +247,8 @@ export default {
                         this.customPath = this.isflag.Fou;
                     }
                     this.deploy = this.agentDeploy.deploy;
+                    this.oldAgentDir = this.agentDeploy.save_dir;
+                    this.oldLogPath = this.agentDeploy.log_dir;
                 }
                 this.$refs['agentDeploy'].resetFields();
             })
