@@ -112,7 +112,7 @@
         </div>
     </el-dialog>
     <!-- 点击编辑按钮编辑信息弹出框 -->
-    <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%">
+    <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%" :before-close="beforeCloseview">
         <el-form :model="form" ref="form">
             <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
@@ -256,22 +256,23 @@ export default {
         // 点击取消按钮
         cancleAdd(val) {
             if (val == "0") {
-                // 表单清空
-                this.formAdd = {};
-                this.$refs.formAdd.resetFields();
                 // 隐藏对话框
                 this.dialogFormVisible = false;
+                // 表单清空
+                this.$refs.formAdd.resetFields();
             } else if (val == "1") {
                 this.dialogFormVisibleview = false;
-                this.form = {};
                 this.$refs.form.resetFields();
             }
         },
         // 关闭弹出框之前触发事件
-        beforeClose() {
-            this.$refs.formAdd.resetFields();
+        beforeCloseview() {
+            this.dialogFormVisibleview = false;
             this.$refs.form.resetFields();
+        },
+        beforeClose() {
             this.dialogFormVisible = false;
+            this.$refs.formAdd.resetFields();
         },
         // 点击不同的数据类型获取不同的数据
         tapDifferentType(e) {

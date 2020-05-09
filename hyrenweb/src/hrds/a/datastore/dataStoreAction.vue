@@ -72,7 +72,7 @@
             </el-col>
             <span class="saveDataSpan">数据存储层配置属性</span>
             <el-button size="medium" class="partTwoBtn" v-if="showAddbutton" type="success" @click="addTableData">增加行</el-button>
-            <el-table :data="form.tableData" border stripe size="medium" height="300">
+            <el-table :data="form.tableData" border stripe size="medium">
                 <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
 
                 <el-table-column prop="storage_property_key" label="key" align="center" :key="2">
@@ -424,115 +424,64 @@ export default {
         },
         // 根据存储类型动态显示key
         changedata(val) {
+            let dataList = [];
+            let numberCount = '';
+            let numberCountfile = '';
             valueIndex = val;
             this.$refs.form.clearValidate();
-            if (val === "1") {
-                this.showValue = true;
-                this.selectVlueOrUpload = false;
-                this.showAddbutton = true;
-                this.form.tableData = [{
-                    storage_property_key: "database_drive"
-                }, {
-                    storage_property_key: "jdbc_url"
-                }, {
-                    storage_property_key: "user_name"
-                }, {
-                    storage_property_key: "database_pad"
-                }, {
-                    storage_property_key: "database_type"
-                }];
-                this.deleteLength = 5;
-                this.lengthdata = 5;
-                tableDataLength = this.form.tableData.length;
-            } else if (val === "2") {
-                this.form.tableData = [{
-                        storage_property_key: "database_drive"
-                    }, {
-                        storage_property_key: "jdbc_url"
-                    }, {
-                        storage_property_key: "user_name"
-                    }, {
-                        storage_property_key: "database_pad"
-                    }, {
-                        storage_property_key: "database_type"
-                    },
-                    {
-                        storage_property_key: "hbase-site.xml",
-                    }, {
-                        storage_property_key: "hdfs-site.xml"
-                    }, {
-                        storage_property_key: "core-site.xml"
-                    },
-                    {
-                        storage_property_key: "yarn-site.xml"
-                    },
-                    {
-                        storage_property_key: "mapreduce-site.xml"
-                    }, {
-                        storage_property_key: "keytab"
-                    }, {
-                        storage_property_key: "krb5"
-                    }
-                ];
-                tableDataLength = this.form.tableData.length;
-                this.lengthdata = 12;
-                this.deleteLength = 12;
-                this.showValue = false;
-                this.selectVlueOrUpload = true;
-                this.showAddbutton = true;
-                this.uploadindexless = 4;
-                this.uploadindexmore = 11;
-                this.inputindex = 4;
-            } else if (val === "3") {
-                this.form.tableData = [{
-                    storage_property_key: "zkhost"
-                }, {
-                    storage_property_key: "hbase-site.xml",
-                }, {
-                    storage_property_key: "hdfs-site.xml"
-                }, {
-                    storage_property_key: "core-site.xml"
-                }, {
-                    storage_property_key: "keytab"
-                }, {
-                    storage_property_key: "krb5"
-                }]
-                tableDataLength = this.form.tableData.length;
-                this.lengthdata = 6;
-                this.showValue = false;
-                this.selectVlueOrUpload = true;
-                this.showAddbutton = true;
-                this.deleteLength = 6;
-                this.uploadindexless = 0;
-                this.uploadindexmore = 5;
-                this.inputindex = 0;
-            } else if (val === "4") {
-                this.selectVlueOrUpload = false;
-                this.showValue = true;
-                this.showAddbutton = true;
-                this.form.tableData = [{
-                    storage_property_key: "solr_url"
-                }]
-                tableDataLength = this.form.tableData.length;
-                this.lengthdata = 1;
-                this.deleteLength = 1;
-            } else if (val === "5") {
-                this.selectVlueOrUpload = false;
-                this.showAddbutton = true;
-                this.showValue = true;
-                this.form.tableData = [];
+            functionAll.getDataLayerAttrKey({
+                store_type: val
+            }).then(res => {
+                let arry = [];
+                // 数据合并
+                dataList = [...res.data.jdbcKey, ...res.data.fileKey];
+                // 记录需要判断的长度
+                numberCount = res.data.jdbcKey.length;
+                numberCountfile = res.data.fileKey.length;
+                dataList.forEach((item, index) => {
+                    arry.push({
+                        'storage_property_key': item
+                    })
+                })
+                // 赋值给表格
+                this.form.tableData = arry;
+                this.deleteLength = this.form.tableData.length;
                 tableDataLength = this.form.tableData.length;
                 this.lengthdata = this.form.tableData.length;
-                this.deleteLength = 0;
-            } else if (val === "6") {
-                this.selectVlueOrUpload = false;
-                this.showAddbutton = true;
-                this.showValue = true;
-                this.form.tableData = [];
-                tableDataLength = this.form.tableData.length;
-                this.lengthdata = this.form.tableData.length;
-                this.deleteLength = 0;
-            }
+                if (val === "1") {
+                    this.showValue = true;
+                    this.selectVlueOrUpload = false;
+                    this.showAddbutton = true;
+                } else if (val === "2") {
+                    this.showValue = false;
+                    this.selectVlueOrUpload = true;
+                    this.showAddbutton = true;
+                    this.uploadindexless = numberCount - 1;
+                    this.uploadindexmore = this.form.tableData.length - 1;
+                    this.inputindex = numberCount - 1;
+                } else if (val === "3") {
+                    this.showValue = false;
+                    this.selectVlueOrUpload = true;
+                    this.showAddbutton = true;
+                    this.uploadindexless = numberCount - 1;
+                    this.uploadindexmore = this.form.tableData.length - 1;
+                    this.inputindex = numberCount - 1;
+                } else if (val === "4") {
+                    this.selectVlueOrUpload = false;
+                    this.showValue = true;
+                    this.showAddbutton = true;
+                } else if (val === "5") {
+                    this.selectVlueOrUpload = false;
+                    this.showAddbutton = true;
+                    this.showValue = true;
+                } else if (val === "6") {
+                    this.selectVlueOrUpload = false;
+                    this.showAddbutton = true;
+                    this.showValue = true;
+
+                }
+            })
+
         },
         // 获取数据类型长度信息
         searchDataLayerDataTypeLengthInfo() {

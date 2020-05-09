@@ -149,12 +149,6 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="dsla_remark" label="描述" align="center">
-                        <template slot-scope="scope">
-                            <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
-                        </template>
-                    </el-table-column>
-
                     <el-table-column label="value" align="center" :key="4" v-if="selectVlueOrUpload">
                         <template slot-scope="scope">
                             <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
@@ -165,6 +159,12 @@
                                 <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>
                                 <el-radio @change="selectedUploadValue=true;handleEditValue(scope.$index, scope.row)" label="1">选择文件</el-radio>
                             </el-radio-group>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="dsla_remark" label="描述" align="center">
+                        <template slot-scope="scope">
+                            <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
                         </template>
                     </el-table-column>
 
@@ -834,140 +834,97 @@ export default {
         },
         // 根据存储类型动态显示key
         changedata(val) {
+            let dataList = [];
+            let numberCount = '';
+            let numberCountfile = '';
             valueIndex = val;
             this.$refs.form.clearValidate();
-            if (val === "1") {
-                this.showValue = true;
-                this.selectVlueOrUpload = false;
-                this.showDownloadButton = false;
-                if (flag2 == 1) {
-                    this.form.tableDataConfigure = arrMarkall;
-                } else {
-                    this.form.tableDataConfigure = [{
-                        storage_property_key: "database_drive"
-                    }, {
-                        storage_property_key: "jdbc_url"
-                    }, {
-                        storage_property_key: "user_name"
-                    }, {
-                        storage_property_key: "database_pad"
-                    }, {
-                        storage_property_key: "database_type"
-                    }];
-                }
-                this.deleteLength = 5;
-                this.lengthdata = 5;
+            functionAll.getDataLayerAttrKey({
+                store_type: val
+            }).then(res => {
+                let arry = [];
+                // 数据合并
+                dataList = [...res.data.jdbcKey, ...res.data.fileKey];
+                // 记录需要判断的长度
+                numberCount = res.data.jdbcKey.length;
+                numberCountfile = res.data.fileKey.length;
+                dataList.forEach((item, index) => {
+                    arry.push({
+                        'storage_property_key': item
+                    })
+                })
+                this.form.tableDataConfigure = arry;
                 tableDataLength = this.form.tableDataConfigure.length;
-            } else if (val === "2") {
-                if (flag == 0) {
-                    this.form.tableDataConfigure = [{
-                            storage_property_key: "database_drive"
-                        }, {
-                            storage_property_key: "jdbc_url"
-                        }, {
-                            storage_property_key: "user_name"
-                        }, {
-                            storage_property_key: "database_pad"
-                        }, {
-                            storage_property_key: "database_type"
-                        },
-                        {
-                            storage_property_key: "hbase-site.xml",
-                        }, {
-                            storage_property_key: "hdfs-site.xml"
-                        }, {
-                            storage_property_key: "core-site.xml"
-                        },
-                        {
-                            storage_property_key: "yarn-site.xml"
-                        },
-                        {
-                            storage_property_key: "mapreduce-site.xml"
-                        }, {
-                            storage_property_key: "keytab"
-                        }, {
-                            storage_property_key: "krb5"
-                        }
-                    ];
-                } else {
-                    this.form.tableDataConfigure = arryMarkhive;
-                }
-                tableDataLength = this.form.tableDataConfigure.length;
-                this.showDownloadButton = false;
-                this.lengthdata = 12;
-                this.deleteLength = 12;
-                this.showValue = false;
-                this.selectVlueOrUpload = true;
-                this.uploadindexless = 4;
-                this.uploadindexmore = 11;
-                this.inputindex = 4;
-            } else if (val === "3") {
-                if (flag3 == 0) {
-                    this.form.tableDataConfigure = [{
-                        storage_property_key: "zkhost"
-                    }, {
-                        storage_property_key: "hbase-site.xml",
-                    }, {
-                        storage_property_key: "hdfs-site.xml"
-                    }, {
-                        storage_property_key: "core-site.xml"
-                    }, {
-                        storage_property_key: "keytab"
-                    }, {
-                        storage_property_key: "krb5"
-                    }]
-                } else {
-                    this.form.tableDataConfigure = arryMarkhbase;
-                }
+                this.lengthdata = 0;
+                this.deleteLength = this.form.tableDataConfigure.length;
+                if (val === "1") {
+                    this.showValue = true;
+                    this.selectVlueOrUpload = false;
+                    this.showDownloadButton = false;
+                    if (flag2 == 1) {
+                        this.form.tableDataConfigure = arrMarkall;
+                        this.lengthdata = 0
+                    } else {
 
-                tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = 6;
-                this.showValue = false;
-                this.selectVlueOrUpload = true;
-                this.showDownloadButton = false;
-                this.deleteLength = 6;
-                this.uploadindexless = 0;
-                this.uploadindexmore = 5;
-                this.inputindex = 0;
-            } else if (val === "4") {
-                this.showValue = true;
-                this.selectVlueOrUpload = false;
-                if (flag4 == 1) {
-                    this.form.tableDataConfigure = arrMarkall;
-                } else {
-                    this.form.tableDataConfigure = [{
-                        storage_property_key: "solr_url"
-                    }]
+                    }
+                } else if (val === "2") {
+                    if (flag == 1) {
+                        this.form.tableDataConfigure = arrMarkall;
+                        this.lengthdata = 0
+                    } else {
+
+                    }
+                    this.showDownloadButton = false;
+                    this.showValue = false;
+                    this.selectVlueOrUpload = true;
+                    this.uploadindexless = numberCount - 1;
+                    this.uploadindexmore = this.form.tableDataConfigure.length - 1;
+                    this.inputindex = numberCount - 1;
+                } else if (val === "3") {
+                    if (flag3 == 1) {
+                        this.form.tableDataConfigure = arrMarkall;
+                        this.lengthdata = 0
+                    } else {
+
+                    }
+                    this.showValue = false;
+                    this.selectVlueOrUpload = true;
+                    this.showDownloadButton = false;
+                    this.uploadindexless = numberCount - 1;
+                    this.uploadindexmore = this.form.tableDataConfigure.length - 1;
+                    this.inputindex = numberCount - 1;
+                } else if (val === "4") {
+                    this.showValue = true;
+                    this.selectVlueOrUpload = false;
+                    if (flag4 == 1) {
+                        this.form.tableDataConfigure = arrMarkall;
+                        this.lengthdata = 0
+                    } else {
+
+                    }
+                    this.showDownloadButton = false;
+                } else if (val === "5") {
+                    this.showValue = true;
+                    if (flag5 == 1) {
+                        this.form.tableDataConfigure = arrMarkall;
+                        this.lengthdata = 0
+                    } else {
+
+                    }
+                    this.showDownloadButton = false;
+                    this.selectVlueOrUpload = false;
+                } else if (val === "6") {
+                    this.showValue = true;
+                    if (flag6 == 1) {
+                        this.form.tableDataConfigure = arrMarkall;
+                        this.lengthdata = 0
+                    } else {
+
+                    }
+                    this.showDownloadButton = false;
+                    this.selectVlueOrUpload = false;
                 }
-                tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = 1;
-                this.deleteLength = 1;
-                this.showDownloadButton = false;
-            } else if (val === "5") {
-                this.deleteLength = 0;
-                this.showValue = true;
-                if (flag5 == 1) {
-                    this.form.tableDataConfigure = arrMarkall;
-                } else {
-                    this.form.tableDataConfigure = [];
-                }
-                tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = this.form.tableDataConfigure.length;
-                this.showDownloadButton = false;
-                this.selectVlueOrUpload = false;
-            } else if (val === "6") {
-                this.deleteLength = 0;
-                this.showValue = true;
-                if (flag6 == 1) {
-                    this.form.tableDataConfigure = arrMarkall;
-                } else {
-                    this.form.tableDataConfigure = [];
-                }
-                tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = this.form.tableDataConfigure.length;
-                this.showDownloadButton = false;
-                this.selectVlueOrUpload = false;
-            }
+            })
         },
         // 保存上传文件
         handleChange(file, fileList) {
