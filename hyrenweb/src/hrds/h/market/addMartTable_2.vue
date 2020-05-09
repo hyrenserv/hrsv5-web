@@ -9,13 +9,22 @@
                 <!--树菜单-->
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                 <div class='mytree'>
-                    <el-tree empty-text="暂无数据" :expand-on-click-node="true" :indent='0' :props="treeProps"
-                             :load="loadNode" lazy @node-click="showtablecolumn"
-                             node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>
-                          <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="node.label">{{ node.label }}</span>
+
+                    <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn"
+                    >
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description">{{node.label}}</span>
                         </span>
                     </el-tree>
+
+
+                    <!--<el-tree empty-text="暂无数据" :expand-on-click-node="true" :indent='0' :props="treeProps"-->
+                    <!--:load="loadNode" lazy @node-click="showtablecolumn"-->
+                    <!--node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>-->
+                    <!--<span class="span-ellipsis" slot-scope="{ node, data }">-->
+                    <!--<span :title="node.label">{{ node.label }}</span>-->
+                    <!--</span>-->
+                    <!--</el-tree>-->
                 </div>
             </el-col>
             <el-col :span="18">
@@ -79,7 +88,7 @@
                     </el-table-column>
                     <el-table-column prop="field_length" label="字段长度" width="90" show-overflow-tooltip
                                      align="center">
-                        <template slot-scope="scope" >
+                        <template slot-scope="scope">
                             <el-input width="90" v-model="scope.row.field_length" autocomplete="off"
                                       placeholder="字段长度"></el-input>
                         </template>
@@ -137,10 +146,12 @@
                     <el-table-column label="操作" show-overflow-tooltip
                                      align="center" width="150">
                         <template slot-scope="scope">
-                            <el-button size="mini" icon="el-icon-arrow-up" title="上移" @click="upcolumn(scope.$index,scope.row)"
+                            <el-button size="mini" icon="el-icon-arrow-up" title="上移"
+                                       @click="upcolumn(scope.$index,scope.row)"
                                        circle type="primary">
                             </el-button>
-                            <el-button size="mini" icon="el-icon-arrow-down" title="下移" @click="downcolumn(scope.$index,scope.row)"
+                            <el-button size="mini" icon="el-icon-arrow-down" title="下移"
+                                       @click="downcolumn(scope.$index,scope.row)"
                                        circle type="primary">
                             </el-button>
                             <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletecolumn(scope.$index)"
@@ -257,6 +268,7 @@
         },
         data() {
             return {
+                treedata: [],
                 active: 1,
                 rule: validator.default,
                 data_mart_id: this.$route.query.data_mart_id,
@@ -273,11 +285,11 @@
                 allfromcolumn: [],
                 databysql: [],
                 filterText: '',
-                treeProps: {id: 'id', label: 'name', children: 'children',},
-                treeDataInfo: {
-                    isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
-                    isRootNode: '1', tableName: ''
-                },
+                // treeProps: {id: 'id', label: 'name', children: 'children',},
+                // treeDataInfo: {
+                //     isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
+                //     isRootNode: '1', tableName: ''
+                // },
                 ifhbase: false,
                 ifhbasesort: false,
                 sqlparameter: "",
@@ -296,6 +308,9 @@
                 this.$refs.tree.filter(this.filterText);
             }
         },
+        created() {
+            this.gettreeData();
+        },
         mounted() {
             // this.getcolumnbysql();
             this.getallfield_type();
@@ -308,9 +323,9 @@
         },
         methods: {
             showtablecolumn(node) {
-                if (!node.isParent) {
+                if (node.file_id !== '') {
                     functionAll.queryAllColumnOnTableName({
-                        'source': node.source,
+                        'source': node.data_layer,
                         'id': node.id
                     }).then((res) => {
                         this.tablecolumn = res.data.columnresult;
@@ -326,45 +341,51 @@
                     // this.ifhbae = true;
                 }))
             },
-            filterNode(value, data, node) {
-                // 如果检索内容为空,直接返回
-                if (!value) return true;
-                // 如果传入的value和data中的name相同说明是匹配到了
-                return data.name.indexOf(value) !== -1;
-                // 否则要去判断它是不是选中节点的子节点
-                // return this.checkBelongToChooseNode(value, data, node);
+            // filterNode(value, data, node) {
+            //     // 如果检索内容为空,直接返回
+            //     if (!value) return true;
+            //     // 如果传入的value和data中的name相同说明是匹配到了
+            //     return data.name.indexOf(value) !== -1;
+            //     // 否则要去判断它是不是选中节点的子节点
+            //     // return this.checkBelongToChooseNode(value, data, node);
+            // },
+            gettreeData() {
+                functionAll.getTreeDataInfo().then(res => {
+                    this.treedata = res.data.marketTreeList;
+                });
             },
-            loadNode(node, resolve) {
-                // this.searchResolve = resolve;
-                // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
-                if (node.level === 0) {
-                    functionAll.getTreeDataInfo(this.treeDataInfo).then((res) => {
-                        return resolve(res.data.tree_sources);
-                    }).catch(() => {
-                        return resolve([]);
-                    });
-                } else {
-                    // 如果当前节点是父节点,则根据当前节点数据获取下一级的所有节点,否则根据节点信息查询数据
-                    if (node.data.isParent) {
-                        functionAll.getTreeDataInfo(node.data).then((res) => {
-                            return resolve(res.data.tree_sources);
-                        });
-                    } else {
-                        // // 查询数据
-                        // debugger;
-                        // functionAll.queryAllColumnOnTableName({
-                        //     'source': node.data.source,
-                        //     'id': node.data.id
-                        // }).then((res) => {
-                        //     this.tablecolumn = res.data.columnresult;
-                        //     this.sqltablename = res.data.tablename;
-                        //     this.iftablecolumn = true;
-                        //     this.Allis_selectionstate = false;
-                        // });
-                    }
-                }
-
-            },
+            // loadNode(node, resolve) {
+            //
+            //     // this.searchResolve = resolve;
+            //     // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
+            //     if (node.level === 0) {
+            //         functionAll.getTreeDataInfo(this.treeDataInfo).then((res) => {
+            //             return resolve(res.data.tree_sources);
+            //         }).catch(() => {
+            //             return resolve([]);
+            //         });
+            //     } else {
+            //         // 如果当前节点是父节点,则根据当前节点数据获取下一级的所有节点,否则根据节点信息查询数据
+            //         if (node.data.isParent) {
+            //             functionAll.getTreeDataInfo(node.data).then((res) => {
+            //                 return resolve(res.data.tree_sources);
+            //             });
+            //         } else {
+            //             // // 查询数据
+            //             // debugger;
+            //             // functionAll.queryAllColumnOnTableName({
+            //             //     'source': node.data.source,
+            //             //     'id': node.data.id
+            //             // }).then((res) => {
+            //             //     this.tablecolumn = res.data.columnresult;
+            //             //     this.sqltablename = res.data.tablename;
+            //             //     this.iftablecolumn = true;
+            //             //     this.Allis_selectionstate = false;
+            //             // });
+            //         }
+            //     }
+            //
+            // },
             getquerysql() {
                 let params = {
                     "datatable_id": this.datatable_id,
@@ -472,7 +493,7 @@
             changecolumnfiledproccess(row) {
                 if (row.field_process != '3') {
                     row.process_para = "";
-                }else{
+                } else {
                     row.process_para = 0;
                 }
             },
@@ -546,7 +567,7 @@
                 }
                 for (var i = 0; i < this.columnbysql.length; i++) {
                     var field_en_name = this.columnbysql[i].field_en_name;
-                    if(field_en_name === "" || field_en_name == undefined ){
+                    if (field_en_name === "" || field_en_name == undefined) {
                         this.$message({
                             type: "warning",
                             message: "第" + (i + 1) + "行字段英文名为空"
@@ -554,7 +575,7 @@
                         return false;
                     }
                     var field_cn_name = this.columnbysql[i].field_cn_name;
-                    if(field_cn_name === "" || field_cn_name == undefined ){
+                    if (field_cn_name === "" || field_cn_name == undefined) {
                         this.$message({
                             type: "warning",
                             message: "第" + (i + 1) + "行字段中文名为空"
@@ -562,7 +583,7 @@
                         return false;
                     }
                     var field_type = this.columnbysql[i].field_type;
-                    if(field_type === "" || field_type == undefined ){
+                    if (field_type === "" || field_type == undefined) {
                         this.$message({
                             type: "warning",
                             message: "第" + (i + 1) + "行字段类型名为空"
@@ -570,7 +591,7 @@
                         return false;
                     }
                     var field_process = this.columnbysql[i].field_process;
-                    if(field_process === "" || field_process == undefined ){
+                    if (field_process === "" || field_process == undefined) {
                         this.$message({
                             type: "warning",
                             message: "第" + (i + 1) + "行字段处理方式为空"
@@ -578,7 +599,7 @@
                         return false;
                     }
                     var process_para = this.columnbysql[i].process_para;
-                    if(process_para === '' || process_para == undefined ){
+                    if (process_para === '' || process_para == undefined) {
                         this.$message({
                             type: "warning",
                             message: "第" + (i + 1) + "行来源值为空"
