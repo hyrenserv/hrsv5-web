@@ -28,9 +28,9 @@
 
             <el-col :span="18">
                 <el-form-item label="数据字典文件" :label-width="formLabelWidth" prop="plane_url" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.plane_url" placeholder="数据字典文件" disabled :size="size">
+                    <el-input v-model="form.plane_url" placeholder="数据字典文件" :size="size">
                         <template slot="prepend">
-                            <el-button :size="size" @click="dialogSelectfolder = true;seletFilePath()">选择目录</el-button>
+                            <el-button :size="size" @click="dialogSelectfolder = true;seletFilePath()">选择文件</el-button>
                         </template>
                     </el-input>
                 </el-form-item>
@@ -48,12 +48,12 @@
         </el-col>
     </div>
     <!-- 选择目录弹出框 -->
-    <el-dialog title="选择目录" :visible.sync="dialogSelectfolder">
+    <el-dialog title="选择文件" :visible.sync="dialogSelectfolder">
         <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">选择目录</span>
+            <span class="dialogtitle el-icon-caret-right">选择文件</span>
         </div>
         <div class="mytree"  hight='200'>
-            <el-tree ref='tree' :data="data2" :check-strictly="true" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
+            <el-tree ref='tree' :data="data2" :check-strictly="true" :show-checkbox='hiddenshow' node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span>{{ node.label }}</span>
                 </span>
@@ -169,7 +169,7 @@ export default {
         return {
             active: 0,
             form: {
-
+                plane_url: ''
             },
             formLabelWidth: "150px",
             size: "medium",
@@ -180,6 +180,7 @@ export default {
             radio: "1",
             isLoading: false,
             classify_id: '',
+            hiddenshow: true,
             addClassTask: {
 
             },
@@ -191,7 +192,8 @@ export default {
             CollTaskData: [],
             defaultProps: {
                 children: "children",
-                label: "path"
+                label: "path",
+                isLeaf: 'leaf'
             },
             radio: null,
             innerVisible: false,
@@ -351,7 +353,7 @@ export default {
         handleSizeChange(size) {
             this.pagesize = size;
         },
-        // 取消选择目录并且关闭弹出框
+        // 取消选择目录文件并且关闭弹出框
         cancelSelect() {
             if (this.fileMark != '') {
                 this.form.plane_url = this.fileMark;
@@ -375,7 +377,12 @@ export default {
                     if (res.data && res.data.length > 0) {
                         for (let i = 0; i < res.data.length; i++) {
                             if (res.data[i].isFolder == 'true') {
-                                res.data[i].children = [{}]
+                                res.data[i].children = [{}];
+                                res.data[i].disabled = true;
+                                res.data[i].leaf = false;
+                            } else if (res.data[i].isFolder == 'false') {
+                                res.data[i].disabled = false;
+                                res.data[i].leaf = true;
                             }
                         }
                         this.data2 = res.data;
@@ -403,7 +410,12 @@ export default {
                         .then(res => {
                             for (let i = 0; i < res.data.length; i++) {
                                 if (res.data[i].isFolder == 'true') {
-                                    res.data[i].children = [{}]
+                                    res.data[i].children = [{}];
+                                    res.data[i].disabled = true;
+                                    res.data[i].leaf = false;
+                                } else if (res.data[i].isFolder == 'false') {
+                                    res.data[i].disabled = false;
+                                    res.data[i].leaf = true;
                                 }
                             }
                             resolve(res.data);
