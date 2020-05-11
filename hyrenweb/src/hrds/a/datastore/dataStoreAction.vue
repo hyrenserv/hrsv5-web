@@ -86,9 +86,16 @@
 
                 <el-table-column label="value" prop="storage_property_val" align="center" v-if="showValue" :key="3">
                     <template slot-scope="scope">
-                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
+                        <el-form-item v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" :prop="`tableData.${scope.$index}.storage_property_val`" :rules="rule.selected">
+                            <el-select  v-model="scope.row.storage_property_val" style="width:280px">
+                                <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item v-else :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
                             <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
                         </el-form-item>
+
                     </template>
                 </el-table-column>
 
@@ -215,6 +222,7 @@ export default {
             typeLengthinfo: [],
             fileList: [],
             YesNo: [],
+            databaseType: [],
             rule: validator.default
         }
     },
@@ -252,6 +260,14 @@ export default {
                     })
                     .then(res => {
                         this.YesNo = res.data;
+                    });
+            } else if (e == "DatabaseType") {
+                functionAll
+                    .getCategoryItems({
+                        category: e
+                    })
+                    .then(res => {
+                        this.databaseType = res.data;
                     });
             }
         },
@@ -433,8 +449,16 @@ export default {
                 store_type: val
             }).then(res => {
                 let arry = [];
+                let arr = [];
+                for (let index = 0; index < res.data.jdbcKey.length; index++) {
+                    if (res.data.jdbcKey[index] == "database_type") {
+                        arr.push(res.data.jdbcKey[index]);
+                        res.data.jdbcKey.splice(index, 1);
+                        this.getCategoryItems("DatabaseType");
+                    }
+                }
                 // 数据合并
-                dataList = [...res.data.jdbcKey, ...res.data.fileKey];
+                dataList = [...arr, ...res.data.jdbcKey, ...res.data.fileKey];
                 // 记录需要判断的长度
                 numberCount = res.data.jdbcKey.length;
                 numberCountfile = res.data.fileKey.length;
