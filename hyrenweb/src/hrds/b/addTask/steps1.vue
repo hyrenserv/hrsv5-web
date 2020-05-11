@@ -372,8 +372,8 @@ export default {
         } else {
             let params = {};
             params["databaseId"] = this.sourceId;
+           params["agent_id"] =this.$route.query.agent_id
             addTaskAllFun.addDBConfInfo(params).then(res => {
-
                 if (res.data.length != 0) {
                     this.ruleForm = res.data[0];
                     this.radio = res.data[0].classify_id;
