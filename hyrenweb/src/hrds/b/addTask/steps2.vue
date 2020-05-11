@@ -1095,14 +1095,14 @@ export default {
                         isparmi2 = [], //sql抽取中增量存在的表
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     if (this.callTable3.length > 0) {
-                        for (let i = 0; i < callTable3.length; i++) {
+                        for (let i = 0; i < this.callTable3.length; i++) {
                             for (let j = 0; j < this.firstTableInfo.length; j++) {
-                                if (callTable3[i].table_name == this.firstTableInfo[j].table_name) {
-                                    callTable3.splice(i, 1)
+                                if (this.callTable3[i].table_name == this.firstTableInfo[j].table_name) {
+                                    this.callTable3.splice(i, 1)
                                 }
                             }
                         }
-                        tableData = callTable3.concat(this.firstTableInfo)
+                        tableData = this.callTable3.concat(this.firstTableInfo)
                     } else {
                         tableData = this.firstTableInfo
                     }
