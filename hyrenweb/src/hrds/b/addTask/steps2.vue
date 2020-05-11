@@ -1106,6 +1106,7 @@ export default {
                     } else {
                         tableData = this.firstTableInfo
                     }
+                    console.log(tableData)
                     for (let i = 0; i < tableData.length; i++) {
                         //判断两个页面数据有无重复数据
                         if (
@@ -1404,7 +1405,7 @@ export default {
         },
         // 处理第一个页面数据
         saveTableConfFun(tableData) {
-            // console.log(this.tableData, '第一个页面数据')
+            console.log(tableData, '第一个页面数据')
             // console.log(this.SelectColumn, '第一个页面选择列点击过保存的值')
             // console.log(this.sqlFiltArr, '第一个页面sql过滤点击过保存的值')
             // console.log(this.ParallelExtractionArr, '第一个页面并行抽取数据')
@@ -1418,7 +1419,7 @@ export default {
                 // 遍历拿到所有勾选的数据
                 console.log(1)
                 for (let i = 0; i < tableData.length; i++) {
-                    if (tableData.selectionState == true) {
+                    if (tableData[i].selectionState == true) {
                         arrData.push(tableData[i]);
                     }
                 }
