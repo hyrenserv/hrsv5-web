@@ -109,7 +109,7 @@ export default {
                             this.dialogFormVisibleAdd = false;
                             this.formUpdate = {};
                             this.depIds = [];
-                        } 
+                        }
                     });
                 } else {
                     return false;
@@ -232,7 +232,7 @@ export default {
     height: 80px;
     background: #337ab7;
     border-radius: 10px;
-    margin-right: 82px;
+    margin-right: 50px;
     text-align: center;
     float: left;
     position: relative;

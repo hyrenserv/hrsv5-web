@@ -91,7 +91,7 @@
                 <div class="mytree"  hight='200'>
                     <el-tree :data="data2" :check-strictly="true" show-checkbox @check-change="handleCheckChange">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span @click="() => append(data)">{{ node.label }}</span>
+                            <span @click="() => append(data)" :title="node.label">{{ node.label }}</span>
                             <span>
                                 <el-button class="netxNUM" type="text" @click="() => append(data)">
                                     点击获取下一级

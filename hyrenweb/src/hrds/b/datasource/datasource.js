@@ -182,7 +182,15 @@ export function deleteAgent(data) {
         params:data
     })
 }
-
+/**(4)
+ * 获取代码项信息
+ */
+export function getCategoryItems(data) {
+    return request({
+        url: '/A/codes/getCategoryItems',
+        params: data
+    })
+}
 
 
 
