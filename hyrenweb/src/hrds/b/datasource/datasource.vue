@@ -81,7 +81,8 @@
             <el-table-column prop="user_name" label="数据采集用户" align="center"></el-table-column>
             <el-table-column label="操作" width="190" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
+                    <el-button size="mini" v-if="showViewOrHandle" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">查看</el-button>
+                    <el-button size="mini" v-else type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
                     <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -115,16 +116,16 @@
     <el-dialog title="编辑 Agent" :visible.sync="dialogFormVisibleview" width="40%" :before-close="beforeCloseview">
         <el-form :model="form" ref="form">
             <el-form-item label=" Agent名称" :label-width="formLabelWidth" prop="agent_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="form.agent_name" autocomplete="off" style="width:284px"></el-input>
+                <el-input v-model="form.agent_name" :disabled="disabled" autocomplete="off" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" Agent所在服务器ip" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
-                <el-input v-model="form.agent_ip" autocomplete="off" style="width:284px"></el-input>
+                <el-input v-model="form.agent_ip" :disabled="disabled" autocomplete="off" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" Agent 连接端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
-                <el-input v-model="form.agent_port" autocomplete="off" style="width:284px"></el-input>
+                <el-input v-model="form.agent_port" :disabled="disabled" autocomplete="off" style="width:284px"></el-input>
             </el-form-item>
             <el-form-item label=" 数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
-                <el-select v-model="form.user_id" filterable placeholder="请选择" style="width:284px">
+                <el-select v-model="form.user_id" :disabled="disabled" filterable placeholder="请选择" style="width:284px">
                     <el-option v-for="(item,index) in options" :key="index" :label="item.user_name" :value="item.user_id"></el-option>
                 </el-select>
             </el-form-item>
@@ -161,6 +162,8 @@ export default {
             semiStructure: false,
             nonStructural: false,
             ftpAgent: false,
+            showViewOrHandle: false,
+            disabled: false,
             formAdd: {
                 agent_name: "",
                 agent_ip: "",
@@ -173,24 +176,39 @@ export default {
                 agent_port: "",
             },
             rule: validator.default,
-            formLabelWidth: "150px"
+            formLabelWidth: "150px",
+            result: []
         };
     },
     created() {
-        // 发送请求获取数据
-        functionAll.searchDatasourceAndAgentInfo({
-            source_id: this.$route.query.source_id
-        }).then(res => {
-            // 传参
-            this.datasource_name = res.data.datasource_name
-            this.tableData = res.data.sjkAgent;
-            this.dialogName = "添加数据库 Agent";
-            this.agent_type = 1;
-            agentTupe = 1;
-            this.dataAll = res.data;
-        });
+        this.getCategoryItems();
+        this.searchDatasourceAndAgentInfos();
     },
     methods: {
+        // 获取页面初始值
+        searchDatasourceAndAgentInfos() {
+            // 发送请求获取数据
+            functionAll.searchDatasourceAndAgentInfo({
+                source_id: this.$route.query.source_id
+            }).then(res => {
+                // 传参
+                this.datasource_name = res.data.datasource_name
+                this.tableData = res.data.sjkAgent;
+                this.showViewOrHandles(this.result, this.tableData);
+                this.dialogName = "添加数据库 Agent";
+                this.agent_type = 1;
+                agentTupe = 1;
+                this.dataAll = res.data;
+            });
+        },
+        // 获取代码项信息
+        getCategoryItems() {
+            functionAll.getCategoryItems({
+                category: 'AgentStatus'
+            }).then(res => {
+                this.result = res.data;
+            })
+        },
         // 获取agent数据内容方法
         getAgentAllData(e) {
             // 发送请求获取数据
@@ -274,6 +292,23 @@ export default {
             this.dialogFormVisible = false;
             this.$refs.formAdd.resetFields();
         },
+        showViewOrHandles(result, tableData) {
+            result.forEach(item => {
+                let name;
+                tableData.forEach(val => {
+                    if (item.code == val.agent_status) {
+                        name = item.value;
+                        if (name == "已连接") {
+                            this.showViewOrHandle = true;
+                            this.disabled = true;
+                        } else {
+                            this.showViewOrHandle = false;
+                            this.disabled = false;
+                        }
+                    }
+                })
+            })
+        },
         // 点击不同的数据类型获取不同的数据
         tapDifferentType(e) {
             switch (e) {
@@ -283,6 +318,7 @@ export default {
                     // 给tableData渲染对应的数组，先看上面能不能拿到；
                     this.dialogName = "添加数据库 Agent";
                     this.tableData = this.dataAll.sjkAgent;
+                    this.showViewOrHandles(this.result, this.tableData);
                     this.sourceAgent = true;
                     this.nonStructural = false;
                     this.ftpAgent = false;
@@ -294,6 +330,7 @@ export default {
                     agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.fileSystemAgent;
+                    this.showViewOrHandles(this.result, this.tableData);
                     this.nonStructural = true;
                     this.ftpAgent = false;
                     this.dataFile = false;
@@ -305,6 +342,7 @@ export default {
                     agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.ftpAgent;
+                    this.showViewOrHandles(this.result, this.tableData);
                     this.ftpAgent = true;
                     this.dataFile = false;
                     this.semiStructure = false;
@@ -316,6 +354,7 @@ export default {
                     agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.dbFileAgent;
+                    this.showViewOrHandles(this.result, this.tableData);
                     this.dataFile = true;
                     this.semiStructure = false;
                     this.sourceAgent = false;
@@ -327,6 +366,7 @@ export default {
                     agentTupe = e;
                     this.agent_type = e;
                     this.tableData = this.dataAll.dxAgent;
+                    this.showViewOrHandles(this.result, this.tableData);
                     this.semiStructure = true;
                     this.sourceAgent = false;
                     this.nonStructural = false;
@@ -349,12 +389,11 @@ export default {
                                 type: "success",
                                 message: "更新成功!"
                             });
+                            // 重新渲染页面
                             this.getAgentAllData(agentTupe);
                             // 隐藏对话框
                             this.dialogFormVisibleview = false;
-                            // 表单清空
-                            this.form = {};
-                            // 重新渲染页面
+
                         }
                     });
                 } else {

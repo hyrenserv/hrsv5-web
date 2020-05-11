@@ -126,7 +126,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="当前批量日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
-                <el-date-picker v-model="formStartCON.curr_bath_date" type="date" placeholder="选择日期" value-format="yyyy-MM-dd">
+                <el-date-picker v-model="formStartCON.curr_bath_date" type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择日期">
                 </el-date-picker>
             </el-form-item>
         </el-form>
@@ -159,7 +159,7 @@
                 <el-button type="primary" @click="onViewCON">查看</el-button>
             </el-form-item>
             <el-form-item label="跑批日期" prop="curr_bath_date">
-                <el-date-picker v-model="formRecordCON.curr_bath_date" type="date" placeholder="选择日期" value-format="yyyy-MM-dd">
+                <el-date-picker v-model="formRecordCON.curr_bath_date" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyyMMdd">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -184,7 +184,7 @@
                 <el-button type="primary" @click="onViewTRI">查看</el-button>
             </el-form-item>
             <el-form-item label="跑批日期" prop="curr_bath_date">
-                <el-date-picker v-model="formRecordTRI.curr_bath_date" type="date" placeholder="选择日期" value-format="yyyy-MM-dd">
+                <el-date-picker v-model="formRecordTRI.curr_bath_date" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyyMMdd">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -347,8 +347,15 @@ export default {
         getTable() {
             let params = {};
             etlMageAllFun.searchEtlSys(params).then(res => {
+                for (let index = 0; index < res.data.length; index++) {
+                    let year = res.data[index].curr_bath_date.substring(0, 4);
+                    let month = res.data[index].curr_bath_date.substring(4, 6);
+                    let day = res.data[index].curr_bath_date.substring(6, 9);
+                    let date = year + "-" + month + "-" + day;
+                    res.data[index].curr_bath_date = date;
+                }
                 this.tableData = res.data;
-            });
+            })
         },
         //查询作业调度工程信息
         getEtlSys(etl_sys_cd) {

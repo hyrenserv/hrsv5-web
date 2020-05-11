@@ -55,7 +55,7 @@
         <div class="mytree"  hight='200'>
             <el-tree ref='tree' :data="data2" :check-strictly="true" :show-checkbox='hiddenshow' node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
-                    <span>{{ node.label }}</span>
+                    <span :title="node.label">{{ node.label }}</span>
                 </span>
             </el-tree>
         </div>
@@ -221,7 +221,7 @@ export default {
                     agent_id: this.$route.query.agent_id,
                     source_id: this.$route.query.source_id
                 }).then(res => {
-                    if (JSON.stringify(res.data) != "{}") {
+                    if (res.data.plane_url != undefined && res.data.task_name != undefined) {
                         this.updateMark = "1";
                         this.radio = res.data.classify_id;
                         this.classify_id = res.data.classify_id;
@@ -237,7 +237,7 @@ export default {
                 agent_id: this.$route.query.agent_id,
                 colSetId: this.$route.query.id
             }).then(res => {
-                if (JSON.stringify(res.data) != "{}") {
+                if (res.data.plane_url != undefined && res.data.task_name != undefined) {
                     this.updateMark = "1";
                     this.radio = res.data.classify_id;
                     this.classify_id = res.data.classify_id;

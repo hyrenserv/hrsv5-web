@@ -167,7 +167,7 @@
         <div class="mytree"  hight='200'>
             <el-tree ref='tree' :data="data2" :check-strictly="true" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
-                    <span>{{ node.label }}</span>
+                    <span :title="node.label">{{ node.label }}</span>
                 </span>
             </el-tree>
         </div>
