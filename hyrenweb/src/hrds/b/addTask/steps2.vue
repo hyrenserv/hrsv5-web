@@ -722,6 +722,7 @@ export default {
             zdycallTable: [],
             onclickAll: false,
             alltableact: false,
+            Searchzt: false, //是否点击搜索
         };
     },
     created() {
@@ -906,6 +907,7 @@ export default {
         },
         // 全表点击单个复选框
         evercheck(val, name) {
+            console.log(val)
             let count = 0;
             if (val == true) {
                 for (let i = 0; i < this.tableData.length; i++) {
@@ -923,6 +925,7 @@ export default {
                         this.allDataList[i].selectionState = true;
                     }
                 }
+                console.log(this.allDataList)
             } else {
                 for (let i = 0; i < this.tableData.length; i++) {
                     if (this.tableData[i].selectionState == false) {
@@ -995,6 +998,7 @@ export default {
                 this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
                     if (res.data.length > 0) {
+                        this.Searchzt = true
                         let data = res.data;
                         for (let i = 0; i < data.length; i++) {
                             if (data[i].table_id && data[i].table_id != "") {
@@ -1016,7 +1020,19 @@ export default {
                                 data[i].unload_type = "全量";
                             } else if (data[i].unload_type == "2") {
                                 data[i].unload_type = "增量";
+                            } else {
+                                data[i].unload_type = "全量";
                             }
+                            // 
+                            for (let j = 0; j < this.allDataList.length; j++) {
+                                if (this.allDataList[j].table_name == data[i].table_name) {
+                                    data[i].selectionState = this.allDataList[j].selectionState
+                                    data[i].is_parallel = this.allDataList[j].is_parallel
+                                    data[i].is_md5 = this.allDataList[j].is_md5
+                                    data[i].unload_type = this.allDataList[j].unload_type
+                                }
+                            }
+
                         }
                         this.tableData = res.data;
                     } else {
@@ -1359,7 +1375,8 @@ export default {
             params["colSetId"] = this.dbid;
             addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
                 // 遍历拿到所有勾选的数据
-                if (this.onclickAll == true) {
+                if (this.onclickAll == true || this.Searchzt == true) {
+                    console.log(1)
                     for (let i = 0; i < this.allDataList.length; i++) {
                         if (this.allDataList[i].selectionState == true) {
                             arrData.push(this.allDataList[i]);
@@ -1627,6 +1644,7 @@ export default {
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
                 params2["delTbString"] =
                     delJson.length > 0 ? JSON.stringify(delJson) : "";
+                console.log(params2)
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;

@@ -73,7 +73,7 @@
                     <el-select v-show="scope.row.par" disabled placeholder="PAR换行符" v-model="scope.row.par_row_separator" style="margin-bottom: 8px;" size="mini">
                         <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
                     </el-select>
-                    <el-select v-show="scope.row.csv" placeholder="CSV换行符" v-model="scope.row.csv_row_separator" style="margin-bottom: 8px;" size="mini">
+                    <el-select v-show="scope.row.csv" disabled placeholder="CSV换行符" v-model="scope.row.csv_row_separator" style="margin-bottom: 8px;" size="mini">
                         <el-option size="medium" v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value">{{item.title}}</el-option>
                     </el-select>
                     <el-select v-show="scope.row.seq" disabled placeholder="SEQ换行符" v-model="scope.row.seq_row_separator" style="margin-bottom: 8px;" size="mini">
@@ -152,7 +152,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="换行符" key="2" v-else>
-                <el-select placeholder="换行符" v-model="separatorData.Newlinecharacte" style="width: 190px;" size="medium" :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'">
+                <el-select placeholder="换行符" v-model="separatorData.Newlinecharacte" style="width: 190px;" size="medium" :disabled="separatorData.Extractformat=='ORC'||separatorData.Extractformat=='PARQUET'||separatorData.Extractformat=='SEQUENCEFILE'||separatorData.Extractformat=='CSV'">
                     <el-option v-for="(item,index) in newlineCharacter" :key="index" :label="item.value" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
