@@ -17,7 +17,7 @@
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
                             </template>
                             <template slot-scope="scope">
-                                <el-checkbox :checked="scope.row.selectionState" v-model="scope.row.selectionState" @change="evercheck(scope.row.selectionState,scope.row.table_name)"></el-checkbox>
+                                <el-checkbox :checked="scope.row.selectionState" v-model="scope.row.selectionState" @change="evercheck(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column label="序号" align="center" width="60">
@@ -28,7 +28,7 @@
                         <el-table-column prop="table_name" label="表名" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="table_ch_name" label="表中文名" width="160" align="center" :show-overflow-tooltip="true">
                             <template slot-scope="scope">
-                                <el-input v-model="scope.row.table_ch_name" placeholder="中文名" @change="changetablechnameFun(scope.row.table_ch_name,scope.row.table_name)"></el-input>
+                                <el-input v-model="scope.row.table_ch_name" placeholder="中文名" @change="changetablechnameFun(scope.row)"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="卸数方式" align="center">
@@ -719,10 +719,12 @@ export default {
             xsTypeArr2All: [], //第二个页面卸数全量是存放数据
             ParallelExtractionArr2: [], //第二个页面并行抽取保存数据
             callTable2: [],
+            callTable3: [],
             zdycallTable: [],
             onclickAll: false,
             alltableact: false,
             Searchzt: false, //是否点击搜索
+            firstTableInfo: [], //存储第一页修改数据
         };
     },
     created() {
@@ -731,7 +733,7 @@ export default {
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
-        this.getAllTableInfo()
+        // this.getAllTableInfo()
 
     },
     beforeMount() {},
@@ -792,8 +794,22 @@ export default {
                         // data[i].unload_type = "";
                         data[i].unload_type = "全量";
                     }
+                    // 
+                    if (this.firstTableInfo.length > 0) {
+                        for (let j = 0; j < this.firstTableInfo.length; j++) {
+                            if (this.firstTableInfo[j].table_name == data[i].table_name) {
+                                data[i].selectionState = this.firstTableInfo[j].selectionState
+                                data[i].is_parallel = this.firstTableInfo[j].is_parallel
+                                data[i].is_md5 = this.firstTableInfo[j].is_md5
+                                data[i].unload_type = this.firstTableInfo[j].unload_type
+                            }
+                        }
+                    }
+
                 }
                 this.allDataList = data;
+                this.isdata = JSON.parse(JSON.stringify(data));
+                this.tableData = JSON.parse(JSON.stringify(data));
             });
         },
         //编辑状态获取第二个页面值
@@ -860,6 +876,7 @@ export default {
                     this.tableData = data;
                     this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
                     this.callTable2 = JSON.parse(JSON.stringify(data));
+                    this.callTable3 = JSON.parse(JSON.stringify(data));
                     // this.Allis_selectionState = true;
                 }
             });
@@ -900,46 +917,57 @@ export default {
             this.onclickAll = true;
             this.Allis_selectionState = false;
             this.tableData.length = 0;
-            if (this.alltableact == true) {
+            this.getAllTableInfo()
+            /* if (this.alltableact == true) {
                 this.isdata = JSON.parse(JSON.stringify(this.allDataList));
                 this.tableData = JSON.parse(JSON.stringify(this.allDataList));
-            }
+            } */
         },
         // 全表点击单个复选框
-        evercheck(val, name) {
-            console.log(val)
-            let count = 0;
-            if (val == true) {
-                for (let i = 0; i < this.tableData.length; i++) {
-                    if (this.tableData[i].selectionState == true) {
-                        count++;
+        evercheck(row) {
+            if (this.firstTableInfo.length > 0) {
+                for (let i = 0; i < this.firstTableInfo.length; i++) {
+                    if (this.firstTableInfo[i].table_name == row.table_name) {
+                        this.firstTableInfo.splice(i, 1)
                     }
                 }
-                if (count == this.tableData.length) {
-                    this.Allis_selectionState = true;
-                } else {
-                    this.Allis_selectionState = false;
-                }
-                for (let i = 0; i < this.allDataList.length; i++) {
-                    if (this.allDataList[i].table_name == name) {
-                        this.allDataList[i].selectionState = true;
-                    }
-                }
-                console.log(this.allDataList)
+                this.firstTableInfo.push(row)
             } else {
-                for (let i = 0; i < this.tableData.length; i++) {
-                    if (this.tableData[i].selectionState == false) {
-                        if (count < this.tableData.length) {
-                            this.Allis_selectionState = false;
-                        }
-                    }
-                }
-                for (let i = 0; i < this.allDataList.length; i++) {
-                    if (this.allDataList[i].table_name == name) {
-                        this.allDataList[i].selectionState = false;
-                    }
-                }
+                this.firstTableInfo.push(row)
             }
+
+            /*  let count = 0;
+             if (val == true) {
+                 for (let i = 0; i < this.tableData.length; i++) {
+                     if (this.tableData[i].selectionState == true) {
+                         count++;
+                     }
+                 }
+                 if (count == this.tableData.length) {
+                     this.Allis_selectionState = true;
+                 } else {
+                     this.Allis_selectionState = false;
+                 }
+                 for (let i = 0; i < this.allDataList.length; i++) {
+                     if (this.allDataList[i].table_name == name) {
+                         this.allDataList[i].selectionState = true;
+                     }
+                 }
+                 console.log(this.allDataList)
+             } else {
+                 for (let i = 0; i < this.tableData.length; i++) {
+                     if (this.tableData[i].selectionState == false) {
+                         if (count < this.tableData.length) {
+                             this.Allis_selectionState = false;
+                         }
+                     }
+                 }
+                 for (let i = 0; i < this.allDataList.length; i++) {
+                     if (this.allDataList[i].table_name == name) {
+                         this.allDataList[i].selectionState = false;
+                     }
+                 }
+             } */
         },
         //选择列
         every_SelectColumnfun(val, alldata) {
@@ -1024,12 +1052,14 @@ export default {
                                 data[i].unload_type = "全量";
                             }
                             // 
-                            for (let j = 0; j < this.allDataList.length; j++) {
-                                if (this.allDataList[j].table_name == data[i].table_name) {
-                                    data[i].selectionState = this.allDataList[j].selectionState
-                                    data[i].is_parallel = this.allDataList[j].is_parallel
-                                    data[i].is_md5 = this.allDataList[j].is_md5
-                                    data[i].unload_type = this.allDataList[j].unload_type
+                            if (this.firstTableInfo.length > 0) {
+                                for (let j = 0; j < this.firstTableInfo.length; j++) {
+                                    if (this.firstTableInfo[j].table_name == data[i].table_name) {
+                                        data[i].selectionState = this.firstTableInfo[j].selectionState
+                                        data[i].is_parallel = this.firstTableInfo[j].is_parallel
+                                        data[i].is_md5 = this.firstTableInfo[j].is_md5
+                                        data[i].unload_type = this.firstTableInfo[j].unload_type
+                                    }
                                 }
                             }
 
@@ -1057,18 +1087,29 @@ export default {
             this.$refs["ruleForm"].validate(valid => {
                 if (valid) {
                     this.isLoading = true;
-                    let tableData = this.tableData, //第一个页面所有表
+                    let tableData = [], //第一个页面所有表
                         sqlExtractData = this.ruleForm.sqlExtractData, //第二个页面所有表
                         rep_table = [], //两张表重复的表
                         isparmi = [],
                         tableidArr1 = {}, //单表查询中增量存在的表
                         isparmi2 = [], //sql抽取中增量存在的表
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
+                    if (this.callTable3.length > 0) {
+                        for (let i = 0; i < callTable3.length; i++) {
+                            for (let j = 0; j < this.firstTableInfo.length; j++) {
+                                if (callTable3[i].table_name == this.firstTableInfo[j].table_name) {
+                                    callTable3.splice(i, 1)
+                                }
+                            }
+                        }
+                        tableData = callTable3.concat(this.firstTableInfo)
+                    } else {
+                        tableData = this.firstTableInfo
+                    }
                     for (let i = 0; i < tableData.length; i++) {
                         //判断两个页面数据有无重复数据
                         if (
-                            tableData[i].selectionState == true &&
-                            tableData[i].unload_type == "增量"
+                            tableData[i].selectionState == true && tableData[i].unload_type == "增量"
                         ) {
                             isparmi.push(tableData[i].table_name);
                             if (tableData[i].table_id && tableData[i].table_id != "") {
@@ -1156,10 +1197,10 @@ export default {
                                                 });
                                             } else {
                                                 //不存在继续下面方法
-                                                this.saveTableConfFun(); //处理第一个页面数据
+                                                this.saveTableConfFun(tableData); //处理第一个页面数据
                                             }
                                         } else {
-                                            this.saveTableConfFun();
+                                            this.saveTableConfFun(tableData);
                                         }
                                     } else {
                                         //手动没有保存的选择列信息，只需要判断从接口获取的原本的
@@ -1179,13 +1220,13 @@ export default {
                                             });
                                         } else {
                                             //不存在未设置主键的表则继续下面整合数据方法
-                                            this.saveTableConfFun(); //处理第一个页面数据
+                                            this.saveTableConfFun(tableData); //处理第一个页面数据
                                         }
                                     }
                                 });
                             } else {
                                 //第一个页面无增量的卸数存在直接进整理数据方法
-                                this.saveTableConfFun(); //处理第一个页面数据
+                                this.saveTableConfFun(tableData); //处理第一个页面数据
                             }
                             // 第二个页面
                             this.sqlFun();
@@ -1362,7 +1403,7 @@ export default {
             });
         },
         // 处理第一个页面数据
-        saveTableConfFun() {
+        saveTableConfFun(tableData) {
             // console.log(this.tableData, '第一个页面数据')
             // console.log(this.SelectColumn, '第一个页面选择列点击过保存的值')
             // console.log(this.sqlFiltArr, '第一个页面sql过滤点击过保存的值')
@@ -1375,21 +1416,12 @@ export default {
             params["colSetId"] = this.dbid;
             addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
                 // 遍历拿到所有勾选的数据
-                if (this.onclickAll == true || this.Searchzt == true) {
-                    console.log(1)
-                    for (let i = 0; i < this.allDataList.length; i++) {
-                        if (this.allDataList[i].selectionState == true) {
-                            arrData.push(this.allDataList[i]);
-                        }
-                    }
-                } else {
-                    for (let i = 0; i < this.tableData.length; i++) {
-                        if (this.tableData[i].selectionState == true) {
-                            arrData.push(this.tableData[i]);
-                        }
+                console.log(1)
+                for (let i = 0; i < tableData.length; i++) {
+                    if (tableData.selectionState == true) {
+                        arrData.push(tableData[i]);
                     }
                 }
-
                 //对比要删除的数据
                 for (let i = 0; i < arrData.length; i++) {
                     for (let j = 0; j < this.callTable.length; j++) {
@@ -2119,19 +2151,29 @@ export default {
         },
         // 第一个页面md5
         md50Fun(row) {
-            if (row.is_md5 == true) {
-                for (let i = 0; i < this.allDataList.length; i++) {
-                    if (this.allDataList[i].table_name == row.table_name) {
-                        this.allDataList[i].is_md5 = true;
+            if (this.firstTableInfo.length > 0) {
+                for (let i = 0; i < this.firstTableInfo.length; i++) {
+                    if (this.firstTableInfo[i].table_name == row.table_name) {
+                        this.firstTableInfo.splice(i, 1)
                     }
                 }
+                this.firstTableInfo.push(row)
             } else {
-                for (let i = 0; i < this.allDataList.length; i++) {
-                    if (this.allDataList[i].table_name == row.table_name) {
-                        this.allDataList[i].is_md5 = false;
-                    }
-                }
+                this.firstTableInfo.push(row)
             }
+            /*  if (row.is_md5 == true) {
+                 for (let i = 0; i < this.allDataList.length; i++) {
+                     if (this.allDataList[i].table_name == row.table_name) {
+                         this.allDataList[i].is_md5 = true;
+                     }
+                 }
+             } else {
+                 for (let i = 0; i < this.allDataList.length; i++) {
+                     if (this.allDataList[i].table_name == row.table_name) {
+                         this.allDataList[i].is_md5 = false;
+                     }
+                 }
+             } */
         },
         // 是否抽取sql弹框关闭
         testParallelExtractionCloseFun() {
@@ -2679,12 +2721,23 @@ export default {
             });
         },
         // 修改表名
-        changetablechnameFun(chname, name) {
-            for (let m = 0; m < this.allDataList.length; m++) {
-                if (this.allDataList[m].table_name == name) {
-                    this.allDataList[m].table_ch_name = chname;
+        changetablechnameFun(row) {
+            if (this.firstTableInfo.length > 0) {
+                for (let i = 0; i < this.firstTableInfo.length; i++) {
+                    if (this.firstTableInfo[i].table_name == row.table_name) {
+                        this.firstTableInfo.splice(i, 1)
+                    }
                 }
+                this.firstTableInfo.push(row)
+            } else {
+                this.firstTableInfo.push(row)
             }
+            console.log(this.firstTableInfo)
+            /*  for (let m = 0; m < this.allDataList.length; m++) {
+                 if (this.allDataList[m].table_name == name) {
+                     this.allDataList[m].table_ch_name = chname;
+                 }
+             } */
         },
 
         // 第一个页面卸数方式发生改变
