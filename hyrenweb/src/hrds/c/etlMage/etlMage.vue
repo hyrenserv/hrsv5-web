@@ -114,15 +114,14 @@
                 </div>
             </el-form-item>
             <el-form-item label="是否续跑" prop="isResumeRun">
+
                 <el-radio-group v-model="formStartCON.isResumeRun">
-                    <el-radio label="YES"></el-radio>
-                    <el-radio label="NO"></el-radio>
+                    <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="是否日切" prop="isAutoShift">
                 <el-radio-group v-model="formStartCON.isAutoShift">
-                    <el-radio label="YES"></el-radio>
-                    <el-radio label="NO"></el-radio>
+                    <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="当前批量日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
@@ -335,6 +334,7 @@ export default {
             tableData: [],
             EtlSysInfo: [],
             listdata: [],
+            YesNo: [],
             online: {},
         };
     },
@@ -676,6 +676,7 @@ export default {
         handleStartco(index, row) {
             this.dialogFormVisibleStartCON = true;
             this.getEtlSys(row.etl_sys_cd);
+            this.getCategoryItems("IsFlag");
             this.formStartCON.etl_sys_cd = row.etl_sys_cd;
         },
         //表格启动TRIGGER按钮
@@ -973,7 +974,19 @@ export default {
                     etl_sys_cd: val.etl_sys_cd,
                 }
             });
-        }
+        },
+        // 获取代码项对应的值
+        getCategoryItems(e) {
+            if (e == "IsFlag") {
+                functionAll
+                    .getCategoryItems({
+                        category: e
+                    })
+                    .then(res => {
+                        this.YesNo = res.data;
+                    });
+            }
+        },
     },
 };
 </script>

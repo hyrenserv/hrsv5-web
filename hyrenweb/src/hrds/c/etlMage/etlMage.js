@@ -88,3 +88,11 @@ export function monitorAllProjectChartsData(data) {
         params: data
     })
 }
+
+// 获取代码项 
+export function getCategoryItems(data) {
+    return request({
+        url: '/A/codes/getCategoryItems',
+        params: data
+    })
+}

@@ -12,7 +12,7 @@ import request from '@/utils/request'
 }
 
 /**(1)
- * 获取ftp采集配置页面初始化的值（代码项）
+ * 获取页面初始化的值（代码项）
  */
 export function getCategoryItems(data) {
     return request({
