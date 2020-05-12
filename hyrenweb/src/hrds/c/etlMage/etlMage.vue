@@ -147,7 +147,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleTRI" size="mini" type="danger">否</el-button>
-            <el-button type="primary" @click="startTRI" size="mini">是</el-button>
+            <el-button type="primary" @click="startTRI" :loading="isloadingTri" size="mini">是</el-button>
         </div>
     </el-dialog>
     <!-- CONTROL日志模态框 -->
@@ -341,6 +341,7 @@ export default {
             isLoadings: false,
             isStop: false,
             isLoading: false,
+            isloadingTri: false
         };
     },
     mounted() {
@@ -359,7 +360,17 @@ export default {
                     let date = year + "-" + month + "-" + day;
                     res.data[index].curr_bath_date = date;
                 }
-                this.tableData = res.data;
+                let arr = [];
+                let arr2 = [];
+                res.data.forEach(item => {
+                    if (item.sys_run_status == "S") {
+                        arr.push(item)
+                    } else {
+                        arr2.push(item)
+                    }
+
+                })
+                this.tableData = [...arr2, ...arr];
             })
         },
         //查询作业调度工程信息
@@ -593,10 +604,12 @@ export default {
         },
         //启动TRIGGER模态框启动按钮
         startTRI() {
+            this.isloadingTri = true;
             let params = {};
             params["etl_sys_cd"] = this.formStartTRI.etl_sys_cd;
             etlMageAllFun.startTrigger(params).then(res => {
-                if (res.code == 200) {
+                if (res && res.success) {
+                    this.isloadingTri = false;
                     this.$message({
                         message: '启动TRIGGER成功',
                         type: 'success'
@@ -604,6 +617,8 @@ export default {
                     this.getTable();
                     this.formStartTRI = {};
                     this.dialogFormVisibleStartTRI = false;
+                } else {
+                    this.isloadingTri = false;
                 }
             });
 
