@@ -263,11 +263,11 @@
                             this.ipAndPort +
                             "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
                             "&selectColumn=column1,column2&whereColumn=user_name=zhangsan&num=10" +
-                            "&dataType=json&outType=file";
+                            "&dataType=json&outType=file&asynType=0";
                         this.requestAddress = this.ipAndPort +
                             "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
                             "&tableName=emp&selectColumn=column1,column2" +
-                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=file";
+                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=file&asynType=0";
                     })
             },
         }
