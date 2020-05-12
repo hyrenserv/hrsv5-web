@@ -145,7 +145,10 @@
 
                     <el-table-column label="value" align="center" v-if="showValue" :key="3">
                         <template slot-scope="scope">
-                            <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
+                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" v-model="scope.row.storage_property_val" style="width:260px">
+                                <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
+                            </el-select>
+                            <el-input v-else size="meduim" v-model="scope.row.storage_property_val"></el-input>
                         </template>
                     </el-table-column>
 
@@ -154,7 +157,13 @@
                             <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
                                 <el-button size="small" type="info" @click="handleEditchange(scope.$index, scope.row)">选择文件</el-button>
                             </el-upload>
-                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
+
+                            <el-select v-if="scope.$index <= inputindex &&scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:260px">
+                                <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
+                            </el-select>
+
+                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-else-if="scope.$index <= inputindex "></el-input>
+
                             <el-radio-group v-model="scope.row.radio" v-if="scope.$index > uploadindexmore">
                                 <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>
                                 <el-radio @change="selectedUploadValue=true;handleEditValue(scope.$index, scope.row)" label="1">选择文件</el-radio>
@@ -248,9 +257,8 @@ let uploadindex;
 let valueIndex;
 let storetype;
 let uploadIndex;
-let arryMarkhive = [];
-let arryMarkhbase = [];
 let arrMarkall = [];
+let diffentMark = [];
 export default {
     data() {
         return {
@@ -265,6 +273,7 @@ export default {
                 dsla_storelayer: [],
                 tableDataConfigure: [],
             },
+            oldDataArry: [],
             showValue: true,
             selectVlueOrUpload: false,
             showDownloadButton: false,
@@ -287,6 +296,7 @@ export default {
             storeType: [],
             checkboxType: [],
             YesNo: [],
+            databaseType: [],
             dataSaveConfigure: false,
             dialogFormVisibleUpdate: false,
             rule: validator.default
@@ -365,6 +375,26 @@ export default {
                 })
             })
         },
+        // 数据存储完整信息
+        getDataLayerAttrKeyTwo(val) {
+            functionAll.getDataLayerAttrKey({
+                store_type: val
+            }).then(res => {
+                let arry = [];
+                let arr = [];
+                let arrNew = [];
+                for (let index = 0; index < res.data.jdbcKey.length; index++) {
+                    if (res.data.jdbcKey[index] == "database_type") {
+                        arr.push(res.data.jdbcKey[index]);
+                        this.getCategoryItems("DatabaseType");
+                    } else {
+                        arrNew.push(res.data.jdbcKey[index]);
+                    }
+                }
+                // 数据合并
+                this.oldDataArry = [...arr, ...arrNew, ...res.data.fileKey];
+            })
+        },
         // 根据dsl_id删除对应的数据
         deleteArry(e) {
             this.$confirm('确定删除吗?', '提示', {
@@ -410,111 +440,64 @@ export default {
                 // 获取编辑参数
                 storetype = res.data.store_type;
                 let arry = [];
+                let arr = [];
                 let arr2 = [];
+                let arr3 = [];
                 // 处理tableData格式正确性
                 res.data.layerAndAttr.forEach((item) => {
                     if (item.is_file == 0) {
-                        arry.push(item);
+                        arr.push(item);
                     } else if (item.is_file == 1) {
                         arr2.push(item);
                     }
-
                 })
-
-                let j = arry.length - 1;
-                let i = res.data.layerAndAttr.length;
-                arry.push(...arr2);
-                let oldHive = [{
-                        storage_property_key: "database_drive"
-                    }, {
-                        storage_property_key: "jdbc_url"
-                    }, {
-                        storage_property_key: "user_name"
-                    }, {
-                        storage_property_key: "database_pad"
-                    }, {
-                        storage_property_key: "database_type"
-                    },
-                    {
-                        storage_property_key: "hbase-site.xml",
-                    }, {
-                        storage_property_key: "hdfs-site.xml"
-                    }, {
-                        storage_property_key: "core-site.xml"
-                    },
-                    {
-                        storage_property_key: "yarn-site.xml"
-                    },
-                    {
-                        storage_property_key: "mapreduce-site.xml"
-                    }, {
-                        storage_property_key: "keytab"
-                    }, {
-                        storage_property_key: "krb5"
+                for (let index = 0; index < arr.length; index++) {
+                    if (arr[index].storage_property_key == "database_type") {
+                        arr3.push(arr[index]);
+                        arr.splice(index, 1);
+                        this.getCategoryItems("DatabaseType");
                     }
-                ];
-                let oldHbase = [{
-                    storage_property_key: "zkhost"
-                }, {
-                    storage_property_key: "hbase-site.xml",
-                }, {
-                    storage_property_key: "hdfs-site.xml"
-                }, {
-                    storage_property_key: "core-site.xml"
-                }, {
-                    storage_property_key: "keytab"
-                }, {
-                    storage_property_key: "krb5"
-                }]
+                }
+                arry = [...arr3, ...arr, ...arr2]
+                let j = arr.length - 1;
+                let i = res.data.layerAndAttr.length;
+                if (row.store_type == "hive") {
+                    this.getDataLayerAttrKeyTwo("2")
+                } else if (row.store_type == "Hbase") {
+                    this.getDataLayerAttrKeyTwo("2")
+                };
                 // 编辑显示选择文件
                 if (row.store_type == "hive" || row.store_type == "Hbase") {
                     if (row.store_type == "hive") {
                         this.inputindex = j;
-                        this.uploadindexmore = 12;
+                        this.uploadindexmore = arry.length;
                         this.uploadindexless = j;
                         this.showValue = false;
                         this.selectVlueOrUpload = true;
-                        let length = oldHive.length;
+                        let length = arry.length;
                         flag = 1;
                         flag2 = 0;
                         flag3 = 0;
                         flag4 = 0;
                         flag5 = 0;
                         flag6 = 0;
-                        arry.forEach(item => {
-                            for (let index = 0; index < length; index++) {
-                                if (item.storage_property_key == oldHive[index].storage_property_key) {
-                                    oldHive[index] = item
-                                }
-                            }
-
-                        })
-                        this.form.tableDataConfigure = oldHive;
-                        arryMarkhive = oldHive;
+                        this.form.tableDataConfigure = arry;
                     } else if (row.store_type == "Hbase") {
                         this.inputindex = j;
-                        this.uploadindexmore = 6;
+                        this.uploadindexmore = arry.length;
                         this.uploadindexless = j;
                         this.showValue = false;
                         this.selectVlueOrUpload = true;
-                        let length = oldHbase.length;
+                        let length = arry.length;
                         flag = 0;
                         flag2 = 0;
                         flag3 = 1;
                         flag4 = 0;
                         flag5 = 0;
                         flag6 = 0;
-                        arry.forEach(item => {
-                            for (let index = 0; index < length; index++) {
-                                if (item.storage_property_key == oldHbase[index].storage_property_key) {
-                                    oldHbase[index] = item;
-                                }
-                            }
-
-                        })
-                        this.form.tableDataConfigure = oldHbase;
-                        arryMarkhbase = oldHbase;
+                        this.form.tableDataConfigure = arry;
                     }
+                    diffentMark = arry;
                 } else {
                     if (row.store_type == "solr") {
                         flag = 0;
@@ -788,6 +771,14 @@ export default {
                     .then(res => {
                         this.YesNo = res.data;
                     });
+            } else if (e == "DatabaseType") {
+                functionAll
+                    .getCategoryItems({
+                        category: e
+                    })
+                    .then(res => {
+                        this.databaseType = res.data;
+                    });
             }
         },
         // 获取数据类型长度信息
@@ -843,8 +834,18 @@ export default {
                 store_type: val
             }).then(res => {
                 let arry = [];
+                let arr = [];
+                let arrNew = [];
+                for (let index = 0; index < res.data.jdbcKey.length; index++) {
+                    if (res.data.jdbcKey[index] == "database_type") {
+                        arr.push(res.data.jdbcKey[index]);
+                        this.getCategoryItems("DatabaseType");
+                    } else {
+                        arrNew.push(res.data.jdbcKey[index]);
+                    }
+                }
                 // 数据合并
-                dataList = [...res.data.jdbcKey, ...res.data.fileKey];
+                dataList = [...arr, ...arrNew, ...res.data.fileKey];
                 // 记录需要判断的长度
                 numberCount = res.data.jdbcKey.length;
                 numberCountfile = res.data.fileKey.length;
@@ -856,7 +857,7 @@ export default {
                 this.form.tableDataConfigure = arry;
                 tableDataLength = this.form.tableDataConfigure.length;
                 this.lengthdata = 0;
-                this.deleteLength = this.form.tableDataConfigure.length;
+                this.deleteLength = 0;
                 if (val === "1") {
                     this.showValue = true;
                     this.selectVlueOrUpload = false;
@@ -869,7 +870,7 @@ export default {
                     }
                 } else if (val === "2") {
                     if (flag == 1) {
-                        this.form.tableDataConfigure = arrMarkall;
+                        this.form.tableDataConfigure = diffentMark;
                         this.lengthdata = 0
                     } else {
 
@@ -882,7 +883,7 @@ export default {
                     this.inputindex = numberCount - 1;
                 } else if (val === "3") {
                     if (flag3 == 1) {
-                        this.form.tableDataConfigure = arrMarkall;
+                        this.form.tableDataConfigure = diffentMark;
                         this.lengthdata = 0
                     } else {
 
