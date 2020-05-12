@@ -805,31 +805,31 @@ export default {
             });
         },
         // 表第一列的全选
-        Allis_selectionStateFun(items, e){
-            let change=false;
-            if(e==true){
-             change=true
-            }else{
-                change=false
+        Allis_selectionStateFun(items, e) {
+            let change = false;
+            if (e == true) {
+                change = true
+            } else {
+                change = false
             }
-            let num=this.pagesize*this.currentPage>=items.length?items.length:this.pagesize*this.currentPage
-                if (this.firstTableInfo.length > 0) {
-                    for (let i = this.pagesize * (this.currentPage - 1); i <num; i++) {
-                        for (let j = 0; j < this.firstTableInfo.length; j++) {
-                            if (items[i].table_name == this.firstTableInfo[j].table_name) {
-                                items[i].selectionState=change
-                                this.firstTableInfo.splice(j, 1)
-                            }
+            let num = this.pagesize * this.currentPage >= items.length ? items.length : this.pagesize * this.currentPage
+            if (this.firstTableInfo.length > 0) {
+                for (let i = this.pagesize * (this.currentPage - 1); i < num; i++) {
+                    for (let j = 0; j < this.firstTableInfo.length; j++) {
+                        if (items[i].table_name == this.firstTableInfo[j].table_name) {
+                            items[i].selectionState = change
+                            this.firstTableInfo.splice(j, 1)
                         }
-                        this.firstTableInfo.push(items[i])
+                    }
+                    this.firstTableInfo.push(items[i])
 
-                    }
-                } else {
-                    for (let i = this.pagesize * (this.currentPage - 1); i <num; i++) {
-                         items[i].selectionState=change
-                        this.firstTableInfo.push(items[i])
-                    }
                 }
+            } else {
+                for (let i = this.pagesize * (this.currentPage - 1); i < num; i++) {
+                    items[i].selectionState = change
+                    this.firstTableInfo.push(items[i])
+                }
+            }
         },
         // 获取所有表信息
         getAllTableInfoFun() {
@@ -850,6 +850,7 @@ export default {
             } else {
                 this.firstTableInfo.push(row)
             }
+            console.log(this.firstTableInfo)
         },
         //选择列
         every_SelectColumnfun(val, alldata) {
@@ -978,20 +979,22 @@ export default {
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     //第一个页面数据整合--start
                     if (this.callTable3.length > 0) {
-                        if(this.firstTableInfo.length>0){
-                        for (let i = 0; i < this.callTable3.length; i++) {
+                        if (this.firstTableInfo.length > 0) {
                             for (let j = 0; j < this.firstTableInfo.length; j++) {
-                                if (this.callTable3[i].table_name == this.firstTableInfo[j].table_name) {
-                                    this.callTable3.splice(i, 1)
+                                for (let i = 0; i < this.callTable3.length; i++) {
+                                    if (this.firstTableInfo[j].table_name == this.callTable3[i].table_name) {
+                                        this.callTable3.splice(i, 1);
+                                        i--;
+                                    }
                                 }
                             }
-                        }
-                       /*  for(var item in this.firstTableInfo){
-                            this.callTable3[item] = this.firstTableInfo[item];
-                         } */
-                        tableData = this.callTable3.concat(this.firstTableInfo)
-                        }else{
-                         tableData = this.callTable3
+                            /*  for(var item in this.firstTableInfo){
+                                 this.callTable3[item] = this.firstTableInfo[item];
+                              } */
+                            tableData = this.callTable3.concat(this.firstTableInfo)
+                            console.log(tableData)
+                        } else {
+                            tableData = this.callTable3
                         }
                     } else {
                         tableData = this.firstTableInfo
@@ -1148,7 +1151,7 @@ export default {
                             // 第二个页面
                             this.sqlFun();
                         }
-                    } 
+                    }
                 } else {
                     this.activeName = "second";
                 }
@@ -1339,9 +1342,9 @@ export default {
                     }
                 }
                 //对比要删除的数据
-                    for (let j = 0; j < this.callTable.length; j++) {
-                for (let i = 0; i < arrData.length; i++) {
-                        if (this.callTable[j].table_name==arrData[i].table_name) {
+                for (let j = 0; j < this.callTable.length; j++) {
+                    for (let i = 0; i < arrData.length; i++) {
+                        if (this.callTable[j].table_name == arrData[i].table_name) {
                             this.callTable.splice(j, 1);
                             j--;
                             break;
