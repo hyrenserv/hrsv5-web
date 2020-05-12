@@ -806,22 +806,29 @@ export default {
             });
         },
         // 表第一列的全选
-        Allis_selectionStateFun(items, e) {
-            console.log(e)
+        Allis_selectionStateFun(items, e){
+            console.log(1,e)
+            let change=false;
+            if(e==true){
+             change=true
+            }else{
+                change=false
+            }
             let num=(items.length%this.pagesize)==0?this.pagesize*this.currentPage:items.length
                 if (this.firstTableInfo.length > 0) {
                     for (let i = this.pagesize * (this.currentPage - 1); i <num; i++) {
                         for (let j = 0; j < this.firstTableInfo.length; j++) {
                             if (items[i].table_name == this.firstTableInfo[j].table_name) {
-                                items[i].selectionState=e
-                                this.firstTableInfo.splice(i, 1)
+                                items[i].selectionState=change
+                                this.firstTableInfo.splice(j, 1)
                             }
-                        this.firstTableInfo.push(items[i])
                         }
+                        this.firstTableInfo.push(items[i])
+
                     }
                 } else {
                     for (let i = this.pagesize * (this.currentPage - 1); i <num; i++) {
-                         items[i].selectionState=e
+                         items[i].selectionState=change
                          console.log(items[i])
                         this.firstTableInfo.push(items[i])
                     }
@@ -976,20 +983,28 @@ console.log(this.firstTableInfo)
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     //第一个页面数据整合--start
                     if (this.callTable3.length > 0) {
+                        console.log(this.firstTableInfo)
+                        if(this.firstTableInfo.length>0){
                         for (let i = 0; i < this.callTable3.length; i++) {
                             for (let j = 0; j < this.firstTableInfo.length; j++) {
                                 if (this.callTable3[i].table_name == this.firstTableInfo[j].table_name) {
                                     this.callTable3.splice(i, 1)
+                                    console.log(1)
                                 }
                             }
                         }
+                       /*  for(var item in this.firstTableInfo){
+                            this.callTable3[item] = this.firstTableInfo[item];
+                         } */
                         tableData = this.callTable3.concat(this.firstTableInfo)
-                        console.log(tableData, this.callTable3, this.firstTableInfo)
+                        }else{
+                         tableData = this.callTable3
+                        }
                     } else {
                         tableData = this.firstTableInfo
                     }
                     //第一个页面数据整合--end
-                    console.log(tableData)
+                    console.log( tableData,this.firstTableInfo)
                     for (let i = 0; i < tableData.length; i++) {
                         //判断两个页面数据有无重复数据
                         if (
@@ -1001,6 +1016,7 @@ console.log(this.firstTableInfo)
                             }
                         }
                         if (tableData[i].selectionState == true) {
+                            console.log(istrue)
                             istrue.push(tableData[i].table_name);
                         }
                         for (let j = 0; j < sqlExtractData.length; j++) {
@@ -1141,7 +1157,7 @@ console.log(this.firstTableInfo)
                             // 第二个页面
                             this.sqlFun();
                         }
-                    }
+                    } 
                 } else {
                     this.activeName = "second";
                 }
@@ -1335,15 +1351,17 @@ console.log(this.firstTableInfo)
                 console.log(arrData)
 
                 //对比要删除的数据
-                for (let i = 0; i < arrData.length; i++) {
                     for (let j = 0; j < this.callTable.length; j++) {
-                        if (arrData[i].table_name == this.callTable[j].table_name) {
+                for (let i = 0; i < arrData.length; i++) {
+                        if (this.callTable[j].table_name==arrData[i].table_name) {
                             this.callTable.splice(j, 1);
                             j--;
+                            break;
                         }
                     }
                 }
                 for (let j = 0; j < this.callTable.length; j++) {
+                    console.log(this.callTable[j].table_name)
                     delJson.push({
                         tableId: this.callTable[j].table_id //存储删除的表id
                     });
