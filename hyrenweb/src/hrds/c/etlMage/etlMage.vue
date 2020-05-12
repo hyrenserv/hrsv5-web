@@ -32,8 +32,6 @@
                         </el-button>
                         <el-button size="mini" icon="el-icon-thumb" title="部署Agent" circle type="warning" @click="handleDeploy(scope.$index, scope.row)">
                         </el-button>
-                        <el-button size="mini" icon="el-icon-video-pause" v-if="scope.row.sys_run_status != 'S'" title="停止工程" circle type="warning" @click="stopWork(scope.$index, scope.row)">
-                        </el-button>
                         <el-button size="mini" icon="el-icon-switch-button" title="启动CONTROL" circle type="success" @click="handleStartco(scope.$index, scope.row)">
                         </el-button>
                         <el-button size="mini" icon="el-icon-switch-button" title="启动TRIGGER" circle type="primary" @click="handleStarttr(scope.$index, scope.row)">
@@ -41,6 +39,8 @@
                         <el-button size="mini" icon="el-icon-document" title="CONTROL日志信息" circle type="success" @click="handleRecordco(scope.$index, scope.row)">
                         </el-button>
                         <el-button size="mini" icon="el-icon-document" title="TRIGGER日志信息" circle type="primary" @click="handleRecordtr(scope.$index, scope.row)">
+                        </el-button>
+                        <el-button size="mini" icon="el-icon-video-pause" v-if="scope.row.sys_run_status != 'S'" title="停止工程" circle type="danger" @click="stopWork(scope.$index, scope.row)">
                         </el-button>
                     </template>
                 </el-table-column>
@@ -104,7 +104,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleDeploy" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="saveDeploy('formDeploy')" size="mini">部署</el-button>
+            <el-button type="primary" @click="saveDeploy('formDeploy')" :loading="isLoadings" size="mini">部署</el-button>
         </div>
     </el-dialog>
     <!-- 启动CONTROL模态框 -->
@@ -133,7 +133,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleCON" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="startCON('formStartCON')" size="mini">启动</el-button>
+            <el-button type="primary" @click="startCON('formStartCON')" :loading="isLoading" size="mini">启动</el-button>
         </div>
     </el-dialog>
     <!-- 启动TRIGGER模态框  -->
@@ -338,7 +338,9 @@ export default {
             listdata: [],
             YesNo: [],
             online: {},
-            isStop: false
+            isLoadings: false,
+            isStop: false,
+            isLoading: false,
         };
     },
     mounted() {
@@ -522,6 +524,7 @@ export default {
         saveDeploy(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    this.isLoadings = true;
                     let params = {};
                     params["etl_sys_cd"] = this.formDeploy.etl_sys_cd;
                     params["etl_serv_ip"] = this.formDeploy.etl_serv_ip;
@@ -529,7 +532,8 @@ export default {
                     params["user_name"] = this.formDeploy.user_name;
                     params["user_pwd"] = this.formDeploy.user_pwd;
                     etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
-                        if (res.code == 200) {
+                        if (res && res.success) {
+                            this.isLoadings = false;
                             this.$message({
                                 message: '部署成功',
                                 type: 'success'
@@ -537,6 +541,8 @@ export default {
                             this.getTable();
                             this.dialogFormVisibleDeploy = false;
                             this.formDeploy = {};
+                        } else {
+                            this.isLoadings = false;
                         }
 
                     });
@@ -555,13 +561,15 @@ export default {
         startCON(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    this.isLoading = true;
                     let params = {};
                     params["etl_sys_cd"] = this.formStartCON.etl_sys_cd;
                     params["isResumeRun"] = this.formStartCON.isResumeRun;
                     params["isAutoShift"] = this.formStartCON.isAutoShift;
                     params["curr_bath_date"] = this.formStartCON.curr_bath_date;
                     etlMageAllFun.startControl(params).then(res => {
-                        if (res.code == 200) {
+                        if (res && res.success) {
+                            this.isLoading = false;
                             this.$message({
                                 message: '启动CONTROL成功',
                                 type: 'success'
@@ -569,6 +577,8 @@ export default {
                             this.getTable();
                             this.dialogFormVisibleStartCON = false;
                             this.formStartCON = {};
+                        } else {
+                            this.isLoading = false;
                         }
                     });
 

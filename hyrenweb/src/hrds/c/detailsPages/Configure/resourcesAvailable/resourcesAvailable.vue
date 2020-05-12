@@ -134,7 +134,16 @@ export default {
             params["currPage"] = this.currpage;
             params["pageSize"] = this.pagesize;
             resourcesAvailableAllFun.searchEtlResourceByPage(params).then(res => {
-                this.tableData = res.data.etlResourceList;
+                let arr = [];
+                let arr2 = [];
+                res.data.etlResourceList.forEach(item => {
+                    if (item.resource_type == "Thrift" || item.resource_type == "Yarn") {
+                        arr.push(item)
+                    } else {
+                        arr2.push(item)
+                    }
+                })
+                this.tableData = [...arr, ...arr2];
                 this.pageLength = res.data.totalSize;
             });
         },

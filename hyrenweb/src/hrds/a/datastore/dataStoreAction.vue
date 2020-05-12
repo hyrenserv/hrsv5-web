@@ -87,7 +87,7 @@
                 <el-table-column label="value" prop="storage_property_val" align="center" v-if="showValue" :key="3">
                     <template slot-scope="scope">
                         <el-form-item v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" :prop="`tableData.${scope.$index}.storage_property_val`" :rules="rule.selected">
-                            <el-select  v-model="scope.row.storage_property_val" style="width:280px">
+                            <el-select v-model="scope.row.storage_property_val" style="width:280px">
                                 <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </el-form-item>
@@ -112,7 +112,14 @@
                         <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
                             <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
                         </el-upload>
-                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])" v-if="scope.$index <= inputindex ">
+
+                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="rule.selected" v-if="scope.$index <= inputindex &&scope.$index == 0 &&scope.row.storage_property_key == 'database_type' ">
+                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:280px">
+                                <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])" v-else-if="scope.$index <= inputindex ">
                             <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
                         </el-form-item>
 
@@ -450,15 +457,17 @@ export default {
             }).then(res => {
                 let arry = [];
                 let arr = [];
+                let arrNew = [];
                 for (let index = 0; index < res.data.jdbcKey.length; index++) {
                     if (res.data.jdbcKey[index] == "database_type") {
                         arr.push(res.data.jdbcKey[index]);
-                        res.data.jdbcKey.splice(index, 1);
                         this.getCategoryItems("DatabaseType");
+                    } else {
+                        arrNew.push(res.data.jdbcKey[index]);
                     }
                 }
                 // 数据合并
-                dataList = [...arr, ...res.data.jdbcKey, ...res.data.fileKey];
+                dataList = [...arr, ...arrNew, ...res.data.fileKey];
                 // 记录需要判断的长度
                 numberCount = res.data.jdbcKey.length;
                 numberCountfile = res.data.fileKey.length;
