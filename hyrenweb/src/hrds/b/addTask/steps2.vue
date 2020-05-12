@@ -768,7 +768,6 @@ export default {
             params["colSetId"] = this.dbid;
             // this.tableloadingInfo='数据加载中...'
             addTaskAllFun.steps_getInitInfo(params).then(res => {
-                console.log(res.data)
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
@@ -807,14 +806,13 @@ export default {
         },
         // 表第一列的全选
         Allis_selectionStateFun(items, e){
-            console.log(1,e)
             let change=false;
             if(e==true){
              change=true
             }else{
                 change=false
             }
-            let num=(items.length%this.pagesize)==0?this.pagesize*this.currentPage:items.length
+            let num=this.pagesize*this.currentPage>=items.length?items.length:this.pagesize*this.currentPage
                 if (this.firstTableInfo.length > 0) {
                     for (let i = this.pagesize * (this.currentPage - 1); i <num; i++) {
                         for (let j = 0; j < this.firstTableInfo.length; j++) {
@@ -829,11 +827,9 @@ export default {
                 } else {
                     for (let i = this.pagesize * (this.currentPage - 1); i <num; i++) {
                          items[i].selectionState=change
-                         console.log(items[i])
                         this.firstTableInfo.push(items[i])
                     }
                 }
-                console.log(this.firstTableInfo)
         },
         // 获取所有表信息
         getAllTableInfoFun() {
@@ -854,7 +850,6 @@ export default {
             } else {
                 this.firstTableInfo.push(row)
             }
-console.log(this.firstTableInfo)
         },
         //选择列
         every_SelectColumnfun(val, alldata) {
@@ -983,13 +978,11 @@ console.log(this.firstTableInfo)
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
                     //第一个页面数据整合--start
                     if (this.callTable3.length > 0) {
-                        console.log(this.firstTableInfo)
                         if(this.firstTableInfo.length>0){
                         for (let i = 0; i < this.callTable3.length; i++) {
                             for (let j = 0; j < this.firstTableInfo.length; j++) {
                                 if (this.callTable3[i].table_name == this.firstTableInfo[j].table_name) {
                                     this.callTable3.splice(i, 1)
-                                    console.log(1)
                                 }
                             }
                         }
@@ -1004,7 +997,6 @@ console.log(this.firstTableInfo)
                         tableData = this.firstTableInfo
                     }
                     //第一个页面数据整合--end
-                    console.log( tableData,this.firstTableInfo)
                     for (let i = 0; i < tableData.length; i++) {
                         //判断两个页面数据有无重复数据
                         if (
@@ -1016,7 +1008,6 @@ console.log(this.firstTableInfo)
                             }
                         }
                         if (tableData[i].selectionState == true) {
-                            console.log(istrue)
                             istrue.push(tableData[i].table_name);
                         }
                         for (let j = 0; j < sqlExtractData.length; j++) {
@@ -1330,7 +1321,7 @@ console.log(this.firstTableInfo)
         },
         // 处理第一个页面数据
         saveTableConfFun(tableData) {
-            console.log(tableData, '第一个页面数据')
+            // console.log(tableData, '第一个页面数据')
             // console.log(this.SelectColumn, '第一个页面选择列点击过保存的值')
             // console.log(this.sqlFiltArr, '第一个页面sql过滤点击过保存的值')
             // console.log(this.ParallelExtractionArr, '第一个页面并行抽取数据')
@@ -1342,14 +1333,11 @@ console.log(this.firstTableInfo)
             params["colSetId"] = this.dbid;
             addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
                 // 遍历拿到所有勾选的数据
-                console.log(1)
                 for (let i = 0; i < tableData.length; i++) {
                     if (tableData[i].selectionState == true) {
                         arrData.push(tableData[i]);
                     }
                 }
-                console.log(arrData)
-
                 //对比要删除的数据
                     for (let j = 0; j < this.callTable.length; j++) {
                 for (let i = 0; i < arrData.length; i++) {
@@ -1361,7 +1349,6 @@ console.log(this.firstTableInfo)
                     }
                 }
                 for (let j = 0; j < this.callTable.length; j++) {
-                    console.log(this.callTable[j].table_name)
                     delJson.push({
                         tableId: this.callTable[j].table_id //存储删除的表id
                     });
@@ -1373,7 +1360,6 @@ console.log(this.firstTableInfo)
                             if (
                                 arrData[j].unload_type == '全量' && arrData[j].is_parallel == true && arrData[j].table_name == this.ParallelExtractionArr[jj].tablename
                             ) {
-                                console.log(1, arrData[j])
                                 arrData[j].is_customize_sql = this.ParallelExtractionArr[
                                     jj
                                 ].is_customize_sql;
@@ -1429,9 +1415,7 @@ console.log(this.firstTableInfo)
                         }
                     }
                 }
-                console.log(arrData)
                 for (let k = 0; k < arrData.length; k++) {
-                    console.log(arrData[k].is_parallel)
                     if (arrData[k].unload_type == "增量") {
                         tableInfoString.push({
                             database_id: this.dbid,
@@ -1446,7 +1430,6 @@ console.log(this.firstTableInfo)
                         });
                     } else {
                         if (arrData[k].is_parallel == true) {
-                            console.log(arrData[k].is_customize_sql)
                             if (arrData[k].is_customize_sql == "1") {
                                 tableInfoString.push({
                                     database_id: this.dbid,
@@ -1462,7 +1445,6 @@ console.log(this.firstTableInfo)
                                     sql: arrData[k].sql ? arrData[k].sql : ""
                                 });
                             } else {
-                                console.log(1111)
                                 tableInfoString.push({
                                     database_id: this.dbid,
                                     unload_type: "1",
@@ -1571,7 +1553,6 @@ console.log(this.firstTableInfo)
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
                 params2["delTbString"] =
                     delJson.length > 0 ? JSON.stringify(delJson) : "";
-                console.log(params2)
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;
@@ -1908,7 +1889,6 @@ console.log(this.firstTableInfo)
             params["tableName"] = this.EXtable_name;
             params["colSetId"] = parseInt(this.dbid);
             addTaskAllFun.getTableDataCount(params).then(res => {
-                console.log(res)
                 var nowDate = new Date();
                 let date = {
                     year: nowDate.getFullYear(),
@@ -1982,7 +1962,6 @@ console.log(this.firstTableInfo)
                                 rec_num_date: this.ruleForm_ParallelEx.rec_num_date
                             });
                         }
-                        console.log(this.ParallelExtractionArr)
                         this.dialogTableVisible = false;
                     }
                 }
@@ -2557,7 +2536,6 @@ console.log(this.firstTableInfo)
             } else {
                 this.firstTableInfo.push(row)
             }
-            console.log(this.firstTableInfo)
             /*  for (let m = 0; m < this.allDataList.length; m++) {
                  if (this.allDataList[m].table_name == name) {
                      this.allDataList[m].table_ch_name = chname;
@@ -2591,7 +2569,6 @@ console.log(this.firstTableInfo)
         },
         //第一个页面打开卸数方式设置
         XSTypeFun(row, e) {
-            console.log(row)
             row.sql = ''
             if (this.firstTableInfo.length > 0) {
                 for (let i = 0; i < this.firstTableInfo.length; i++) {
