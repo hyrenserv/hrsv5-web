@@ -26,11 +26,13 @@
                 </el-table-column>
                 <el-table-column prop="curr_bath_date" show-overflow-tooltip label="当前批量日期" align='center'>
                 </el-table-column>
-                <el-table-column label="操作" align='center' width="300px">
+                <el-table-column label="操作" align='center' width="320px">
                     <template slot-scope="scope">
                         <el-button size="mini" icon="el-icon-edit" title="编辑" circle type="primary" @click="handleEdit(scope.$index, scope.row)">
                         </el-button>
                         <el-button size="mini" icon="el-icon-thumb" title="部署Agent" circle type="warning" @click="handleDeploy(scope.$index, scope.row)">
+                        </el-button>
+                        <el-button size="mini" icon="el-icon-video-pause" v-if="scope.row.sys_run_status != 'S'" title="停止工程" circle type="warning" @click="stopWork(scope.$index, scope.row)">
                         </el-button>
                         <el-button size="mini" icon="el-icon-switch-button" title="启动CONTROL" circle type="success" @click="handleStartco(scope.$index, scope.row)">
                         </el-button>
@@ -336,6 +338,7 @@ export default {
             listdata: [],
             YesNo: [],
             online: {},
+            isStop: false
         };
     },
     mounted() {
@@ -987,6 +990,32 @@ export default {
                     });
             }
         },
+        // 停止工程
+        stopWork(index, row) {
+            let mess = row.etl_sys_name;
+            this.$confirm('确定停止' + mess + '工程?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                etlMageAllFun.stopEtlProject({
+                    etl_sys_cd: row.etl_sys_cd
+                }).then(res => {
+                    if (res && res.success) {
+                        this.$message({
+                            message: '停止工程成功',
+                            type: 'success'
+                        });
+                        this.getTable();
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消停止'
+                });
+            });
+        }
     },
 };
 </script>

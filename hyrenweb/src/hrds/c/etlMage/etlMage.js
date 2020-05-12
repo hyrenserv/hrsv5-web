@@ -53,6 +53,14 @@ export function startTrigger(data) {
         params: data
     })
 }
+//停止工程信息
+export function stopEtlProject(data) {
+    return request({
+        url: '/C/etlsys/stopEtlProject',
+        method: 'post',
+        params: data
+    })
+}
 
 //读取Control或Trigger日志信息
 export function readControlOrTriggerLog(data) {
