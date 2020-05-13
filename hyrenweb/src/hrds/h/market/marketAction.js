@@ -316,3 +316,20 @@ export function getTableTop5InDsl(data) {
     })
 }
 
+//保存前置和后置作业作业
+export function savePreAndAfterJob(data) {
+    debugger;
+    return request({
+        url: '/H/market/savePreAndAfterJob',
+        params: data
+    })
+}
+
+
+//保存前置和后置作业作业
+export function getPreAndAfterJob(data) {
+    return request({
+        url: '/H/market/getPreAndAfterJob',
+        params: data
+    })
+}

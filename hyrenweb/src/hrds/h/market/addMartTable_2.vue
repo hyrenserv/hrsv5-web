@@ -5,29 +5,18 @@
             <span>配置SQL</span>
         </el-row>
         <el-row>
-            <el-col class="borderStyle" :span="5" style="margin-right: 10px;">
+            <el-col class="borderStyle" :span="7" style="margin-right: 10px;">
                 <!--树菜单-->
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                 <div class='mytree'>
-
-                    <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn"
-                    >
+                    <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="data.description">{{node.label}}</span>
                         </span>
                     </el-tree>
-
-
-                    <!--<el-tree empty-text="暂无数据" :expand-on-click-node="true" :indent='0' :props="treeProps"-->
-                    <!--:load="loadNode" lazy @node-click="showtablecolumn"-->
-                    <!--node-key="id" :filter-node-method="filterNode" ref="tree" highlight-current>-->
-                    <!--<span class="span-ellipsis" slot-scope="{ node, data }">-->
-                    <!--<span :title="node.label">{{ node.label }}</span>-->
-                    <!--</span>-->
-                    <!--</el-tree>-->
                 </div>
             </el-col>
-            <el-col :span="18">
+            <el-col :span="16">
                 <el-tabs type="card">
                     <el-row>
                         <span>SQL查询</span>
@@ -55,6 +44,16 @@
                 <el-col :span='2' style="float:right">
                     <el-button class="elButton" type="primary" @click="addcolumn()"
                                size="medium">新增字段
+                    </el-button>
+                </el-col>
+                <el-col :span='2' style="float:left">
+                    <el-button class="elButton" type="primary" @click="showprejob()"
+                               size="medium">前置作业
+                    </el-button>
+                </el-col>
+                <el-col :span='2' style="float:left">
+                    <el-button class="elButton" type="primary" @click="showafterjob()"
+                               size="medium">后置作业
                     </el-button>
                 </el-col>
             </el-row>
@@ -249,6 +248,64 @@
             </el-row>
         </el-dialog>
 
+
+        <el-dialog title="前置作业" :visible.sync="ifprejob" width="80%">
+            <el-row>
+                <el-col class="borderStyle" :span="7" style="margin-right: 10px;">
+                    <!--树菜单-->
+                    <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
+                    <div class='mytree'>
+                        <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description">{{node.label}}</span>
+                        </span>
+                        </el-tree>
+                    </div>
+                </el-col>
+                <el-col :span="16">
+                    <el-tabs type="card">
+                        <el-row>
+                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL"
+                                      v-model="presql"/>
+                        </el-row>
+                    </el-tabs>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="cancelprejob()">取消</el-button>
+            </el-row>
+        </el-dialog>
+
+        <el-dialog title="后置作业" :visible.sync="ifafterjob" width="80%">
+            <el-row>
+                <el-col class="borderStyle" :span="7" style="margin-right: 10px;">
+                    <!--树菜单-->
+                    <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
+                    <div class='mytree'>
+                        <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description">{{node.label}}</span>
+                        </span>
+                        </el-tree>
+                    </div>
+                </el-col>
+                <el-col :span="16">
+                    <el-tabs type="card">
+                        <el-row>
+                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL"
+                                      v-model="aftersql"/>
+                        </el-row>
+                    </el-tabs>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="cancelafterjob()">取消</el-button>
+            </el-row>
+        </el-dialog>
+
+
         <transition name="fade">
             <loading v-if="isLoading"/>
         </transition>
@@ -268,6 +325,10 @@
         },
         data() {
             return {
+                presql: "",
+                aftersql: "",
+                ifprejob: false,
+                ifafterjob: false,
                 treedata: [],
                 active: 1,
                 rule: validator.default,
@@ -335,19 +396,16 @@
                     });
                 }
             },
-            checkiftable(node){
-                if(!node.hasOwnProperty("children")){
-                    if(node.data_layer == "DCL" && node.file_id != ""){
+            checkiftable(node) {
+                if (!node.hasOwnProperty("children")) {
+                    if (node.data_layer == "DCL" && node.file_id != "") {
                         return true;
-                    }
-                    else if(node.data_layer == "DML" && node.datatable_id != ""){
+                    } else if (node.data_layer == "DML" && node.datatable_id != "") {
                         return true;
-                    }
-                    else{
+                    } else {
                         return false;
                     }
-                }
-                else{
+                } else {
                     return false;
                 }
             },
@@ -767,7 +825,13 @@
                 }
                 sql = sql.substr(0, sql.length - 1);
                 sql += " from " + this.sqltablename;
-                this.querysql = sql;
+                if (this.ifprejob == true) {
+                    this.presql = sql;
+                } else if (this.ifafterjob == true) {
+                    this.aftersql = sql;
+                } else {
+                    this.querysql = sql;
+                }
                 this.iftablecolumn = false;
                 this.Allis_selectionstate = false;
             },
@@ -803,6 +867,49 @@
                     this.Allis_selectionstate = false;
                 }
             },
+            getpreandafterjob() {
+                functionAll.getPreAndAfterJob({
+                    "datatable_id": this.datatable_id
+                }).then((res) => {
+                    if (res && res.success) {
+                        if (res.data.length > 0) {
+                            console.log(res.data[0].post_work);
+                            console.log(res.data[0].pre_work);
+                            if (res.data[0].post_work != undefined)
+                                this.aftersql = res.data[0].post_work;
+                            if (res.data[0].pre_work != undefined)
+                                this.presql = res.data[0].pre_work;
+                        }
+                    }
+                });
+            },
+            showprejob() {
+                this.ifprejob = true;
+                this.getpreandafterjob();
+            },
+            cancelprejob() {
+                this.ifprejob = false;
+            },
+            showafterjob() {
+                this.ifafterjob = true;
+                this.getpreandafterjob();
+
+            },
+            cancelafterjob() {
+                this.ifafterjob = false;
+            },
+            savePreAndAfterJob() {
+                functionAll.savePreAndAfterJob({
+                    "pre_work": this.presql,
+                    "post_work": this.aftersql,
+                    "datatable_id": this.datatable_id
+                }).then((res) => {
+                    if (res && res.success) {
+                        this.ifprejob = false;
+                        this.ifafterjob = false;
+                    }
+                });
+            },
         }
     }
 </script>
@@ -811,7 +918,7 @@
     /* 按钮样式 */
     .elButton {
         float: right;
-        margin-top: 10px;
+
         margin-bottom: 10px;
     }
 
