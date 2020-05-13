@@ -485,7 +485,6 @@ export default {
         add(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-
                     if (this.projectTitle == '添加工程') {
                         let params = {};
                         params["etl_sys_cd"] = this.formAdd.etl_sys_cd;
@@ -718,9 +717,9 @@ export default {
         },
         //TRIGGER日志下载按钮
         downRecordTRI(formName) {
-            this.isViewDowntri = true;
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                    this.isViewDowntri = true;
                     let params = {};
                     params["etl_sys_cd"] = this.formRecordTRI.etl_sys_cd;
                     params["curr_bath_date"] = this.formRecordTRI.curr_bath_date;
