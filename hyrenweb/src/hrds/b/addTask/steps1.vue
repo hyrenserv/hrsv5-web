@@ -153,7 +153,7 @@
                         </div>
                     </el-dialog>
                     <div slot="footer" class="dialog-footer">
-                        <el-table  :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" highlight-current-row @current-change="handleSelectionChange" @row-click="chooseone">
+                        <el-table :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" highlight-current-row @current-change="handleSelectionChange" @row-click="chooseone">
                             <el-table-column property label="选择" width="60px" type="index" align="center">
                                 <template slot-scope="scope">
                                     <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
@@ -281,7 +281,7 @@ export default {
             radio: null,
             linkTip: "",
             isLoading: false,
-            linkloading:false,
+            linkloading: false,
             CollTaskData: [],
             currentPage: 1,
             pagesize: 10,
@@ -372,12 +372,24 @@ export default {
         } else {
             let params = {};
             params["databaseId"] = this.sourceId;
-           params["agent_id"] =this.$route.query.agent_id
+            params["agent_id"] = this.$route.query.agent_id
             addTaskAllFun.addDBConfInfo(params).then(res => {
                 if (res.data.length != 0) {
                     this.ruleForm = res.data[0];
                     this.radio = res.data[0].classify_id;
                     this.dbid = res.data[0].database_id;
+                    if (res.data[0].database_type != '') {
+                        let params = {};
+                        params["dbType"] = String(res.data[0].database_type);
+                        addTaskAllFun.getDBConnectionProp(params).then(res => {
+                            if (res.data) {
+                                this.ipPlaceholder = res.data.ipPlaceholder;
+                                this.portPlaceholder = res.data.portPlaceholder;
+                                this.urlPrefix = res.data.urlPrefix;
+                                this.urlSuffix = res.data.urlSuffix;
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -531,7 +543,6 @@ export default {
             let params = {};
             params["sourceId"] = this.sourceId;
             addTaskAllFun.getClassifyInfo(params).then(res => {
-                console.log(res.data, 111)
                 if (res.data) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
@@ -645,8 +656,9 @@ export default {
         },
         // 点击测试连接
         testLinkFun(n) {
-             if (n == '1') {
-            this.linkloading=true}
+            if (n == '1') {
+                this.linkloading = true
+            }
             let params = {};
             params["database_drive"] = this.ruleForm.database_drive;
             params["user_name"] = this.ruleForm.user_name;
@@ -658,13 +670,13 @@ export default {
                 if (res.success == true) {
                     if (n == '1') {
                         // this.testLink = true
-                        this.linkloading=false
+                        this.linkloading = false
                         this.$Msg.customizTitle('连接成功');
                     }
                     // this.linkTip = "连接成功";
                     this.activelink = "true";
                 } else {
-                     this.linkloading=false
+                    this.linkloading = false
                     // this.linkTip = res.message;
                     this.activelink = "false";
                     this.isLoading = false
