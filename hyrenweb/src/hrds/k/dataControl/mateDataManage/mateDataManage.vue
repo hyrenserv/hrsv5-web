@@ -1,5 +1,5 @@
 <template>
-    <div id='meta_listDataManagement'>
+    <div id='metaDataManagement'>
         <el-row class='topTitle'>
             <span>元数据管理</span>
             <router-link to="/dataControl">
@@ -15,7 +15,7 @@
                         <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0' @node-click="mdmHandleClick"
-                                     :default-expand-all="true" :filter-node-method="filterNode" ref="tree1">
+                                     :filter-node-method="filterNode" ref="tree1">
                                 <span class="span-ellipsis" slot-scope="{ node, data }">
                                     <span :title="data.description">{{node.label}}</span>
                                 </span>
@@ -26,7 +26,7 @@
                         <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="drbTreeList" :indent='0' @node-click="drbHandleClick"
-                                     :default-expand-all="true" :filter-node-method="filterNode" ref="tree2">
+                                     :filter-node-method="filterNode" ref="tree2">
                                 <span class="span-ellipsis" slot-scope="{node, data}">
                                     <span :title="data.description">{{node.label}}</span>
                                 </span>
@@ -50,22 +50,27 @@
                             <el-input placeholder="创建日期 :" size='mini' v-model="data_meta_info.create_date"
                                       :disabled="true"/>
                         </el-form-item>
-                        <template v-if="tag_type === 'mdm'">
-                            <el-form-item>
-                                <el-button type="primary" size="mini" @click="editMetadata()">编辑</el-button>
-                                <el-button type="primary" size="mini" @click="saveMetaData()">保存</el-button>
-                            </el-form-item>
-                        </template>
-                        <template v-else>
-                            <el-form-item>
-                                <el-button type="primary" size="mini" @click="restoreDRBTable()">恢复</el-button>
-                            </el-form-item>
+                        <template v-if="data_meta_info.table_id !== ''">
+                            <template v-if="tag_type === 'mdm'">
+                                <el-form-item>
+                                    <template v-if="data_meta_info.data_layer !=='DQC'">
+                                        <el-button type="primary" size="mini" @click="editMetadata()">编辑</el-button>
+                                        <el-button type="success" size="mini" @click="saveMetaData()">保存</el-button>
+                                    </template>
+                                    <el-button type="danger" size="mini" @click="tableSetToInvalid()">删除</el-button>
+                                </el-form-item>
+                            </template>
+                            <template v-else>
+                                <el-form-item>
+                                    <el-button type="primary" size="mini" @click="restoreDRBTable()">恢复</el-button>
+                                </el-form-item>
+                            </template>
                         </template>
                     </el-form>
                 </el-row>
                 <el-row>
                     <el-table
-                            :data="data_meta_info.meta_list.slice((currentPage-1) * pageSize,currentPage * pageSize)"
+                            :data="data_meta_info.column_info_list.slice((currentPage-1) * pageSize,currentPage * pageSize)"
                             size="mini">
                         <el-table-column type="index" prop="date" label="序号" align="center" width="80px">
                             <template slot-scope="scope">{{scope.$index+(currentPage - 1) * pageSize + 1}}</template>
@@ -96,7 +101,7 @@
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                                    :current-page="currentPage" :page-sizes="[5, 10, 50, 100, 500]" :page-size="pageSize"
                                    layout="total, sizes, prev, pager, next, jumper" style="text-align: center"
-                                   :total="data_meta_info.meta_list.length">
+                                   :total="data_meta_info.column_info_list.length">
                     </el-pagination>
                 </el-row>
             </el-col>
@@ -125,8 +130,8 @@
                 drbTreeList: [],
                 filterText: '',
                 data_meta_info: {
-                    table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '', create_date: '',
-                    meta_list: [], data_len: 0,
+                    file_id: '', table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '',
+                    create_date: '', column_info_list: [], data_len: 0,
                 },
             }
         },
@@ -149,6 +154,20 @@
             /* 查询页面 */
             handleCurrentChange(currentPage) {
                 this.currentPage = currentPage;
+            },
+            //点击tags标签触发
+            tagHandleClick(data) {
+                this.column_ch_name_input = true;
+                this.table_ch_name_input = true;
+                this.data_meta_info = {table_id: '', column_info_list: []};
+                if (data.name === 'mdm') {
+                    this.tag_type = 'mdm';
+                    this.getMDMTreeData();
+                }
+                if (data.name === 'drb') {
+                    this.tag_type = 'drb';
+                    this.getDRBTreeData();
+                }
             },
             //获取源数据列表树信息
             getMDMTreeData() {
@@ -173,8 +192,11 @@
                     mdmFun.getMDMTableColumnInfo({
                         "data_layer": data.data_layer, "file_id": data.file_id,
                     }).then(res => {
-                        this.data_meta_info = res.data;
-                        console.log(res.data);
+                        if (res.success) {
+                            this.data_meta_info = res.data;
+                        } else {
+                            this.data_meta_info = {table_id: '', column_info_list: []};
+                        }
                     })
                 }
             },
@@ -182,38 +204,47 @@
             drbHandleClick(data) {
                 if (data.file_id !== '') {
                     mdmFun.getDRBTableColumnInfo({"failure_table_id": data.file_id}).then(res => {
-                        this.data_meta_info = res.data;
+                        if (res.success) {
+                            this.data_meta_info = res.data;
+                        } else {
+                            this.data_meta_info = {table_id: '', column_info_list: []};
+                        }
                     })
-                }
-            },
-            //点击tags标签触发
-            tagHandleClick(data) {
-                if (data.name === 'mdm') {
-                    this.tag_type = 'mdm';
-                    this.getMDMTreeData();
-                }
-                if (data.name === 'drb') {
-                    this.tag_type = 'drb';
-                    this.getDRBTreeData();
                 }
             },
             //编辑元数据
             editMetadata() {
-                console.log(this.data_meta_info);
-                if ("DQC" !== this.data_meta_info.data_layer) {
-                    this.table_ch_name_input = false;
-                    this.column_ch_name_input = false;
+                if ("DQC" === this.data_meta_info.data_layer) {
+                    this.table_ch_name_input = true;
+                    this.column_ch_name_input = true;
                 }
             },
             //保存元数据,保存完成后查询保存的信息
             saveMetaData() {
-                console.log(this.data_meta_info);
+                let columnInfoBeans = [];
+                this.data_meta_info.column_info_list.forEach(o => {
+                    let column_info = {};
+                    column_info['column_id'] = o.column_id;
+                    column_info['column_ch_name'] = o.column_ch_name;
+                    columnInfoBeans.push(column_info);
+                });
+                this.data_meta_info['columnInfoBeans'] = JSON.stringify(columnInfoBeans);
                 mdmFun.saveMetaData(this.data_meta_info).then(res => {
-                    console.log(this.data_meta_info);
                     if (res.success) {
                         this.table_ch_name_input = true;
+                        this.column_ch_name_input = true;
                     }
                 });
+            },
+            //删除表(表设置为无效)
+            tableSetToInvalid(data) {
+                console.log(this.data_meta_info);
+                mdmFun.tableSetToInvalid({
+                    'data_layer': this.data_meta_info.data_layer,
+                    'file_id': this.data_meta_info.file_id
+                }).then(res => {
+                    console.log(res);
+                })
             },
             //恢复数据回收站的表
             restoreDRBTable() {
@@ -224,7 +255,7 @@
 </script>
 
 <style lang="less">
-    #meta_listDataManagement {
+    #metaDataManagement {
         .mytree /deep/ {
             .el-tree > .el-tree-node:after {
                 border-top: none;
