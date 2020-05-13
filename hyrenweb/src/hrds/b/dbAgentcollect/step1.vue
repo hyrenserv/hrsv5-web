@@ -393,7 +393,11 @@ export default {
                 });
         },
         //获取选中状态下的数据
-        handleCheckChange(data) {
+        handleCheckChange(data, checked, indeterminate) {
+            if (checked) {
+                let arr = [data.name];
+                this.$refs.tree.setCheckedKeys(arr);
+            }
             this.form.plane_url = data.path;
         },
         //  获取目录下一级
