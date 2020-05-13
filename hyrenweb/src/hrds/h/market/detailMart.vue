@@ -4,10 +4,10 @@
             <i class="block_icon fa text-warning fa-globe blue"></i>
             <span>数据集市</span>
             <div class="elButton ">
-                <el-button type="primary" @click="adddmdatatable()" size="medium">
+                <el-button type="primary" @click="adddmdatatable()" size="mini">
                     <i class="el-icon-circle-plus-outline"></i>新增数据表
                 </el-button>
-                <el-button type="primary" @click="back()" size="medium">
+                <el-button type="primary" @click="back()" size="mini">
                     <i class="fa fa-home fa-lg"></i>返回首页
                 </el-button>
             </div>

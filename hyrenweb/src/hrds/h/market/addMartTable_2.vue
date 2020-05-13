@@ -214,8 +214,8 @@
                 </el-table>
             </el-row>
             <el-row>
-                <el-button type="primary" size="medium" class="rightbtn" @click="next()">确定</el-button>
-                <el-button type="primary" size="medium" class="rightbtn" @click="dismissifhbasesort()">取消</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="next()">确定</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="dismissifhbasesort()">取消</el-button>
             </el-row>
         </el-dialog>
 
@@ -244,8 +244,8 @@
                 </el-table>
             </el-row>
             <el-row>
-                <el-button type="primary" size="medium" class="rightbtn" @click="changesql()">确定</el-button>
-                <el-button type="primary" size="medium" class="rightbtn" @click="dismissiftablecolumn()">取消</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="changesql()">确定</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="dismissiftablecolumn()">取消</el-button>
             </el-row>
         </el-dialog>
 
@@ -827,9 +827,8 @@
 
     .rightbtn {
         margin-top: 12px;
-        margin-top: 12px;
         float: right;
-        margin: 15px;
+        margin: 10px;
         margin-bottom: 10px;
     }
 
