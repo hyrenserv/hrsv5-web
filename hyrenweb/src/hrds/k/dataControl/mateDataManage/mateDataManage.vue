@@ -238,7 +238,6 @@
             },
             //删除表(表设置为无效)
             tableSetToInvalid() {
-                console.log(this.data_meta_info);
                 mdmFun.tableSetToInvalid({
                     'data_layer': this.data_meta_info.data_layer,
                     'file_id': this.data_meta_info.file_id
