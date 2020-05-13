@@ -145,24 +145,24 @@
 
                     <el-table-column label="value" align="center" v-if="showValue" :key="3">
                         <template slot-scope="scope">
-                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" v-model="scope.row.storage_property_val" style="width:260px">
+                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" v-model="scope.row.storage_property_val" style="width:98%">
                                 <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
                             </el-select>
-                            <el-input v-else size="meduim" v-model="scope.row.storage_property_val"></el-input>
+                            <el-input v-else size="meduim" v-model="scope.row.storage_property_val" style="width:98%"></el-input>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="value" align="center" :key="4" v-if="selectVlueOrUpload">
                         <template slot-scope="scope">
-                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
                                 <el-button size="small" type="info" @click="handleEditchange(scope.$index, scope.row)">选择文件</el-button>
                             </el-upload>
 
-                            <el-select v-if="scope.$index <= inputindex &&scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:260px">
+                            <el-select v-if="scope.$index <= inputindex &&scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:98%">
                                 <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
                             </el-select>
 
-                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-else-if="scope.$index <= inputindex "></el-input>
+                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-else-if="scope.$index <= inputindex " style="width:98%"></el-input>
 
                             <el-radio-group v-model="scope.row.radio" v-if="scope.$index > uploadindexmore">
                                 <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>

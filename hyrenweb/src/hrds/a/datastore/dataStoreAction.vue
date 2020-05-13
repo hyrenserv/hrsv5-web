@@ -87,13 +87,13 @@
                 <el-table-column label="value" prop="storage_property_val" align="center" v-if="showValue" :key="3">
                     <template slot-scope="scope">
                         <el-form-item v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" :prop="`tableData.${scope.$index}.storage_property_val`" :rules="rule.selected">
-                            <el-select v-model="scope.row.storage_property_val" style="width:280px">
+                            <el-select v-model="scope.row.storage_property_val" style="width:98%">
                                 <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item v-else :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])">
-                            <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
+                            <el-input size="meduim" v-model="scope.row.storage_property_val" style="width:98%"></el-input>
                         </el-form-item>
 
                     </template>
@@ -107,20 +107,20 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="value" width="300" prop="storage_property_val" align="center" :key="3" v-if="selectVlueOrUpload">
+                <el-table-column label="value" prop="storage_property_val" align="center" :key="3" v-if="selectVlueOrUpload">
                     <template slot-scope="scope">
-                        <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
+                        <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
                             <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
                         </el-upload>
 
                         <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="rule.selected" v-if="scope.$index <= inputindex &&scope.$index == 0 &&scope.row.storage_property_key == 'database_type' ">
-                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:280px">
+                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:98%">
                                 <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item :prop="`tableData.${scope.$index}.storage_property_val`" :rules="filter_rules([{required: true}])" v-else-if="scope.$index <= inputindex ">
-                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex "></el-input>
+                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-if="scope.$index <= inputindex " style="width:98%"></el-input>
                         </el-form-item>
 
                         <el-radio-group v-model="scope.row.radio" v-if="scope.$index > uploadindexmore">
