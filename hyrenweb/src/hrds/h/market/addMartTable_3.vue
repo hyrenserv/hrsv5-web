@@ -134,6 +134,10 @@
                 })
             },
             excutmartjob() {
+                if (this.date === '') {
+                    this.$message({type: 'warning', message: '日期不能为空!'});
+                    return ;
+                }
                 this.isLoading = true;
                 let param = {
                     "datatable_id": this.datatable_id,
