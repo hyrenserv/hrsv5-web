@@ -69,7 +69,7 @@
     <el-dialog :title="projectTitle" :visible.sync="dialogFormVisibleAdd" width="40%" :before-close="beforeClose">
         <el-form :model="formAdd" ref="formAdd" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.etl_sys_cd" style="width:270px" autocomplete="off" placeholder="工程编号"></el-input>
+                <el-input v-model="formAdd.etl_sys_cd" :readonly="disableds" style="width:270px" autocomplete="off" placeholder="工程编号"></el-input>
             </el-form-item>
             <el-form-item label="工程名称" prop="etl_sys_name" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.etl_sys_name" style="width:270px" autocomplete="off" placeholder="工程名称"></el-input>
@@ -151,24 +151,30 @@
         </div>
     </el-dialog>
     <!-- CONTROL日志模态框 -->
-    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="72%">
+    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="72%" :before-close="closeCON">
         <el-form :model="formRecordCON" ref="formRecordCON" class="demo-form-inline" :inline="true" label-width="100px">
-            <el-form-item label="工程编号" prop="readNum">
-                <el-input v-model="formRecordCON.readNum"></el-input>
+            <el-form-item label="日志行数" prop="readNum">
+                <!-- <el-tooltip class="item" effect="dark" content="默认显示100行，最多显示1000行(正整数)" placement="right">
+                        <i class="fa fa-question-circle " aria-hidden="true"></i>
+                    </el-tooltip> -->
+                <el-input v-model="formRecordCON.readNum">
+
+                </el-input>
+
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onViewCON">查看</el-button>
+                <el-button type="primary" :loading="isViewCon" @click="onViewCON">查看</el-button>
             </el-form-item>
-            <el-form-item label="跑批日期" prop="curr_bath_date">
+            <el-form-item label="跑批日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
                 <el-date-picker v-model="formRecordCON.curr_bath_date" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyyMMdd">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="downRecordCON">下载日志</el-button>
+                <el-button type="primary" :loading="isViewDowncon" @click="downRecordCON('formRecordCON')">下载日志</el-button>
             </el-form-item>
         </el-form>
-        <div style="margin-top:-25px">
-            <span>{{formRecordCON.project_records}}</span>
+        <div style="margin-top:-10px">
+            <span v-html="formRecordCON.project_records"></span>
             <el-divider></el-divider>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -176,24 +182,24 @@
         </div>
     </el-dialog>
     <!-- TRIGGER日志模态框 -->
-    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="72%">
+    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="72%" :before-close="closeTRI">
         <el-form :model="formRecordTRI" ref="formRecordTRI" class="demo-form-inline" :inline="true" label-width="100px">
-            <el-form-item label="工程编号" prop="readNum">
+            <el-form-item label="日志行数" prop="readNum">
                 <el-input v-model="formRecordTRI.readNum"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onViewTRI">查看</el-button>
+                <el-button type="primary" :loading="isViewTri" @click="onViewTRI">查看</el-button>
             </el-form-item>
-            <el-form-item label="跑批日期" prop="curr_bath_date">
+            <el-form-item label="跑批日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
                 <el-date-picker v-model="formRecordTRI.curr_bath_date" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyyMMdd">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="downRecordTRI">下载日志</el-button>
+                <el-button type="primary" :loading="isViewDowntri" @click="downRecordTRI('formRecordTRI')">下载日志</el-button>
             </el-form-item>
         </el-form>
-        <div style="margin-top:-25px">
-            <span>{{formRecordTRI.project_records}}</span>
+        <div style="margin-top:-10px">
+            <span v-html="formRecordTRI.project_records"></span>
             <el-divider></el-divider>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -325,7 +331,7 @@ export default {
                 etl_sys_cd: "",
                 readNum: "",
                 curr_bath_date: "",
-                project_records: "",
+                project_records: ""
             },
             formRecordTRI: {
                 etl_sys_cd: "",
@@ -339,9 +345,13 @@ export default {
             YesNo: [],
             online: {},
             isLoadings: false,
-            isStop: false,
             isLoading: false,
-            isloadingTri: false
+            isloadingTri: false,
+            disableds: false,
+            isViewDowncon: false,
+            isViewCon: false,
+            isViewDowntri: false,
+            isViewTri: false,
         };
     },
     mounted() {
@@ -362,15 +372,7 @@ export default {
                 }
                 let arr = [];
                 let arr2 = [];
-                res.data.forEach(item => {
-                    if (item.sys_run_status == "S") {
-                        arr.push(item)
-                    } else {
-                        arr2.push(item)
-                    }
-
-                })
-                this.tableData = [...arr2, ...arr];
+                this.tableData = res.data;
             })
         },
         //查询作业调度工程信息
@@ -461,12 +463,12 @@ export default {
         },
         //添加工程按钮
         addProject() {
+            this.disableds = false;
             this.dialogFormVisibleAdd = true;
             this.projectTitle = '添加工程';
         },
         //点击工程编号跳转按钮
         details(index, row) {
-            // this.SET_CD({sys_cd:row.etl_sys_cd});
             sessionStorage.setItem('sys_cd', row.etl_sys_cd);
             sessionStorage.setItem('sys_name', row.etl_sys_name);
             this.$router.push({
@@ -543,8 +545,8 @@ export default {
                     params["user_name"] = this.formDeploy.user_name;
                     params["user_pwd"] = this.formDeploy.user_pwd;
                     etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
+                        this.isLoadings = false;
                         if (res && res.success) {
-                            this.isLoadings = false;
                             this.$message({
                                 message: '部署成功',
                                 type: 'success'
@@ -552,8 +554,6 @@ export default {
                             this.getTable();
                             this.dialogFormVisibleDeploy = false;
                             this.formDeploy = {};
-                        } else {
-                            this.isLoadings = false;
                         }
 
                     });
@@ -579,8 +579,8 @@ export default {
                     params["isAutoShift"] = this.formStartCON.isAutoShift;
                     params["curr_bath_date"] = this.formStartCON.curr_bath_date;
                     etlMageAllFun.startControl(params).then(res => {
+                        this.isLoading = false;
                         if (res && res.success) {
-                            this.isLoading = false;
                             this.$message({
                                 message: '启动CONTROL成功',
                                 type: 'success'
@@ -588,8 +588,6 @@ export default {
                             this.getTable();
                             this.dialogFormVisibleStartCON = false;
                             this.formStartCON = {};
-                        } else {
-                            this.isLoading = false;
                         }
                     });
 
@@ -608,8 +606,8 @@ export default {
             let params = {};
             params["etl_sys_cd"] = this.formStartTRI.etl_sys_cd;
             etlMageAllFun.startTrigger(params).then(res => {
+                this.isloadingTri = false;
                 if (res && res.success) {
-                    this.isloadingTri = false;
                     this.$message({
                         message: '启动TRIGGER成功',
                         type: 'success'
@@ -617,11 +615,8 @@ export default {
                     this.getTable();
                     this.formStartTRI = {};
                     this.dialogFormVisibleStartTRI = false;
-                } else {
-                    this.isloadingTri = false;
                 }
             });
-
         },
         //启动TRIGGER模态框取消按钮
         cancleTRI() {
@@ -631,55 +626,117 @@ export default {
         },
         //CONTROL日志查看按钮
         onViewCON() {
-            this.getEtlSys(this.formRecordCON.etl_sys_cd);
+            this.isViewCon = true;
             let params = {};
             params["etl_sys_cd"] = this.formRecordCON.etl_sys_cd;
             params["readNum"] = this.formRecordCON.readNum;
             params["isControl"] = '0';
             etlMageAllFun.readControlOrTriggerLog(params).then(res => {
-                this.getTable();
+                this.isViewCon = false;
+                if (res.data.length != 0) {
+                    this.formRecordCON.project_records = res.data.replace(/\[/g, '<br>[');
+                    let dataTIP = this.formRecordCON.project_records.replace(/: <br>\[/g, ':[');
+                    this.formRecordCON.project_records = dataTIP;
+                } else {
+                    this.formRecordCON.project_records = "暂无日志信息";
+                }
+
             });
         },
         //CONTROL日志下载按钮
-        downRecordCON() {
-            this.getEtlSys(this.formRecordCON.etl_sys_cd);
-            let params = {};
-            params["etl_sys_cd"] = this.formRecordCON.etl_sys_cd;
-            params["curr_bath_date"] = this.formRecordCON.curr_bath_date;
-            params["isControl"] = '0';
-            etlMageAllFun.downloadControlOrTriggerLog(params).then(res => {
-                this.getTable();
-            });
+        downRecordCON(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.isViewDowncon = true;
+                    let params = {};
+                    params["etl_sys_cd"] = this.formRecordCON.etl_sys_cd;
+                    params["curr_bath_date"] = this.formRecordCON.curr_bath_date;
+                    params["isControl"] = '0';
+                    etlMageAllFun.downloadControlOrTriggerLog(params).then(res => {
+                        this.isViewDowncon = false;
+                        if (res && res.success) {
+                            this.downloadFile(res.data)
+                        }
+                    });
+                }
+            })
+        },
+        // 下载日志方法封装
+        downloadFile(val) {
+            etlMageAllFun.downloadFile({
+                fileName: val
+            }).then(res => {
+                if (res && res.success) {
+                    this.filename = val;
+                    const blob = new Blob([res.data]);
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, this.filename);
+                    } else {
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        // document.body.appendChild(aTag);
+                        aTag.download = this.filename;
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
+                    }
+                }
+            })
         },
         //CONTROL日志关闭按钮
         closeCON() {
+            this.$refs.formRecordCON.resetFields();
             this.dialogFormVisibleRecordCON = false;
             this.formRecordCON = {};
         },
         //TRIGGER日志查看按钮
         onViewTRI() {
-            this.getEtlSys(this.formRecordTRI.etl_sys_cd);
+            this.isViewTri = true;
             let params = {};
             params["etl_sys_cd"] = this.formRecordTRI.etl_sys_cd;
             params["readNum"] = this.formRecordTRI.readNum;
             params["isControl"] = '1';
             etlMageAllFun.readControlOrTriggerLog(params).then(res => {
-                this.getTable();
+                this.isViewTri = false;
+                if (res.data.length != 0) {
+                    this.formRecordTRI.project_records = res.data.replace(/\[/g, '<br>[');
+                    let dataTIP = this.formRecordTRI.project_records.replace(/: <br>\[/g, ':[');
+                    this.formRecordTRI.project_records = dataTIP;
+                } else {
+                    this.formRecordTRI.project_records = "暂无日志信息";
+                }
+
             });
         },
         //TRIGGER日志下载按钮
-        downRecordTRI() {
-            this.getEtlSys(this.formRecordTRI.etl_sys_cd);
-            let params = {};
-            params["etl_sys_cd"] = this.formRecordTRI.etl_sys_cd;
-            params["curr_bath_date"] = this.formRecordTRI.curr_bath_date;
-            params["isControl"] = '1';
-            etlMageAllFun.downloadControlOrTriggerLog(params).then(res => {
-                this.getTable();
-            });
+        downRecordTRI(formName) {
+            this.isViewDowntri = true;
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let params = {};
+                    params["etl_sys_cd"] = this.formRecordTRI.etl_sys_cd;
+                    params["curr_bath_date"] = this.formRecordTRI.curr_bath_date;
+                    params["isControl"] = '1';
+                    etlMageAllFun.downloadControlOrTriggerLog(params).then(res => {
+                        this.isViewDowntri = false;
+                        if (res && res.success) {
+                            this.downloadFile(res.data)
+                        }
+                    });
+                }
+            })
         },
         //TRIGGER日志关闭按钮
         closeTRI() {
+            this.$refs.formRecordTRI.resetFields();
             this.dialogFormVisibleRecordTRI = false;
             this.formRecordTRI = {};
         },
@@ -689,6 +746,7 @@ export default {
             this.dialogFormVisibleAdd = true;
             this.formAdd = row;
             this.projectTitle = '修改工程';
+            this.disableds = true;
         },
         //表格部署按钮
         handleDeploy(index, row) {
@@ -716,13 +774,15 @@ export default {
         handleRecordco(index, row) {
             this.dialogFormVisibleRecordCON = true;
             this.formRecordCON.etl_sys_cd = row.etl_sys_cd;
-            this.onViewCON();
+            this.formRecordCON.readNum = 100;
+            // this.onViewCON();
         },
         //表格TRIGGER日志信息按钮
         handleRecordtr(index, row) {
             this.dialogFormVisibleRecordTRI = true;
             this.formRecordTRI.etl_sys_cd = row.etl_sys_cd;
-            this.onViewTRI();
+            this.formRecordTRI.readNum = 100;
+            // this.onViewTRI();
         },
         // 全屏幕显示
         fullScreen(val) {
@@ -1018,7 +1078,7 @@ export default {
         // 停止工程
         stopWork(index, row) {
             let mess = row.etl_sys_name;
-            this.$confirm('确定停止' + mess + '工程?', '提示', {
+            this.$confirm('确定停止(' + mess + ')工程?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
@@ -1105,6 +1165,7 @@ i {
 }
 
 .loindex .span10 {
+    color: #409EFF;
     cursor: pointer;
     margin-top: 30px;
     font-size: 20px;
