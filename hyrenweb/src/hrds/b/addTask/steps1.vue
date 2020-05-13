@@ -464,9 +464,9 @@ export default {
             let params = {};
             params["sourceId"] = this.sourceId;
             params["readNum"] = this.input0;
-            addTaskAllFun.getClassifyInfo(params).then(res => {
+            /* addTaskAllFun.viewLog(params).then(res => {
                 console.log(res)
-            });
+            }); */
         },
         handleSizeChange(size) {
             this.pagesize = size;
