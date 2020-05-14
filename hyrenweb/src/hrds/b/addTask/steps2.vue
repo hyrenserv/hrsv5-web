@@ -801,6 +801,7 @@ export default {
                     this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
                     this.callTable2 = JSON.parse(JSON.stringify(data));
                     this.callTable3 = JSON.parse(JSON.stringify(data));
+                    console.log( this.callTable3)
                     // this.Allis_selectionState = true;
                 }
             });
@@ -992,9 +993,9 @@ export default {
                                 }
                             }
                             tableDatalin = this.callTable3.concat(this.firstTableInfo)
-                            for (let i = 0; i < this.tableDatalin.length; i++) {
-                                if (this.tableDatalin[i].selectionState == true) {
-                                    tableData.push(this.tableDatalin[i])
+                            for (let i = 0; i <tableDatalin.length; i++) {
+                                if (tableDatalin[i].selectionState == true) {
+                                    tableData.push(tableDatalin[i])
                                 }
                             }
                         } else {
