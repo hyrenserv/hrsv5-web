@@ -648,6 +648,7 @@ export default {
             alltableact: false,
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
+            secondTrue: false,
         };
     },
     created() {
@@ -976,7 +977,9 @@ export default {
                         isparmi = [], //存第一个页面是增量的表的名字
                         tableidArr1 = {}, //第一个页面单表查询中增量存在的表
                         isparmi2 = [], //第二个页面sql抽取中增量存在的表的名称
+                        tableDatalin = [],
                         istrue = []; //存两个页面存在的表，为了判断至少有一张表存在
+
                     //第一个页面数据整合--start
                     if (this.callTable3.length > 0) {
                         if (this.firstTableInfo.length > 0) {
@@ -988,40 +991,29 @@ export default {
                                     }
                                 }
                             }
-                            /*  for(var item in this.firstTableInfo){
-                                 this.callTable3[item] = this.firstTableInfo[item];
-                              } */
-                            tableData = this.callTable3.concat(this.firstTableInfo)
-                            console.log(tableData)
+                            tableDatalin = this.callTable3.concat(this.firstTableInfo)
+                            for (let i = 0; i < this.tableDatalin.length; i++) {
+                                if (this.tableDatalin[i].selectionState == true) {
+                                    tableData.push(this.tableDatalin[i])
+                                }
+                            }
                         } else {
-                            tableData = this.callTable3
+                            for (let i = 0; i < this.callTable3.length; i++) {
+                                if (this.callTable3[i].selectionState == true) {
+                                    tableData.push(this.callTable3[i])
+                                }
+                            }
                         }
                     } else {
-                        tableData = this.firstTableInfo
+                        if (this.firstTableInfo.length > 0) {
+                            for (let i = 0; i < this.firstTableInfo.length; i++) {
+                                if (this.firstTableInfo[i].selectionState == true) {
+                                    tableData.push(this.firstTableInfo[i])
+                                }
+                            }
+                        }
                     }
                     //第一个页面数据整合--end
-                    for (let i = 0; i < tableData.length; i++) {
-                        //判断两个页面数据有无重复数据
-                        if (
-                            tableData[i].selectionState == true && tableData[i].unload_type == "增量"
-                        ) {
-                            isparmi.push(tableData[i].table_name);
-                            if (tableData[i].table_id && tableData[i].table_id != "") {
-                                tableidArr1[tableData[i].table_name] = tableData[i].table_id;
-                            }
-                        }
-                        if (tableData[i].selectionState == true) {
-                            istrue.push(tableData[i].table_name);
-                        }
-                        for (let j = 0; j < sqlExtractData.length; j++) {
-                            if (
-                                tableData[i].table_name == sqlExtractData[j].table_name &&
-                                tableData[i].selectionState == true
-                            ) {
-                                rep_table.push(tableData[i].table_name);
-                            }
-                        }
-                    }
                     // 判断第二个页面表重复的
                     if (sqlExtractData.length > 0) {
                         let reparr2 = []
@@ -1043,7 +1035,9 @@ export default {
                                     message: "sql抽取数据中存在表" + rep_table2 + "重复,请修改",
                                     type: "error"
                                 });
+                                this.activeName = "second";
                             } else {
+                                this.secondTrue = true
                                 for (let j = 0; j < sqlExtractData.length; j++) {
                                     if (sqlExtractData[j].unload_type == "增量") {
                                         isparmi2.push(sqlExtractData[j].table_name);
@@ -1054,53 +1048,102 @@ export default {
 
                         }
                     }
-                    if (istrue.length == 0) {
-                        //判断第二步整体有没有表存在
-                        this.isLoading = false;
-                        this.$message({
-                            showClose: true,
-                            message: "至少选择一张表",
-                            type: "error"
-                        });
-                    } else {
-                        //checkTablePrimary
-                        if (rep_table.length > 0) {
-                            //有重复表
+                    // 
+                    if (this.secondTrue == true) {
+                        //判断两个页面数据有无重复数据
+                        if (tableData.length > 0) {
+                            for (let i = 0; i < tableData.length; i++) {
+                                if (
+                                    tableData[i].selectionState == true && tableData[i].unload_type == "增量"
+                                ) {
+                                    isparmi.push(tableData[i].table_name); //第一个页面存勾选并且是增量的表
+                                    if (tableData[i].table_id && tableData[i].table_id != "") {
+                                        tableidArr1[tableData[i].table_name] = tableData[i].table_id; //存上次编辑表
+                                    }
+                                }
+                                if (tableData[i].selectionState == true) {
+                                    istrue.push(tableData[i].table_name); //仅存勾选的表--第一个页面
+                                }
+                                for (let j = 0; j < sqlExtractData.length; j++) {
+                                    if (
+                                        tableData[i].table_name == sqlExtractData[j].table_name &&
+                                        tableData[i].selectionState == true
+                                    ) {
+                                        rep_table.push(tableData[i].table_name); //
+                                    }
+                                }
+                            }
+                        }
+                        if (istrue.length == 0) {
+                            //判断第二步整体有没有表存在
                             this.isLoading = false;
                             this.$message({
                                 showClose: true,
-                                message: "单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改",
+                                message: "至少选择一张表",
                                 type: "error"
                             });
                         } else {
-                            //没有重复表
-                            if (isparmi.length > 0) {
-                                //第一个页面卸数方式是增量存在的
-                                let params1 = {};
-                                params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
-                                params1["colSetId"] = parseInt(this.dbid);
-                                params1["tableIds"] =
-                                    JSON.stringify(tableidArr1) === "{}" ?
-                                    "" :
-                                    JSON.stringify(tableidArr1);
-                                addTaskAllFun.checkTablePrimary(params1).then(res => {
-                                    let arrdata = res.data;
-                                    if (this.SelectColumn.length > 0) {
-                                        if (arrdata.length > 0) {
-                                            for (let key in arrdata) {
-                                                for (let j = 0; j < this.SelectColumn.length; j++) {
-                                                    if (key == this.SelectColumn[j].tablename) {
-                                                        //判断手动保存的列当时是true或者false,true则删除
-                                                        if (this.SelectColumn[j].hasprimaryKey == true) {
-                                                            delete arrdata[key];
+                            //checkTablePrimary
+                            if (rep_table.length > 0) {
+                                //有重复表
+                                this.isLoading = false;
+                                this.$message({
+                                    showClose: true,
+                                    message: "单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改",
+                                    type: "error"
+                                });
+                            } else {
+                                //没有重复表
+                                if (isparmi.length > 0) {
+                                    //第一个页面卸数方式是增量存在的
+                                    let params1 = {};
+                                    params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
+                                    params1["colSetId"] = parseInt(this.dbid);
+                                    params1["tableIds"] =
+                                        JSON.stringify(tableidArr1) === "{}" ?
+                                        "" :
+                                        JSON.stringify(tableidArr1);
+                                    addTaskAllFun.checkTablePrimary(params1).then(res => {
+                                        let arrdata = res.data;
+                                        if (this.SelectColumn.length > 0) {
+                                            if (arrdata.length > 0) {
+                                                for (let key in arrdata) {
+                                                    for (let j = 0; j < this.SelectColumn.length; j++) {
+                                                        if (key == this.SelectColumn[j].tablename) {
+                                                            //判断手动保存的列当时是true或者false,true则删除
+                                                            if (this.SelectColumn[j].hasprimaryKey == true) {
+                                                                delete arrdata[key];
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        // arrdata删除本次设置了主键的剩余的做判断
-                                        if (arrdata.length > 0) {
+                                            // arrdata删除本次设置了主键的剩余的做判断
+                                            if (arrdata.length > 0) {
+                                                let arr = [];
+                                                for (let key in arrdata) {
+                                                    if (arrdata[key] == false) {
+                                                        arr.push(key);
+                                                    }
+                                                }
+                                                if (arr.length > 0) {
+                                                    //存在未设置主键
+                                                    this.isLoading = false;
+                                                    this.$message({
+                                                        showClose: true,
+                                                        message: "单表查询中表" + arr + "未设置主键",
+                                                        type: "error"
+                                                    });
+                                                } else {
+                                                    //不存在继续下面方法
+                                                    this.saveTableConfFun(tableData); //处理第一个页面数据
+                                                }
+                                            } else {
+                                                this.saveTableConfFun(tableData);
+                                            }
+                                        } else {
+                                            //手动没有保存的选择列信息，只需要判断从接口获取的原本的
                                             let arr = [];
                                             for (let key in arrdata) {
                                                 if (arrdata[key] == false) {
@@ -1108,7 +1151,7 @@ export default {
                                                 }
                                             }
                                             if (arr.length > 0) {
-                                                //存在未设置主键
+                                                //存在未设置主键的表
                                                 this.isLoading = false;
                                                 this.$message({
                                                     showClose: true,
@@ -1116,42 +1159,21 @@ export default {
                                                     type: "error"
                                                 });
                                             } else {
-                                                //不存在继续下面方法
+                                                //不存在未设置主键的表则继续下面整合数据方法
                                                 this.saveTableConfFun(tableData); //处理第一个页面数据
                                             }
-                                        } else {
-                                            this.saveTableConfFun(tableData);
                                         }
-                                    } else {
-                                        //手动没有保存的选择列信息，只需要判断从接口获取的原本的
-                                        let arr = [];
-                                        for (let key in arrdata) {
-                                            if (arrdata[key] == false) {
-                                                arr.push(key);
-                                            }
-                                        }
-                                        if (arr.length > 0) {
-                                            //存在未设置主键的表
-                                            this.isLoading = false;
-                                            this.$message({
-                                                showClose: true,
-                                                message: "单表查询中表" + arr + "未设置主键",
-                                                type: "error"
-                                            });
-                                        } else {
-                                            //不存在未设置主键的表则继续下面整合数据方法
-                                            this.saveTableConfFun(tableData); //处理第一个页面数据
-                                        }
-                                    }
-                                });
-                            } else {
-                                //第一个页面无增量的卸数存在直接进整理数据方法
-                                this.saveTableConfFun(tableData); //处理第一个页面数据
+                                    });
+                                } else {
+                                    //第一个页面无增量的卸数存在直接进整理数据方法
+                                    this.saveTableConfFun(tableData); //处理第一个页面数据
+                                }
+                                // 第二个页面
+                                this.sqlFun();
                             }
-                            // 第二个页面
-                            this.sqlFun();
                         }
                     }
+
                 } else {
                     this.activeName = "second";
                 }
