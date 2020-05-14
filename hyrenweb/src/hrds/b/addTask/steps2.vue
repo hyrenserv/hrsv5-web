@@ -648,7 +648,7 @@ export default {
             alltableact: false,
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
-            secondTrue: false,
+            secondTrue: true,
         };
     },
     created() {
@@ -1029,6 +1029,7 @@ export default {
                                 }
                             }
                             if (rep_table2.length > 0) {
+                                this.secondTrue = false
                                 this.isLoading = false;
                                 this.$message({
                                     showClose: true,
@@ -1037,7 +1038,6 @@ export default {
                                 });
                                 this.activeName = "second";
                             } else {
-                                this.secondTrue = true
                                 for (let j = 0; j < sqlExtractData.length; j++) {
                                     if (sqlExtractData[j].unload_type == "增量") {
                                         isparmi2.push(sqlExtractData[j].table_name);
