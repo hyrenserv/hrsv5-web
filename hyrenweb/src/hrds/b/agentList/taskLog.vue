@@ -9,7 +9,7 @@
         </router-link>
     </el-row>
     <div class="logcontent">
-        <div class="redcolor">请填写查看日志行数 : 默认显示最后100行,最多显示最后1000行.</div>
+        <div class="redcolor">请填写查看日志行数 : 默认显示最后100行,最多显示最后1000行...下载时可填写下载行数,否则默认10000行</div>
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
             <el-row class="middline">
                 <el-col :span="3">
@@ -106,7 +106,26 @@ export default {
             params["logType"] = this.formInline.LogType;
             params["readNum"] = this.formInline.lognum;
             agentList.downloadTaskLog(params).then(res => {
-                console.log(res);
+                const blob = new Blob([res.data]);
+                let filename = res.headers["content-disposition"].split('=')[1];
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    aTag.download = filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        let evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
             });
         }
     }
