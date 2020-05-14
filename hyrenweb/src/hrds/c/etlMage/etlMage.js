@@ -110,6 +110,10 @@ export function downloadFile(data) {
     return request({
         url: '/C/etlsys/downloadFile',
         method: 'post',
-        params: data
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
