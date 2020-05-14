@@ -30,7 +30,7 @@
             <el-table-column prop="request_mode" label="请求方式" align="center"/>
             <el-table-column prop="remoteaddr" label="登陆 IP" align="center"/>
             <el-table-column prop="protocol" label="传输协议版本" align="center"/>
-            <el-table-column prop="request_date" label="请求日期" align="center"/>
+            <el-table-column prop="request_date" :formatter="dateFormat" label="请求日期" align="center"/>
             <el-table-column prop="request_time" label="请求时间" align="center"/>
             <el-table-column prop="request_type" label="请求类型" align="center"/>
             <el-table-column prop="user_id" label="用户ID" align="center"/>
@@ -126,17 +126,29 @@
                 }).catch(() => {
                 })
             },
+            // 表格日期格式化展示
+            dateFormat(row, column) {
+                const date = row[column.property];
+                if (date != null) {
+                    const year = date.substring(0, 4);
+                    const month = date.substring(4, 6);
+                    const day = date.substring(6, 8);
+                    return year + "-" + month + "-" + day;
+                }
+            },
             //用户列表数据实现分页功能
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
                 this.currPage = currPage;
                 this.searchSystemLogByPage(currPage, this.pageSize);
-            },
+            }
+            ,
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
                 this.searchSystemLogByPage(this.currPage, pageSize);
-            },
+            }
+            ,
         }
     }
 </script>
