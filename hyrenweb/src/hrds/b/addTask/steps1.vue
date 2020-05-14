@@ -233,7 +233,7 @@
                             <el-button slot="append" icon="el-icon-search" @click='getviewlog()'></el-button>
                         </el-input>
                     </div>
-                    <div>
+                    <div class='logclass' style="min-height:200px">
                         <pre>{{logMsg}}</pre>
                     </div>
                 </el-dialog>

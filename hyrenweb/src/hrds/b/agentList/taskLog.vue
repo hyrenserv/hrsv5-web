@@ -50,9 +50,8 @@
                 </el-col>
             </el-row>
         </el-form>
-        <div class="showlog"></div>
     </div>
-    <div>
+    <div class='logclass'>
         <pre>
         {{logMsg}}
         </pre>
@@ -127,7 +126,7 @@ export default {
                     URL.revokeObjectURL(aTag.href);
                 }
             });
-        }
+        },
     }
 };
 </script>
@@ -157,5 +156,9 @@ export default {
 
 .el-select-dropdown {
     top: 204px !important;
+}
+
+.logcontent>>>.el-form-item {
+    margin-bottom: 0;
 }
 </style>
