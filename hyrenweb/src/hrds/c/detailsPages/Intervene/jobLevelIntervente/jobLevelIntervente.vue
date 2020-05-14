@@ -169,11 +169,14 @@
     </el-dialog>
     <!-- 批量干预模态框 -->
     <el-dialog title="批量干预" :visible.sync="dialogVisiblebatchInter" width="40%">
-        <el-button class="btns" type="primary" @click="handleStop1" size="mini">停止</el-button>
-        <el-button class="btns" type="primary" @click="handlePass1" size="mini">跳过</el-button>
-        <el-button class="btns" type="primary" @click="handleRefresh1" size="mini">重跑</el-button>
-        <el-button class="btns" type="primary" @click="handleForce1" size="mini">强制执行</el-button>
-        <el-button class="btns" type="primary" @click="handleAdjust1" size="mini">调整优先级</el-button>
+        <div class="dialogDiv">
+            <el-button class="btns" type="primary" @click="handleStop1" size="mini">停止</el-button>
+            <el-button class="btns" type="primary" @click="handlePass1" size="mini">跳过</el-button>
+            <el-button class="btns" type="primary" @click="handleRefresh1" size="mini">重跑</el-button>
+            <el-button class="btns" type="primary" @click="handleForce1" size="mini">强制执行</el-button>
+            <el-button class="btns" type="primary" @click="handleAdjust1" size="mini">调整优先级</el-button>
+        </div>
+
     </el-dialog>
 </div>
 </template>
@@ -342,7 +345,12 @@ export default {
                         if (item.job_disp_status == value.code) {
                             item.status = value.value
                         }
-                    })
+                    });
+                    let year = item.curr_bath_date.substring(0, 4);
+                    let month = item.curr_bath_date.substring(4, 6);
+                    let day = item.curr_bath_date.substring(6, 8);
+                    let date = year + "-" + month + "-" + day;
+                    item.curr_bath_date = date;
                 });
                 this.tableData = dates;
             });
@@ -525,7 +533,7 @@ export default {
                     arr.push(obj);
                 });
                 arr = JSON.stringify(arr);
-                let code = 'SS';
+                let code = 'JS';
                 let params = {};
                 params["etl_sys_cd"] = etl_sys_cd;
                 params["etl_hand_type"] = code;
@@ -537,13 +545,13 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统批量干预成功！',
+                            message: '批量作业停止成功！',
                             type: 'success'
                         });
                     }
                 });
             } else {
-                let code = 'SS';
+                let code = 'JS';
                 let params = {};
                 params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
                 params["etl_job"] = this.tempForm.etl_job;
@@ -556,7 +564,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统干预成功！',
+                            message: '作业停止成功！',
                             type: 'success'
                         });
                         this.tempForm = {};
@@ -592,7 +600,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统批量干预成功！',
+                            message: '批量作业跳过成功！',
                             type: 'success'
                         });
                     }
@@ -611,7 +619,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统干预成功！',
+                            message: '作业跳过成功！',
                             type: 'success'
                         });
                         this.tempForm = {};
@@ -635,7 +643,7 @@ export default {
                     arr.push(obj);
                 });
                 arr = JSON.stringify(arr);
-                let code = 'SO';
+                let code = 'JR';
                 let params = {};
                 params["etl_sys_cd"] = etl_sys_cd;
                 params["etl_hand_type"] = code;
@@ -647,13 +655,13 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统批量干预成功！',
+                            message: '批量作业重跑成功！',
                             type: 'success'
                         });
                     }
                 });
             } else {
-                let code = 'SO';
+                let code = 'JR';
                 let params = {};
                 params["etl_sys_cd"] = this.tempForm.etl_sys_cd;
                 params["etl_job"] = this.tempForm.etl_job;
@@ -666,7 +674,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统干预成功！',
+                            message: '作业重跑成功！',
                             type: 'success'
                         });
                     }
@@ -702,7 +710,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统批量干预成功！',
+                            message: '批量作业直接跑成功！',
                             type: 'success'
                         });
                     }
@@ -721,7 +729,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统干预成功！',
+                            message: '作业直接跑成功！',
                             type: 'success'
                         });
                         this.tempForm = {};
@@ -756,7 +764,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统批量干预成功！',
+                            message: '批量作业临时调整优先级成功！',
                             type: 'success'
                         });
                     }
@@ -776,7 +784,7 @@ export default {
                         this.getCurrInfo();
                         this.getHistoryInfo();
                         this.$message({
-                            message: '系统干预成功！',
+                            message: '作业临时调整优先级成功！',
                             type: 'success'
                         });
                         this.tempForm = {};
@@ -886,12 +894,15 @@ export default {
 }
 
 .btns {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 .searchBtn {
     margin-left: 10px;
+}
+
+.dialogDiv {
+    text-align: center;
 }
 </style><style>
 .el-autocomplete-suggestion li {

@@ -111,19 +111,23 @@ export default {
         monitorHistoryJobInfo() {
             let self = this;
             functionAll.monitorHistoryJobInfo(self.form).then(res => {
-                this.departmentalList = res.data;
                 for (let i = 0; i < res.data.length; i++) {
+                    let year = res.data[i].curr_bath_date.substring(0, 4);
+                    let month = res.data[i].curr_bath_date.substring(4, 6);
+                    let day = res.data[i].curr_bath_date.substring(6, 8);
+                    let date = year + "-" + month + "-" + day;
+                    res.data[i].curr_bath_date = date;
                     let sty = self.formatterLong24HH(res.data[i].curr_st_time);
                     // 开始时间数据
                     let startpiont = {
                         name: res.data[i].etl_job,
                         xs: res.data[i].curr_bath_date,
-                        tooltipData: res.data[i].curr_st_time,
+                        tooltipData: this.dateToMilldate(res.data[i].curr_st_time),
                         flag: "st", //开始时间标志
                         y: sty
                     };
-                    let sdate = new Date(res.data[i].curr_st_time)
-                    let edate = new Date(res.data[i].curr_end_time)
+                    let sdate = new Date(this.dateToMilldate(res.data[i].curr_st_time))
+                    let edate = new Date(this.dateToMilldate(res.data[i].curr_end_time))
                     // 获得所用时间差
                     let entime = self.subTime(sdate, edate);
                     // 使用时间数据
@@ -138,7 +142,7 @@ export default {
                     let endpiont = {
                         name: res.data[i].etl_job,
                         xs: res.data[i].curr_bath_date,
-                        tooltipData: res.data[i].curr_end_time,
+                        tooltipData: this.dateToMilldate(res.data[i].curr_end_time),
                         flag: "et", //结束时间标志
                         y: ety
                     };
@@ -151,7 +155,13 @@ export default {
                     self.use_times[i] = useTimePoint;
                     self.curr_st_times[i] = startpiont;
                     self.curr_end_times[i] = endpiont;
-                }
+                };
+                let dataTable = res.data;
+                dataTable.forEach(item => {
+                    item.curr_st_time = this.dateToMilldate(item.curr_st_time);
+                    item.curr_end_time = this.dateToMilldate(item.curr_end_time);
+                });
+                this.departmentalList = dataTable;
                 Highcahrts.chart('container', {
                     title: {
                         text: '作业明细'
@@ -172,7 +182,9 @@ export default {
                         labels: {
                             overflow: 'justify',
                             formatter: function () {
+                                console.log(this.value)
                                 return self.get24H(this.value);
+
                             }
                         },
                         title: {
@@ -219,7 +231,6 @@ export default {
                         yAxis: 1,
                         data: self.use_times,
                         color: "#91c7ae",
-
                     }, {
                         type: 'spline',
                         name: '开始时间',
@@ -359,18 +370,32 @@ export default {
             return str;
         },
         // 毫秒数转换
-        formatterLong24HH: function (value) {
-            let str = 0;
-            let datetime = new Date(value);
+        formatterLong24HH: function (date) {
+            date = date.replace(/\s*/g, "");
+            let year = date.substring(0, 4);
+            let month = date.substring(4, 6);
+            let day = date.substring(6, 8);
+            let timeh = date.substring(8, 10);
+            let timem = date.substring(10, 12)
+            let times = date.substring(12, 14)
+            let dates = year + "-" + month + "-" + day + " " + timeh + ":" + timem + ":" + times;
+            date = dates;
+            date = (new Date(date)).getTime() + 8 * 60 * 60 * 1000;
 
-            let HH = datetime.getHours();
-            let MM = datetime.getMinutes();
-            let SS = datetime.getMinutes();
-            str += SS * 1000;
-            str += MM * 60 * 1000;
-            str += HH * 60 * 60 * 1000;
-
-            return str;
+            return date;
+        },
+        //显示日期格式
+        dateToMilldate(date) {
+            date = date.replace(/\s*/g, "");
+            let year = date.substring(0, 4);
+            let month = date.substring(4, 6);
+            let day = date.substring(6, 8);
+            let timeh = date.substring(8, 10);
+            let timem = date.substring(10, 12)
+            let times = date.substring(12, 14)
+            let dates = year + "-" + month + "-" + day + " " + timeh + ":" + timem + ":" + times;
+            date = dates;
+            return date;
         },
         // 所用时间数据处理
         subTime: function (value, value1) {
