@@ -233,10 +233,8 @@
                             <el-button slot="append" icon="el-icon-search" @click='getviewlog()'></el-button>
                         </el-input>
                     </div>
-                    <div class='logclass' style="height:400px">
-                        <Scrollbar>
+                    <div class='logclass' style="min-height:200px">
                         <pre>{{logMsg}}</pre>
-                        </Scrollbar>
                     </div>
                 </el-dialog>
             </div>
@@ -268,15 +266,13 @@ import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
 import Loading from '../../components/loading'
-import Scrollbar from '../../components/scrollbar';
 import {
     viewTaskLog
 } from '../agentList/agentList'
 export default {
     components: {
         Step,
-        Loading,
-        Scrollbar
+        Loading
     },
     data() {
         return {
