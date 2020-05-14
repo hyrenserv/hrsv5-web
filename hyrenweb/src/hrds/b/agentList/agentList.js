@@ -103,3 +103,10 @@ export function sendDBCollectTaskById(data) {
         params:data
     })
 }
+//读取日志
+export function agentDeployData(data) {
+    return request({
+        url: '/B/agent/agentDeployData',
+        params:data
+    })
+}
