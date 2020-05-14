@@ -233,6 +233,7 @@ export default {
                     let getData = res.data
                     for (let i = 0; i < getData.length; i++) {
                         getData[i].DataExtractType = []
+                         getData[i].table_ch_name=getData[i].table_ch_name==''?getData[i].table_name:getData[i].table_ch_name
                         getData[i].dbfile_format = getData[i].storage[0].dbfile_format
                         getData[i].is_header = getData[i].storage[0].is_header == '1' ? true : false
                         getData[i].row_separator = getData[i].storage[0].row_separator
