@@ -65,7 +65,10 @@ export function viewTaskLog(data) {
 export function downloadTaskLog(data) {
     return request({
         url: '/B/agent/downloadTaskLog',
-        params:data
+        params:data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
 //获取工程信息

@@ -96,7 +96,7 @@ export default {
             params["readNum"] = this.lognum;
             agentList.viewTaskLog(params).then(res => {
                 console.log(res);
-                this.logMsg = res.data;
+                this.logMsg = res.data.trim();
             });
         },
         // 任务日志下载

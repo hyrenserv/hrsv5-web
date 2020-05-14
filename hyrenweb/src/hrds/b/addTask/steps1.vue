@@ -224,18 +224,17 @@
                 </el-dialog>
                 <!-- 查看日志弹层 -->
 
-                <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="70%">
+                <el-dialog title="Agent日志信息" :visible.sync="viewLog" width="80%">
                     <div slot="title">
                         <span class="dialogtitle el-icon-caret-right">Agent日志信息</span>
                     </div>
                     <div class="logseach">
-                        <el-input placeholder="请输入查询内容" v-model="input0" class="input-with-select" size="mini">
-
+                        <el-input placeholder="请输入查看条数" v-model="lognum" class="input-with-select" size="mini">
                             <el-button slot="append" icon="el-icon-search" @click='getviewlog()'></el-button>
                         </el-input>
                     </div>
                     <div>
-                        <span></span>
+                        <pre>{{logMsg}}</pre>
                     </div>
                 </el-dialog>
             </div>
@@ -267,7 +266,9 @@ import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step";
 import Loading from '../../components/loading'
-
+import {
+    viewTaskLog
+} from '../agentList/agentList'
 export default {
     components: {
         Step,
@@ -332,7 +333,9 @@ export default {
             dbid: null,
             activelink: "",
             formLabelWidth: "150px",
-            show: false
+            show: false,
+            lognum: 100,
+            logMsg: ''
         };
     },
     created() {
@@ -474,11 +477,11 @@ export default {
         },
         getviewlog() {
             let params = {};
-            params["sourceId"] = this.sourceId;
-            params["readNum"] = this.input0;
-            /* addTaskAllFun.viewLog(params).then(res => {
-                console.log(res)
-            }); */
+            params["agentId"] = this.agentId;
+            params["readNum"] = this.lognum;
+            viewTaskLog(params).then(res => {
+                this.logMsg = res.data.trim();
+            });
         },
         handleSizeChange(size) {
             this.pagesize = size;
