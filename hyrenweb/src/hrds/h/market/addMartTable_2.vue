@@ -265,7 +265,7 @@
                 <el-col :span="16">
                     <el-tabs type="card">
                         <el-row>
-                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL"
+                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL,多个SQL用;;分隔"
                                       v-model="presql"/>
                         </el-row>
                     </el-tabs>
@@ -293,7 +293,7 @@
                 <el-col :span="16">
                     <el-tabs type="card">
                         <el-row>
-                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL"
+                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL,多个SQL用;;分隔"
                                       v-model="aftersql"/>
                         </el-row>
                     </el-tabs>

@@ -333,3 +333,13 @@ export function getPreAndAfterJob(data) {
         params: data
     })
 }
+
+//上传execl表格
+export function uploadExcelFile(data) {
+    return request({
+        url: '/H/market/uploadExcelFile',
+        method: 'post',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}

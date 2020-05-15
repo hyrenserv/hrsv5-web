@@ -1,9 +1,14 @@
 <template>
     <div id="marketIndex">
-        <el-row class='topTitle'>
+        <el-row class='topTitle1'>
             <i class="block_icon fa text-warning fa-globe blue"></i>
             <span>数据集市</span>
             <div class="elButton ">
+                <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange"
+                           :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                    <el-button size="mini" type="primary">选择上传文件</el-button>
+                </el-upload>
+                <el-button size="mini" type="primary" @click="importData">导入数据</el-button>
                 <el-button type="primary" @click="adddmdatatable()" size="mini">
                     <i class="el-icon-circle-plus-outline"></i>新增数据表
                 </el-button>
@@ -13,47 +18,48 @@
             </div>
         </el-row>
 
-        <el-tabs class="tabes" type="card">
-            <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号"  align='center'>
-                </el-table-column>
-                <el-table-column prop="datatable_id" label="作业参数"  align='center'>
-                </el-table-column>
-                <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
-                </el-table-column>
-                <el-table-column prop="datatable_cn_name" label="中文表名"  show-overflow-tooltip align='center'>
-                </el-table-column>
-                <el-table-column prop="datatable_lifecycle" label="生命周期"   align='center'>
-                </el-table-column>
-                <el-table-column prop="etl_date" label="跑批日期"   align='center'>
-                </el-table-column>
-                <el-table-column prop="is_successful" label="执行状态"  align='center'>
-                </el-table-column>
-                <el-table-column prop="datatable_create_date" label="创建日期"   align='center'>
-                </el-table-column>
-                <el-table-column prop="datatable_due_date" label="数据到期日期"   align='center'>
-                </el-table-column>
-                <el-table-column label="操作"  width="300" align='center'>
-                    <template slot-scope="scope">
-                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
-                                   type="primary">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-share" v-if="scope.row.isadd" title="生成作业" @click="producefun(scope.row)"
-                                   circle type="primary">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-caret-right" v-if="scope.row.isadd" title="立即执行" @click="pushtoaddmart3(scope.row)"
-                                   circle type="primary">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-download" v-if="scope.row.isadd" title="导出表" @click="downloaddmdatatable(scope.row)"
-                                   circle type="primary">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)"
-                                   circle type="primary">
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-tabs>
+        <el-table :data="tableData" border style="width: 100%">
+            <el-table-column type="index" label="序号" align='center'>
+            </el-table-column>
+            <el-table-column prop="datatable_id" label="作业参数" align='center'>
+            </el-table-column>
+            <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
+            </el-table-column>
+            <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip align='center'>
+            </el-table-column>
+            <el-table-column prop="datatable_lifecycle" label="生命周期" align='center'>
+            </el-table-column>
+            <el-table-column prop="etl_date" label="跑批日期" align='center'>
+            </el-table-column>
+            <el-table-column prop="is_successful" label="执行状态" align='center'>
+            </el-table-column>
+            <el-table-column prop="datatable_create_date" label="创建日期" align='center'>
+            </el-table-column>
+            <el-table-column prop="datatable_due_date" label="数据到期日期" align='center'>
+            </el-table-column>
+            <el-table-column label="操作" width="300" align='center'>
+                <template slot-scope="scope">
+                    <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
+                               type="primary">
+                    </el-button>
+                    <el-button size="mini" icon="el-icon-share" v-if="scope.row.isadd" title="生成作业"
+                               @click="producefun(scope.row)"
+                               circle type="primary">
+                    </el-button>
+                    <el-button size="mini" icon="el-icon-caret-right" v-if="scope.row.isadd" title="立即执行"
+                               @click="pushtoaddmart3(scope.row)"
+                               circle type="primary">
+                    </el-button>
+                    <el-button size="mini" icon="el-icon-download" v-if="scope.row.isadd" title="导出表"
+                               @click="downloaddmdatatable(scope.row)"
+                               circle type="primary">
+                    </el-button>
+                    <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)"
+                               circle type="primary">
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
 
         <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
             <div slot="title">
@@ -80,7 +86,9 @@
                 <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
             </div>
         </el-dialog>
-
+        <transition name="fade">
+            <loading v-if="isLoading"/>
+        </transition>
 
     </div>
 </template>
@@ -90,8 +98,12 @@
     import regular from "@/utils/js/regular";
     import * as functionAll from "./marketAction";
     import * as message from "@/utils/js/message";
-
+    import Loading from '../../components/loading'
+    let arr = [];
     export default {
+        components: {
+            Loading
+        },
         data() {
             return {
                 data_mart_id: this.$route.query.data_mart_id,
@@ -101,7 +113,10 @@
                 alletltask: [],
                 selectedetlsys: "",
                 selectedetltask: "",
-                selecteddatatable_id:""
+                selecteddatatable_id: "",
+                fileList: [],
+                isLoading: false,
+
             };
         },
         mounted() {
@@ -155,7 +170,7 @@
                     }
                 });
             },
-            downloaddmdatatable(row){
+            downloaddmdatatable(row) {
                 let datatable_id = row.datatable_id;
                 let datatable_en_name = row.datatable_en_name;
                 message.confirmMsg('确定导出吗').then(res => {
@@ -191,7 +206,7 @@
 
 
             },
-            producefun(row){
+            producefun(row) {
                 this.dialogProdeceJobs = true;
                 this.selecteddatatable_id = row.datatable_id;
                 functionAll.queryAllEtlSys().then((res) => {
@@ -232,10 +247,10 @@
                 })
             },
             savemartjobtoetl() {
-                let param ={
-                    "etl_sys_cd":this.selectedetlsys,
-                    "sub_sys_cd":this.selectedetltask,
-                    "datatable_id":this.selecteddatatable_id,
+                let param = {
+                    "etl_sys_cd": this.selectedetlsys,
+                    "sub_sys_cd": this.selectedetltask,
+                    "datatable_id": this.selecteddatatable_id,
                 }
                 functionAll.generateMartJobToEtl(param).then((res) => {
                     if (res && res.success) {
@@ -246,7 +261,37 @@
                     }
                     this.dialogProdeceJobs = false;
                 })
-            }
+            },
+            handleChange(file, fileList) {
+                arr = fileList;
+            },
+            //文件超出个数限制时的钩子
+            handleExceed(files, fileList) {
+                this.$message.warning(`只能选择一个文件`);
+            },
+            importData() {
+                if (arr.length > 0) {
+                    let param = new FormData() // 创建form对象
+                    for (let i = 0; i < arr.length; i++) {
+                        param.append('file', arr[i].raw);
+                    }
+                    param.append('data_mart_id', this.data_mart_id);
+                    this.isLoading = true;
+                    functionAll.uploadExcelFile(param).then(res => {
+                        this.isLoading = false;
+                        debugger;
+                        if (res.code == 200) {
+                            message.customizTitle("文件上传成功", "success");
+                            this.querydmdatatable(this.data_mart_id);
+                            this.fileList = [];
+                        }
+                    });
+                    this.isLoading = false;
+                } else {
+                    message.customizTitle("请选择上传文件", "warning");
+                }
+
+            },
         }
     };
 </script>
@@ -256,6 +301,25 @@
     /* 按钮样式 */
     .elButton {
         float: right;
+    }
+
+    .buttonStyle {
+        display: block;
+        float: left;
+        margin-right: 10px;
+        margin-left: 0px;
+    }
+
+    .tabes {
+        margin-top: 25px;
+    }
+
+    .topTitle1 {
+        border-bottom: 1px solid #e6e3e3;
+        margin-bottom: 10px;
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
     }
 </style>
 
