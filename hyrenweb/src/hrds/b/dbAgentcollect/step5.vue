@@ -9,11 +9,11 @@
                 </template>
             </el-table-column>
             <el-table-column label="表名" prop="table_name" width="180" align="center" :show-overflow-tooltip="true">
-                <template slot-scope="scope">
+               <!--  <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default" >
                         <el-input size="medium" v-model="scope.row.table_name" style="width:160px" readonly></el-input>
                     </el-form-item>
-                </template>
+                </template> -->
             </el-table-column>
             <el-table-column label="表中文名" width="180" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
@@ -120,7 +120,7 @@
         <el-form ref="digForm" :model="digForm" label-width="20%">
             <el-row>
                 <el-col :span="12">
-                    <el-form-item label="落地表名:" prop="hyren_name" :rules="filter_rules([{required: true}])">
+                    <el-form-item label="落地表名:" prop="hyren_name" :rules="filter_rules([{required: true,dataType:'compositions'}])">
                         <el-input placeholder="表名" v-model="digForm.hyren_name" size="mini">
                             <template slot="prepend">{{datasource_number}}_{{classify_num}}_</template></el-input>
                     </el-form-item>
@@ -425,6 +425,7 @@ export default {
         },
         next(formName) {
             let dataAll = this.ruleForm.ex_destinationData;
+            console.log(dataAll)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // oldTbData this.dslIdString
