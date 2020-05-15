@@ -400,6 +400,11 @@ export default {
             etlMageAllFun.monitorAllProjectChartsData().then(res => {
                 this.listdata = res.data;
                 res.data.forEach((item, index) => {
+                    let year = res.data[index].bathdate.substring(0, 4);
+                    let month = res.data[index].bathdate.substring(4, 6);
+                    let day = res.data[index].bathdate.substring(6, 9);
+                    let date = year + "-" + month + "-" + day;
+                    res.data[index].bathdate = date;
                     let arry = [];
                     item['挂起'] = item.pending;
                     item['等待'] = item.waiting;
@@ -793,6 +798,11 @@ export default {
             functionAll.monitorCurrentBatchInfo({
                 etl_sys_cd: val
             }).then((res) => {
+                let year = res.data.curr_bath_date.substring(0, 4);
+                let month = res.data.curr_bath_date.substring(4, 6);
+                let day = res.data.curr_bath_date.substring(6, 9);
+                let date = year + "-" + month + "-" + day;
+                res.data.curr_bath_date = date;
                 res.data.systemOperationStatus.forEach(item => {
                     item['挂起'] = item.pending;
                     item['等待'] = item.waiting;
@@ -824,7 +834,7 @@ export default {
             functionAll.searchMonitorJobStateBySubCd({
                 etl_sys_cd: changValue,
                 sub_sys_cd: val,
-                curr_bath_date: this.dayDate
+                curr_bath_date: this.dayDate.replace(/-/g, "")
             }).then(res => {
                 // 数据处理成图标需要的格式
                 let time = [];
@@ -891,134 +901,136 @@ export default {
                         end = endTime[index];
                     }
                     time[index] = [start, end];
-                    this.getChartInfo(sysName, startTime, status, endTime, time, colorsArray);
-                }
-
-            })
-        },
-        // 获得图表信息
-        getChartInfo(sysName, startTime, status, endTime, time, colorsArray) {
-            let that = this;
-            var chart = Highcahrts.chart('container', {
-                chart: {
-                    type: 'columnrange',
-                    inverted: true,
-                },
-                title: {
-                    text: ''
-                },
-                exporting: {
-                    enabled: false
-                },
-                xAxis: {
-                    categories: sysName,
-                    tickColor: 'gray',
-                    gridLineWidth: 1,
-                    gridLineColor: 'gray',
-                    tickmarkPlacement: 'on'
-                },
-                // 数据提示框
-                tooltip: {
-                    crosshairs: true,
-                    useHTML: true,
-                    formatter: function () {
-                        var index = 0;
-                        for (var i = 0; i < sysName.length; i++) {
-                            if (this.x == sysName[i]) {
-                                index = i;
-                                var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
-                                var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
-                                if (status[index] == "P") {
-                                    return this.x + '<br/>' + '状态' + ':' + '挂机' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
-                                } else if (status[index] == "W") {
-                                    return this.x + '<br/>' + '状态' + ':' + '等待' + '<br/>' + '开始时间' + '<br/>' + '结束时间';
-                                } else if (status[index] == "S") {
-                                    return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                } else if (status[index] == "E") {
-                                    return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                } else if (status[index] == "D") {
-                                    return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                } else if (status[index] == "R") {
-                                    return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
-                                        Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
-                                }
-                            }
-
-                        }
-                    }
-                },
-                yAxis: {
-                    type: 'datetime',
-                    title: {
-                        text: ''
-                    },
-                    gridLineWidth: 0,
-                    labels: {
-                        overflow: 'justify',
-                        useHTML: true,
-                        formatter: function () {
-                            var date = new Date(this.value);
-                            var hours = date.getUTCHours();
-                            var minutes = date.getUTCMinutes();
-                            var seconds = date.getUTCSeconds();
-                            if (this.isFirst) {
-                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
-                            } else if (hours == 0 && minutes == 0 && seconds == 0) {
-                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
-                            } else {
-                                return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
-                            }
-                        }
-                    }
-                },
-                // 数据点
-                plotOptions: {
-                    columnrange: {
-                        colorByPoint: true,
-                        pointPadding: 1,
-                        borderWidth: 0,
-                        pointWidth: 8,
-                        showCheckbox: true,
-                    },
-                    series: {
-                        minPointLength: 15,
-                        cursor: 'pointer',
-                        point: {
-                            events: {
-                                plotOptions: true,
-                                enableMouseTracking: true,
-                                click: function () {
-                                    let etlJobName = this.category;
-
-                                    // that.$emit('viewIn', '/currentJob', '当前作业');
-                                    that.$router.push({
-                                        name: 'currentJob',
-                                        query: {
-                                            name: '/currentJob',
-                                            dec: that.$Base64.encode('当前作业'),
-                                            etl_job: etlJobName,
-                                            etl_sys_cd: changValue
+                    let that = this;
+                    var chart = Highcahrts.chart('container', {
+                        chart: {
+                            type: 'columnrange',
+                            inverted: true,
+                        },
+                        title: {
+                            text: ''
+                        },
+                        exporting: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            categories: sysName,
+                            tickColor: 'gray',
+                            gridLineWidth: 1,
+                            gridLineColor: 'gray',
+                            tickmarkPlacement: 'on'
+                        },
+                        // 数据提示框
+                        tooltip: {
+                            crosshairs: true,
+                            useHTML: true,
+                            formatter: function () {
+                                var index = 0;
+                                for (var i = 0; i < sysName.length; i++) {
+                                    if (this.x == sysName[i]) {
+                                        index = i;
+                                        var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
+                                        var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
+                                        if (status[index] == "P") {
+                                            return this.x + '<br/>' + '状态' + ':' + '挂机';
+                                        } else if (status[index] == "W") {
+                                            return this.x + '<br/>' + '状态' + ':' + '等待';
+                                        } else if (status[index] == "S") {
+                                            return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                        } else if (status[index] == "E") {
+                                            return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                        } else if (status[index] == "D") {
+                                            return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                        } else if (status[index] == "R") {
+                                            return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
+                                                Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
                                         }
-                                    });
+                                    }
+
                                 }
                             }
-                        }
-                    },
-                },
-                // 图例
-                legend: {
-                    enabled: false,
-                },
-                series: [{
-                    data: time,
-                    colors: colorsArray
-                }]
+                        },
+                        yAxis: {
+                            type: 'datetime',
+                            title: {
+                                text: ''
+                            },
+                            gridLineWidth: 0,
+                            labels: {
+                                overflow: 'justify',
+                                useHTML: true,
+                                formatter: function () {
+                                    var date = new Date(this.value);
+                                    var hours = date.getUTCHours();
+                                    var minutes = date.getUTCMinutes();
+                                    var seconds = date.getUTCSeconds();
+                                    if (this.isFirst) {
+                                        return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                                    } else if (hours == 0 && minutes == 0 && seconds == 0) {
+                                        return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                                    } else {
+                                        return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
+                                    }
+                                }
+                            }
+                        },
+                        // 数据点
+                        plotOptions: {
+                            columnrange: {
+                                colorByPoint: true,
+                                pointPadding: 1,
+                                borderWidth: 0,
+                                pointWidth: 8,
+                                showCheckbox: true,
+                            },
+                            series: {
+                                minPointLength: 15,
+                                cursor: 'pointer',
+                                point: {
+                                    events: {
+                                        plotOptions: true,
+                                        enableMouseTracking: true,
+                                        click: function () {
+                                            let etlJobName = this.category;
+                                            that.$router.push({
+                                                name: 'currentJob',
+                                                query: {
+                                                    name: '/currentJob',
+                                                    dec: that.$Base64.encode('当前作业'),
+                                                    etl_job: etlJobName,
+                                                    etl_sys_cd: changValue
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            },
+                        },
+                        // 图例
+                        legend: {
+                            enabled: false,
+                        },
+                        series: [{
+                            data: time,
+                            colors: colorsArray
+                        }]
+
+                    })
+                }
 
             })
         },
         // 毫秒数
         dateToMill(date) {
-            date = date.replace(new RegExp("-", "gm"), "/");
+            date = date.replace(/\s*/g, "");
+            let year = date.substring(0, 4);
+            let month = date.substring(4, 6);
+            let day = date.substring(6, 8);
+            let timeh = date.substring(8, 10);
+            let timem = date.substring(10, 12)
+            let times = date.substring(12, 14)
+            let dates = year + "-" + month + "-" + day + " " + timeh + ":" + timem + ":" + times;
+            date = dates;
             date = (new Date(date)).getTime() + 8 * 60 * 60 * 1000; //得到毫秒数
             return date;
         },

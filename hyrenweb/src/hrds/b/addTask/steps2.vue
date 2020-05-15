@@ -648,7 +648,7 @@ export default {
             alltableact: false,
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
-            secondTrue: false,
+            secondTrue: true,
         };
     },
     created() {
@@ -801,6 +801,7 @@ export default {
                     this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
                     this.callTable2 = JSON.parse(JSON.stringify(data));
                     this.callTable3 = JSON.parse(JSON.stringify(data));
+                    console.log( this.callTable3)
                     // this.Allis_selectionState = true;
                 }
             });
@@ -992,9 +993,9 @@ export default {
                                 }
                             }
                             tableDatalin = this.callTable3.concat(this.firstTableInfo)
-                            for (let i = 0; i < this.tableDatalin.length; i++) {
-                                if (this.tableDatalin[i].selectionState == true) {
-                                    tableData.push(this.tableDatalin[i])
+                            for (let i = 0; i <tableDatalin.length; i++) {
+                                if (tableDatalin[i].selectionState == true) {
+                                    tableData.push(tableDatalin[i])
                                 }
                             }
                         } else {
@@ -1029,6 +1030,7 @@ export default {
                                 }
                             }
                             if (rep_table2.length > 0) {
+                                this.secondTrue = false
                                 this.isLoading = false;
                                 this.$message({
                                     showClose: true,
@@ -1037,7 +1039,6 @@ export default {
                                 });
                                 this.activeName = "second";
                             } else {
-                                this.secondTrue = true
                                 for (let j = 0; j < sqlExtractData.length; j++) {
                                     if (sqlExtractData[j].unload_type == "增量") {
                                         isparmi2.push(sqlExtractData[j].table_name);

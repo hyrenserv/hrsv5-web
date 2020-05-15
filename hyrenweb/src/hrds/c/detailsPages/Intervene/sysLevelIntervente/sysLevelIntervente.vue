@@ -67,8 +67,8 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-            <el-pagination layout="total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
-            </el-pagination>
+        <el-pagination layout="total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+        </el-pagination>
     </el-row>
     <!-- 暂停模态框 -->
     <el-dialog title="确定执行该操作?" :visible.sync="dialogVisiblePause" width="20%">
@@ -263,7 +263,7 @@ export default {
                     this.getCurrInfo();
                     this.getHistoryInfo();
                     this.$message({
-                        message: '系统干预成功！',
+                        message: '系统级暂停成功！',
                         type: 'success'
                     });
                     this.dialogVisiblePause = false;
@@ -283,7 +283,7 @@ export default {
                     this.getCurrInfo();
                     this.getHistoryInfo();
                     this.$message({
-                        message: '系统干预成功！',
+                        message: '系统级续跑成功！',
                         type: 'success'
                     });
                     this.dialogVisiblePlay = false;
@@ -303,7 +303,7 @@ export default {
                     this.getCurrInfo();
                     this.getHistoryInfo();
                     this.$message({
-                        message: '系统干预成功！',
+                        message: '系统级重跑成功！',
                         type: 'success'
                     });
                     this.dialogVisibleRefresh = false;
@@ -323,7 +323,7 @@ export default {
                     this.getCurrInfo();
                     this.getHistoryInfo();
                     this.$message({
-                        message: '系统干预成功！',
+                        message: '系统日切成功！',
                         type: 'success'
                     });
                     this.dialogVisibleNext = false;
@@ -343,7 +343,7 @@ export default {
                     this.getCurrInfo();
                     this.getHistoryInfo();
                     this.$message({
-                        message: '系统干预成功！',
+                        message: '系统停止成功！',
                         type: 'success'
                     });
                     this.dialogVisibleStop = false;

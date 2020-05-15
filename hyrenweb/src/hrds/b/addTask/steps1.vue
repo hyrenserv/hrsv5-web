@@ -14,7 +14,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="10">
-                            <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true}])">
+                            <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
                                 <el-col :span="16">
                                     <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
                                     <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
@@ -102,7 +102,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="10" prop="database_pad">
-                            <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
+                            <el-form-item label="密码" :rules="filter_rules([{required: true,dataType:'password'}])" prop="database_pad">
                                 <el-col :span="16">
                                     <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
                                 </el-col>
