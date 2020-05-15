@@ -102,7 +102,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="10" prop="database_pad">
-                            <el-form-item label="密码" :rules="filter_rules([{required: true,dataType:'password'}])" prop="database_pad">
+                            <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
                                 <el-col :span="16">
                                     <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
                                 </el-col>
