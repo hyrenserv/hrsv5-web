@@ -9,13 +9,13 @@
         </el-col>
         <el-col :span="9">
             <el-form-item label="开始批量日期">
-                <el-date-picker size="mini" style="width:126px;" v-model="form.start_date" @change="changevalue1" type="date" placeholder="开始日期">
+                <el-date-picker size="mini" style="width:126px;" v-model="form.start_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" placeholder="开始日期">
                 </el-date-picker>
             </el-form-item>
         </el-col>
         <el-col :span="9">
             <el-form-item label="结束批量日期">
-                <el-date-picker size="mini" style="width:126px;" v-model="form.end_date" @change="changevalue2" type="date" placeholder="结束日期">
+                <el-date-picker size="mini" style="width:126px;" v-model="form.end_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -41,22 +41,25 @@
             </template></el-table-column>
     </el-table>
     <!-- 日志查看 -->
-    <el-dialog title="作业日志信息" :visible.sync="dialogForm">
+    <el-dialog title="作业日志信息" :visible.sync="dialogForm" :before-close="closeDialog">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label="日志行数" :label-width="formLabelWidth" prop="readNum">
                 <el-input v-model="formAdd.readNum" autocomplete="off" placeholder="行数" style="width:284px"></el-input>
-                <el-button type="primary" class="download" @click='viewData' size="small">查 看</el-button>
+                <el-button type="primary" class="download" @click='viewData' :loading="viewLoading" size="small">查 看</el-button>
                 <el-tooltip class="item" effect="dark" content="默认显示最后100行，最多显示最后1000行(正整数)" placement="right">
                     <i class="fa fa-question-circle " aria-hidden="true"></i>
                 </el-tooltip>
             </el-form-item>
-            <el-form-item label=" 日志日期" :label-width="formLabelWidth" prop="curr_bath_date">
-                <el-date-picker v-model="formAdd.curr_bath_date" @change="changevalue1" type="date" style="width:284px" placeholder="开始批量日期">
+            <el-form-item label=" 日志日期" :label-width="formLabelWidth" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
+                <el-date-picker v-model="formAdd.curr_bath_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" style="width:284px" placeholder="开始批量日期">
                 </el-date-picker>
-                <el-button class="download" @click="downLoad" type="primary" size="small">下 载</el-button>
+                <el-button class="download" @click="downLoad('formAdd')" :loading="downLoading" type="primary" size="small">下 载</el-button>
             </el-form-item>
-
         </el-form>
+        <div v-if="showHidden" class="diaolgDiv">
+            <span v-html="journalData"></span>
+            <el-divider></el-divider>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button size="mini" type="danger" @click='closeDialog'>关 闭</el-button>
         </div>
@@ -69,6 +72,7 @@
 import * as functionAll from "./historyJob";
 import Highcahrts from 'highcharts';
 import * as message from "@/utils/js/message";
+import regular from "@/utils/js/regular";
 let object = {};
 export default {
     data() {
@@ -84,6 +88,7 @@ export default {
                 readNum: '',
                 curr_bath_date: ''
             },
+            journalData: '',
             departmentalList: [],
             curr_bath_dates: [],
             use_times: [],
@@ -91,7 +96,10 @@ export default {
             curr_st_times: [],
             curr_end_times: [],
             dialogForm: false,
-            formLabelWidth: '150px'
+            formLabelWidth: '150px',
+            showHidden: false,
+            downLoading: false,
+            viewLoading: false
         };
     },
     mounted() {
@@ -182,9 +190,16 @@ export default {
                         labels: {
                             overflow: 'justify',
                             formatter: function () {
-                                console.log(this.value)
-                                return self.get24H(this.value);
-
+                                let values = this.value - 8 * 60 * 60 * 1000;
+                                var d = new Date(values);
+                                var year = d.getFullYear();
+                                var month = (d.getMonth() + 1) >= 10 ? (d.getMonth() + 1) : "0" + (d.getMonth() + 1);
+                                var day = d.getDate() >= 10 ? d.getDate() : "0" + d.getDate();
+                                var hour = d.getHours() >= 10 ? d.getHours() : "0" + d.getHours();
+                                var min = d.getMinutes() >= 10 ? d.getMinutes() : "0" + d.getMinutes();
+                                var sec = d.getSeconds() >= 10 ? d.getSeconds() : "0" + d.getSeconds();
+                                let date = year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+                                return date;
                             }
                         },
                         title: {
@@ -249,23 +264,6 @@ export default {
         // 点击按钮查询
         search() {
             this.monitorHistoryJobInfo();
-        },
-        //更改时间格式
-        changeTime(val) {
-            if (val != null) {
-                function changeData(num) {
-                    return num > 9 ? (num + "") : ("0" + num);
-                };
-                let Date = (val.getFullYear() + '-' + changeData((val.getMonth() + 1)) + '-' + changeData(val.getDate()));
-                return Date;
-            }
-
-        },
-        changevalue1(val) {
-            this.form.start_date = this.changeTime(val);
-        },
-        changevalue2(val) {
-            this.form.end_date = this.changeTime(val);
         },
         // 格式化日期
         formatterDate: function (value, type) {
@@ -411,13 +409,13 @@ export default {
         handleEdit(val, value) {
             this.dialogForm = true;
             this.formAdd.curr_bath_date = value.curr_bath_date;
-            this.formAdd.readNum = 100;
             object = value;
-
         },
         // 关闭弹出框
         closeDialog() {
             this.dialogForm = false;
+            this.showHidden = false;
+            this.$refs.formAdd.resetFields();
         },
         // input框的历史信息
         querySearch(queryString, cb) {
@@ -448,54 +446,69 @@ export default {
             });
         },
         // 下载
-        downLoad() {
-            if (this.formAdd.curr_bath_date) {
-                functionAll.downHistoryJobLog({
-                    etl_sys_cd: this.$route.query.etl_sys_cd,
-                    etl_job: object.etl_job,
-                    curr_bath_date: this.formAdd.curr_bath_date
-                }).then(res => {
-                    // this.filename = this.data[index].source_id;
-                    const blob = new Blob([res.data]);
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // 兼容IE10
-                        navigator.msSaveBlob(blob, this.filename);
-                    } else {
-                        //  chrome/firefox
-                        let aTag = document.createElement("a");
-                        // document.body.appendChild(aTag);
-                        aTag.download = this.filename + ".rar";
-                        aTag.href = URL.createObjectURL(blob);
-                        if (aTag.all) {
-                            aTag.click();
-                        } else {
-                            //  兼容firefox
-                            var evt = document.createEvent("MouseEvents");
-                            evt.initEvent("click", true, true);
-                            aTag.dispatchEvent(evt);
+        downLoad(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.downLoading = true;
+                    functionAll.downHistoryJobLog({
+                        etl_sys_cd: this.$route.query.etl_sys_cd,
+                        etl_job: object.etl_job,
+                        curr_bath_date: this.formAdd.curr_bath_date.replace(/-/g, "")
+                    }).then(res => {
+                        this.downLoading = false;
+                        if (res && res.success) {
+                            this.downloadFile(res.data)
                         }
-                        URL.revokeObjectURL(aTag.href);
+                    })
+                }
+            })
+        },
+        // 下载日志方法封装
+        downloadFile(val) {
+            functionAll.downloadFile({
+                fileName: val
+            }).then(res => {
+                this.filename = val;
+                const blob = new Blob([res.data]);
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, this.filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    // document.body.appendChild(aTag);
+                    aTag.download = this.filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
                     }
-                })
-            } else {
-                message.customizTitle('请填写日志日期', 'warning');
-            }
-
+                    URL.revokeObjectURL(aTag.href);
+                }
+            })
         },
         //查看日志
         viewData() {
-            if (this.formAdd.readNum) {
-                functionAll.readHistoryJobLogInfo({
-                    etl_sys_cd: this.$route.query.etl_sys_cd,
-                    etl_job: object.etl_job,
-                    readNum: this.formAdd.readNum
-                }).then(res => {
-
-                })
-            } else {
-                message.customizTitle('请填写日志行数', 'warning');
-            }
-
+            this.viewLoading = true;
+            functionAll.readHistoryJobLogInfo({
+                etl_sys_cd: this.$route.query.etl_sys_cd,
+                etl_job: object.etl_job,
+                readNum: this.formAdd.readNum
+            }).then(res => {
+                this.showHidden = true;
+                this.viewLoading = false;
+                if (res.data.length != 0) {
+                    this.journalData = res.data.replace(/\[/g, '<br>[');
+                    let dataTIP = this.journalData.replace(/: <br>\[/g, ':[');
+                    this.journalData = dataTIP;
+                } else {
+                    this.journalData = "暂无日志信息"
+                }
+            })
         }
     }
 
@@ -521,6 +534,15 @@ export default {
     font-size: 16px;
     margin-bottom: 10px;
     font-weight: 600;
+}
+
+.historyJob .diaolgDiv {
+    min-height: 20px;
+}
+
+.historyJob .diaolgDiv span {
+    font-weight: normal;
+    margin-left: 10px;
 }
 </style><style>
 .el-autocomplete-suggestion li {
