@@ -46,7 +46,7 @@
                                size="medium">新增字段
                     </el-button>
                 </el-col>
-                <el-col :span='2' style="float:left">
+                <el-col v-show="false" :span='2' style="float:left">
                     <el-button class="elButton" type="primary" @click="showprejob()"
                                size="medium">前置作业
                     </el-button>
