@@ -2,16 +2,16 @@
 <div>
     <Step :active="active"></Step>
     <el-form ref="ruleForm" :model="ruleForm" class="steps5">
-        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%"  size="medium" border :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)">
+        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)">
             <el-table-column label="序号" align="center" width="60">
                 <template scope="scope">
                     <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="表名" width="180" align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表名" prop="table_name" width="180" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
-                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default">
-                        <el-input size="medium" v-model="scope.row.table_name" style="width:160px"></el-input>
+                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default" >
+                        <el-input size="medium" v-model="scope.row.table_name" style="width:160px" readonly></el-input>
                     </el-form-item>
                 </template>
             </el-table-column>
@@ -30,7 +30,7 @@
                     </el-tooltip>
                 </template>
                 <template slot-scope="scope">
-                    <span class="settingbtn" v-if="scope.row.data_extract_type!='1'" @click="ChooseDestination(scope.row,scope.$index)">
+                    <span class="settingbtn" v-if="scope.row.data_extract_type!='1'">
                         <el-button type="success" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
                         <el-button type="warning" size="mini" v-else @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
                     </span>
@@ -117,6 +117,16 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">选择目的地</span>
         </div>
+        <el-form ref="digForm" :model="digForm" label-width="20%">
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="落地表名:" prop="hyren_name" :rules="filter_rules([{required: true}])">
+                        <el-input placeholder="表名" v-model="digForm.hyren_name" size="mini">
+                            <template slot="prepend">{{datasource_number}}_{{classify_num}}_</template></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
         <el-table :data="destinationData.slice((destination_currentPage - 1) * destination_pagesize, destination_currentPage * destination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="getRowKeys">
             <el-table-column width="55" align="center" prop="selectionState">
                 <template slot="header" slot-scope="scope">
@@ -151,7 +161,7 @@
         <el-pagination @size-change="destination_handleSizeChange" @current-change="destination_handleCurrentChange" :current-page.sync="destination_currentPage" :page-size="destination_pagesize" layout="total, prev, pager, next" :total="destinationData.length" class="locationcenter"></el-pagination>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogChooseDestination = false" type="danger" size="mini">取 消</el-button>
-            <el-button type="primary" @click="ChooseDestinationSubmitFun()" size="mini">确 定</el-button>
+            <el-button type="primary" @click="ChooseDestinationSubmitFun('digForm')" size="mini">确 定</el-button>
         </div>
     </el-dialog>
     <!-- 查看详情 -->
@@ -259,8 +269,12 @@ export default {
             fieldProperty_currentPage: 1,
             fieldProperty_pagesize: 10,
             ruleForm: {
-                ex_destinationData: []
+                ex_destinationData: [],
+
             },
+            digForm: {
+                hyren_name: "",
+            }, //选择目的地弹框显示的表名
             ex_destinationData: [],
             dialogChooseDestination: false,
             dialogViewDetails: false,
@@ -292,7 +306,10 @@ export default {
             dataExtractypeindex: "",
             oldTbData: [],
             submit_0: false,
-            submit_1: false
+            submit_1: false,
+            datasource_number: '', //数据源编号
+            classify_num: '', // 分类编号
+
         };
     },
     computed: {
@@ -325,11 +342,14 @@ export default {
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
+            console.log(res.data)
+            this.datasource_number = res.data.datasource_number
+            this.classify_num = res.data.classify_num
             if (res) {
-                if (res.data.length == 0) {
+                if (res.data.storageTableData.length == 0) {
                     this.tableloadingInfo = "暂无数据";
                 } else {
-                    let arr = res.data;
+                    let arr = res.data.storageTableData;
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
@@ -421,14 +441,14 @@ export default {
                         } */
                         if (arr[i].data_extract_type != "1") {
                             tbStoInfoString.push({
-                                is_zipper: arr[i].is_zipper==true ? "1" : "0",
+                                is_zipper: arr[i].is_zipper == true ? "1" : "0",
                                 storage_time: parseInt(arr[i].storage_time),
                                 storage_type: arr[i].storage_type,
                                 table_id: arr[i].table_id
                             });
                             desDataArr.push({
                                 tableId: arr[i].table_id,
-                                dslIds: []
+                                dslIds: [],
                             });
                         }
 
@@ -443,6 +463,8 @@ export default {
                         for (let k = 0; k < this.oldTbData.length; k++) {
                             if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
                                 desDataArr[j].dslIds = this.oldTbData[k].dslIds;
+                                 desDataArr[j].hyren_name= this.oldTbData[k].hyren_name
+
                             }
                         }
                     }
@@ -450,6 +472,7 @@ export default {
                         for (let n = 0; n < this.dslIdString.length; n++) {
                             if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
                                 desDataArr[m].dslIds = this.dslIdString[n].dslIds;
+                                   desDataArr[m].hyren_name= this.dslIdString[n].hyren_name
                             }
                         }
                     }
@@ -459,6 +482,7 @@ export default {
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
                         params["colSetId"] = parseInt(this.dbid);
                         params["dslIdString"] = JSON.stringify(dslIdString);
+                        console.log(params)
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
                                 this.submit_1 = true;
@@ -473,6 +497,7 @@ export default {
                         let params0 = {};
                         params0["tableString"] = JSON.stringify(tableString);
                         addTaskAllFun.updateTableName(params0).then(res => {
+                            console.log(res.data)
                             if (res.code == 200) {
                                 this.submit_0 = true;
                                 // this.dbid = res.data;
@@ -609,6 +634,7 @@ export default {
             });
         },
         ChooseDestination(row, index) {
+            console.log(row)
             this.dataExtractypeindex = index;
             this.tableId = row.table_id;
             if (this.dslIdString.length > 0) {
@@ -621,6 +647,7 @@ export default {
                 if (arrall.indexOf(row.table_id) != -1) {
                     for (let m = 0; m < this.dslIdString.length; m++) {
                         if (this.dslIdString[m].tableId == row.table_id) {
+                             this.digForm.hyren_name=this.dslIdString[m].new_name
                             if (this.dslIdString[m].dslIds.length > 0) {
                                 for (let n = 0; n < this.dslIdString[m].dslIds.length; n++) {
                                     for (let yn = 0; yn < this.destinationData.length; yn++) {
@@ -636,9 +663,11 @@ export default {
                         }
                     }
                 } else {
+            this.digForm.hyren_name = row.table_name
                     this.destinationOldDataFun(row.table_id);
                 }
             } else {
+            this.digForm.hyren_name = row.table_name
                 this.destinationOldDataFun(row.table_id);
             }
             this.dialogChooseDestination = true;
@@ -648,6 +677,7 @@ export default {
             let params = {};
             params["tableId"] = id;
             addTaskAllFun.getStoDestByTableId(params).then(res => {
+                console.log(res.data)
                 if (res.data) {
                     let arr = JSON.parse(JSON.stringify(res.data));
                     let data = this.storeTypeData;
@@ -950,33 +980,58 @@ export default {
             }
         },
         //选择目的地弹框提交确定按钮
-        ChooseDestinationSubmitFun() {
-            let data = JSON.parse(JSON.stringify(this.destinationData));
-            let dslIds = [];
-            if (this.dslIdString.length > 0) {
-                for (let j = 0; j < this.dslIdString.length; j++) {
-                    if (this.dslIdString[j].tableId == this.tableId) {
-                        this.dslIdString.splice(j, 1);
+        ChooseDestinationSubmitFun(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    console.log(1, this.digForm)
+                    let data = JSON.parse(JSON.stringify(this.destinationData)),
+                        str = '';
+                    console.log(data)
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].dsl_name.toLowerCase() == 'oracle') {
+                            str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
+                            if (str.length > 27) {
+                                this.$message({
+                                    showClose: true,
+                                    message: "选择目的地存在oracl时,落地表名长度不能超过27,请修改落地表名",
+                                    type: "error"
+                                });
+                                break;
+                            } else {
+                                let dslIds = [];
+                                if (this.dslIdString.length > 0) {
+                                    for (let j = 0; j < this.dslIdString.length; j++) {
+                                        if (this.dslIdString[j].tableId == this.tableId) {
+                                            this.dslIdString.splice(j, 1);
+                                        }
+                                    }
+                                }
+                                for (let i = 0; i < data.length; i++) {
+                                    if (data[i].usedflag == true) {
+                                        dslIds.push(data[i].dsl_id);
+                                    }
+                                }
+                                if (dslIds.length != 0) {
+                                    this.dslIdString.push({
+                                        dslIds: dslIds,
+                                        tableId: this.tableId,
+                                        hyren_name:str,
+                                        new_name:this.digForm.hyren_name
+                                    });
+                                    this.dialogChooseDestination = false;
+                                    this.ruleForm.ex_destinationData[
+                                        this.dataExtractypeindex
+                                    ].table_setting = true;
+                                } else {
+                                    this.open();
+                                }
+                            }
+                        }
                     }
+
                 }
-            }
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].usedflag == true) {
-                    dslIds.push(data[i].dsl_id);
-                }
-            }
-            if (dslIds.length != 0) {
-                this.dslIdString.push({
-                    dslIds: dslIds,
-                    tableId: this.tableId
-                });
-                this.dialogChooseDestination = false;
-                this.ruleForm.ex_destinationData[
-                    this.dataExtractypeindex
-                ].table_setting = true;
-            } else {
-                this.open();
-            }
+            })
+
         },
         open() {
             this.$message({
@@ -1022,6 +1077,18 @@ export default {
 </script>
 
 <style scoped>
+.el-form-item__content .el-input-group {
+    vertical-align: middle;
+}
+
+.el-select .el-input {
+    width: 130px;
+}
+
+.input-with-select .el-input-group__prepend {
+    background-color: #fff;
+}
+
 .leftbtn {
     margin-top: 12px;
     margin-top: 12px;
