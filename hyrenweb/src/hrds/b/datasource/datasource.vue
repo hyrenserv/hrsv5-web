@@ -81,7 +81,7 @@
             <el-table-column prop="user_name" label="数据采集用户" align="center"></el-table-column>
             <el-table-column label="操作" width="190" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" v-if="showViewOrHandle" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">查看</el-button>
+                    <el-button size="mini" v-if="scope.row.agent_status =='已连接'" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">查看</el-button>
                     <el-button size="mini" v-else type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
                     <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -132,7 +132,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancleAdd('1')" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="AgentEdit('form')" size="mini">保存</el-button>
+            <el-button type="primary" @click="AgentEdit('form')" :disabled="disabled" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -162,7 +162,6 @@ export default {
             semiStructure: false,
             nonStructural: false,
             ftpAgent: false,
-            showViewOrHandle: false,
             disabled: false,
             formAdd: {
                 agent_name: "",
@@ -229,6 +228,7 @@ export default {
                 } else if (e == 5) {
                     this.tableData = this.dataAll.dxAgent;
                 }
+                this.showViewOrHandles(this.result, this.tableData);
             });
         },
         // 点击查看获取数据采集信息
@@ -262,8 +262,7 @@ export default {
                             // 隐藏对话框
                             this.dialogFormVisible = false;
                             this.getAgentAllData(this.agent_type);
-                            // 表单清空
-                            this.formAdd = {};
+                            this.$refs.formAdd.resetFields();
                         }
                     });
                 } else {
@@ -298,11 +297,10 @@ export default {
                 tableData.forEach(val => {
                     if (item.code == val.agent_status) {
                         name = item.value;
+                        val.agent_status = item.value;
                         if (name == "已连接") {
-                            this.showViewOrHandle = true;
                             this.disabled = true;
                         } else {
-                            this.showViewOrHandle = false;
                             this.disabled = false;
                         }
                     }

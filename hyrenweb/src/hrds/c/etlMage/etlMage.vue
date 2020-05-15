@@ -227,7 +227,7 @@
                 <p class="span22">任务:{{this.task}}</p>
                 <p class="span2">批量日期:{{this.dayDate}}</p>
             </div>
-            <div v-if="showOrhidden" id="container" :style="{width: '100%', height: 'auto'}"></div>
+            <div v-show="showOrhidden" id="container" :style="{width: '100%', height: 'auto'}"></div>
         </div>
         <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
@@ -776,14 +776,12 @@ export default {
         handleRecordco(index, row) {
             this.dialogFormVisibleRecordCON = true;
             this.formRecordCON.etl_sys_cd = row.etl_sys_cd;
-            this.formRecordCON.readNum = 100;
             // this.onViewCON();
         },
         //表格TRIGGER日志信息按钮
         handleRecordtr(index, row) {
             this.dialogFormVisibleRecordTRI = true;
             this.formRecordTRI.etl_sys_cd = row.etl_sys_cd;
-            this.formRecordTRI.readNum = 100;
             // this.onViewTRI();
         },
         // 全屏幕显示
@@ -903,23 +901,6 @@ export default {
                     time[index] = [start, end];
                     let that = this;
                     var chart = Highcahrts.chart('container', {
-                        chart: {
-                            type: 'columnrange',
-                            inverted: true,
-                        },
-                        title: {
-                            text: ''
-                        },
-                        exporting: {
-                            enabled: false
-                        },
-                        xAxis: {
-                            categories: sysName,
-                            tickColor: 'gray',
-                            gridLineWidth: 1,
-                            gridLineColor: 'gray',
-                            tickmarkPlacement: 'on'
-                        },
                         // 数据提示框
                         tooltip: {
                             crosshairs: true,
@@ -949,6 +930,23 @@ export default {
 
                                 }
                             }
+                        },
+                        chart: {
+                            type: 'columnrange',
+                            inverted: true,
+                        },
+                        title: {
+                            text: ''
+                        },
+                        exporting: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            categories: sysName,
+                            tickColor: 'gray',
+                            gridLineWidth: 1,
+                            gridLineColor: 'gray',
+                            tickmarkPlacement: 'on'
                         },
                         yAxis: {
                             type: 'datetime',

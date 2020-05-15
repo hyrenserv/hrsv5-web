@@ -210,23 +210,6 @@ export default {
                 // 获得图表信息
                 let that = this;
                 var chart = Highcahrts.chart('container', {
-                    chart: {
-                        type: 'columnrange',
-                        inverted: true,
-                    },
-                    title: {
-                        text: ''
-                    },
-                    exporting: {
-                        enabled: false
-                    },
-                    xAxis: {
-                        categories: sysName,
-                        tickColor: 'gray',
-                        gridLineWidth: 1,
-                        gridLineColor: 'gray',
-                        tickmarkPlacement: 'on'
-                    },
                     // 数据提示框
                     tooltip: {
                         crosshairs: true,
@@ -256,6 +239,23 @@ export default {
 
                             }
                         }
+                    },
+                    chart: {
+                        type: 'columnrange',
+                        inverted: true,
+                    },
+                    title: {
+                        text: ''
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        categories: sysName,
+                        tickColor: 'gray',
+                        gridLineWidth: 1,
+                        gridLineColor: 'gray',
+                        tickmarkPlacement: 'on'
                     },
                     yAxis: {
                         type: 'datetime',
