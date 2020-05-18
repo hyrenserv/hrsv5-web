@@ -26,24 +26,34 @@
                 </el-table-column>
                 <el-table-column prop="curr_bath_date" show-overflow-tooltip label="当前批量日期" align='center'>
                 </el-table-column>
-                <el-table-column label="操作" align='center' width="320px">
+                <el-table-column label="CONTROL" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" icon="el-icon-edit" title="编辑" circle type="primary" @click="handleEdit(scope.$index, scope.row)">
+                        <el-button size="mini" type="text" @click="handleStartco(scope.$index, scope.row)">启动
                         </el-button>
-                        <el-button size="mini" icon="el-icon-thumb" title="部署Agent" circle type="warning" @click="handleDeploy(scope.$index, scope.row)">
+                        <el-button size="mini" type="text" @click="handleRecordco(scope.$index, scope.row)">日志信息
                         </el-button>
-                        <el-button size="mini" icon="el-icon-switch-button" title="启动CONTROL" circle type="success" @click="handleStartco(scope.$index, scope.row)">
+
+                    </template>
+                </el-table-column>
+                <el-table-column label="TRIGGER" align='center'>
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" @click="handleStarttr(scope.$index, scope.row)">启动
                         </el-button>
-                        <el-button size="mini" icon="el-icon-switch-button" title="启动TRIGGER" circle type="primary" @click="handleStarttr(scope.$index, scope.row)">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-document" title="CONTROL日志信息" circle type="success" @click="handleRecordco(scope.$index, scope.row)">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-document" title="TRIGGER日志信息" circle type="primary" @click="handleRecordtr(scope.$index, scope.row)">
-                        </el-button>
-                        <el-button size="mini" icon="el-icon-video-pause" v-if="scope.row.sys_run_status != 'S'" title="停止工程" circle type="danger" @click="stopWork(scope.$index, scope.row)">
+                        <el-button size="mini" type="text" @click="handleRecordtr(scope.$index, scope.row)">日志信息
                         </el-button>
                     </template>
                 </el-table-column>
+                <el-table-column label="操作" align='center'>
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button size="mini" type="text" @click="handleDeploy(scope.$index, scope.row)">部署
+                        </el-button>
+                        <el-button size="mini" class="endAgent" v-if="scope.row.sys_run_status != 'S'" type="text" @click="stopWork(scope.$index, scope.row)">停止
+                        </el-button>
+                    </template>
+                </el-table-column>
+
             </el-table>
         </el-tab-pane>
         <el-tab-pane label="调度监控" name="second">
@@ -151,7 +161,7 @@
         </div>
     </el-dialog>
     <!-- CONTROL日志模态框 -->
-    <el-dialog title="CONTROL日志信息?" :visible.sync="dialogFormVisibleRecordCON" width="72%" :before-close="closeCON">
+    <el-dialog :title="'CONTROL日志信息('  +this.dialogInfo + ')'" :visible.sync="dialogFormVisibleRecordCON" width="72%" :before-close="closeCON">
         <el-form :model="formRecordCON" ref="formRecordCON" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="日志行数" prop="readNum">
                 <!-- <el-tooltip class="item" effect="dark" content="默认显示100行，最多显示1000行(正整数)" placement="right">
@@ -182,7 +192,7 @@
         </div>
     </el-dialog>
     <!-- TRIGGER日志模态框 -->
-    <el-dialog title="TRIGGER日志信息?" :visible.sync="dialogFormVisibleRecordTRI" width="72%" :before-close="closeTRI">
+    <el-dialog :title="'TRIGGER日志信息('  +this.dialogInfoTri + ')'" :visible.sync="dialogFormVisibleRecordTRI" width="72%" :before-close="closeTRI">
         <el-form :model="formRecordTRI" ref="formRecordTRI" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="日志行数" prop="readNum">
                 <el-input v-model="formRecordTRI.readNum"></el-input>
@@ -299,6 +309,8 @@ export default {
             task: '',
             showOrhidden: false,
             valueTime: '',
+            dialogInfo: '',
+            dialogInfoTri: '',
             chartExtendChartOne: {
                 series: {
                     //柱子宽度
@@ -776,13 +788,13 @@ export default {
         handleRecordco(index, row) {
             this.dialogFormVisibleRecordCON = true;
             this.formRecordCON.etl_sys_cd = row.etl_sys_cd;
-            // this.onViewCON();
+            this.dialogInfo = row.etl_sys_cd;
         },
         //表格TRIGGER日志信息按钮
         handleRecordtr(index, row) {
             this.dialogFormVisibleRecordTRI = true;
             this.formRecordTRI.etl_sys_cd = row.etl_sys_cd;
-            // this.onViewTRI();
+            this.dialogInfoTri = row.etl_sys_cd;
         },
         // 全屏幕显示
         fullScreen(val) {
@@ -1248,5 +1260,9 @@ i {
     color: #606266;
     font-size: 14px;
     word-break: break-all;
+}
+
+.loindex .endAgent {
+    color: red;
 }
 </style>

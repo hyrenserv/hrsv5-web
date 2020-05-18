@@ -41,7 +41,7 @@
             </template></el-table-column>
     </el-table>
     <!-- 日志查看 -->
-    <el-dialog title="作业日志信息" :visible.sync="dialogForm" :before-close="closeDialog">
+    <el-dialog :title="'作业日志信息(' + this.dialogWorks + ')'" :visible.sync="dialogForm" :before-close="closeDialog">
         <el-form :model="formAdd" ref="formAdd">
             <el-form-item label="日志行数" :label-width="formLabelWidth" prop="readNum">
                 <el-input v-model="formAdd.readNum" autocomplete="off" placeholder="行数" style="width:284px"></el-input>
@@ -99,7 +99,8 @@ export default {
             formLabelWidth: '150px',
             showHidden: false,
             downLoading: false,
-            viewLoading: false
+            viewLoading: false,
+            dialogWorks: ''
         };
     },
     mounted() {
@@ -410,6 +411,7 @@ export default {
             this.dialogForm = true;
             this.formAdd.curr_bath_date = value.curr_bath_date;
             object = value;
+            this.dialogWorks = value.etl_job;
         },
         // 关闭弹出框
         closeDialog() {

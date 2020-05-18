@@ -81,7 +81,7 @@
             <el-table-column prop="user_name" label="数据采集用户" align="center"></el-table-column>
             <el-table-column label="操作" width="190" align="center">
                 <template slot-scope="scope">
-                    <el-button size="mini" v-if="scope.row.agent_status =='已连接'" type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">查看</el-button>
+                    <el-button size="mini" v-if="scope.row.agent_status =='已连接'" type="success" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">查看</el-button>
                     <el-button size="mini" v-else type="primary" @click="dialogFormVisibleview = true;handleEdit(scope.$index, scope.row);DataCathInfo()">编辑</el-button>
                     <el-button size="mini" type="danger" @click="delteThisData();handleEdit(scope.$index, scope.row)">删除</el-button>
                 </template>
