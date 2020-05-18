@@ -14,15 +14,15 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="分类编号" :label-width="formLabelWidth" prop="classify_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.classify_name" disabled placeholder="分类编号" :size="size">
+                <el-form-item label="分类编号" :label-width="formLabelWidth" prop="classify_num" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.classify_num" disabled placeholder="分类编号" :size="size">
                         <el-button slot="append" @click="getNumber()" class="addButton"> <i class="el-icon-circle-plus-outline"></i></el-button>
                     </el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="分类名称" :label-width="formLabelWidth" prop="classify_num" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.classify_num" disabled placeholder="分类名称" :size="size"></el-input>
+                <el-form-item label="分类名称" :label-width="formLabelWidth" prop="classify_name" :rules="filter_rules([{required: true}])">
+                    <el-input v-model="form.classify_name" disabled placeholder="分类名称" :size="size"></el-input>
                 </el-form-item>
             </el-col>
 
