@@ -357,6 +357,7 @@ export default {
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
+                        console.log(res.data)
                         if (res) {
                             this.oldTbData = res.data != '' ? res.data : [];
                         }
@@ -990,9 +991,10 @@ export default {
                     console.log(1, this.digForm)
                     let data = JSON.parse(JSON.stringify(this.destinationData)),
                         str = '',searcharr=[];
-                    console.log(data)
                     for (let i = 0; i < data.length; i++) {
+                        if(data[i].usedflag==true){
                         searcharr.push(data[i].dsl_name.toLowerCase())
+                        }
                     }
                     if(searcharr.indexOf('oracle')==-1){
                              let dslIds = [];
