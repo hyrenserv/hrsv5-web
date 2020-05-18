@@ -164,24 +164,18 @@
     <el-dialog :title="'CONTROL日志信息('  +this.dialogInfo + ')'" :visible.sync="dialogFormVisibleRecordCON" width="72%" :before-close="closeCON">
         <el-form :model="formRecordCON" ref="formRecordCON" class="demo-form-inline" :inline="true" label-width="100px">
             <el-form-item label="日志行数" prop="readNum">
-                <!-- <el-tooltip class="item" effect="dark" content="默认显示100行，最多显示1000行(正整数)" placement="right">
-                        <i class="fa fa-question-circle " aria-hidden="true"></i>
-                    </el-tooltip> -->
                 <el-input v-model="formRecordCON.readNum">
-
                 </el-input>
-
             </el-form-item>
-            <el-form-item>
-                <el-button type="primary" :loading="isViewCon" @click="onViewCON">查看</el-button>
-            </el-form-item>
+            <el-tooltip effect="dark" content="默认显示100行，最多显示1000行(正整数)" placement="right">
+                <i class="fa fa-question-circle " aria-hidden="true"></i>
+            </el-tooltip>
+            <el-button type="primary" :loading="isViewCon" @click="onViewCON">查看</el-button>
             <el-form-item label="跑批日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
                 <el-date-picker v-model="formRecordCON.curr_bath_date" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyyMMdd">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item>
-                <el-button type="primary" :loading="isViewDowncon" @click="downRecordCON('formRecordCON')">下载日志</el-button>
-            </el-form-item>
+            <el-button type="primary" :loading="isViewDowncon" @click="downRecordCON('formRecordCON')">下载日志</el-button>
         </el-form>
         <div style="margin-top:-10px">
             <span v-html="formRecordCON.project_records"></span>
@@ -197,16 +191,15 @@
             <el-form-item label="日志行数" prop="readNum">
                 <el-input v-model="formRecordTRI.readNum"></el-input>
             </el-form-item>
-            <el-form-item>
-                <el-button type="primary" :loading="isViewTri" @click="onViewTRI">查看</el-button>
-            </el-form-item>
+            <el-tooltip effect="dark" content="默认显示100行，最多显示1000行(正整数)" placement="right">
+                <i class="fa fa-question-circle " aria-hidden="true"></i>
+            </el-tooltip>
+            <el-button type="primary" :loading="isViewTri" @click="onViewTRI">查看</el-button>
             <el-form-item label="跑批日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
                 <el-date-picker v-model="formRecordTRI.curr_bath_date" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyyMMdd">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item>
-                <el-button type="primary" :loading="isViewDowntri" @click="downRecordTRI('formRecordTRI')">下载日志</el-button>
-            </el-form-item>
+            <el-button type="primary" :loading="isViewDowntri" @click="downRecordTRI('formRecordTRI')">下载日志</el-button>
         </el-form>
         <div style="margin-top:-10px">
             <span v-html="formRecordTRI.project_records"></span>
@@ -1264,5 +1257,10 @@ i {
 
 .loindex .endAgent {
     color: red;
+}
+
+.loindex .fa-question-circle {
+    margin-left: -5px;
+    margin-right: 5px;
 }
 </style>
