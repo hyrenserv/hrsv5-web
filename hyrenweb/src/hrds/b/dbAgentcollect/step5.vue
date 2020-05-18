@@ -196,7 +196,11 @@
         class="addline"
       >新增行</el-button>-->
         <el-table :data="FieldProperty.slice((fieldProperty_currentPage - 1) * fieldProperty_pagesize, fieldProperty_currentPage * fieldProperty_pagesize)" border size="medium" highlight-current-row>
-            <el-table-column type="index" label="序号" width="60px" align="center"></el-table-column>
+            <el-table-column  label="序号" width="60px" align="center">
+                 <template scope="scope">
+                    <span>{{scope.$index+(fieldProperty_currentPage - 1) * fieldProperty_pagesize + 1}}</span>
+                </template>
+            </el-table-column>
             <el-table-column :label="item.value" :property="item.id" v-for="item in selectedColumnList" :key="item.id" align="center">
                 <template slot-scope="scope" slot="header">
                     <span :key="scope.column.property" class="allclickColor" v-if="item.id=='column_name'||item.id=='column_ch_name'">{{item.value}}</span>
@@ -664,23 +668,23 @@ export default {
                         }
                     }
                 } else {
-            this.digForm.hyren_name = row.table_name
-                    this.destinationOldDataFun(row.table_id);
+                    this.destinationOldDataFun(row.table_id,row.table_name);
                 }
             } else {
-            this.digForm.hyren_name = row.table_name
-                this.destinationOldDataFun(row.table_id);
+                this.destinationOldDataFun(row.table_id,row.table_name);
             }
             this.dialogChooseDestination = true;
         },
         //目的地弹框初始数据
-        destinationOldDataFun(id) {
+        destinationOldDataFun(id,tablename) {
             let params = {};
             params["tableId"] = id;
             addTaskAllFun.getStoDestByTableId(params).then(res => {
                 console.log(res.data)
+                let str=this.datasource_number + '_' + this.classify_num + '_'
                 if (res.data) {
-                    let arr = JSON.parse(JSON.stringify(res.data));
+                     this.digForm.hyren_name =res.data.hyren_name!=''?res.data.hyren_name.replace(str,'').trim():tablename;
+                    let arr = JSON.parse(JSON.stringify(res.data.tableStorage ));
                     let data = this.storeTypeData;
                     for (let i = 0; i < arr.length; i++) {
                         if (arr[i].usedflag == "1") {
@@ -986,24 +990,55 @@ export default {
                 if (valid) {
                     console.log(1, this.digForm)
                     let data = JSON.parse(JSON.stringify(this.destinationData)),
-                        str = '';
+                        str = '',searcharr=[];
                     console.log(data)
                     for (let i = 0; i < data.length; i++) {
-                        if (data[i].dsl_name.toLowerCase() == 'oracle') {
-                            str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
-                            if (str.length > 27) {
+                        searcharr.push(data[i].dsl_name.toLowerCase())
+                    }
+                    if(searcharr.indexOf('oracle')==-1){
+                             let dslIds = [];
+                                if (this.dslIdString.length > 0) {
+                                    for (let j = 0; j < this.dslIdString.length; j++) {
+                                        if (this.dslIdString[j].tableId == this.tableId) {
+                                            this.dslIdString.splice(j, 1);
+                                            j--
+                                        }
+                                    }
+                                }
+                                for (let i = 0; i < data.length; i++) {
+                                    if (data[i].usedflag == true) {
+                                        dslIds.push(data[i].dsl_id);
+                                    }
+                                }
+                                if (dslIds.length != 0) {
+                                    this.dslIdString.push({
+                                        dslIds: dslIds,
+                                        tableId: this.tableId,
+                                        hyren_name:str,
+                                        new_name:this.digForm.hyren_name
+                                    });
+                                    this.dialogChooseDestination = false;
+                                    this.ruleForm.ex_destinationData[
+                                        this.dataExtractypeindex
+                                    ].table_setting = true;
+                                } else {
+                                    this.open();
+                                }
+                    }else{
+                          str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
+                        if (str.length > 27) {
                                 this.$message({
                                     showClose: true,
                                     message: "选择目的地存在oracl时,落地表名长度不能超过27,请修改落地表名",
                                     type: "error"
                                 });
-                                break;
                             } else {
                                 let dslIds = [];
                                 if (this.dslIdString.length > 0) {
                                     for (let j = 0; j < this.dslIdString.length; j++) {
                                         if (this.dslIdString[j].tableId == this.tableId) {
                                             this.dslIdString.splice(j, 1);
+                                            j--
                                         }
                                     }
                                 }
@@ -1027,9 +1062,7 @@ export default {
                                     this.open();
                                 }
                             }
-                        }
                     }
-
                 }
             })
 
