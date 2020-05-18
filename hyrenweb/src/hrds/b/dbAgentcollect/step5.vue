@@ -680,11 +680,10 @@ export default {
             let params = {};
             params["tableId"] = id;
             addTaskAllFun.getStoDestByTableId(params).then(res => {
-                console.log(res.data)
                 let str=this.datasource_number + '_' + this.classify_num + '_'
                 if (res.data) {
                      this.digForm.hyren_name =res.data.hyren_name!=''?res.data.hyren_name.replace(str,'').trim():tablename;
-                    let arr = JSON.parse(JSON.stringify(res.data.tableStorage ));
+                    let arr = JSON.parse(JSON.stringify(res.data.tableStorage));
                     let data = this.storeTypeData;
                     for (let i = 0; i < arr.length; i++) {
                         if (arr[i].usedflag == "1") {
