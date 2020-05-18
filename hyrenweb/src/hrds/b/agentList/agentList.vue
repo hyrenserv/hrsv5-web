@@ -52,9 +52,9 @@
             <el-table-column property="agent_type" label="采集类型" align="center"></el-table-column>
             <el-table-column label="Agent连接状态" align="center">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.agent_status=='未连接'" class='unlink'>{{scope.row.agent_status}}</span>
-                    <span v-else-if="scope.row.agent_status=='已连接'" class='successlink'>{{scope.row.agent_status}}</span>
-                    <span v-else class='linking'>{{scope.row.agent_status}}</span>
+                    <el-tag v-if="scope.row.agent_status=='未连接'" type="danger">{{scope.row.agent_status}}</el-tag>
+                    <el-tag v-else-if="scope.row.agent_status=='已连接'" type="success">{{scope.row.agent_status}}</el-tag>
+                    <el-tag v-else >{{scope.row.agent_status}}</el-tag>
                 </template>
             </el-table-column>
 
