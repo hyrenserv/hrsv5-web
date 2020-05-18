@@ -431,6 +431,7 @@ export default {
         next(formName) {
             let dataAll = this.ruleForm.ex_destinationData,datasource_number1=this.datasource_number,classify_num1=this.classify_num;
             console.log(dataAll)
+              console.log(this.dslIdString,datasource_number1,classify_num1)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // oldTbData this.dslIdString
@@ -465,6 +466,7 @@ export default {
                             table_name: arr[i].table_name
                         });
                     }
+                    console.log(desDataArr)
                     // 判断获得的表里面
                     for (let j = 0; j < desDataArr.length; j++) {
                         for (let k = 0; k < this.oldTbData.length; k++) {
@@ -476,11 +478,15 @@ export default {
                             }
                         }
                     }
+                  
                     for (let m = 0; m < desDataArr.length; m++) {
                         for (let n = 0; n < this.dslIdString.length; n++) {
                             if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
                                 desDataArr[m].dslIds = this.dslIdString[n].dslIds;
+                                if(this.dslIdString[n].hyren_name!=''){
                                    desDataArr[m].hyren_name= this.dslIdString[n].hyren_name
+                                  
+                                }
                             }
                         }
                     }
@@ -653,12 +659,16 @@ export default {
                     arrall.push(this.dslIdString[m].tableId);
                 }
                 if (arrall.indexOf(row.table_id) != -1) {
+                    arrall.length=0
+                    console.log(111)
                     for (let m = 0; m < this.dslIdString.length; m++) {
                         if (this.dslIdString[m].tableId == row.table_id) {
+                            console.log(this.dslIdString[m].dslIds)
                              this.digForm.hyren_name=this.dslIdString[m].new_name
                             if (this.dslIdString[m].dslIds.length > 0) {
+                                 for (let yn = 0; yn < this.destinationData.length; yn++) {
+                                      this.destinationData[yn].usedflag = false;
                                 for (let n = 0; n < this.dslIdString[m].dslIds.length; n++) {
-                                    for (let yn = 0; yn < this.destinationData.length; yn++) {
                                         if (
                                             this.destinationData[yn].dsl_id ==
                                             this.dslIdString[m].dslIds[n]
@@ -999,6 +1009,7 @@ export default {
                         }
                     }
                     if(searcharr.indexOf('oracle')==-1){
+                          str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
                              let dslIds = [];
                                 if (this.dslIdString.length > 0) {
                                     for (let j = 0; j < this.dslIdString.length; j++) {
@@ -1066,6 +1077,7 @@ export default {
                                 }
                             }
                     }
+                    console.log( this.dslIdString)
                 }
             })
 
