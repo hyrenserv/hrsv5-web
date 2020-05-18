@@ -37,7 +37,6 @@ export function searchEtlJob(data) {
     })
 }
 // 下载日志
-//读取Control或Trigger日志信息
 export function downloadFile(data) {
     return request({
         url: '/C/etlsys/downloadFile',
