@@ -24,6 +24,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
+            <p class="red" v-if="scope.row.B001==tableData.failure">错误信息: {{scope.row.B001error}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -45,6 +46,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
+            <p class="red" v-if="scope.row.B002==tableData.failure">错误信息: {{scope.row.B002error}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -66,6 +68,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
+            <p class="red" v-if="scope.row.UHDFS==tableData.failure">错误信息: {{scope.row.UHDFSerror}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -87,6 +90,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
+            <p class="red" v-if="scope.row.LHIVE==tableData.failure">错误信息: {{scope.row.LHIVEerror}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -108,6 +112,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
+            <p class="red" v-if="scope.row.SOURCE==tableData.failure">错误信息: {{scope.row.SOURCEerror}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -132,6 +137,7 @@ export default {
   watch: {
     tableData() {
       this.collectTableData = this.tableData.collectTableData;
+      console.log(this.collectTableData)
 
     }
   }
