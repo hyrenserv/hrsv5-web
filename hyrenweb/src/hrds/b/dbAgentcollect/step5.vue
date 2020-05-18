@@ -429,7 +429,7 @@ export default {
 
         },
         next(formName) {
-            let dataAll = this.ruleForm.ex_destinationData;
+            let dataAll = this.ruleForm.ex_destinationData,datasource_number1=this.datasource_number,classify_num1=this.classify_num;
             console.log(dataAll)
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -455,6 +455,7 @@ export default {
                             desDataArr.push({
                                 tableId: arr[i].table_id,
                                 dslIds: [],
+                                hyren_name:datasource_number1+'_'+classify_num1+'_'+arr[i].table_name
                             });
                         }
 
@@ -469,8 +470,9 @@ export default {
                         for (let k = 0; k < this.oldTbData.length; k++) {
                             if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
                                 desDataArr[j].dslIds = this.oldTbData[k].dslIds;
+                                if(this.oldTbData[k].hyren_name!=''){
                                  desDataArr[j].hyren_name= this.oldTbData[k].hyren_name
-
+                                }
                             }
                         }
                     }
