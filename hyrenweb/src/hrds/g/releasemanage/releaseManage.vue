@@ -51,7 +51,7 @@
                 <el-input type="textarea" v-model="form.interface_note" autosize placeholder="备注"
                           style="width: 300px"/>
             </el-form-item>
-            <el-tabs type="border-card" @tab-click="handleClick">
+            <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane v-for="item in interfaceType" value="item.code" v-model="item.code">
                     <span slot="label">{{item.value}}接口</span>
                 </el-tab-pane>
@@ -124,10 +124,10 @@
                 use_valid_date_s: "",
                 start_date: "",
                 end_date: "",
+                activeName: "",
                 form: {
                     interface_note: "",
-                    classify_name: "",
-                    user_id: []
+                    classify_name: ""
                 },
             }
         },
@@ -224,13 +224,15 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 处理参数
+                        console.log(this.form)
                         interfaceFunctionAll.saveInterfaceUseInfo(this.form).then((res) => {
                             message.saveSuccess(res);
-                            this.form = [];
+                            this.form = {};
                             this.start_date = "";
                             this.end_date = "";
                             this.$refs.multipleTable.clearSelection();
                             this.searchUserInfo();
+                            this.activeName = "0";
                             this.searchInterfaceInfoByType("1");
                             this.currPage = 1;
                         })
