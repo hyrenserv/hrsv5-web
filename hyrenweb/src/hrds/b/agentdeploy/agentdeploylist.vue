@@ -8,31 +8,31 @@
             </el-button>
         </router-link>
     </el-row>
-    <el-table :data="sourceData.filter(data => !search || data.datasource_name.toLowerCase().includes(search.toLowerCase()))" :default-sort="{prop: 'datasource_name', order: 'descending'}" max-height="50%" style="width: 100%">
+    <el-table :data="sourceData.filter(data => !search || data.datasource_name.toLowerCase().includes(search.toLowerCase()))"  max-height="50%" style="width: 100%">
         <el-table-column sortable prop="datasource_name" label="数据源"></el-table-column>
         <el-table-column label="数据库 Agent">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="deployAgentList(agentTypeData.ShuJuKu, scope.row)">部署</el-button>
+                <el-button v-if="scope.row.dbflag!=0" size="mini" type="primary" @click="deployAgentList(agentTypeData.ShuJuKu, scope.row)">部署</el-button>
             </template>
         </el-table-column>
         <el-table-column label="数据文件 Agent">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="deployAgentList(agentTypeData.DBWenJian, scope.row)">部署</el-button>
+                <el-button v-if="scope.row.dfflag!=0" size="mini" type="primary" @click="deployAgentList(agentTypeData.DBWenJian, scope.row)">部署</el-button>
             </template>
         </el-table-column>
         <el-table-column label="非结构化 Agent">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="deployAgentList(agentTypeData.WenJianXiTong, scope.row)">部署</el-button>
+                <el-button v-if="scope.row.nonstructflag!=0" size="mini" type="primary" @click="deployAgentList(agentTypeData.WenJianXiTong, scope.row)">部署</el-button>
             </template>
         </el-table-column>
         <el-table-column label="半结构化 Agent">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="deployAgentList(agentTypeData.DuiXiang, scope.row)">部署</el-button>
+                <el-button v-if="scope.row.halfstructflag!=0" size="mini" type="primary" @click="deployAgentList(agentTypeData.DuiXiang, scope.row)">部署</el-button>
             </template>
         </el-table-column>
         <el-table-column label="Ftp Agent">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="deployAgentList(agentTypeData.FTP, scope.row)">部署</el-button>
+                <el-button v-if="scope.row.ftpflag!=0" size="mini" type="primary" @click="deployAgentList(agentTypeData.FTP, scope.row)">部署</el-button>
             </template>
         </el-table-column>
         <el-table-column>
