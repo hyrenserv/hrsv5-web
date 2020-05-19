@@ -38,7 +38,7 @@
         </router-link>
     </el-row>
      ```
-     - 8.2 树形控件样式直接复制下面代码（样式在类名mytree和span-ellipsis）
+- 8.2 树形控件样式直接复制下面代码（样式在类名mytree和span-ellipsis）
      ```css
      <div class="mytree" hight='200'>
                     <el-tree class="filter-tree" :empty-text='tip' :data="data" :indent='0' :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
