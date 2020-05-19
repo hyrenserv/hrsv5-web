@@ -47,7 +47,7 @@
                         </span>
                     </el-tree>
                 </div>
-                ```
+   ```
 - 8.3 弹框标题样式，直接复制下面代码（样式在类名dialogtitle,dialogtoptst,dialogtopname中）
       ```css
        <div slot="title" >
