@@ -47,57 +47,57 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-form-item label="备注">
-                <el-input type="textarea" v-model="form.interface_note" autosize placeholder="备注"
-                          style="width: 300px"/>
-            </el-form-item>
+                    <el-form-item label="备注">
+                        <el-input type="textarea" v-model="form.interface_note" autosize placeholder="备注"
+                                  style="width: 300px"/>
+                    </el-form-item>
             <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane v-for="item in interfaceType" value="item.code" v-model="item.code">
                     <span slot="label">{{item.value}}接口</span>
                 </el-tab-pane>
+                <!--接口信息列表展示-->
+                <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)"
+                          border style="width: 100%" ref="multipleTable" size="medium"
+                          :row-key="(row)=>{ return row.interface_id}"
+                          @selection-change="handleSelectionChange" @select-all='allSelect'>
+                    <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
+                    </el-table-column>
+                    <el-table-column label="序号" align="center">
+                        <template slot-scope="scope">
+                            <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="interface_name" label="接口名称" align="center"/>
+                    <el-table-column prop="interface_code" label="接口代码" align="center"/>
+                    <el-table-column prop="start_use_date_s" label="开始日期" align="center">
+                        <template slot-scope="scope">
+                            <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
+                                            v-model="scope.row.start_use_date_s" size="small"
+                                            style="width:100%"
+                                            :rules="filter_rules([{required: true}])"/>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="use_valid_date_s" label="结束日期" align="center">
+                        <template slot-scope="scope">
+                            <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
+                                            v-model="scope.row.use_valid_date_s" size="small"
+                                            style="width: 100%"
+                                            :rules="filter_rules([{required: true}])"/>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="interface_state" label="接口状态" align="center">
+                        <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <!-- 分页内容 -->
+                <el-row class="pagination">
+                    <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage"
+                                   @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]"
+                                   :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper"
+                                   :total="totalSize" class='locationcenter'/>
+                </el-row>
             </el-tabs>
-            <!--接口信息列表展示-->
-            <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                      border style="width: 100%" ref="multipleTable"
-                      :row-key="(row)=>{ return row.interface_id}"
-                      @selection-change="handleSelectionChange" @select-all='allSelect'>
-                <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
-                </el-table-column>
-                <el-table-column label="序号" align="center">
-                    <template slot-scope="scope">
-                        <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="interface_name" label="接口名称" align="center"/>
-                <el-table-column prop="interface_code" label="接口代码" align="center"/>
-                <el-table-column prop="start_use_date_s" label="开始日期" align="center">
-                    <template slot-scope="scope">
-                        <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
-                                        v-model="scope.row.start_use_date_s" size="small"
-                                        style="width:100%"
-                                        :rules="filter_rules([{required: true}])"/>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="use_valid_date_s" label="结束日期" align="center">
-                    <template slot-scope="scope">
-                        <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
-                                        v-model="scope.row.use_valid_date_s" size="small"
-                                        style="width: 100%"
-                                        :rules="filter_rules([{required: true}])"/>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="interface_state" label="接口状态" align="center">
-                    <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!-- 分页内容 -->
-            <el-row class="pagination">
-                <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage"
-                               @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]"
-                               :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper"
-                               :total="totalSize" class='locationcenter'/>
-            </el-row>
         </el-form>
     </div>
 </template>
@@ -127,7 +127,8 @@
                 activeName: "",
                 form: {
                     interface_note: "",
-                    classify_name: ""
+                    classify_name: "",
+                    user_id: []
                 },
             }
         },
@@ -224,15 +225,14 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 处理参数
-                        console.log(this.form)
                         interfaceFunctionAll.saveInterfaceUseInfo(this.form).then((res) => {
                             message.saveSuccess(res);
                             this.form = {};
                             this.start_date = "";
                             this.end_date = "";
-                            this.$refs.multipleTable.clearSelection();
                             this.searchUserInfo();
                             this.activeName = "0";
+                            this.$refs.multipleTable.clearSelection();
                             this.searchInterfaceInfoByType("1");
                             this.currPage = 1;
                         })

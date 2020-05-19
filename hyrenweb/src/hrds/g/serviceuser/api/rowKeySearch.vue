@@ -21,9 +21,9 @@
         <el-divider/>
         <span class="fontStyle">请求参数列表</span>
         <!--请求参数列表展示-->
-        <el-table :data="tableData" border>
-            <el-table-column prop="field" label="字段" align="center"/>
-            <el-table-column prop="fieldType" label="类型" align="center"/>
+        <el-table :data="tableData" border size="medium">
+            <el-table-column prop="field" label="字段" width="160px" align="center"/>
+            <el-table-column prop="fieldType" width="100px" label="类型" align="center"/>
             <el-table-column prop="isRequired" label="是否必填" align="center"/>
             <el-table-column prop="remark" label="描述" align="center"/>
         </el-table>
@@ -83,7 +83,7 @@
             <el-col :span="12">
                 <span class="fontStyle">错误响应字段明细</span>
                 <!--响应参数列表展示-->
-                <el-table :data="errorData" border>
+                <el-table :data="errorData" border size="medium">
                     <el-table-column prop="state" label="状态字段名" align="center"/>
                     <el-table-column prop="description" label="状态说明" align="center"/>
                 </el-table>

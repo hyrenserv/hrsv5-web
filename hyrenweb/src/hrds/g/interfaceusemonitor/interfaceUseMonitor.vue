@@ -39,7 +39,7 @@
                 </el-row>
                 <!--接口信息列表展示-->
                 <el-table :data="interfaceData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                          border style="width: 100%">
+                          border style="width: 100%" size="medium">
                     <el-table-column label="序号" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
@@ -103,14 +103,14 @@
                     </el-col>
                 </el-row>
                 <el-table :data="dataTableData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                          border style="width: 100%">
+                          border style="width: 100%" size="medium">
                     <el-table-column label="序号" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="original_name" label="数据表名称" align="center"/>
-                    <el-table-column prop="sysreg_name" label="数据表中文名称" align="center"/>
+                    <el-table-column prop="sysreg_name" label="系统登记表名" align="center"/>
+                    <el-table-column prop="original_name" label="原始表中文名" align="center"/>
                     <el-table-column prop="user_name" label="使用用户" align="center"/>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
@@ -159,7 +159,8 @@
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="table_column_name" label="字段名" align="center"/>
+                <el-table-column prop="table_en_column" label="字段英文名" align="center"/>
+                <el-table-column prop="table_ch_column" label="字段中文名" align="center"/>
             </el-table>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" size="mini" @click="dialogViewFieldFormVisible = false">
