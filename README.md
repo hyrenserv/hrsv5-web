@@ -60,6 +60,7 @@
 ##### /* 按钮设置样式的class名称,需要给button设置class="elButton"实现更改样式*/
 ##### /*按钮大小设置需在el-button标签设置size属性实现*/
 ##### /*删除 确定 取消 可以通过设置button的type属性实现*/
+ ```java
 .elButton{
  
 }
