@@ -361,7 +361,7 @@ export default {
                         if (res) {
                             this.oldTbData = res.data != '' ? res.data : [];
                         }
-                        if (this.oldTbData.length > 0) {
+                       if (this.oldTbData.length > 0) {
                             for (var i = 0; i < arr.length; i++) {
                                 for (let j = 0; j < this.oldTbData.length; j++) {
                                     if (arr[i].table_id == this.oldTbData[j].tableId) {
@@ -378,10 +378,10 @@ export default {
                                     arr[i].is_zipper = false;
                                 }
                                 if (!arr[i].storage_type) {
-                                    arr[i].storage_type = "";
+                                    arr[i].storage_type = "3";
                                 }
                                 if (!arr[i].storage_time) {
-                                    arr[i].storage_time = "";
+                                    arr[i].storage_time = 1;
                                 }
                             }
                             this.ruleForm.ex_destinationData = arr;
@@ -393,14 +393,14 @@ export default {
                                     arr[i].is_zipper = false;
                                 }
                                 if (!arr[i].storage_type) {
-                                    arr[i].storage_type = "";
+                                    arr[i].storage_type = "3";
                                 }
                                 if (!arr[i].storage_time) {
-                                    arr[i].storage_time = "";
+                                    arr[i].storage_time =1;
                                 }
                             }
                             this.ruleForm.ex_destinationData = arr;
-                        }
+                        } 
 
                     });
                 }
