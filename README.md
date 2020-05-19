@@ -54,7 +54,7 @@
         </div>
 
 ### 9、系统样式定义
-#### 1、button
+### 1、button
 ##### 按钮设置样式的class名称,需要给button设置class="elButton"实现更改样式
 ##### 按钮大小设置需在el-button标签设置size属性实现
 ##### 删除 确定 取消 可以通过设置button的type属性实现
@@ -63,7 +63,7 @@
  
 }
 ```
-#### 2、table
+### 2、table
 ##### 表格表头样式,不需要添加属性即可更改，如有特别样式请自行设置class名谢谢
  ```css
 /* .el-table th{
@@ -94,7 +94,7 @@
     
 }
 ```
-#### 3、radio
+### 3、radio
 ##### 单选框默认样式设置，不需要添加属性，可以直接更改
  ```css
 .el-radio__inner{
@@ -148,7 +148,7 @@
     /* color: rgb(83, 168, 33); */
 }
 ```
-#### 4、message
+### 4、message
 ##### 在更改样式之前，需要在methods的方法this.$confirm里添加cancelButtonClass或者confirmButtonClass
 ##### message取消按钮的默认样式
  ```css
@@ -169,7 +169,7 @@
 
 }
 ```
-#### 5、input
+### 5、input
 
 ##### input表单验证提示信息样式，不需要添加属性，可以直接更改
  ```css
@@ -183,7 +183,7 @@
 /* border-color: blue; */
 }
 ```
-#### 6、checkbox
+### 6、checkbox
 ##### 复选框默认样式设置，不需要添加属性，可以直接更改
  ```css
 .el-checkbox__inner{
@@ -233,7 +233,7 @@
   
 }
 ```
-#### 7、tab选项卡
+### 7、tab选项卡
 ##### 选项卡的默认样式
  ```css
 .el-tabs__nav-scroll{
