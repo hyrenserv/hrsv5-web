@@ -14,19 +14,24 @@
             <el-col :span="10">
                 <el-form-item label="表英文名" prop="datatable_en_name"
                               :rules="rule.default">
-                    <el-input v-model="dm_datatable.datatable_en_name" placeholder="表英文名"></el-input>
+                    <el-input v-model="dm_datatable.datatable_en_name" placeholder="表英文名">
+                        <el-button slot="append" icon="el-icon-zoom-in"
+                                   @click="showalreadyexisttablename()"></el-button>
+                    </el-input>
                 </el-form-item>
+
             </el-col>
             <el-col :span="10">
                 <el-form-item label="表中文名" prop="datatable_cn_name"
                               :rules="rule.default">
-                    <el-input v-model="dm_datatable.datatable_cn_name" autocomplete="off" placeholder="表中文名"></el-input>
+                    <el-input  v-model="dm_datatable.datatable_cn_name" autocomplete="off"
+                              placeholder="表中文名"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="10">
                 <el-form-item label="执行引擎" prop="sql_engine" :rules="rule.selected">
-                    <el-select v-model="dm_datatable.sql_engine" placeholder="请选择">
+                    <el-select  v-model="dm_datatable.sql_engine" placeholder="请选择">
                         <el-option v-for="item in allsqlengine" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
                     </el-select>
@@ -83,9 +88,9 @@
             </el-input>
         </el-col>
         <el-table :data="tableData" border stripe size="medium">
-            <el-table-column property label="选择" type="index" align="center" width='60'>
+            <el-table-column  property label="选择" type="index" align="center" width='60'>
                 <template slot-scope="scope">
-                    <el-radio v-model="dsl_id" :label="scope.row.dsl_id">&thinsp;</el-radio>
+                    <el-radio  v-model="dsl_id" :label="scope.row.dsl_id">&thinsp;</el-radio>
                 </template>
             </el-table-column>
 
@@ -136,6 +141,27 @@
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dataSaveConfigure = false" size="mini" type="danger">关 闭</el-button>
             </div>
+        </el-dialog>
+
+
+        <el-dialog title="选择已有的集市表" :visible.sync="ifalreadyexisttablename" width="35%">
+            <el-table :data="alldatatable_en_name" border stripe size="medium">
+                <el-table-column property label="选择" type="index" align="center" width='60'>
+                    <template slot-scope="scope">
+                        <el-radio v-model="selecttablename" :label="scope.row.datatable_en_name">&thinsp;</el-radio>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="datatable_en_name" label="表英文名" show-overflow-tooltip
+                                 align="center"></el-table-column>
+            </el-table>
+            <el-row>
+                <el-button type="primary" size="mini" class="rightbtn"
+                           @click="confirmselecttable()">
+                    确定
+                </el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="ifalreadyexisttablename = false">取消
+                </el-button>
+            </el-row>
         </el-dialog>
 
         <transition name="fade">
@@ -189,7 +215,10 @@
                 form: {},
                 fuzzyqueryitem: "",
                 isLoading: false,
-
+                ifalreadyexisttablename: false,
+                alldatatable_en_name: [],
+                selecttablename: "",
+                iflock: false,
                 // currentPage: 1,
                 // pagesize: 5,
 
@@ -229,6 +258,7 @@
                         if (this.dm_datatable.datatable_lifecycle == "2") {
                             this.showData_date = true;
                         }
+                        this.iflock = true;
                     } else {
                         this.$emit(response.message);
                     }
@@ -286,7 +316,8 @@
                                                 name: 'addMartTable_2',
                                                 query: {
                                                     data_mart_id: this.data_mart_id,
-                                                    datatable_id: this.datatable_id
+                                                    datatable_id: this.datatable_id,
+                                                    ifrepeat: res.data.ifrepeat
                                                 }
                                             });
                                         } else {
@@ -311,7 +342,8 @@
                                                 name: 'addMartTable_2',
                                                 query: {
                                                     data_mart_id: this.data_mart_id,
-                                                    datatable_id: this.datatable_id
+                                                    datatable_id: this.datatable_id,
+                                                    ifrepeat: res.data.ifrepeat
                                                 }
                                             });
                                         } else {
@@ -409,7 +441,38 @@
                         data_mart_id: this.data_mart_id
                     }
                 });
-            }
+            },
+            showalreadyexisttablename() {
+                this.ifalreadyexisttablename = true;
+                this.selecttablename = this.dm_datatable.datatable_en_name;
+                functionAll.getalldatatable_en_name().then((res) => {
+                    this.alldatatable_en_name = res.data;
+                })
+            },
+            confirmselecttable() {
+                this.ifalreadyexisttablename = false;
+                this.dm_datatable.datatable_en_name = this.selecttablename
+                let param = {
+                    "datatable_en_name": this.dm_datatable.datatable_en_name
+                }
+                functionAll.queryDMDataTableByDataTableName(param).then((res) => {
+                    if (res && res.success) {
+                        this.dm_datatable = res.data[0];
+                        let dataYear = this.dm_datatable.datatable_due_date.substring(0, 4);
+                        let dataMonth = this.dm_datatable.datatable_due_date.substring(4, 6);
+                        let dataDay = this.dm_datatable.datatable_due_date.substring(6, 9);
+                        let data = dataYear + "-" + dataMonth + "-" + dataDay;
+                        this.dm_datatable.datatable_due_date = data;
+                        this.dsl_id = res.data[0].dsl_id;
+                        if (this.dm_datatable.datatable_lifecycle == "2") {
+                            this.showData_date = true;
+                        }
+                    } else {
+                        this.$emit(response.message);
+                    }
+                })
+            },
+
         }
     };
 </script>

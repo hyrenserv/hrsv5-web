@@ -21,13 +21,13 @@
                     <el-row>
                         <span>SQL查询</span>
                         <el-col :span='10' style="float:right">
-                            <el-input placeholder="参数如: 自定义名称=123;自定义名称2=456,中间用分号;隔开" size="mini"
+                            <el-input placeholder="SQL中使用#{}进行替换，例如#{abc};参数处填写abc=123,多个参数时,中间用分号;隔开" size="mini"
                                       v-model="sqlparameter">
                             </el-input>
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入查询SQL"
+                        <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入查询SQL 如果需使用参数,则使用#{}进行替换"
                                   v-model="querysql"/>
                     </el-row>
                     <el-row class="partFour">
@@ -64,7 +64,7 @@
                                      align="center">
                         <template slot-scope="scope">
                             <el-input v-model="scope.row.field_en_name" autocomplete="off"
-                                      placeholder="字段英文名"></el-input>
+                                      placeholder="英文名"></el-input>
                         </template>
                     </el-table-column>
 
@@ -72,7 +72,7 @@
                                      align="center">
                         <template slot-scope="scope">
                             <el-input v-model="scope.row.field_cn_name" autocomplete="off"
-                                      placeholder="字段中文名"></el-input>
+                                      placeholder="中文名"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column prop="field_type" label="字段类型" width="140" show-overflow-tooltip
@@ -89,7 +89,7 @@
                                      align="center">
                         <template slot-scope="scope">
                             <el-input width="90" v-model="scope.row.field_length" autocomplete="off"
-                                      placeholder="字段长度"></el-input>
+                                      placeholder="长度"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column prop="field_process" label="处理方式" width="100" show-overflow-tooltip
@@ -335,6 +335,7 @@
                 data_mart_id: this.$route.query.data_mart_id,
                 is_add: this.$route.query.is_add,
                 datatable_id: this.$route.query.datatable_id,
+                ifrepeat: this.$route.query.ifrepeat,
                 querydatadialogshow: false,
                 querysql: '',
                 filterText: '',
@@ -720,7 +721,8 @@
                     "datatable_id": this.datatable_id,
                     "dm_column_storage": JSON.stringify(dm_column_storage),
                     "querysql": this.querysql,
-                    "hbasesort": JSON.stringify(this.hbasesort)
+                    "hbasesort": JSON.stringify(this.hbasesort),
+                    'ifrepeat':this.ifrepeat,
                 };
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
@@ -735,7 +737,8 @@
                                 name: 'addMartTable_3',
                                 query: {
                                     data_mart_id: this.data_mart_id,
-                                    datatable_id: this.datatable_id
+                                    datatable_id: this.datatable_id,
+                                    ifrepeat:this.ifrepeat,
                                 }
                             });
                         } else {

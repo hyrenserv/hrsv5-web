@@ -104,6 +104,16 @@ export function queryDMDataTableByDataTableId(data) {
 }
 
 /**
+ * 获取集市表的信息
+ */
+export function queryDMDataTableByDataTableName(data) {
+    return request({
+        url: '/H/market/queryDMDataTableByDataTableName',
+        params:data
+    })
+}
+
+/**
  * 删除集市表及其相关信息
  */
 export function deleteDMDataTable(data) {
@@ -341,5 +351,21 @@ export function uploadExcelFile(data) {
         method: 'post',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
+//查询所有集市表名
+export function getalldatatable_en_name(data) {
+    return request({
+        url: '/H/market/getAllDatatable_En_Name',
+        params: data
+    })
+}
+
+//编辑集市工程
+export function getdminfo(data) {
+    return request({
+        url: '/H/market/getdminfo',
+        params: data
     })
 }

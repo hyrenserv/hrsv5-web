@@ -95,6 +95,7 @@
                 rule: validator.default,
                 data_mart_id: this.$route.query.data_mart_id,
                 datatable_id: this.$route.query.datatable_id,
+                ifrepeat: this.$route.query.ifrepeat,
                 date: "",
                 parameter: "",
                 querysql: "",
@@ -115,7 +116,8 @@
                     query: {
                         data_mart_id: this.data_mart_id,
                         datatable_id: this.datatable_id,
-                        is_add: 1
+                        ifrepeat:this.ifrepeat,
+
                     }
                 });
             },

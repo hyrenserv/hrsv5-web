@@ -5,7 +5,7 @@
         </el-row>
         <span class="top3title">存储层表数量</span>
         <div class="dataSheetmain">
-            <div class="dataSheetmainDiv" v-for="(item,index) in alldslinfomart" :key="index">
+            <div class="dataSheetmainDiv2" v-for="(item,index) in alldslinfomart" :key="index">
                 <i class="fa fa-database fa-3x tree"></i>
                 <p>{{item.dsl_name}}</p>
                 <p class="postionP">集市表个数：{{item.count}} </p>
@@ -32,10 +32,13 @@
                     <p>{{item.mart_name}}</p>
                 </div>
                 <div class="boxshletr">
-                    <el-button type="text" class="editBtn" @click="downloadmart(item.mart_name,item.data_mart_id)">
+                    <el-button type="text" class="editBtn" title="编辑" @click="editmart(item.data_mart_id)">
+                        <i class="fa fa-pencil fa-lg"></i>
+                    </el-button>
+                    <el-button type="text" class="editBtn" title="下载" @click="downloadmart(item.mart_name,item.data_mart_id)">
                         <i class="fa fa-download fa-lg"></i>
                     </el-button>
-                    <el-button type="text" class="editBtn" @click="deletemart(item.mart_name,item.data_mart_id)">
+                    <el-button type="text" class="editBtn" title="删除" @click="deletemart(item.mart_name,item.data_mart_id)">
                         <i class="fa fa-trash fa-lg"></i>
                     </el-button>
                 </div>
@@ -295,6 +298,12 @@
                     });
                 }).catch(() => {
                 })
+            },
+            editmart(data_mart_id){
+                this.dialogofmarketadd = true;
+                functionAll.getdminfo({"data_mart_id": data_mart_id}).then(res => {
+                    this.formAdd = res.data[0];
+                });
             }
         }
     };
@@ -332,6 +341,10 @@
         display: block;
     }
 
+    .dataSheetmainDiv2:hover .boxshletr {
+        display: block;
+    }
+
     .dataSheetmainDiv {
         margin-bottom: 50px;
         padding-top: 10px;
@@ -348,11 +361,11 @@
     .dataSheetmainDiv2 {
         margin-bottom: 50px;
         padding-top: 10px;
-        width: 130px;
-        height: 100px;
+        width: 100px;
+        height: 80px;
         background: #337ab7;
         border-radius: 10px;
-        margin-right: 82px;
+        margin-right: 50px;
         text-align: center;
         float: left;
         position: relative;
@@ -364,6 +377,15 @@
 
 
     .dataSheetmainDiv p {
+        color: #fff;
+        margin-left: 5px;
+        font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dataSheetmainDiv2 p {
         color: #fff;
         margin-left: 5px;
         font-size: 18px;
@@ -386,6 +408,20 @@
         font-size: 12px;
     }
 
+    /* 标签定位 */
+    .dataSheetmainDiv2 span {
+        display: block;
+        width: 18px;
+        height: 18px;
+        background: #f89406;
+        border-radius: 50%;
+        color: white;
+        position: absolute;
+        right: -2px;
+        top: -3px;
+        font-size: 12px;
+    }
+
     /* 字体描述定位 */
     .dataSheetmainDiv .postionP {
         position: absolute;
@@ -395,6 +431,14 @@
         color: black;
     }
 
+    /* 字体描述定位 */
+    .dataSheetmainDiv2 .postionP {
+        position: absolute;
+        bottom: -20px;
+        left: 4px;
+        font-size: 13px;
+        color: black;
+    }
 
     /* 小图标样式 */
     .tree {

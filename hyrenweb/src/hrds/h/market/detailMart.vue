@@ -37,25 +37,17 @@
             </el-table-column>
             <el-table-column prop="datatable_due_date" width="90" label="到期日期" align='center'>
             </el-table-column>
-            <el-table-column label="操作" width="220" align='center'>
+            <el-table-column label="操作" width="250" align='center'>
                 <template slot-scope="scope">
-                    <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
-                               type="primary">
+                    <el-button size="mini" type="text" @click="editdmdatatable(scope.row)">编辑
                     </el-button>
-                    <el-button size="mini" icon="el-icon-share" v-if="scope.row.isadd" title="生成作业"
-                               @click="producefun(scope.row)"
-                               circle type="primary">
+                    <el-button size="mini" type="text" v-if="scope.row.isadd" @click="producefun(scope.row)">生成作业
                     </el-button>
-                    <el-button size="mini" icon="el-icon-caret-right" v-if="scope.row.isadd" title="立即执行"
-                               @click="pushtoaddmart3(scope.row)"
-                               circle type="primary">
+                    <el-button size="mini" type="text" v-if="scope.row.isadd" @click="pushtoaddmart3(scope.row)">立即执行
                     </el-button>
-                    <el-button size="mini" icon="el-icon-download" v-if="scope.row.isadd" title="导出表"
-                               @click="downloaddmdatatable(scope.row)"
-                               circle type="primary">
+                    <el-button size="mini" type="text" v-if="scope.row.isadd" @click="downloaddmdatatable(scope.row)">导出
                     </el-button>
-                    <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletedmdatatable(scope.row)"
-                               circle type="primary">
+                    <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -272,27 +264,29 @@
                 this.$message.warning(`只能选择一个文件`);
             },
             importData() {
-                if (arr.length > 0) {
-                    let param = new FormData() // 创建form对象
-                    for (let i = 0; i < arr.length; i++) {
-                        param.append('file', arr[i].raw);
-                    }
-                    param.append('data_mart_id', this.data_mart_id);
-                    this.isLoading = true;
-                    functionAll.uploadExcelFile(param).then(res => {
-                        this.isLoading = false;
-                        debugger;
-                        if (res.code == 200) {
-                            message.customizTitle("文件上传成功", "success");
-                            this.querydmdatatable(this.data_mart_id);
-                            this.fileList = [];
+                message.confirmMsg('确定导入 ' + arr[0].name + ' 吗').then(res => {
+                    if (arr.length > 0) {
+                        let param = new FormData() // 创建form对象
+                        for (let i = 0; i < arr.length; i++) {
+                            param.append('file', arr[i].raw);
                         }
-                    });
-                    this.isLoading = false;
-                } else {
-                    message.customizTitle("请选择上传文件", "warning");
-                }
-
+                        param.append('data_mart_id', this.data_mart_id);
+                        this.isLoading = true;
+                        functionAll.uploadExcelFile(param).then(res => {
+                            this.isLoading = false;
+                            debugger;
+                            if (res.code == 200) {
+                                message.customizTitle("文件上传成功", "success");
+                                this.querydmdatatable(this.data_mart_id);
+                                this.fileList = [];
+                            }
+                        });
+                        this.isLoading = false;
+                    } else {
+                        message.customizTitle("请选择上传文件", "warning");
+                    }
+                }).catch(() => {
+                })
             },
         }
     };
