@@ -27,7 +27,8 @@
     * `this.$Code.方法名称`
 ### 7、代码请注意格式化,保证代码格式的统一, 请统一使用vue-format格式化插件
 ### 8、页面样式统一（el-main已经加了间距，每一个显示在内容区的单页面不允许在给外层增加边距）
-     8.1 el-main内容区顶部标题直接复制下面代码修改里面显示文字和跳转链接即可
+     - 8.1 el-main内容区顶部标题直接复制下面代码修改里面显示文字和跳转链接即可
+     ```css
      <el-row class='topTitle'>
         <span class='el-icon-location'>表结构对标</span>
         <router-link to="/collectmonitor">
@@ -36,7 +37,9 @@
             </el-button>
         </router-link>
     </el-row>
-      8.2 树形控件样式直接复制下面代码（样式在类名mytree和span-ellipsis）
+     ```
+     - 8.2 树形控件样式直接复制下面代码（样式在类名mytree和span-ellipsis）
+     ```css
      <div class="mytree" hight='200'>
                     <el-tree class="filter-tree" :empty-text='tip' :data="data" :indent='0' :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
@@ -44,7 +47,9 @@
                         </span>
                     </el-tree>
                 </div>
-      8.3 弹框标题样式，直接复制下面代码（样式在类名dialogtitle,dialogtoptst,dialogtopname中）
+                ```
+     - 8.3 弹框标题样式，直接复制下面代码（样式在类名dialogtitle,dialogtoptst,dialogtopname中）
+      ```css
        <div slot="title" >
                         <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
                         <span class="dialogtoptxt">
@@ -52,7 +57,7 @@
                             <p class="dialogtopname">{{EXtable_name}}</p>
                         </span>
         </div>
-
+      ```
 ### 9、系统样式定义
 ### 1、button
 - 按钮设置样式的class名称,需要给button设置class="elButton"实现更改样式
