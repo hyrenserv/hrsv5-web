@@ -8,7 +8,7 @@
                            :limit="1" :on-exceed="handleExceed" :fileList="fileList">
                     <el-button size="mini" type="primary">选择上传文件</el-button>
                 </el-upload>
-                <el-button size="mini" type="primary" @click="importData">导入数据</el-button>
+                <el-button size="mini" type="success" @click="importData">导入数据</el-button>
                 <el-button type="primary" @click="adddmdatatable()" size="mini">
                     <i class="el-icon-circle-plus-outline"></i>新增数据表
                 </el-button>
@@ -19,25 +19,25 @@
         </el-row>
 
         <el-table :data="tableData" border style="width: 100%">
-            <el-table-column type="index" label="序号" align='center'>
+            <el-table-column type="index" width="60" label="序号" align='center'>
             </el-table-column>
-            <el-table-column prop="datatable_id" label="作业参数" align='center'>
+            <el-table-column prop="datatable_id" width="110" label="作业参数" align='center'>
             </el-table-column>
             <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
             </el-table-column>
             <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip align='center'>
             </el-table-column>
-            <el-table-column prop="datatable_lifecycle" label="生命周期" align='center'>
+            <el-table-column prop="datatable_lifecycle" width="80" label="生命周期" align='center'>
             </el-table-column>
-            <el-table-column prop="etl_date" label="跑批日期" align='center'>
+            <el-table-column prop="etl_date" width="90" label="跑批日期" align='center'>
             </el-table-column>
-            <el-table-column prop="is_successful" label="执行状态" align='center'>
+            <el-table-column prop="is_successful" width="90" label="执行状态" align='center'>
             </el-table-column>
-            <el-table-column prop="datatable_create_date" label="创建日期" align='center'>
+            <el-table-column prop="datatable_create_date" width="90" label="创建日期" align='center'>
             </el-table-column>
-            <el-table-column prop="datatable_due_date" label="数据到期日期" align='center'>
+            <el-table-column prop="datatable_due_date" width="90" label="到期日期" align='center'>
             </el-table-column>
-            <el-table-column label="操作" width="300" align='center'>
+            <el-table-column label="操作" width="220" align='center'>
                 <template slot-scope="scope">
                     <el-button size="mini" icon="el-icon-edit" title="编辑" @click="editdmdatatable(scope.row)" circle
                                type="primary">
@@ -99,6 +99,7 @@
     import * as functionAll from "./marketAction";
     import * as message from "@/utils/js/message";
     import Loading from '../../components/loading'
+
     let arr = [];
     export default {
         components: {
@@ -148,7 +149,8 @@
                 });
             },
             deletedmdatatable(row) {
-                message.confirmMsg('确定删除吗').then(res => {
+                let datatable_en_name = row.datatable_en_name;
+                message.confirmMsg('确定删除 ' + datatable_en_name + ' 吗').then(res => {
                     let param = {
                         "datatable_id": row.datatable_id
                     }
@@ -173,7 +175,7 @@
             downloaddmdatatable(row) {
                 let datatable_id = row.datatable_id;
                 let datatable_en_name = row.datatable_en_name;
-                message.confirmMsg('确定导出吗').then(res => {
+                message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
                     let that = this;
                     functionAll.downloadDmDatatable({
                         datatable_id: datatable_id
