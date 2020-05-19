@@ -48,7 +48,7 @@
                     </el-tree>
                 </div>
                 ```
-     - 8.3 弹框标题样式，直接复制下面代码（样式在类名dialogtitle,dialogtoptst,dialogtopname中）
+- 8.3 弹框标题样式，直接复制下面代码（样式在类名dialogtitle,dialogtoptst,dialogtopname中）
       ```css
        <div slot="title" >
                         <span class="dialogtitle el-icon-caret-right">定义分页抽取SQL</span>
