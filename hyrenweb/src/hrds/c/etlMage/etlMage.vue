@@ -940,6 +940,9 @@ export default {
                             type: 'columnrange',
                             inverted: true,
                         },
+                        credits: {
+                            enabled: false
+                        },
                         title: {
                             text: ''
                         },
