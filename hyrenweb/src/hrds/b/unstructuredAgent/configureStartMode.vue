@@ -109,6 +109,7 @@
 <script>
 import * as functionAll from "./unstructuredAgent";
 import * as validator from "@/utils/js/validator";
+import * as fixedAll from "@/utils/js/fileOperations";
 import regular from "@/utils/js/regular";
 export default {
     data() {
@@ -162,31 +163,13 @@ export default {
                         this.form.agent_name = this.$Base64.decode(this.$route.query.rowName);
                         this.form.host_name = res.data.file_collect_set_info.host_name;
                         this.form.is_solr = res.data.file_collect_set_info.is_solr;
-                        // 处理本地时间
+                        // 处理本地时间和时分秒
                         this.oldlocalTime = res.data.localdate;
-                        let years = res.data.localdate.substring(0, 4);
-                        let months = res.data.localdate.substring(4, 6);
-                        let days = res.data.localdate.substring(6, 9);
-                        let dateChanges = years + "-" + months + "-" + days;
-                        // 处理传来的本地时分秒
-                        let hours = res.data.localtime.substring(0, 2);
-                        let minute = res.data.localtime.substring(2, 4);
-                        let second = res.data.localtime.substring(4, 6);
-                        let hourChanges = hours + ":" + minute + ":" + second;
-                        this.form.systemtime = dateChanges + " " + hourChanges;
+                        this.form.systemtime = fixedAll.dateFormat(res.data.localdate) + " " + fixedAll.hourFormat(res.data.localtime);
                         this.localTime = this.form.systemtime;
-                        // 处理传来的年月日
+                        // 处理传来的年月日和时分秒
                         this.oldserveTime = res.data.agentdate;
-                        let year = res.data.agentdate.substring(0, 4);
-                        let month = res.data.agentdate.substring(4, 6);
-                        let day = res.data.agentdate.substring(6, 9);
-                        let dateChange = year + "-" + month + "-" + day;
-                        // 处理传来的时分秒
-                        let hour = res.data.agenttime.substring(0, 2);
-                        let minutes = res.data.agenttime.substring(2, 4);
-                        let seconds = res.data.agenttime.substring(4, 6);
-                        let hourChange = hour + ":" + minutes + ":" + seconds;
-                        this.form.agent_time = dateChange + " " + hourChange;
+                        this.form.agent_time = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
                         this.serverTime = this.form.agent_time;
                     }
                 });
@@ -198,31 +181,13 @@ export default {
                         this.form.system_type = res.data.osName;
                         this.form.agent_name = this.$Base64.decode(this.$route.query.agent_name);
                         this.form.host_name = res.data.userName;
-                        // 处理本地时间
+                        // 处理本地时间和时分秒
                         this.oldlocalTime = res.data.localdate;
-                        let years = res.data.localdate.substring(0, 4);
-                        let months = res.data.localdate.substring(4, 6);
-                        let days = res.data.localdate.substring(6, 9);
-                        let dateChanges = years + "-" + months + "-" + days;
-                        // 处理传来的本地时分秒
-                        let hours = res.data.localtime.substring(0, 2);
-                        let minute = res.data.localtime.substring(2, 4);
-                        let second = res.data.localtime.substring(4, 6);
-                        let hourChanges = hours + ":" + minute + ":" + second;
-                        this.form.systemtime = dateChanges + " " + hourChanges;
+                        this.form.systemtime = fixedAll.dateFormat(res.data.localdate) + " " + fixedAll.hourFormat(res.data.localtime);
                         this.localTime = this.form.systemtime;
-                        // 处理传来的服务器年月日
+                        // 处理传来的服务器年月日和时分秒
                         this.oldserveTime = res.data.agentdate;
-                        let year = res.data.agentdate.substring(0, 4);
-                        let month = res.data.agentdate.substring(4, 6);
-                        let day = res.data.agentdate.substring(6, 9);
-                        let dateChange = year + "-" + month + "-" + day;
-                        // 处理传来的服务器时分秒
-                        let hour = res.data.agenttime.substring(0, 2);
-                        let minutes = res.data.agenttime.substring(2, 4);
-                        let seconds = res.data.agenttime.substring(4, 6);
-                        let hourChange = hour + ":" + minutes + ":" + seconds;
-                        this.form.agent_time = dateChange + " " + hourChange;
+                        this.form.agent_time = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);;
                         this.serverTime = this.form.agent_time;
                     }
                 });

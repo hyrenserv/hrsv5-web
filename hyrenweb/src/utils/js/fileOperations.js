@@ -25,3 +25,23 @@ export function fileDownload(res, fileName) {
         URL.revokeObjectURL(aTag.href);
     }
 }
+
+// 年月日转换
+export function dateFormat(data){
+    let year = data.substring(0, 4);
+    let month = data.substring(4, 6);
+    let day = data.substring(6, 8);
+    let dateChange = year + "-" + month + "-" + day;
+    data = dateChange;
+    return data
+}
+
+// 时分秒转换
+export function hourFormat(data){
+    let hour = data.substring(0, 2);
+    let minutes = data.substring(2, 4);
+    let seconds = data.substring(4, 6);
+    let hourChange = hour + ":" + minutes + ":" + seconds;
+    data = hourChange;
+    return data
+}
