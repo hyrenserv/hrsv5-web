@@ -217,6 +217,7 @@
 <script>
 import * as functionAll from "./semiStructuredAgent";
 import * as validator from "@/utils/js/validator";
+import * as fixedAll from "@/utils/js/fileOperations";
 import regular from "@/utils/js/regular";
 import Step from "./step";
 export default {
@@ -283,29 +284,11 @@ export default {
                 }).then(res => {
                     this.form.system_name = res.data.osName;
                     this.form.host_name = res.data.userName;
-                    // 处理传来的年月日服务器日期
-                    let year = res.data.agentdate.substring(0, 4);
-                    let month = res.data.agentdate.substring(4, 6);
-                    let day = res.data.agentdate.substring(6, 9);
-                    let dateChange = year + "-" + month + "-" + day;
-                    // 处理传来的时分秒
-                    let hour = res.data.agenttime.substring(0, 2);
-                    let minutes = res.data.agenttime.substring(2, 4);
-                    let seconds = res.data.agenttime.substring(4, 6);
-                    let hourChange = hour + ":" + minutes + ":" + seconds;
-                    this.form.server_date = dateChange + " " + hourChange;
+                    // 处理传来的年月日服务器日期和时分秒
+                    this.form.server_date = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
                     this.serverTime = this.form.server_date;
-                    // 处理传来的年月日本地日期
-                    let yearlocal = res.data.localDate.substring(0, 4);
-                    let monthlocal = res.data.localDate.substring(4, 6);
-                    let daylocal = res.data.localDate.substring(6, 9);
-                    let dateChangelocal = yearlocal + "-" + monthlocal + "-" + daylocal;
-                    // 处理传来的时分秒
-                    let hourlocal = res.data.localtime.substring(0, 2);
-                    let minuteslocal = res.data.localtime.substring(2, 4);
-                    let secondslocal = res.data.localtime.substring(4, 6);
-                    let hourChangelocal = hourlocal + ":" + minuteslocal + ":" + secondslocal;
-                    this.form.local_time = dateChangelocal + " " + hourChangelocal;
+                    // 处理传来的年月日本地日期和时分秒
+                    this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localtime);
                     this.localTime = this.form.local_time;
                     this.form.obj_number = res.data.object_collect_info.obj_number;
                     this.form.obj_collect_name = res.data.object_collect_info.obj_collect_name;
@@ -330,29 +313,11 @@ export default {
                 }).then(res => {
                     this.form.system_name = res.data.osName;
                     this.form.host_name = res.data.userName;
-                    // 处理传来的年月日服务器日期
-                    let year = res.data.agentdate.substring(0, 4);
-                    let month = res.data.agentdate.substring(4, 6);
-                    let day = res.data.agentdate.substring(6, 9);
-                    let dateChange = year + "-" + month + "-" + day;
-                    // 处理传来的时分秒
-                    let hour = res.data.agenttime.substring(0, 2);
-                    let minutes = res.data.agenttime.substring(2, 4);
-                    let seconds = res.data.agenttime.substring(4, 6);
-                    let hourChange = hour + ":" + minutes + ":" + seconds;
-                    this.form.server_date = dateChange + " " + hourChange;
+                    // 处理传来的年月日服务器日期和时分秒
+                    this.form.server_date = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
                     this.serverTime = this.form.server_date;
-                    // 处理传来的年月日本地日期
-                    let yearlocal = res.data.localDate.substring(0, 4);
-                    let monthlocal = res.data.localDate.substring(4, 6);
-                    let daylocal = res.data.localDate.substring(6, 9);
-                    let dateChangelocal = yearlocal + "-" + monthlocal + "-" + daylocal;
-                    // 处理传来的时分秒
-                    let hourlocal = res.data.localtime.substring(0, 2);
-                    let minuteslocal = res.data.localtime.substring(2, 4);
-                    let secondslocal = res.data.localtime.substring(4, 6);
-                    let hourChangelocal = hourlocal + ":" + minuteslocal + ":" + secondslocal;
-                    this.form.local_time = dateChangelocal + " " + hourChangelocal;
+                    // 处理传来的年月日本地日期和时分秒
+                    this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localtime);
                     this.localTime = this.form.local_time;
                 })
             }
