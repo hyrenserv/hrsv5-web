@@ -60,16 +60,16 @@
         </el-table-column>
         <el-table-column prop="configure" label="配置" align='center' width="100">
             <template slot-scope="scope">
-                <i class="el-icon-setting" title="配置" @click="setting(scope.$index, scope.row)"></i>
+                <i class="el-icon-setting handeler" title="配置" @click="setting(scope.$index, scope.row)"></i>
             </template>
         </el-table-column>
         <el-table-column label="操作" align='center' width="150">
             <template slot-scope="scope">
-                <i class="el-icon-circle-close ls" title="停止" @click="handleStop(scope.$index, scope.row)"></i>
-                <i class="el-icon-finished ls" title="跳过" @click="handlePass(scope.$index, scope.row)"></i>
-                <i class="el-icon-refresh ls" title="重跑" @click="handleRefresh(scope.$index, scope.row)"></i>
-                <i class="el-icon-right ls" title="强制执行" @click="handleForce(scope.$index, scope.row)"></i>
-                <i class="el-icon-sort ls" title="临时调整优先级" @click="handleAdjust(scope.$index, scope.row)"></i>
+                <i class="el-icon-circle-close handeler ls" title="停止" @click="handleStop(scope.$index, scope.row)"></i>
+                <i class="el-icon-finished handeler ls" title="跳过" @click="handlePass(scope.$index, scope.row)"></i>
+                <i class="el-icon-refresh handeler ls" title="重跑" @click="handleRefresh(scope.$index, scope.row)"></i>
+                <i class="el-icon-right handeler ls" title="强制执行" @click="handleForce(scope.$index, scope.row)"></i>
+                <i class="el-icon-sort handeler ls" title="临时调整优先级" @click="handleAdjust(scope.$index, scope.row)"></i>
             </template>
         </el-table-column>
     </el-table>
@@ -903,6 +903,10 @@ export default {
 
 .dialogDiv {
     text-align: center;
+}
+
+.handeler {
+    cursor: pointer;
 }
 </style><style>
 .el-autocomplete-suggestion li {

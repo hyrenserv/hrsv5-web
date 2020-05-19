@@ -22,11 +22,11 @@
         </el-table-column>
         <el-table-column label="操作" align='center' width="150">
             <template slot-scope="scope">
-                <i class="el-icon-video-pause ls" title="暂停" @click="handlePause(scope.$index, scope.row)"></i>
-                <i class="el-icon-caret-right ls" title="续跑" @click="handlePlay(scope.$index, scope.row)"></i>
-                <i class="el-icon-refresh ls" title="重跑" @click="handleRefresh(scope.$index, scope.row)"></i>
-                <i class="el-icon-d-arrow-right ls" title="日切" @click="handleNext(scope.$index, scope.row)"></i>
-                <i class="el-icon-circle-close ls" title="停止" @click="handleStop(scope.$index, scope.row)"></i>
+                <i class="el-icon-video-pause ls handeler" title="暂停" @click="handlePause(scope.$index, scope.row)"></i>
+                <i class="el-icon-caret-right ls handeler" title="续跑" @click="handlePlay(scope.$index, scope.row)"></i>
+                <i class="el-icon-refresh ls handeler" title="重跑" @click="handleRefresh(scope.$index, scope.row)"></i>
+                <i class="el-icon-d-arrow-right ls handeler" title="日切" @click="handleNext(scope.$index, scope.row)"></i>
+                <i class="el-icon-circle-close ls handeler" title="停止" @click="handleStop(scope.$index, scope.row)"></i>
             </template>
         </el-table-column>
     </el-table>
@@ -381,5 +381,9 @@ export default {
 
 .tabBtns {
     margin-top: 15px;
+}
+
+.handeler {
+    cursor: pointer;
 }
 </style>
