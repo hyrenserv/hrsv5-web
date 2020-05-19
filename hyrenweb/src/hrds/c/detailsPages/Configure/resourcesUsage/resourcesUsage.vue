@@ -16,11 +16,9 @@
     <el-divider></el-divider>
     <el-row>
         <div class="subSystemdiv">
-            <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                <el-button size="mini" type="primary">选择上传文件</el-button>
+            <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                <el-button size="mini" type="primary">导入数据</el-button>
             </el-upload>
-            <el-button class="buttonStyle" size="mini" type="success" @click="importData">导入数据
-            </el-button>
             <el-button class="buttonStyle" size="mini" type="primary" @click="downloadModel">下载模板
             </el-button>
             <el-button class="buttonStyle" size="mini" type="primary" @click="handleAdd">新增
@@ -84,6 +82,14 @@
             <el-button type="primary" @click="saveAdd('formAdd')" size="mini">保存</el-button>
         </div>
     </el-dialog>
+    <!-- 获取上传文件 -->
+    <el-dialog title="导入Excel" :visible.sync="dialogImportData" :before-close="importDatacancel">
+        <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
+            <el-button type="primary" @click="importData" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -109,6 +115,7 @@ export default {
             rule: validator.default,
             dialogFormVisibleAdd: false,
             dialogVisibleDelete: false,
+            dialogImportData: false,
             formAdd: {
                 etl_sys_cd: '',
                 etl_job: '',
@@ -342,7 +349,19 @@ export default {
         },
         // 获取上传的文件详情
         handleChange(file, fileList) {
+            this.fileList = fileList;
+            if (fileList.length != 0) {
+                this.dialogImportData = true;
+            } else {
+                this.dialogImportData = false;
+            }
             arr = fileList;
+        },
+        // 取消数据导入
+        importDatacancel() {
+            this.dialogImportData = false;
+            this.fileList = [];
+            this.$message.info('已取消上传');
         },
         //导入数据按钮
         importData() {
@@ -356,6 +375,7 @@ export default {
                         message.customizTitle("文件上传成功", "success");
                         this.getTable();
                         this.fileList = [];
+                        this.dialogImportData = false;
                     }
                 });
             } else {
