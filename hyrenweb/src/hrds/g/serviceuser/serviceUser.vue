@@ -18,15 +18,15 @@
         </el-form>
         <!--接口使用信息列表展示-->
         <el-table :data="interfaceUseData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                  border style="width: 100%">
+                  border style="width: 100%" size="medium">
             <el-table-column label="序号" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="interface_name" label="接口名称" align="center"/>
-            <el-table-column prop="start_use_date" label="开始使用日期" align="center"/>
-            <el-table-column prop="use_valid_date" label="结束使用日期" align="center"/>
+            <el-table-column prop="start_use_date" :formatter="dateFormat" label="开始使用日期" align="center"/>
+            <el-table-column prop="use_valid_date" :formatter="dateFormat" label="结束使用日期" align="center"/>
             <el-table-column label="接口使用API查看" align="center" prop="interface_name">
                 <template slot-scope="scope">
                     <router-link
@@ -60,14 +60,14 @@
         </el-form>
         <!--数据使用信息列表展示-->
         <el-table :data="dataUseData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                  border style="width: 100%">
+                  border style="width: 100%" size="medium">
             <el-table-column label="序号" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="sysreg_name" label="表名称" align="center"/>
-            <el-table-column prop="original_name" label="表中文名称" align="center"/>
+            <el-table-column prop="sysreg_name" label="系统登记表名" align="center"/>
+            <el-table-column prop="original_name" label="原始表中文名" align="center"/>
             <el-table-column label="表列信息查看" align="center">
                 <template slot-scope="scope">
                     <el-button size="medium" type="text" class='editcolor'
@@ -87,13 +87,14 @@
         <!--查看字段弹出框-->
         <el-dialog title="表列名信息" :visible.sync="dialogViewFieldFormVisible"
                    :before-close="beforeViewFieldClose">
-            <el-table :data="filedData" border style="width: 100%">
+            <el-table :data="filedData" border style="width: 100%" size="medium">
                 <el-table-column label="序号" align="center">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="table_column_name" label="字段名" align="center"/>
+                <el-table-column prop="table_en_column" label="字段英文名" align="center"/>
+                <el-table-column prop="table_ch_column" label="字段中文名" align="center"/>
             </el-table>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" size="mini" @click="dialogViewFieldFormVisible = false">
@@ -185,6 +186,16 @@
             },
             beforeViewFieldClose() {
                 this.dialogViewFieldFormVisible = false;
+            },
+            // 表格日期格式化展示
+            dateFormat(row, column) {
+                const date = row[column.property];
+                if (date != null) {
+                    const year = date.substring(0, 4);
+                    const month = date.substring(4, 6);
+                    const day = date.substring(6, 8);
+                    return year + "-" + month + "-" + day;
+                }
             },
         }
     }

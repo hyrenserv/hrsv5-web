@@ -405,7 +405,8 @@ export default {
                                 job_priority: parseInt(arrdata[i].job_priority),
                                 pre_etl_job: arrdata[i].pre_etl_job,
                                 pro_para: arrdata[i].pro_para,
-                                etl_sys_cd: this.ruleForm.Project_num
+                                etl_sys_cd: this.ruleForm.Project_num,
+                                ded_id:arrdata[i].ded_id
                             });
                             jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join(
                                 "^"
@@ -425,16 +426,18 @@ export default {
                                 disp_offset: parseInt(arrdata[i].disp_offset),
                                 disp_time: arrdata[i].disp_time,
                                 pro_para: arrdata[i].pro_para,
-                                etl_sys_cd: this.ruleForm.Project_num
+                                etl_sys_cd: this.ruleForm.Project_num,
+                                ded_id:arrdata[i].ded_id
                             });
                         }
                     }
                     params["etlJobs"] = JSON.stringify(etlJobs);
-                    params["ded_arr"] = ded_arr.join("^");
+                    params["ded_arr"] =ded_arr //ded_arr.join("^");
                     params["jobRelations"] =
                         JSON.stringify(jobRelation) == "{}" ?
                         "" :
                         JSON.stringify(jobRelation);
+                        console.log(params)
                     sendTask.saveJobDataToDatabase(params).then(res => {
                         if (res.code && res.code == 200) {
                             this.isLoading = false;
@@ -533,6 +536,8 @@ export default {
                 })
                 .then(res => {
                     if (res.data.length > 0) {
+                    console.log(res.data)
+
                         this.ruleForm.startuptableData = res.data;
                     } else {
                         this.tableloadingInfo = "暂无数据";

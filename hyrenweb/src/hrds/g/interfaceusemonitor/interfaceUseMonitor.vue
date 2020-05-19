@@ -39,8 +39,8 @@
                 </el-row>
                 <!--接口信息列表展示-->
                 <el-table :data="interfaceData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                          border style="width: 100%">
-                    <el-table-column label="序号" align="center">
+                          border style="width: 100%" size="medium">
+                    <el-table-column label="序号" width="50px" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                         </template>
@@ -48,9 +48,11 @@
                     <el-table-column prop="interface_name" label="接口名称" align="center"/>
                     <el-table-column prop="interface_code" label="接口代码" align="center"/>
                     <el-table-column prop="user_name" label="使用用户" align="center"/>
-                    <el-table-column prop="start_use_date" label="开始日期" align="center"/>
-                    <el-table-column prop="use_valid_date" label="结束日期" align="center"/>
-                    <el-table-column prop="use_state" label="接口使用状态" align="center">
+                    <el-table-column prop="start_use_date" :formatter="dateFormat" label="开始日期"
+                                     align="center"/>
+                    <el-table-column prop="use_valid_date" :formatter="dateFormat" label="结束日期"
+                                     align="center"/>
+                    <el-table-column prop="use_state" width="80px" label="接口使用状态" align="center">
                         <template slot-scope="scope">{{useState[scope.row.use_state]}}</template>
                     </el-table-column>
                     <el-table-column label="操作" align="center">
@@ -103,14 +105,14 @@
                     </el-col>
                 </el-row>
                 <el-table :data="dataTableData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                          border style="width: 100%">
-                    <el-table-column label="序号" align="center">
+                          border style="width: 100%" size="medium">
+                    <el-table-column label="序号" width="50px" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="original_name" label="数据表名称" align="center"/>
-                    <el-table-column prop="sysreg_name" label="数据表中文名称" align="center"/>
+                    <el-table-column prop="sysreg_name" label="系统登记表名" align="center"/>
+                    <el-table-column prop="original_name" label="原始表中文名" align="center"/>
                     <el-table-column prop="user_name" label="使用用户" align="center"/>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
@@ -159,7 +161,8 @@
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="table_column_name" label="字段名" align="center"/>
+                <el-table-column prop="table_en_column" label="字段英文名" align="center"/>
+                <el-table-column prop="table_ch_column" label="字段中文名" align="center"/>
             </el-table>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" size="mini" @click="dialogViewFieldFormVisible = false">
@@ -356,6 +359,7 @@
             },
             // 改变tabs框
             handleClick(tab) {
+                this.currPage = 1;
                 if (tab.paneName === "0") {
                     this.searchInterfaceInfo();
                 } else {
@@ -378,7 +382,17 @@
             resetDataTable() {
                 this.searchTableData();
                 this.user_id = '';
-            }
+            },
+            // 表格日期格式化展示
+            dateFormat(row, column) {
+                const date = row[column.property];
+                if (date != null) {
+                    const year = date.substring(0, 4);
+                    const month = date.substring(4, 6);
+                    const day = date.substring(6, 8);
+                    return year + "-" + month + "-" + day;
+                }
+            },
         }
     };
 </script>

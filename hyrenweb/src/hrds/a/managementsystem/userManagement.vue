@@ -148,6 +148,7 @@
 <script>
 import * as functionAll from "@/hrds/a/managementsystem/managementsystem";
 import * as validator from "@/utils/js/validator";
+import * as fixedAll from "@/utils/js/fileOperations";
 import regular from "@/utils/js/regular";
 import {
     watch
@@ -216,11 +217,7 @@ export default {
                     }
                     for (let index = 0; index < res.data.sysUsers.length; index++) {
                         // 更改日期格式
-                        let year = res.data.sysUsers[index].create_date.substring(0, 4);
-                        let month = res.data.sysUsers[index].create_date.substring(4, 6);
-                        let day = res.data.sysUsers[index].create_date.substring(6, 9);
-                        let date = year + "-" + month + "-" + day;
-                        res.data.sysUsers[index].create_date = date;
+                        res.data.sysUsers[index].create_date = fixedAll.dateFormat(res.data.sysUsers[index].create_date);
                         // getvalue代码项
                         let typeArr = res.data.sysUsers[index].usertype_group.split(",");
                         let dataType = this.getValueWithcode(typeArr);

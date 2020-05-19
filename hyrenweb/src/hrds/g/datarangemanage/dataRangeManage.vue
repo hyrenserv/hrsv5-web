@@ -48,41 +48,39 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
-                        <!--接口信息列表展示-->
-                        <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage*pageSize)"
-                                  border style="width: 100%" ref="multipleTable"
-                                  :row-key="(row)=>{ return row.table_id}"
-                                  @selection-change="selectionChange" @select-all='allSelect'>
-                            <el-table-column width="40" align="center" type="selection"
-                                             :reserve-selection="true">
-                            </el-table-column>
-                            <el-table-column label="序号" align="center">
-                                <template slot-scope="scope">
-                                    <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="table_name" label="采集原始表名" align="center"/>
-                            <el-table-column prop="original_name" label="原始表中文名" align="center"/>
-                            <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名"
-                                             align="center"/>
-                            <el-table-column prop="selectColumn" label="选择字段" align="center">
-                                <template slot-scope="scope">
-                                    <el-button type="primary" size="mini"
-                                               @click="searchFieldById(scope.row,scope.$index)">
-                                        选择字段
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <!-- 分页内容 -->
-                        <el-row class="pagination">
-                            <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage"
-                                           @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]"
-                                           :page-size="pageSize"
-                                           layout=" total,sizes,prev, pager, next,jumper"
-                                           :total="totalSize" class='locationcenter'/>
-                        </el-row>
+                    <!--接口信息列表展示-->
+                    <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage*pageSize)"
+                              border style="width: 100%" ref="multipleTable" size="medium"
+                              :row-key="(row)=>{ return row.id}"
+                              @selection-change="selectionChange" @select-all='allSelect'>
+                        <el-table-column width="40" align="center" type="selection"
+                                         :reserve-selection="true">
+                        </el-table-column>
+                        <el-table-column label="序号" width="50px" align="center">
+                            <template slot-scope="scope">
+                                <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="table_name" label="采集原始表名" align="center"/>
+                        <el-table-column prop="original_name" label="原始表中文名" align="center"/>
+                        <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名"
+                                         align="center"/>
+                        <el-table-column prop="selectColumn" label="选择字段" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini"
+                                           @click="searchFieldById(scope.row,scope.$index)">
+                                    选择字段
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!-- 分页内容 -->
+                    <el-row class="pagination">
+                        <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage"
+                                       @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]"
+                                       :page-size="pageSize"
+                                       layout=" total,sizes,prev, pager, next,jumper"
+                                       :total="totalSize" class='locationcenter'/>
                     </el-row>
                 </el-form>
             </el-col>
@@ -91,7 +89,7 @@
         <el-dialog title="查看字段信息" :visible.sync="dialogShowFieldFormVisible"
                    :before-close="beforeShowFieldClose">
             <el-table :data="columnData" border style="width: 100%" ref="multipleColumnTable"
-                      :row-key="(row)=>{ return row.column_id}" height="450"
+                      :row-key="(row)=>{ return row.column_id}" height="450" size="medium"
                       @select="columnSelectionChange" @select-all='allColumnSelect'>
                 <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
                 </el-table-column>
@@ -100,7 +98,7 @@
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="field_en_name" label="字段名" align="center"/>
+                <el-table-column prop="field_en_name" label="字段英文名" align="center"/>
                 <el-table-column prop="field_cn_name" label="字段中文名" align="center"/>
             </el-table>
             <div slot="footer" class="dialog-footer">
@@ -136,8 +134,6 @@
                 selectColumnRow: [],
                 userData: [],
                 treeData: [],
-                checkedAll: false,
-                checked: false,
                 dialogShowFieldFormVisible: false,
                 filterText: '',
                 tableShowStatus: true,
@@ -189,18 +185,18 @@
                     return;
                 }
                 this.selectRow.forEach(row => {
+                    let tableChColumns = [];
+                    let tableEnColumns = [];
                     let param = {};
-                    let column_id = [];
-                    let column_name = [];
                     if (row.selectColumn !== undefined) {
                         row.selectColumn.forEach(o => {
-                            column_id.push(o.column_id);
-                            column_name.push(o.field_en_name);
+                            tableChColumns.push(o.field_cn_name);
+                            tableEnColumns.push(o.field_en_name);
                         })
-                        param["column_id"] = column_id;
-                        param["column_name"] = column_name;
                     }
                     param["file_id"] = row.file_id;
+                    param["table_ch_column"] = tableChColumns;
+                    param["table_en_column"] = tableEnColumns;
                     tableDataInfos.push(param)
                 });
                 params["tableDataInfos"] = JSON.stringify(tableDataInfos);
@@ -216,7 +212,7 @@
                                 this.$refs.multipleColumnTable.clearSelection();
                             }
                             this.$refs.multipleTable.clearSelection();
-                            this.form = [];
+                            this.form = {};
                             this.tableData = [];
                             this.searchUserInfo();
                             this.searchDataUsageRangeInfoToTreeData();

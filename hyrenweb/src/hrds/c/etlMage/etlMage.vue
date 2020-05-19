@@ -250,7 +250,8 @@ import regular from "@/utils/js/regular";
 import VeLine from 'v-charts/lib/histogram.common';
 import Vuex from 'vuex';
 import draggable from 'vuedraggable'
-import Sortable from 'sortablejs'
+import Sortable from 'sortablejs';
+import * as fixedAll from "@/utils/js/fileOperations";
 let changValue;
 let sys_cds;
 export default {
@@ -369,11 +370,7 @@ export default {
             let params = {};
             etlMageAllFun.searchEtlSys(params).then(res => {
                 for (let index = 0; index < res.data.length; index++) {
-                    let year = res.data[index].curr_bath_date.substring(0, 4);
-                    let month = res.data[index].curr_bath_date.substring(4, 6);
-                    let day = res.data[index].curr_bath_date.substring(6, 9);
-                    let date = year + "-" + month + "-" + day;
-                    res.data[index].curr_bath_date = date;
+                    res.data[index].curr_bath_date = fixedAll.dateFormat(res.data[index].curr_bath_date);
                 }
                 let arr = [];
                 let arr2 = [];
@@ -405,11 +402,7 @@ export default {
             etlMageAllFun.monitorAllProjectChartsData().then(res => {
                 this.listdata = res.data;
                 res.data.forEach((item, index) => {
-                    let year = res.data[index].bathdate.substring(0, 4);
-                    let month = res.data[index].bathdate.substring(4, 6);
-                    let day = res.data[index].bathdate.substring(6, 9);
-                    let date = year + "-" + month + "-" + day;
-                    res.data[index].bathdate = date;
+                    res.data[index].bathdate = fixedAll.dateFormat(res.data[index].bathdate);
                     let arry = [];
                     item['挂起'] = item.pending;
                     item['等待'] = item.waiting;
@@ -801,11 +794,7 @@ export default {
             functionAll.monitorCurrentBatchInfo({
                 etl_sys_cd: val
             }).then((res) => {
-                let year = res.data.curr_bath_date.substring(0, 4);
-                let month = res.data.curr_bath_date.substring(4, 6);
-                let day = res.data.curr_bath_date.substring(6, 9);
-                let date = year + "-" + month + "-" + day;
-                res.data.curr_bath_date = date;
+                res.data.curr_bath_date = fixedAll.dateFormat(res.data.curr_bath_date);
                 res.data.systemOperationStatus.forEach(item => {
                     item['挂起'] = item.pending;
                     item['等待'] = item.waiting;
