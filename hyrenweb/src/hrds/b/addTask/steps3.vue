@@ -1554,7 +1554,7 @@ export default {
                 col_offset: "",
                 seq: "",
                 split_sep: "",
-                col_type: ""
+                col_type: "varchar(10)"
             });
         },
         Col_colcfSubmitFun() {
@@ -1910,7 +1910,7 @@ export default {
         columnMerge_addRow(tableData) {
             tableData.push({
                 col_name: "",
-                col_type: "",
+                col_type: "varchar(10)",
                 col_zhname: "",
                 old_name: ""
             });
