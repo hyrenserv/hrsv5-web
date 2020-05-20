@@ -30,6 +30,15 @@
                     <el-form-item label="url">
                         <el-input v-model="testForm.url" clearable placeholder="请输入请求url"/>
                     </el-form-item>
+                    <el-form-item label="tableName">
+                        <el-input v-model="testForm.tableName" clearable placeholder="请输入系统登记表名称"/>
+                    </el-form-item>
+                    <el-form-item label="dataType">
+                        <el-input v-model="testForm.dataType" clearable placeholder="请输入输出数据类型"/>
+                    </el-form-item>
+                    <el-form-item label="outType">
+                        <el-input v-model="testForm.outType" clearable placeholder="请输入输出数据形式"/>
+                    </el-form-item>
                     <el-form-item label="num">
                         <el-input v-model="testForm.num" clearable placeholder="请输入显示条数"/>
                     </el-form-item>
@@ -38,9 +47,6 @@
                     </el-form-item>
                     <el-form-item label="whereColumn">
                         <el-input v-model="testForm.whereColumns" clearable placeholder="请输入查询条件"/>
-                    </el-form-item>
-                    <el-form-item label="tableName">
-                        <el-input v-model="testForm.tableName" clearable placeholder="请输入系统登记表名称"/>
                     </el-form-item>
                     <el-form-item label="ds_name">
                         <el-input v-model="testForm.ds_name" clearable placeholder="请输入数据源名称"/>
@@ -80,12 +86,6 @@
                     </el-form-item>
                     <el-form-item label="fcs_id">
                         <el-input v-model="testForm.fcs_id" clearable placeholder="请输入任务ID"/>
-                    </el-form-item>
-                    <el-form-item label="dataType">
-                        <el-input v-model="testForm.dataType" clearable placeholder="请输入输出数据类型"/>
-                    </el-form-item>
-                    <el-form-item label="outType">
-                        <el-input v-model="testForm.outType" clearable placeholder="请输入输出数据形式"/>
                     </el-form-item>
                     <el-form-item label="asynType">
                         <el-input v-model="testForm.asynType" clearable placeholder="请输入是否异步"/>
@@ -133,8 +133,16 @@
             },
             // 获取接口响应信息
             getInterfaceData() {
+                if (this.testForm.num === "") {
+                    this.testForm.num = 10;
+                }
+                let checkParams = [];
+                let checkParam = {};
+                checkParam["user_id"] = "2001";
+                checkParam["user_password"] = "1";
+                checkParams.push(checkParam);
+                this.testForm["checkParams"] = JSON.stringify(checkParams);
                 interfaceFunctionAll.getInterfaceData(this.testForm).then(res => {
-                    // this.interfaceData = JSON.stringify(res.data);
                     this.interfaceData = this.getFormatData(JSON.stringify(res.data));
                 })
             },
