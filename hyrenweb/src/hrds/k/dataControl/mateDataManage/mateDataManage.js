@@ -37,3 +37,11 @@ export function saveMetaData(data) {
         params: data,
     })
 }
+
+//删除表(表设置为无效)
+export function tableSetToInvalid(data) {
+    return request({
+        url: '/K/dm/metadatamanage/tableSetToInvalid',
+        params: data,
+    })
+}
