@@ -188,6 +188,11 @@
             },
             //点击源数据管理树节点触发
             mdmHandleClick(data) {
+                //初始化输入框
+                this.table_ch_name_input = true;
+                this.column_ch_name_input = true;
+                //初始化查询结果
+                this.data_meta_info = {table_id: '', column_info_list: []};
                 if (data.file_id !== '') {
                     mdmFun.getMDMTableColumnInfo({
                         "data_layer": data.data_layer, "file_id": data.file_id,
@@ -214,9 +219,9 @@
             },
             //编辑元数据
             editMetadata() {
-                if ("DQC" === this.data_meta_info.data_layer) {
-                    this.table_ch_name_input = true;
-                    this.column_ch_name_input = true;
+                if ("DQC" !== this.data_meta_info.data_layer) {
+                    this.table_ch_name_input = false;
+                    this.column_ch_name_input = false;
                 }
             },
             //保存元数据,保存完成后查询保存的信息
@@ -242,7 +247,9 @@
                     'data_layer': this.data_meta_info.data_layer,
                     'file_id': this.data_meta_info.file_id
                 }).then(res => {
-                    console.log(res);
+                    if (res.success) {
+                        console.log(res);
+                    }
                 })
             },
             //恢复数据回收站的表
