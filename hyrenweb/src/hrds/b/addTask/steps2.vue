@@ -1104,7 +1104,9 @@ export default {
                                         JSON.stringify(tableidArr1) === "{}" ?
                                         "" :
                                         JSON.stringify(tableidArr1);
+                                        console.log(params1)
                                     addTaskAllFun.checkTablePrimary(params1).then(res => {
+                                          console.log(res.data)
                                         let arrdata = res.data;
                                         if (this.SelectColumn.length > 0) {
                                             if (arrdata.length > 0) {
@@ -1123,6 +1125,7 @@ export default {
                                             // arrdata删除本次设置了主键的剩余的做判断
                                             if (arrdata.length > 0) {
                                                 let arr = [];
+                                                console.log(arrdata)
                                                 for (let key in arrdata) {
                                                     if (arrdata[key] == false) {
                                                         arr.push(key);
