@@ -8,7 +8,7 @@
             </el-button>
         </router-link>
     </el-row>
-    <el-table :data="AgenttableData" border style="width: 100%">
+    <el-table stripe :data="AgenttableData" border style="width: 100%">
         <el-table-column prop="datasource_name" label="数据源" width="180" align="center"></el-table-column>
 
         <el-table-column label="数据库 Agent" align="center">
@@ -44,7 +44,7 @@
             <span class="dialogtitle el-icon-caret-right">数据源名称:{{ sourceName }}</span>
             <span class="dialogtoptxt">采集类型: <p class="dialogtopname">{{agentType }}</p></span>
         </div>
-        <el-table :data="gridData2" border size="medium">
+        <el-table stripe :data="gridData2" border size="medium">
             <el-table-column property="agent_name" label="Agent名称" width="150px" align="center"></el-table-column>
             <el-table-column property="agent_ip" label="Agent IP" align="center"></el-table-column>
 
@@ -85,7 +85,7 @@
             <span class="dialogtitle el-icon-caret-right">数据采集任务</span>
         </div>
         <el-button type="success" size="mini" style="margin: 10px 0;">全部发送</el-button>
-        <el-table :data="taskMang" border size="medium" :empty-text="tableloadingInfo">
+        <el-table stripe :data="taskMang" border size="medium" :empty-text="tableloadingInfo">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center" :show-overflow-tooltip="true"></el-table-column>
 

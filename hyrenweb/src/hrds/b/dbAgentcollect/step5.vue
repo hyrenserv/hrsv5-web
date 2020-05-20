@@ -127,7 +127,7 @@
                 </el-col>
             </el-row>
         </el-form>
-        <el-table :data="destinationData.slice((destination_currentPage - 1) * destination_pagesize, destination_currentPage * destination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="getRowKeys">
+        <el-table stripe :data="destinationData.slice((destination_currentPage - 1) * destination_pagesize, destination_currentPage * destination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="getRowKeys">
             <el-table-column width="55" align="center" prop="selectionState">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_destinationFun(destinationData,Allis_destination)" v-model="Allis_destination" :checked="Allis_destination"></el-checkbox>
@@ -195,7 +195,7 @@
         @click="FieldProperty_addRow(FieldProperty)"
         class="addline"
       >新增行</el-button>-->
-        <el-table :data="FieldProperty.slice((fieldProperty_currentPage - 1) * fieldProperty_pagesize, fieldProperty_currentPage * fieldProperty_pagesize)" border size="medium" highlight-current-row>
+        <el-table stripe :data="FieldProperty.slice((fieldProperty_currentPage - 1) * fieldProperty_pagesize, fieldProperty_currentPage * fieldProperty_pagesize)" border size="medium" highlight-current-row>
             <el-table-column  label="序号" width="60px" align="center">
                  <template scope="scope">
                     <span>{{scope.$index+(fieldProperty_currentPage - 1) * fieldProperty_pagesize + 1}}</span>

@@ -206,7 +206,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">选择工程编号</span>
         </div>
-        <el-table  :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
+        <el-table stripe  :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="projnum_radio" :label="scope.row">&thinsp;</el-radio>
@@ -235,7 +235,7 @@
                 <p class="dialogtopname">{{ruleForm.Project_name}}</p>
             </span>
         </div>
-        <el-table  :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
+        <el-table stripe :data="WorknumData.slice((WorknumcurrentPage - 1) * Worknumpagesize, WorknumcurrentPage * Worknumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="worknum_radio" :label="scope.row.sub_sys_cd">&thinsp;</el-radio>

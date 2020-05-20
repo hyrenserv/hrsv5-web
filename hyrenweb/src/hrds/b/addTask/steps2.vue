@@ -77,7 +77,7 @@
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
             <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
-                <el-table :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
+                <el-table stripe :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(sqlexcurrentPage - 1) * sqlexpagesize + 1}}</span>
@@ -195,7 +195,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table :data="SelectColumnData" border size="medium" highlight-current-row>
+        <el-table stripe :data="SelectColumnData" border size="medium" highlight-current-row>
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData,Allis_SelectColumn)" v-model="Allis_SelectColumn" :checked="Allis_SelectColumn" v-if="disShow==true" disabled></el-checkbox>
@@ -442,7 +442,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table :data="SelectColumnData2" border size="medium" highlight-current-row>
+        <el-table stripe :data="SelectColumnData2" border size="medium" highlight-current-row>
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
