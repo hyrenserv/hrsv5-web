@@ -4,11 +4,10 @@
             <i class="block_icon fa text-warning fa-globe blue"></i>
             <span>数据集市</span>
             <div class="elButton ">
-                <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange"
-                           :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                    <el-button size="mini" type="primary">选择上传文件</el-button>
-                </el-upload>
-                <el-button size="mini" type="success" @click="importData">导入数据</el-button>
+                <el-button type="primary" tab-position="top" @click="dialogFormVisibleImport = true;"
+                           size="small">
+                    <i class="el-icon-circle-plus-outline"></i>导入集市表
+                </el-button>
                 <el-button type="primary" @click="adddmdatatable()" size="mini">
                     <i class="el-icon-circle-plus-outline"></i>新增数据表
                 </el-button>
@@ -78,6 +77,23 @@
                 <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">
+            <el-form :model="formImport" ref="formImport">
+                <el-form-item label="上传要导入的集市表">
+                    <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange"
+                               :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                        <el-button size="mini" type="primary">选择上传文件</el-button>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisibleImport = false" size="mini" type="danger">取 消</el-button>
+                <el-button size="mini" type="success" @click="importData">上传</el-button>
+            </div>
+        </el-dialog>
+
+
         <transition name="fade">
             <loading v-if="isLoading"/>
         </transition>
@@ -109,6 +125,7 @@
                 selecteddatatable_id: "",
                 fileList: [],
                 isLoading: false,
+                dialogFormVisibleImport:false,
 
             };
         },
@@ -274,7 +291,7 @@
                         this.isLoading = true;
                         functionAll.uploadExcelFile(param).then(res => {
                             this.isLoading = false;
-                            debugger;
+                            this.dialogFormVisibleImport = false;
                             if (res.code == 200) {
                                 message.customizTitle("文件上传成功", "success");
                                 this.querydmdatatable(this.data_mart_id);
