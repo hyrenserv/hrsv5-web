@@ -72,7 +72,7 @@ export default {
             active: 1,
             tableData: [],
             tableDataDialog: [],
-            pagesize: 5,
+            pagesize: 10,
             currentPage: 1,
             innerVisible: false,
             table_id: '',

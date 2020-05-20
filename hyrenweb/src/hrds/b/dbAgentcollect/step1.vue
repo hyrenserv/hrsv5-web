@@ -174,7 +174,7 @@ export default {
             formLabelWidth: "150px",
             size: "medium",
             showDiolag: false,
-            pagesize: 5,
+            pagesize: 10,
             currentPage: 1,
             data2: [],
             radio: "1",
