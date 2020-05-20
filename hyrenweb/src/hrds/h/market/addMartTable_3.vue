@@ -95,6 +95,7 @@
                 rule: validator.default,
                 data_mart_id: this.$route.query.data_mart_id,
                 datatable_id: this.$route.query.datatable_id,
+                is_add: this.$route.query.is_add,
                 ifrepeat: this.$route.query.ifrepeat,
                 date: "",
                 parameter: "",
@@ -117,6 +118,7 @@
                         data_mart_id: this.data_mart_id,
                         datatable_id: this.datatable_id,
                         ifrepeat:this.ifrepeat,
+                        is_add: this.is_add
 
                     }
                 });

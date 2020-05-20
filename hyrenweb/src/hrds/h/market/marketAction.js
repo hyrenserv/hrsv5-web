@@ -106,12 +106,24 @@ export function queryDMDataTableByDataTableId(data) {
 /**
  * 获取集市表的信息
  */
-export function queryDMDataTableByDataTableName(data) {
+export function querytablenameifrepeat(data) {
     return request({
-        url: '/H/market/queryDMDataTableByDataTableName',
+        url: '/H/market/queryTableNameIfRepeat',
         params:data
     })
 }
+
+
+/**
+ * 获取集市表的信息
+ */
+export function querydatatableidifrepeat(data) {
+    return request({
+        url: '/H/market/queryDataTableIdIfRepeat',
+        params:data
+    })
+}
+
 
 /**
  * 删除集市表及其相关信息
@@ -369,3 +381,12 @@ export function getdminfo(data) {
         params: data
     })
 }
+
+//查询与当前datatable_id拥有相同datatable_en_name的另外一组datatable_id
+export function getTableIdFromSameNameTableId(data) {
+    return request({
+        url: '/H/market/getTableIdFromSameNameTableId',
+        params: data
+    })
+}
+

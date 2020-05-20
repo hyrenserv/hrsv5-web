@@ -33,7 +33,8 @@
                     <el-row class="partFour">
                         <div class="elButton">
                             <el-button type="primary" @click="getdatabysql()" size="medium">查询</el-button>
-                            <el-button type="primary" @click="getcolumnbysql()" size="medium">确定</el-button>
+                            <el-button :disabled="iflock" type="primary" @click="getcolumnbysql()" size="medium">确定
+                            </el-button>
                         </div>
                     </el-row>
                 </el-tabs>
@@ -42,7 +43,7 @@
         <el-tabs type="card">
             <el-row>
                 <el-col :span='2' style="float:right">
-                    <el-button class="elButton" type="primary" @click="addcolumn()"
+                    <el-button :disabled="iflock" class="elButton" type="primary" @click="addcolumn()"
                                size="medium">新增字段
                     </el-button>
                 </el-col>
@@ -63,7 +64,7 @@
                     <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.field_en_name" autocomplete="off"
+                            <el-input :disabled="iflock" v-model="scope.row.field_en_name" autocomplete="off"
                                       placeholder="英文名"></el-input>
                         </template>
                     </el-table-column>
@@ -71,14 +72,14 @@
                     <el-table-column prop="field_cn_name" label="字段中文名" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.field_cn_name" autocomplete="off"
+                            <el-input :disabled="iflock" v-model="scope.row.field_cn_name" autocomplete="off"
                                       placeholder="中文名"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column prop="field_type" label="字段类型" width="140" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope" width="140">
-                            <el-select v-model="scope.row.field_type" placeholder="请选择">
+                            <el-select :disabled="iflock" v-model="scope.row.field_type" placeholder="请选择">
                                 <el-option v-for="item in allfield_type" :key="item.target_type"
                                            :label="item.target_type"
                                            :value="item.target_type"></el-option>
@@ -88,14 +89,15 @@
                     <el-table-column prop="field_length" label="字段长度" width="90" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-input width="90" v-model="scope.row.field_length" autocomplete="off"
+                            <el-input :disabled="iflock" width="90" v-model="scope.row.field_length" autocomplete="off"
                                       placeholder="长度"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column prop="field_process" label="处理方式" width="100" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope" width="100">
-                            <el-select v-model="scope.row.field_process" @change="changecolumnfiledproccess(scope.row)"
+                            <el-select :disabled="iflock" v-model="scope.row.field_process"
+                                       @change="changecolumnfiledproccess(scope.row)"
                                        placeholder="请选择">
                                 <el-option v-for="item in allfield_process" :key="item.value"
                                            :label="item.value"
@@ -107,14 +109,15 @@
                     <el-table-column prop="process_para" label="来源值" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-select v-if="scope.row.field_process == '3'" v-model="scope.row.process_para"
+                            <el-select :disabled="iflock" v-if="scope.row.field_process == '3'"
+                                       v-model="scope.row.process_para"
                                        placeholder="请选择">
                                 <el-option v-for="item in allfromcolumn" :key="item.value"
                                            :label="item.value"
                                            :value="item.code"></el-option>
                             </el-select>
 
-                            <el-input v-else v-model="scope.row.process_para" autocomplete="off"
+                            <el-input :disabled="iflock" v-else v-model="scope.row.process_para" autocomplete="off"
                                       placeholder="处理方式参数"></el-input>
 
                         </template>
@@ -131,29 +134,30 @@
                     <el-table-column prop="field_desc" label="描述" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.field_desc" autocomplete="off"
+                            <el-input :disabled="iflock" v-model="scope.row.field_desc" autocomplete="off"
                                       placeholder="描述"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column v-for="index in columnmore"
                                      :label="index.dsla_storelayer" prop="index" align="center">
                         <template slot-scope="scope">
-                            <el-checkbox v-model="scope.row[scope.column.label]"
+                            <el-checkbox :disabled="iflock" v-model="scope.row[scope.column.label]"
                                          :checked="scope.row[scope.column.label]"></el-checkbox>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" show-overflow-tooltip
                                      align="center" width="150">
                         <template slot-scope="scope">
-                            <el-button size="mini" icon="el-icon-arrow-up" title="上移"
+                            <el-button :disabled="iflock" size="mini" icon="el-icon-arrow-up" title="上移"
                                        @click="upcolumn(scope.$index,scope.row)"
                                        circle type="primary">
                             </el-button>
-                            <el-button size="mini" icon="el-icon-arrow-down" title="下移"
+                            <el-button :disabled="iflock" size="mini" icon="el-icon-arrow-down" title="下移"
                                        @click="downcolumn(scope.$index,scope.row)"
                                        circle type="primary">
                             </el-button>
-                            <el-button size="mini" icon="el-icon-delete" title="删除" @click="deletecolumn(scope.$index)"
+                            <el-button :disabled="iflock" size="mini" icon="el-icon-delete" title="删除"
+                                       @click="deletecolumn(scope.$index)"
                                        circle type="primary">
                             </el-button>
                             <!--<el-button type="primary" size="mini" @click="upcolumn(scope.$index,scope.row)">上移-->
@@ -180,7 +184,7 @@
                 </el-table>
             </el-row>
             <el-row>
-                <el-button type="primary" size="medium" class="rightbtn"
+                <el-button :disabled="iflock" type="primary" size="medium" class="rightbtn"
                            @click="querydatadialogshow = false ; getcolumnbysql()">确定
                 </el-button>
                 <el-button type="primary" size="medium" class="rightbtn" @click="querydatadialogshow = false">取消
@@ -347,11 +351,6 @@
                 allfromcolumn: [],
                 databysql: [],
                 filterText: '',
-                // treeProps: {id: 'id', label: 'name', children: 'children',},
-                // treeDataInfo: {
-                //     isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
-                //     isRootNode: '1', tableName: ''
-                // },
                 ifhbase: false,
                 ifhbasesort: false,
                 sqlparameter: "",
@@ -361,7 +360,7 @@
                 Allis_selectionstate: false,
                 sqltablename: "",
                 isLoading: false,
-
+                iflock: false,
             };
         },
         watch: {
@@ -372,18 +371,31 @@
         },
         created() {
             this.gettreeData();
-        },
-        mounted() {
-            // this.getcolumnbysql();
             this.getallfield_type();
             this.getallfield_process();
             this.getcolumnmore();
-            this.getcolumnfromdatabase();
+            this.getcolumnfromdatabase(this.datatable_id);
             this.getquerysql();
             this.getifhbase();
-            this.getfromcolumnlist();
+            this.getfromcolumnlist(this.datatable_id);
+        },
+        mounted(){
+            this.checkifrepeat();
         },
         methods: {
+            checkifrepeat() {
+                debugger;
+                if (this.ifrepeat == "true" || this.ifrepeat == true) {
+                    functionAll.getTableIdFromSameNameTableId({
+                        "datatable_id": this.datatable_id
+                    }).then((res) => {
+                        let tmpdatatable_id = res.data[0].datatable_id;
+                        this.getcolumnfromdatabase(tmpdatatable_id);
+                        this.getfromcolumnlist(tmpdatatable_id);
+                        this.iflock = true;
+                    });
+                }
+            },
             showtablecolumn(node) {
                 if (this.checkiftable(node)) {
                     functionAll.queryAllColumnOnTableName({
@@ -471,17 +483,17 @@
                     }
                 })
             },
-            getcolumnfromdatabase() {
+            getcolumnfromdatabase(datatable_id) {
                 let params = {
-                    "datatable_id": this.datatable_id,
+                    "datatable_id": datatable_id,
                 };
                 functionAll.getColumnFromDatabase(params).then((res) => {
                     this.columnbysql = res.data;
                 })
             },
-            getfromcolumnlist() {
+            getfromcolumnlist(datatable_id) {
                 let params = {
-                    "datatable_id": this.datatable_id,
+                    "datatable_id": datatable_id,
                 };
                 functionAll.getFromColumnList(params).then((res) => {
                     this.allfromcolumn = res.data;
@@ -722,7 +734,7 @@
                     "dm_column_storage": JSON.stringify(dm_column_storage),
                     "querysql": this.querysql,
                     "hbasesort": JSON.stringify(this.hbasesort),
-                    'ifrepeat':this.ifrepeat,
+                    'ifrepeat': this.ifrepeat,
                 };
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
@@ -738,7 +750,8 @@
                                 query: {
                                     data_mart_id: this.data_mart_id,
                                     datatable_id: this.datatable_id,
-                                    ifrepeat:this.ifrepeat,
+                                    is_add: 1,
+                                    ifrepeat: this.ifrepeat,
                                 }
                             });
                         } else {

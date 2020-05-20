@@ -14,7 +14,7 @@
             <el-col :span="10">
                 <el-form-item label="表英文名" prop="datatable_en_name"
                               :rules="rule.default">
-                    <el-input v-model="dm_datatable.datatable_en_name" placeholder="表英文名">
+                    <el-input v-model="dm_datatable.datatable_en_name" @change="checkrepeat()" placeholder="表英文名">
                         <el-button slot="append" icon="el-icon-zoom-in"
                                    @click="showalreadyexisttablename()"></el-button>
                     </el-input>
@@ -24,14 +24,14 @@
             <el-col :span="10">
                 <el-form-item label="表中文名" prop="datatable_cn_name"
                               :rules="rule.default">
-                    <el-input  v-model="dm_datatable.datatable_cn_name" autocomplete="off"
+                    <el-input :disabled="iflock" v-model="dm_datatable.datatable_cn_name" autocomplete="off"
                               placeholder="表中文名"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="10">
                 <el-form-item label="执行引擎" prop="sql_engine" :rules="rule.selected">
-                    <el-select  v-model="dm_datatable.sql_engine" placeholder="请选择">
+                    <el-select :disabled="iflock" v-model="dm_datatable.sql_engine" placeholder="请选择">
                         <el-option v-for="item in allsqlengine" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
                     </el-select>
@@ -40,14 +40,14 @@
 
             <el-col :span="10">
                 <el-form-item label="表描述" prop="datatable_desc">
-                    <el-input type="text" v-model="dm_datatable.datatable_desc" autocomplete="off"
+                    <el-input :disabled="iflock" type="text" v-model="dm_datatable.datatable_desc" autocomplete="off"
                               placeholder="表描述"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :span="10">
                 <el-form-item label="进数方式" prop="storage_type" :rules="rule.selected">
-                    <el-select v-model="dm_datatable.storage_type" placeholder="请选择">
+                    <el-select :disabled="iflock" v-model="dm_datatable.storage_type" placeholder="请选择">
                         <el-option v-for="item in allstoragetype" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
                     </el-select>
@@ -56,7 +56,7 @@
 
             <el-col :span="10">
                 <el-form-item label="数据存储方式" prop="table_storage" :rules="rule.selected">
-                    <el-select v-model="dm_datatable.table_storage" placeholder="请选择">
+                    <el-select :disabled="iflock" v-model="dm_datatable.table_storage" placeholder="请选择">
                         <el-option v-for="item in alltablestorage" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
                     </el-select>
@@ -65,7 +65,7 @@
 
             <el-col :span="10">
                 <el-form-item label="数据生命周期" prop="datatable_lifecycle" :rules="rule.selected">
-                    <el-select v-model="dm_datatable.datatable_lifecycle" placeholder="请选择"
+                    <el-select :disabled="iflock" v-model="dm_datatable.datatable_lifecycle" placeholder="请选择"
                                @change="changeDataLifeCycle">
                         <el-option v-for="item in alldatatablelifecycle" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
@@ -75,7 +75,7 @@
 
             <el-col :span="10" v-if="showData_date">
                 <el-form-item label="数据表到期日期" prop="datatable_due_date" :rules="rule.selected">
-                    <el-date-picker v-model="dm_datatable.datatable_due_date" value-format="yyyyMMdd"
+                    <el-date-picker :disabled="iflock" v-model="dm_datatable.datatable_due_date" value-format="yyyyMMdd"
                                     align="right" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
             </el-col>
@@ -88,9 +88,9 @@
             </el-input>
         </el-col>
         <el-table :data="tableData" border stripe size="medium">
-            <el-table-column  property label="选择" type="index" align="center" width='60'>
+            <el-table-column property label="选择" type="index" align="center" width='60'>
                 <template slot-scope="scope">
-                    <el-radio  v-model="dsl_id" :label="scope.row.dsl_id">&thinsp;</el-radio>
+                    <el-radio :disabled="iflock" v-model="dsl_id" :label="scope.row.dsl_id">&thinsp;</el-radio>
                 </template>
             </el-table-column>
 
@@ -219,10 +219,14 @@
                 alldatatable_en_name: [],
                 selecttablename: "",
                 iflock: false,
+
                 // currentPage: 1,
                 // pagesize: 5,
 
             };
+        },
+        created(){
+
         },
         mounted() {
             this.getTable();
@@ -230,8 +234,9 @@
             this.getAllStorageType();
             this.getAllTableStorage();
             this.getAllDatatableLifecycle();
-            if (this.datatable_id != undefined) {
-                this.queryDMDataTableByDataTableId()
+            if (this.is_add == 1 && this.datatable_id != undefined) {
+                this.queryDMDataTableByDataTableId(this.datatable_id)
+                this.checkrepeat2();
             }
         },
         methods: {
@@ -242,9 +247,9 @@
                     this.showData_date = true;
                 }
             },
-            queryDMDataTableByDataTableId() {
+            queryDMDataTableByDataTableId(datatable_id) {
                 let param = {
-                    "datatable_id": this.datatable_id
+                    "datatable_id": datatable_id
                 }
                 functionAll.queryDMDataTableByDataTableId(param).then((res) => {
                     if (res && res.success) {
@@ -258,7 +263,7 @@
                         if (this.dm_datatable.datatable_lifecycle == "2") {
                             this.showData_date = true;
                         }
-                        this.iflock = true;
+                        // this.iflock = true;
                     } else {
                         this.$emit(response.message);
                     }
@@ -317,6 +322,7 @@
                                                 query: {
                                                     data_mart_id: this.data_mart_id,
                                                     datatable_id: this.datatable_id,
+                                                    is_add: 1,
                                                     ifrepeat: res.data.ifrepeat
                                                 }
                                             });
@@ -333,6 +339,7 @@
                             else {
                                 this.dm_datatable.dsl_id = this.dsl_id;
                                 this.dm_datatable.data_mart_id = this.data_mart_id;
+                                this.dm_datatable.datatable_id = this.datatable_id;
                                 functionAll.updateDMDataTable(this.dm_datatable).then((res) => {
                                     this.isLoading = false;
                                     if (res && res.success) {
@@ -343,6 +350,7 @@
                                                 query: {
                                                     data_mart_id: this.data_mart_id,
                                                     datatable_id: this.datatable_id,
+                                                    is_add: 1,
                                                     ifrepeat: res.data.ifrepeat
                                                 }
                                             });
@@ -452,26 +460,38 @@
             confirmselecttable() {
                 this.ifalreadyexisttablename = false;
                 this.dm_datatable.datatable_en_name = this.selecttablename
+                this.checkrepeat();
+            },
+            checkrepeat() {
                 let param = {
-                    "datatable_en_name": this.dm_datatable.datatable_en_name
+                    "datatable_en_name": this.dm_datatable.datatable_en_name,
+                    "datatable_id": this.datatable_id,
                 }
-                functionAll.queryDMDataTableByDataTableName(param).then((res) => {
+                functionAll.querytablenameifrepeat(param).then((res) => {
                     if (res && res.success) {
-                        this.dm_datatable = res.data[0];
-                        let dataYear = this.dm_datatable.datatable_due_date.substring(0, 4);
-                        let dataMonth = this.dm_datatable.datatable_due_date.substring(4, 6);
-                        let dataDay = this.dm_datatable.datatable_due_date.substring(6, 9);
-                        let data = dataYear + "-" + dataMonth + "-" + dataDay;
-                        this.dm_datatable.datatable_due_date = data;
-                        this.dsl_id = res.data[0].dsl_id;
-                        if (this.dm_datatable.datatable_lifecycle == "2") {
-                            this.showData_date = true;
+                        if(res.data.result == true){
+                            this.queryDMDataTableByDataTableId(res.data.datatable_id)
+                            this.iflock = true;
+                        }else{
+                            this.iflock = false;
                         }
-                    } else {
-                        this.$emit(response.message);
                     }
                 })
             },
+            checkrepeat2(){
+                let param = {
+                    "datatable_id": this.datatable_id
+                }
+                functionAll.querydatatableidifrepeat(param).then((res) => {
+                    if (res && res.success) {
+                        if(res.data.result == true){
+                            this.iflock = true;
+                        }else{
+                            this.iflock = false;
+                        }
+                    }
+                })
+            }
 
         }
     };
