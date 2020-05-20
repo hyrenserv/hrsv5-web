@@ -4,10 +4,11 @@
             <i class="block_icon fa text-warning fa-globe blue"></i>
             <span>数据集市</span>
             <div class="elButton ">
-                <el-button type="primary" tab-position="top" @click="dialogFormVisibleImport = true;"
-                           size="small">
-                    <i class="el-icon-circle-plus-outline"></i>导入集市表
-                </el-button>
+                <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false"
+                           :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                    <el-button size="mini" type="primary">
+                        <i class="el-icon-circle-plus-outline"></i> 导入数据</el-button>
+                </el-upload>
                 <el-button type="primary" @click="adddmdatatable()" size="mini">
                     <i class="el-icon-circle-plus-outline"></i>新增数据表
                 </el-button>
@@ -78,18 +79,11 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">
-            <el-form :model="formImport" ref="formImport">
-                <el-form-item label="上传要导入的集市表">
-                    <el-upload class="buttonStyle" accept=".xlsx" action="" :auto-upload="false" :on-change="handleChange"
-                               :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                        <el-button size="mini" type="primary">选择上传文件</el-button>
-                    </el-upload>
-                </el-form-item>
-            </el-form>
+        <el-dialog title="导入Excel" :visible.sync="dialogImportData" :before-close="importDatacancel">
+            <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisibleImport = false" size="mini" type="danger">取 消</el-button>
-                <el-button size="mini" type="success" @click="importData">上传</el-button>
+                <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
+                <el-button type="primary" @click="importData" size="mini">保存</el-button>
             </div>
         </el-dialog>
 
@@ -125,7 +119,7 @@
                 selecteddatatable_id: "",
                 fileList: [],
                 isLoading: false,
-                dialogFormVisibleImport:false,
+                dialogImportData: false,
 
             };
         },
@@ -274,36 +268,44 @@
                 })
             },
             handleChange(file, fileList) {
+                this.fileList = fileList;
+                if (fileList.length != 0) {
+                    this.dialogImportData = true;
+                } else {
+                    this.dialogImportData = false;
+                }
                 arr = fileList;
             },
             //文件超出个数限制时的钩子
             handleExceed(files, fileList) {
                 this.$message.warning(`只能选择一个文件`);
             },
+            importDatacancel() {
+                this.dialogImportData = false;
+                this.fileList = [];
+                this.$message.info('已取消上传');
+            },
             importData() {
-                message.confirmMsg('确定导入 ' + arr[0].name + ' 吗').then(res => {
-                    if (arr.length > 0) {
-                        let param = new FormData() // 创建form对象
-                        for (let i = 0; i < arr.length; i++) {
-                            param.append('file', arr[i].raw);
-                        }
-                        param.append('data_mart_id', this.data_mart_id);
-                        this.isLoading = true;
-                        functionAll.uploadExcelFile(param).then(res => {
-                            this.isLoading = false;
-                            this.dialogFormVisibleImport = false;
-                            if (res.code == 200) {
-                                message.customizTitle("文件上传成功", "success");
-                                this.querydmdatatable(this.data_mart_id);
-                                this.fileList = [];
-                            }
-                        });
-                        this.isLoading = false;
-                    } else {
-                        message.customizTitle("请选择上传文件", "warning");
+                if (arr.length > 0) {
+                    let param = new FormData() // 创建form对象
+                    for (let i = 0; i < arr.length; i++) {
+                        param.append('file', arr[i].raw);
                     }
-                }).catch(() => {
-                })
+                    param.append('data_mart_id', this.data_mart_id);
+                    this.isLoading = true;
+                    functionAll.uploadExcelFile(param).then(res => {
+                        this.isLoading = false;
+                        this.dialogImportData = false;
+                        if (res.code == 200) {
+                            message.customizTitle("文件上传成功", "success");
+                            this.querydmdatatable(this.data_mart_id);
+                            this.fileList = [];
+                        }
+                    });
+                    this.isLoading = false;
+                } else {
+                    message.customizTitle("请选择上传文件", "warning");
+                }
             },
         }
     };

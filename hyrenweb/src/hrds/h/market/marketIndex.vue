@@ -19,10 +19,13 @@
                            size="small">
                     <i class="el-icon-circle-plus-outline"></i>新增集市
                 </el-button>
-                <el-button type="primary" tab-position="top" @click="dialogFormVisibleImport = true;"
-                           size="small">
-                    <i class="el-icon-circle-plus-outline"></i>导入集市
-                </el-button>
+                <el-upload class="buttonStyle" accept=".hrds" action="" :show-file-list="false" :auto-upload="false"
+                           :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                    <el-button size="small" type="primary">
+                        <i class="el-icon-circle-plus-outline"></i> 导入数据
+                    </el-button>
+                </el-upload>
+
             </div>
         </el-row>
         <div class="dataSheetmain">
@@ -35,10 +38,12 @@
                     <el-button type="text" class="editBtn" title="编辑" @click="editmart(item.data_mart_id)">
                         <i class="fa fa-pencil fa-lg"></i>
                     </el-button>
-                    <el-button type="text" class="editBtn" title="下载" @click="downloadmart(item.mart_name,item.data_mart_id)">
+                    <el-button type="text" class="editBtn" title="下载"
+                               @click="downloadmart(item.mart_name,item.data_mart_id)">
                         <i class="fa fa-download fa-lg"></i>
                     </el-button>
-                    <el-button type="text" class="editBtn" title="删除" @click="deletemart(item.mart_name,item.data_mart_id)">
+                    <el-button type="text" class="editBtn" title="删除"
+                               @click="deletemart(item.mart_name,item.data_mart_id)">
                         <i class="fa fa-trash fa-lg"></i>
                     </el-button>
                 </div>
@@ -99,18 +104,26 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">
-            <el-form :model="formImport" ref="formImport">
-                <el-form-item label="上传要导入的集市工程">
-                    <el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action=""
-                               :auto-upload="false" :on-change="handleChange">
-                        <el-button size="small" type="primary">选择上传文件</el-button>
-                    </el-upload>
-                </el-form-item>
-            </el-form>
+        <!--<el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%">-->
+        <!--<el-form :model="formImport" ref="formImport">-->
+        <!--<el-form-item label="上传要导入的集市工程">-->
+        <!--<el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action=""-->
+        <!--:auto-upload="false" :on-change="handleChange">-->
+        <!--<el-button size="small" type="primary">选择上传文件</el-button>-->
+        <!--</el-upload>-->
+        <!--</el-form-item>-->
+        <!--</el-form>-->
+        <!--<div slot="footer" class="dialog-footer">-->
+        <!--<el-button @click="dialogFormVisibleImport = false" size="mini" type="danger">取 消</el-button>-->
+        <!--<el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>-->
+        <!--</div>-->
+        <!--</el-dialog>-->
+
+        <el-dialog title="导入Excel" :visible.sync="dialogImportData" :before-close="importDatacancel">
+            <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisibleImport = false" size="mini" type="danger">取 消</el-button>
-                <el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>
+                <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
+                <el-button type="primary" @click="importData" size="mini">确定</el-button>
             </div>
         </el-dialog>
 
@@ -129,6 +142,7 @@
     import * as message from "@/utils/js/message";
     import Loading from '../../components/loading'
 
+    let arr = [];
     export default {
         components: {
             Loading
@@ -136,7 +150,7 @@
         data() {
             return {
                 fileList: [],
-                dialogFormVisibleImport: false,
+                dialogImportData: false,
                 SumTotal: [],
                 formLabelWidth: "150px",
                 alldslinfomart: [],
@@ -168,11 +182,6 @@
                 functionAll.getTableTop5InDsl().then(res => {
                     this.tabletop5indsl = res.data;
                 })
-            },
-            handleChange(file, fileList) {
-                if (fileList.length > 0) {
-                    this.fileList = [fileList[fileList.length - 1]]
-                }
             },
             getMarketInfo() {
                 functionAll.getMarketInfo().then(res => {
@@ -226,7 +235,7 @@
                     }).then(res => {
                         // if (res && res.success) {
                         let filename = mart_name + ".hrds"
-                        const blob = new Blob([res]);
+                        const blob = new Blob([res.data]);
                         if (window.navigator.msSaveOrOpenBlob) {
                             // 兼容IE10
                             navigator.msSaveBlob(blob, filename);
@@ -250,33 +259,33 @@
                 }).catch(() => {
                 })
             },
-            upload(formName) {
-                this.isLoading = true;
-                this.$refs[formName].validate(valid => {
-                    console.log(this.fileList[0]);
-                    if (valid) {
-                        let param = new FormData() // 创建form对象
-                        param.append('file', this.fileList[0].raw);
-                        functionAll.uploadFile(param).then(res => {
-                            this.isLoading = false;
-                            if (res && res.success) {
-                                this.$message({
-                                    type: "success",
-                                    message: "上传成功!"
-                                });
-                                // 隐藏对话框
-                                this.dialogFormVisibleImport = false;
-                                // 表单清空
-                                this.formImport = {};
-                                location.reload();
-                            } else {
-                                this.$emit(response.message);
-                            }
-                        });
-                    }
-                })
-            },
-            deletemart(mart_name,data_mart_id) {
+            // upload(formName) {
+            //     this.isLoading = true;
+            //     this.$refs[formName].validate(valid => {
+            //         console.log(this.fileList[0]);
+            //         if (valid) {
+            //             let param = new FormData() // 创建form对象
+            //             param.append('file', this.fileList[0].raw);
+            //             functionAll.uploadFile(param).then(res => {
+            //                 this.isLoading = false;
+            //                 if (res && res.success) {
+            //                     this.$message({
+            //                         type: "success",
+            //                         message: "上传成功!"
+            //                     });
+            //                     // 隐藏对话框
+            //                     this.dialogFormVisibleImport = false;
+            //                     // 表单清空
+            //                     this.formImport = {};
+            //                     location.reload();
+            //                 } else {
+            //                     this.$emit(response.message);
+            //                 }
+            //             });
+            //         }
+            //     })
+            // },
+            deletemart(mart_name, data_mart_id) {
                 message.confirmMsg('确定删除 ' + mart_name + ' 吗').then(res => {
                     this.isLoading = true;
                     functionAll.deleteMart({"data_mart_id": data_mart_id}).then(res => {
@@ -299,12 +308,54 @@
                 }).catch(() => {
                 })
             },
-            editmart(data_mart_id){
+            editmart(data_mart_id) {
                 this.dialogofmarketadd = true;
                 functionAll.getdminfo({"data_mart_id": data_mart_id}).then(res => {
                     this.formAdd = res.data[0];
                 });
-            }
+            },
+            handleChange(file, fileList) {
+                this.fileList = fileList;
+                if (fileList.length != 0) {
+                    this.dialogImportData = true;
+                } else {
+                    this.dialogImportData = false;
+                }
+                arr = fileList;
+            },
+            //文件超出个数限制时的钩子
+            handleExceed(files, fileList) {
+                this.$message.warning(`只能选择一个文件`);
+            },
+            importDatacancel() {
+                this.dialogImportData = false;
+                this.fileList = [];
+                this.$message.info('已取消上传');
+            },
+            importData() {
+                if (arr.length > 0) {
+                    let param = new FormData() // 创建form对象
+                    for (let i = 0; i < arr.length; i++) {
+                        param.append('file', arr[i].raw);
+                    }
+                    this.isLoading = true;
+                    functionAll.uploadFile(param).then(res => {
+                        this.isLoading = false;
+                        this.dialogImportData = false;
+                        if (res.code == 200) {
+                            message.customizTitle("文件上传成功", "success");
+                            this.querydmdatatable(this.data_mart_id);
+                            this.fileList = [];
+                            location.reload();
+                        }
+                    });
+                    this.isLoading = false;
+                } else {
+                    message.customizTitle("请选择上传文件", "warning");
+                }
+            },
+
+
         }
     };
 </script>
@@ -566,4 +617,12 @@
     .editBtn {
         padding: 0;
     }
+
+    .buttonStyle {
+        display: block;
+        float: left;
+        margin-right: 10px;
+        margin-left: 0px;
+    }
+
 </style>
