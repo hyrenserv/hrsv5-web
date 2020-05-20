@@ -5,7 +5,7 @@
                 <span class="el-icon-s-operation">接口使用信息</span>
             </el-form-item>
             <el-form-item>
-                <router-link to="/interfaceTest">
+                <router-link target="_blank" to="/interfaceTest">
                     <el-button type="success" size="mini">接口测试</el-button>
                 </router-link>
             </el-form-item>
@@ -18,8 +18,8 @@
         </el-form>
         <!--接口使用信息列表展示-->
         <el-table :data="interfaceUseData.slice((currPage - 1) * pageSize,currPage * pageSize)"
-                  border style="width: 100%" size="medium">
-            <el-table-column label="序号" align="center">
+                  border style="width: 100%" size="medium" class="tableBox">
+            <el-table-column label="序号"  width="80px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                 </template>
@@ -32,7 +32,7 @@
                     <router-link
                             :to="{path:scope.row.url,query:{interface_use_id:scope.row.interface_use_id,
                             url:scope.row.url}}" :key="scope.row.interface_use_id">
-                        <el-button size="medium" type="text" class='editcolor'>
+                        <el-button size="size" type="text" class='editcolor'>
                             {{scope.row.interface_name}}
                         </el-button>
                     </router-link>
@@ -201,21 +201,6 @@
     }
 </script>
 <style scoped>
-    .borderStyle {
-        border: 1px solid #e6e6e6;
-        padding: 2%;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .elButton {
-        margin-left: 150px;
-        width: 180px;
-        height: 120px;
-        text-align: center;
-        font-size: 18px;
-    }
-
     .el-icon-s-operation {
         font-size: 18px;
         color: #2196f3;
@@ -228,6 +213,21 @@
 
     .search {
         float: right;
+    }
+
+    .tableBox {
+
+    th {
+        padding: 0 !important;
+        height: 47px;
+        line-height: 47px;
+    }
+    td {
+        padding: 0 !important;
+        height: 47px;
+        line-height: 47px;
+    }
+
     }
 
     .locationcenter {

@@ -250,7 +250,7 @@
             },
             // 表复选框选中
             selectionChange(selectTrue) {
-                this.selectRow = selectTrue
+                this.selectRow = selectTrue;
             },
             // 选择字段全选
             allColumnSelect(all) {
