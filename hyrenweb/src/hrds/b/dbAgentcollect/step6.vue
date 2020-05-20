@@ -429,6 +429,7 @@ export default {
                                 'job_priority': parseInt(arrdata[i].job_priority),
                                 'disp_offset': parseInt(arrdata[i].disp_offset),
                                 'disp_time': arrdata[i].disp_time,
+                                 'pro_para': arrdata[i].pro_para,
                                 'etl_sys_cd': this.ruleForm.Project_num,
                             })
                         }

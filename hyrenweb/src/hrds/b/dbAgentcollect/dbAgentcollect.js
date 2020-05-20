@@ -402,6 +402,12 @@ export function getStoDestByTableId(data) {
         params:data
     })
 }
+// 全表存储目的地弹框
+export function getStorageData() {
+    return request({
+        url: '/B/agent/dbagentconf/stodestconf/getStorageData',
+    })
+}
 // 点击详情
 export function getStoDestDetail(data) {
     return request({
