@@ -85,6 +85,7 @@ export default {
                 this.formInline = res.data[0];
             }
         })
+        this.onSubmit()
     },
     methods: {
         // 日志查看

@@ -1,12 +1,12 @@
 <template>
 <div>
     <el-row style="margin-bottom:10px">
-        <el-col :span='11'>&nbsp;</el-col>
         <el-col :span='5' style="text-align:right">
             <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeClass_Value">
                 <el-button slot="append" icon="el-icon-search" @click="searchDbmSortInfo"></el-button>
             </el-input>
         </el-col>
+        <el-col :span='11'>&nbsp;</el-col>
         <el-col :span='8' style="text-align:right" class='allbutton'>
             <el-button size="mini" type="success" class="el-icon-upload" @click="batchReleaseDbmSortInfo()">发布分类</el-button>
             <el-button size="mini" type="primary" class='el-icon-circle-plus-outline' @click="addClass()">新增分类</el-button>
