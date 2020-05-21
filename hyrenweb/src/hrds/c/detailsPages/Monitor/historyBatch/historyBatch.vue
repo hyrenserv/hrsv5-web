@@ -329,7 +329,7 @@ export default {
                     yAxis: {
                         type: 'datetime',
                         title: {
-                            text: '<div class="EdbeSubTitle">' + '系统运行时间' + '<div/>'
+                            text: '<div class="EdbeSubTitle">' + '作业运行时间' + '<div/>'
                         },
                         gridLineWidth: 0,
                         labels: {
