@@ -16,6 +16,6 @@ export default {
   background: url('~@/assets/images/loading-ball.svg') center center no-repeat rgba(156, 154, 154, 0.6);
   width: 100vw;
   height: 100vh;
-  z-index: 1000;
+  z-index: 1000000000000;
 }
 </style>
