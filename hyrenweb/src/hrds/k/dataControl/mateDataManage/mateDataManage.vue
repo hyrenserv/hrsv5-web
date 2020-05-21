@@ -219,10 +219,8 @@
             },
             //编辑元数据
             editMetadata() {
-                if ("DQC" !== this.data_meta_info.data_layer) {
-                    this.table_ch_name_input = false;
-                    this.column_ch_name_input = false;
-                }
+                this.table_ch_name_input = false;
+                this.column_ch_name_input = false;
             },
             //保存元数据,保存完成后查询保存的信息
             saveMetaData() {
@@ -248,13 +246,24 @@
                     'file_id': this.data_meta_info.file_id
                 }).then(res => {
                     if (res.success) {
-                        console.log(res);
+                        //重新获取树数据
+                        this.getMDMTreeData();
+                        this.data_meta_info = {table_id: '', column_info_list: []};
                     }
                 })
             },
             //恢复数据回收站的表
             restoreDRBTable() {
-                console.log(this.data_meta_info);
+                mdmFun.restoreDRBTable({
+                    'data_layer': this.data_meta_info.data_layer,
+                    'file_id': this.data_meta_info.file_id
+                }).then(res => {
+                    if (res.success) {
+                        //重新获取树数据
+                        this.getDRBTreeData();
+                        this.data_meta_info = {table_id: '', column_info_list: []};
+                    }
+                })
             }
         },
     }

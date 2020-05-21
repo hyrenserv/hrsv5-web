@@ -45,3 +45,11 @@ export function tableSetToInvalid(data) {
         params: data,
     })
 }
+
+//恢复回收站表
+export function restoreDRBTable(data) {
+    return request({
+        url: '/K/dm/metadatamanage/restoreDRBTable',
+        params: data,
+    })
+}
