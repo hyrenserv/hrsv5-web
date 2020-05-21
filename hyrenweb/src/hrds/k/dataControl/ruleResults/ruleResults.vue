@@ -214,13 +214,14 @@
             //获取规则执行结果数据
             getRuleResultInfos() {
                 rrFun.getRuleResultInfos().then(res => {
-                    console.log(res.data.rule_result_s)
                     this.rule_result_s = res.data.rule_result_s;
                     this.totalSize = res.data.totalSize;
                 })
             },
             //规则结果搜索
             ruleResultSearch() {
+                this.rule_result_form['currPage'] = this.currPage;
+                this.rule_result_form['pageSize'] = this.pageSize;
                 rrFun.searchRuleResultInfos(this.rule_result_form).then(res => {
                     this.rule_result_s = res.data.rule_result_s;
                     this.totalSize = res.data.totalSize;

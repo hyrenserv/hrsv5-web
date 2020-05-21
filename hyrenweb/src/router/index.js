@@ -345,8 +345,15 @@ export default new Router({
                 {
                     path: '/ruleDetectionDetail',
                     name: 'ruleDetectionDetail',
-                    title: '规则配置',
+                    title: '规则详情',
                     component: () => import('@/hrds/k/dataControl/ruleConfig/ruleDetectionDetail.vue')
+                },
+                //规则调度状态
+                {
+                    path: '/ruleETLStatus',
+                    name: 'ruleETLStatus',
+                    title: '规则详情',
+                    component: () => import('@/hrds/k/dataControl/ruleConfig/ruleETLStatus.vue')
                 },
                 //规则结果
                 {
