@@ -12,13 +12,13 @@
     <el-row>
         <el-row class="span10">系统批量</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
-        <ve-bar :data="chartData" :extend="chartExtend" :events="chartEvents"></ve-bar>
+        <div class="panel-body" style="width: 100% ,height: 'auto';" id="taskCharts"></div>
     </el-row>
     <el-row v-if="showOrhidden">
         <el-row class="span10">任务:{{this.task}}</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
     </el-row>
-    <div id="container" :style="{width: '100%', height: 'auto'}"></div>
+    <div id="container" v-show="showOrhidden" :style="{width: '100%', height: 'auto'}"></div>
 </div>
 </template>
 
@@ -27,76 +27,17 @@ import * as functionAll from "./historyBatch";
 import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
+import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
-        let self = this;
-        this.chartSettings = {
-            stack: {
-                '任务': ['挂起', '等待', '运行', '暂停', '错误', '完成']
-            }
-        }
-        this.chartExtend = {
-            series: {
-                barWidth: 10
-            },
-            color: ['#00a9a2'],
-            tooltip: {
-                formatter: function (param) {
-                    self.chartData.rows.forEach((item => {
-                        if (param[0].name == item.desc_sys) {
-                            self.start = item.curr_st_time;
-                            self.end = item.curr_end_time;
-                        }
-                    }))
-                    return [
-                        '系统名称：' + param[0].name + '<br/>',
-                        '开始时间: ' + self.start + '<br/>',
-                        '结束时间: ' + self.end + '<br/>',
-                    ].join('');
-                }
-            },
-            xAxis: {
-                // name: '系统运行时间',
-                // nameLocation: 'center',
-                axisLabel: {
-                    show: false
-                }
-            },
-            useUTC: true,
-            yAxis: {
-
-            }
-        }
-        this.chartExtendDeatil = {
-            series: {
-                barWidth: 10
-            }
-        }
-        // 获取对应任务详情
-        this.chartEvents = {
-            click: function (e) {
-                self.task = e.name;
-                self.showOrhidden = true;
-                let value = self.changeParamas(e.name);
-                // 获取数据
-                self.searchMonitorHisBatchJobBySubCd(value, self.dayDate);
-            }
-        }
         return {
             datePickerValue: "",
-            chartData: {
-                columns: ['任务名称', '信息详情'],
-                rows: []
-            },
-            chartdataHistoryDeatil: {
-                columns: ['etl_job', '完成', '等待', '错误', '暂停', '运行', '挂起'],
-                rows: []
-            },
             start: '',
             end: '',
             dayDate: '',
             task: '',
-            showOrhidden: false
+            showOrhidden: false,
+            dataALL: []
         };
 
     },
@@ -107,21 +48,146 @@ export default {
                 etl_sys_cd: this.$route.query.etl_sys_cd,
                 curr_bath_date: val
             }).then((res) => {
-                this.dateToMill(res.data[0].curr_end_time)
+                let arry = res.data;
+                this.dataALL = arry;
+                let time = [];
+                let colorsArray = [];
+                let sysName = [];
+                let startTime = [];
+                let endTime = [];
+                let start = 0;
+                let end = 0;
+                let bathData = '';
+                let leng = arry.length;
+                this.dayDate = fixedAll.dateFormat(arry[0].curr_bath_date);
+                for (let index = 0; index < leng; index++) {
+                    let status = [];
+                    status.push(arry[index]['E']);
+                    status.push(arry[index]['S']);
+                    status.push(arry[index]['R']);
+                    status.push(arry[index]['W']);
+                    status.push(arry[index]['P']);
+                    status.push(arry[index]['D']);
+                    var color = this.edwColor(status);
+                    sysName[index] = arry[index]['desc_sys'];
+                    startTime[index] = this.dateToMill(arry[index]['curr_st_time']);
+                    endTime[index] = this.dateToMill(arry[index]['curr_end_time']);
+                    colorsArray[index] = '#2B908F';
+                    start = startTime[index];
+                    end = endTime[index];
+                    var obj = {
+                        sysName: arry[index]['sub_sys_cd'],
+                        low: this.dateToMill(arry[index]['curr_st_time']),
+                        high: this.dateToMill(arry[index]['curr_end_time']),
+                        y: this.dateToMill(arry[index]['curr_st_time']),
+                        color: color,
+                        bathData: arry[index]['curr_bath_date']
+                    };
+                    time[index] = obj;
+                }
+                let datasUp = document.getElementById("taskCharts");
+                datasUp.style.height = 200 + leng * 30 + "px";
                 let that = this;
-                res.data.forEach((item, index) => {
-                    item['信息详情'] = 1;
-                    item['任务名称'] = item.desc_sys;
-                    let year = item.curr_bath_date.substring(0, 4);
-                    let month = item.curr_bath_date.substring(4, 6);
-                    let day = item.curr_bath_date.substring(6, 9);
-                    let date = year + "-" + month + "-" + day;
-                    item.curr_st_time = this.dateToMilldate(item.curr_st_time);
-                    item.curr_end_time = this.dateToMilldate(item.curr_end_time);
-                    item.curr_bath_date = date;
-                    that.dayDate = item.curr_bath_date;
+                let charts = Highcahrts.chart('taskCharts', {
+                    chart: {
+                        type: 'columnrange',
+                        inverted: true // 反转
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    title: {
+                        useHTML: true,
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: sysName,
+                        tickColor: 'gray',
+                        gridLineWidth: 1,
+                        gridLineColor: 'gray',
+                        tickmarkPlacement: 'on',
+                    },
+                    yAxis: {
+                        type: 'datetime',
+                        title: {
+                            text: '<div class="EdbeSubTitle">' + '系统运行时间' + '<div/>'
+                        },
+                        gridLineWidth: 0,
+                        labels: {
+                            rotation: -45,
+                            overflow: 'justify',
+                            useHTML: true,
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                var hours = date.getUTCHours();
+                                var minutes = date.getUTCMinutes();
+                                var seconds = date.getUTCSeconds();
+                                if (this.isFirst) {
+                                    return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                                } else if (hours == 0 && minutes == 0 && seconds == 0) {
+                                    return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                                } else {
+                                    return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
+                                }
+                            }
+                        }
+                    },
+                    //数据提示框
+                    tooltip: {
+                        crosshairs: true,
+                        useHTML: true,
+                        formatter: function () {
+                            var index = 0;
+                            for (var i = 0; i < sysName.length; i++) {
+                                if (this.x == sysName[i]) {
+                                    index = i;
+                                }
+                                var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
+                                var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
+                                return '系统名称' + this.x + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    //数据点
+                    plotOptions: {
+                        columnrange: {
+                            colorByPoint: true,
+                            colors: colorsArray,
+                            pointPadding: 1,
+                            borderWidth: 0,
+                            pointWidth: 10,
+                            showCheckbox: true
+                        },
+                        series: {
+                            minPointLength: 15,
+                            cursor: 'pointer',
+                            point: {
+                                events: {
+                                    plotOptions: true,
+                                    enableMouseTracking: true,
+                                    click: function (event) {
+                                        console.log(event)
+                                        that.task = event.point.category;
+                                        let value = that.changeParamas(event.point.category);
+                                        // 获取数据
+                                        that.searchMonitorHisBatchJobBySubCd(value, that.dayDate);
+                                    }
+                                }
+                            }
+                        },
+                    },
+                    legend: {
+                        enabled: false,
+                    },
+                    series: [{
+                        data: time
+                    }]
+
                 })
-                this.chartData.rows = res.data;
+
             })
         },
         // 获取日期对应数据和历史批量
@@ -129,8 +195,6 @@ export default {
             let val = this.datePickerValue;
             if (val != null) {
                 this.monitorHistoryBatchInfo(val)
-            } else {
-                this.chartData.rows = [];
             }
         },
         // 获取历史批量详情对应的数据
@@ -159,19 +223,19 @@ export default {
                     let curr_end_time = arry[index]['curr_end_time']
                     // 挂起：
                     if (arry[index]['job_disp_status'] == "P") {
-                        colorsArray[index] = '#c4b4e4';
+                        colorsArray[index] = '#90B1D8';
                         start = date;
                         end = date;
                     }
                     // 等待
                     if (arry[index]['job_disp_status'] == "W") {
-                        colorsArray[index] = '#5ab1ef';
+                        colorsArray[index] = '#C3FFGF';
                         start = date;
                         end = date;
                     }
                     // 暂停
                     if (arry[index]['job_disp_status'] == "S") {
-                        colorsArray[index] = '#ffb980';
+                        colorsArray[index] = '#F7A35C';
                         startTime[index] = this.dateToMill(curr_st_time);
                         endTime[index] = this.dateToMill(curr_end_time);
                         start = startTime[index];
@@ -180,7 +244,7 @@ export default {
 
                     // 错误
                     if (arry[index]['job_disp_status'] == "E") {
-                        colorsArray[index] = '#c23531';
+                        colorsArray[index] = '#FF7474';
                         startTime[index] = this.dateToMill(curr_st_time);
                         endTime[index] = this.dateToMill(curr_end_time);
                         start = startTime[index];
@@ -188,7 +252,7 @@ export default {
                     }
                     // 运行时长：
                     if (arry[index]['job_disp_status'] == "R") {
-                        colorsArray[index] = '#0067a6';
+                        colorsArray[index] = '#90EE7E';
                         startTime[index] = this.dateToMill(curr_st_time);
                         start = startTime[index];
                         end = date;
@@ -197,7 +261,7 @@ export default {
                     if (arry[index]['job_disp_status'] == "D") {
                         startTime[index] = (this.dateToMill(curr_st_time));
                         endTime[index] = (this.dateToMill(curr_end_time));
-                        colorsArray[index] = '#19d4ae';
+                        colorsArray[index] = '#2B908F';
                         // 是否虚拟作业
                         if (startTime[index] > endTime[index]) {
                             startTime[index] = endTime[index];
@@ -207,6 +271,8 @@ export default {
                     }
                     time[index] = [start, end];
                 }
+                let datasUp2 = document.getElementById("container");
+                datasUp2.style.height = 200 + arry.length * 30 + "px";
                 // 获得图表信息
                 let that = this;
                 var chart = Highcahrts.chart('container', {
@@ -263,10 +329,11 @@ export default {
                     yAxis: {
                         type: 'datetime',
                         title: {
-                            text: ''
+                            text: '<div class="EdbeSubTitle">' + '系统运行时间' + '<div/>'
                         },
                         gridLineWidth: 0,
                         labels: {
+                            rotation: -45,
                             overflow: 'justify',
                             useHTML: true,
                             formatter: function () {
@@ -328,41 +395,12 @@ export default {
                     }]
 
                 })
-                let arr = res.data;
-                // 数组去重
-                for (let i = 0; i < arr.length; i++) {
-                    arr[i].count = 1
-                    for (let j = i + 1; j < arr.length; j++) {
-                        if (arr[i].etl_job == arr[j].etl_job) {
-                            //第一个等同于第二个，splice方法删除第二个
-                            arr[i].count++;
-                            arr.splice(j, 1);
-                            j--;
-                        }
-                    }
-                }
-                // 数据处理
-                arr.forEach(item => {
-                    if (item.job_disp_status == "D") {
-                        item['完成'] = item.count;
-                    } else if (item.job_disp_status == "E") {
-                        item['错误'] = item.count;
-                    } else if (item.job_disp_status == "P") {
-                        item['挂起'] = item.count;
-                    } else if (item.job_disp_status == "R") {
-                        item['运行'] = item.count;
-                    } else if (item.job_disp_status == "S") {
-                        item['停止'] = item.count;
-                    } else if (item.job_disp_status == "W") {
-                        item['等待'] = item.count;
-                    }
-                })
-                this.chartdataHistoryDeatil.rows = arr;
+                that.showOrhidden = true;
             })
         },
         // 改变传参
         changeParamas(val) {
-            this.chartData.rows.forEach(item => {
+            this.dataALL.forEach(item => {
                 if (val == item.desc_sys) {
                     val = item.sub_sys_cd;
                 }

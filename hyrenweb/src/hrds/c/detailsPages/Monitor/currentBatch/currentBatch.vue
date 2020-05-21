@@ -1,12 +1,12 @@
 <template>
 <div class="currentBatch">
     <el-row>
-        <el-col :span="10">
+        <el-col :span="8">
             <el-row class="span10">批量运行状态</el-row>
             <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
             <div id="leftChart" style="width: 100%;height:400px;"></div>
         </el-col>
-        <el-col :span="14">
+        <el-col :span="16">
             <el-row class="span10">系统运行状态</el-row>
             <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
             <div id="rightChart" style="width: 100%;height:400px;"></div>
@@ -16,11 +16,7 @@
         <el-row class="span10">任务:{{this.task}}</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
     </el-row>
-    <div id="container" :style="{width: '100%', height: 'auto'}"></div>
-    <!-- 加载过度 -->
-    <transition name="fade">
-        <loading v-if="isLoading" />
-    </transition>
+    <div id="container" v-show="showOrhidden" :style="{width: '100%', height: 'auto'}"></div>
 </div>
 </template>
 
@@ -30,11 +26,8 @@ import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
 import * as fixedAll from "@/utils/js/fileOperations";
-import Loading from '../../../../components/loading'
 export default {
-    components: {
-        Loading
-    },
+    components: {},
     data() {
         return {
             dayDate: '',
@@ -42,7 +35,6 @@ export default {
             batchState: {},
             sysState: [],
             showOrhidden: false,
-            isLoading: false,
         };
     },
     mounted() {
@@ -217,7 +209,6 @@ export default {
                                     that.task = event.point.category;
                                     let id = that.changeParamas(event.point.category)
                                     that.searchMonitorJobStateBySubCd(id);
-                                    that.isLoading = true;
                                 }
                             }
                         }
@@ -337,7 +328,6 @@ export default {
                             end = endTime[index];
                         }
                         time[index] = [start, end];
-                        this.showOrhidden = true;
                         let that = this;
                         let chart = Highcahrts.chart('container', {
                             // 数据提示框
@@ -458,9 +448,7 @@ export default {
 
                         })
                     }
-                    that.isLoading = false;
-                } else {
-                    that.isLoading = false;
+                    this.showOrhidden = true;
                 }
             })
         },
