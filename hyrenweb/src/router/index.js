@@ -537,12 +537,6 @@ export default new Router({
                     component: () => import('@/hrds/g/serviceuser/serviceUser.vue')
                 },
                 {
-                    path: '/interfaceTest',
-                    name: 'interfaceTest',
-                    title: '接口测试',
-                    component: () => import('@/hrds/g/serviceuser/interfaceTest.vue')
-                },
-                {
                     path: '/getToken',
                     name: 'getToken',
                     title: '获取token值接口',
@@ -600,5 +594,11 @@ export default new Router({
         },
 
         {path: '*', name: '*', component: () => import('@/hrds/components/notFound.vue')},
+        {
+            path: '/interfaceTest',
+            name: 'interfaceTest',
+            title: '接口测试',
+            component: () => import('@/hrds/g/serviceuser/interfaceTest.vue')
+        },
     ]
 })
