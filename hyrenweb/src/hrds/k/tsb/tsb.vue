@@ -13,8 +13,7 @@
                 <div style='height:0.1px'>&nbsp;</div>
                 <Scrollbar>
                     <div class="mytree" height='260'>
-                        <el-tree class="filter-tree" :data="data2" :indent='0' @node-click="handleNodeClick"
-                                 :default-expand-all="true">
+                        <el-tree class="filter-tree" :data="data2" :indent='0' @node-click="handleNodeClick">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="data.description">{{node.label}}</span>
                         </span>
