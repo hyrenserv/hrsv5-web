@@ -28,7 +28,7 @@
                         <el-input v-model="testForm.token" clearable placeholder="请输入token"/>
                     </el-form-item>
                     <el-form-item label="url">
-                        <el-input v-model="testForm.url" clearable placeholder="请输入请求url"/>
+                        <el-input v-model="testForm.url" clearable placeholder="请输入请求路径"/>
                     </el-form-item>
                     <el-form-item label="tableName">
                         <el-input v-model="testForm.tableName" clearable placeholder="请输入系统登记表名称"/>
@@ -46,7 +46,7 @@
                         <el-input v-model="testForm.selectColumn" clearable placeholder="请输入需要查询的列名"/>
                     </el-form-item>
                     <el-form-item label="whereColumn">
-                        <el-input v-model="testForm.whereColumns" clearable placeholder="请输入查询条件"/>
+                        <el-input v-model="testForm.whereColumn" clearable placeholder="请输入查询条件"/>
                     </el-form-item>
                     <el-form-item label="ds_name">
                         <el-input v-model="testForm.ds_name" clearable placeholder="请输入数据源名称"/>
@@ -117,6 +117,7 @@
                 tokenForm: {},
                 testForm: {
                     token: '',
+                    num: null
                 },
                 interfaceData: ''
             }
@@ -129,22 +130,26 @@
                 params["user_password"] = this.tokenForm.user_password;
                 interfaceFunctionAll.getToken(params).then(res => {
                     this.testForm.token = res.data.token;
+                    this.interfaceData = this.getFormatData(JSON.stringify(res.data));
                 })
             },
             // 获取接口响应信息
             getInterfaceData() {
-                if (this.testForm.num === "") {
-                    this.testForm.num = 10;
+                if (this.testForm.user_id === "" || this.testForm.user_id === undefined) {
+                    this.testForm.user_id = null;
                 }
-                let checkParams = [];
-                let checkParam = {};
-                checkParam["user_id"] = "2001";
-                checkParam["user_password"] = "1";
-                checkParams.push(checkParam);
-                this.testForm["checkParams"] = JSON.stringify(checkParams);
-                interfaceFunctionAll.getInterfaceData(this.testForm).then(res => {
-                    this.interfaceData = this.getFormatData(JSON.stringify(res.data));
-                })
+                if (this.testForm.url === undefined) {
+                    this.interfaceData = this.getFormatData(JSON.stringify('{' +
+                        '                        "message": {' +
+                        '                            "url未填或填写错误请检查"' +
+                        '                        },' +
+                        '                        "status": "NORMAL"' +
+                        '                    }'));
+                } else {
+                    interfaceFunctionAll.getInterfaceData(this.testForm).then(res => {
+                        this.interfaceData = this.getFormatData(JSON.stringify(res.data));
+                    })
+                }
             },
             formatJson(json) {
                 let i = 0,
