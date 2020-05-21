@@ -548,6 +548,9 @@ export default {
                             message: '批量作业停止成功！',
                             type: 'success'
                         });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleStop = false;
                     }
                 });
             } else {
@@ -603,6 +606,9 @@ export default {
                             message: '批量作业跳过成功！',
                             type: 'success'
                         });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisiblePass = false;
                     }
                 });
             } else {
@@ -658,6 +664,9 @@ export default {
                             message: '批量作业重跑成功！',
                             type: 'success'
                         });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleRefresh = false;
                     }
                 });
             } else {
@@ -713,6 +722,9 @@ export default {
                             message: '批量作业直接跑成功！',
                             type: 'success'
                         });
+                        this.tempForm = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleForce = false;
                     }
                 });
             } else {
@@ -767,6 +779,10 @@ export default {
                             message: '批量作业临时调整优先级成功！',
                             type: 'success'
                         });
+                        this.tempForm = {};
+                        this.formAdjust = {};
+                        this.multipleSelection = [];
+                        this.dialogVisibleAdjust = false;
                     }
 
                 });
