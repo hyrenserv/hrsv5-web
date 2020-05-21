@@ -10,7 +10,7 @@
     </el-row>
     <el-tabs class="tabes" v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="工程信息" name="first">
-            <el-table size="medium" :data="tableData" border style="width: 100%">
+            <el-table size="medium" :data="tableData" border stripe style="width: 100%">
                 <el-table-column type="index" label="序号" width="70px" align='center'>
                 </el-table-column>
                 <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
@@ -210,19 +210,19 @@
         </div>
     </el-dialog>
     <!-- 调度监控模态框 -->
-    <el-dialog :title="title" :visible.sync="dialogMointer" width="78%">
+    <el-dialog :title="title" :visible.sync="dialogMointer" width="78%" :before-close="close">
         <el-divider></el-divider>
         <div>
             <div class="fixed">
                 <el-col :span="10">
                     <p class="span22">批量运行状态</p>
                     <p class="span2">批量日期:{{this.dayDate}}</p>
-                    <VeLine :data="chartdataChartOne" :extend="chartExtendChartOne"></VeLine>
+                    <div v-if="showChartsInfo" id="leftChart" style="width: 100%;height:400px;"></div>
                 </el-col>
                 <el-col :span="14">
                     <p class="span22">系统运行状态</p>
                     <p class="span2">批量日期:{{this.dayDate}}</p>
-                    <VeLine :data="chartdataChartTwo" :extend="chartExtendChartTwo" :settings="chartSettings" :events="chartEvents"></VeLine>
+                    <div v-if="showChartsInfo" id="rightChart" style="width: 100%;height:400px;"></div>
                 </el-col>
             </div>
 
@@ -237,6 +237,10 @@
             <el-button size="mini" @click="close" type="danger">关闭</el-button>
         </div>
     </el-dialog>
+    <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoadingtran" />
+    </transition>
 </div>
 </template>
 
@@ -247,34 +251,20 @@ import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
 import regular from "@/utils/js/regular";
-import VeLine from 'v-charts/lib/histogram.common';
 import Vuex from 'vuex';
 import draggable from 'vuedraggable'
 import Sortable from 'sortablejs';
 import * as fixedAll from "@/utils/js/fileOperations";
+import Loading from '../../components/loading'
 let changValue;
 let sys_cds;
 export default {
     components: {
         draggable,
         Sortable,
-        VeLine
+        Loading
     },
     data() {
-        this.chartSettings = {
-            stack: {
-                '任务': ['挂起', '等待', '运行', '暂停', '错误', '完成']
-            }
-        }
-        let self = this;
-        this.chartEvents = {
-            click: function (e) {
-                self.task = e.name;
-                self.showOrhidden = true;
-                let id = self.changeParamas(e.name)
-                self.searchMonitorJobStateBySubCd(id);
-            }
-        }
         return {
             dialogFormVisibleAdd: false,
             dialogFormVisibleDeploy: false,
@@ -283,6 +273,10 @@ export default {
             dialogFormVisibleRecordCON: false,
             dialogFormVisibleRecordTRI: false,
             dialogMointer: false,
+            isLoadingtran: false,
+            showChartsInfo: false,
+            batchState: {},
+            sysState: [],
             projectTitle: '',
             activeName: 'first',
             title: "",
@@ -291,32 +285,12 @@ export default {
                 etl_sys_name: "",
                 comments: "",
             },
-            chartdataChartOne: {
-                columns: ['sub_sys_desc', '完成', '等待', '错误', '暂停', '运行', '挂起'],
-                rows: []
-            },
-            chartdataChartTwo: {
-                columns: ['sub_sys_desc', '完成', '等待', '错误', '暂停', '运行', '挂起'],
-                rows: []
-            },
             dayDate: '',
             task: '',
             showOrhidden: false,
             valueTime: '',
             dialogInfo: '',
             dialogInfoTri: '',
-            chartExtendChartOne: {
-                series: {
-                    //柱子宽度
-                    barWidth: 15
-                }
-            },
-            chartExtendChartTwo: {
-                series: {
-                    //柱子宽度
-                    barWidth: 80
-                }
-            },
             formDeploy: {
                 etl_sys_cd: "",
                 etl_serv_ip: "",
@@ -403,65 +377,90 @@ export default {
                 this.listdata = res.data;
                 res.data.forEach((item, index) => {
                     res.data[index].bathdate = fixedAll.dateFormat(res.data[index].bathdate);
-                    let arry = [];
-                    item['挂起'] = item.pending;
-                    item['等待'] = item.waiting;
-                    item['运行'] = item.runing;
-                    item['暂停'] = item.suspension;
-                    item['错误'] = item.error;
-                    item['完成'] = item.done;
-                    arry.push(item);
                     var bar_dv = document.getElementById(`radar${index}`);
                     if (bar_dv) {
-                        let myChart = this.$echarts.init(bar_dv);
-                        myChart.setOption({
-                            legend: {},
+                        let that = this;
+                        this.batchState = item;
+                        let chart = Highcahrts.chart(`radar${index}`, {
+                            chart: {
+                                type: 'column',
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            exporting: {
+                                enabled: false
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            title: {
+                                text: ''
+                            },
+                            xAxis: {
+                                categories: ['挂机', '等待', '运行', '暂停', '错误', '完成']
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: '<div class="EdbeSubTitle">' + '作业数量' + '<div/>'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                },
+                                gridLineWidth: 1,
+                                gridLineColor: 'gray'
+                            },
                             tooltip: {
-                                trigger: 'axis',
-                                axisPointer: { // 坐标轴指示器，坐标轴触发有效
-                                    type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                                crosshairs: true,
+                                pointFormat: '<span style="color:{series.color}">{series.name}</span>：' +
+                                    '<b>{point.y}</b>',
+                            },
+                            plotOptions: {
+                                column: {
+                                    animation: false,
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function () {
+                                            return this.y;
+                                        }
+                                    },
+                                    colorByPoint: true
                                 }
                             },
-                            dataset: {
-                                dimensions: ['etl_sys_name', '错误', '等待', '运行', '暂停', '完成', '挂起'],
-                                source: arry
-                            },
-                            grid: {
-                                left: '3%',
-                                right: '4%',
-                                bottom: '3%',
-                                containLabel: true
-                            },
-                            xAxis: [{
-                                type: 'category',
-                                axisTick: {
-                                    alignWithLabel: true
-                                }
-                            }],
-                            yAxis: {},
                             series: [{
-                                    type: 'bar'
-                                },
-                                {
-                                    type: 'bar'
-                                },
-                                {
-                                    type: 'bar'
-                                }, {
-                                    type: 'bar'
-                                },
-                                {
-                                    type: 'bar'
-                                },
-                                {
-                                    type: 'bar'
-                                }
-                            ]
+                                name: '作业数量',
+                                data: [{
+                                        y: parseInt(this.batchState.pending),
+                                        color: "#90B1D8"
+                                    },
+                                    {
+                                        y: parseInt(this.batchState.waiting),
+                                        color: "#00FFFF"
+                                    },
+                                    {
+                                        y: parseInt(this.batchState.runing),
+                                        color: "#90EE7E"
+                                    },
+                                    {
+                                        y: parseInt(this.batchState.suspension),
+                                        color: "#F7A35C"
+                                    },
+                                    {
+                                        y: parseInt(this.batchState.error),
+                                        color: "#FF7474"
+                                    },
+                                    {
+                                        y: parseInt(this.batchState.done),
+                                        color: "#2B908F"
+                                    }
+                                ]
+                            }]
                         })
                     }
-
                 })
-
             })
         },
         //添加工程按钮
@@ -786,34 +785,216 @@ export default {
         fullScreen(val) {
             this.dayDate = val.bathdate;
             this.monitorCurrentBatchInfo(val.etl_sys_cd);
+            this.monitorCurrentBatchInfoByTask(val.etl_sys_cd)
             changValue = val.etl_sys_cd;
             this.title = val.sys_name;
+            this.dialogMointer = true;
+            this.showChartsInfo = true;
         },
-        // 当前批量情况获取
+        // 系统运行状态数据
         monitorCurrentBatchInfo(val) {
             functionAll.monitorCurrentBatchInfo({
                 etl_sys_cd: val
             }).then((res) => {
-                res.data.curr_bath_date = fixedAll.dateFormat(res.data.curr_bath_date);
-                res.data.systemOperationStatus.forEach(item => {
-                    item['挂起'] = item.pending;
-                    item['等待'] = item.waiting;
-                    item['运行'] = item.runing;
-                    item['暂停'] = item.suspension;
-                    item['错误'] = item.error;
-                    item['完成'] = item.done;
+                let that = this;
+                this.batchState = res.data;
+                this.dayDate = fixedAll.dateFormat(res.data.curr_bath_date);
+                let chart = Highcahrts.chart('leftChart', {
+                    chart: {
+                        type: 'column',
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ['挂机', '等待', '运行', '暂停', '错误', '完成']
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '<div class="EdbeSubTitle">' + '作业数量' + '<div/>'
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value;
+                            }
+                        },
+                        gridLineWidth: 1,
+                        gridLineColor: 'gray'
+                    },
+                    tooltip: {
+                        crosshairs: true,
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>：' +
+                            '<b>{point.y}</b>',
+                    },
+                    plotOptions: {
+                        column: {
+                            animation: false,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return this.y;
+                                }
+                            },
+                            colorByPoint: true
+                        }
+                    },
+                    series: [{
+                        name: '作业数量',
+                        data: [{
+                                y: parseInt(this.batchState.pending),
+                                color: "#90B1D8"
+                            },
+                            {
+                                y: parseInt(this.batchState.waiting),
+                                color: "#00FFFF"
+                            },
+                            {
+                                y: parseInt(this.batchState.runing),
+                                color: "#90EE7E"
+                            },
+                            {
+                                y: parseInt(this.batchState.suspension),
+                                color: "#F7A35C"
+                            },
+                            {
+                                y: parseInt(this.batchState.error),
+                                color: "#FF7474"
+                            },
+                            {
+                                y: parseInt(this.batchState.done),
+                                color: "#2B908F"
+                            }
+                        ]
+                    }]
                 })
-                this.dayDate = res.data.curr_bath_date;
-                // 系统运行状态
-                this.chartdataChartTwo.rows = res.data.systemOperationStatus;
-                // 批量运行状态
-                this.chartdataChartOne.rows = res.data.systemOperationStatus;
-                this.dialogMointer = true;
+            })
+        },
+        // 监控当前批量状态
+        monitorCurrentBatchInfoByTask(val) {
+            functionAll.monitorCurrentBatchInfoByTask({
+                etl_sys_cd: val
+            }).then((res) => {
+                this.sysState = res.data;
+                let sub_sys_cd = [];
+                let name = [];
+                let runingNum = [];
+                let doneNum = [];
+                let errorNum = [];
+                let pendingNum = [];
+                let waitingNum = [];
+                let suspensionNum = [];
+                for (let i in this.sysState) {
+                    sub_sys_cd.push(this.sysState[i].sub_sys_cd);
+                    name.push(this.sysState[i].sub_sys_desc);
+                    runingNum.push(parseInt(this.sysState[i].runing));
+                    doneNum.push(parseInt(this.sysState[i].done));
+                    errorNum.push(parseInt(this.sysState[i].error));
+                    pendingNum.push(parseInt(this.sysState[i].pending));
+                    waitingNum.push(parseInt(this.sysState[i].waiting));
+                    suspensionNum.push(parseInt(this.sysState[i].suspension));
+                }
+                let that = this;
+                let chart = Highcahrts.chart('rightChart', {
+                    chart: {
+                        type: 'column'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        title: {
+                            text: this.value,
+                        },
+                        categories: name,
+                        labels: {
+                            rotation: -45,
+                            formatter: function () {
+                                var val;
+                                if (this.value.length > 8) {
+                                    val = this.value.substring(0, 6) + '...'
+                                } else {
+                                    val = this.value
+                                }
+                                return val;
+                            }
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: ''
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                        shared: true,
+                        followPointer: true,
+                        crosshairs: true
+                    },
+                    plotOptions: {
+                        column: {
+                            animation: false,
+                            plotOptions: true,
+                            enableMouseTracking: true,
+                            stacking: 'percent',
+                            events: {
+                                click: function (event) {
+                                    that.task = event.point.category;
+                                    let id = that.changeParamas(event.point.category)
+                                    that.searchMonitorJobStateBySubCd(id);
+                                    that.isLoadingtran = true;
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '挂起',
+                        color: "#90B1D8",
+                        data: pendingNum
+                    }, {
+                        name: '等待',
+                        color: "#00FFFF",
+                        data: waitingNum
+                    }, {
+                        name: '运行',
+                        color: "#90EE7E",
+                        data: runingNum
+                    }, {
+                        name: '暂停',
+                        color: "#F7A35C",
+                        data: suspensionNum
+                    }, {
+                        name: '错误',
+                        color: "#FF7474",
+                        data: errorNum
+                    }, {
+                        name: '完成',
+                        color: "#2B908F",
+                        data: doneNum
+                    }]
+                })
+
             })
         },
         // 改变传参
         changeParamas(val) {
-            this.chartdataChartTwo.rows.forEach(item => {
+            this.sysState.forEach(item => {
                 if (val == item.sub_sys_desc) {
                     val = item.sub_sys_cd;
                 }
@@ -828,189 +1009,197 @@ export default {
                 sub_sys_cd: val,
                 curr_bath_date: this.dayDate.replace(/-/g, "")
             }).then(res => {
-                // 数据处理成图标需要的格式
-                let time = [];
-                let colorsArray = [];
-                let sysName = [];
-                let status = [];
-                let startTime = [];
-                let endTime = [];
-                let start = 0;
-                let end = 0;
-                let arry = res.data;
-                let date = new Date().valueOf() + 8 * 60 * 60 * 1000;
-                for (let index = 0; index < arry.length; index++) {
-                    sysName[index] = arry[index].etl_job;
-                    status[index] = arry[index].job_disp_status;
-                    let curr_st_time = arry[index]['curr_st_time']
-                    let curr_end_time = arry[index]['curr_end_time']
-                    // 挂起：
-                    if (arry[index]['job_disp_status'] == "P") {
-                        colorsArray[index] = '#c4b4e4';
-                        start = date;
-                        end = date;
-                    }
-                    // 等待
-                    if (arry[index]['job_disp_status'] == "W") {
-                        colorsArray[index] = '#5ab1ef';
-                        start = date;
-                        end = date;
-                    }
-                    // 暂停
-                    if (arry[index]['job_disp_status'] == "S") {
-                        colorsArray[index] = '#ffb980';
-                        startTime[index] = this.dateToMill(curr_st_time);
-                        endTime[index] = this.dateToMill(curr_end_time);
-                        start = startTime[index];
-                        end = start;
-                    }
-
-                    // 错误
-                    if (arry[index]['job_disp_status'] == "E") {
-                        colorsArray[index] = '#c23531';
-                        startTime[index] = this.dateToMill(curr_st_time);
-                        endTime[index] = this.dateToMill(curr_end_time);
-                        start = startTime[index];
-                        end = start;
-                    }
-                    // 运行时长：
-                    if (arry[index]['job_disp_status'] == "R") {
-                        colorsArray[index] = '#0067a6';
-                        startTime[index] = this.dateToMill(curr_st_time);
-                        start = startTime[index];
-                        end = date;
-                    }
-                    // 完成
-                    if (arry[index]['job_disp_status'] == "D") {
-                        startTime[index] = (this.dateToMill(curr_st_time));
-                        endTime[index] = (this.dateToMill(curr_end_time));
-                        colorsArray[index] = '#19d4ae';
-                        // 是否虚拟作业
-                        if (startTime[index] > endTime[index]) {
-                            startTime[index] = endTime[index];
+                if (res && res.success) {
+                    // 数据处理成图标需要的格式
+                    let time = [];
+                    let colorsArray = [];
+                    let sysName = [];
+                    let status = [];
+                    let startTime = [];
+                    let endTime = [];
+                    let start = 0;
+                    let end = 0;
+                    let arry = res.data;
+                    let bottom = document.getElementById('container');
+                    bottom.style.height = 140 + arry.length * 30 + "px";
+                    let date = new Date().valueOf() + 8 * 60 * 60 * 1000;
+                    for (let index = 0; index < arry.length; index++) {
+                        sysName[index] = arry[index].etl_job;
+                        status[index] = arry[index].job_disp_status;
+                        let curr_st_time = arry[index]['curr_st_time']
+                        let curr_end_time = arry[index]['curr_end_time']
+                        // 挂起：
+                        if (arry[index]['job_disp_status'] == "P") {
+                            colorsArray[index] = '#90B1D8';
+                            start = date;
+                            end = date;
                         }
-                        start = startTime[index];
-                        end = endTime[index];
-                    }
-                    time[index] = [start, end];
-                    let that = this;
-                    var chart = Highcahrts.chart('container', {
-                        // 数据提示框
-                        tooltip: {
-                            crosshairs: true,
-                            useHTML: true,
-                            formatter: function () {
-                                var index = 0;
-                                for (var i = 0; i < sysName.length; i++) {
-                                    if (this.x == sysName[i]) {
-                                        index = i;
-                                        var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
-                                        var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
-                                        if (status[index] == "P") {
-                                            return this.x + '<br/>' + '状态' + ':' + '挂机';
-                                        } else if (status[index] == "W") {
-                                            return this.x + '<br/>' + '状态' + ':' + '等待';
-                                        } else if (status[index] == "S") {
-                                            return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                        } else if (status[index] == "E") {
-                                            return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                        } else if (status[index] == "D") {
-                                            return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
-                                        } else if (status[index] == "R") {
-                                            return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
-                                                Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
-                                        }
-                                    }
+                        // 等待
+                        if (arry[index]['job_disp_status'] == "W") {
+                            colorsArray[index] = '#00FFFF';
+                            start = date;
+                            end = date;
+                        }
+                        // 暂停
+                        if (arry[index]['job_disp_status'] == "S") {
+                            colorsArray[index] = '#F7A35C';
+                            startTime[index] = this.dateToMill(curr_st_time);
+                            endTime[index] = this.dateToMill(curr_end_time);
+                            start = startTime[index];
+                            end = start;
+                        }
 
-                                }
+                        // 错误
+                        if (arry[index]['job_disp_status'] == "E") {
+                            colorsArray[index] = '#FF7474';
+                            startTime[index] = this.dateToMill(curr_st_time);
+                            endTime[index] = this.dateToMill(curr_end_time);
+                            start = startTime[index];
+                            end = start;
+                        }
+                        // 运行时长：
+                        if (arry[index]['job_disp_status'] == "R") {
+                            colorsArray[index] = '#90EE7E';
+                            startTime[index] = this.dateToMill(curr_st_time);
+                            start = startTime[index];
+                            end = date;
+                        }
+                        // 完成
+                        if (arry[index]['job_disp_status'] == "D") {
+                            startTime[index] = (this.dateToMill(curr_st_time));
+                            endTime[index] = (this.dateToMill(curr_end_time));
+                            colorsArray[index] = '#2B908F';
+                            // 是否虚拟作业
+                            if (startTime[index] > endTime[index]) {
+                                startTime[index] = endTime[index];
                             }
-                        },
-                        chart: {
-                            type: 'columnrange',
-                            inverted: true,
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: ''
-                        },
-                        exporting: {
-                            enabled: false
-                        },
-                        xAxis: {
-                            categories: sysName,
-                            tickColor: 'gray',
-                            gridLineWidth: 1,
-                            gridLineColor: 'gray',
-                            tickmarkPlacement: 'on'
-                        },
-                        yAxis: {
-                            type: 'datetime',
+                            start = startTime[index];
+                            end = endTime[index];
+                        }
+                        this.showOrhidden = true;
+                        time[index] = [start, end];
+                        let that = this;
+                        var chart = Highcahrts.chart('container', {
+                            // 数据提示框
+                            tooltip: {
+                                crosshairs: true,
+                                useHTML: true,
+                                formatter: function () {
+                                    var index = 0;
+                                    for (var i = 0; i < sysName.length; i++) {
+                                        if (this.x == sysName[i]) {
+                                            index = i;
+                                            var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
+                                            var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
+                                            if (status[index] == "P") {
+                                                return this.x + '<br/>' + '状态' + ':' + '挂机';
+                                            } else if (status[index] == "W") {
+                                                return this.x + '<br/>' + '状态' + ':' + '等待';
+                                            } else if (status[index] == "S") {
+                                                return this.x + '<br/>' + '状态' + ':' + '暂停' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                            } else if (status[index] == "E") {
+                                                return this.x + '<br/>' + '状态' + ':' + '错误' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                            } else if (status[index] == "D") {
+                                                return this.x + '<br/>' + '状态' + ':' + '完成' + '<br/>' + '开始时间' + start + '<br/>' + '结束时间' + end;
+                                            } else if (status[index] == "R") {
+                                                return this.x + '<br/>' + '状态' + ':' + '运行' + '<br/>' + '开始时间' + start + '<br/>' + '至' +
+                                                    Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', new Date().getTime() + 8 * 60 * 60 * 1000);
+                                            }
+                                        }
+
+                                    }
+                                }
+                            },
+                            chart: {
+                                type: 'columnrange',
+                                inverted: true,
+                            },
+                            credits: {
+                                enabled: false
+                            },
                             title: {
                                 text: ''
                             },
-                            gridLineWidth: 0,
-                            labels: {
-                                overflow: 'justify',
-                                useHTML: true,
-                                formatter: function () {
-                                    var date = new Date(this.value);
-                                    var hours = date.getUTCHours();
-                                    var minutes = date.getUTCMinutes();
-                                    var seconds = date.getUTCSeconds();
-                                    if (this.isFirst) {
-                                        return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
-                                    } else if (hours == 0 && minutes == 0 && seconds == 0) {
-                                        return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
-                                    } else {
-                                        return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
-                                    }
-                                }
-                            }
-                        },
-                        // 数据点
-                        plotOptions: {
-                            columnrange: {
-                                colorByPoint: true,
-                                pointPadding: 1,
-                                borderWidth: 0,
-                                pointWidth: 8,
-                                showCheckbox: true,
+                            exporting: {
+                                enabled: false
                             },
-                            series: {
-                                minPointLength: 15,
-                                cursor: 'pointer',
-                                point: {
-                                    events: {
-                                        plotOptions: true,
-                                        enableMouseTracking: true,
-                                        click: function () {
-                                            let etlJobName = this.category;
-                                            that.$router.push({
-                                                name: 'currentJob',
-                                                query: {
-                                                    name: '/currentJob',
-                                                    dec: that.$Base64.encode('当前作业'),
-                                                    etl_job: etlJobName,
-                                                    etl_sys_cd: changValue
-                                                }
-                                            });
+                            xAxis: {
+                                categories: sysName,
+                                tickColor: 'gray',
+                                gridLineWidth: 1,
+                                gridLineColor: 'gray',
+                                tickmarkPlacement: 'on'
+                            },
+                            yAxis: {
+                                type: 'datetime',
+                                title: {
+                                    text: ''
+                                },
+                                gridLineWidth: 0,
+                                labels: {
+                                    overflow: 'justify',
+                                    useHTML: true,
+                                    formatter: function () {
+                                        var date = new Date(this.value);
+                                        var hours = date.getUTCHours();
+                                        var minutes = date.getUTCMinutes();
+                                        var seconds = date.getUTCSeconds();
+                                        if (this.isFirst) {
+                                            return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                                        } else if (hours == 0 && minutes == 0 && seconds == 0) {
+                                            return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%m-%d %H:%M', this.value) + '<div/>';
+                                        } else {
+                                            return '<div class="EdbeSubTitle">' + Highcahrts.dateFormat('%H:%M:%S', this.value) + '<div/>';
                                         }
                                     }
                                 }
                             },
-                        },
-                        // 图例
-                        legend: {
-                            enabled: false,
-                        },
-                        series: [{
-                            data: time,
-                            colors: colorsArray
-                        }]
+                            // 数据点
+                            plotOptions: {
+                                columnrange: {
+                                    colorByPoint: true,
+                                    pointPadding: 1,
+                                    borderWidth: 0,
+                                    pointWidth: 8,
+                                    showCheckbox: true,
+                                },
+                                series: {
+                                    minPointLength: 15,
+                                    cursor: 'pointer',
+                                    point: {
+                                        events: {
+                                            plotOptions: true,
+                                            enableMouseTracking: true,
+                                            click: function () {
+                                                let etlJobName = this.category;
+                                                that.$router.push({
+                                                    name: 'currentJob',
+                                                    query: {
+                                                        name: '/currentJob',
+                                                        dec: that.$Base64.encode('当前作业'),
+                                                        etl_job: etlJobName,
+                                                        etl_sys_cd: changValue
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                },
+                            },
+                            // 图例
+                            legend: {
+                                enabled: false,
+                            },
+                            series: [{
+                                data: time,
+                                colors: colorsArray
+                            }]
 
-                    })
+                        })
+                    }
+                    this.isLoadingtran = false;
+                } else {
+                    this.isLoadingtran = false;
                 }
 
             })
@@ -1051,9 +1240,8 @@ export default {
         // 关闭模态框
         close() {
             this.dialogMointer = false;
-            this.chartdataChartTwo.rows = [];
-            this.chartdataChartOne.rows = [];
             this.showOrhidden = false;
+            this.showChartsInfo = false;
         },
         // 跳转详情页
         routerLink(val) {
