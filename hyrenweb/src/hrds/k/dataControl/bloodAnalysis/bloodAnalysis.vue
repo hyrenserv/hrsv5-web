@@ -16,7 +16,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="关系">
-                <el-select v-model="formInline.search_relationship" placeholder="关系">
+                <el-select v-model="formInline.search_relationship" @change="relationChange" placeholder="关系">
                     <el-option label="影响" value="0"/>
                     <el-option label="血缘" value="1"/>
                 </el-select>
@@ -26,7 +26,7 @@
                         class="inline-input"
                         v-model="formInline.table_name"
                         :fetch-suggestions="querySearch"
-                        placeholder="请输入表名"
+                        placeholder="请输入表名" clearable
                         :trigger-on-focus="false"/>
             </el-form-item>
             <el-form-item>
@@ -49,6 +49,7 @@
                 rule: validator.default,
                 isFlag: [],
                 tableNames: [],
+                results:[],
                 formInline: {
                     search_type: '0',
                     search_relationship: '1',
@@ -60,6 +61,11 @@
             this.fuzzySearchTableName();
         },
         methods: {
+            relationChange() {
+                this.formInline.table_name = "";
+                this.fuzzySearchTableName();
+                this.tableNames=[];
+            },
             // 模糊搜索表名
             fuzzySearchTableName() {
                 // 处理参数
@@ -134,13 +140,13 @@
             querySearch(queryString, cb) {
                 this.fuzzySearchTableName();
                 const res = this.tableNames;
-                const results = queryString ? res.filter(this.createFilter(queryString)) : res;
+                this.results = queryString ? res.filter(this.createFilter(queryString)) : res;
                 // 调用 callback 返回建议列表的数据
-                cb(results);
+                cb(this.results);
             },
             createFilter(queryString) {
                 return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
                 };
             },
         },
