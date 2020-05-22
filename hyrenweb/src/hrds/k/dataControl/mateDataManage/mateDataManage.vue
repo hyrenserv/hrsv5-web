@@ -14,18 +14,27 @@
                     <el-tab-pane label="源数据列表" name="mdm">
                         <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
-                            <el-tree class="filter-tree" :data="mdmTreeList" :indent='0' @node-click="mdmHandleClick"
+                            <el-tree class="filter-tree" :data="mdmTreeList" :indent='0'
+                                     @node-click="mdmHandleClick" @node-contextmenu="rightMouseClick"
                                      :filter-node-method="filterNode" ref="tree1">
                                 <span class="span-ellipsis" slot-scope="{ node, data }">
                                     <span :title="data.description">{{node.label}}</span>
+
                                 </span>
                             </el-tree>
+                            <div v-show="menuVisible">
+                                <ul id="menu" class="menu">
+                                    <li class="menu__item" @click="tableSetToInvalid">删除</li>
+                                    <li  class="menu__item">删除</li>
+                                </ul>
+                            </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="数据回收站" name="drb">
                         <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
-                            <el-tree class="filter-tree" :data="drbTreeList" :indent='0' @node-click="drbHandleClick"
+                            <el-tree class="filter-tree" :data="drbTreeList" :indent='0'
+                                     @node-click="drbHandleClick" @node-contextmenu="recoverRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree2">
                                 <span class="span-ellipsis" slot-scope="{node, data}">
                                     <span :title="data.description">{{node.label}}</span>
@@ -54,15 +63,19 @@
                             <template v-if="tag_type === 'mdm'">
                                 <el-form-item>
                                     <template v-if="data_meta_info.data_layer !=='DQC'">
-                                        <el-button type="primary" size="mini" @click="editMetadata()">编辑</el-button>
-                                        <el-button type="success" size="mini" @click="saveMetaData()">保存</el-button>
+                                        <el-button type="primary" size="mini" @click="editMetadata()">编辑
+                                        </el-button>
+                                        <el-button type="success" size="mini" @click="saveMetaData()">保存
+                                        </el-button>
                                     </template>
-                                    <el-button type="danger" size="mini" @click="tableSetToInvalid()">删除</el-button>
+                                    <el-button type="danger" size="mini" @click="tableSetToInvalid()">删除
+                                    </el-button>
                                 </el-form-item>
                             </template>
                             <template v-else>
                                 <el-form-item>
-                                    <el-button type="primary" size="mini" @click="restoreDRBTable()">恢复</el-button>
+                                    <el-button type="primary" size="mini" @click="restoreDRBTable()">恢复
+                                    </el-button>
                                 </el-form-item>
                             </template>
                         </template>
@@ -73,7 +86,8 @@
                             :data="data_meta_info.column_info_list.slice((currentPage-1) * pageSize,currentPage * pageSize)"
                             size="mini">
                         <el-table-column type="index" prop="date" label="序号" align="center" width="80px">
-                            <template slot-scope="scope">{{scope.$index+(currentPage - 1) * pageSize + 1}}</template>
+                            <template slot-scope="scope">{{scope.$index+(currentPage - 1) * pageSize + 1}}
+                            </template>
                         </el-table-column>
                         <el-table-column prop="column_name" label="字段名" align="center"/>
                         <el-table-column prop="table_ch_name" label="字段中文名" align="center">
@@ -99,19 +113,28 @@
                     </el-table>
                     <!-- 分页 -->
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                                   :current-page="currentPage" :page-sizes="[5, 10, 50, 100, 500]" :page-size="pageSize"
+                                   :current-page="currentPage" :page-sizes="[5, 10, 50, 100, 500]"
+                                   :page-size="pageSize"
                                    layout="total, sizes, prev, pager, next, jumper" style="text-align: center"
                                    :total="data_meta_info.column_info_list.length">
                     </el-pagination>
                 </el-row>
             </el-col>
         </el-row>
+        <div v-show="recoverMenuVisible">
+            <el-row id="recoverMenu">
+                <el-button type="text">恢复表</el-button>
+                <el-button type="text">彻底删除表</el-button>
+            </el-row>
+        </div>
     </div>
 </template>
 
 <script>
     import * as mdmFun from './mateDataManage'
     import Loading from "../../../components/loading/index";
+    import * as vcFun from "../variableConfig/variableConfig";
+    import * as message from "../../../../utils/js/message";
 
     export default {
         components: {
@@ -129,9 +152,19 @@
                 mdmTreeList: [],
                 drbTreeList: [],
                 filterText: '',
+                description: '',
+                menuVisible: false,
+                recoverMenuVisible: false,
                 data_meta_info: {
-                    file_id: '', table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '',
-                    create_date: '', column_info_list: [], data_len: 0,
+                    file_id: '',
+                    table_id: '',
+                    data_layer: '',
+                    table_type: '',
+                    table_name: '',
+                    table_ch_name: '',
+                    create_date: '',
+                    column_info_list: [],
+                    data_len: 0,
                 },
             }
         },
@@ -205,6 +238,25 @@
                     })
                 }
             },
+            // 树节点鼠标右击事件
+            rightMouseClick(event, object, value, element) {
+                this.menuVisible = true;
+                const menu = document.querySelector('#menu');
+                this.description=object.description;
+                menu.style.left=event.clientX-200+'px';
+                menu.style.top=event.clientY-90+'px';
+            },
+            // 回收站树节点鼠标右击事件
+            recoverRightMouseClick(event, object, value, element) {
+                // 共四个参数，依次为：event、传递给data属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身
+                if (value.level === 1) {
+                    this.recoverMenuVisible = true;
+                    let menu = document.querySelector("#menu");
+                    /* 菜单定位基于鼠标点击位置 */
+                    menu.style.left = event.clientX + 20 + "px";
+                    menu.style.top = event.clientY - 10 + "px";
+                }
+            },
             //点击回收站树节点触发
             drbHandleClick(data) {
                 if (data.file_id !== '') {
@@ -224,6 +276,7 @@
             },
             //保存元数据,保存完成后查询保存的信息
             saveMetaData() {
+                let params = {};
                 let columnInfoBeans = [];
                 this.data_meta_info.column_info_list.forEach(o => {
                     let column_info = {};
@@ -231,8 +284,12 @@
                     column_info['column_ch_name'] = o.column_ch_name;
                     columnInfoBeans.push(column_info);
                 });
-                this.data_meta_info['columnInfoBeans'] = JSON.stringify(columnInfoBeans);
-                mdmFun.saveMetaData(this.data_meta_info).then(res => {
+                params['columnInfoBeans'] = JSON.stringify(columnInfoBeans);
+                params['data_layer'] = this.data_meta_info.data_layer;
+                params['table_ch_name'] = this.data_meta_info.table_ch_name;
+                params['file_id'] = this.data_meta_info.file_id;
+                params['table_id'] = this.data_meta_info.table_id;
+                mdmFun.saveMetaData(params).then(res => {
                     if (res.success) {
                         this.table_ch_name_input = true;
                         this.column_ch_name_input = true;
@@ -241,16 +298,23 @@
             },
             //删除表(表设置为无效)
             tableSetToInvalid() {
-                mdmFun.tableSetToInvalid({
-                    'data_layer': this.data_meta_info.data_layer,
-                    'file_id': this.data_meta_info.file_id
-                }).then(res => {
-                    if (res.success) {
-                        //重新获取树数据
-                        this.getMDMTreeData();
-                        this.data_meta_info = {table_id: '', column_info_list: []};
-                    }
-                })
+                this.$confirm('确定要将'+this.description+'表放入数据回收站吗？?', '提示', {
+                    confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
+                }).then(() => {
+                    mdmFun.tableSetToInvalid({
+                        'data_layer': this.data_meta_info.data_layer,
+                        'file_id': this.data_meta_info.file_id
+                    }).then(res => {
+                        if (res.success) {
+                            //重新获取树数据
+                            this.getMDMTreeData();
+                            this.data_meta_info = {table_id: '', column_info_list: []};
+                            this.menuVisible=false;
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({type: 'info', message: '已取消删除申请!'});
+                });
             },
             //恢复数据回收站的表
             restoreDRBTable() {
@@ -270,6 +334,25 @@
 </script>
 
 <style lang="less">
+    .menu__item {
+        display: block;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        font-size: 12px;
+    }
+    .menu {
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        border: 1px solid #999999;
+        background-color: #f5f5f5;
+    }
+    li:hover {
+        color: brown;
+        cursor: pointer;
+    }
+
     #metaDataManagement {
         .mytree /deep/ {
             .el-tree > .el-tree-node:after {

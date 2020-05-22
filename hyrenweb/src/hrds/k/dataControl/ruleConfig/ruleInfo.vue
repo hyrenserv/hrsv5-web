@@ -63,10 +63,13 @@
                             <el-col :span="7" :offset=1>
                                 <el-form-item label="规则类型 :" prop="case_type" :title="dq_help_info_map.ruleType">
                                     <el-select v-model="form_dq_data.case_type" clearable
+                                               :rules="filter_rules([{required: true}])"
                                                @change="caseTypeChange(form_dq_data.case_type)"
                                                filterable placeholder="请选择">
-                                        <el-option v-for="i in dq_rule_def_s" :key="i.case_type" :value="i.case_type"
-                                                   :label="i.case_type+' : '+i.case_type_desc">
+                                        <el-option v-if="i.case_type!==''" v-for="i in dq_rule_def_s"
+                                                   :key="i.case_type"
+                                                    :value="i.case_type"
+                                                   :label="i.case_type+' : '+i.case_type_desc" >
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
@@ -341,6 +344,7 @@
 <script>
     import * as message from '../../../../utils/js/message';
     import Loading from '@/hrds/components/loading';
+    import * as validator from "@/utils/js/validator";
     import * as rcFun from "./ruleConfig";
 
     export default {
@@ -351,6 +355,7 @@
         data() {
             return {
                 //页面变量初始化
+                rule: validator.default,
                 isLoading: false,
                 ruleTitle: '',
                 operation_type: '',

@@ -17,11 +17,13 @@
                     <el-input placeholder="变量值" v-model="search_var_data.var_value"/>
                 </el-form-item>
                 <el-form-item label="开始日期 : " prop='start_date' size="mini">
-                    <el-date-picker v-model="search_var_data.start_date" placeholder="开始日期" value-format="yyyyMMdd">
+                    <el-date-picker v-model="search_var_data.start_date" placeholder="开始日期"
+                                    value-format="yyyyMMdd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="结束日期 : " prop='e_date' size="mini">
-                    <el-date-picker v-model="search_var_data.end_date" placeholder="结束日期" value-format="yyyyMMdd">
+                    <el-date-picker v-model="search_var_data.end_date" placeholder="结束日期"
+                                    value-format="yyyyMMdd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
@@ -44,7 +46,8 @@
                 <el-table-column prop="sys_var_id" label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" @click="editVarData(scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="delVarData(scope.row.sys_var_id)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="delVarData(scope.row.sys_var_id)">删除
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,7 +62,11 @@
                 <div slot="title"><span>{{title}}系统变量</span></div>
                 <el-form :model="form_var_data" ref="var_data_from">
                     <el-form-item label="变量名" prop="var_name">
-                        <el-input v-model="form_var_data.var_name" autocomplete="off" placeholder="变量名"/>
+                        <el-input v-model="form_var_data.var_name" v-if="isEditor"
+                                  autocomplete="off"
+                                  placeholder="变量名"/>
+                        <el-input v-model="form_var_data.var_name" v-else disabled autocomplete="off"
+                                  placeholder="变量名"/>
                     </el-form-item>
                     <el-form-item label="变量值" prop="var_value">
                         <el-input v-model="form_var_data.var_value" placeholder="变量值"/>
@@ -94,6 +101,7 @@
                 var_data_s: [],
                 selectRow: [],
                 title: '',
+                isEditor: true,
                 sys_var_dialog: false,
                 operation_type: '',
             }
@@ -136,6 +144,7 @@
             //新增变量
             addVariableConfig() {
                 this.title = '新增';
+                this.isEditor = true;
                 this.sys_var_dialog = true;
                 this.operation_type = 'add';
                 this.form_var_data = {};
@@ -143,6 +152,7 @@
             //编辑变量
             editVarData(row) {
                 this.title = '编辑';
+                this.isEditor = false;
                 this.sys_var_dialog = true;
                 this.operation_type = 'edit';
                 //获取编辑的对象
