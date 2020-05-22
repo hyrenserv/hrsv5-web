@@ -26,7 +26,7 @@
                         class="inline-input"
                         v-model="formInline.table_name"
                         :fetch-suggestions="querySearch"
-                        placeholder="请输入表名" clearable
+                        placeholder="请输入表名"
                         :trigger-on-focus="false"/>
             </el-form-item>
             <el-form-item>
@@ -49,7 +49,6 @@
                 rule: validator.default,
                 isFlag: [],
                 tableNames: [],
-                results:[],
                 formInline: {
                     search_type: '0',
                     search_relationship: '1',
@@ -62,7 +61,6 @@
         },
         methods: {
             relationChange() {
-                this.formInline.table_name = "";
                 this.fuzzySearchTableName();
                 this.tableNames=[];
             },
@@ -140,9 +138,10 @@
             querySearch(queryString, cb) {
                 this.fuzzySearchTableName();
                 const res = this.tableNames;
-                this.results = queryString ? res.filter(this.createFilter(queryString)) : res;
+                let results={};
+                results= queryString ? res.filter(this.createFilter(queryString)) : res;
                 // 调用 callback 返回建议列表的数据
-                cb(this.results);
+                cb(results);
             },
             createFilter(queryString) {
                 return (restaurant) => {
