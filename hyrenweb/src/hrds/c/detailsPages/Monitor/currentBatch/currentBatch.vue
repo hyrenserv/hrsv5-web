@@ -16,7 +16,7 @@
         <el-row class="span10">任务:{{this.task}}</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
     </el-row>
-    <div id="container" v-show="showOrhidden" :style="{width: '100%', height: 'auto'}"></div>
+    <div id="container" :style="{width: '100%', height: 'auto'}"></div>
 </div>
 </template>
 

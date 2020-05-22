@@ -2,30 +2,24 @@
 <div>
     <el-row class="elRows">
         <el-form :model="form" ref="form" class="demo-form-inline" style="height:40px;" :inline="true">
-            <el-col :span="8">
+            <el-col :span="9">
                 <el-form-item label="作业名称">
-                    <div style="width:120px">
-                        <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" placeholder="作业名称"></el-autocomplete>
-                    </div>
+                    <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" clearable style="width:240px" placeholder="作业名称"></el-autocomplete>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="7">
                 <el-form-item label="任务名称">
-                    <div style="width:120px">
-                        <el-input size="mini" v-model="form.sub_sys_desc" placeholder="任务名称"></el-input>
-                    </div>
+                    <el-input size="mini" v-model="form.sub_sys_desc" style="width:150px" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="8">
                 <el-form-item label="状态">
-                    <div>
-                        <el-select size="mini" style="width:120px" v-model="form.job_status" placeholder="--请选择--" clearable>
-                            <el-option v-for="item in jobStatus" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                        </el-select>
-                        <el-button size="mini" class="searchBtn" type="primary" @click="searchBtn">搜索
-                        </el-button>
-                    </div>
+                    <el-select size="mini" v-model="form.job_status" placeholder="--请选择--" clearable style="width:140px">
+                        <el-option v-for="item in jobStatus" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-button size="mini" class="searchBtn" type="primary" @click="searchBtn">搜索
+                    </el-button>
                 </el-form-item>
             </el-col>
 

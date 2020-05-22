@@ -3,12 +3,12 @@
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
-                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" style="width:180px" placeholder="作业名称"></el-autocomplete>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" style="width:264px" placeholder="作业名称"></el-autocomplete>
             </el-form-item>
         </el-col>
         <el-col :span="12">
             <el-form-item label="资源类型">
-                <el-input size="mini" v-model="form.resource_type" style="width:180px" placeholder="资源类型"></el-input>
+                <el-input size="mini" v-model="form.resource_type" style="width:264px" placeholder="资源类型"></el-input>
                 <el-button class="searchBtn" size="mini" type="primary" @click="searchBtn">搜索</el-button>
             </el-form-item>
         </el-col>

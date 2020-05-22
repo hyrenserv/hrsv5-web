@@ -16,7 +16,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="关系">
-                <el-select v-model="formInline.search_relationship" placeholder="关系">
+                <el-select v-model="formInline.search_relationship" @change="relationChange" placeholder="关系">
                     <el-option label="影响" value="0"/>
                     <el-option label="血缘" value="1"/>
                 </el-select>
@@ -30,7 +30,8 @@
                         :trigger-on-focus="false"/>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" size="mini" @click="getTableBloodRelationship('formInline')">搜索</el-button>
+                <el-button type="primary" size="mini" @click="getTableBloodRelationship('formInline')">搜索
+                </el-button>
             </el-form-item>
         </el-form>
         <!--echarts图展示血缘关系-->
@@ -59,6 +60,10 @@
             this.fuzzySearchTableName();
         },
         methods: {
+            relationChange() {
+                this.fuzzySearchTableName();
+                this.tableNames=[];
+            },
             // 模糊搜索表名
             fuzzySearchTableName() {
                 // 处理参数
@@ -76,7 +81,6 @@
             // 根据表名称获取表与表之间的血缘关系
             getTableBloodRelationship(formName) {
                 this.$refs[formName].validate(valid => {
-                    console.log(valid)
                     if (valid) {
                         // 处理参数
                         dataControlFunctionAll.getTableBloodRelationship(this.formInline).then(res => {
@@ -132,14 +136,16 @@
             },
             // 查询之前先去选择关系
             querySearch(queryString, cb) {
+                this.fuzzySearchTableName();
                 const res = this.tableNames;
-                const results = queryString ? res.filter(this.createFilter(queryString)) : res;
+                let results={};
+                results= queryString ? res.filter(this.createFilter(queryString)) : res;
                 // 调用 callback 返回建议列表的数据
                 cb(results);
             },
             createFilter(queryString) {
                 return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
                 };
             },
         },

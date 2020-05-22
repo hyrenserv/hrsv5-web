@@ -28,7 +28,7 @@
             <el-table-column label=" 选择目的地" align="center">
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
-                        <div slot="content">请至少选择一个目的地</div>
+                        <div slot="content">请至少选择一个目的地,当选择的目的地是oracle时,落地表名长度不能大于27</div>
                         <i class="el-icon-question" aria-hidden="true">选择目的地</i>
                     </el-tooltip>
                 </template>
