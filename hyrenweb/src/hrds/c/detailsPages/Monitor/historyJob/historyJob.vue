@@ -2,18 +2,18 @@
 <div class="historyJob">
     <div class="title">搜索条件</div>
     <el-form :model="form" ref="form" class="demo-form-inline" :inline="true" style="height:40px;">
-        <el-col :span="6">
+        <el-col :span="9">
             <el-form-item label="作业名称">
-                <el-autocomplete :fetch-suggestions="querySearch" size="mini" style="width:110px;" v-model="form.etl_job" placeholder="作业名称"></el-autocomplete>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" placeholder="作业名称" clearable style="width:264px"></el-autocomplete>
             </el-form-item>
         </el-col>
-        <el-col :span="9">
+        <el-col :span="7">
             <el-form-item label="开始批量日期">
                 <el-date-picker size="mini" style="width:126px;" v-model="form.start_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" placeholder="开始日期">
                 </el-date-picker>
             </el-form-item>
         </el-col>
-        <el-col :span="9">
+        <el-col :span="8">
             <el-form-item label="结束批量日期">
                 <el-date-picker size="mini" style="width:126px;" v-model="form.end_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" placeholder="结束日期">
                 </el-date-picker>
