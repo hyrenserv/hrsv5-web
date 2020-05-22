@@ -55,9 +55,6 @@
                 },
             }
         },
-        mounted() {
-            this.fuzzySearchTableName();
-        },
         methods: {
             // 模糊搜索表名
             fuzzySearchTableName() {
@@ -131,6 +128,7 @@
             },
             // 查询之前先去选择关系
             querySearch(queryString, cb) {
+                this.fuzzySearchTableName();
                 const res = this.tableNames;
                 const results = queryString ? res.filter(this.createFilter(queryString)) : res;
                 // 调用 callback 返回建议列表的数据
