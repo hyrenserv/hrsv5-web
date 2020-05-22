@@ -16,7 +16,8 @@
         <el-row class="span10">任务:{{this.task}}</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
     </el-row>
-    <div id="container" :style="{width: '100%', height: 'auto'}"></div>
+    <highcharts v-show="showOrhidden" :options="chartOptions"></highcharts>
+
 </div>
 </template>
 
@@ -25,9 +26,14 @@ import * as functionAll from "./currentBatch";
 import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
+import {
+    Chart
+} from 'highcharts-vue'
 import * as fixedAll from "@/utils/js/fileOperations";
 export default {
-    components: {},
+    components: {
+        highcharts: Chart
+    },
     data() {
         return {
             dayDate: '',
@@ -35,6 +41,11 @@ export default {
             batchState: {},
             sysState: [],
             showOrhidden: false,
+            chartOptions: {
+                title: {
+                    text: ''
+                },
+            }
         };
     },
     mounted() {
@@ -271,8 +282,7 @@ export default {
                     let start = 0;
                     let end = 0;
                     let arry = res.data;
-                    let bottom = document.getElementById('container');
-                    bottom.style.height = 140 + arry.length * 30 + "px";
+                    let height = 140 + arry.length * 30;
                     let date = new Date().valueOf() + 8 * 60 * 60 * 1000;
                     for (let index = 0; index < arry.length; index++) {
                         sysName[index] = arry[index].etl_job;
@@ -329,7 +339,7 @@ export default {
                         }
                         time[index] = [start, end];
                         let that = this;
-                        let chart = Highcahrts.chart('container', {
+                        this.chartOptions = {
                             // 数据提示框
                             tooltip: {
                                 crosshairs: true,
@@ -363,6 +373,7 @@ export default {
                             chart: {
                                 type: 'columnrange',
                                 inverted: true,
+                                height: height
                             },
                             credits: {
                                 enabled: false
@@ -378,7 +389,7 @@ export default {
                                 tickColor: 'gray',
                                 gridLineWidth: 1,
                                 gridLineColor: 'gray',
-                                tickmarkPlacement: 'on'
+                                tickmarkPlacement: 'on',
                             },
                             yAxis: {
                                 type: 'datetime',
@@ -387,6 +398,7 @@ export default {
                                 },
                                 gridLineWidth: 0,
                                 labels: {
+                                    rotation: -45,
                                     overflow: 'justify',
                                     useHTML: true,
                                     formatter: function () {
@@ -446,7 +458,7 @@ export default {
                                 colors: colorsArray
                             }]
 
-                        })
+                        }
                     }
                     this.showOrhidden = true;
                 }

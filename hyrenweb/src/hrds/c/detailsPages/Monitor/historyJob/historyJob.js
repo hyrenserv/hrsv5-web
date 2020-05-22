@@ -22,10 +22,6 @@ export function downHistoryJobLog(data) {
         url: '/C/etlmonitor/downHistoryJobLog',
         method: 'post',
         params: data,
-        responseType: 'blob',
-        headers: {
-            'Content-Type': 'application/json'
-        }
     })
 }
 //查询作业名称信息

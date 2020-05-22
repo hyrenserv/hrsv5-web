@@ -12,13 +12,13 @@
     <el-row>
         <el-row class="span10">系统批量</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
-        <div class="panel-body" style="width: 100% ,height: 'auto';" id="taskCharts"></div>
+        <highcharts :options="chartOptions"></highcharts>
     </el-row>
     <el-row v-if="showOrhidden">
         <el-row class="span10">任务:{{this.task}}</el-row>
         <el-row class="span10">批量日期:{{this.dayDate}}</el-row>
     </el-row>
-    <div id="container" v-show="showOrhidden" :style="{width: '100%', height: 'auto'}"></div>
+    <highcharts v-show="showOrhidden" :options="chartOptionbottom"></highcharts>
 </div>
 </template>
 
@@ -28,7 +28,13 @@ import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
 import * as fixedAll from "@/utils/js/fileOperations";
+import {
+    Chart
+} from 'highcharts-vue'
 export default {
+    components: {
+        highcharts: Chart
+    },
     data() {
         return {
             datePickerValue: "",
@@ -37,7 +43,17 @@ export default {
             dayDate: '',
             task: '',
             showOrhidden: false,
-            dataALL: []
+            dataALL: [],
+            chartOptions: {
+                title: {
+                    text: ''
+                },
+            },
+            chartOptionbottom: {
+                title: {
+                    text: ''
+                },
+            }
         };
 
     },
@@ -85,13 +101,13 @@ export default {
                     };
                     time[index] = obj;
                 }
-                let datasUp = document.getElementById("taskCharts");
-                datasUp.style.height = 200 + leng * 30 + "px";
+                let heights = 200 + leng * 30;
                 let that = this;
-                let charts = Highcahrts.chart('taskCharts', {
+                this.chartOptions = {
                     chart: {
                         type: 'columnrange',
-                        inverted: true // 反转
+                        inverted: true, // 反转,
+                        height: heights
                     },
                     exporting: {
                         enabled: false
@@ -169,7 +185,6 @@ export default {
                                     plotOptions: true,
                                     enableMouseTracking: true,
                                     click: function (event) {
-                                        console.log(event)
                                         that.task = event.point.category;
                                         let value = that.changeParamas(event.point.category);
                                         // 获取数据
@@ -185,9 +200,7 @@ export default {
                     series: [{
                         data: time
                     }]
-
-                })
-
+                }
             })
         },
         // 获取日期对应数据和历史批量
@@ -271,11 +284,10 @@ export default {
                     }
                     time[index] = [start, end];
                 }
-                let datasUp2 = document.getElementById("container");
-                datasUp2.style.height = 200 + arry.length * 30 + "px";
+                let heightbottom = 200 + arry.length * 30;
                 // 获得图表信息
                 let that = this;
-                var chart = Highcahrts.chart('container', {
+                this.chartOptionbottom = {
                     // 数据提示框
                     tooltip: {
                         crosshairs: true,
@@ -309,6 +321,7 @@ export default {
                     chart: {
                         type: 'columnrange',
                         inverted: true,
+                        height: heightbottom
                     },
                     credits: {
                         enabled: false
@@ -394,7 +407,7 @@ export default {
                         colors: colorsArray
                     }]
 
-                })
+                }
                 that.showOrhidden = true;
             })
         },
