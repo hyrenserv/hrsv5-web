@@ -15,7 +15,7 @@
                         <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0'
-                                     @node-click="mdmHandleClick" @node-contextmenu="rightMouseClick"
+                                     @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree1">
                                 <span class="span-ellipsis" slot-scope="{ node, data }">
                                     <span :title="data.description">{{node.label}}</span>
@@ -24,7 +24,7 @@
                             </el-tree>
                             <div v-show="mouseVisible">
                                 <ul id="menu" class="menu">
-                                    <li class="menu__item" @click="tableSetToInvalid">删除</li>
+                                    <li class="menu_item" @click="tableSetToInvalid()">删除</li>
                                 </ul>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                         <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="drbTreeList" :indent='0'
-                                     @node-click="drbHandleClick" @node-contextmenu="recoverRightMouseClick"
+                                     @node-click="drbHandleClick" @node-contextmenu="DRBRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree2">
                                 <span class="span-ellipsis" slot-scope="{node, data}">
                                     <span :title="data.description">{{node.label}}</span>
@@ -41,8 +41,8 @@
                             </el-tree>
                             <div v-show="recoverMouseVisible">
                                 <ul id="menu2" class="menu2">
-                                    <li class="menu__item2" @click="removeCompletelyTable">彻底删除表</li>
-                                    <li class="menu__item2" @click="restoreDRBTable">恢复表</li>
+                                    <li class="menu_item2" @click="restoreDRBTable()">恢复表</li>
+                                    <li class="menu_item2" @click="removeCompletelyTable()">彻底删除表</li>
                                 </ul>
                             </div>
                         </div>
@@ -73,16 +73,16 @@
                                         <el-button type="success" size="mini" @click="saveMetaData()">保存
                                         </el-button>
                                     </template>
-                                    <el-button type="danger" size="mini" @click="tableSetToInvalid()">删除
-                                    </el-button>
+                                    <!--                                    <el-button type="danger" size="mini" @click="tableSetToInvalid()">删除-->
+                                    <!--                                    </el-button>-->
                                 </el-form-item>
                             </template>
-                            <template v-else>
-                                <el-form-item>
-                                    <el-button type="primary" size="mini" @click="restoreDRBTable()">恢复
-                                    </el-button>
-                                </el-form-item>
-                            </template>
+                            <!--                            <template v-else>-->
+                            <!--                                <el-form-item>-->
+                            <!--                                    <el-button type="primary" size="mini" @click="restoreDRBTable()">恢复-->
+                            <!--                                    </el-button>-->
+                            <!--                                </el-form-item>-->
+                            <!--                            </template>-->
                         </template>
                     </el-form>
                 </el-row>
@@ -132,8 +132,6 @@
 <script>
     import * as mdmFun from './mateDataManage'
     import Loading from "../../../components/loading/index";
-    import * as vcFun from "../variableConfig/variableConfig";
-    import * as message from "../../../../utils/js/message";
 
     export default {
         components: {
@@ -155,16 +153,10 @@
                 mouseVisible: false,
                 recoverMouseVisible: false,
                 data_meta_info: {
-                    file_id: '',
-                    table_id: '',
-                    data_layer: '',
-                    table_type: '',
-                    table_name: '',
-                    table_ch_name: '',
-                    create_date: '',
-                    column_info_list: [],
-                    data_len: 0,
+                    file_id: '', table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '',
+                    create_date: '', column_info_list: [], data_len: 0,
                 },
+                node_data: {}
             }
         },
         created() {
@@ -238,34 +230,36 @@
                     })
                 }
             },
-            // 树节点鼠标右击事件
-            rightMouseClick(event, object, value, element) {
-                if (value.level !== 2) {
+            hiddenMouse() {
+                this.mouseVisible = false;
+                this.recoverMouseVisible = false;
+            },
+            //源数据管理树节点鼠标右击事件
+            MDMRightMouseClick(event, object, node) {
+                if (node.level === 3) {
                     this.mouseVisible = true;
                     const menu = document.querySelector('#menu');
                     this.description = object.description;
                     menu.style.left = event.clientX - 210 + 'px';
                     menu.style.top = event.clientY - 120 + 'px';
+                    this.node_data = object;
                 }
             },
-            hiddenMouse() {
-                this.mouseVisible = false;
-                this.recoverMouseVisible = false;
-            },
             // 回收站树节点鼠标右击事件
-            recoverRightMouseClick(event, object, value, element) {
-                if (value.level !== 2) {
+            DRBRightMouseClick(event, object, node) {
+                if (node.level === 3) {
                     // 共四个参数，依次为：event、传递给data属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身
                     this.recoverMouseVisible = true;
                     const menu = document.querySelector('#menu2');
                     this.description = object.description;
                     menu.style.left = event.clientX - 210 + 'px';
                     menu.style.top = event.clientY - 120 + 'px';
+                    this.node_data = object;
                 }
             },
             //点击回收站树节点触发
             drbHandleClick(data) {
-                this.recoverMouseVisible=false;
+                this.recoverMouseVisible = false;
                 if (data.file_id !== '') {
                     mdmFun.getDRBTableColumnInfo({"failure_table_id": data.file_id}).then(res => {
                         if (res.success) {
@@ -309,8 +303,8 @@
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
                     mdmFun.tableSetToInvalid({
-                        'data_layer': this.data_meta_info.data_layer,
-                        'file_id': this.data_meta_info.file_id
+                        'data_layer': this.node_data.data_layer,
+                        'file_id': this.node_data.file_id
                     }).then(res => {
                         if (res.success) {
                             //重新获取树数据
@@ -329,8 +323,8 @@
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
                     mdmFun.restoreDRBTable({
-                        'data_layer': this.data_meta_info.data_layer,
-                        'file_id': this.data_meta_info.file_id
+                        'data_layer': this.node_data.data_layer,
+                        'file_id': this.node_data.file_id
                     }).then(res => {
                         if (res.success) {
                             //重新获取树数据
@@ -348,8 +342,7 @@
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
                     mdmFun.removeCompletelyTable({
-                        'data_layer': this.data_meta_info.data_layer,
-                        'file_id': this.data_meta_info.file_id
+                        'file_id': this.node_data.file_id
                     }).then(res => {
                         if (res.success) {
                             //重新获取树数据
@@ -366,7 +359,7 @@
 </script>
 
 <style lang="less">
-    .menu__item {
+    .menu_item {
         display: block;
         height: 20px;
         line-height: 20px;
@@ -382,7 +375,7 @@
         background-color: #f5f5f5;
     }
 
-    .menu__item2 {
+    .menu_item2 {
         display: block;
         height: 20px;
         line-height: 20px;
@@ -392,7 +385,7 @@
 
     .menu2 {
         height: 40px;
-        width: 60px;
+        width: 80px;
         position: absolute;
         border: 1px solid #999999;
         background-color: #f5f5f5;
