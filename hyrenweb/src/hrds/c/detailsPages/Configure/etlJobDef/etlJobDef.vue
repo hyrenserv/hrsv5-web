@@ -3,22 +3,22 @@
     <el-form :model="form" ref="form" class="demo-form-inlines" :inline="true">
         <el-col :span="12">
             <el-form-item label="作业名称">
-                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" style="width:130px" placeholder="作业名称"></el-autocomplete>
+                <el-autocomplete :fetch-suggestions="querySearch" size="mini" v-model="form.etl_job" clearable style="width:264px" placeholder="作业名称"></el-autocomplete>
             </el-form-item>
         </el-col>
         <el-col :span="12">
             <el-form-item label="作业程序名称">
-                <el-input size="mini" v-model="form.pro_name" style="width:130px" placeholder="作业程序名称"></el-input>
+                <el-input size="mini" v-model="form.pro_name" style="width:264px" placeholder="作业程序名称"></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="12">
             <el-form-item label="任务编号">
-                <el-input size="mini" v-model="form.sub_sys_cd" style="width:130px" placeholder="任务编号"></el-input>
+                <el-input size="mini" v-model="form.sub_sys_cd" style="width:264px" placeholder="任务编号"></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="12">
             <el-form-item label="作业程序类型">
-                <el-select size="mini" v-model="form.pro_type" style="width:130px" placeholder="选择程序类型" clearable>
+                <el-select size="mini" v-model="form.pro_type" style="width:200px" placeholder="选择程序类型" clearable>
                     <el-option v-for="item in addSelect.proType" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>

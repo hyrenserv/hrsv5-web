@@ -3,7 +3,7 @@
     <div class="title">搜索条件</div>
     <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
         <el-form-item label="作业名称" class="elformItem">
-            <el-autocomplete :fetch-suggestions="querySearch" v-model="form.etl_job" placeholder="作业名称" size="mini"></el-autocomplete>
+            <el-autocomplete :fetch-suggestions="querySearch" v-model="form.etl_job" placeholder="作业名称" clearable style="width:284px" size="mini"></el-autocomplete>
         </el-form-item>
         <el-form-item class="elformItem">
             <el-button type="primary" @click="searchSingle" size="mini">单作业搜索</el-button>
