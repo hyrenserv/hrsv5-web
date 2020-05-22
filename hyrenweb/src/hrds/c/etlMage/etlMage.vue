@@ -214,12 +214,12 @@
         <el-divider></el-divider>
         <div>
             <div class="fixed">
-                <el-col :span="10">
+                <el-col :span="8">
                     <p class="span22">批量运行状态</p>
                     <p class="span2">批量日期:{{this.dayDate}}</p>
                     <div v-if="showChartsInfo" id="leftChart" style="width: 100%;height:400px;"></div>
                 </el-col>
-                <el-col :span="14">
+                <el-col :span="16">
                     <p class="span22">系统运行状态</p>
                     <p class="span2">批量日期:{{this.dayDate}}</p>
                     <div v-if="showChartsInfo" id="rightChart" style="width: 100%;height:400px;"></div>
@@ -237,10 +237,6 @@
             <el-button size="mini" @click="close" type="danger">关闭</el-button>
         </div>
     </el-dialog>
-    <!-- 加载过度 -->
-    <transition name="fade">
-        <loading v-if="isLoadingtran" />
-    </transition>
 </div>
 </template>
 
@@ -255,14 +251,12 @@ import Vuex from 'vuex';
 import draggable from 'vuedraggable'
 import Sortable from 'sortablejs';
 import * as fixedAll from "@/utils/js/fileOperations";
-import Loading from '../../components/loading'
 let changValue;
 let sys_cds;
 export default {
     components: {
         draggable,
         Sortable,
-        Loading
     },
     data() {
         return {
@@ -273,7 +267,6 @@ export default {
             dialogFormVisibleRecordCON: false,
             dialogFormVisibleRecordTRI: false,
             dialogMointer: false,
-            isLoadingtran: false,
             showChartsInfo: false,
             batchState: {},
             sysState: [],
@@ -958,7 +951,6 @@ export default {
                                     that.task = event.point.category;
                                     let id = that.changeParamas(event.point.category)
                                     that.searchMonitorJobStateBySubCd(id);
-                                    that.isLoadingtran = true;
                                 }
                             }
                         }
@@ -1076,7 +1068,6 @@ export default {
                             start = startTime[index];
                             end = endTime[index];
                         }
-                        this.showOrhidden = true;
                         time[index] = [start, end];
                         let that = this;
                         var chart = Highcahrts.chart('container', {
@@ -1196,10 +1187,8 @@ export default {
                             }]
 
                         })
+                        this.showOrhidden = true;
                     }
-                    this.isLoadingtran = false;
-                } else {
-                    this.isLoadingtran = false;
                 }
 
             })

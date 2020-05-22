@@ -118,9 +118,9 @@ export function getRuleConfigTreeData() {
 }
 
 //获取字段信息
-export function getColumnByFileId(data) {
+export function getColumnsByTableName(data) {
     return request({
-        url: '/K/dm/ruleconfig/getColumnByFileId',
+        url: '/K/dm/ruleconfig/getColumnsByTableName',
         params: data,
     })
 }

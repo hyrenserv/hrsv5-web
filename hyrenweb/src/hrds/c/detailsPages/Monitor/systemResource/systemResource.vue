@@ -3,7 +3,7 @@
     <el-row><span class="spanDeatil">系统资源情况</span></el-row>
     <el-row class="span10">系统资源</el-row>
     <el-row>
-        <VeLine :data="chartdataChartOne" :extend="chartExtendChartOne"></VeLine>
+        <div id="main" style="width: 100%;height:400px;"></div>
     </el-row>
     <el-row>
         <span class="spanDeatil">系统当前占用资源</span>
@@ -22,29 +22,17 @@
 </template>
 
 <script>
-import VeLine from 'v-charts/lib/histogram.common';
 import * as functionAll from "./systemResource";
+import Highcahrts from 'highcharts';
+import highchartsMore from 'highcharts/highcharts-more';
+highchartsMore(Highcahrts);
 export default {
-    components: {
-        VeLine
-    },
     data() {
         return {
-            chartdataChartOne: {
-                columns: ['resource_type', '总资源', '空闲资源', '使用资源'],
-                rows: []
-            },
             departmentalList: [],
-            chartExtendChartOne: {
-                series: {
-                    //柱子宽度
-                    barWidth: 50,
-                    label: {
-                        show: true,
-                        position: "top"
-                    }
-                }
-            },
+            free: [],
+            used: [],
+            resourceType: []
         };
 
     },
@@ -56,12 +44,82 @@ export default {
             functionAll.monitorSystemResourceInfo({
                 etl_sys_cd: this.$route.query.etl_sys_cd
             }).then((res) => {
-                res.data.etlResourceList.forEach((item) => {
-                    item['总资源'] = item.resource_max;
-                    item['空闲资源'] = item.free;
-                    item['使用资源'] = item.resource_used
+                for (let i in res.data.etlResourceList) {
+                    this.free.push(parseInt(res.data.etlResourceList[i].free))
+                    this.used.push(parseInt(res.data.etlResourceList[i].resource_used))
+                    this.resourceType.push(res.data.etlResourceList[i].resource_type)
+                }
+                let that = this;
+                let chart = Highcahrts.chart('main', {
+                    chart: {
+                        type: 'column'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: this.resourceType,
+                        labels: {
+                            rotation: -45
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '资源数'
+                        },
+                        stackLabels: {
+                            enabled: true,
+                            style: {
+                                fontWeight: 'bold',
+                                color: (Highcahrts.theme && Highcahrts.theme.textColor) || 'gray'
+                            }
+                        }
+                    },
+                    legend: {
+                        align: 'right',
+                        x: -30,
+                        verticalAlign: 'top',
+                        y: 25,
+                        floating: true,
+                        backgroundColor: (Highcahrts.theme && Highcahrts.theme.background2) || 'white',
+                        borderColor: '#CCC',
+                        borderWidth: 1,
+                        shadow: false
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            return '<b>' + this.x + '</b><br/><span style="color:{series.color}">' +
+                                this.series.name + ' : ' + this.y + '</span><br/>' + '总资源数' + this.point.stackTotal;
+                        }
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: true,
+                                color: (Highcahrts.theme && Highcahrts.theme.dataLabelsColor) || 'white',
+                                style: {
+                                    textShadow: '0 0 3px black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                            name: '空闲资源',
+                            color: '#90EE7E',
+                            data: this.free
+                        },
+                        {
+                            name: '使用资源',
+                            color: '#2B908F',
+                            data: this.used
+                        }
+                    ]
                 })
-                this.chartdataChartOne.rows = res.data.etlResourceList;
                 let arr = res.data.jobRunList;
                 arr.forEach(item => {
                     if (item.job_disp_status == "D") {

@@ -133,13 +133,18 @@
             </el-form>
         </el-dialog>
         <!-- 弹出发布到工程调度模态框 end-->
+
+        <!-- 加载过度 -->
+        <transition name="fade">
+            <loading v-if="isLoading"/>
+        </transition>
     </div>
 </template>
 
 <script>
     import * as message from '../../../../utils/js/message';
     import * as rcFun from './ruleConfig'
-    import Loading from "../../../components/loading/index";
+    import Loading from '../../../components/loading';
 
     export default {
         name: 'ruleConfig',
@@ -250,17 +255,22 @@
             },
             //手工执行确定
             manualExecution() {
+                this.manual_execution_dialog = false;
+                this.isLoading = true;
                 rcFun.manualExecution({
                     'reg_num': this.manual_execution_reg_num,
                     'verify_date': this.verify_date
                 }).then(res => {
                     if (res.success) {
+                        this.isLoading = false;
                         this.$router.push({
                             name: 'ruleDetectionDetail',
                             query: {
                                 'task_id': res.data,
                             }
                         });
+                    } else {
+                        this.isLoading = false;
                     }
                 });
             },
