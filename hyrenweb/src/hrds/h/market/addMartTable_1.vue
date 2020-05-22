@@ -30,6 +30,15 @@
             </el-col>
 
             <el-col :span="10">
+                <el-form-item label="表名可能重复" prop="repeat_flag" :rules="rule.selected">
+                    <el-select :disabled="is_add == '1'" v-model="dm_datatable.repeat_flag" placeholder="请选择">
+                        <el-option v-for="item in isflag" :key="item.value" :label="item.value"
+                                   :value="item.code"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="10">
                 <el-form-item label="执行引擎" prop="sql_engine" :rules="rule.selected">
                     <el-select :disabled="iflock" v-model="dm_datatable.sql_engine" placeholder="请选择">
                         <el-option v-for="item in allsqlengine" :key="item.value" :label="item.value"
@@ -195,6 +204,7 @@
                 is_add: this.$route.query.is_add,
                 datatable_id: this.$route.query.datatable_id,
                 allsqlengine: [],
+                isflag: [],
                 allstoragetype: [],
                 alltablestorage: [],
                 alldatatablelifecycle: [],
@@ -220,6 +230,7 @@
                 selecttablename: "",
                 iflock: false,
 
+
                 // currentPage: 1,
                 // pagesize: 5,
 
@@ -229,6 +240,7 @@
 
         },
         mounted() {
+            this.getisflag();
             this.getTable();
             this.getAllSqlEngine();
             this.getAllStorageType();
@@ -274,6 +286,13 @@
                     'category': 'SqlEngine'
                 }).then(res => {
                     this.allsqlengine = res.data
+                })
+            },
+            getisflag(){
+                this.$Code.getCategoryItems({
+                    'category': 'IsFlag'
+                }).then(res => {
+                    this.isflag = res.data
                 })
             },
             getAllStorageType() {
