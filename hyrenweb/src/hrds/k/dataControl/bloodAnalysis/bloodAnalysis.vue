@@ -76,7 +76,6 @@
             // 根据表名称获取表与表之间的血缘关系
             getTableBloodRelationship(formName) {
                 this.$refs[formName].validate(valid => {
-                    console.log(valid)
                     if (valid) {
                         // 处理参数
                         dataControlFunctionAll.getTableBloodRelationship(this.formInline).then(res => {
