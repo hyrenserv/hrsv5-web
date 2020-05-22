@@ -1,6 +1,6 @@
 <template>
 <div class="home">
-    <el-container>
+    <el-container style="height:100%">
         <el-header>
             <el-row>
                 <el-col :span="6" style='text-align:left'>
@@ -14,37 +14,46 @@
                 </el-col>
             </el-row>
         </el-header>
-        <el-container style="margin-top:50px;margin-bottom:30px">
-            <el-aside width='210px'>
-                <!-- 导航 -->
-                <Scrollbar>
-                    <el-menu background-color="#495179" text-color="#fff" active-text-color="rgba(255, 208, 75, 0.8)" router :default-active="$route.path" :collapse-transition="true" :collapse="isCollapse" class='el-menu-vertical-demo'>
-                        <div v-for="items in menus" :key="items.name">
-                            <template v-if="items.children">
-                                <!--二级菜单循环-->
-                                <el-submenu :index="items.children[0].path" class='oneMenu'>
-                                    <template slot="title"><i :class="items.icon"></i><span slot="title">{{items.title}}</span></template>
-                                        <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path">
-                                            <i :class="item.icon"></i>
-                                            <span>{{item.title}}</span>
+        <div style="margin-bottom:44px;"></div>
+        <el-container>
+            <div style="position:fixed" class='leftmean'>
+                <el-container>
+                    <el-aside >
+                        <Scrollbar>
+                            <!-- 导航 -->
+                            <el-menu :unique-opened='true'   style="border:0" background-color="#495179" text-color="#fff" active-text-color="rgba(255, 208, 75, 0.8)" router :default-active="$route.path" :collapse-transition="true" :collapse="isCollapse" class="el-menu-vertical-demo">
+                                <div v-for="items in menus" :key="items.name">
+                                    <template v-if="items.children">
+                                        <!--二级菜单循环-->
+                                        <el-submenu :index="items.children[0].path" class='oneMenu'>
+                                            <template slot="title"><i :class="items.icon"></i><span slot="title">{{items.title}}</span></template>
+                                            <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path">
+                                                <i :class="item.icon"></i>
+                                                <span>{{item.title}}</span>
+                                            </el-menu-item>
+                                        </el-submenu>
+                                    </template>
+                                    <template v-else>
+                                        <!--一级菜单循环-->
+                                        <el-menu-item :index="items.path">
+                                            <i :class="items.icon"></i>
+                                            <span slot="title">{{items.title}}</span>
                                         </el-menu-item>
-                                </el-submenu>
-                            </template>
-                            <template v-else>
-                                <!--一级菜单循环-->
-                                <el-menu-item :index="items.path">
-                                    <i :class="items.icon"></i>
-                                    <span slot="title">{{items.title}}</span>
-                                </el-menu-item>
-                            </template>
-                        </div>
-                    </el-menu>
-                </Scrollbar>
-            </el-aside>
-            <el-main>
-                <router-view></router-view>
-            </el-main>
+                                    </template>
+                                </div>
+                            </el-menu>
+                        </Scrollbar>
+                    </el-aside>
+                </el-container>
+            </div>
+            <div style="margin-left:200px"></div>
+            <el-container>
+                <el-main>
+                    <router-view></router-view>
+                </el-main>
+            </el-container>
         </el-container>
+        <div style="margin-top:18px"></div>
         <el-footer><span>版权所有：海云数服 Version 5.0</span></el-footer>
     </el-container>
 </div>
@@ -66,7 +75,7 @@ export default {
         return {
             menus: [],
             deflink: '',
-            isCollapse: false
+            isCollapse: false,
         }
     },
     mounted() {
@@ -102,55 +111,45 @@ export default {
             this.resetToken();
             this.$router.push('/');
         },
-       /*  meanClickFun() {
-            this.isCollapse = !this.isCollapse
-            if (!this.isCollapse) {
-                this.width = '10%'
-            } else {
-                this.width = '3%'
-            }
-
-        }, */
+       /*   meanClickFun() {
+             this.isCollapse = !this.isCollapse
+         }, */
 
     }
 }
 </script>
 
 <style scoped>
-/* .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
-    min-height: 400px;
-} */
-
-.el-header,
-.el-footer {
-    background-color: #495179;
-    text-align: center;
-    line-height: 50px;
-    color: #fff;
-}
-
 .el-aside {
     background-color: #495179;
-    min-height: 92.1vh;
+    min-height: 89.1vh;
+    width: 200px !important;
+    /* position: fixed; */
+    /* left: 0; */
 }
-
+ .leftmean>>>.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+  }
 .el-header {
+    background-color: #495179;
+    text-align: center;
+    color: #fff;
     position: fixed;
     top: 0%;
     width: 100%;
     z-index: 10;
     left: 0;
-    height: 50px !important;
-    line-height: 50px;
+    height: 45px !important;
+    line-height: 45px;
 }
 
 .el-main {
-       padding: 14px 20px;
+    padding: 14px 20px;
 }
 
 .el-container {
-    min-height: 90vh;
+    min-height: 93vh;
 }
 
 .el-footer {
@@ -161,5 +160,8 @@ export default {
     bottom: 0%;
     width: 100%;
     z-index: 10;
+    background-color: #495179;
+    text-align: center;
+    color: #fff;
 }
 </style>
