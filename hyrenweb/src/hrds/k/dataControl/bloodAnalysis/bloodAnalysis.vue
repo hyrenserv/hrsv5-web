@@ -30,7 +30,8 @@
                         :trigger-on-focus="false"/>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" size="mini" @click="getTableBloodRelationship('formInline')">搜索</el-button>
+                <el-button type="primary" size="mini" @click="getTableBloodRelationship('formInline')">搜索
+                </el-button>
             </el-form-item>
         </el-form>
         <!--echarts图展示血缘关系-->
@@ -54,6 +55,9 @@
                     table_name: ''
                 },
             }
+        },
+        mounted() {
+            this.fuzzySearchTableName();
         },
         methods: {
             // 模糊搜索表名
