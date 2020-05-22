@@ -8,22 +8,20 @@
                 </el-button>
             </router-link>
         </el-row>
-        <el-form :inline="true" :model="formInline" class="demo-form-inline" size="mini">
+        <el-form :inline="true" :model="formInline" ref="formInline" class="demo-form-inline" size="mini">
             <el-form-item label="类型">
-                <el-select v-model="formInline.search_type" placeholder="类型"
-                           :rules="filter_rules([{required: true}])">
+                <el-select v-model="formInline.search_type" placeholder="类型">
                     <el-option label="表查看" value="0"/>
                     <el-option label="字段查看" value="1"/>
                 </el-select>
             </el-form-item>
             <el-form-item label="关系">
-                <el-select v-model="formInline.search_relationship" placeholder="关系"
-                           :rules="filter_rules([{required: true}])">
+                <el-select v-model="formInline.search_relationship" placeholder="关系">
                     <el-option label="影响" value="0"/>
                     <el-option label="血缘" value="1"/>
                 </el-select>
             </el-form-item>
-            <el-form-item label="表名" :rules="filter_rules([{required: true}])">
+            <el-form-item label="表名" prop="table_name" :rules="filter_rules([{required: true}])">
                 <el-autocomplete
                         class="inline-input"
                         v-model="formInline.table_name"
@@ -31,13 +29,12 @@
                         placeholder="请输入表名"
                         :trigger-on-focus="false"/>
             </el-form-item>
-
             <el-form-item>
-                <el-button type="primary" size="mini" @click="getTableBloodRelationship">搜索</el-button>
+                <el-button type="primary" size="mini" @click="getTableBloodRelationship('formInline')">搜索</el-button>
             </el-form-item>
         </el-form>
         <!--echarts图展示血缘关系-->
-        <div id="myChart" :style="{width: '100%', height: '500px'}"></div>
+        <el-row id="myChart" :style="{width: '100%', height: '500px'}"/>
     </div>
 </template>
 <script>
@@ -79,16 +76,17 @@
             // 根据表名称获取表与表之间的血缘关系
             getTableBloodRelationship(formName) {
                 this.$refs[formName].validate(valid => {
+                    console.log(valid)
                     if (valid) {
                         // 处理参数
                         dataControlFunctionAll.getTableBloodRelationship(this.formInline).then(res => {
+                            let data = res.data;
                             let myChart = this.$echarts.init(document.getElementById('myChart'));
                             myChart.hideLoading();
-
-                            echarts.util.each(res.data.children, function (datum, index) {
+                            this.$echarts.util.each(data.children, function (datum, index) {
                                 index % 2 === 0 && (datum.collapsed = true);
                             });
-                            myChart.setOption(option = {
+                            let option = {
                                 tooltip: {
                                     trigger: 'item',
                                     triggerOn: 'mousemove'
@@ -126,7 +124,8 @@
                                         animationDurationUpdate: 750
                                     }
                                 ]
-                            });
+                            };
+                            myChart.setOption(option);
                         });
                     }
                 });
