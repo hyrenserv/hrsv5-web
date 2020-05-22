@@ -53,3 +53,10 @@ export function restoreDRBTable(data) {
         params: data,
     })
 }
+//彻底删除表
+export function removeCompletelyTable(data) {
+    return request({
+        url: '/K/dm/metadatamanage/removeCompletelyTable',
+        params: data,
+    })
+}
