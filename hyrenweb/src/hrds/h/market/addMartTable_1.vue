@@ -14,7 +14,8 @@
             <el-col :span="10">
                 <el-form-item label="表英文名" prop="datatable_en_name"
                               :rules="rule.default">
-                    <el-input v-model="dm_datatable.datatable_en_name" @change="checkrepeat()" placeholder="表英文名">
+                    <el-input :disabled="ennameiflock" v-model="dm_datatable.datatable_en_name" @change="checkrepeat()"
+                              placeholder="表英文名">
                         <el-button slot="append" icon="el-icon-zoom-in"
                                    @click="showalreadyexisttablename()"></el-button>
                     </el-input>
@@ -31,7 +32,8 @@
 
             <el-col :span="10">
                 <el-form-item label="表名可能重复" prop="repeat_flag" :rules="rule.selected">
-                    <el-select :disabled="is_add == '1'" v-model="dm_datatable.repeat_flag" placeholder="请选择">
+                    <el-select @change="changerepeat()" :disabled="repeatiflock" v-model="dm_datatable.repeat_flag"
+                               placeholder="请选择">
                         <el-option v-for="item in isflag" :key="item.value" :label="item.value"
                                    :value="item.code"></el-option>
                     </el-select>
@@ -218,7 +220,8 @@
                     storage_type: "",
                     table_storage: "",
                     datatable_lifecycle: "",
-                    datatable_due_date: ""
+                    datatable_due_date: "",
+                    repeat_flag:""
                 },
                 checkboxType: [],
                 tableDataConfigure: [],
@@ -229,14 +232,11 @@
                 alldatatable_en_name: [],
                 selecttablename: "",
                 iflock: false,
-
-
-                // currentPage: 1,
-                // pagesize: 5,
-
+                ennameiflock: false,
+                repeatiflock: false,
             };
         },
-        created(){
+        created() {
 
         },
         mounted() {
@@ -246,12 +246,27 @@
             this.getAllStorageType();
             this.getAllTableStorage();
             this.getAllDatatableLifecycle();
-            if (this.is_add == 1 && this.datatable_id != undefined) {
+            if ((this.is_add == 1 || this.is_add == "1") && this.datatable_id != undefined) {
                 this.queryDMDataTableByDataTableId(this.datatable_id)
+                this.checkrunstatus();
                 this.checkrepeat2();
             }
         },
         methods: {
+            checkrunstatus() {
+                functionAll.checkRunStatus({
+                    "datatable_id": this.datatable_id
+                }).then((res) => {
+                        if (res && res.success) {
+                            if (res.data.status == true) {
+                                this.iflock = res.data.status;
+                                this.ennameiflock = res.data.status;
+                                this.repeatiflock = res.data.status;
+                            }
+                        }
+                    }
+                )
+            },
             changeDataLifeCycle() {
                 if (this.dm_datatable.datatable_lifecycle == "1") {
                     this.showData_date = false;
@@ -275,7 +290,10 @@
                         if (this.dm_datatable.datatable_lifecycle == "2") {
                             this.showData_date = true;
                         }
-                        // this.iflock = true;
+                        if(this.datatable_id == undefined){
+                            this.dm_datatable.repeat_flag = "1";
+                        }
+                        this.changerepeat();
                     } else {
                         this.$emit(response.message);
                     }
@@ -288,7 +306,7 @@
                     this.allsqlengine = res.data
                 })
             },
-            getisflag(){
+            getisflag() {
                 this.$Code.getCategoryItems({
                     'category': 'IsFlag'
                 }).then(res => {
@@ -470,6 +488,13 @@
                 });
             },
             showalreadyexisttablename() {
+                if (this.dm_datatable.repeat_flag == "0") {
+                    this.$message({
+                        type: "warning",
+                        message: "表名不能重复，不能选择已有表名"
+                    });
+                    return false;
+                }
                 this.ifalreadyexisttablename = true;
                 this.selecttablename = this.dm_datatable.datatable_en_name;
                 functionAll.getalldatatable_en_name().then((res) => {
@@ -477,8 +502,17 @@
                 })
             },
             confirmselecttable() {
+                if(this.selecttablename == ""){
+                    this.$message({
+                        type: "warning",
+                        message: "请选择表名"
+                    });
+                    return false;
+                }
                 this.ifalreadyexisttablename = false;
-                this.dm_datatable.datatable_en_name = this.selecttablename
+                this.dm_datatable.datatable_en_name = this.selecttablename;
+                this.dm_datatable.repeat_flag = '1';
+                this.ennameiflock = true;
                 this.checkrepeat();
             },
             checkrepeat() {
@@ -486,30 +520,40 @@
                     "datatable_en_name": this.dm_datatable.datatable_en_name,
                     "datatable_id": this.datatable_id,
                 }
+                if( this.dm_datatable.datatable_en_name == ""){
+                    return false;
+                }
                 functionAll.querytablenameifrepeat(param).then((res) => {
                     if (res && res.success) {
-                        if(res.data.result == true){
-                            this.queryDMDataTableByDataTableId(res.data.datatable_id)
+                        if (res.data.result == true) {
+                            this.queryDMDataTableByDataTableId(res.data.datatable_id);
+
                             this.iflock = true;
-                        }else{
+                            this.dm_datatable.repeat_flag = "1";
+                            this.ennameiflock = true;
+                        } else {
                             this.iflock = false;
                         }
                     }
                 })
             },
-            checkrepeat2(){
+            checkrepeat2() {
                 let param = {
                     "datatable_id": this.datatable_id
                 }
                 functionAll.querydatatableidifrepeat(param).then((res) => {
                     if (res && res.success) {
-                        if(res.data.result == true){
-                            this.iflock = true;
-                        }else{
-                            this.iflock = false;
-                        }
+                        this.iflock = res.data.result;
                     }
                 })
+            },
+            changerepeat() {
+                //如果改为是
+                if (this.dm_datatable.repeat_flag == "1") {
+                    this.ennameiflock = true;
+                } else {
+                    this.ennameiflock = false;
+                }
             }
 
         }

@@ -390,3 +390,11 @@ export function getTableIdFromSameNameTableId(data) {
     })
 }
 
+
+//检查集市状态
+export function checkRunStatus(data) {
+    return request({
+        url: '/H/market/checkRunStatus',
+        params: data
+    })
+}
