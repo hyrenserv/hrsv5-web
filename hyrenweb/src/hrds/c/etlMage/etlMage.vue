@@ -1,7 +1,6 @@
 <template>
 <div class="loindex">
     <el-row class="elRows">
-        <!-- <i class="block_icon fa fa-briefcase fa-globe blue"></i> -->
         <span>工程管理</span>
         <el-button type="primary" class="el1 els" @click="addProject" size="small">
             <i class="block_icon fa fa-plus-circle"></i>添加工程
@@ -230,7 +229,7 @@
                 <p class="span22">任务:{{this.task}}</p>
                 <p class="span2">批量日期:{{this.dayDate}}</p>
             </div>
-            <div v-show="showOrhidden" id="container" :style="{width: '100%', height: 'auto'}"></div>
+            <highcharts v-show="showOrhidden" :options="chartOptions"></highcharts>
         </div>
         <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
@@ -251,12 +250,16 @@ import Vuex from 'vuex';
 import draggable from 'vuedraggable'
 import Sortable from 'sortablejs';
 import * as fixedAll from "@/utils/js/fileOperations";
+import {
+    Chart
+} from 'highcharts-vue'
 let changValue;
 let sys_cds;
 export default {
     components: {
         draggable,
         Sortable,
+        highcharts: Chart
     },
     data() {
         return {
@@ -271,6 +274,11 @@ export default {
             batchState: {},
             sysState: [],
             projectTitle: '',
+            chartOptions: {
+                title: {
+                    text: ''
+                },
+            },
             activeName: 'first',
             title: "",
             formAdd: {
@@ -1012,8 +1020,6 @@ export default {
                     let start = 0;
                     let end = 0;
                     let arry = res.data;
-                    let bottom = document.getElementById('container');
-                    bottom.style.height = 140 + arry.length * 30 + "px";
                     let date = new Date().valueOf() + 8 * 60 * 60 * 1000;
                     for (let index = 0; index < arry.length; index++) {
                         sysName[index] = arry[index].etl_job;
@@ -1070,7 +1076,8 @@ export default {
                         }
                         time[index] = [start, end];
                         let that = this;
-                        var chart = Highcahrts.chart('container', {
+                        let heightbottom = 140 + arry.length * 30;
+                        this.chartOptions = {
                             // 数据提示框
                             tooltip: {
                                 crosshairs: true,
@@ -1104,6 +1111,7 @@ export default {
                             chart: {
                                 type: 'columnrange',
                                 inverted: true,
+                                height: heightbottom
                             },
                             credits: {
                                 enabled: false
@@ -1128,6 +1136,7 @@ export default {
                                 },
                                 gridLineWidth: 0,
                                 labels: {
+                                    rotation: -45,
                                     overflow: 'justify',
                                     useHTML: true,
                                     formatter: function () {
@@ -1186,7 +1195,7 @@ export default {
                                 colors: colorsArray
                             }]
 
-                        })
+                        }
                         this.showOrhidden = true;
                     }
                 }

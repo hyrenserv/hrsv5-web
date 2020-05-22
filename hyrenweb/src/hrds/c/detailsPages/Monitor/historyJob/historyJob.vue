@@ -43,7 +43,7 @@
     <!-- 日志查看 -->
     <el-dialog :title="'作业日志信息(' + this.dialogWorks + ')'" :visible.sync="dialogForm" :before-close="closeDialog">
         <el-form :model="formAdd" ref="formAdd">
-            <el-form-item label="日志行数" :label-width="formLabelWidth" prop="readNum">
+            <el-form-item label="日志行数" :label-width="formLabelWidth">
                 <el-input v-model="formAdd.readNum" autocomplete="off" placeholder="行数" style="width:284px"></el-input>
                 <el-button type="primary" class="download" @click='viewData' :loading="viewLoading" size="small">查 看</el-button>
                 <el-tooltip class="item" effect="dark" content="默认显示最后100行，最多显示最后1000行(正整数)" placement="right">
@@ -409,7 +409,7 @@ export default {
         // 打开模态框查看与下载
         handleEdit(val, value) {
             this.dialogForm = true;
-            this.formAdd.curr_bath_date = value.curr_bath_date;
+            this.formAdd.curr_bath_date = value.curr_bath_date.replace(/-/g, "");
             object = value;
             this.dialogWorks = value.etl_job;
         },
