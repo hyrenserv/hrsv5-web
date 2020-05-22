@@ -132,7 +132,7 @@
 
 <style lang="less" scoped>
   .scrollbar-wrap {
-    height: 100%;
+    height: 96%;
     position: relative;
     overflow: hidden;
 
@@ -141,7 +141,7 @@
       position: absolute;
       top: 0px;
       left: 0px;
-      right: 0px;
+      right: -1px;
       bottom: 0px;
       // 一定要设置成scoll，目的是不管存不存在滚动，都让原生滚动区显示，这样才方便同时设置负的margin-bottom和margin-right
       overflow: scroll;
