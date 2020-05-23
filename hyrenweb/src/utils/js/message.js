@@ -92,3 +92,21 @@ export function sendSuccess(data) {
         })
     }
 }
+export function recoverSuccess(data) {
+    if (data && data.success) {
+        Message({
+            message: '恢复成功',
+            type: 'success',
+            duration: 5 * 1000
+        })
+    }
+}
+export function recycleSuccess(data) {
+    if (data && data.success) {
+        Message({
+            message: '放入回收站成功',
+            type: 'success',
+            duration: 5 * 1000
+        })
+    }
+}
