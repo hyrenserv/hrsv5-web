@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="websqlconsole">
     <el-row class='topTitle'>
         <span>SQL 操作台</span>
         <router-link to="/collectmonitor">
@@ -38,13 +38,15 @@
                 </el-tab-pane>
                 <el-tab-pane label="Sql查询" name="sqlQuery">
                     <el-col :span="20">
-                        <el-input type="textarea" autosize placeholder="请输入查询SQL" v-model="querySQL" />
+                        <div style="min-height:30px">
+                            <codemirror v-model="code" @input="onCmCodeChange" :options="cmOptions" />
+                        </div>
                     </el-col>
                     <el-col :span="4">
-                        <el-button class="query-sql-btn" type="primary" @click="getDataBySQL(querySQL)" size="small">查询
+                        <el-button class="query-sql-btn" type="primary" @click="getDataBySQL()" size="small">查询
                         </el-button>
                     </el-col>
-                    <el-table :data="dataBySQL" stripe border size="medium">
+                    <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
                         <el-table-column v-for="(index, item) in dataBySQL[0]" :key="dataBySQL.$index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
@@ -62,16 +64,24 @@
 <script>
 import * as dataQuery from "./dataQuery";
 import Loading from '../../components/loading';
+import {
+    codemirror
+} from 'vue-codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/duotone-dark.css'
+import 'codemirror/mode/sql/sql.js'
 
 export default {
-    name: "webSqlConsole",
+    name: "codeMirror",
     components: {
         Loading,
+        codemirror
     },
     data() {
         return {
             isLoading: false,
             menuVisible: false,
+            showOrhidden: false,
             querySQL: '',
             filterText: '',
             activeName: 'tableQuery',
@@ -79,10 +89,26 @@ export default {
             dataByTableName: [],
             dataBySQL: [],
             copydata: '',
-            // treeDataInfo: {
-            //     isFileCo: 'false', tree_menu_from: 'webSQL', isPublicLayer: '1',
-            //     isRootNode: '1', tableName: ''
-            // },
+            code: '',
+            cmOptions: {
+                mode: 'text/x-sql',
+                theme: 'duotone-dark',
+                indentWithTabs: true,
+                smartIndent: true,
+                lineWrapping: true,
+                matchBrackets: true,
+                autofocus: true,
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete"
+                },
+                hintOptions: { //自定义提示选项
+                    tables: {
+                        users: ['name', 'score', 'birthDate'],
+                        countries: ['name', 'population', 'size']
+                    },
+
+                }
+            },
             webSqlTreeData: [],
         };
     },
@@ -104,36 +130,14 @@ export default {
             // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
             return data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
         },
-        // //前台树
-        // loadNode(node, resolve) {
-        //     // this.searchResolve = resolve;
-        //     // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
-        //     if (node.level === 0) {
-        //         dataQuery.getTreeDataInfo(this.treeDataInfo).then((res) => {
-        //             return resolve(res.data.tree_sources);
-        //         }).catch(() => {
-        //             return resolve([]);
-        //         });
-        //     } else {
-        //         // 如果当前节点是父节点,则根据当前节点数据获取下一级的所有节点,否则根据节点信息查询数据
-        //         if (node.data.isParent) {
-        //             dataQuery.getTreeDataInfo(node.data).then((res) => {
-        //                 return resolve(res.data.tree_sources);
-        //             });
-        //         } else {
-        //             // 查询数据
-        //             dataQuery.queryDataBasedOnTableName({'tableName': 'sys_para', 'queryNum': 10}).then((res) => {
-        //                 this.dataByTableName = res.data;
-        //             });
-        //         }
-        //     }
-        //
-        // },
-        //后台树
         getWebSQLTreeData() {
             dataQuery.getWebSQLTreeData().then(res => {
                 this.webSqlTreeData = res.data;
             });
+        },
+        //   获取编辑器新值
+        onCmCodeChange(newCode) {
+            this.code = newCode
         },
         //树点击触发
         handleNodeClick(data) {
@@ -153,8 +157,10 @@ export default {
                 });
             }
         },
+
         // 根据SQL查询数据
-        getDataBySQL(querySQL) {
+        getDataBySQL() {
+            let querySQL = this.code;
             if (querySQL === '') {
                 this.$message({
                     type: 'warning',
@@ -166,6 +172,7 @@ export default {
                     'querySQL': querySQL
                 }).then((res) => {
                     if (res.success) {
+                        this.showOrhidden = true;
                         this.dataBySQL = res.data;
                     }
                 });
@@ -173,16 +180,15 @@ export default {
         },
         // 树右键复制代码
         rightClick(MouseEvent, object, Node, element) {
-            console.log(MouseEvent)
             if (Node.childNodes.length == 0 && Node.level > 1) {
                 this.copydata = Node.label;
-                this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
-                this.menuVisible = true // 显示模态窗口，跳出自定义菜单栏
-                var menu = document.querySelector('#menu')
-                document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo关闭监听方法
+                this.menuVisible = false;
+                this.menuVisible = true;
+                var menu = document.querySelector('#menu');
+                document.addEventListener('click', this.foo);
                 menu.style.display = "block";
-                menu.style.left = MouseEvent.pageX + 20 + 'px'
-                menu.style.top = MouseEvent.pageY - 8 + 'px'
+                menu.style.left = MouseEvent.pageX + 20 + 'px';
+                menu.style.top = MouseEvent.pageY - 8 + 'px';
             } else {
                 return false;
             }
@@ -216,7 +222,7 @@ export default {
     margin-left: 5%;
 }
 
-.menu {
+.websqlconsole .menu {
     display: inline-block;
     text-align: center;
     height: 20px;
@@ -231,5 +237,13 @@ export default {
     background-color: #f4f4f4;
     z-index: 100;
     cursor: pointer;
+}
+
+.websqlconsole>>>.CodeMirror {
+    width: 100%;
+    border: 1px solid #ddd;
+    height: 60px;
+    background: #fff;
+    margin-bottom: 10px;
 }
 </style>
