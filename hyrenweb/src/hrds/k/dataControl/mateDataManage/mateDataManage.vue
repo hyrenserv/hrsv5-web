@@ -342,7 +342,7 @@
                     this.hiddenMouse();
                 });
             },
-            //恢复数据回收站的表
+            //彻底删除数据回收站的表
             removeCompletelyTable() {
                 this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表彻底删除吗?', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
