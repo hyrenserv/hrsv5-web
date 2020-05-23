@@ -10,46 +10,46 @@
         </el-row>
         <el-row>
             <el-form :model="rule_result_form" :inline="true" size='mini'>
-                <el-row>
-                    <el-col :span="7" :offset=1>
+                <el-row :gutter="20">
+                    <el-col :span="8">
                         <el-form-item label="检查日期 : " prop='verify_date'>
                             <el-date-picker v-model="rule_result_form.verify_date" placeholder="检查日期"
                                             value-format="yyyyMMdd">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7" :offset=1>
+                    <el-col :span="8">
                         <el-form-item label="执行日期 : " prop='start_date'>
                             <el-date-picker v-model="rule_result_form.start_date" placeholder="执行日期"
                                             value-format="yyyyMMdd">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7" :offset=1>
+                    <el-col :span="8">
                         <el-form-item label="规则来源 : " prop='rule_src'>
                             <el-input placeholder="规则来源 :" v-model="rule_result_form.rule_src"/>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row>
-                    <el-col :span="7" :offset=1>
+                <el-row :gutter="20">
+                    <el-col :span="8" >
                         <el-form-item label="规则标签 : " prop='rule_tag'>
                             <el-input placeholder="规则标签 :" v-model="rule_result_form.rule_tag"/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7" :offset=1>
+                    <el-col :span="8" >
                         <el-form-item label="规则名称 : " prop='reg_name'>
                             <el-input placeholder="规则名称 :" v-model="rule_result_form.reg_name"/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7" :offset=1>
+                    <el-col :span="8" >
                         <el-form-item label="规则编号 : " prop='reg_num'>
                             <el-input placeholder="规则编号 :" v-model="rule_result_form.reg_num"/>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row>
-                    <el-col :span="7" :offset=1>
+                <el-row :gutter="20">
+                    <el-col :span="8">
                         <el-form-item label="执行方式 : " prop='exec_mode'>
                             <el-select v-model="rule_result_form.exec_mode" placeholder="请选择">
                                 <el-option v-for="item in exec_mode_list" :key="item.code" :label="item.value"
@@ -58,7 +58,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7" :offset=1>
+                    <el-col :span="8">
                         <el-form-item label="检查结果 : " prop='verify_result'>
                             <el-select v-model="rule_result_form.verify_result" multiple placeholder="请选择">
                                 <el-option v-for="item in verify_result_list" :key="item.code" :label="item.value"
@@ -67,7 +67,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7" :offset=1>
+                    <el-col :span="8">
                         <el-form-item>
                             <el-button type="primary" @click="ruleResultSearch()">搜索</el-button>
                         </el-form-item>
@@ -115,7 +115,7 @@
                 </el-table-column>
             </el-table>
             <!--分页-->
-            <el-pagination :total="totalSize" @size-change="handleSizeChange" :page-sizes="[10, 50, 100, 500]"
+            <el-pagination :total="totalSize" @size-change="handleSizeChange" :page-sizes="[5,10, 50, 100,500]"
                            :page-size="pageSize" @prev-click='preclickFun' :current-page="currPage"
                            @next-click='nextclickFun' @current-change="handleCurrentChange"
                            layout="total, sizes, prev, pager, next, jumper" style="text-align: center">
@@ -134,7 +134,7 @@
             return {
                 //页面加载数据
                 currPage: 1,
-                pageSize: 5,
+                pageSize: 10,
                 totalSize: 0,
                 //页面初始化数据
                 rule_result_form: {
@@ -165,12 +165,10 @@
             /* 设置每页显示条数 */
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.getRuleExecuteHistoryInfo(this.currPage, this.pageSize);
             },
             /* 查询页面 */
             handleCurrentChange(currPage) {
                 this.currPage = currPage;
-                this.getRuleExecuteHistoryInfo(this.currPage, this.pageSize);
             },
             /* 上一页 */
             preclickFun(currPage) {
