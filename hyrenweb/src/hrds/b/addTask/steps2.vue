@@ -1314,6 +1314,7 @@ export default {
                     "" :
                     JSON.stringify(tableColumn);
                 addTaskAllFun.saveAllSQL(params1).then(res => {
+                    console.log(res)
                     if (res.code == "200") {
                         this.activeSec = true;
                     } else {
@@ -2270,10 +2271,13 @@ export default {
         },
         // 第二页选择列调接口显示数据
         getSqlColumnDataFun(row, sql) {
+            console.log(row)
             let params = {};
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);
             params["sql"] = sql;
+            params["tableId"] = row.table_id?row.table_id : "";
+            params['tableName']=row.table_name
             addTaskAllFun.getSqlColumnData(params).then(res => {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
