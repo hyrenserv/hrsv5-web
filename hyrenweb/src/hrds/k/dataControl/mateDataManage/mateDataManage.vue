@@ -8,18 +8,17 @@
                 </el-button>
             </router-link>
         </el-row>
-        <el-row :gutter='60'>
+        <el-row gutter="42.8">
             <el-col :span="6">
                 <el-tabs v-model="mdmActiveName" type="border-card" @tab-click="tagHandleClick">
                     <el-tab-pane label="源数据列表" name="mdm">
-                        <div class="mytree">
+                        <div class="mytree" >
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0'
                                      @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree1">
                                 <span class="span-ellipsis" slot-scope="{ node, data }">
                                     <span :title="data.description">{{node.label}}</span>
-
                                 </span>
                             </el-tree>
                             <div v-show="mouseVisible">
@@ -49,9 +48,9 @@
                     </el-tab-pane>
                 </el-tabs>
             </el-col>
-            <el-col :span="18">
+            <el-col :span="17">
                 <el-row>
-                    <el-form :model="data_meta_info" :inline="true">
+                    <el-form :model="data_meta_info" :inline="true" >
                         <el-form-item label="表英文名 : " prop='table_name'>
                             <el-input placeholder="表英文名" size='mini' v-model="data_meta_info.table_name"
                                       :disabled="true"/>
@@ -195,12 +194,14 @@
             },
             //获取源数据列表树信息
             getMDMTreeData() {
+                this.hiddenMouse();
                 mdmFun.getMDMTreeData().then(res => {
                     this.mdmTreeList = res.data.mdmTreeList;
                 })
             },
             //获取数据回收站树信息
             getDRBTreeData() {
+                this.hiddenMouse();
                 mdmFun.getDRBTreeData().then(res => {
                     this.drbTreeList = res.data.drbTreeList;
                 })
@@ -241,7 +242,7 @@
                     const menu = document.querySelector('#menu');
                     this.description = object.description;
                     menu.style.left = event.clientX - 210 + 'px';
-                    menu.style.top = event.clientY - 120 + 'px';
+                    menu.style.top = event.clientY - 140 + 'px';
                     this.node_data = object;
                 }
             },
@@ -253,7 +254,7 @@
                     const menu = document.querySelector('#menu2');
                     this.description = object.description;
                     menu.style.left = event.clientX - 210 + 'px';
-                    menu.style.top = event.clientY - 120 + 'px';
+                    menu.style.top = event.clientY - 140 + 'px';
                     this.node_data = object;
                 }
             },
@@ -310,7 +311,6 @@
                             //重新获取树数据
                             this.getMDMTreeData();
                             this.data_meta_info = {table_id: '', column_info_list: []};
-                            this.menuVisible = false;
                         }
                     })
                 }).catch(() => {
@@ -349,6 +349,7 @@
                             this.getDRBTreeData();
                             this.data_meta_info = {table_id: '', column_info_list: []};
                         }
+
                     })
                 }).catch(() => {
                     this.hiddenMouse();
