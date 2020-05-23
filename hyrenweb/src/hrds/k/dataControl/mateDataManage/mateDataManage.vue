@@ -8,11 +8,11 @@
                 </el-button>
             </router-link>
         </el-row>
-        <el-row gutter="42.8">
+        <el-row :gutter="42">
             <el-col :span="6">
                 <el-tabs v-model="mdmActiveName" type="border-card" @tab-click="tagHandleClick">
                     <el-tab-pane label="源数据列表" name="mdm">
-                        <div class="mytree" >
+                        <div class="mytree">
                             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini"/>
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0'
                                      @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick"
@@ -50,7 +50,7 @@
             </el-col>
             <el-col :span="17">
                 <el-row>
-                    <el-form :model="data_meta_info" :inline="true" >
+                    <el-form :model="data_meta_info" :inline="true">
                         <el-form-item label="表英文名 : " prop='table_name'>
                             <el-input placeholder="表英文名" size='mini' v-model="data_meta_info.table_name"
                                       :disabled="true"/>
@@ -131,6 +131,7 @@
 <script>
     import * as mdmFun from './mateDataManage'
     import Loading from "../../../components/loading/index";
+    import * as message from "@/utils/js/message";
 
     export default {
         components: {
@@ -152,8 +153,15 @@
                 mouseVisible: false,
                 recoverMouseVisible: false,
                 data_meta_info: {
-                    file_id: '', table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '',
-                    create_date: '', column_info_list: [], data_len: 0,
+                    file_id: '',
+                    table_id: '',
+                    data_layer: '',
+                    table_type: '',
+                    table_name: '',
+                    table_ch_name: '',
+                    create_date: '',
+                    column_info_list: [],
+                    data_len: 0,
                 },
                 node_data: {}
             }
@@ -307,11 +315,10 @@
                         'data_layer': this.node_data.data_layer,
                         'file_id': this.node_data.file_id
                     }).then(res => {
-                        if (res.success) {
-                            //重新获取树数据
-                            this.getMDMTreeData();
-                            this.data_meta_info = {table_id: '', column_info_list: []};
-                        }
+                        message.recycleSuccess(res);
+                        //重新获取树数据
+                        this.getMDMTreeData();
+                        this.data_meta_info = {table_id: '', column_info_list: []};
                     })
                 }).catch(() => {
                     this.hiddenMouse();
@@ -326,11 +333,10 @@
                         'data_layer': this.node_data.data_layer,
                         'file_id': this.node_data.file_id
                     }).then(res => {
-                        if (res.success) {
-                            //重新获取树数据
-                            this.getDRBTreeData();
-                            this.data_meta_info = {table_id: '', column_info_list: []};
-                        }
+                        //重新获取树数据
+                        message.recoverSuccess(res);
+                        this.getDRBTreeData();
+                        this.data_meta_info = {table_id: '', column_info_list: []};
                     })
                 }).catch(() => {
                     this.hiddenMouse();
@@ -344,11 +350,10 @@
                     mdmFun.removeCompletelyTable({
                         'file_id': this.node_data.file_id
                     }).then(res => {
-                        if (res.success) {
-                            //重新获取树数据
-                            this.getDRBTreeData();
-                            this.data_meta_info = {table_id: '', column_info_list: []};
-                        }
+                        message.deleteSuccess(res);
+                        //重新获取树数据
+                        this.getDRBTreeData();
+                        this.data_meta_info = {table_id: '', column_info_list: []};
 
                     })
                 }).catch(() => {
