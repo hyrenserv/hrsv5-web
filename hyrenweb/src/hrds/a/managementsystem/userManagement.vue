@@ -14,10 +14,10 @@
                 <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
             </template>
         </el-table-column>
-        <el-table-column prop="user_id" label="用户登录账号" align="center"></el-table-column>
-        <el-table-column prop="user_name" label="创建用户名" align="center"></el-table-column>
+        <el-table-column prop="user_id" label="用户登录账号" show-overflow-tooltip align="center"></el-table-column>
+        <el-table-column prop="user_name" label="创建用户名" show-overflow-tooltip align="center"></el-table-column>
         <el-table-column prop="usertype_group" label="用户功能类型" width="370" show-overflow-tooltip align="center"></el-table-column>
-        <el-table-column prop="create_date" label="创建时间" align="center"></el-table-column>
+        <el-table-column prop="create_date" show-overflow-tooltip label="创建时间" align="center"></el-table-column>
         <el-table-column label="操作" width="160" align="center">
             <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="dialogFormVisibleUpdate = true;handleEdit(scope.$index, scope.row);">编辑</el-button>
