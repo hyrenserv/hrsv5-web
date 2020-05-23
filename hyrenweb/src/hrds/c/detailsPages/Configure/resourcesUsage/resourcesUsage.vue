@@ -27,7 +27,7 @@
             </el-button>
         </div>
     </el-row>
-    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" stripe border style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" align='center'>

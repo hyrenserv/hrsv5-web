@@ -3,7 +3,7 @@
     <div class="title">搜索条件</div>
     <el-form :model="form" ref="form" class="demo-form-inline tops" :inline="true">
         <el-form-item label="作业名称" class="itemformel">
-            <el-autocomplete :fetch-suggestions="querySearch" v-model="form.etl_job" placeholder="作业名称" size="mini" clearable  style="width:284px"></el-autocomplete>
+            <el-autocomplete :fetch-suggestions="querySearch" v-model="form.etl_job" placeholder="作业名称" size="mini" clearable style="width:284px"></el-autocomplete>
         </el-form-item>
         <el-form-item class="itemformel">
             <el-button type="primary" @click="search" size="mini">搜索</el-button>
@@ -120,7 +120,7 @@
         </el-col>
     </el-form>
     <div class="tips">资源信息</div>
-    <el-table ref="multipleTable" size="medium " :data="tableData" tooltip-effect="dark" border style="width: 100%">
+    <el-table ref="multipleTable" size="medium " :data="tableData" tooltip-effect="dark" stripe border style="width: 100%">
         <el-table-column prop="resource_type" label="资源类型" align='center'>
         </el-table-column>
         <el-table-column prop="resource_req" label="需求数" align='center'>

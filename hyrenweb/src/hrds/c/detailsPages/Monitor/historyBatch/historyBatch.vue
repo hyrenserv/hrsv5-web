@@ -48,10 +48,16 @@ export default {
                 title: {
                     text: ''
                 },
+                credits: {
+                    enabled: false
+                },
             },
             chartOptionbottom: {
                 title: {
                     text: ''
+                },
+                credits: {
+                    enabled: false
                 },
             }
         };
@@ -109,6 +115,9 @@ export default {
                         inverted: true, // 反转,
                         height: heights
                     },
+                    credits: {
+                        enabled: false
+                    },
                     exporting: {
                         enabled: false
                     },
@@ -164,9 +173,7 @@ export default {
                             }
                         }
                     },
-                    credits: {
-                        enabled: false
-                    },
+
                     //数据点
                     plotOptions: {
                         columnrange: {
