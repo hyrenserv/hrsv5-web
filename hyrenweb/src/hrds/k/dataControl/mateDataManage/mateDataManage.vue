@@ -308,14 +308,14 @@
             },
             //删除表(表设置为无效)
             tableSetToInvalid() {
-                this.$confirm('确定要将' + this.description + '表放入数据回收站吗？?', '提示', {
+                this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表放入数据回收站吗？', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
                     mdmFun.tableSetToInvalid({
                         'data_layer': this.node_data.data_layer,
                         'file_id': this.node_data.file_id
                     }).then(res => {
-                        message.recycleSuccess(res);
+                        message.customizTitle("将表放入回收站成功","success");
                         //重新获取树数据
                         this.getMDMTreeData();
                         this.data_meta_info = {table_id: '', column_info_list: []};
@@ -326,7 +326,7 @@
             },
             //恢复数据回收站的表
             restoreDRBTable() {
-                this.$confirm('确定要将' + this.description + '表恢复吗?', '提示', {
+                this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表恢复吗?', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
                     mdmFun.restoreDRBTable({
@@ -334,7 +334,7 @@
                         'file_id': this.node_data.file_id
                     }).then(res => {
                         //重新获取树数据
-                        message.recoverSuccess(res);
+                        message.customizTitle("恢复表成功","success");
                         this.getDRBTreeData();
                         this.data_meta_info = {table_id: '', column_info_list: []};
                     })
@@ -344,7 +344,7 @@
             },
             //恢复数据回收站的表
             removeCompletelyTable() {
-                this.$confirm('确定要将' + this.description + '表彻底删除吗?', '提示', {
+                this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表彻底删除吗?', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
                     mdmFun.removeCompletelyTable({
