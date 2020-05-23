@@ -432,7 +432,7 @@ export default {
                         }
                     }
                     params["etlJobs"] = JSON.stringify(etlJobs);
-                    params["ded_arr"] =ded_arr //ded_arr.join("^");
+                    params["ded_arr"] =ded_arr.join("^");
                     params["jobRelations"] =
                         JSON.stringify(jobRelation) == "{}" ?
                         "" :
