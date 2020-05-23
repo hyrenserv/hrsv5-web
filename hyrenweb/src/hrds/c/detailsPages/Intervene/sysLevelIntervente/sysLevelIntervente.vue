@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="title">系统批量情况</div>
-    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%">
+    <el-table size="medium" ref="multipleTable" :data="tableData" tooltip-effect="dark" stripe border style="width: 100%">
         <el-table-column prop="etl_sys_cd" label="工程编号" align='center' width="120">
         </el-table-column>
         <el-table-column prop="curr_bath_date" label="批量日期" align='center' width="150">
@@ -31,7 +31,7 @@
         </el-table-column>
     </el-table>
     <div class="titles">当前干预情况</div>
-    <el-table size="medium" ref="multipleTable" :data="tableData1" tooltip-effect="dark" border style="width: 100%">
+    <el-table size="medium" ref="multipleTable" :data="tableData1" tooltip-effect="dark" stripe border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
         <el-table-column prop="etl_sys_cd" label="工程编号" align='center' show-overflow-tooltip>
@@ -50,7 +50,7 @@
         </el-table-column>
     </el-table>
     <div class="titles">历史干预情况</div>
-    <el-table size="medium" ref="multipleTable" :data="tableData2" tooltip-effect="dark" border style="width: 100%">
+    <el-table size="medium" ref="multipleTable" :data="tableData2" tooltip-effect="dark" stripe border style="width: 100%">
         <el-table-column prop="event_id" label="事件号" align='center' width="160">
         </el-table-column>
         <el-table-column prop="etl_sys_cd" label="工程编号" align='center' show-overflow-tooltip>

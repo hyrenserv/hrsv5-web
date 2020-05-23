@@ -278,6 +278,9 @@ export default {
                 title: {
                     text: ''
                 },
+                credits: {
+                    enabled: false
+                },
             },
             activeName: 'first',
             title: "",
