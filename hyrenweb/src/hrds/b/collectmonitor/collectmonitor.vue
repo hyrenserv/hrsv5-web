@@ -4,20 +4,20 @@
         <el-col :span="12">
             <el-col :span="10" :offset="2">
                 <el-badge :value="agentnum" class="item">
-                    <el-button type="success" size="medium">
-                        <router-link to="/agentdeploy">
+                    <router-link to="/agentdeploy">
+                        <el-button type="success" size="medium">
                             <i class="el-icon-download" style="color: white;">部署Agent</i>
-                        </router-link>
-                    </el-button>
+                        </el-button>
+                    </router-link>
                 </el-badge>
             </el-col>
             <el-col :span="10" :offset="2">
                 <el-badge :value="sourcenum" class="item">
-                    <el-button type="success" size="medium">
-                        <router-link to="/agentList">
+                    <router-link to="/agentList">
+                        <el-button type="success" size="medium">
                             <i class="el-icon-setting" style="color: white;">设置采集任务</i>
-                        </router-link>
-                    </el-button>
+                        </el-button>
+                    </router-link>
                 </el-badge>
             </el-col>
         </el-col>
@@ -110,7 +110,7 @@ export default {
         });
 
         collect.getHostoryCollect().then(res => {
-            if (typeof res != 'undefined' && res.data != "" ) {
+            if (typeof res != 'undefined' && res.data != "") {
                 this.chartData.columns = Object.keys(res.data[0]);
                 this.chartData.rows = res.data.reverse();
             }
