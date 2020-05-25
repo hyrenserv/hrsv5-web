@@ -163,7 +163,7 @@
                             this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
-                            this.userForm = {};
+                            this.$refs.userForm.resetFields();
                         })
                     }
                 });
@@ -178,7 +178,7 @@
                             this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
-                            this.userForm = {};
+                            this.$refs.userForm.resetFields();
                         })
                     }
                 });
@@ -201,7 +201,7 @@
                 this.$refs.userForm.resetFields();
             },
             // 点击取消按钮
-            cancle() {
+            cancel() {
                 this.dialogUserFormVisible = false;
                 this.$refs.userForm.resetFields();
             },
