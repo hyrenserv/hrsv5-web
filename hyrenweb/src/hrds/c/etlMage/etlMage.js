@@ -35,7 +35,14 @@ export function updateEtlSys(data) {
         params: data
     })
 }
-
+//删除作业调度工程
+export function deleteEtlProject(data) {
+    return request({
+        url: '/C/etlsys/deleteEtlProject',
+        method: 'post',
+        params: data
+    })
+}
 //启动CONTROL
 export function startControl(data) {
     return request({
