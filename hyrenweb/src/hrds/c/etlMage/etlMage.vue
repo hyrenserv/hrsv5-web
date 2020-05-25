@@ -42,11 +42,13 @@
                         </el-button>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" align='center'>
+                <el-table-column label="操作" align='center' width="200">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑
                         </el-button>
                         <el-button size="mini" type="text" @click="handleDeploy(scope.$index, scope.row)">部署
+                        </el-button>
+                        <el-button size="mini" class="endAgent" type="text" @click="deleteWork(scope.row)">删除
                         </el-button>
                         <el-button size="mini" class="endAgent" v-if="scope.row.sys_run_status != 'S'" type="text" @click="stopWork(scope.$index, scope.row)">停止
                         </el-button>
@@ -769,6 +771,31 @@ export default {
             this.formAdd = row;
             this.projectTitle = '修改工程';
             this.disableds = true;
+        },
+        // 删除作业工程
+        deleteWork(row) {
+            this.$confirm('确认删除(' + row.etl_sys_cd + ')吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                etlMageAllFun.deleteEtlProject({
+                    "etl_sys_cd": row.etl_sys_cd
+                }).then(res => {
+                    if (res && res.success) {
+                        this.getTable();
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
         //表格部署按钮
         handleDeploy(index, row) {

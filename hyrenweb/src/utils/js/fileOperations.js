@@ -45,3 +45,16 @@ export function hourFormat(data){
     data = hourChange;
     return data
 }
+// 处理后台传来的日期年月日时分秒在一起
+export function dateToMilldate(date){
+    date = date.replace(/\s*/g, "");
+    let year = date.substring(0, 4);
+    let month = date.substring(4, 6);
+    let day = date.substring(6, 8);
+    let timeh = date.substring(8, 10);
+    let timem = date.substring(10, 12)
+    let times = date.substring(12, 14)
+    let dates = year + "-" + month + "-" + day + " " + timeh + ":" + timem + ":" + times;
+    date = dates;
+    return date;
+}

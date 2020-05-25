@@ -65,7 +65,7 @@
         </el-col>
         <el-col :span="8">
             <el-form-item label="开始时间">
-                <el-input v-model="forms.star_time" size="mini" disabled></el-input>
+                <el-input v-model="forms.curr_st_time" size="mini" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -80,7 +80,7 @@
         </el-col>
         <el-col :span="8">
             <el-form-item label="结束时间">
-                <el-input v-model="forms.end_time" size="mini" disabled></el-input>
+                <el-input v-model="forms.curr_end_time" size="mini" disabled></el-input>
             </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -131,6 +131,7 @@
 
 <script>
 import * as currentJobAllFun from "./currentJob";
+import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
@@ -151,10 +152,10 @@ export default {
                 curr_bath_date: '',
                 disp_type: '',
                 pro_dic: '',
-                star_time: '',
+                curr_st_time: '',
                 job_eff_flag: '',
                 log_dic: '',
-                end_time: '',
+                curr_end_time: '',
                 today_disp: '',
                 comments: '',
                 overtime_val: '',
@@ -348,6 +349,9 @@ export default {
                         res.data.main_serv_sync = "备份中";
                         break;
                 }
+                res.data.curr_st_time = fixedAll.dateToMilldate(res.data.curr_st_time);
+                res.data.curr_end_time = fixedAll.dateToMilldate(res.data.curr_end_time);
+                res.data.curr_bath_date = fixedAll.dateFormat(res.data.curr_bath_date);
                 this.forms = res.data;
                 let arr = [];
                 let dates = res.data.resourceRelation;
