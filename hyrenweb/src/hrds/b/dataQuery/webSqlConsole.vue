@@ -14,11 +14,19 @@
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
             <div class='mytree'>
                 <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
-                    <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.description" v-if="data.leaf == false && node.level > 1">
+                    <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
+                        <span :title="data.description" v-if="data.file_id.length > 0">
                             <i class=" el-icon-document"></i>{{node.label}}
                         </span>
                         <span :title="data.description" v-else>
+                            <i class="el-icon-folder-opened"></i>{{node.label}}
+                        </span>
+                    </span>
+                    <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
+                        <span :title="data.label" v-if="data.file_id.length > 0">
+                            <i class=" el-icon-document"></i>{{node.label}}
+                        </span>
+                        <span :title="data.label" v-else>
                             <i class="el-icon-folder-opened"></i>{{node.label}}
                         </span>
                     </span>
@@ -180,7 +188,7 @@ export default {
         },
         // 树右键复制代码
         rightClick(MouseEvent, object, Node, element) {
-            if (Node.childNodes.length == 0 && Node.level > 1) {
+            if (Node.data.file_id.length > 0) {
                 this.copydata = Node.label;
                 this.menuVisible = false;
                 this.menuVisible = true;
