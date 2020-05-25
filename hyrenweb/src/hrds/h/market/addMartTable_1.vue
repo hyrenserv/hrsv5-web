@@ -543,7 +543,9 @@
                 }
                 functionAll.querydatatableidifrepeat(param).then((res) => {
                     if (res && res.success) {
-                        this.iflock = res.data.result;
+                        if(res.data.result == true){
+                            this.iflock = res.data.result;
+                        }
                     }
                 })
             },
