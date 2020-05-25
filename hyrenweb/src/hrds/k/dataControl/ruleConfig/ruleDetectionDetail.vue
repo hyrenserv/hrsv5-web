@@ -15,12 +15,12 @@
                             <el-input v-model="form_dq_result.task_id" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="规则编号 :" prop="reg_name">
                             <el-input v-model="form_dq_result.reg_num" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="规则类型 :" prop="case_type">
                             <el-input v-model="dq_rule_def_map[form_dq_result.case_type]" disabled/>
                         </el-form-item>
@@ -32,12 +32,12 @@
                             <el-input v-model="dq_rule_def_map[form_dq_result.case_type]" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="检查日期 :" prop="verify_date">
                             <el-input v-model="form_dq_result.verify_date" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="检测表名 :" prop="target_tab">
                             <el-input v-model="form_dq_result.target_tab" disabled/>
                         </el-form-item>
@@ -49,7 +49,7 @@
                             <el-input v-model="form_dq_result.target_key_fields" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="检测结果 :" prop="verify_result">
                             <el-input v-model="verify_result_map[form_dq_result.verify_result]" disabled/>
                         </el-form-item>
@@ -61,14 +61,14 @@
                             <el-input v-model="form_dq_result.start_date + ' '+ form_dq_result.start_time" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="结束时间 :" prop="end_date_time">
                             <el-input v-model="form_dq_result.end_date + ' '+ form_dq_result.end_time" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
-                        <el-form-item label="执行耗时 :" prop="elapsed_ms">
-                            <el-input v-model="form_dq_result.elapsed_ms+' (ms)'" disabled/>
+                    <el-col :span="6" :offset=1>
+                        <el-form-item label="执行耗时(ms) :" prop="elapsed_ms">
+                            <el-input v-model="form_dq_result.elapsed_ms" disabled/>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -78,7 +78,7 @@
                             <el-input v-model="form_dq_result.check_index1" disabled/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset=2>
+                    <el-col :span="6" :offset=1>
                         <el-form-item label="指标结果2 :" prop="check_index2">
                             <el-input v-model="form_dq_result.check_index2" disabled/>
                         </el-form-item>
@@ -89,7 +89,7 @@
         <!--    当选中保存指标3结果时,显示指标3的结果,只取前10条数据 1:保存,0:不保存   -->
         <el-row v-if="form_dq_result.is_saveindex3 === '1'">
             <el-row>指标3结果</el-row>
-            <el-col :span="20" :offset=2>
+            <el-col :span="19" :offset=1>
                 <el-table :data="check_index3_list" border size="mini">
                     <el-table-column v-for="(index, item) in check_index3_list[0]"
                                      :key="check_index3_list.$index" :label="item" :prop="item">

@@ -21,11 +21,6 @@
                                     <span :title="data.description">{{node.label}}</span>
                                 </span>
                             </el-tree>
-                            <div v-show="mouseVisible">
-                                <ul id="menu" class="menu">
-                                    <li class="menu_item" @click="tableSetToInvalid()">删除</li>
-                                </ul>
-                            </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="数据回收站" name="drb">
@@ -38,12 +33,6 @@
                                     <span :title="data.description">{{node.label}}</span>
                                 </span>
                             </el-tree>
-                            <div v-show="recoverMouseVisible">
-                                <ul id="menu2" class="menu2">
-                                    <li class="menu_item2" @click="restoreDRBTable()">恢复表</li>
-                                    <li class="menu_item2" @click="removeCompletelyTable()">彻底删除表</li>
-                                </ul>
-                            </div>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -125,6 +114,23 @@
                 </el-row>
             </el-col>
         </el-row>
+        <!--源数据列表右键弹框-->
+        <div v-show="mouseVisible">
+            <ul id="menu" class="menu">
+                <li class="menu_item" @click="tableSetToInvalid()">删除</li>
+            </ul>
+        </div>
+        <!--数据回收站右键弹框-->
+        <div v-show="recoverMouseVisible">
+            <ul id="menu2" class="menu2">
+                <li class="menu_item2" @click="restoreDRBTable()">恢复表</li>
+                <li class="menu_item2" @click="removeCompletelyTable()">彻底删除表</li>
+            </ul>
+        </div>
+        <!-- 加载过度 -->
+        <transition name="fade">
+            <loading v-if="isLoading"/>
+        </transition>
     </div>
 </template>
 
@@ -149,9 +155,9 @@
                 mdmTreeList: [],
                 drbTreeList: [],
                 filterText: '',
-                description: '',
                 mouseVisible: false,
                 recoverMouseVisible: false,
+                isLoading: false,
                 data_meta_info: {
                     file_id: '',
                     table_id: '',
@@ -202,14 +208,12 @@
             },
             //获取源数据列表树信息
             getMDMTreeData() {
-                this.hiddenMouse();
                 mdmFun.getMDMTreeData().then(res => {
                     this.mdmTreeList = res.data.mdmTreeList;
                 })
             },
             //获取数据回收站树信息
             getDRBTreeData() {
-                this.hiddenMouse();
                 mdmFun.getDRBTreeData().then(res => {
                     this.drbTreeList = res.data.drbTreeList;
                 })
@@ -239,20 +243,22 @@
                     })
                 }
             },
-            hiddenMouse() {
-                this.mouseVisible = false;
-                this.recoverMouseVisible = false;
-            },
             //源数据管理树节点鼠标右击事件
             MDMRightMouseClick(event, object, node) {
                 if (node.level === 3) {
                     this.mouseVisible = true;
                     const menu = document.querySelector('#menu');
-                    this.description = object.description;
-                    menu.style.left = event.clientX - 210 + 'px';
-                    menu.style.top = event.clientY - 140 + 'px';
+                    document.addEventListener('click', this.foo);
+                    menu.style.display = "block";
+                    menu.style.left = event.pageX + 20 + 'px';
+                    menu.style.top = event.pageY - 8 + 'px';
                     this.node_data = object;
                 }
+            },
+            foo() {
+                this.mouseVisible = false;
+                this.recoverMouseVisible = false;
+                document.removeEventListener('click', this.foo) //关闭事件监听
             },
             // 回收站树节点鼠标右击事件
             DRBRightMouseClick(event, object, node) {
@@ -260,9 +266,10 @@
                     // 共四个参数，依次为：event、传递给data属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身
                     this.recoverMouseVisible = true;
                     const menu = document.querySelector('#menu2');
-                    this.description = object.description;
-                    menu.style.left = event.clientX - 210 + 'px';
-                    menu.style.top = event.clientY - 140 + 'px';
+                    document.addEventListener('click', this.foo);
+                    menu.style.display = "block";
+                    menu.style.left = event.pageX + 20 + 'px';
+                    menu.style.top = event.pageY - 8 + 'px';
                     this.node_data = object;
                 }
             },
@@ -311,17 +318,18 @@
                 this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表放入数据回收站吗？', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
+                    this.isLoading = true;
                     mdmFun.tableSetToInvalid({
                         'data_layer': this.node_data.data_layer,
                         'file_id': this.node_data.file_id
                     }).then(res => {
-                        message.customizTitle("将表放入回收站成功","success");
+                        this.isLoading = true;
+                        message.customizTitle("将表放入回收站成功", "success");
                         //重新获取树数据
                         this.getMDMTreeData();
                         this.data_meta_info = {table_id: '', column_info_list: []};
                     })
                 }).catch(() => {
-                    this.hiddenMouse();
                 });
             },
             //恢复数据回收站的表
@@ -329,17 +337,18 @@
                 this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表恢复吗?', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
+                    this.isLoading = true;
                     mdmFun.restoreDRBTable({
                         'data_layer': this.node_data.data_layer,
                         'file_id': this.node_data.file_id
                     }).then(res => {
                         //重新获取树数据
-                        message.customizTitle("恢复表成功","success");
+                        this.isLoading = false;
+                        message.customizTitle("恢复表成功", "success");
                         this.getDRBTreeData();
                         this.data_meta_info = {table_id: '', column_info_list: []};
                     })
                 }).catch(() => {
-                    this.hiddenMouse();
                 });
             },
             //彻底删除数据回收站的表
@@ -347,9 +356,11 @@
                 this.$Msg.confirmMsg('确定要将' + this.node_data.hyren_name + '表彻底删除吗?', '提示', {
                     confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning',
                 }).then(() => {
+                    this.isLoading = true;
                     mdmFun.removeCompletelyTable({
                         'file_id': this.node_data.file_id
                     }).then(res => {
+                        this.isLoading = false;
                         message.deleteSuccess(res);
                         //重新获取树数据
                         this.getDRBTreeData();
@@ -357,7 +368,6 @@
 
                     })
                 }).catch(() => {
-                    this.hiddenMouse();
                 });
             },
         }
@@ -400,78 +410,5 @@
     li:hover {
         color: brown;
         cursor: pointer;
-    }
-
-    #metaDataManagement {
-        .mytree /deep/ {
-            .el-tree > .el-tree-node:after {
-                border-top: none;
-            }
-
-            .el-tree-node {
-                position: relative;
-                padding-left: 16px;
-            }
-
-            //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
-            /*.el-tree-node__expand-icon.is-leaf {*/
-            /*    display: none;*/
-            /*}*/
-
-            .el-tree-node__children {
-                padding-left: 16px;
-            }
-
-            .el-tree-node :last-child:before {
-                height: 38px;
-            }
-
-            .el-tree > .el-tree-node:before {
-                border-left: none;
-            }
-
-            .el-tree > .el-tree-node:after {
-                border-top: none;
-            }
-
-            .el-tree-node:before {
-                content: "";
-                left: -4px;
-                position: absolute;
-                right: auto;
-                border-width: 1px;
-            }
-
-            .el-tree-node:after {
-                content: "";
-                left: -4px;
-                position: absolute;
-                right: auto;
-                border-width: 1px;
-            }
-
-            .el-tree-node:before {
-                border-left: 1px dashed #4386c6;
-                bottom: 0;
-                height: 100%;
-                top: -26px;
-                width: 1px;
-            }
-
-            .el-tree-node__content {
-                padding: 0 !important;
-            }
-
-            .el-tree-node__content > .el-tree-node__expand-icon {
-                padding: 0;
-            }
-
-            .el-tree-node:after {
-                border-top: 1px dashed #4386c6;
-                height: 20px;
-                top: 12px;
-                width: 24px;
-            }
-        }
     }
 </style>
