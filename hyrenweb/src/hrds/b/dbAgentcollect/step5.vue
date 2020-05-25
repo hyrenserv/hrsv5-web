@@ -252,6 +252,15 @@
             </el-table-column>
             <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+             <el-table-column label="详情" width="160px" align="center">
+                <template slot-scope="scope">
+                    <el-row>
+                        <el-col :span="24" class="delbtn">
+                            <el-button size="medium" type="text" circle @click="getStoDestDetailFun(scope.row)">查看详情</el-button>
+                        </el-col>
+                    </el-row>
+                </template>
+            </el-table-column>
         </el-table>
         <el-pagination @size-change="Alldestination_handleSizeChange" @current-change="Alldestination_handleCurrentChange" :current-page.sync="Alldestination_currentPage" :page-size="Alldestination_pagesize" layout="total, prev, pager, next" :total="AlldestinationData.length" class="locationcenter"></el-pagination>
         <div slot="footer" class="dialog-footer">
