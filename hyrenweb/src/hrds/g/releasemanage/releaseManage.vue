@@ -17,7 +17,7 @@
             <el-divider/>
             <el-row>
                 <el-col :span="11">
-                    <el-form-item label="用户名称" :rules="filter_rules([{required: true}])">
+                    <el-form-item label="用户名称" prop="user_id" :rules="filter_rules([{required: true}])">
                         <el-select v-model="form.user_id" multiple filterable clearable placeholder="请选择">
                             <el-option
                                     v-for="item in userData"
@@ -35,15 +35,17 @@
             </el-row>
             <el-row>
                 <el-col :span="11">
-                    <el-form-item label="开始日期" :rules="filter_rules([{required: true}])">
+                    <el-form-item label="开始日期" prop="start_use_date"
+                                  :rules="filter_rules([{required: true}])">
                         <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
-                                        v-model="start_date" @change="dateStartSelectChange"/>
+                                        v-model="form.start_use_date" @change="dateStartSelectChange"/>
                     </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                    <el-form-item label="结束日期" :rules="filter_rules([{required: true}])">
+                    <el-form-item label="结束日期" prop="use_valid_date"
+                                  :rules="filter_rules([{required: true}])">
                         <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
-                                        v-model="end_date" @change="dateEndSelectChange"/>
+                                        v-model="form.use_valid_date" @change="dateEndSelectChange"/>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -72,17 +74,15 @@
                     <el-table-column prop="start_use_date_s" label="开始日期" align="center">
                         <template slot-scope="scope">
                             <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
-                                            v-model="scope.row.start_use_date_s" size="small"
-                                            style="width:100%"
-                                            :rules="filter_rules([{required: true}])"/>
+                                            v-model="scope.row.start_date" size="small"
+                                            style="width:100%"/>
                         </template>
                     </el-table-column>
                     <el-table-column prop="use_valid_date_s" label="结束日期" align="center">
                         <template slot-scope="scope">
                             <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
-                                            v-model="scope.row.use_valid_date_s" size="small"
-                                            style="width: 100%"
-                                            :rules="filter_rules([{required: true}])"/>
+                                            v-model="scope.row.end_date" size="small"
+                                            style="width: 100%"/>
                         </template>
                     </el-table-column>
                     <el-table-column prop="interface_state" label="接口状态" align="center">
@@ -120,12 +120,12 @@
                 interfaceType: [],
                 interfaceState: [],
                 interfaceStateObj: {},
-                start_use_date_s: "",
-                use_valid_date_s: "",
                 start_date: "",
                 end_date: "",
                 activeName: "",
                 form: {
+                    start_use_date: "",
+                    use_valid_date: "",
                     interface_note: "",
                     classify_name: "",
                     user_id: []
@@ -179,34 +179,14 @@
             },
             // 新增接口使用信息
             saveInterfaceUseInfo(formName) {
-                if (this.selectRow.length === 0) {
-                    message.customizTitle("请至少选一项", "warning");
-                    return;
-                }
                 let interfaceUseInfos = [];
                 this.selectRow.forEach(o => {
-                    if (o.start_use_date_s === '') {
-                        message.customizTitle("开始日期不能为空", "warning");
-                        return;
-                    }
-                    if (o.use_valid_date_s === '') {
-                        message.customizTitle("结束日期不能为空", "warning");
-                        return;
-                    }
-                    if (new Date(o.start_use_date_s) > new Date(o.use_valid_date_s)) {
-                        message.customizTitle("结束日期不能小于开始日期", "warning");
-                        return;
-                    }
                     let param = {};
                     param["interface_id"] = o.interface_id;
-                    param["start_use_date"] = o.start_use_date_s;
-                    param["use_valid_date"] = o.use_valid_date_s;
+                    param["start_use_date"] = o.start_date;
+                    param["use_valid_date"] = o.end_date;
                     interfaceUseInfos.push(param);
                 });
-                if (this.selectRow.length !== interfaceUseInfos.length) {
-                    message.customizTitle("选择列与选中日期列长度不一致", "warning");
-                    return;
-                }
                 this.form["interfaceUseInfos"] = JSON.stringify(interfaceUseInfos);
                 this.$refs[formName].validate(valid => {
                     if (valid) {
@@ -260,12 +240,12 @@
             },
             dateStartSelectChange(val) {
                 this.tableData.forEach(o => {
-                    o.start_use_date_s = val;
+                    o.start_date = val;
                 })
             },
             dateEndSelectChange(val) {
                 this.tableData.forEach(o => {
-                    o.use_valid_date_s = val;
+                    o.end_date = val;
                 })
             },
         }
