@@ -18,7 +18,12 @@
                                      @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree1">
                                 <span class="span-ellipsis" slot-scope="{ node, data }">
-                                    <span :title="data.description">{{node.label}}</span>
+                                    <span :title="data.description" v-if="data.leaf === false && node.level > 1">
+                                        <i class=" el-icon-document"/>{{node.label}}
+                                    </span>
+                                    <span :title="data.description" v-else>
+                                        <i class="el-icon-folder-opened"/>{{node.label}}
+                                    </span>
                                 </span>
                             </el-tree>
                         </div>
@@ -323,7 +328,7 @@
                         'data_layer': this.node_data.data_layer,
                         'file_id': this.node_data.file_id
                     }).then(res => {
-                        this.isLoading = true;
+                        this.isLoading = false;
                         message.customizTitle("将表放入回收站成功", "success");
                         //重新获取树数据
                         this.getMDMTreeData();
