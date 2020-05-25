@@ -15,7 +15,7 @@
             <div class='mytree'>
                 <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.description" v-if="data.leaf == false && node.level > 1">
+                        <span :title="data.description" v-if="data.file_id.length > 0">
                             <i class=" el-icon-document"></i>{{node.label}}
                         </span>
                         <span :title="data.description" v-else>
@@ -180,7 +180,7 @@ export default {
         },
         // 树右键复制代码
         rightClick(MouseEvent, object, Node, element) {
-            if (Node.childNodes.length == 0 && Node.level > 1) {
+            if (Node.data.file_id.length > 0) {
                 this.copydata = Node.label;
                 this.menuVisible = false;
                 this.menuVisible = true;
