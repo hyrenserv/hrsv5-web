@@ -58,8 +58,7 @@
                            :total="totalSize" class='locationcenter'/>
         </el-row>
         <!--新增/编辑用户弹出框-->
-        <el-dialog :title="customTitle" :visible.sync="dialogUserFormVisible"
-                   :before-close="beforeClose">
+        <el-dialog :title="customTitle" :visible.sync="dialogUserFormVisible" :before-close="beforeClose">
             <el-form :model="userForm" ref="userForm" label-width="120px">
                 <el-form-item label="用户名称:" prop="user_name" :rules="filter_rules([{required: true}])">
                     <el-input v-model="userForm.user_name" clearable placeholder="用户名称"/>
@@ -78,7 +77,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogUserFormVisible = false" size="mini">取 消</el-button>
+                <el-button @click="cancle" size="mini">取 消</el-button>
                 <el-button type="primary" size="mini" v-if="isEditor"
                            @click="updateUser('userForm')">更 新
                 </el-button>
@@ -198,8 +197,13 @@
             },
             // 关闭弹出框之前触发事件
             beforeClose() {
-                this.$refs.userForm.resetFields();
                 this.dialogUserFormVisible = false;
+                this.$refs.userForm.resetFields();
+            },
+            // 点击取消按钮
+            cancle() {
+                this.dialogUserFormVisible = false;
+                this.$refs.userForm.resetFields();
             },
             //用户列表数据实现分页功能
             handleCurrentChangeList(currPage) {

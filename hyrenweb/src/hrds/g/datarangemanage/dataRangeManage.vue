@@ -15,14 +15,22 @@
                 <div class="mytree" hight='200'>
                     <el-tree class="filter-tree" :data="treeData" :indent='0' :filter-node-method="filterNode"
                              ref="tree" @node-click="handleNodeClick">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description" v-if="data.leaf === false && node.level > 1">
+                        <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
+                            <span :title="data.description" v-if="data.file_id.length > 0">
                                 <i class=" el-icon-document"/>{{node.label}}
                             </span>
                             <span :title="data.description" v-else>
                                 <i class="el-icon-folder-opened"/>{{node.label}}
                             </span>
-                        </span>
+                            </span>
+                            <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
+                            <span :title="data.label" v-if="data.file_id.length > 0">
+                                <i class=" el-icon-document"/>{{node.label}}
+                            </span>
+                            <span :title="data.label" v-else>
+                                <i class="el-icon-folder-opened"/>{{node.label}}
+                            </span>
+                         </span>
                     </el-tree>
                 </div>
             </el-col>
@@ -36,7 +44,7 @@
                     <el-divider/>
                     <el-row>
                         <el-col :span="12">
-                            <el-form-item label="用户选择" :rules="filter_rules([{required: true}])">
+                            <el-form-item label="用户选择" prop="user_id" :rules="rule.selected">
                                 <el-select v-model="form.user_id" multiple clearable filterable
                                            placeholder="请选择" size="small">
                                     <el-option
@@ -214,7 +222,7 @@
                                 this.$refs.multipleColumnTable.clearSelection();
                             }
                             this.$refs.multipleTable.clearSelection();
-                            this.form = {};
+                            this.$refs.form.resetFields();
                             this.tableData = [];
                             this.searchUserInfo();
                             this.searchDataUsageRangeInfoToTreeData();

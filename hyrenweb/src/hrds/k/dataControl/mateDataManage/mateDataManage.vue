@@ -17,11 +17,19 @@
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0'
                                      @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree1">
-                                <span class="span-ellipsis" slot-scope="{ node, data }">
-                                    <span :title="data.description" v-if="data.leaf === false && node.level > 1">
+                                <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
+                                    <span :title="data.description" v-if="data.file_id.length > 0">
                                         <i class=" el-icon-document"/>{{node.label}}
                                     </span>
                                     <span :title="data.description" v-else>
+                                        <i class="el-icon-folder-opened"/>{{node.label}}
+                                    </span>
+                                </span>
+                                            <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
+                                    <span :title="data.label" v-if="data.file_id.length > 0">
+                                        <i class=" el-icon-document"/>{{node.label}}
+                                    </span>
+                                    <span :title="data.label" v-else>
                                         <i class="el-icon-folder-opened"/>{{node.label}}
                                     </span>
                                 </span>
