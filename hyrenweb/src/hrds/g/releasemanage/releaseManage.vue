@@ -47,10 +47,10 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-                    <el-form-item label="备注">
-                        <el-input type="textarea" v-model="form.interface_note" autosize placeholder="备注"
-                                  style="width: 300px"/>
-                    </el-form-item>
+            <el-form-item label="备注">
+                <el-input type="textarea" v-model="form.interface_note" autosize placeholder="备注"
+                          style="width: 300px"/>
+            </el-form-item>
             <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane v-for="item in interfaceType" value="item.code" v-model="item.code">
                     <span slot="label">{{item.value}}接口</span>
@@ -180,32 +180,21 @@
             // 新增接口使用信息
             saveInterfaceUseInfo(formName) {
                 if (this.selectRow.length === 0) {
-                    this.$message({
-                        message: "请至少选一项!"
-                    });
+                    message.customizTitle("请至少选一项", "warning");
                     return;
                 }
                 let interfaceUseInfos = [];
                 this.selectRow.forEach(o => {
                     if (o.start_use_date_s === '') {
-                        this.$message({
-                            message: "开始日期不能为空!",
-                            type: 'error'
-                        });
+                        message.customizTitle("开始日期不能为空", "warning");
                         return;
                     }
                     if (o.use_valid_date_s === '') {
-                        this.$message({
-                            message: "结束日期不能为空!",
-                            type: 'error'
-                        });
+                        message.customizTitle("结束日期不能为空", "warning");
                         return;
                     }
                     if (new Date(o.start_use_date_s) > new Date(o.use_valid_date_s)) {
-                        this.$message({
-                            message: "结束日期不能小于开始日期",
-                            type: 'error'
-                        });
+                        message.customizTitle("结束日期不能小于开始日期", "warning");
                         return;
                     }
                     let param = {};
@@ -215,10 +204,7 @@
                     interfaceUseInfos.push(param);
                 });
                 if (this.selectRow.length !== interfaceUseInfos.length) {
-                    this.$message({
-                        message: "选择列与选中日期列长度不一致",
-                        type: 'error',
-                    });
+                    message.customizTitle("选择列与选中日期列长度不一致", "warning");
                     return;
                 }
                 this.form["interfaceUseInfos"] = JSON.stringify(interfaceUseInfos);

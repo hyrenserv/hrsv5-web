@@ -302,15 +302,9 @@
                     interfaceFunctionAll.interfaceDisableEnable(params).then((res) => {
                         if (res && res.success) {
                             if (row.use_state == "1") {
-                                this.$message({
-                                    message: "禁用" + row.interface_name + "接口成功",
-                                    type: 'success'
-                                });
+                                message.customizTitle("禁用" + row.interface_name + "接口成功", "success");
                             } else {
-                                this.$message({
-                                    message: "启用" + row.interface_name + "接口成功",
-                                    type: 'success'
-                                });
+                                message.customizTitle("启用" + row.interface_name + "接口成功", "success");
                             }
                         }
                         this.searchInterfaceInfo();
