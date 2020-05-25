@@ -57,7 +57,7 @@
         </el-tab-pane>
         <el-tab-pane label="调度监控" name="second">
             <draggable v-model="listdata">
-                <el-col :span=12 v-for="(item,index) in listdata" :key="item.etl_sys_cd">
+                <el-col :span=12 v-for="(item) in listdata" :key="item.etl_sys_cd">
                     <div class="movePlace">
                         <span class="pDrag"> <span> {{item.sys_name}} --拖动可排列顺序</span>
                             <span>
@@ -68,7 +68,7 @@
                         </span>
                         <p class="span10" @click="routerLink(item)">批量运行状态</p>
                         <p class="span11">批量日期：{{item.bathdate}}</p>
-                        <p :id="`radar${index}`" :style="{ height: '300px'}"></p>
+                        <p :id="`radar${item.etl_sys_cd}`" :key="item.etl_sys_cd" :style="{ height: '300px'}"></p>
                     </div>
                 </el-col>
             </draggable>
@@ -336,11 +336,16 @@ export default {
             isViewCon: false,
             isViewDowntri: false,
             isViewTri: false,
+            timer: ''
         };
     },
     mounted() {
         this.getTable();
         this.monitorAllProjectChartsData();
+    },
+    beforeDestroy() {
+        // 关闭定时器
+        clearInterval(this.timer);
     },
     methods: {
         //刷新表格
@@ -367,9 +372,23 @@ export default {
         handleClick(tab, event) {
             if (tab.label == '调度监控') {
                 this.monitorAllProjectChartsData();
+                this.setFor();
+            } else {
+                // 关闭定时器
+                clearInterval(this.timer);
             }
 
         },
+        // 轮询
+        setFor() {
+            let that = this;
+            this.timer = setInterval(() => {
+                setTimeout(() => {
+                    that.monitorAllProjectChartsData();
+                }, 0);
+            }, 10000);
+        },
+
         // 关闭弹出框数据回显
         beforeClose() {
             this.getTable();
@@ -381,11 +400,11 @@ export default {
                 this.listdata = res.data;
                 res.data.forEach((item, index) => {
                     res.data[index].bathdate = fixedAll.dateFormat(res.data[index].bathdate);
-                    var bar_dv = document.getElementById(`radar${index}`);
+                    var bar_dv = document.getElementById(`radar${item.etl_sys_cd}`);
                     if (bar_dv) {
                         let that = this;
                         this.batchState = item;
-                        let chart = Highcahrts.chart(`radar${index}`, {
+                        let chart = Highcahrts.chart(`radar${item.etl_sys_cd}`, {
                             chart: {
                                 type: 'column',
                             },

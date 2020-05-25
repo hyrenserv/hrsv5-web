@@ -48,14 +48,30 @@ export default {
                 credits: {
                     enabled: false
                 },
-            }
+            },
+            timer: ''
         };
     },
     mounted() {
         this.monitorCurrentBatchInfo();
         this.monitorCurrentBatchInfoByTask();
+        this.setFor();
+    },
+    beforeDestroy() {
+        // 关闭定时器
+        clearInterval(this.timer);
     },
     methods: {
+        // 轮询
+        setFor() {
+            let that = this;
+            this.timer = setInterval(() => {
+                setTimeout(() => {
+                    that.monitorCurrentBatchInfo();
+                    that.monitorCurrentBatchInfoByTask();
+                }, 0);
+            }, 10000);
+        },
         // 系统运行状态数据
         monitorCurrentBatchInfo() {
             functionAll.monitorCurrentBatchInfo({
