@@ -16,9 +16,14 @@
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column property="is_archived" width="84" label="是否转存" align="center">
+            <el-table-column property="is_archived"  label="是否转存" align="center">
+                  <template slot="header" slot-scope="scope">
+                        <el-checkbox @change="handleCheckAllChange(ruleForm.tableData,is_archivedAll)" v-model="is_archivedAll" :checked="is_archivedAll">
+                            <span class="allclickColor">是否转存</span>
+                        </el-checkbox>
+                    </template>
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_archived" :checked="scope.row.is_archived"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_archived" :checked="scope.row.is_archived" @change="col_everySelectfun(scope.row.is_archived,ruleForm.tableData)"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="dbfile_format" label="文件格式" align="center">
@@ -148,6 +153,7 @@ export default {
                 database_code: ''
             },
             tablename: '', //点击转存临时存表名
+            is_archivedAll:false,
             newlineCharacter: [{
                     value: "\\n",
                     code: "1",
@@ -193,6 +199,40 @@ export default {
                 }
             }
         },
+        //转存
+         handleCheckAllChange(items, e) {
+            items.forEach((item, i) => {
+                if (e) {
+                    item.is_archived = true;
+                } else {
+                    item.is_archived = false;
+                }
+            });
+        },
+        //转存单个点击
+        col_everySelectfun(val, alldata) {
+            let count = 0
+            if (val == true) {
+                for (let i = 0; i < alldata.length; i++) {
+                    if (alldata[i].is_archived == true) {
+                        count++
+                    }
+                }
+                if (count == alldata.length) {
+                    this.is_archivedAll = true
+                } else {
+                    this.is_archivedAll = false
+                }
+            } else {
+                for (let i = 0; i < alldata.length; i++) {
+                    if (alldata[i].is_archived == false) {
+                        if (count < alldata.length) {
+                            this.is_archivedAll = false
+                        }
+                    }
+                }
+            }
+        },
         // 抽取数据存储方式
         getFileFormat() {
             let params = {};
@@ -228,7 +268,6 @@ export default {
             functionAll.getInitDataTransfer({
                 colSetId: this.$route.query.id
             }).then(res => {
-                console.log(res.data)
                 if (res.data.length > 0) {
                     let getData = res.data
                     for (let i = 0; i < getData.length; i++) {
@@ -467,6 +506,10 @@ export default {
 
 .step3>>>.el-form-item {
     margin-bottom: 0 !important;
+}
+.allclickColor {
+    color: #fff;
+    font-weight: bold;
 }
 
 .step3>>>.el-form-item__error {
