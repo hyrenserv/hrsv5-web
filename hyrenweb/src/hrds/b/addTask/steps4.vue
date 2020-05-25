@@ -287,7 +287,8 @@ export default {
             dialogSelectfolder: false,
             path: '',
             row_ml: '',
-            row_ml_name: ''
+            row_ml_name: '',
+            delcomData: []
         };
     },
     created() {
@@ -331,11 +332,14 @@ export default {
                 if (valid) {
                     this.isLoading = true
                     let dataAll = a,
-                        extractionDefString = [];
+                        extractionDefString = [],
+                        arrsaveDed_id = [];
                     if (dataAll.length > 0) {
+                        console.log(dataAll)
                         for (var i = 0; i < dataAll.length; i++) {
                             for (let j = 0; j < dataAll[i].dbfile_format.length; j++) {
                                 if (dataAll[i].dbfile_format[j] == '非定长') {
+                                    arrsaveDed_id.push(dataAll[i].fdc_ded_id)
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].fdc_ml,
@@ -345,6 +349,7 @@ export default {
                                         'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
                                 } else if (dataAll[i].dbfile_format[j] == '定长') {
+                                    arrsaveDed_id.push(dataAll[i].dc_ded_id)
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].dc_ml,
@@ -354,6 +359,7 @@ export default {
                                         'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
                                 } else if (dataAll[i].dbfile_format[j] == 'CSV') {
+                                    arrsaveDed_id.push(dataAll[i].csv_ded_id)
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].csv_ml,
@@ -363,6 +369,7 @@ export default {
                                         'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
                                 } else if (dataAll[i].dbfile_format[j] == 'ORC') {
+                                    arrsaveDed_id.push(dataAll[i].orc_ded_id)
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].orc_ml,
@@ -371,6 +378,7 @@ export default {
                                     })
 
                                 } else if (dataAll[i].dbfile_format[j] == 'SEQUENCEFILE') {
+                                    arrsaveDed_id.push(dataAll[i].seq_ded_id)
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].seq_ml,
@@ -379,6 +387,7 @@ export default {
                                     })
 
                                 } else if (dataAll[i].dbfile_format[j] == 'PARQUET') {
+                                    arrsaveDed_id.push(dataAll[i].par_ded_id)
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].par_ml,
@@ -390,9 +399,20 @@ export default {
                             }
 
                         }
-                        let params = {};
+                        for (let j = 0; j < arrsaveDed_id.length; j++) { //本次
+                            for (let i = 0; i < this.delcomData.length; i++) {
+                                if (arrsaveDed_id[j] == this.delcomData[i]) {
+                                    this.delcomData.splice(i, 1)
+                                    i--
+                                }
+                            }
+                        }
+                        let params = {},
+                            dedid = this.delcomData;
                         params["colSetId"] = parseInt(this.databaseId);
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
+                        params['dedId'] = JSON.parse(JSON.stringify(dedid)).join('^')
+                        console.log(params)
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
                             if (res.code == 200) {
@@ -470,12 +490,14 @@ export default {
                         for (let i = 0; i < arrData.length; i++) {
                             arrData[i].dbfile_format = []
                             for (let j = 0; j < arrData[i].tableData.length; j++) {
+                                this.delcomData.push(arrData[i].tableData[j].ded_id)
                                 if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == '非定长') {
                                     arrData[i].fdc = true
                                     arrData[i].fdc_ml = arrData[i].tableData[j].plane_url
                                     arrData[i].fdc_row_separator = arrData[i].tableData[j].row_separator
                                     arrData[i].fdc_database_separatorr = arrData[i].tableData[j].database_separatorr
                                     arrData[i].fdc_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].fdc_ded_id = arrData[i].tableData[j].ded_id
                                     arrData[i].dbfile_format.push('非定长')
                                 } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == '定长') {
                                     arrData[i].dc = true
@@ -483,6 +505,7 @@ export default {
                                     arrData[i].dc_row_separator = arrData[i].tableData[j].row_separator
                                     arrData[i].dc_database_separatorr = arrData[i].tableData[j].database_separatorr
                                     arrData[i].dc_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].dc_ded_id = arrData[i].tableData[j].ded_id
                                     arrData[i].dbfile_format.push('定长')
                                 } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'ORC') {
                                     arrData[i].orc = true
@@ -490,6 +513,7 @@ export default {
                                     arrData[i].orc_row_separator = arrData[i].tableData[j].row_separator
                                     arrData[i].orc_database_separatorr = arrData[i].tableData[j].database_separatorr
                                     arrData[i].orc_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].orc_ded_id = arrData[i].tableData[j].ded_id
                                     arrData[i].dbfile_format.push('ORC')
                                 } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'CSV') {
                                     arrData[i].csv = true
@@ -497,6 +521,7 @@ export default {
                                     arrData[i].csv_row_separator = arrData[i].tableData[j].row_separator
                                     arrData[i].csv_database_separatorr = arrData[i].tableData[j].database_separatorr
                                     arrData[i].csv_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].csv_ded_id = arrData[i].tableData[j].ded_id
                                     arrData[i].dbfile_format.push('CSV')
                                 } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'SEQUENCEFILE') {
                                     arrData[i].seq = true
@@ -504,6 +529,7 @@ export default {
                                     arrData[i].seq_row_separator = arrData[i].tableData[j].row_separator
                                     arrData[i].seq_database_separatorr = arrData[i].tableData[j].database_separatorr
                                     arrData[i].seq_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].seq_ded_id = arrData[i].tableData[j].ded_id
                                     arrData[i].dbfile_format.push('SEQUENCEFILE')
                                 } else if (this.getExtractDataTypeFun(arrData[i].tableData[j].dbfile_format) == 'PARQUET') {
                                     arrData[i].par = true
@@ -511,6 +537,7 @@ export default {
                                     arrData[i].par_row_separator = arrData[i].tableData[j].row_separator
                                     arrData[i].par_database_separatorr = arrData[i].tableData[j].database_separatorr
                                     arrData[i].par_database_code = arrData[i].tableData[j].database_code
+                                    arrData[i].par_ded_id = arrData[i].tableData[j].ded_id
                                     arrData[i].dbfile_format.push('PARQUET')
                                 }
                             }
@@ -543,42 +570,52 @@ export default {
                     this.dialogAllTableSeparatorSettings = false;
                     let data = this.separatorData;
                     let alldata = this.ruleForm.unloadingFileData;
+                    console.log(alldata)
                     for (var i = 0; i < alldata.length; i++) {
-                        alldata[i].dc = false
+                        /* alldata[i].dc = false
                         alldata[i].fdc = false
                         alldata[i].orc = false
                         alldata[i].seq = false
                         alldata[i].par = false
                         alldata[i].csv = false
-                         delete alldata[i].dbfile_format //抽取方式
-                         delete alldata[i].dc_database_code//字符集
-                         delete alldata[i].dc_database_separatorr//数据列分隔符
-                         delete alldata[i].dc_row_separator//换行符
-                         delete alldata[i].dc_ml//目录
+                        delete alldata[i].dbfile_format //抽取方式
+                        delete alldata[i].dc_database_code //字符集
+                        delete alldata[i].dc_database_separatorr //数据列分隔符
+                        delete alldata[i].dc_row_separator //换行符
+                        delete alldata[i].dc_ml //目录
                         delete alldata[i].fdc_database_code //字符集
                         delete alldata[i].fdc_database_separatorr //数据列分隔符
                         delete alldata[i].fdc_row_separator //换行符
-                        delete  alldata[i].fdc_ml //目录
+                        delete alldata[i].fdc_ml //目录
                         // alldata[i].fdc_ml = '' //目录
                         delete alldata[i].orc_database_code //字符集
-                         delete alldata[i].orc_database_separatorr  //数据列分隔符
-                         delete alldata[i].orc_row_separator//换行符
-                         delete alldata[i].orc_ml //目录
-                         delete alldata[i].seq_database_code //字符集
-                         delete alldata[i].seq_database_separatorr  //数据列分隔符
-                         delete alldata[i].seq_row_separator  //换行符
-                         delete alldata[i].seq_ml //目录
-                         delete alldata[i].csv_database_code  //字符集
-                         delete alldata[i].csv_database_separatorr //数据列分隔符
-                         delete alldata[i].csv_row_separator//换行符
-                         delete alldata[i].csv_ml //目录
-                         delete alldata[i].par_database_code//字符集
-                         delete alldata[i].par_database_separatorr //数据列分隔符
-                         delete alldata[i].par_row_separator//换行符
-                         delete alldata[i].par_ml//目录
+                        delete alldata[i].orc_database_separatorr //数据列分隔符
+                        delete alldata[i].orc_row_separator //换行符
+                        delete alldata[i].orc_ml //目录
+                        delete alldata[i].seq_database_code //字符集
+                        delete alldata[i].seq_database_separatorr //数据列分隔符
+                        delete alldata[i].seq_row_separator //换行符
+                        delete alldata[i].seq_ml //目录
+                        delete alldata[i].csv_database_code //字符集
+                        delete alldata[i].csv_database_separatorr //数据列分隔符
+                        delete alldata[i].csv_row_separator //换行符
+                        delete alldata[i].csv_ml //目录
+                        delete alldata[i].par_database_code //字符集
+                        delete alldata[i].par_database_separatorr //数据列分隔符
+                        delete alldata[i].par_row_separator //换行符
+                        delete alldata[i].par_ml //目录 */
+                         for(let m=0;m<alldata[i].dbfile_format.length;m++){
+                                  if(alldata[i].dbfile_format[m]==this.separatorData.Extractformat){
+                                     alldata[i].dbfile_format.splice(m,1)
+                                     break
+                                  }
+                            }
+                            alldata[i].dbfile_format.push(this.separatorData.Extractformat )
+                            console.log(alldata[i])
                         if (this.separatorData.Extractformat == '定长') {
                             alldata[i].dc = true
-                            this.$set(alldata[i], 'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
+                           
+                            // this.$set(alldata[i], 'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
                             this.$set(alldata[i], 'dc_database_code', this.separatorData.Datacharacterset) //字符集
                             this.$set(alldata[i], 'dc_database_separatorr', this.separatorData.Datacolumnseparator) //数据列分隔符
                             this.$set(alldata[i], 'dc_row_separator', this.separatorData.Newlinecharacte) //换行符
@@ -590,11 +627,11 @@ export default {
                             // alldata[i].dc_ml = this.separatorData.ml 
                         } else if (this.separatorData.Extractformat == '非定长') {
                             alldata[i].fdc = true
-                            this.$set(alldata[i],'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
-                            this.$set(alldata[i],'fdc_database_code',this.separatorData.Datacharacterset) //字符集
-                            this.$set(alldata[i],'fdc_database_separatorr',this.separatorData.Datacolumnseparator) //数据列分隔符
-                            this.$set(alldata[i],'fdc_row_separator',this.separatorData.Newlinecharacte) //换行符
-                            this.$set(alldata[i],'fdc_ml',this.separatorData.ml) //目录
+                            // this.$set(alldata[i], 'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
+                            this.$set(alldata[i], 'fdc_database_code', this.separatorData.Datacharacterset) //字符集
+                            this.$set(alldata[i], 'fdc_database_separatorr', this.separatorData.Datacolumnseparator) //数据列分隔符
+                            this.$set(alldata[i], 'fdc_row_separator', this.separatorData.Newlinecharacte) //换行符
+                            this.$set(alldata[i], 'fdc_ml', this.separatorData.ml) //目录
                             /*  alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                              alldata[i].fdc_database_code = this.separatorData.Datacharacterset //字符集
                              alldata[i].fdc_ml = this.separatorData.ml //目录 */
@@ -602,7 +639,7 @@ export default {
                             alldata[i].orc = true
                             this.$set(alldata[i], 'orc_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'orc_database_code', this.separatorData.Datacharacterset) //字符集
-                            alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
+                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                             // alldata[i].orc_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].orc_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].orc_row_separator = this.separatorData.Newlinecharacte //换行符
@@ -611,7 +648,7 @@ export default {
                             alldata[i].seq = true
                             this.$set(alldata[i], 'seq_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'seq_database_code', this.separatorData.Datacharacterset) //字符集
-                            alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
+                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                             // alldata[i].seq_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].seq_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].seq_row_separator = this.separatorData.Newlinecharacte //换行符
@@ -621,7 +658,7 @@ export default {
                             this.$set(alldata[i], 'csv_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'csv_database_code', this.separatorData.Datacharacterset) //字符集
                             this.$set(alldata[i], 'csv_row_separator', this.separatorData.Newlinecharacte) //换行符
-                            alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
+                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                             // alldata[i].csv_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].csv_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             // alldata[i].csv_row_separator = this.separatorData.Newlinecharacte //换行符
@@ -630,7 +667,7 @@ export default {
                             alldata[i].par = true
                             this.$set(alldata[i], 'par_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'par_database_code', this.separatorData.Datacharacterset) //字符集
-                            alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
+                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
                             // alldata[i].par_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].par_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].par_row_separator = this.separatorData.Newlinecharacte //换行符
@@ -799,14 +836,14 @@ export default {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
                         // item.fdc_ml = path
-                        this.$set(item,'fdc_ml',path)
+                        this.$set(item, 'fdc_ml', path)
                     }
                 })
             } else if (this.row_ml_name == 'dc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
                         // item.dc_ml = path
-                        this.$set(item,'dc_ml',path)
+                        this.$set(item, 'dc_ml', path)
 
                     }
                 })
@@ -814,7 +851,7 @@ export default {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
                         // item.csv_ml = path
-                        this.$set(item,'csv_ml',path)
+                        this.$set(item, 'csv_ml', path)
 
                     }
                 })
@@ -822,7 +859,7 @@ export default {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
                         // item.seq_ml = path
-                        this.$set(item,'seq_ml',path)
+                        this.$set(item, 'seq_ml', path)
 
                     }
                 })
@@ -830,19 +867,19 @@ export default {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
                         // item.par_ml = path
-                         this.$set(item,'par_ml',path)
+                        this.$set(item, 'par_ml', path)
                     }
                 })
             } else if (this.row_ml_name == 'orc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
                         // item.orc_ml = path
-                        this.$set(item,'orc_ml',path)
+                        this.$set(item, 'orc_ml', path)
                     }
                 })
             } else if (this.row_ml_name == 'all') {
                 // this.separatorData.ml = path
-                this.$set(this.separatorData,'ml',path)
+                this.$set(this.separatorData, 'ml', path)
             }
         },
 
