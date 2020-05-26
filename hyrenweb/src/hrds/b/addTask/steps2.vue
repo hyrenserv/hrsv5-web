@@ -801,7 +801,6 @@ export default {
                     this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
                     this.callTable2 = JSON.parse(JSON.stringify(data));
                     this.callTable3 = JSON.parse(JSON.stringify(data));
-                    console.log( this.callTable3)
                     // this.Allis_selectionState = true;
                 }
             });
@@ -852,7 +851,6 @@ export default {
             } else {
                 this.firstTableInfo.push(row)
             }
-            console.log(this.firstTableInfo)
         },
         //选择列
         every_SelectColumnfun(val, alldata) {
@@ -1104,9 +1102,7 @@ export default {
                                         JSON.stringify(tableidArr1) === "{}" ?
                                         "" :
                                         JSON.stringify(tableidArr1);
-                                        console.log(params1)
                                     addTaskAllFun.checkTablePrimary(params1).then(res => {
-                                          console.log(res.data)
                                         let arrdata = res.data;
                                         if (this.SelectColumn.length > 0) {
                                             if (arrdata.length > 0) {
@@ -1125,7 +1121,6 @@ export default {
                                             // arrdata删除本次设置了主键的剩余的做判断
                                             if (arrdata.length > 0) {
                                                 let arr = [];
-                                                console.log(arrdata)
                                                 for (let key in arrdata) {
                                                     if (arrdata[key] == false) {
                                                         arr.push(key);
@@ -1314,7 +1309,6 @@ export default {
                     "" :
                     JSON.stringify(tableColumn);
                 addTaskAllFun.saveAllSQL(params1).then(res => {
-                    console.log(res)
                     if (res.code == "200") {
                         this.activeSec = true;
                     } else {
@@ -2271,7 +2265,6 @@ export default {
         },
         // 第二页选择列调接口显示数据
         getSqlColumnDataFun(row, sql) {
-            console.log(row)
             let params = {};
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);

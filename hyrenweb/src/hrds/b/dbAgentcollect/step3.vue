@@ -291,7 +291,6 @@ export default {
                         }
                     }
                     this.ruleForm.tableData = getData
-                    console.log(getData)
                 } else {
                     this.tableloadingInfo = '暂无数据'
                 }
