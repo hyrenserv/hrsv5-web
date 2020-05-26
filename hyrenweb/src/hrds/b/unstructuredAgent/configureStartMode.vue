@@ -134,7 +134,7 @@ export default {
             oldlocalTime: ''
         }
     },
-    created() {
+    mounted() {
         // 获取首页数据
         this.searchFileCollect();
         // 获取代码项对应值
@@ -150,8 +150,9 @@ export default {
         },
         // 获取首页数据（同时判断是新加任务还是编辑任务)
         searchFileCollect() {
-            let fcs_id = this.$route.query.id;
-            if (this.$route.query.id) {
+            if (this.$route.query.id != undefined) {
+                let fcs_id = this.$route.query.id;
+                this.form.agent_name = this.$Base64.decode(this.$route.query.rowName);
                 functionAll.searchFileCollect({
                     agent_id: this.$route.query.agent_id,
                     fcs_id: fcs_id
@@ -160,7 +161,6 @@ export default {
                         // 数据回显
                         this.form.fcs_name = res.data.file_collect_set_info.fcs_name
                         this.form.system_type = res.data.file_collect_set_info.system_type;
-                        this.form.agent_name = this.$Base64.decode(this.$route.query.rowName);
                         this.form.host_name = res.data.file_collect_set_info.host_name;
                         this.form.is_solr = res.data.file_collect_set_info.is_solr;
                         // 处理本地时间和时分秒
@@ -174,12 +174,12 @@ export default {
                     }
                 });
             } else {
+                this.form.agent_name = this.$Base64.decode(this.$route.query.agent_name);
                 functionAll.searchFileCollect({
                     agent_id: this.$route.query.agent_id
                 }).then((res) => {
                     if (res && res.success) {
                         this.form.system_type = res.data.osName;
-                        this.form.agent_name = this.$Base64.decode(this.$route.query.agent_name);
                         this.form.host_name = res.data.userName;
                         // 处理本地时间和时分秒
                         this.oldlocalTime = res.data.localdate;
