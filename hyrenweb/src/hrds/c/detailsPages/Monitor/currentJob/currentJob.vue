@@ -349,9 +349,21 @@ export default {
                         res.data.main_serv_sync = "备份中";
                         break;
                 }
-                res.data.curr_st_time = fixedAll.dateToMilldate(res.data.curr_st_time);
-                res.data.curr_end_time = fixedAll.dateToMilldate(res.data.curr_end_time);
-                res.data.curr_bath_date = fixedAll.dateFormat(res.data.curr_bath_date);
+                if (res.data.curr_st_time != undefined) {
+                    if (res.data.curr_st_time.length > 0) {
+                        res.data.curr_st_time = fixedAll.dateToMilldate(res.data.curr_st_time);
+                    }
+                }
+                if (res.data.curr_end_time != undefined) {
+                    if (res.data.curr_end_time.length > 0) {
+                        res.data.curr_end_time = fixedAll.dateToMilldate(res.data.curr_end_time);
+                    }
+                }
+                if (res.data.curr_bath_date != undefined) {
+                    if (res.data.curr_bath_date.length > 0) {
+                        res.data.curr_bath_date = fixedAll.dateFormat(res.data.curr_bath_date);
+                    }
+                }
                 this.forms = res.data;
                 let arr = [];
                 let dates = res.data.resourceRelation;
