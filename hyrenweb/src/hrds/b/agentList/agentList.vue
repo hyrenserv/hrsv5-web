@@ -203,7 +203,6 @@ export default {
             let params = {};
             params["sourceId"] = id;
             params["agentType"] = type;
-            console.log(params)
             agentList.getAgentInfo(params).then(res => {
                 let arrdata = res.data ? res.data : [];
                 for (let i = 0; i < this.CollectType.length; i++) {
@@ -234,7 +233,6 @@ export default {
             params["sourceId"] = row.source_id;
             params["agentId"] = row.agent_id;
             agentList.getTaskInfo(params).then(res => {
-                console.log(res)
                 let arrdata = res ? res.data : [];
                 for (let i = 0; i < arrdata.length; i++) {
                     arrdata[i].agent_type = row.agent_type;
@@ -304,7 +302,6 @@ export default {
         },
         //删除
         taskDelBtn(type, row) {
-            console.log(type, row)
             for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == type) {
                     if (this.CollectType[i].code == '1') {
@@ -417,7 +414,6 @@ export default {
         ProdeceJobsFun() {
             this.dialogProdeceJobs = true
             agentList.getProjectInfo().then(res => {
-                console.log(res)
                 this.Allproject = res.data
             });
         },

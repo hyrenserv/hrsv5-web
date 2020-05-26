@@ -406,7 +406,7 @@ export default {
                                 pre_etl_job: arrdata[i].pre_etl_job,
                                 pro_para: arrdata[i].pro_para,
                                 etl_sys_cd: this.ruleForm.Project_num,
-                                ded_id:arrdata[i].ded_id
+                                ded_id: arrdata[i].ded_id
                             });
                             jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join(
                                 "^"
@@ -427,12 +427,12 @@ export default {
                                 disp_time: arrdata[i].disp_time,
                                 pro_para: arrdata[i].pro_para,
                                 etl_sys_cd: this.ruleForm.Project_num,
-                                ded_id:arrdata[i].ded_id
+                                ded_id: arrdata[i].ded_id
                             });
                         }
                     }
                     params["etlJobs"] = JSON.stringify(etlJobs);
-                    params["ded_arr"] =ded_arr.join("^");
+                    params["ded_arr"] = ded_arr.join("^");
                     params["jobRelations"] =
                         JSON.stringify(jobRelation) == "{}" ?
                         "" :
@@ -456,12 +456,6 @@ export default {
                     return this.Dispatch_Frequency[i].code;
                 }
             }
-            /*   this.Dispatch_Frequency.forEach((item) => {
-                              if (item.value == value) {
-                                  console.log(item.code)
-                                  return item.code
-                              }
-                          }) */
         },
         pre() {
             let data = {};
@@ -584,21 +578,6 @@ export default {
             this.ruleForm.startuptableData.forEach(item => {
                 this.$set(item, "disp_type", key);
             });
-            /*  if (key == 'T' || key == 'Z') {
-                             this.TandZ = '1'
-                             this.ruleForm.Upstream_operation = ''
-                             this.ruleForm.startuptableData.forEach((item) => {
-                                 item.pre_etl_job = ''
-                             })
-                         } else if (key == 'D') {
-                             this.TandZ = '2'
-                             this.ruleForm.Dispatching_timedrift = ''
-                             this.ruleForm.Dispatching_time = ''
-                             this.ruleForm.startuptableData.forEach((item) => {
-                                 item.disp_time = ''
-                                 item.disp_offset = 0
-                             })
-                         } */
         },
         //通过触发方式key值遍历得到中文value值
         getDispatching_modeValueFun(key) {
@@ -681,11 +660,6 @@ export default {
         // 调度频率改变时
         Dispatching_frequencyFun() {
             let code = this.ruleForm.Dispatching_frequency;
-            /*  this.Dispatch_Frequency.forEach((item) => {
-                            if (item.code == code) {
-                                this.getstartuptableData(item.value)
-                            }
-                        }) */
             this.getstartuptableData(code);
         },
         //遍历全表改变对应列值--调度频率

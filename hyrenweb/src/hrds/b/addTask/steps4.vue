@@ -569,58 +569,21 @@ export default {
                     let data = this.separatorData;
                     let alldata = this.ruleForm.unloadingFileData;
                     for (var i = 0; i < alldata.length; i++) {
-                        /* alldata[i].dc = false
-                        alldata[i].fdc = false
-                        alldata[i].orc = false
-                        alldata[i].seq = false
-                        alldata[i].par = false
-                        alldata[i].csv = false
-                        delete alldata[i].dbfile_format //抽取方式
-                        delete alldata[i].dc_database_code //字符集
-                        delete alldata[i].dc_database_separatorr //数据列分隔符
-                        delete alldata[i].dc_row_separator //换行符
-                        delete alldata[i].dc_ml //目录
-                        delete alldata[i].fdc_database_code //字符集
-                        delete alldata[i].fdc_database_separatorr //数据列分隔符
-                        delete alldata[i].fdc_row_separator //换行符
-                        delete alldata[i].fdc_ml //目录
-                        // alldata[i].fdc_ml = '' //目录
-                        delete alldata[i].orc_database_code //字符集
-                        delete alldata[i].orc_database_separatorr //数据列分隔符
-                        delete alldata[i].orc_row_separator //换行符
-                        delete alldata[i].orc_ml //目录
-                        delete alldata[i].seq_database_code //字符集
-                        delete alldata[i].seq_database_separatorr //数据列分隔符
-                        delete alldata[i].seq_row_separator //换行符
-                        delete alldata[i].seq_ml //目录
-                        delete alldata[i].csv_database_code //字符集
-                        delete alldata[i].csv_database_separatorr //数据列分隔符
-                        delete alldata[i].csv_row_separator //换行符
-                        delete alldata[i].csv_ml //目录
-                        delete alldata[i].par_database_code //字符集
-                        delete alldata[i].par_database_separatorr //数据列分隔符
-                        delete alldata[i].par_row_separator //换行符
-                        delete alldata[i].par_ml //目录 */
-                         for(let m=0;m<alldata[i].dbfile_format.length;m++){
-                                  if(alldata[i].dbfile_format[m]==this.separatorData.Extractformat){
-                                     alldata[i].dbfile_format.splice(m,1)
-                                     break
-                                  }
+                        for (let m = 0; m < alldata[i].dbfile_format.length; m++) {
+                            if (alldata[i].dbfile_format[m] == this.separatorData.Extractformat) {
+                                alldata[i].dbfile_format.splice(m, 1)
+                                break
                             }
-                            alldata[i].dbfile_format.push(this.separatorData.Extractformat )
+                        }
+                        alldata[i].dbfile_format.push(this.separatorData.Extractformat)
                         if (this.separatorData.Extractformat == '定长') {
                             alldata[i].dc = true
-                           
+
                             // this.$set(alldata[i], 'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
                             this.$set(alldata[i], 'dc_database_code', this.separatorData.Datacharacterset) //字符集
                             this.$set(alldata[i], 'dc_database_separatorr', this.separatorData.Datacolumnseparator) //数据列分隔符
                             this.$set(alldata[i], 'dc_row_separator', this.separatorData.Newlinecharacte) //换行符
                             this.$set(alldata[i], 'dc_ml', this.separatorData.ml) //目录
-                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] 
-                            // alldata[i].dc_database_code = this.separatorData.Datacharacterset 
-                            // alldata[i].dc_database_separatorr = this.separatorData.Datacolumnseparator 
-                            // alldata[i].dc_row_separator = this.separatorData.Newlinecharacte 
-                            // alldata[i].dc_ml = this.separatorData.ml 
                         } else if (this.separatorData.Extractformat == '非定长') {
                             alldata[i].fdc = true
                             // this.$set(alldata[i], 'dbfile_format', [this.separatorData.Extractformat]) //抽取方式
@@ -628,46 +591,30 @@ export default {
                             this.$set(alldata[i], 'fdc_database_separatorr', this.separatorData.Datacolumnseparator) //数据列分隔符
                             this.$set(alldata[i], 'fdc_row_separator', this.separatorData.Newlinecharacte) //换行符
                             this.$set(alldata[i], 'fdc_ml', this.separatorData.ml) //目录
-                            /*  alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                             alldata[i].fdc_database_code = this.separatorData.Datacharacterset //字符集
-                             alldata[i].fdc_ml = this.separatorData.ml //目录 */
                         } else if (this.separatorData.Extractformat == 'ORC') {
                             alldata[i].orc = true
                             this.$set(alldata[i], 'orc_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'orc_database_code', this.separatorData.Datacharacterset) //字符集
-                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            // alldata[i].orc_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].orc_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].orc_row_separator = this.separatorData.Newlinecharacte //换行符
-                            // alldata[i].orc_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'SEQUENCEFILE') {
                             alldata[i].seq = true
                             this.$set(alldata[i], 'seq_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'seq_database_code', this.separatorData.Datacharacterset) //字符集
-                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            // alldata[i].seq_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].seq_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].seq_row_separator = this.separatorData.Newlinecharacte //换行符
-                            // alldata[i].seq_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'CSV') {
                             alldata[i].csv = true
                             this.$set(alldata[i], 'csv_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'csv_database_code', this.separatorData.Datacharacterset) //字符集
                             this.$set(alldata[i], 'csv_row_separator', this.separatorData.Newlinecharacte) //换行符
-                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            // alldata[i].csv_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].csv_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
-                            // alldata[i].csv_row_separator = this.separatorData.Newlinecharacte //换行符
-                            // alldata[i].csv_ml = this.separatorData.ml //目录
                         } else if (this.separatorData.Extractformat == 'PARQUET') {
                             alldata[i].par = true
                             this.$set(alldata[i], 'par_ml', this.separatorData.ml) //目录
                             this.$set(alldata[i], 'par_database_code', this.separatorData.Datacharacterset) //字符集
-                            // alldata[i].dbfile_format = [this.separatorData.Extractformat] //抽取方式
-                            // alldata[i].par_database_code = this.separatorData.Datacharacterset //字符集
                             alldata[i].par_database_separatorr = this.separatorData.Datacolumnseparator //数据列分隔符
                             alldata[i].par_row_separator = this.separatorData.Newlinecharacte //换行符
-                            // alldata[i].par_ml = this.separatorData.ml //目录
                         }
                     }
                     this.separatorData = {
@@ -830,14 +777,12 @@ export default {
             if (this.row_ml_name == 'fdc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        // item.fdc_ml = path
                         this.$set(item, 'fdc_ml', path)
                     }
                 })
             } else if (this.row_ml_name == 'dc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        // item.dc_ml = path
                         this.$set(item, 'dc_ml', path)
 
                     }
@@ -845,7 +790,6 @@ export default {
             } else if (this.row_ml_name == 'csv') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        // item.csv_ml = path
                         this.$set(item, 'csv_ml', path)
 
                     }
@@ -853,7 +797,6 @@ export default {
             } else if (this.row_ml_name == 'seq') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        // item.seq_ml = path
                         this.$set(item, 'seq_ml', path)
 
                     }
@@ -861,19 +804,16 @@ export default {
             } else if (this.row_ml_name == 'par') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        // item.par_ml = path
                         this.$set(item, 'par_ml', path)
                     }
                 })
             } else if (this.row_ml_name == 'orc') {
                 this.ruleForm.unloadingFileData.forEach((item) => {
                     if (item.table_id == id) {
-                        // item.orc_ml = path
                         this.$set(item, 'orc_ml', path)
                     }
                 })
             } else if (this.row_ml_name == 'all') {
-                // this.separatorData.ml = path
                 this.$set(this.separatorData, 'ml', path)
             }
         },

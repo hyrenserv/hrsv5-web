@@ -123,7 +123,7 @@
                             <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
                         </el-col>
                         <el-col :span="2">
-                            <el-button type="success" @click="viewLog = true" size="mini">查看日志</el-button>
+                            <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
                         </el-col>
                     </el-row>
                 </el-form>
@@ -482,6 +482,10 @@ export default {
             viewTaskLog(params).then(res => {
                 this.logMsg = res.data.trim();
             });
+        },
+        viewLogFun(){
+         this.viewLog = true
+         this.getviewlog()
         },
         handleSizeChange(size) {
             this.pagesize = size;
