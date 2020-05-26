@@ -281,13 +281,17 @@ export default {
                         getData[i].database_code = getData[i].storage[0].database_code
                         getData[i].is_archived = getData[i].is_archived == '1' ? true : false
                         for (let j = 0; j < getData[i].storage.length; j++) {
-                            getData[i].DataExtractType.push({
+                            if(getData[i].storage[j].dbfile_format){
+                                getData[i].DataExtractType.push({
                                 'code': getData[i].storage[j].dbfile_format,
                                 'value': this.getFileFormatValue(getData[i].storage[j].dbfile_format)
                             })
+                            }
+                            
                         }
                     }
                     this.ruleForm.tableData = getData
+                    console.log(getData)
                 } else {
                     this.tableloadingInfo = '暂无数据'
                 }
