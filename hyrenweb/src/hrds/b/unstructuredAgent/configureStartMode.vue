@@ -116,8 +116,15 @@ export default {
         return {
             form: {
                 is_solr: "",
+                agent_name: "",
                 fcs_name: "",
-                run_way: ""
+                run_way: "",
+                system_type: "",
+                host_name: "",
+                systemtime: "",
+                agent_time: "",
+                start_date: "",
+                end_date: ""
             },
             runWay: [],
             YesNo: [],
