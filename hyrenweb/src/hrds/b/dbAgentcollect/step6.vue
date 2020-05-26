@@ -655,11 +655,6 @@ export default {
         // 调度频率改变时
         Dispatching_frequencyFun() {
             let code = this.ruleForm.Dispatching_frequency
-            /*  this.Dispatch_Frequency.forEach((item) => {
-                 if (item.code == code) {
-                     this.getstartuptableData(item.value)
-                 }
-             }) */
             this.getstartuptableData(code)
         },
         //遍历全表改变对应列值--调度频率

@@ -79,7 +79,6 @@ export default {
         agentList.agentDeployData({
             'agent_id': this.agentid
         }).then(res => {
-            console.log(res, "agentDeployData");
             if (typeof res != 'undefined') {
                 //获取第一条的信息就可以了...部署的路径可能会出现重复的
                 this.formInline = res.data[0];
@@ -95,7 +94,6 @@ export default {
             // params["logType"] = this.formInline.LogType;
             params["readNum"] = this.lognum;
             agentList.viewTaskLog(params).then(res => {
-                console.log(res);
                 this.logMsg = res.data.trim();
             });
         },
