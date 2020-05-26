@@ -1767,7 +1767,6 @@ export default {
             });
         },
         columnMergeDelFun(index, rows) {
-            console.log(rows)
             if (rows[index].col_merge_id) {
                 message.confirmMsg('确定删除吗').then(res => {
                     let params = {};

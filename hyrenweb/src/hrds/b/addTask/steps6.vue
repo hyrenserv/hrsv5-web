@@ -437,7 +437,6 @@ export default {
                         JSON.stringify(jobRelation) == "{}" ?
                         "" :
                         JSON.stringify(jobRelation);
-                        console.log(params)
                     sendTask.saveJobDataToDatabase(params).then(res => {
                         if (res.code && res.code == 200) {
                             this.isLoading = false;
@@ -536,8 +535,6 @@ export default {
                 })
                 .then(res => {
                     if (res.data.length > 0) {
-                    console.log(res.data)
-
                         this.ruleForm.startuptableData = res.data;
                     } else {
                         this.tableloadingInfo = "暂无数据";

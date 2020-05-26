@@ -384,7 +384,6 @@ export default {
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
-            console.log(res.data)
             this.datasource_number = res.data.datasource_number
             this.classify_num = res.data.classify_num
             if (res) {
@@ -395,7 +394,6 @@ export default {
                     let paramst = {};
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-                        console.log(res.data)
                         if (res) {
                             this.oldTbData = res.data != '' ? res.data : [];
                         }
@@ -470,8 +468,6 @@ export default {
             let dataAll = this.ruleForm.ex_destinationData,
                 datasource_number1 = this.datasource_number,
                 classify_num1 = this.classify_num;
-            console.log(dataAll)
-            console.log(this.dslIdString, datasource_number1, classify_num1)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // oldTbData this.dslIdString
@@ -506,7 +502,6 @@ export default {
                             table_name: arr[i].table_name
                         });
                     }
-                    console.log(desDataArr)
                     // 判断获得的表里面
                     for (let j = 0; j < desDataArr.length; j++) {
                         for (let k = 0; k < this.oldTbData.length; k++) {
@@ -536,7 +531,6 @@ export default {
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
                         params["colSetId"] = parseInt(this.dbid);
                         params["dslIdString"] = JSON.stringify(dslIdString);
-                        console.log(params)
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
                                 this.submit_1 = true;
@@ -551,7 +545,6 @@ export default {
                         let params0 = {};
                         params0["tableString"] = JSON.stringify(tableString);
                         addTaskAllFun.updateTableName(params0).then(res => {
-                            console.log(res.data)
                             if (res.code == 200) {
                                 this.submit_0 = true;
                                 // this.dbid = res.data;
@@ -694,7 +687,6 @@ export default {
             });
         },
         ChooseDestination(row, index) {
-            console.log(row)
             this.dataExtractypeindex = index;
             this.tableId = row.table_id;
             if (this.dslIdString.length > 0) {
@@ -706,7 +698,6 @@ export default {
                 }
                 if (arrall.indexOf(row.table_id) != -1) {
                     arrall.length = 0
-                    console.log(111)
                     for (let m = 0; m < this.dslIdString.length; m++) {
                         if (this.dslIdString[m].tableId == row.table_id) {
                             let params = {},
@@ -741,7 +732,6 @@ export default {
                                 }
                                 this.destinationData = arr;
                             })
-                            console.log(this.dslIdString[m].dslIds)
                             this.digForm.hyren_name = this.dslIdString[m].new_name
 
                         }
@@ -761,7 +751,6 @@ export default {
             addTaskAllFun.getStoDestByTableId(params).then(res => {
                 let str = this.datasource_number + '_' + this.classify_num + '_'
                 if (res.data) {
-                    console.log(res)
                     this.digForm.hyren_name = res.data.hyren_name != '' ? res.data.hyren_name.replace(str, '').trim() : tablename;
                     let arr = JSON.parse(JSON.stringify(res.data.tableStorage));
                     let data = this.storeTypeData;
@@ -1067,7 +1056,6 @@ export default {
         ChooseDestinationSubmitFun(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    console.log(1, this.digForm)
                     let data = JSON.parse(JSON.stringify(this.destinationData)),
                         str = '',
                         searcharr = [];
@@ -1145,7 +1133,6 @@ export default {
                             }
                         }
                     }
-                    console.log(this.dslIdString)
                 }
             })
 
@@ -1209,7 +1196,6 @@ export default {
         },
         // 全表设置目的地确定提交
         ChooseAllDestinationSubmitFun() {
-            console.log(this.Alldestinationchoose)
             if (this.Alldestinationchoose.length > 0) {
                 this.dslIdString.length = 0
                 let dslIds = []
@@ -1226,14 +1212,12 @@ export default {
                     this.ruleForm.ex_destinationData[i].table_setting = true
                 }
                 this.dialogAllChooseDestination = false
-                console.log(this.dslIdString)
             } else {
                 this.open()
             }
         },
         // 全表设置目的地全选
         AllhandleSelectionChange(item) {
-            console.log(item)
             this.Alldestinationchoose = item
         },
         // 全表设置目的地单个勾选

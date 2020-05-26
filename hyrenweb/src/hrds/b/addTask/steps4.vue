@@ -335,7 +335,6 @@ export default {
                         extractionDefString = [],
                         arrsaveDed_id = [];
                     if (dataAll.length > 0) {
-                        console.log(dataAll)
                         for (var i = 0; i < dataAll.length; i++) {
                             for (let j = 0; j < dataAll[i].dbfile_format.length; j++) {
                                 if (dataAll[i].dbfile_format[j] == '非定长') {
@@ -412,7 +411,6 @@ export default {
                         params["colSetId"] = parseInt(this.databaseId);
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
                         params['dedId'] = JSON.parse(JSON.stringify(dedid)).join('^')
-                        console.log(params)
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
                             if (res.code == 200) {
@@ -570,7 +568,6 @@ export default {
                     this.dialogAllTableSeparatorSettings = false;
                     let data = this.separatorData;
                     let alldata = this.ruleForm.unloadingFileData;
-                    console.log(alldata)
                     for (var i = 0; i < alldata.length; i++) {
                         /* alldata[i].dc = false
                         alldata[i].fdc = false
@@ -611,7 +608,6 @@ export default {
                                   }
                             }
                             alldata[i].dbfile_format.push(this.separatorData.Extractformat )
-                            console.log(alldata[i])
                         if (this.separatorData.Extractformat == '定长') {
                             alldata[i].dc = true
                            
@@ -800,7 +796,6 @@ export default {
                 this.path = data.path
                 this.$refs.tree.setCheckedKeys([data.name]);
             } else {
-                // console.log(2)
                 if (this.checkedId == data.name) {
                     this.$refs.tree.setCheckedKeys([data.name]);
                 }
