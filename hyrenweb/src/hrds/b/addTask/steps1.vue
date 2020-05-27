@@ -27,7 +27,7 @@
                     </el-row>
                     <el-row type="flex" justify="center">
                         <el-col :span="10">
-                            <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'composition'}])">
+                            <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
                                 <el-col :span="16">
                                     <el-input v-model="ruleForm.classify_num" size="medium" disabled placeholder="分类编号">
                                         <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun();outerVisible = true"></el-button>
@@ -137,7 +137,7 @@
                             <span class="dialogtitle el-icon-caret-right">新增采集任务分类</span>
                         </div>
                         <el-form :model="addClassTask" ref="addClassTask">
-                            <el-form-item label=" 分类编号" prop="class_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
+                            <el-form-item label=" 分类编号" prop="class_num" :rules="filter_rules([{required: true,dataType:'compositions'}])" :label-width="formLabelWidth">
                                 <el-input v-model="addClassTask.class_num" style="width:284px"></el-input>
                             </el-form-item>
                             <el-form-item label=" 分类名称" prop="class_name" :rules="rule.default" :label-width="formLabelWidth">

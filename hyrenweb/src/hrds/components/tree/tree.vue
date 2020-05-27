@@ -74,7 +74,7 @@ export default {
         },
         //树点击触发
         handleNodeClick(data) {
-            console.log(this.blongs) //给下面接口传的参数，属于哪一个也没树
+            console.log(this.blongs,data) //给下面接口传的参数，属于哪一个也没树
             if (data.file_id !== '') {
                 // 查询数据
                 this.dataByTableName = [];
