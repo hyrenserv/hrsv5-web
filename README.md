@@ -252,3 +252,26 @@
     color: coral; */
 }
 ```
+### 9、公共树组件
+引入树组件：```import Tree from '../../components/tree/tree.vue';```
+
+注册数组件：```components: {Tree},```
+
+页面使用：```<Tree ref='treefun' v-on:eventName="myFunction" :blongs='blongs'></Tree>```
+
+data中数据： 
+```
+ data() {
+        return {
+            blongs:'websql',//哪个页面使用的组件传对应后台需要的参数
+            dataByTableName: [],
+        }
+    },
+    
+methods中写方法拿到点击树节点对应json数据： 
+```
+      methods: {
+        myFunction: function (data) {
+            this.dataByTableName = data //点击树节点，得到对应数据，自行处理数据
+        }
+    }
