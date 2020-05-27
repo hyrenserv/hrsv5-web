@@ -110,6 +110,7 @@
 
 <script>
 import * as sysLevelInterventeAllFun from "./sysLevelIntervente";
+import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
@@ -160,7 +161,7 @@ export default {
                 arr = res.data.etlJobCurrList;
                 arr.forEach((item) => {
                     item.etl_sys_cd = this.sys_cd;
-                    item.curr_bath_date = res.data.curr_bath_date;
+                    item.curr_bath_date = fixedAll.dateFormat(res.data.curr_bath_date);
                 });
                 this.tableData = arr;
             });
