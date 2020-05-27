@@ -7,14 +7,45 @@
                 <i class="fa fa-home fa-lg"></i>返回首页
             </el-button>
         </router-link>
-    </el-row>
 
+    </el-row>
+    <el-row :gutter="20">
+        <el-col :span="6" >
+            <tbTree ref='treefun' v-on:eventName="myFunction" :blongs='blongs'></tbTree>
+        </el-col>
+        <el-col :span="18">
+            <el-table :data="dataByTableName" stripe border size="medium">
+                <el-table-column v-for="(index, item) in dataByTableName[0]" :key="dataByTableName.$index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
+                    <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                    <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                </el-table-column>
+            </el-table>
+        </el-col>
+    </el-row>
 </div>
 </template>
 
 <script>
+import tbTree from '../../components/tree/tree.vue';
+export default {
+    name: 'tree',
+    components: {
+        tbTree,
+    },
+    data() {
+        return {
+            blongs:'123',
+            dataByTableName: [],
+        }
+    },
+    methods: {
+        myFunction: function (data) {
+            this.dataByTableName = data
+        }
+    }
+}
 </script>
 
-<style lang="less" scoped>
-// @import '../../../assets/css/changeColor.less';
+<style scoped>
+
 </style>
