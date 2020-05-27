@@ -222,7 +222,7 @@
         </el-table>
         <el-pagination @size-change="Projectnum_handleSizeChange" @current-change="Projectnum_handleCurrentChange" :current-page="ProjectnumcurrentPage" :page-size="Projectnumpagesize" layout="total, prev, pager, next" :total="ProjectnumData.length" class="locationright"></el-pagination>
         <div slot="footer" class="dialog-footer">
-            <el-button type="danger" size="mini" @click="Projectnumdialog=false">取 消</el-button>
+            <el-button type="danger" size="mini" @click="projNumCloseFun(),Projectnumdialog=false">取 消</el-button>
             <el-button type="primary" size="mini" @click="projNumSubmitFun()">确定</el-button>
         </div>
     </el-dialog>
@@ -620,6 +620,9 @@ export default {
                     type: "error"
                 });
             }
+        },
+        projNumCloseFun(){
+            this.projnum_radio={}
         },
         // 选择工程弹框确定
         projNumSubmitFun() {
