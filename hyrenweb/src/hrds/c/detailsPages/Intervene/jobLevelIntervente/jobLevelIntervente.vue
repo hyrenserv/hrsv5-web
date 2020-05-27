@@ -177,6 +177,7 @@
 
 <script>
 import * as jobLevelInterventeAllFun from "./jobLevelIntervente";
+import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
@@ -340,11 +341,7 @@ export default {
                             item.status = value.value
                         }
                     });
-                    let year = item.curr_bath_date.substring(0, 4);
-                    let month = item.curr_bath_date.substring(4, 6);
-                    let day = item.curr_bath_date.substring(6, 8);
-                    let date = year + "-" + month + "-" + day;
-                    item.curr_bath_date = date;
+                    item.curr_bath_date = fixedAll.dateFormat(item.curr_bath_date);
                 });
                 this.tableData = dates;
             });
@@ -425,6 +422,7 @@ export default {
                             item.status = value.value
                         }
                     })
+                    item.curr_bath_date = fixedAll.dateFormat(item.curr_bath_date);
                 });
                 this.tableData = dates;
             });

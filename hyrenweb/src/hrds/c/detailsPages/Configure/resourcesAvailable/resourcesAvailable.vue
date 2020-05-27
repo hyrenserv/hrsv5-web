@@ -191,25 +191,36 @@ export default {
                     type: 'warning'
                 });
             } else {
-                let arr = [];
-                this.multipleSelection.forEach((item) => {
-                    arr.push(item.resource_type);
-                });
-                this.batchDeleteForm.etl_sys_cd = this.sys_cd;
-                this.batchDeleteForm.resource_type = arr;
-                let params = {};
-                params["etl_sys_cd"] = this.batchDeleteForm.etl_sys_cd;
-                params["resource_type"] = this.batchDeleteForm.resource_type;
-                resourcesAvailableAllFun.batchDeleteEtlResource(params).then(res => {
-                    if (res && res.success) {
-                        this.getTable();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                    }
+                this.$confirm('确认批量删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }).then(() => {
+                    let arr = [];
+                    this.multipleSelection.forEach((item) => {
+                        arr.push(item.resource_type);
+                    });
+                    this.batchDeleteForm.etl_sys_cd = this.sys_cd;
+                    this.batchDeleteForm.resource_type = arr;
+                    let params = {};
+                    params["etl_sys_cd"] = this.batchDeleteForm.etl_sys_cd;
+                    params["resource_type"] = this.batchDeleteForm.resource_type;
+                    resourcesAvailableAllFun.batchDeleteEtlResource(params).then(res => {
+                        if (res && res.success) {
+                            this.getTable();
+                            this.$message({
+                                message: '批量删除成功',
+                                type: 'success'
+                            });
+                        }
 
-                })
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消批量删除'
+                    });
+                });
             }
         },
         //编辑按钮

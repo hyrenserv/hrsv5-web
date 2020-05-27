@@ -327,28 +327,39 @@ export default {
                     type: 'warning'
                 });
             } else {
-                let obj = {};
-                let arr = [];
-                this.multipleSelection.forEach((item) => {
-                    obj.etl_job = item.etl_job;
-                    obj.pre_etl_job = item.pre_etl_job;
-                    arr.push(obj);
-                    obj = {};
+                this.$confirm('确认批量删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }).then(() => {
+                    let obj = {};
+                    let arr = [];
+                    this.multipleSelection.forEach((item) => {
+                        obj.etl_job = item.etl_job;
+                        obj.pre_etl_job = item.pre_etl_job;
+                        arr.push(obj);
+                        obj = {};
+                    });
+                    arr = JSON.stringify(arr);
+                    let params = {};
+                    params["etl_sys_cd"] = this.sys_cd;
+                    params["pre_etl_sys_cd"] = this.multipleSelection[0].pre_etl_sys_cd;
+                    params["batchEtlJob"] = arr;
+                    etlDependencyAllFun.batchDeleteEtlDependency(params).then(res => {
+                        if (res && res.success) {
+                            this.getTable();
+                            this.$message({
+                                message: '批量删除成功',
+                                type: 'success'
+                            });
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消批量删除'
+                    });
                 });
-                arr = JSON.stringify(arr);
-                let params = {};
-                params["etl_sys_cd"] = this.sys_cd;
-                params["pre_etl_sys_cd"] = this.multipleSelection[0].pre_etl_sys_cd;
-                params["batchEtlJob"] = arr;
-                etlDependencyAllFun.batchDeleteEtlDependency(params).then(res => {
-                    if (res && res.success) {
-                        this.getTable();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                    }
-                })
             }
         },
         //编辑按钮
