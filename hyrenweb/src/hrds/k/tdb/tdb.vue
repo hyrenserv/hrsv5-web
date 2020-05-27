@@ -10,7 +10,7 @@
 
     </el-row>
     <el-row :gutter="20">
-        <el-col :span="6" >
+        <el-col :span="6">
             <tbTree ref='treefun' v-on:eventName="myFunction" :blongs='blongs'></tbTree>
         </el-col>
         <el-col :span="18">
@@ -34,13 +34,13 @@ export default {
     },
     data() {
         return {
-            blongs:'123',
+            blongs: 'websql', //哪个页面使用的组件传对应后台需要的参数
             dataByTableName: [],
         }
     },
     methods: {
         myFunction: function (data) {
-            this.dataByTableName = data
+            this.dataByTableName = data //得到对应数据，自行处理数据
         }
     }
 }

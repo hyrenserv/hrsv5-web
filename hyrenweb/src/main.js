@@ -34,7 +34,12 @@ Vue.component('vue-draggable-resizable', VueDraggableResizable)
 // Base64
 import Base64 from '@/utils/base64.js' 
 Vue.prototype.$Base64 = Base64;
-
+// 引入滚轮
+import { HappyScroll } from 'vue-happy-scroll'
+//自定义组件名
+Vue.component('happy-scroll', HappyScroll)
+// 引入css
+import 'vue-happy-scroll/docs/happy-scroll.css'
 /**公用的提示消息框 */
 import * as message from '@/utils/js/message.js'
 Vue.prototype.$Msg = message;
