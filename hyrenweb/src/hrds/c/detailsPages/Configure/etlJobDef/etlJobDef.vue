@@ -95,7 +95,7 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业名称" prop="etl_job" :rules="filter_rules([{required: true}])">
-                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" :disabled="disabledControl" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -121,10 +121,14 @@
                     <el-input style="width:218px;" v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" class="workProgrammsDivFather">
                 <el-form-item label="作业程序参数" prop="pro_para">
-                    <el-input style="width:218px;" v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
+                    <el-input v-model="formAdd.pro_para" clearable @focus="focusMenthods" @blur="blurMenthods" style="width:218px" placeholder="多个参数时,使用@分割"></el-input>
                 </el-form-item>
+                <div class="workProgrammsDiv" v-if="showHiddenOr">
+                    <span class="workProgrammsDivSpan"> <span>参数</span> <i class="el-icon-close close" @click="closeShow"></i></span>
+                    <p class="workProgramms" v-for="(item,index) in workhidden " @click="clickData(item.value)" :key="index">{{item.value}}</p>
+                </div>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="日志目录" prop="log_dic" :rules="filter_rules([{required: true}])">
@@ -222,7 +226,7 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业名称" prop="etl_job" :rules="filter_rules([{required: true}])">
-                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" :disabled="disabledControl" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -248,10 +252,14 @@
                     <el-input style="width:218px;" v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" class="workProgrammsDivFather">
                 <el-form-item label="作业程序参数" prop="pro_para">
-                    <el-input style="width:218px;" v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
+                    <el-input v-model="formAdd.pro_para" @focus="focusMenthods" @blur="blurMenthods" clearable style="width:218px" placeholder="多个参数时,使用@分割"></el-input>
                 </el-form-item>
+                <div class="workProgrammsDiv" v-if="showHiddenOr">
+                    <span class="workProgrammsDivSpan"> <span>参数</span> <i class="el-icon-close close" @click="closeShow"></i></span>
+                    <p class="workProgramms" v-for="(item,index) in workhidden " @click="clickData(item.value)" :key="index">{{item.value}}</p>
+                </div>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="日志目录" prop="log_dic" :rules="filter_rules([{required: true}])">
@@ -347,7 +355,7 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业名称" prop="etl_job" :rules="filter_rules([{required: true}])">
-                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" placeholder="任务名称"></el-input>
+                    <el-input style="width:218px;" v-model="formAdd.etl_job" autocomplete="off" :disabled="disabledControl" placeholder="任务名称"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -373,10 +381,14 @@
                     <el-input style="width:218px;" v-model="formAdd.pro_name" autocomplete="off" placeholder="作业程序名称"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" class="workProgrammsDivFather">
                 <el-form-item label="作业程序参数" prop="pro_para">
-                    <el-input style="width:218px;" v-model="formAdd.pro_para" autocomplete="off" placeholder="多个参数时,使用@分割"></el-input>
+                    <el-input v-model="formAdd.pro_para" @focus="focusMenthods" @blur="blurMenthods" clearable style="width:218px" placeholder="多个参数时,使用@分割"></el-input>
                 </el-form-item>
+                <div class="workProgrammsDiv" v-if="showHiddenOr">
+                    <span class="workProgrammsDivSpan"> <span>参数</span> <i class="el-icon-close close" @click="closeShow"></i></span>
+                    <p class="workProgramms" v-for="(item,index) in workhidden " @click="clickData(item.value)" :key="index">{{item.value}}</p>
+                </div>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="日志目录" prop="log_dic" :rules="filter_rules([{required: true}])">
@@ -499,6 +511,13 @@ export default {
                 sub_sys_cd: '',
                 pro_type: '',
             },
+            workhidden: [{
+                value: "#{txdate}"
+            }, {
+                value: "#{txdate_next}"
+            }, {
+                value: "#{txdate_pre}"
+            }],
             tableData: [],
             listDatas: [],
             Today_Dispatch_Flag: [],
@@ -507,10 +526,12 @@ export default {
             Dispatch_Frequency: [],
             jobTitle: '',
             temp: 'false',
+            disabledControl: false,
             rule: validator.default,
             multipleSelection: [],
             dialogFormVisibleAdd: false,
             dialogImportData: false,
+            showHiddenOr: false,
             formAdd: {
                 etl_sys_cd: '',
                 sub_sys_cd: '',
@@ -873,6 +894,7 @@ export default {
             this.getCode();
             let params = {};
             let arr = [];
+            this.disabledControl = true;
             params["etl_sys_cd"] = row.etl_sys_cd;
             params["etl_job"] = row.etl_job;
             etlJobDefAllFun.searchEtlJobDefById(params).then(res => {
@@ -935,13 +957,21 @@ export default {
         cancleAdd() {
             if (this.jobTitle == "修改作业") {
                 this.getTable();
+                this.disabledControl = true;
             }
+            this.showHiddenOr = false;
+            this.disabledControl = false;
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.tempForm = {};
             this.$refs.formAdd.resetFields();
         },
         beforeClosechange() {
+            if (this.jobTitle == "修改作业") {
+                this.disabledControl = true;
+            }
+            this.showHiddenOr = false;
+            this.disabledControl = false;
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.$refs.formAdd.resetFields();
@@ -967,7 +997,6 @@ export default {
                     params["disp_offset"] = this.formAdd.disp_offset;
                     params["disp_type"] = this.formAdd.disp_type;
                     params["disp_time"] = this.formAdd.disp_time;
-                    console.log(this.formAdd.job_priority)
                     if (this.formAdd.job_priority == '') {
                         this.formAdd.job_priority = null;
                     }
@@ -1013,7 +1042,10 @@ export default {
         cancleAdd1() {
             if (this.jobTitle == "修改作业") {
                 this.getTable();
+                this.disabledControl = true;
             }
+            this.showHiddenOr = false;
+            this.disabledControl = false;
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
             this.$refs.formAdd.resetFields();
@@ -1077,9 +1109,13 @@ export default {
         cancleAdd2() {
             if (this.jobTitle == "修改作业") {
                 this.getTable();
+                this.disabledControl = true;
             }
+            this.showHiddenOr = false;
+            this.disabledControl = false;
             this.dialogFormVisibleAdd = false;
             this.formAdd = {};
+
             this.$refs.formAdd.resetFields();
         },
         //新增/修改模态框2保存按钮
@@ -1179,6 +1215,7 @@ export default {
                 for (let i = 0; i < arr.length; i++) {
                     param.append('file', arr[i].raw);
                 }
+                param.append('table_name', 'etl_job_def');
                 etlJobDefAllFun.uploadExcelFile(param).then(res => {
                     if (res.code == 200) {
                         message.customizTitle("文件上传成功", "success");
@@ -1231,6 +1268,45 @@ export default {
                     URL.revokeObjectURL(aTag.href);
                 }
             })
+        },
+        // 获取点击作业程序参数下拉值
+        clickData(val) {
+            // 赋值
+            if (this.formAdd.pro_para.length < 1) {
+                this.formAdd.pro_para = val;
+            } else if (this.formAdd.pro_para == "@" && this.formAdd.pro_para.length == 1) {
+                this.formAdd.pro_para = val;
+            } else {
+                this.formAdd.pro_para += val;
+            }
+            this.showHiddenOr = false;
+        },
+        // 获取键盘监听事件
+        keyCodeForEventup(e) {
+            let self = this;
+            if (e.shiftKey == 0 && e.key == "2") {
+                self.showHiddenOr = true;
+            }
+        },
+        keyCodeForEventdown(e) {
+            let self = this;
+            if (e.shiftKey == 1 && e.key == "Process" || e.shiftKey == 1 && e.key == "@") {
+                self.showHiddenOr = true;
+            }
+        },
+        // 作业程序参数聚焦
+        focusMenthods() {
+            window.addEventListener('keyup', this.keyCodeForEventup);
+            window.addEventListener('keydown', this.keyCodeForEventdown);
+        },
+        // 作业程序参数失焦
+        blurMenthods() {
+            window.removeEventListener('keyup', this.keyCodeForEventup);
+            window.removeEventListener('keydown', this.keyCodeForEventdown);
+        },
+        // 关闭参数选择栏
+        closeShow() {
+            this.showHiddenOr = false;
         }
     },
 };
@@ -1264,6 +1340,49 @@ export default {
 .etljob>>>.el-select__tags {
     white-space: nowrap;
     overflow: hidden;
+}
+
+.workProgramms {
+    width: 194px;
+    height: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    padding-left: 8px;
+}
+
+.workProgramms:hover {
+    color: #409EFF;
+}
+
+.workProgrammsDiv {
+    padding: 4px;
+    position: absolute;
+    z-index: 10000;
+    background: #fff;
+    left: 150px;
+    top: 40px;
+    border-radius: 6px;
+    border: 1px solid #e6e6e6;
+    border-top: none;
+    columns: black;
+}
+
+.workProgrammsDivFather {
+    position: relative;
+}
+
+.workProgrammsDivSpan {
+    padding-left: 4px;
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    font-size: 16px;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.close {
+    cursor: pointer;
+    float: right;
 }
 </style><style>
 .el-autocomplete-suggestion li {
