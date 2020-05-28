@@ -689,6 +689,12 @@ export default {
                     item.label = item.value;
                     item.value = item.code;
                 });
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].code == 'A' || arr[i].code == 'B') {
+                        arr.splice(i, 1);
+                        i--
+                    }
+                }
                 this.addSelect.dispType = arr;
             });
         },

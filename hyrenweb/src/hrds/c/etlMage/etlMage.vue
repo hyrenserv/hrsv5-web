@@ -423,7 +423,7 @@ export default {
                                 text: ''
                             },
                             xAxis: {
-                                categories: ['挂机', '等待', '运行', '暂停', '错误', '完成']
+                                categories: ['挂起', '等待', '运行', '暂停', '错误', '完成']
                             },
                             yAxis: {
                                 min: 0,
@@ -866,7 +866,7 @@ export default {
                         text: ''
                     },
                     xAxis: {
-                        categories: ['挂机', '等待', '运行', '暂停', '错误', '完成']
+                        categories: ['挂起', '等待', '运行', '暂停', '错误', '完成']
                     },
                     yAxis: {
                         min: 0,
@@ -1139,7 +1139,7 @@ export default {
                                             var start = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', startTime[index]);
                                             var end = Highcahrts.dateFormat('%Y-%m-%d %H:%M:%S', endTime[index]);
                                             if (status[index] == "P") {
-                                                return this.x + '<br/>' + '状态' + ':' + '挂机';
+                                                return this.x + '<br/>' + '状态' + ':' + '挂起';
                                             } else if (status[index] == "W") {
                                                 return this.x + '<br/>' + '状态' + ':' + '等待';
                                             } else if (status[index] == "S") {
