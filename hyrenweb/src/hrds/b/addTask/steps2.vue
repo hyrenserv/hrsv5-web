@@ -5,7 +5,7 @@
         <el-tab-pane label="单表查询" name="first">
             <div id="singleTable">
                 <div class="rightSearch">
-                    <el-input v-model="search" placeholder="查询表名" style="width: 50%;
+                    <el-input v-model="search" placeholder="多表查询请用|分隔" style="width: 50%;
     margin-right: 10px;" @keyup.enter.native="searchEnterFun" />
                     <el-button size="mini" type="success" icon="el-icon-search" @click="schfilter(search)">查询</el-button>
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
@@ -949,6 +949,7 @@ export default {
                         }
                         this.tableData = res.data;
                     } else {
+                         this.tableData = [];
                         this.tableloadingInfo = "暂无数据";
                     }
                 });
