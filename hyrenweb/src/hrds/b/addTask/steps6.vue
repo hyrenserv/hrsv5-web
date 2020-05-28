@@ -353,6 +353,13 @@ export default {
             })
             .then(res => {
                 if (res.data) {
+                    let data = res.data
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].code == 'A' || data[i].code == 'B') {
+                            data.splice(i, 1);
+                            i--
+                        }
+                    }
                     this.Dispatching_mode = res.data;
                 }
             });
@@ -617,8 +624,8 @@ export default {
                 });
             }
         },
-        projNumCloseFun(){
-            this.projnum_radio={}
+        projNumCloseFun() {
+            this.projnum_radio = {}
         },
         // 选择工程弹框确定
         projNumSubmitFun() {
