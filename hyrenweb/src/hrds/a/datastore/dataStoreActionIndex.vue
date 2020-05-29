@@ -651,15 +651,13 @@ export default {
                                 valueArr.push(item);
                             }
                         });
-                        valueArr.forEach((item) => {
-                            item['is_file'] = 0;
-                        });
                         // 如果是hbase
                         if (valueIndex == 3) {
                             let arrtable = [];
                             valueArr.forEach(item => {
                                 if (item.storage_property_val) {
                                     arrtable.push(item);
+                                    item['is_file'] = 0;
                                 }
                             });
                             arrtable.forEach((item) => {
@@ -670,8 +668,11 @@ export default {
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else if (valueIndex == 2) {
                             let arrtable = [];
-                            for (let i = 0; i < 5; i++) {
-                                arrtable.push(this.form.tableDataConfigure[i]);
+                            for (let i = 0; i < valueArr.length; i++) {
+                                if (valueArr[i].storage_property_val) {
+                                    arrtable.push(valueArr[i]);
+                                    valueArr[i].is_file = "0";
+                                }
                             }
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else {
