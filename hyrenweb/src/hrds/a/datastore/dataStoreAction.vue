@@ -331,9 +331,7 @@ export default {
                                 } else {
                                     param.append('dslad_remark', '');
                                 }
-                                this.form.tableData.forEach((item) => {
-                                    item['is_file'] = 0;
-                                });
+
                                 // 处理参数dataStoreLayerAttr
                                 // 如果是hbase
                                 if (valueIndex == 3) {
@@ -341,6 +339,7 @@ export default {
                                     this.form.tableData.forEach(item => {
                                         if (item.storage_property_val) {
                                             arrtable.push(item);
+                                            item['is_file'] = 0;
                                         }
                                     })
                                     arrtable.forEach((item) => {
@@ -351,8 +350,11 @@ export default {
                                     param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                                 } else if (valueIndex == 2) {
                                     let arrtable = [];
-                                    for (let i = 0; i < 5; i++) {
-                                        arrtable.push(this.form.tableData[i]);
+                                    for (let i = 0; i < this.form.tableData.length; i++) {
+                                        if (this.form.tableData[i].storage_property_val) {
+                                            arrtable.push(this.form.tableData[i]);
+                                            this.form.tableData[i].is_file = "0";
+                                        }
                                     }
                                     param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                                 }
