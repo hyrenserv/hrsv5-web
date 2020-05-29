@@ -651,6 +651,9 @@ export default {
                                 valueArr.push(item);
                             }
                         });
+                        valueArr.forEach(item => {
+                            item['is_file'] = 0;
+                        })
                         // 如果是hbase
                         if (valueIndex == 3) {
                             let arrtable = [];

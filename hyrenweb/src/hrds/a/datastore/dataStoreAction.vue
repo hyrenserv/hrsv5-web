@@ -331,7 +331,9 @@ export default {
                                 } else {
                                     param.append('dslad_remark', '');
                                 }
-
+                                this.form.tableData.forEach(item => {
+                                    item['is_file'] = 0;
+                                })
                                 // 处理参数dataStoreLayerAttr
                                 // 如果是hbase
                                 if (valueIndex == 3) {
