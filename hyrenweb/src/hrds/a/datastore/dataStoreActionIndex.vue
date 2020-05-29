@@ -598,14 +598,6 @@ export default {
                 name: "dataStoreAction"
             })
         },
-        // 编辑时table新增一行
-        addTableDataData() {
-            this.form.tableDataConfigure.push({
-                storage_property_key: "",
-                storage_property_val: "",
-                dsla_remark: ""
-            })
-        },
         // 编辑时table删除一行
         deleteArrydata(index, row) {
             this.form.tableDataConfigure.splice(index, 1)
@@ -985,7 +977,8 @@ export default {
             this.form.tableDataConfigure.push({
                 storage_property_key: "",
                 storage_property_val: "",
-                dsla_remark: ""
+                dsla_remark: "",
+                dsl_id: this.dsl_id,
             });
         },
         // 删除一行信息
