@@ -72,7 +72,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item v-if="this.dependTitle == '修改作业依赖'" prop="etl_job" label="作业名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.etl_job" disabled placeholder="请选择作业名称" style="width:218px;">
+                <el-select v-model="formAdd.etl_job"  placeholder="请选择作业名称" style="width:218px;">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
@@ -514,7 +514,7 @@ export default {
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
-            this.$message.info('已取消上传');
+            this.$message.info('已取消导入数据');
         },
         //导入数据按钮
         importData() {
@@ -526,7 +526,7 @@ export default {
                 param.append('table_name', 'etl_dependency');
                 etlDependencyAllFun.uploadExcelFile(param).then(res => {
                     if (res.code == 200) {
-                        message.customizTitle("文件上传成功", "success");
+                        message.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;

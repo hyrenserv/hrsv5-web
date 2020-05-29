@@ -119,7 +119,7 @@
         </div>
     </el-dialog>
     <!-- 启动CONTROL模态框 -->
-    <el-dialog title="启动CONTROL配置参数" :visible.sync="dialogFormVisibleStartCON" width="35%">
+    <el-dialog title="启动CONTROL配置参数" :visible.sync="dialogFormVisibleStartCON" width="35%" :before-close="cancleCON">
         <el-form :model="formStartCON" ref="formStartCON" class="demo-ruleForm" label-width="150px">
             <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                 <div style="width:220px">
@@ -129,7 +129,7 @@
             <el-form-item label="是否续跑" prop="isResumeRun">
 
                 <el-radio-group v-model="formStartCON.isResumeRun">
-                    <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    <el-radio v-for="item in YesNo" @change="changeValue" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="是否日切" prop="isAutoShift">
@@ -138,7 +138,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="当前批量日期" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
-                <el-date-picker v-model="formStartCON.curr_bath_date" type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择日期">
+                <el-date-picker v-model="formStartCON.curr_bath_date" :disabled="dateDisabled" type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择日期">
                 </el-date-picker>
             </el-form-item>
         </el-form>
@@ -271,11 +271,13 @@ export default {
             dialogFormVisibleStartTRI: false,
             dialogFormVisibleRecordCON: false,
             dialogFormVisibleRecordTRI: false,
+            dateDisabled: false,
             dialogMointer: false,
             showChartsInfo: false,
             batchState: {},
             sysState: [],
             projectTitle: '',
+            currDate: '',
             chartOptions: {
                 title: {
                     text: ''
@@ -306,8 +308,8 @@ export default {
             },
             formStartCON: {
                 etl_sys_cd: "",
-                isResumeRun: "",
-                isAutoShift: "",
+                isResumeRun: "0",
+                isAutoShift: "0",
                 curr_bath_date: "",
             },
             formStartTRI: {
@@ -623,8 +625,14 @@ export default {
         },
         //启动CONTROL模态框取消按钮
         cancleCON() {
+            this.dateDisabled = false;
             this.dialogFormVisibleStartCON = false;
-            this.formStartCON = {};
+            this.formStartCON = {
+                etl_sys_cd: "",
+                isResumeRun: "0",
+                isAutoShift: "0",
+                curr_bath_date: "",
+            }
         },
         //启动TRIGGER模态框启动按钮
         startTRI() {
@@ -809,10 +817,17 @@ export default {
         },
         //表格启动CONTROL按钮
         handleStartco(index, row) {
+            this.formStartCON = {
+                etl_sys_cd: "",
+                isResumeRun: "0",
+                isAutoShift: "0",
+                curr_bath_date: "",
+            }
             this.dialogFormVisibleStartCON = true;
             this.getEtlSys(row.etl_sys_cd);
             this.getCategoryItems("IsFlag");
             this.formStartCON.etl_sys_cd = row.etl_sys_cd;
+            this.currDate = row.curr_bath_date;
         },
         //表格启动TRIGGER按钮
         handleStarttr(index, row) {
@@ -1339,6 +1354,16 @@ export default {
                     message: '已取消停止'
                 });
             });
+        },
+        // 是否续跑控制日期选择
+        changeValue(val) {
+            if (val == "1") {
+                this.formStartCON.curr_bath_date = this.currDate.replace(/-/g, "");
+                this.dateDisabled = true;
+            } else if (val == "0") {
+                this.formStartCON.curr_bath_date = ''
+                this.dateDisabled = false;
+            }
         }
     },
 };

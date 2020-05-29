@@ -346,7 +346,7 @@ export default {
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
-            this.$message.info('已取消上传');
+            this.$message.info('已取消导入数据');
         },
         //导入数据按钮
         importData() {
@@ -358,7 +358,7 @@ export default {
                 param.append('table_name', 'etl_resource');
                 resourcesAvailableAllFun.uploadExcelFile(param).then(res => {
                     if (res.code == 200) {
-                        message.customizTitle("文件上传成功", "success");
+                        message.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;

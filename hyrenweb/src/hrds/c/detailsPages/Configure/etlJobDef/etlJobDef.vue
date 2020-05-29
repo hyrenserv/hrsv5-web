@@ -153,7 +153,7 @@
             <el-col :span="12">
                 <el-form-item label="调度触发方式" prop="disp_type" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select style="width:218px;" v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
+                        <el-select style="width:218px;" @change="changeValue" v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
                             <el-option v-for="item in addSelect.dispType" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -413,7 +413,7 @@
             <el-col :span="12">
                 <el-form-item label="调度触发方式" prop="disp_type" :rules="rule.selected">
                     <div style="width:150px">
-                        <el-select style="width:218px;" v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
+                        <el-select style="width:218px;" @change="changeValue" v-model="formAdd.disp_type" placeholder="--触发选择--" clearable>
                             <el-option v-for="item in addSelect.dispType" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -461,7 +461,7 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="依赖是否有效">
+                <el-form-item label="依赖是否有效" prop="status" :rules="rule.selected">
                     <div style="width:150px">
                         <el-select style="width:218px;" v-model="formAdd.status" placeholder="--有效选择--" clearable @change="selectChange">
                             <el-option v-for="item in addSelect.status" :key="item.value" :label="item.label" :value="item.value">
@@ -1212,7 +1212,7 @@ export default {
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
-            this.$message.info('已取消上传');
+            this.$message.info('已取消导入数据');
         },
         //导入数据按钮
         importData() {
@@ -1224,7 +1224,7 @@ export default {
                 param.append('table_name', 'etl_job_def');
                 etlJobDefAllFun.uploadExcelFile(param).then(res => {
                     if (res.code == 200) {
-                        message.customizTitle("文件上传成功", "success");
+                        message.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;
@@ -1313,6 +1313,14 @@ export default {
         // 关闭参数选择栏
         closeShow() {
             this.showHiddenOr = false;
+        },
+        // 调度触发方式控制依赖是否有效
+        changeValue(val) {
+            if (val == "D") {
+                this.formAdd.status = "T"
+            } else {
+                this.formAdd.status = ""
+            }
         }
     },
 };
