@@ -241,6 +241,9 @@
     <el-dialog title=" 选择目的地" :visible.sync="dialogAllChooseDestination" width="70%" class="alltable">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">全表选择目的地设置</span>
+            <span class="dialogtoptxt">
+                <p class="dialogtopname">(存储名称选择存在oracle时，落地表名长度不能大于27，需单独设置并更改对应落地表名)</p>
+            </span>
         </div>
         <el-table stripe :data="AlldestinationData.slice((Alldestination_currentPage - 1) * Alldestination_pagesize,Alldestination_currentPage * Alldestination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="(row)=>{ return row.dsl_id}" @selection-change="AllhandleSelectionChange" @select-all='allselectD'>
             <el-table-column width="55" align="center" type="selection">
@@ -1212,6 +1215,7 @@ export default {
                     this.ruleForm.ex_destinationData[i].table_setting = true
                 }
                 this.dialogAllChooseDestination = false
+                console.log(this.dslIdString)
             } else {
                 this.open()
             }
