@@ -1010,9 +1010,11 @@ export default {
                     params["job_eff_flag"] = this.formAdd.job_eff_flag;
                     params["today_disp"] = this.formAdd.today_disp;
                     params["comments"] = this.formAdd.comments;
+                    params['pre_etl_job'] = this.formAdd.pre_etl_job;
                     params["old_disp_freq"] = this.tempForm.old_disp_freq;
                     params["old_pre_etl_job"] = this.tempForm.old_pre_etl_job;
                     params["old_dispatch_type"] = this.tempForm.old_dispatch_type;
+
                     if (this.jobTitle == '添加作业') {
                         etlJobDefAllFun.saveEtlJobDef(params).then(res => {
                             if (res && res.success) {
