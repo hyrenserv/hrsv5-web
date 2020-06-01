@@ -179,8 +179,8 @@
 
                     <el-table-column label="操作" width="80" align="center">
                         <template slot-scope="scope">
-                            <el-button type="danger" size="small" disabled v-if="scope.$index < deleteLength " @click="dialogFormVisibleAdd = true;deleteTableDataRow(scope.$index, scope.row);">删除</el-button>
-                            <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteTableDataRow(scope.$index, scope.row);">删除</el-button>
+                            <el-button type="danger" size="small" disabled v-if="scope.row.storage_property_val !=undefined &&scope.row.storage_property_val.indexOf('.xml') !=-1 ">删除</el-button>
+                            <el-button type="danger" size="small" v-else @click="deleteTableDataRow(scope.$index, scope.row);">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
