@@ -239,6 +239,9 @@
                             }).then((res) => {
                                 item.is_successful = res.data;
                             });
+                            if(item.etl_date == "00000000"){
+                                item.etl_date = "--------";
+                            }
                         })
                         this.tableData = res.data;
                     }

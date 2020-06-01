@@ -125,9 +125,9 @@
             },
             getquerysql() {
                 functionAll.getQuerySql({"datatable_id": this.datatable_id}).then((res) => {
+                    debugger;
                     if (res && res.success) {
-                        this.querysql = res.data[0].querysql;
-                    }
+                        this.querysql = res.data;                    }
                 })
             },
             gettablename() {

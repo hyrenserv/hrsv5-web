@@ -291,18 +291,11 @@
                     functionAll.deleteMart({"data_mart_id": data_mart_id}).then(res => {
                         this.isLoading = false;
                         if (res && res.success) {
-                            if (!res.data.status) {
-                                this.$message({
-                                    type: "warning",
-                                    message: "工程下还存在表，请先删除表"
-                                });
-                            } else {
-                                this.$message({
-                                    type: "success",
-                                    message: "删除成功"
-                                });
-                                location.reload();
-                            }
+                            this.$message({
+                                type: "success",
+                                message: "删除成功"
+                            });
+                            location.reload();
                         }
                     });
                 }).catch(() => {

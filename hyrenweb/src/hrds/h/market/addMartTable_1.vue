@@ -221,7 +221,7 @@
                     table_storage: "",
                     datatable_lifecycle: "",
                     datatable_due_date: "",
-                    repeat_flag:""
+                    repeat_flag: ""
                 },
                 checkboxType: [],
                 tableDataConfigure: [],
@@ -258,10 +258,10 @@
                     "datatable_id": this.datatable_id
                 }).then((res) => {
                         if (res && res.success) {
-                            if (res.data.status == true) {
-                                this.iflock = res.data.status;
-                                this.ennameiflock = res.data.status;
-                                this.repeatiflock = res.data.status;
+                            if (res.data == true) {
+                                this.iflock = res.data;
+                                this.ennameiflock = res.data;
+                                this.repeatiflock = res.data;
                             }
                         }
                     }
@@ -290,7 +290,7 @@
                         if (this.dm_datatable.datatable_lifecycle == "2") {
                             this.showData_date = true;
                         }
-                        if(this.datatable_id == undefined){
+                        if (this.datatable_id == undefined) {
                             this.dm_datatable.repeat_flag = "1";
                         }
                         this.changerepeat();
@@ -352,23 +352,16 @@
                                 functionAll.addDMDataTable(this.dm_datatable).then((res) => {
                                     this.isLoading = false;
                                     if (res && res.success) {
-                                        if (res.data.success) {
-                                            this.datatable_id = res.data.datatable_id;
-                                            this.$router.push({
-                                                name: 'addMartTable_2',
-                                                query: {
-                                                    data_mart_id: this.data_mart_id,
-                                                    datatable_id: this.datatable_id,
-                                                    is_add: 1,
-                                                    ifrepeat: res.data.ifrepeat
-                                                }
-                                            });
-                                        } else {
-                                            this.$message({
-                                                type: "warning",
-                                                message: "集市表已经生成或者正在运行中，不允许修改"
-                                            });
-                                        }
+                                        this.datatable_id = res.data.datatable_id;
+                                        this.$router.push({
+                                            name: 'addMartTable_2',
+                                            query: {
+                                                data_mart_id: this.data_mart_id,
+                                                datatable_id: this.datatable_id,
+                                                is_add: 1,
+                                                ifrepeat: res.data.ifrepeat
+                                            }
+                                        });
                                     }
                                 })
                             }
@@ -380,23 +373,17 @@
                                 functionAll.updateDMDataTable(this.dm_datatable).then((res) => {
                                     this.isLoading = false;
                                     if (res && res.success) {
-                                        if (res.data.success) {
-                                            // this.datatable_id = res.data.datatable_id;
-                                            this.$router.push({
-                                                name: 'addMartTable_2',
-                                                query: {
-                                                    data_mart_id: this.data_mart_id,
-                                                    datatable_id: this.datatable_id,
-                                                    is_add: 1,
-                                                    ifrepeat: res.data.ifrepeat
-                                                }
-                                            });
-                                        } else {
-                                            this.$message({
-                                                type: "warning",
-                                                message: "集市表运行中，不允许修改"
-                                            });
-                                        }
+                                        // this.datatable_id = res.data.datatable_id;
+                                        this.$router.push({
+                                            name: 'addMartTable_2',
+                                            query: {
+                                                data_mart_id: this.data_mart_id,
+                                                datatable_id: this.datatable_id,
+                                                is_add: 1,
+                                                ifrepeat: res.data.ifrepeat
+                                            }
+                                        });
+
                                     }
                                 })
                             }
@@ -502,7 +489,7 @@
                 })
             },
             confirmselecttable() {
-                if(this.selecttablename == ""){
+                if (this.selecttablename == "") {
                     this.$message({
                         type: "warning",
                         message: "请选择表名"
@@ -520,7 +507,7 @@
                     "datatable_en_name": this.dm_datatable.datatable_en_name,
                     "datatable_id": this.datatable_id,
                 }
-                if( this.dm_datatable.datatable_en_name == ""){
+                if (this.dm_datatable.datatable_en_name == "") {
                     return false;
                 }
                 functionAll.querytablenameifrepeat(param).then((res) => {
@@ -543,8 +530,8 @@
                 }
                 functionAll.querydatatableidifrepeat(param).then((res) => {
                     if (res && res.success) {
-                        if(res.data.result == true){
-                            this.iflock = res.data.result;
+                        if (res.data == true) {
+                            this.iflock = res.data;
                         }
                     }
                 })

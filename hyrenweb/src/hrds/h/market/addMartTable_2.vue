@@ -379,7 +379,7 @@
             this.getifhbase();
             this.getfromcolumnlist(this.datatable_id);
         },
-        mounted(){
+        mounted() {
             this.checkifrepeat();
         },
         methods: {
@@ -424,7 +424,7 @@
             },
             getifhbase() {
                 functionAll.getIfHbase({"datatable_id": this.datatable_id}).then(((res) => {
-                    this.ifhbae = res.data.result;
+                    this.ifhbae = res.data;
                     // this.ifhbae = true;
                 }))
             },
@@ -478,9 +478,9 @@
                     "datatable_id": this.datatable_id,
                 };
                 functionAll.getQuerySql(params).then((res) => {
-                    if (res.data.length != 0) {
-                        this.querysql = res.data[0].querysql;
-                    }
+                    // if (res.data.length != 0) {
+                        this.querysql = res.data;
+                    // }
                 })
             },
             getcolumnfromdatabase(datatable_id) {
@@ -511,8 +511,7 @@
                     };
                     functionAll.getColumnBySql(params).then(((res) => {
                         this.isLoading = false;
-                        if (res && res.data.success) {
-                            debugger;
+                        if (res && res.data) {
                             this.allfromcolumn = res.data.columnlist;
                             this.columnbysql = res.data.result;
                             let tmp_field_type = this.columnbysql[0].field_type;
@@ -527,11 +526,6 @@
                             if (flag) {
                                 this.allfield_type.push({"target_type": tmp_field_type});
                             }
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.data.message
-                            });
                         }
                     }))
                 }
@@ -549,15 +543,10 @@
                         'datatable_id': this.datatable_id
                     }).then((res) => {
                         this.isLoading = false;
-                        if (res && res.data.success) {
-                            this.querydatadialogshow = true;
-                            this.databysql = res.data.result;
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.data.message
-                            });
-                        }
+                        // if (res && res.data.success) {
+                        this.querydatadialogshow = true;
+                        this.databysql = res.data;
+                        // }
                     });
                 }
             },
@@ -739,29 +728,20 @@
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
                     if (res && res.success) {
-                        if (res.data.success) {
-                            this.$message({
-                                type: "success",
-                                message: "保存成功!"
-                            });
-                            this.ifhbasesort = false;
-                            this.$router.push({
-                                name: 'addMartTable_3',
-                                query: {
-                                    data_mart_id: this.data_mart_id,
-                                    datatable_id: this.datatable_id,
-                                    is_add: 1,
-                                    ifrepeat: this.ifrepeat,
-                                }
-                            });
-                        } else {
-                            this.$message({
-                                type: "warning",
-                                message: "集市表运行中，不允许修改"
-                            });
-                        }
-                    } else {
-                        this.$emit(res.message);
+                        this.$message({
+                            type: "success",
+                            message: "保存成功!"
+                        });
+                        this.ifhbasesort = false;
+                        this.$router.push({
+                            name: 'addMartTable_3',
+                            query: {
+                                data_mart_id: this.data_mart_id,
+                                datatable_id: this.datatable_id,
+                                is_add: 1,
+                                ifrepeat: this.ifrepeat,
+                            }
+                        });
                     }
                 })
             },
