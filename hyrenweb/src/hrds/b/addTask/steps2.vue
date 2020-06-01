@@ -1444,7 +1444,7 @@ export default {
                     if (arrData[k].unload_type == "增量") {
                         tableInfoString.push({
                             database_id: this.dbid,
-                            table_id: arrData[k].table_id ?
+                            table_id: (arrData[k].table_id&&arrData[k].table_id!=undefined)?
                                 parseInt(arrData[k].table_id) : "",
                             is_parallel: "0",
                             is_md5: arrData[k].is_md5 == true ? "1" : "0",
@@ -1458,7 +1458,7 @@ export default {
                             if (arrData[k].is_customize_sql == "1") {
                                 tableInfoString.push({
                                     database_id: this.dbid,
-                                    table_id: arrData[k].table_id ?
+                                    table_id:(arrData[k].table_id&&arrData[k].table_id!=undefined)?
                                         parseInt(arrData[k].table_id) : "",
                                     is_parallel: "1",
                                     unload_type: "1",
@@ -1473,7 +1473,7 @@ export default {
                                 tableInfoString.push({
                                     database_id: this.dbid,
                                     unload_type: "1",
-                                    table_id: arrData[k].table_id ?
+                                    table_id: (arrData[k].table_id&&arrData[k].table_id!=undefined)?
                                         parseInt(arrData[k].table_id) : "",
                                     is_parallel: "1",
                                     is_customize_sql: "0",
@@ -1495,7 +1495,7 @@ export default {
                             tableInfoString.push({
                                 database_id: this.dbid,
                                 unload_type: "1",
-                                table_id: arrData[k].table_id ?
+                                table_id:(arrData[k].table_id&&arrData[k].table_id!=undefined)?
                                     parseInt(arrData[k].table_id) : "",
                                 is_parallel: "0",
                                 is_md5: arrData[k].is_md5 == true ? "1" : "0",
