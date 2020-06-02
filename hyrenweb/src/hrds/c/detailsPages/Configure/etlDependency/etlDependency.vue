@@ -72,7 +72,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item v-if="this.dependTitle == '修改作业依赖'" prop="etl_job" label="作业名称" :rules="rule.selected ">
-                <el-select v-model="formAdd.etl_job"  placeholder="请选择作业名称" style="width:218px;">
+                <el-select v-model="formAdd.etl_job" placeholder="请选择作业名称" style="width:218px;">
                     <el-option v-for="item in formSelect.jobName" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
@@ -116,11 +116,11 @@
         </div>
     </el-dialog>
     <!-- 获取上传文件 -->
-    <el-dialog title="导入Excel" :visible.sync="dialogImportData" :before-close="importDatacancel">
+    <el-dialog title="导入作业依赖数据" :visible.sync="dialogImportData" :before-close="importDatacancel">
         <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
         <div slot="footer" class="dialog-footer">
             <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="importData" size="mini">保存</el-button>
+            <el-button type="primary" @click="importData" :loading="loadingUpload" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -150,6 +150,7 @@ export default {
             dialogFormVisibleAdd: false,
             dialogVisibleDelete: false,
             dialogImportData: false,
+            loadingUpload: false,
             statusNum: [],
             formAdd: {
                 etl_sys_cd: '',
@@ -519,17 +520,21 @@ export default {
         //导入数据按钮
         importData() {
             if (arr.length > 0) {
+                this.loadingUpload = true;
                 let param = new FormData() // 创建form对象
                 for (let i = 0; i < arr.length; i++) {
                     param.append('file', arr[i].raw);
                 }
                 param.append('table_name', 'etl_dependency');
                 etlDependencyAllFun.uploadExcelFile(param).then(res => {
-                    if (res.code == 200) {
+                    if (res && res.success) {
                         message.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;
+                        this.loadingUpload = false;
+                    } else {
+                        this.loadingUpload = false;
                     }
                 });
             } else {
