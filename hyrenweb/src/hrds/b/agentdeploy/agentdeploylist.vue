@@ -112,12 +112,12 @@
             </el-row>
             <el-row>
                 <el-col :span="8">
-                    <el-form-item label="context" prop="agent_context" :rules="rule.default">
+                    <el-form-item label="context" prop="agent_context" :rules="filter_rules([{required:true,dataType:'webContext'}])">
                         <el-input v-model="agentDeploy.agent_context" placeholder="agent的context"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="访问路径" prop="agent_pattern" :rules="rule.default">
+                    <el-form-item label="访问路径" prop="agent_pattern" :rules="filter_rules([{required:true,dataType:'agent_pattern'}])">
                         <el-input v-model="agentDeploy.agent_pattern" placeholder="agent的访问路径"></el-input>
                     </el-form-item>
                 </el-col>
@@ -273,6 +273,7 @@ export default {
                         
                     })
                 } else {
+                    this.loading = false;
                     return;
                 }
             })
