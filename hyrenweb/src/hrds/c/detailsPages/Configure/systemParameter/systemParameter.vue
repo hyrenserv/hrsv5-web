@@ -87,11 +87,11 @@
         </div>
     </el-dialog>
     <!-- 获取上传文件 -->
-    <el-dialog title="导入Excel" :visible.sync="dialogImportData" :before-close="importDatacancel">
+    <el-dialog title="导入系统参数数据" :visible.sync="dialogImportData" :before-close="importDatacancel">
         <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
         <div slot="footer" class="dialog-footer">
             <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="importData" size="mini">保存</el-button>
+            <el-button type="primary" @click="importData" :loading="loadingUpload" size="mini">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -116,6 +116,7 @@ export default {
             paratype: [],
             dialogFormVisibleAdd: false,
             dialogImportData: false,
+            loadingUpload: false,
             rule: validator.default,
             formAdd: {
                 etl_sys_cd: '',
@@ -372,17 +373,21 @@ export default {
         //导入数据按钮
         importData() {
             if (arr.length > 0) {
+                this.loadingUpload = true;
                 let param = new FormData() // 创建form对象
                 for (let i = 0; i < arr.length; i++) {
                     param.append('file', arr[i].raw);
                 }
                 param.append('table_name', 'etl_para');
                 systemParameterAllFun.uploadExcelFile(param).then(res => {
-                    if (res.code == 200) {
+                    if (res && res.success) {
                         message.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;
+                        this.loadingUpload = false;
+                    } else {
+                        this.loadingUpload = false;
                     }
                 });
             } else {
