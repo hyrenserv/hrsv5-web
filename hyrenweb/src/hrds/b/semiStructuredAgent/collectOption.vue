@@ -87,15 +87,6 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
-                    <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
-                        <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.code">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
                 <el-form-item label="文件后缀名" :label-width="formLabelWidth">
                     <el-input v-model="form.file_suffix"></el-input>
                 </el-form-item>
@@ -170,47 +161,6 @@
             <el-button @click="closeDiolag" size="mini" type="danger">关 闭</el-button>
         </div>
     </el-dialog>
-    <!-- <el-row class="partThree">
-        <el-row>
-            <el-col :span="8" class="tabcol">
-                <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-                    <el-tab-pane label="月" name="first">
-                        <el-radio-group v-model="form.month">
-                            <el-radio label="每月"></el-radio>
-                            <el-radio label="指定月"></el-radio>
-                        </el-radio-group>
-                        <p>
-                            当前采集频率为 :{{form.month}} -- {{form.week}}
-                        </p>
-                    </el-tab-pane>
-                </el-tabs>
-                <p class="elTabinfo">第一步，设置月频率</p>
-            </el-col>
-            <el-col :span="8" class="tabcol">
-                <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-                    <el-tab-pane label="星期" name="first">
-                        <el-radio-group v-model="form.week">
-                            <el-radio label="星期"></el-radio>
-                            <el-radio label="指定星期"></el-radio>
-                        </el-radio-group>
-                    </el-tab-pane>
-                    <el-tab-pane label="天" name="second">
-                        <el-radio-group v-model="form.resource">
-                            <el-radio label="线上品牌商赞助"></el-radio>
-                            <el-radio label="线下场地免费"></el-radio>
-                        </el-radio-group>
-                    </el-tab-pane>
-                </el-tabs>
-                <p class="elTabinfo">第二步，设置星期/天频率</p>
-            </el-col>
-            <el-col :span="8" class="tabcol">
-                <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-                    <el-tab-pane label="时间" name="first">用户管理</el-tab-pane>
-                </el-tabs>
-                <p class="elTabinfo">第三步，设置数据采集时间</p>
-            </el-col>
-        </el-row>
-    </el-row> -->
 </div>
 </template>
 
@@ -228,7 +178,7 @@ export default {
         return {
             form: {
                 database_code: "",
-                run_way: "",
+                // run_way: "",
                 obj_number: "",
                 obj_collect_name: "",
                 object_collect_type: "1",
@@ -249,7 +199,6 @@ export default {
             active: 0,
             collect_type: [],
             dataBaseCode: [],
-            runWay: [],
             YesNo: [],
             data2: [],
             tableData: [],
@@ -269,7 +218,7 @@ export default {
     mounted() {
         this.getCategoryItems("DataBaseCode");
         this.getCategoryItems("ObjectCollectType");
-        this.getCategoryItems("ExecuteWay");
+        // this.getCategoryItems("ExecuteWay");
         this.getCategoryItems("IsFlag");
         this.searchObjectCollect();
     },
@@ -278,8 +227,7 @@ export default {
         searchObjectCollect() {
             if (this.$route.query.id) {
                 // 更新初始页面
-                functionAll.searchObjectCollect({
-                    agent_id: this.$route.query.agent_id,
+                functionAll.getObjectCollectConfById({
                     odc_id: this.$route.query.id
                 }).then(res => {
                     this.form.system_name = res.data.osName;
@@ -295,7 +243,7 @@ export default {
                     this.form.s_date = res.data.object_collect_info.s_date;
                     this.form.e_date = res.data.object_collect_info.e_date;
                     this.form.database_code = res.data.object_collect_info.database_code;
-                    this.form.run_way = res.data.object_collect_info.run_way;
+                    // this.form.run_way = res.data.object_collect_info.run_way;
                     if (res.data.object_collect_info.is_dictionary == "0") {
                         this.showData_date = true;
                         this.form.data_date = res.data.object_collect_info.data_date;
@@ -308,7 +256,7 @@ export default {
                 })
             } else {
                 // 新增初始页面
-                functionAll.searchObjectCollect({
+                functionAll.getAddObjectCollectConf({
                     agent_id: this.$route.query.agent_id
                 }).then(res => {
                     this.form.system_name = res.data.osName;
@@ -429,7 +377,7 @@ export default {
                             this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
                             this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
                             this.form.agent_id = this.$route.query.agent_id;
-                            functionAll.updateObjectCollect(this.form).then((res) => {
+                            functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
                                     this.$router.push({
                                         name: "collectFileOption",
@@ -451,7 +399,7 @@ export default {
                             this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
                             this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
                             this.form.agent_id = this.$route.query.agent_id;
-                            functionAll.addObjectCollect(this.form).then((res) => {
+                            functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
                                     this.$router.push({
                                         name: "collectFileOption",
@@ -488,14 +436,6 @@ export default {
                 }).then((res) => {
                     if (res && res.success) {
                         this.dataBaseCode = res.data;
-                    }
-                })
-            } else if (e == "ExecuteWay") {
-                functionAll.getCategoryItems({
-                    category: e
-                }).then((res) => {
-                    if (res && res.success) {
-                        this.runWay = res.data;
                     }
                 })
             } else if (e == "IsFlag") {
