@@ -1,4 +1,6 @@
-# hrsv5-web
+# hrsweb-5.0
+
+本分支为发布后的分支，修改bug等需要通过pr的方式进行提交
 
 ### 1、api写法
 - 前端包名定义，hrds/项目（a、b等）/功能模块（syspara）
