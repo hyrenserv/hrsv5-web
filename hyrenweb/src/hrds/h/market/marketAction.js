@@ -398,3 +398,11 @@ export function checkRunStatus(data) {
         params: data
     })
 }
+
+//检查集市状态
+export function checkOracle(data) {
+    return request({
+        url: '/H/market/checkOracle',
+        params: data
+    })
+}

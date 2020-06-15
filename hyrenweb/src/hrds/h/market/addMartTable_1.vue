@@ -259,9 +259,9 @@
                 }).then((res) => {
                         if (res && res.success) {
                             if (res.data == true) {
-                                this.iflock = res.data;
-                                this.ennameiflock = res.data;
-                                this.repeatiflock = res.data;
+                                // this.iflock = res.data;
+                                // this.ennameiflock = res.data;
+                                // this.repeatiflock = res.data;
                             }
                         }
                     }
@@ -334,6 +334,19 @@
                     this.alldatatablelifecycle = res.data
                 })
             },
+            // checkoracle(dsl_id, datatable_en_name) {
+            //     functionAll.checkOracle({
+            //         "dsl_id": dsl_id,
+            //         "datatable_en_name": datatable_en_name
+            //     }).then((res) => {
+            //         debugger;
+            //         if (res && res.success) {
+            //             return res.data;
+            //         } else {
+            //             this.$emit(response.message);
+            //         }
+            //     })
+            // },
             next(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
@@ -343,51 +356,79 @@
                                 message: "请选择存储目的地!"
                             });
                             return false;
-                        } else {
-                            this.isLoading = true;
-                            //新增
-                            if (this.is_add == 0) {
-                                this.dm_datatable.dsl_id = this.dsl_id;
-                                this.dm_datatable.data_mart_id = this.data_mart_id;
-                                functionAll.addDMDataTable(this.dm_datatable).then((res) => {
-                                    this.isLoading = false;
-                                    if (res && res.success) {
-                                        this.datatable_id = res.data.datatable_id;
-                                        this.$router.push({
-                                            name: 'addMartTable_2',
-                                            query: {
-                                                data_mart_id: this.data_mart_id,
-                                                datatable_id: this.datatable_id,
-                                                is_add: 1,
-                                                ifrepeat: res.data.ifrepeat
-                                            }
-                                        });
-                                    }
-                                })
-                            }
-                            //更新
-                            else {
-                                this.dm_datatable.dsl_id = this.dsl_id;
-                                this.dm_datatable.data_mart_id = this.data_mart_id;
-                                this.dm_datatable.datatable_id = this.datatable_id;
-                                functionAll.updateDMDataTable(this.dm_datatable).then((res) => {
-                                    this.isLoading = false;
-                                    if (res && res.success) {
-                                        // this.datatable_id = res.data.datatable_id;
-                                        this.$router.push({
-                                            name: 'addMartTable_2',
-                                            query: {
-                                                data_mart_id: this.data_mart_id,
-                                                datatable_id: this.datatable_id,
-                                                is_add: 1,
-                                                ifrepeat: res.data.ifrepeat
-                                            }
-                                        });
-
-                                    }
-                                })
-                            }
                         }
+                        //判断是否为oracle
+                        let isorclaeok = true;
+                        functionAll.checkOracle({
+                            "dsl_id": this.dsl_id,
+                            "datatable_en_name": this.dm_datatable.datatable_en_name
+                        }).then((res) => {
+                            // debugger;
+                            if (res && res.success) {
+                                // debugger;
+                                isorclaeok = res.data;
+                                if (!res.data) {
+                                    this.$message({
+                                        type: "warning",
+                                        message: "选择存储目的地为oracle,且表名长度大于26，请修改表名!"
+                                    });
+                                    return false;
+                                }
+                                this.isLoading = true;
+                                if (this.is_add == 0) {
+                                    this.dm_datatable.dsl_id = this.dsl_id;
+                                    this.dm_datatable.data_mart_id = this.data_mart_id;
+                                    functionAll.addDMDataTable(this.dm_datatable).then((res) => {
+                                        this.isLoading = false;
+                                        if (res && res.success) {
+                                            this.datatable_id = res.data.datatable_id;
+                                            this.$router.push({
+                                                name: 'addMartTable_2',
+                                                query: {
+                                                    data_mart_id: this.data_mart_id,
+                                                    datatable_id: this.datatable_id,
+                                                    is_add: 1,
+                                                    ifrepeat: res.data.ifrepeat
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                                //更新
+                                else {
+                                    this.dm_datatable.dsl_id = this.dsl_id;
+                                    this.dm_datatable.data_mart_id = this.data_mart_id;
+                                    this.dm_datatable.datatable_id = this.datatable_id;
+                                    functionAll.updateDMDataTable(this.dm_datatable).then((res) => {
+                                        this.isLoading = false;
+                                        if (res && res.success) {
+                                            // this.datatable_id = res.data.datatable_id;
+                                            this.$router.push({
+                                                name: 'addMartTable_2',
+                                                query: {
+                                                    data_mart_id: this.data_mart_id,
+                                                    datatable_id: this.datatable_id,
+                                                    is_add: 1,
+                                                    ifrepeat: res.data.ifrepeat
+                                                }
+                                            });
+
+                                        }
+                                    })
+                                }
+
+
+                            } else {
+                                this.$emit(response.message);
+                            }
+                        })
+                        if (!isorclaeok) {
+
+                        }
+
+                        //新增
+
+
                     }
                 })
             },
@@ -499,7 +540,7 @@
                 this.ifalreadyexisttablename = false;
                 this.dm_datatable.datatable_en_name = this.selecttablename;
                 this.dm_datatable.repeat_flag = '1';
-                this.ennameiflock = true;
+                // this.ennameiflock = true;
                 this.checkrepeat();
             },
             checkrepeat() {
@@ -515,11 +556,11 @@
                         if (res.data.result == true) {
                             this.queryDMDataTableByDataTableId(res.data.datatable_id);
 
-                            this.iflock = true;
+                            // this.iflock = true;
                             this.dm_datatable.repeat_flag = "1";
-                            this.ennameiflock = true;
+                            // this.ennameiflock = true;
                         } else {
-                            this.iflock = false;
+                            // this.iflock = false;
                         }
                     }
                 })
@@ -531,7 +572,7 @@
                 functionAll.querydatatableidifrepeat(param).then((res) => {
                     if (res && res.success) {
                         if (res.data == true) {
-                            this.iflock = res.data;
+                            // this.iflock = res.data;
                         }
                     }
                 })
@@ -539,9 +580,9 @@
             changerepeat() {
                 //如果改为是
                 if (this.dm_datatable.repeat_flag == "1") {
-                    this.ennameiflock = true;
+                    // this.ennameiflock = true;
                 } else {
-                    this.ennameiflock = false;
+                    // this.ennameiflock = false;
                 }
             }
 
