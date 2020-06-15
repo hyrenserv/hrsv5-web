@@ -17,7 +17,8 @@
                             <el-tree class="filter-tree" :data="mdmTreeList" :indent='0'
                                      @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick"
                                      :filter-node-method="filterNode" ref="tree1">
-                                <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
+                                <span class="span-ellipsis" slot-scope="{ node, data }"
+                                      v-if="data.description.length >0">
                                     <span :title="data.description" v-if="data.file_id.length > 0">
                                         <i class=" el-icon-document"/>{{node.label}}
                                     </span>
@@ -25,7 +26,7 @@
                                         <i class="el-icon-folder-opened"/>{{node.label}}
                                     </span>
                                 </span>
-                                            <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
+                                <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
                                     <span :title="data.label" v-if="data.file_id.length > 0">
                                         <i class=" el-icon-document"/>{{node.label}}
                                     </span>
@@ -172,15 +173,8 @@
                 recoverMouseVisible: false,
                 isLoading: false,
                 data_meta_info: {
-                    file_id: '',
-                    table_id: '',
-                    data_layer: '',
-                    table_type: '',
-                    table_name: '',
-                    table_ch_name: '',
-                    create_date: '',
-                    column_info_list: [],
-                    data_len: 0,
+                    file_id: '', table_id: '', data_layer: '', table_type: '', table_name: '', table_ch_name: '',
+                    create_date: '', column_info_list: [], data_len: 0,
                 },
                 node_data: {}
             }
@@ -222,13 +216,13 @@
             //获取源数据列表树信息
             getMDMTreeData() {
                 mdmFun.getMDMTreeData().then(res => {
-                    this.mdmTreeList = res.data.mdmTreeList;
+                    this.mdmTreeList = res.data;
                 })
             },
             //获取数据回收站树信息
             getDRBTreeData() {
                 mdmFun.getDRBTreeData().then(res => {
-                    this.drbTreeList = res.data.drbTreeList;
+                    this.drbTreeList = res.data;
                 })
             },
             //树节点搜索调用方法
@@ -337,10 +331,12 @@
                         'file_id': this.node_data.file_id
                     }).then(res => {
                         this.isLoading = false;
-                        message.customizTitle("将表放入回收站成功", "success");
-                        //重新获取树数据
-                        this.getMDMTreeData();
-                        this.data_meta_info = {table_id: '', column_info_list: []};
+                        if (res.success) {
+                            message.customizTitle("将表放入回收站成功", "success");
+                            //重新获取树数据
+                            this.getMDMTreeData();
+                            this.data_meta_info = {table_id: '', column_info_list: []};
+                        }
                     })
                 }).catch(() => {
                 });
@@ -357,9 +353,11 @@
                     }).then(res => {
                         //重新获取树数据
                         this.isLoading = false;
-                        message.customizTitle("恢复表成功", "success");
-                        this.getDRBTreeData();
-                        this.data_meta_info = {table_id: '', column_info_list: []};
+                        if (res.success) {
+                            message.customizTitle("恢复表成功", "success");
+                            this.getDRBTreeData();
+                            this.data_meta_info = {table_id: '', column_info_list: []};
+                        }
                     })
                 }).catch(() => {
                 });

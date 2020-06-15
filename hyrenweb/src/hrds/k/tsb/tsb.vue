@@ -110,7 +110,7 @@
             },
             treeData() {
                 tsbFun.getTSBTreeData().then(res => {
-                    this.data2 = res.data.tsbTreeList;
+                    this.data2 = res.data;
                 });
             },
             tsb_handleSizeChange(size) {
