@@ -3,8 +3,8 @@
     <el-container style="height:100%">
         <el-header>
             <el-row>
-                <el-col :span="6" style='text-align:left'>
-                    <span @click="meanClickFun()"><i class="el-icon-menu"></i>菜单列表</span>
+                <el-col :span="6" style='text-align:left;line-height: 60px;'>
+                    <span @click="meanClickFun()" style="cursor: pointer;"><i class="el-icon-menu" style="font-size:18px;margin-right:8px;">&nbsp;菜单列表</i></span>
                 </el-col>
                 <el-col :span="12">&nbsp;
                     <!-- <el-link :underline="false" @click="goback"><i class="el-icon-s-check">修改密码</i></el-link> -->
@@ -18,15 +18,15 @@
         <el-container>
             <div style="position:fixed" class='leftmean'>
                 <el-container>
-                    <el-aside >
-                        <Scrollbar>
+                    <el-aside :class="isCollapse==true?'aside1':'aside2'">
+                        <happy-scroll color="rgba(204, 200, 200, 0.6)" size="5" resize>
                             <!-- 导航 -->
-                            <el-menu :unique-opened='true'   style="border:0" background-color="#495179" text-color="#fff" active-text-color="rgba(255, 208, 75, 0.8)" router :default-active="$route.path" :collapse-transition="true" :collapse="isCollapse" class="el-menu-vertical-demo">
+                            <el-menu :unique-opened='true' style="border:0" background-color="#495179" text-color="#fff" active-text-color="rgba(255, 208, 75, 0.8)" router :default-active="$route.path" :collapse-transition="true" :collapse="isCollapse" class="el-menu-vertical-demo">
                                 <div v-for="items in menus" :key="items.name">
                                     <template v-if="items.children">
                                         <!--二级菜单循环-->
                                         <el-submenu :index="items.children[0].path" class='oneMenu'>
-                                            <template slot="title"><i :class="items.icon"></i><span slot="title">{{items.title}}</span></template>
+                                            <template slot="title"><i :class="items.icon"></i><span slot="title" v-if="isCollapse==false">{{items.title}}</span></template>
                                             <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path">
                                                 <i :class="item.icon"></i>
                                                 <span>{{item.title}}</span>
@@ -42,11 +42,11 @@
                                     </template>
                                 </div>
                             </el-menu>
-                        </Scrollbar>
+                        </happy-scroll>
                     </el-aside>
                 </el-container>
             </div>
-            <div style="margin-left:200px"></div>
+            <div :class="isCollapse==true?'asidewidth1':'asidewidth2'"></div>
             <el-container>
                 <el-main>
                     <router-view></router-view>
@@ -69,7 +69,7 @@ import * as addTaskAllFun from './menu'
 import childrenMenus from './childrenMenus'
 export default {
     components: {
-        Scrollbar
+        Scrollbar,
     },
     data() {
         return {
@@ -111,26 +111,44 @@ export default {
             this.resetToken();
             this.$router.push('/');
         },
-       /*   meanClickFun() {
-             this.isCollapse = !this.isCollapse
-         }, */
+        meanClickFun() {
+            this.isCollapse = !this.isCollapse
+        },
 
     }
 }
 </script>
 
 <style scoped>
-.el-aside {
+.aside2 {
     background-color: #495179;
     min-height: 89.1vh;
     width: 200px !important;
-    /* position: fixed; */
-    /* left: 0; */
+    transition: 0.5s;
 }
- .leftmean>>>.el-menu-vertical-demo:not(.el-menu--collapse) {
+
+.aside1 {
+    background-color: #495179;
+    min-height: 89.1vh;
+    width: 64px !important;
+    transition: 0.5s;
+}
+
+.asidewidth2 {
+    margin-left: 200px;
+    transition: 0.5s;
+}
+
+.asidewidth1 {
+    margin-left: 64px;
+    transition: 0.5s;
+}
+
+.leftmean>>>.el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
-  }
+}
+
 .el-header {
     background-color: #495179;
     text-align: center;
