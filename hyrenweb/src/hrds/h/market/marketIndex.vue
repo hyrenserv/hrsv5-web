@@ -304,7 +304,7 @@
             editmart(data_mart_id) {
                 this.dialogofmarketadd = true;
                 functionAll.getdminfo({"data_mart_id": data_mart_id}).then(res => {
-                    this.formAdd = res.data[0];
+                    this.formAdd = res.data;
                 });
             },
             handleChange(file, fileList) {
