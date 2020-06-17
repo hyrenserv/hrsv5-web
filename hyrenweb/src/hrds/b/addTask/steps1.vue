@@ -575,8 +575,8 @@ export default {
             params["classify_num"] = data.class_num;
             params["classify_name"] = data.class_name;
             params["remark"] = data.class_des;
-            params["agent_id"] = parseInt(this.agentId);
-            params["sourceId"] = parseInt(this.sourceId);
+            params["agent_id"] =this.agentId;
+            params["sourceId"] =this.sourceId;
             addTaskAllFun.updateClassifyInfo(params).then(res => {
                 message.updateSuccess(res);
                 this.collTaskClassFun();
@@ -672,7 +672,7 @@ export default {
             params["database_pad"] = this.ruleForm.database_pad;
             params["jdbc_url"] = this.ruleForm.jdbc_url;
             params["database_type"] = this.ruleForm.database_type;
-            params["agent_id"] = parseInt(this.agentId);
+            params["agent_id"] =this.agentId;
             addTaskAllFun.testConnection(params).then(res => {
                 if (res.success == true) {
                     if (n == '1') {

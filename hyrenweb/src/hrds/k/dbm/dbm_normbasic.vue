@@ -553,7 +553,7 @@ export default {
         getDbmNormbasicInfoBySortId(id, currentPage, pagesize) {
             let params = {},
                 that = this;
-            params["sort_id"] = parseInt(id);
+            params["sort_id"] =id;
             params["currPage"] = currentPage;
             params["pageSize"] = pagesize
             dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {

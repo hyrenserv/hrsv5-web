@@ -383,7 +383,7 @@ export default {
 
                     }
                     let params = {};
-                    params["colSetId"] = parseInt(this.$route.query.id);
+                    params["colSetId"] =this.$route.query.id;
                     params["dataExtractionDefs"] = JSON.stringify(dataExtractionDefs);
                     params["tableInfos"] = JSON.stringify(table_info);
                     functionAll.saveDataTransferData(params).then(res => {

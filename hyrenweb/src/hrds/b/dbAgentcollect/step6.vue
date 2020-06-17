@@ -392,7 +392,7 @@ export default {
                 if (valid) {
                     this.isLoading = true
                     let params = {};
-                    params["colSetId"] = parseInt(this.dbid);
+                    params["colSetId"] =this.dbid;
                     params["etl_sys_cd"] = this.ruleForm.Project_num;
                     params["pro_dic"] = this.ruleForm.work_path;
                     params["log_dic"] = this.ruleForm.log_path;
