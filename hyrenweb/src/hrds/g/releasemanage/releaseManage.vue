@@ -17,8 +17,8 @@
             <el-divider/>
             <el-row>
                 <el-col :span="11">
-                    <el-form-item label="用户名称" prop="user_id" :rules="filter_rules([{required: true}])">
-                        <el-select v-model="form.user_id" multiple filterable clearable placeholder="请选择">
+                    <el-form-item label="用户名称" prop="userIds" :rules="filter_rules([{required: true}])">
+                        <el-select v-model="form.userIds" multiple filterable clearable placeholder="请选择">
                             <el-option
                                     v-for="item in userData"
                                     :label="item.user_name"
@@ -121,13 +121,7 @@
                 interfaceState: [],
                 interfaceStateObj: {},
                 activeName: "",
-                form: {
-                    start_date: "",
-                    end_date: "",
-                    interface_note: "",
-                    classify_name: "",
-                    user_id: []
-                },
+                form: {},
             }
         },
         created() {
