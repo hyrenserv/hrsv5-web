@@ -32,17 +32,17 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="8" >
+                    <el-col :span="8">
                         <el-form-item label="规则标签 : " prop='rule_tag'>
                             <el-input placeholder="规则标签 :" v-model="rule_result_form.rule_tag"/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" >
+                    <el-col :span="8">
                         <el-form-item label="规则名称 : " prop='reg_name'>
                             <el-input placeholder="规则名称 :" v-model="rule_result_form.reg_name"/>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" >
+                    <el-col :span="8">
                         <el-form-item label="规则编号 : " prop='reg_num'>
                             <el-input placeholder="规则编号 :" v-model="rule_result_form.reg_num"/>
                         </el-form-item>
@@ -137,10 +137,7 @@
                 pageSize: 10,
                 totalSize: 0,
                 //页面初始化数据
-                rule_result_form: {
-                    verify_date: '', start_date: '', rule_src: '', rule_tag: '', reg_name: '', reg_num: '',
-                    exec_mode: '', verify_result: ''
-                },
+                rule_result_form: {},
                 rule_result_s: [],
                 exec_mode_list: [],
                 exec_mode_map: {},
@@ -218,13 +215,10 @@
             },
             //规则结果搜索
             ruleResultSearch() {
-                this.rule_result_form['currPage'] = this.currPage;
-                this.rule_result_form['pageSize'] = this.pageSize;
                 rrFun.searchRuleResultInfos(this.rule_result_form).then(res => {
                     this.rule_result_s = res.data.rule_result_s;
                     this.totalSize = res.data.totalSize;
                 });
-                console.log(this.rule_result_form);
             },
             //查看规则检测详细信息
             viewRuleDetectionDetail(task_id) {
