@@ -216,11 +216,17 @@ export default new Router({
                     title: '采集文件设置',
                     component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')
                 },
+                 {
+                     path: '/dataStorage',
+                     name: 'dataStorage',
+                     title: '数据存储层',
+                     component: () => import('@/hrds/b/semiStructuredAgent/dataStorage.vue')
+                },
                 {
-                    path: '/collectionStructureSet',
-                    name: 'collectionStructureSet',
-                    title: '采集文件设置',
-                    component: () => import('@/hrds/b/semiStructuredAgent/collectionStructureSet.vue')
+                      path: '/startMode',
+                      name: 'startMode',
+                      title: '启动方式',
+                      component: () => import('@/hrds/b/semiStructuredAgent/startMode.vue')
                 },
                 //ftp agent采集
                 {
