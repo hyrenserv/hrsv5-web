@@ -333,19 +333,8 @@ export default {
                     cancelButtonText: '取消',
                     type: 'warning',
                 }).then(() => {
-                    let obj = {};
-                    let arr = [];
-                    this.multipleSelection.forEach((item) => {
-                        obj.etl_job = item.etl_job;
-                        obj.pre_etl_job = item.pre_etl_job;
-                        arr.push(obj);
-                        obj = {};
-                    });
-                    arr = JSON.stringify(arr);
                     let params = {};
-                    params["etl_sys_cd"] = this.sys_cd;
-                    params["pre_etl_sys_cd"] = this.multipleSelection[0].pre_etl_sys_cd;
-                    params["batchEtlJob"] = arr;
+                    params["etlDependencies"] = JSON.stringify(this.multipleSelection);;
                     etlDependencyAllFun.batchDeleteEtlDependency(params).then(res => {
                         if (res && res.success) {
                             this.getTable();
