@@ -867,12 +867,10 @@
                 }).then((res) => {
                     if (res && res.success) {
                         if (res.data.length > 0) {
-                            console.log(res.data[0].post_work);
-                            console.log(res.data[0].pre_work);
-                            if (res.data[0].post_work != undefined)
-                                this.aftersql = res.data[0].post_work;
-                            if (res.data[0].pre_work != undefined)
-                                this.presql = res.data[0].pre_work;
+                            if (res.data.post_work != undefined)
+                                this.aftersql = res.data.post_work;
+                            if (res.data.pre_work != undefined)
+                                this.presql = res.data.pre_work;
                         }
                     }
                 });

@@ -133,7 +133,7 @@
             gettablename() {
                 functionAll.getTableName({"datatable_id": this.datatable_id}).then((res) => {
                     if (res && res.success) {
-                        this.tablename = res.data[0].datatable_en_name;
+                        this.tablename = res.data;
                     }
                 })
             },
