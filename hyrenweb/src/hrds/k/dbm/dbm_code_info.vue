@@ -305,7 +305,7 @@ export default {
         issueFun(row) {
             let that = this
             dataBenchmarkingAllFun.releaseDbmCodeTypeInfoById({
-                "code_type_id": parseInt(row.code_type_id)
+                "code_type_id":row.code_type_id
             }).then(res => {
                 message.issueSuccess(res)
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
