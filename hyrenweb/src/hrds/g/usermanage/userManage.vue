@@ -77,7 +77,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="cancle" size="mini">取 消</el-button>
+                <el-button @click="cancel" size="mini">取 消</el-button>
                 <el-button type="primary" size="mini" v-if="isEditor"
                            @click="updateUser('userForm')">更 新
                 </el-button>
