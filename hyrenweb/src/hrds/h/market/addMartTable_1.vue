@@ -248,25 +248,25 @@
             this.getAllDatatableLifecycle();
             if ((this.is_add == 1 || this.is_add == "1") && this.datatable_id != undefined) {
                 this.queryDMDataTableByDataTableId(this.datatable_id)
-                this.checkrunstatus();
-                this.checkrepeat2();
+                // this.checkrunstatus();
+                // this.checkrepeat2();
             }
         },
         methods: {
-            checkrunstatus() {
-                functionAll.checkRunStatus({
-                    "datatable_id": this.datatable_id
-                }).then((res) => {
-                        if (res && res.success) {
-                            if (res.data == true) {
-                                // this.iflock = res.data;
-                                // this.ennameiflock = res.data;
-                                // this.repeatiflock = res.data;
-                            }
-                        }
-                    }
-                )
-            },
+            // checkrunstatus() {
+            //     functionAll.checkRunStatus({
+            //         "datatable_id": this.datatable_id
+            //     }).then((res) => {
+            //             if (res && res.success) {
+            //                 if (res.data == true) {
+            //                     // this.iflock = res.data;
+            //                     // this.ennameiflock = res.data;
+            //                     // this.repeatiflock = res.data;
+            //                 }
+            //             }
+            //         }
+            //     )
+            // },
             changeDataLifeCycle() {
                 if (this.dm_datatable.datatable_lifecycle == "1") {
                     this.showData_date = false;
@@ -565,18 +565,18 @@
                     }
                 })
             },
-            checkrepeat2() {
-                let param = {
-                    "datatable_id": this.datatable_id
-                }
-                functionAll.querydatatableidifrepeat(param).then((res) => {
-                    if (res && res.success) {
-                        if (res.data == true) {
-                            // this.iflock = res.data;
-                        }
-                    }
-                })
-            },
+            // checkrepeat2() {
+            //     let param = {
+            //         "datatable_id": this.datatable_id
+            //     }
+            //     functionAll.querydatatableidifrepeat(param).then((res) => {
+            //         if (res && res.success) {
+            //             if (res.data == true) {
+            //                 // this.iflock = res.data;
+            //             }
+            //         }
+            //     })
+            // },
             changerepeat() {
                 //如果改为是
                 if (this.dm_datatable.repeat_flag == "1") {
