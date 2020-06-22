@@ -722,7 +722,6 @@
                     "dm_column_storage": JSON.stringify(dm_column_storage),
                     "querysql": this.querysql,
                     "hbasesort": JSON.stringify(this.hbasesort),
-                    'ifrepeat': this.ifrepeat,
                 };
                 functionAll.addDFInfo(param).then((res) => {
                     this.isLoading = false;
