@@ -175,8 +175,8 @@ export default {
     methods: {
         //刷新表单
         getForm() {
-            if (this.$route.etl_sys_cd) {
-                this.sys_cd = this.$route.etl_sys_cd;
+            if (this.$route.query.etl_sys_cd) {
+                this.sys_cd = this.$route.query.etl_sys_cd;
             } else {
                 this.sys_cd = sessionStorage.getItem('sys_cd');
             }
