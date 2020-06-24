@@ -18,3 +18,6 @@
 - b\dbAgentcollect\step5.vue：saveTbStoInfo(colSetId)    的传参panseInt
 - b\dbAgentcollect\step6.vue：saveJobDataToDatabase(colSetId)    的传参panseInt
 - k\dbm_check\dbm_check_normbasic.vue：getDbmNormbasicInfoBySortId（sort_id）    的传参panseInt
+ 
+- /c/detailsPages/Monitor/currentJob/currentJob.vue：getForm() ：更改之前少个'query'导致无法获取路由值
+- c/detailsPages/Intervene/jobLevelIntervente/jobLevelIntervente.vue：goBack()方法:添加路由参数(更改前未赋值 this.sys_cd 导致接口传参为空)
