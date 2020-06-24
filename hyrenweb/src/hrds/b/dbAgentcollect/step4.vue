@@ -824,7 +824,7 @@ export default {
             if (tbCleanString.length > 0) {
                 let params = {};
                 params["tbCleanString"] = JSON.stringify(tbCleanString);
-                params["colSetId"] = parseInt(this.databaseId);
+                params["colSetId"] =this.databaseId;
                 addTaskAllFun.saveDataCleanConfig(params).then(res => {
                     this.isLoading = false
                     if (res.code == 200) {

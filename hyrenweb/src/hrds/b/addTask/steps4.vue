@@ -409,7 +409,7 @@ export default {
                         }
                         let params = {},
                             dedid = this.delcomData;
-                        params["colSetId"] = parseInt(this.databaseId);
+                        params["colSetId"] =this.databaseId;
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
                         params['dedId'] = JSON.parse(JSON.stringify(dedid)).join('^')
                         addTaskAllFun.saveFileConf(params).then(res => {
