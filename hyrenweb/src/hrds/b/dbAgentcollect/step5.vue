@@ -532,7 +532,7 @@ export default {
                     if (tbStoInfoString.length > 0) {
                         let params = {};
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
-                        params["colSetId"] = parseInt(this.dbid);
+                        params["colSetId"] =this.dbid;
                         params["dslIdString"] = JSON.stringify(dslIdString);
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {

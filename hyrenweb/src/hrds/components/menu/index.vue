@@ -70,7 +70,7 @@ export default {
         return {
             menus: [],
             deflink: '',
-            isCollapse: false,
+            isCollapse: true,
         }
     },
     mounted() {
@@ -126,6 +126,9 @@ export default {
 </script>
 
 <style scoped>
+.home>>>.happy-scroll-container{
+    overflow: visible !important;
+}
 .aside2 {
     background-color: #495179;
     min-height: 89.1vh;
