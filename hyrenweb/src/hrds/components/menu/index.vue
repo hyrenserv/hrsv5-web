@@ -9,10 +9,10 @@
                         <template v-if="items.children">
                             <!--二级菜单循环-->
                             <el-submenu :index="items.children[0].path" class='oneMenu'>
-                                <template slot="title"><i :class="items.icon"></i><span slot="title" class='displayno' v-if="isCollapse==false">{{items.title}}</span></template>
-                                <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path">
-                                    <i :class="item.icon"></i>
-                                    <span>{{item.title}}</span>
+                                <template slot="title"><i :class="items.icon" ></i><span slot="title" class='displayno' v-if="isCollapse==false">{{items.title}}</span></template>
+                                <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path" >
+                                    <i :class="item.icon" class='displayno'></i>
+                                    <span class='displayno'>{{item.title}}</span>
                                 </el-menu-item>
                             </el-submenu>
                         </template>
@@ -46,7 +46,7 @@
                     </el-col>
                 </el-row>
             </el-header>
-            <el-main style="margin-top:60px">
+            <el-main style="margin-top:44px">
                 <router-view></router-view>
             </el-main>
         </el-container>
@@ -129,6 +129,16 @@ export default {
 .home>>>.happy-scroll-container{
     overflow: visible !important;
 }
+.home>>>.focusing{
+    background-color:rgb(73, 81, 121);
+    border:0 !important;
+}
+.home>>>.el-menu--collapse{
+  width: 50px;
+}
+.home>>>.el-menu--collapse>div>.el-menu-item .el-submenu__icon-arrow,.home>>>.el-menu--collapse>div>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
+    display: none;
+}
 .aside2 {
     background-color: #495179;
     min-height: 89.1vh;
@@ -136,11 +146,10 @@ export default {
     transition: 0.5s;
     height: 100%;
 }
-
 .aside1 {
     background-color: #495179;
     min-height: 89.1vh;
-    width: 64px !important;
+    width: 50px !important;
     transition: 0.5s;
     height: 100%;
 }
@@ -156,12 +165,12 @@ export default {
 }
 
 .asideW2 {
-    width: 64px;
+    width: 50px;
     transition: 0.2s;
 }
 
 .asidewidth1 {
-    margin-left: 64px;
+    margin-left: 50px;
     transition: 0.5s;
 }
 
@@ -174,7 +183,7 @@ export default {
 
 .header2 {
     position: fixed !important;
-    left: 64px !important;
+    left: 50px !important;
     top: 0 !important;
     transition: 0.5s;
 }
@@ -182,6 +191,9 @@ export default {
 .leftmean>>>.el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
+}
+.home>>>.el-tooltip,.home>>>.el-submenu__title,.home>>>.el-menu>div>.el-menu-item{
+ padding: 0 10px !important;
 }
 .el-header>>>.el-breadcrumb__separator{
   color:rgb(64, 158, 255)

@@ -568,3 +568,6 @@ white-space: -pre-wrap; /*Opera4-6*/
 white-space: -o-pre-wrap; /*Opera7*/ 
 word-wrap: break-word; /*InternetExplorer5.5+*/ 
 }
+:focus {
+    outline:0;
+}
