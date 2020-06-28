@@ -17,12 +17,12 @@
                 <el-button v-if="scope.row.dbflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)">任务配置</el-button>
             </template>
         </el-table-column>
-          <el-table-column label="数据文件 Agent" align="center">
+        <el-table-column label="数据文件 Agent" align="center">
             <template slot-scope="scope">
                 <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
             </template>
         </el-table-column>
-         <el-table-column label="非结构化 Agent" align="center">
+        <el-table-column label="非结构化 Agent" align="center">
             <template slot-scope="scope">
                 <el-button v-if="scope.row.nonstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)">任务配置</el-button>
             </template>
@@ -54,7 +54,7 @@
                 <template slot-scope="scope">
                     <el-tag v-if="scope.row.agent_status=='未连接'" type="danger">{{scope.row.agent_status}}</el-tag>
                     <el-tag v-else-if="scope.row.agent_status=='已连接'" type="success">{{scope.row.agent_status}}</el-tag>
-                    <el-tag v-else >{{scope.row.agent_status}}</el-tag>
+                    <el-tag v-else>{{scope.row.agent_status}}</el-tag>
                 </template>
             </el-table-column>
 
@@ -80,7 +80,7 @@
         </div>
     </el-dialog>
     <!-- 点击任务管理出现弹层 -->
-    <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="60%" class="taskEx">
+    <el-dialog title="数据采集任务" :visible.sync="dialogTableTask" width="70%" class="taskEx">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">数据采集任务</span>
         </div>
@@ -92,23 +92,15 @@
             <el-table-column property label="启动方式" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="采集频率" align="center" :show-overflow-tooltip="true"></el-table-column>
 
-            <el-table-column label="操作" width="200px" align="center">
+            <el-table-column label="操作" width="300px" align="center">
                 <template slot-scope="scope">
-                    <el-row class='optheight'>
-                        <el-col :span="5" class="edilt" style="text-align: center;">
-                            <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
-                        </el-col>
-                        <el-col :span="5" class="delbtn">
-                            <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
-                        </el-col>
-                        <el-col :span="5" class="sendmsg">
-                            <el-button type="text" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
-                        </el-col>
-                        <el-col :span="9" class="sendmsg">
-                            <!-- <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button> -->
-                            <el-button type="text" class="workcolor" >生成作业</el-button>
-                        </el-col>
-                    </el-row>
+                    <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
+                    <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
+                    <el-button type="text" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
+                    <!-- <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button> -->
+                    <el-button type="text" class="workcolor">生成作业</el-button>
+                    <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
+                    <el-button else type="text" @click="downTaskData(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -282,12 +274,12 @@ export default {
             }
         },
         tasklogFun(row) {
-                this.$router.push({
-                        path: "/taskLog",
-                        query: {
-                            agent_id: row.agent_id,
-                        }
-                    });
+            this.$router.push({
+                path: "/taskLog",
+                query: {
+                    agent_id: row.agent_id,
+                }
+            });
             /* for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == row.agent_type) {
                     this.$router.push({
@@ -447,6 +439,39 @@ export default {
         // 生成作业提交按钮
         workSubmitFun() {
 
+        },
+        downTaskData(type, row) {
+            for (let i = 0; i < this.CollectType.length; i++) {
+                if (this.CollectType[i].value == type) {
+                    if (this.CollectType[i].code == '1') {
+                        agentList.sendJDBCCollectTaskById({
+                            'colSetId': row.id,
+                            'is_download': 'true'
+                        }).then(res => {
+                            const blob = new Blob([JSON.stringify(res.data)]);
+                            let filename = res.headers["content-disposition"].split('=')[1];
+                            if (window.navigator.msSaveOrOpenBlob) {
+                                // 兼容IE10
+                                navigator.msSaveBlob(blob, filename);
+                            } else {
+                                //  chrome/firefox
+                                let aTag = document.createElement("a");
+                                aTag.download = filename;
+                                aTag.href = URL.createObjectURL(blob);
+                                if (aTag.all) {
+                                    aTag.click();
+                                } else {
+                                    //  兼容firefox
+                                    let evt = document.createEvent("MouseEvents");
+                                    evt.initEvent("click", true, true);
+                                    aTag.dispatchEvent(evt);
+                                }
+                                URL.revokeObjectURL(aTag.href);
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
 };
