@@ -154,7 +154,7 @@
             getIpAndPort() {
                 interfaceFunctionAll.getIpAndPort()
                     .then(res => {
-                        this.ipAndPort = "http://" + res.data.ipAndPort +
+                        this.ipAndPort = "http://" + res.data +
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
                         this.requestAddressForToken = this.ipAndPort + "?token=abcdef&tableName=dsd&url=" +
                             this.$route.query.url;
