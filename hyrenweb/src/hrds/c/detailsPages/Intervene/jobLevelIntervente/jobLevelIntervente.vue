@@ -245,6 +245,7 @@ export default {
         //从监控当前作业回来
         goBack() {
             if (this.$route.query.etl_sys_cd && this.$route.query.etl_job) {
+                this.sys_cd = this.$route.query.etl_sys_cd;
                 this.form.etl_job = this.$route.query.etl_job;
             }
         },
