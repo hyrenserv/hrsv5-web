@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import Qs from 'qs'
+import  Qs  from  'qs'
 
 //collectOption页面
 /**(0)
@@ -16,7 +16,7 @@ export function getAddObjectCollectConf(data) {
  */
 export function getObjectCollectConfById(data) {
     return request({
-        url: '/B/semistructured/collectconf/getObjectCollectConfById',
+        url: '/B/agent/semistructured/collectconf/getObjectCollectConfById',
         params: data
     })
 }
@@ -73,16 +73,43 @@ export function searchObjectCollectTask(data) {
  */
 export function searchObjectHandleType(data) {
     return request({
-        url: '/B/agent/objectcollect/searchObjectHandleType',
+        url: '/B/agent/semistructured/collectfileconf/searchObjectHandleType',
         params: data
     })
 }
 /**(2)
- * 查询半结构化采集列结构信息
+ * 查询半结构化采集列结构树（没有数据字典）
  */
-export function searchCollectColumnStruct(data) {
+export function getFirstLineInfo(data) {
     return request({
-        url: '/B/agent/semistructured/collectfileconf/searchObjectCollectStruct',
+        url: '/B/agent/semistructured/collectfileconf/getFirstLineInfo',
+        params: data
+    })
+}
+/**(2.1)
+ * 查询半结构化采集列结构信息右边表格信息（没有数据字典）
+ */
+export function getObjectCollectStructList(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructList',
+        params: data
+    })
+}
+/**(2.2)
+ * 查询半结构化采集列结构信息根据表名（有数据字典）
+ */
+export function getObjectCollectStructByTableName(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructByTableName',
+        params: data
+    })
+}
+/**(2.3)
+ * 查询半结构化采集列结构信息根据id（有数据字典时采集列回显）
+ */
+export function getObjectCollectStructById(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructById',
         params: data
     })
 }
@@ -101,8 +128,8 @@ export function saveHandleType(data) {
 export function saveCollectColumnStruct(data) {
     return request({
         url: '/B/agent/semistructured/collectfileconf/saveObjectCollectStruct',
-        data: Qs.stringify(data),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        data:  Qs.stringify(data),
+                headers:  {  'Content-Type':   'application/x-www-form-urlencoded'  }
     })
 }
 /**(5)
@@ -111,8 +138,8 @@ export function saveCollectColumnStruct(data) {
 export function checkFieldsForSaveObjectCollectTask(data) {
     return request({
         url: '/B/agent/semistructured/collectfileconf/checkFieldsForSaveObjectCollectTask',
-        data: Qs.stringify(data),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        data:  Qs.stringify(data),
+        headers:  {  'Content-Type':   'application/x-www-form-urlencoded'  }
     })
 }
 /**(6)

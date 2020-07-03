@@ -87,7 +87,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="文件后缀名" :label-width="formLabelWidth">
+                <el-form-item label="文件后缀名" :label-width="formLabelWidth"  prop="file_suffix" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.file_suffix"></el-input>
                 </el-form-item>
             </el-col>
@@ -151,8 +151,8 @@
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="table_name" show-overflow-tooltip label="表名" align="center"></el-table-column>
-            <el-table-column prop="table_cn_name" show-overflow-tooltip label="表中文名" align="center"></el-table-column>
+            <el-table-column prop="en_name" show-overflow-tooltip label="表名" align="center"></el-table-column>
+            <el-table-column prop="zh_name" show-overflow-tooltip label="表中文名" align="center"></el-table-column>
         </el-table>
         <div class="pageDiv">
             <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" :total="tableData.length"></el-pagination>
@@ -210,15 +210,12 @@ export default {
             rule: validator.default,
             formLabelWidth: "150px",
             currentPage: 1,
-            pagesize: 10,
-            localTime: '',
-            serverTime: '',
+            pagesize: 10
         }
     },
     mounted() {
         this.getCategoryItems("DataBaseCode");
         this.getCategoryItems("ObjectCollectType");
-        // this.getCategoryItems("ExecuteWay");
         this.getCategoryItems("IsFlag");
         this.searchObjectCollect();
     },
@@ -230,29 +227,26 @@ export default {
                 functionAll.getObjectCollectConfById({
                     odc_id: this.$route.query.id
                 }).then(res => {
-                    this.form.system_name = res.data.osName;
-                    this.form.host_name = res.data.userName;
+                    this.form.system_name = res.data.system_name;
+                    this.form.host_name = res.data.host_name;
                     // 处理传来的年月日服务器日期和时分秒
-                    this.form.server_date = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
-                    this.serverTime = this.form.server_date;
+                    this.form.server_date = res.data.server_date;
                     // 处理传来的年月日本地日期和时分秒
-                    this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localtime);
-                    this.localTime = this.form.local_time;
-                    this.form.obj_number = res.data.object_collect_info.obj_number;
-                    this.form.obj_collect_name = res.data.object_collect_info.obj_collect_name;
-                    this.form.s_date = res.data.object_collect_info.s_date;
-                    this.form.e_date = res.data.object_collect_info.e_date;
-                    this.form.database_code = res.data.object_collect_info.database_code;
-                    // this.form.run_way = res.data.object_collect_info.run_way;
-                    if (res.data.object_collect_info.is_dictionary == "0") {
+                    this.form.local_time = res.data.local_time;
+                    this.form.obj_number = res.data.obj_number;
+                    this.form.obj_collect_name = res.data.obj_collect_name;
+                    this.form.s_date = res.data.s_date;
+                    this.form.e_date = res.data.e_date;
+                    this.form.database_code = res.data.database_code;
+                    if (res.data.is_dictionary == "0") {
                         this.showData_date = true;
-                        this.form.data_date = res.data.object_collect_info.data_date;
+                        this.form.data_date = res.data.data_date;
                     } else {
                         this.showData_date = false;
                     }
-                    this.form.is_dictionary = res.data.object_collect_info.is_dictionary;
-                    this.form.file_suffix = res.data.object_collect_info.file_suffix;
-                    this.form.file_path = res.data.object_collect_info.file_path;
+                    this.form.is_dictionary = res.data.is_dictionary;
+                    this.form.file_suffix = res.data.file_suffix;
+                    this.form.file_path = res.data.file_path;
                 })
             } else {
                 // 新增初始页面
@@ -263,10 +257,8 @@ export default {
                     this.form.host_name = res.data.userName;
                     // 处理传来的年月日服务器日期和时分秒
                     this.form.server_date = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
-                    this.serverTime = this.form.server_date;
                     // 处理传来的年月日本地日期和时分秒
-                    this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localtime);
-                    this.localTime = this.form.local_time;
+                    this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localTime);
                 })
             }
         },
@@ -374,8 +366,6 @@ export default {
                     this.$refs[formName].validate(valid => {
                         if (valid) {
                             this.form['odc_id'] = this.$route.query.id;
-                            this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
-                            this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
                             this.form.agent_id = this.$route.query.agent_id;
                             functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
@@ -386,9 +376,6 @@ export default {
                                             odc_id: res.data
                                         }
                                     })
-                                } else {
-                                    this.form.local_time = this.localTime;
-                                    this.form.server_date = this.serverTime;
                                 }
                             })
                         }
@@ -396,8 +383,6 @@ export default {
                 } else {
                     this.$refs[formName].validate(valid => {
                         if (valid) {
-                            this.form.server_date = this.form.server_date.substring(0, 10).replace(/\-/g, '')
-                            this.form.local_time = this.form.local_time.substring(0, 10).replace(/\-/g, '')
                             this.form.agent_id = this.$route.query.agent_id;
                             functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
@@ -408,9 +393,6 @@ export default {
                                             odc_id: res.data
                                         }
                                     })
-                                } else {
-                                    this.form.local_time = this.localTime;
-                                    this.form.server_date = this.serverTime;
                                 }
                             })
                         }

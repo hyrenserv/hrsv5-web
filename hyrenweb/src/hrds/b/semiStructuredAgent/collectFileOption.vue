@@ -82,8 +82,8 @@
     <!-- 采集列结构弹出框 -->
     <el-dialog title="采集列结构" :visible.sync="dialogCollectStructure" :width=width>
         <el-row class="rowDioloag">
-            <el-col :span="8" class="colContent" v-if="showORhidden">
-                <div class="mytree"  hight='200'>
+            <el-col :span="6" class="colContent" v-if="showORhidden">
+                <!-- <div class="mytree"  hight='200'>
                     <el-tree :data="data2" :check-strictly="true" show-checkbox @check-change="handleCheckChange">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span @click="() => append(data)" :title="node.label">{{ node.label }}</span>
@@ -94,22 +94,24 @@
                             </span>
                         </span>
                     </el-tree>
+                </div> -->
+
+                <div class="mytree"  hight='200'>
+                    <el-tree ref='tree' :data="data2" :check-strictly="true" show-checkbox :props="defaultProps" lazy :load="loadNode" accordion :indent='0' @check-change="handleCheckChange">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="node.label">{{ node.label }}</span>
+                        </span>
+                    </el-tree>
                 </div>
             </el-col>
 
             <el-col :span=span class="colTableContent" :offset=offset>
-                <el-table :data="tableDataColum" border stripe size="mini" :height=height>
+                <el-table :data="tableDataColum" border stripe size="medium" :height=height>
                     <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
 
-                    <el-table-column prop="is_key" label="是否为主键" width="90" align="center">
+                    <el-table-column label="是否为操作字段" width="120" align="center">
                         <template slot-scope="scope">
-                            <el-checkbox name="nature" v-model="scope.row.is_key"></el-checkbox>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column prop="is_operate" label="是否为操作字段" width="120" align="center">
-                        <template slot-scope="scope">
-                            <el-checkbox name="nature" v-model="scope.row.is_operate"></el-checkbox>
+                            <el-radio v-model="radio" :label="scope.row.column_name">&thinsp;</el-radio>
                         </template>
                     </el-table-column>
 
@@ -145,7 +147,7 @@
 
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="saveTableColum" size="mini">保存</el-button>
+            <el-button type="primary" @click="saveTableColum" size="mini">确定</el-button>
         </div>
     </el-dialog>
 
@@ -194,8 +196,15 @@ export default {
             upDateWay: [],
             operationType: [],
             data2: [],
+            defaultProps: {
+                children: "children",
+                label: "name",
+                isLeaf: "leaf",
+                disabled: 'disabled'
+            },
             englishName: "",
             cnName: "",
+            radio: " ",
             dataTypeCode: "",
             upDateWayCode: "",
             optionsCode: "",
@@ -205,7 +214,9 @@ export default {
             showORhidden: false,
             span: '',
             offset: '',
-            height: ''
+            height: '',
+            isDictionary: '',
+            enName: '',
 
         }
     },
@@ -220,108 +231,202 @@ export default {
         // 获取采集文件设置初始数据
         searchObjectCollectTask() {
             functionAll.searchObjectCollectTask({
-                odc_id: this.$route.query.odc_id,
-                agent_id: this.$route.query.agent_id
+                odc_id: this.$route.query.odc_id
             }).then(res => {
-                this.tableDataMain = res.data;
+                this.isDictionary = res.data.is_dictionary;
+                this.tableDataMain = res.data.tableInfo;
             })
         },
         // 查询采集列结构信息
         searchCollectColumnStruct(val) {
-            ocSid = val.ocs_id
-            functionAll.searchCollectColumnStruct({
-                ocs_id: val.ocs_id
-            }).then(res => {
-                if (res.code == 200) {
-                    this.dialogCollectStructure = true;
-                    if (res.data.isDictionary == "1") {
-                        this.span = 24;
-                        this.offset = 0;
-                        this.height = 400;
-                        this.showORhidden = false;
-                        this.width = 70 + '%';
-                        this.tableDataColum = res.data.objectStructList;
-                        let length = this.tableDataColum.length;
-                        for (let i = 0; i < length; i++) {
-                            if (this.tableDataColum[i].is_key == "0") {
-                                this.tableDataColum[i].is_key = false;
-                            } else if (this.tableDataColum[i].is_key == "1") {
-                                this.tableDataColum[i].is_key = true;
-                            }
-                            if (this.tableDataColum[i].is_operate == "0") {
-                                this.tableDataColum[i].is_operate = false;
-                            } else if (this.tableDataColum[i].is_operate == "1") {
-                                this.tableDataColum[i].is_operate = true;
+            // 有数据字典查询采集列信息
+            if (this.isDictionary == "1") {
+                // 有id通过id查询（编辑的时候）
+                if (val.ocs_id) {
+                    functionAll.getObjectCollectStructById({
+                        odc_id: this.$route.query.odc_id,
+                        ocs_id: val.ocs_id,
+                        en_name: val.en_name
+                    }).then(res => {
+                        if (res && res.success) {
+                            this.dialogCollectStructure = true;
+                            this.span = 24;
+                            this.offset = 0;
+                            this.height = 400;
+                            this.showORhidden = false;
+                            this.width = 72 + '%';
+                            this.tableDataColum = res.data;
+                            let length = this.tableDataColum.length;
+                            for (let i = 0; i < length; i++) {
+                                if (this.tableDataColum[i].is_operate == "1") {
+                                    this.radio = this.tableDataColum[i].column_name;
+                                }
                             }
                         }
-                    } else if (res.data.isDictionary == "0") {
-                        this.height = 300;
-                        this.span = 15;
-                        this.offset = 1;
-                        this.showORhidden = true;
-                        this.width = 94 + '%';
-                        res.data.treeConstruct.forEach((item, index) => {
-                            item.label = item.name;
-                            if (item.isParent == true) {
-                                item.children = []
+                    })
+                } else {
+                    // 通过表名查询（新增的时候）
+                    functionAll.getObjectCollectStructByTableName({
+                        en_name: val.en_name,
+                        odc_id: this.$route.query.odc_id
+                    }).then(res => {
+                        if (res && res.success) {
+                            this.dialogCollectStructure = true;
+                            this.span = 24;
+                            this.offset = 0;
+                            this.height = 400;
+                            this.showORhidden = false;
+                            this.width = 72 + '%';
+                            this.tableDataColum = res.data;
+                            let length = this.tableDataColum.length;
+                            for (let i = 0; i < length; i++) {
+                                if (this.tableDataColum[i].is_operate == "1") {
+                                    this.radio = this.tableDataColum[i].column_name;
+                                }
                             }
-                        })
-                        this.data2 = res.data.treeConstruct;
-                    }
-
+                        }
+                    })
                 }
-            })
+            } else if (this.isDictionary == "0") { //没有数据字典的时候查询采集列信息
+                this.enName = val.en_name;
+                if (val.ocs_id) { //有id时通过id查询右边表格的信息和左边的树结构信息
+                    ocSid = val.ocs_id
+                    functionAll.getObjectCollectStructList({
+                        ocs_id: val.ocs_id
+                    }).then(res => {
+
+                    })
+                    functionAll.getFirstLineInfo({ //没有id的时候通过表名查询左边的树结构信息
+                        en_name: val.en_name,
+                        odc_id: this.$route.query.odc_id
+                    }).then(res => {
+                        if (res && res.success) {
+                            this.dialogCollectStructure = true;
+                            this.height = 300;
+                            this.span = 15;
+                            this.offset = 1;
+                            this.showORhidden = true;
+                            this.width = 94 + '%';
+                            res.data.forEach((item, index) => {
+                                item.label = item.name;
+                                if (item.isParent == true) {
+                                    item.children = [{}]
+                                }
+                            })
+                            this.data2 = res.data;
+                        }
+                    });
+                } else {
+                    functionAll.getFirstLineInfo({ //没有id的时候通过表名查询左边的树结构信息
+                        en_name: val.en_name,
+                        odc_id: this.$route.query.odc_id
+                    }).then(res => {
+                        if (res && res.success) {
+                            this.dialogCollectStructure = true;
+                            this.height = 300;
+                            this.span = 17;
+                            this.offset = 1;
+                            this.showORhidden = true;
+                            this.width = 80 + '%';
+                            res.data.forEach((item, index) => {
+                                if (item.isParent == true) {
+                                    item.disabled = true;
+                                    item.leaf = false;
+                                } else {
+                                    item.disabled = false;
+                                    item.leaf = true;
+                                }
+                            })
+                            this.data2 = res.data;
+                        }
+                    });
+                }
+            }
         },
         // 保存采集列结构
         saveTableColum() {
+            // 更改给后台发送的数据
             let length = this.tableDataColum.length;
             for (let i = 0; i < length; i++) {
-                if (this.tableDataColum[i].is_key == false) {
-                    this.tableDataColum[i].is_key = 0;
-                } else if (this.tableDataColum[i].is_key == true) {
-                    this.tableDataColum[i].is_key = 1;
+                if (this.tableDataColum[i].column_name == this.radio) {
+                    this.tableDataColum[i].is_operate = "1"
+                } else {
+                    this.tableDataColum[i].is_operate = "0"
                 }
-                if (this.tableDataColum[i].is_operate == false) {
-                    this.tableDataColum[i].is_operate = 0;
-                } else if (this.tableDataColum[i].is_operate == true) {
-                    this.tableDataColum[i].is_operate = 1;
-                }
-                this.tableDataColum[i].col_seq = i + 1;
             }
-            functionAll.saveCollectColumnStruct({
-                collectStruct: JSON.stringify(this.tableDataColum),
-                ocs_id: ocSid
-            }).then(res => {
-                if (res.code == 200) {
-                    message.customizTitle('采集列结构保存成功', 'success')
-                    this.dialogCollectStructure = false;
-                    this.tableDataColum = [];
-                }
-            })
+            console.log(this.radio)
+            console.log(this.tableDataColum)
+            // for (let i = 0; i < length; i++) {
+            //     if (this.tableDataColum[i].is_operate == false) {
+            //         this.tableDataColum[i].is_operate = 0;
+            //     } else if (this.tableDataColum[i].is_operate == true) {
+            //         this.tableDataColum[i].is_operate = 1;
+            //     }
+            // this.tableDataColum[i].col_seq = i + 1;
+            // }
+            // functionAll.saveCollectColumnStruct({
+            //     objectCollectStructs: JSON.stringify(this.tableDataColum),
+            //     ocs_id: ocSid
+            // }).then(res => {
+            //     if (res.code == 200) {
+            //         message.customizTitle('采集列结构保存成功', 'success')
+            //         this.dialogCollectStructure = false;
+            //         this.tableDataColum = [];
+            //     }
+            // })
         },
         //  获取目录下一级
-        append(data) {
-            let val;
-            if (data.location) {
-                val = data.location;
-            } else {
-                val = data.name;
+        // append(data) {
+        //     let val;
+        //     if (data.location) {
+        //         val = data.location;
+        //     } else {
+        //         val = data.name;
+        //     }
+        //     if (data.isParent == true) {
+        //         functionAll.getObjectCollectTreeInfo({
+        //             ocs_id: ocSid,
+        //             location: val
+        //         }).then(res => {
+        //             res.data.forEach((item, index) => {
+        //                 item.label = item.name;
+        //                 if (item.isParent == true) {
+        //                     item.children = []
+        //                 }
+        //             })
+        //             data.children = res.data
+        //         })
+        //     } else {
+        //         message.customizTitle('暂无下一级数据', 'warning')
+        //     }
+
+        // },
+        //  获取目录下一级选择文件夹
+        loadNode(node, resolve) {
+            if (node.level == 0) {
+                return resolve(this.data2)
             }
-            if (data.isParent == true) {
-                functionAll.getObjectCollectTreeInfo({
-                    ocs_id: ocSid,
-                    location: val
-                }).then(res => {
-                    res.data.forEach((item, index) => {
-                        item.label = item.name;
-                        if (item.isParent == true) {
-                            item.children = []
-                        }
-                    })
-                    data.children = res.data
-                })
-            } else {
-                message.customizTitle('暂无下一级数据', 'warning')
+            if (node.level > 0) {
+                setTimeout(() => {
+                    functionAll.getObjectCollectTreeInfo({
+                            odc_id: this.$route.query.odc_id,
+                            location: node.data.location,
+                            en_name: this.enName
+                        })
+                        .then(res => {
+                            for (let i = 0; i < res.data.length; i++) {
+                                if (res.data[i].isParent == 'true') {
+                                    res.data[i].disabled = true;
+                                    res.data[i].leaf = false;
+                                } else {
+                                    res.data[i].disabled = false;
+                                    res.data[i].leaf = true;
+                                }
+                            }
+                            resolve(res.data);
+                        });
+
+                }, 500);
             }
 
         },
@@ -371,8 +476,18 @@ export default {
         },
         // 获取操作码表
         searchObjectHandleType(val) {
-            ocSid = val.ocs_id
-            this.getCategoryItems("OperationType");
+            if (this.isDictionary == "1") {
+                functionAll.searchObjectHandleType({
+                    odc_id: this.$route.query.odc_id,
+                    en_name: val.en_name
+                }).then(res => {
+                    // console.log(res)
+                })
+            } else if (this.isDictionary == "0") {
+                this.getCategoryItems("OperationType");
+            }
+            // ocSid = val.ocs_id
+
         },
         // 保存操作码表信息
         saveOperationCode() {
@@ -463,6 +578,7 @@ export default {
         },
         // 取消弹出框
         cancelSelect() {
+            this.data2 = []
             this.tableDataColum = [];
             this.operationCodeTable = false;
             this.dialogCollectStructure = false;
@@ -472,12 +588,7 @@ export default {
             if (this.tableDataColum.length > 1) {
                 this.tableDataColum.splice(index, 1)
             } else if (this.tableDataColum.length <= 1) {
-                this.$message({
-                    showClose: true,
-                    message: '请至少填写一项',
-                    type: 'warning',
-                    duration: 0
-                });
+                message.customizTitle("请至少填写一项", "warning");
             }
 
         },
@@ -488,19 +599,13 @@ export default {
                 tableData.splice(val - 1, 1);
                 tableData.splice(val, 0, upDate);
             } else {
-                this.$message({
-                    message: '已经是第一条，不可上移',
-                    type: 'warning',
-                });
+                message.customizTitle("已经是第一条，不可上移", "warning");
             }
         },
         // 数据下移
         moveDown(val, data, tableData) {
             if (val + 1 === tableData.length) {
-                this.$message({
-                    message: '已经是最后一条，不可下移',
-                    type: 'warning',
-                });
+                message.customizTitle("已经是最后一条，不可下移", "warning");
             } else {
                 let downDate = tableData[val + 1];
                 tableData.splice(val + 1, 1);
