@@ -33,7 +33,6 @@
                 </el-tree>
             </div>
         </el-col>
-
         <el-col :span="18" :offset="1">
             <el-tabs v-model="activeName" type="border-card">
                 <el-tab-pane label="表查询" name="tableQuery">
