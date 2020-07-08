@@ -24,25 +24,25 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="dataTypeCode" label="数据类型" align="center">
+                <el-table-column prop="collect_data_type" label="数据类型" align="center">
                     <template slot-scope="scope">
-                        <el-select placeholder="数据类型" style="width: 100%;" v-model="scope.row.dataTypeCode">
+                        <el-select placeholder="数据类型" style="width: 100%;" v-model="scope.row.collect_data_type">
                             <el-option v-for="item in dataType" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                         </el-select>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="upDateWayCode" label="数据更新方式" align="center">
+                <el-table-column prop="updatetype" label="数据更新方式" align="center">
                     <template slot-scope="scope">
-                        <el-select placeholder="数据更新方式" style="width: 100%;" v-model="scope.row.upDateWayCode">
+                        <el-select placeholder="数据更新方式" style="width: 100%;" v-model="scope.row.updatetype">
                             <el-option v-for="item in upDateWay" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                         </el-select>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="optionsCode" label="数据字符编码" align="center">
+                <el-table-column prop="database_code" label="数据字符编码" align="center">
                     <template slot-scope="scope">
-                        <el-select placeholder="数据字符编码" style="width: 100%;" v-model="scope.row.optionsCode">
+                        <el-select placeholder="数据字符编码" style="width: 100%;" v-model="scope.row.database_code">
                             <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                         </el-select>
                     </template>
@@ -56,7 +56,7 @@
 
                 <el-table-column label="操作码表" width="120" align="center">
                     <template slot-scope="scope">
-                        <el-button type="success" size="mini" @click="operationCodeTable = true;searchObjectHandleType(scope.row,scope.$index)">操作码表</el-button>
+                        <el-button type="success" size="mini" @click="searchObjectHandleType(scope.row,scope.$index)">操作码表</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -83,19 +83,6 @@
     <el-dialog title="采集列结构" :visible.sync="dialogCollectStructure" :width=width>
         <el-row class="rowDioloag">
             <el-col :span="6" class="colContent" v-if="showORhidden">
-                <!-- <div class="mytree"  hight='200'>
-                    <el-tree :data="data2" :check-strictly="true" show-checkbox @check-change="handleCheckChange">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span @click="() => append(data)" :title="node.label">{{ node.label }}</span>
-                            <span>
-                                <el-button class="netxNUM" type="text" @click="() => append(data)">
-                                    点击获取下一级
-                                </el-button>
-                            </span>
-                        </span>
-                    </el-tree>
-                </div> -->
-
                 <div class="mytree"  hight='200'>
                     <el-tree ref='tree' :data="data2" :check-strictly="true" node-key="name" :default-checked-keys="checkedDataArr" show-checkbox :props="defaultProps" lazy :load="loadNode" accordion :indent='0' @check-change="handleCheckChange">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
@@ -147,7 +134,7 @@
 
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect(0)" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="saveTableColum" size="mini">确定</el-button>
+            <el-button type="primary" @click="saveTableColum" size="mini">保 存</el-button>
         </div>
     </el-dialog>
 
@@ -156,9 +143,14 @@
         <el-table :data="operationType" border stripe size="mini">
             <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
 
-            <el-table-column label="KEY" prop="value" align="center">
+            <!-- <el-table-column label="KEY" prop="value" align="center" v-if="this.isDictionary == '0'">
                 <template slot-scope="scope">
                     <el-input placeholder="KEY" v-model="scope.row.value" disabled></el-input>
+                </template>
+            </el-table-column> -->
+            <el-table-column label="KEY" prop="handle_type" align="center">
+                <template slot-scope="scope">
+                    <el-input placeholder="KEY" v-model="scope.row.handle_type" disabled></el-input>
                 </template>
             </el-table-column>
 
@@ -170,7 +162,7 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect(1)" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="saveOperationCode" size="mini">确定</el-button>
+            <el-button type="primary" @click="saveOperationCode" size="mini">保 存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -180,7 +172,6 @@
 import * as functionAll from "./semiStructuredAgent";
 import * as message from "@/utils/js/message";
 import Step from "./step";
-let ocSid;
 export default {
     components: {
         Step,
@@ -195,6 +186,7 @@ export default {
             tableDataColum: [],
             upDateWay: [],
             operationType: [],
+            operationTypeData: [],
             data2: [],
             objectHandleTypes: [],
             checkedDataArr: [],
@@ -204,12 +196,7 @@ export default {
                 isLeaf: "leaf",
                 disabled: 'disabled'
             },
-            englishName: "",
-            cnName: "",
             radio: " ",
-            dataTypeCode: "",
-            upDateWayCode: "",
-            optionsCode: "",
             dialogCollectStructure: false,
             operationCodeTable: false,
             width: '',
@@ -217,9 +204,8 @@ export default {
             span: '',
             offset: '',
             isDictionary: '',
-            enName: '',
-            column_index: '',
-            handeleType_index: ''
+            ocSid: '',
+            handeleType_ocSid: ''
 
         }
     },
@@ -242,78 +228,47 @@ export default {
         },
         // 查询采集列结构信息
         searchCollectColumnStruct(val, val2) {
-            this.column_index = val2;
+            this.ocSid = val.ocs_id;
             // 有数据字典查询采集列信息
             if (this.isDictionary == "1") {
-                // 没有保存采集列时的数据回显
-                let arr = [];
-                if (val.objectCollectStructs != undefined) {
-                    if (val.objectCollectStructs.length > 0) {
-                        arr = JSON.parse(JSON.stringify(val.objectCollectStructs));
+                functionAll.getObjectCollectStruct({
+                    odc_id: this.$route.query.odc_id,
+                    ocs_id: val.ocs_id,
+                    en_name: val.en_name
+                }).then(res => {
+                    if (res && res.success) {
                         this.dialogCollectStructure = true;
-                        this.tableDataColum = arr;
+                        this.span = 24;
+                        this.offset = 0;
+                        this.showORhidden = false;
+                        this.width = 72 + '%';
+                        this.tableDataColum = res.data;
+                        let length = this.tableDataColum.length;
+                        for (let i = 0; i < length; i++) {
+                            if (this.tableDataColum[i].is_operate == "1") {
+                                this.radio = this.tableDataColum[i].column_name;
+                            }
+                        }
                     }
-                }
-                // 有id通过id查询（编辑的时候）
-                if (val.ocs_id) {
-                    functionAll.getObjectCollectStructById({
-                        odc_id: this.$route.query.odc_id,
-                        ocs_id: val.ocs_id,
-                        en_name: val.en_name
-                    }).then(res => {
-                        if (res && res.success) {
-                            this.dialogCollectStructure = true;
-                            this.span = 24;
-                            this.offset = 0;
-                            this.showORhidden = false;
-                            this.width = 72 + '%';
-                            this.tableDataColum = res.data;
-                            let length = this.tableDataColum.length;
-                            for (let i = 0; i < length; i++) {
-                                if (this.tableDataColum[i].is_operate == "1") {
-                                    this.radio = this.tableDataColum[i].column_name;
-                                }
-                            }
-                        }
-                    })
-                } else {
-                    // 通过表名查询（新增的时候）
-                    functionAll.getObjectCollectStructByTableName({
-                        en_name: val.en_name,
-                        odc_id: this.$route.query.odc_id
-                    }).then(res => {
-                        if (res && res.success) {
-                            this.dialogCollectStructure = true;
-                            this.span = 24;
-                            this.offset = 0;
-                            this.showORhidden = false;
-                            this.width = 72 + '%';
-                            this.tableDataColum = res.data;
-                            let length = this.tableDataColum.length;
-                            for (let i = 0; i < length; i++) {
-                                if (this.tableDataColum[i].is_operate == "1") {
-                                    this.radio = this.tableDataColum[i].column_name;
-                                }
-                            }
-                        }
-                    })
-                }
+                })
             } else if (this.isDictionary == "0") { //没有数据字典的时候查询采集列信息
-                // 没有保存采集列时的数据回显
-                let arr = [];
-                if (val.objectCollectStructs != undefined) {
-                    if (val.objectCollectStructs.length > 0) {
-                        arr = JSON.parse(JSON.stringify(val.objectCollectStructs));
-                        this.dialogCollectStructure = true;
-                        this.tableDataColum = arr;
-                        arr.forEach(item => {
-                            this.checkedDataArr.push(item.column_name);
-                        })
+                functionAll.getObjectCollectStructById({ //获取右边表格的信息，可能为空；
+                    ocs_id: val.ocs_id
+                }).then(res => {
+                    if (res && res.success) {
+                        if (res.data.length > 0) {
+                            res.data.forEach(item => {
+                                this.checkedDataArr.push(item.column_name);
+                                if (item.is_operate == "1") {
+                                    this.radio = item.column_name;
+                                }
+                            })
+                        }
+                        this.tableDataColum = res.data;
                     }
-                }
-                this.enName = val.en_name;
-                functionAll.getFirstLineInfo({ //没有id的时候通过表名查询左边的树结构信息
-                    en_name: val.en_name,
+                })
+                functionAll.getFirstLineTreeInfo({ //通过ocs_id查询左边的树结构信息
+                    ocs_id: val.ocs_id,
                     odc_id: this.$route.query.odc_id
                 }).then(res => {
                     if (res && res.success) {
@@ -334,14 +289,6 @@ export default {
                         this.data2 = res.data;
                     }
                 });
-                if (val.ocs_id) { //有id时通过id查询右边表格的信息
-                    ocSid = val.ocs_id
-                    functionAll.getObjectCollectStructList({
-                        ocs_id: val.ocs_id
-                    }).then(res => {
-
-                    })
-                }
             }
         },
         // 保存采集列结构
@@ -355,41 +302,21 @@ export default {
                     this.tableDataColum[i].is_operate = "0"
                 }
             }
-            if (this.tableDataColum.length > 0) {
-                this.tableDataMain[this.column_index].objectCollectStructs = JSON.parse(JSON.stringify(this.tableDataColum));
-                this.dialogCollectStructure = false;
-                this.data2 = [];
-                this.tableDataColum = [];
-            } else {
-                message.customizTitle('采集列结构不能为空', 'warning')
-            }
+            // 直接调用接口保存列结构
+            functionAll.saveObjectCollectStruct({
+                odc_id: this.$route.query.odc_id,
+                ocs_id: this.ocSid,
+                objectCollectStructs: JSON.stringify(this.tableDataColum)
+            }).then(res => {
+                if (res && res.success) {
+                    message.customizTitle('采集列结构保存成功', 'success');
+                    this.dialogCollectStructure = false;
+                    this.data2 = [];
+                    this.tableDataColum = [];
+                    this.checkedDataArr = [];
+                }
+            })
         },
-        //  获取目录下一级
-        // append(data) {
-        //     let val;
-        //     if (data.location) {
-        //         val = data.location;
-        //     } else {
-        //         val = data.name;
-        //     }
-        //     if (data.isParent == true) {
-        //         functionAll.getObjectCollectTreeInfo({
-        //             ocs_id: ocSid,
-        //             location: val
-        //         }).then(res => {
-        //             res.data.forEach((item, index) => {
-        //                 item.label = item.name;
-        //                 if (item.isParent == true) {
-        //                     item.children = []
-        //                 }
-        //             })
-        //             data.children = res.data
-        //         })
-        //     } else {
-        //         message.customizTitle('暂无下一级数据', 'warning')
-        //     }
-
-        // },
         //  获取目录下一级选择文件夹
         loadNode(node, resolve) {
             if (node.level == 0) {
@@ -400,7 +327,7 @@ export default {
                     functionAll.getObjectCollectTreeInfo({
                             odc_id: this.$route.query.odc_id,
                             location: node.data.location,
-                            en_name: this.enName
+                            ocs_id: this.ocSid
                         })
                         .then(res => {
                             for (let i = 0; i < res.data.length; i++) {
@@ -424,7 +351,6 @@ export default {
             let object = {};
             object.column_name = val.name;
             object.column_type = 'varchar(256)';
-            object.is_key = false;
             object.is_operate = false;
             // 选中节点添加数据表格
             if (value == true) {
@@ -447,54 +373,77 @@ export default {
         },
         // 获取操作码表
         searchObjectHandleType(val, val2) {
-            this.handeleType_index = val2;
-            if (this.isDictionary == "1") {
+            this.handeleType_ocSid = val.ocs_id;
+            this.getCategoryItems("OperationType"); //获取代码项；
+            if (this.isDictionary == "1") { //有数据字典获取操作码表    
                 functionAll.searchObjectHandleType({
                     odc_id: this.$route.query.odc_id,
                     en_name: val.en_name
                 }).then(res => {
-
+                    if (res && res.success) {
+                        res.data.forEach(item => {
+                            this.operationTypeData.forEach(val => {
+                                if (item.handle_type == val.code) {
+                                    item.handle_type = val.value;
+                                }
+                            })
+                        })
+                        this.operationType = res.data;
+                        this.operationCodeTable = true;
+                    }
                 })
-            } else if (this.isDictionary == "0") {
-                this.getCategoryItems("OperationType");
-            }
-            // ocSid = val.ocs_id
+            } else if (this.isDictionary == "0") { //没有数据字典获取操作码表
+                functionAll.getObjectHandleType({
+                    ocs_id: val.ocs_id
+                }).then(res => {
+                    if (res.data.length > 0) { //接口数据为空时显示代码项数据
+                        res.data.forEach(item => {
+                            this.operationTypeData.forEach(val => {
+                                if (item.handle_type == val.code) {
+                                    item.handle_type = val.value;
+                                }
+                            })
 
+                        })
+                        this.operationType = res.data;
+                    } else {
+                        this.operationType.forEach(item => {
+                            item.handle_type = item.value;
+                        })
+                    }
+                    this.operationCodeTable = true;
+                })
+            }
         },
         // 保存操作码表信息
         saveOperationCode() {
-            if (this.isDictionary == "0") {
-                this.operationType.forEach((item) => {
-                    if (item.value == 'INSERT') {
-                        item.handle_type = item.code;
-                    } else if (item.value == 'UPDATE') {
-                        item.handle_type = item.code;
-                    } else if (item.value == 'DELETE') {
-                        item.handle_type = item.code;
-                    }
-                })
-                let val = this.operationType;
-                val.forEach(item => {
+            // 后台传参处理
+            let arr = [];
+            arr = JSON.parse(JSON.stringify(this.operationType));
+            arr.forEach((item) => {
+                if (item.catCode && item.code && item.catValue) { //判断第一次通过代码项保存还是其他方式保存
+                    item.handle_type = item.code;
                     delete item.value;
                     delete item.catCode;
                     delete item.code;
                     delete item.catValue;
-                })
-                this.tableDataMain[this.handeleType_index].objectHandleTypes = val;
-            } else if (this.isDictionary == "1") {
-                this.tableDataMain[this.handeleType_index].objectHandleTypes = this.operationType;
-            }
-            this.operationCodeTable = false;
-
-            // functionAll.saveHandleType({
-            //     handleType: JSON.stringify(val),
-            //     ocs_id: ocSid
-            // }).then(res => {
-            //     if (res.code == 200) {
-            //         message.customizTitle('操作码表保存成功', 'success')
-            //         
-            //     }
-            // })
+                } else {
+                    this.operationTypeData.forEach(val => {
+                        if (item.handle_type == val.value) {
+                            item.handle_type = val.code
+                        }
+                    })
+                }
+            })
+            functionAll.saveObjectHandleType({ //保存方法调用
+                ocs_id: this.handeleType_ocSid,
+                objectHandleTypes: JSON.stringify(arr)
+            }).then(res => {
+                if (res && res.success) {
+                    message.customizTitle('操作码表保存成功', 'success');
+                    this.operationCodeTable = false;
+                }
+            })
         },
         // 返回上一级
         goBackQuit() {
@@ -514,7 +463,7 @@ export default {
         },
         // 下一步
         nextSteps() {
-            this.checkFieldsForSaveObjectCollectTask();
+            this.saveObjectCollectTask();
         },
         // 获取代码项对应的值
         getCategoryItems(e) {
@@ -551,6 +500,7 @@ export default {
                             item.handle_value = item.value;
                         })
                         this.operationType = res.data;
+                        this.operationTypeData = res.data;
                     }
                 })
             }
@@ -560,6 +510,7 @@ export default {
             if (val == 0) {
                 this.data2 = [];
                 this.tableDataColum = [];
+                this.checkedDataArr = [];
                 this.dialogCollectStructure = false;
             } else {
                 this.operationCodeTable = false;
@@ -568,7 +519,7 @@ export default {
         // 删除表格的当前行
         deleteArry(index, row) {
             if (this.tableDataColum.length > 0) {
-                this.tableDataColum.splice(index, 1)
+                this.tableDataColum.splice(index, 1);
             }
         },
         // 数据上移
@@ -591,46 +542,24 @@ export default {
                 tableData.splice(val, 0, downDate);
             }
         },
-        // 保存采集文件设置前检查
-        checkFieldsForSaveObjectCollectTask() {
-            // 深拷贝处理参数
-            let arrdata = JSON.parse(JSON.stringify(this.tableDataMain));
-            arrdata.forEach(item => {
-                item.agent_id = this.$route.query.agent_id;
-                item.odc_id = this.$route.query.odc_id;
-                item.collect_data_type = item.dataTypeCode;
-                item.database_code = item.optionsCode;
-                delete item.dataTypeCode;
-                delete item.optionsCode;
-            })
-            functionAll.checkFieldsForSaveObjectCollectTask({
-                objectCollectTasks: JSON.stringify(arrdata)
-            }).then(res => {
-                // if (res.code == 200) {
-                //     this.saveObjectCollectTask(this.tableDataMain);
-                // }
-
-            })
-        },
         // 保存采集文件设置
-        saveObjectCollectTask(val) {
+        saveObjectCollectTask() {
             functionAll.saveObjectCollectTask({
-                object_collect_task_array: JSON.stringify(val),
+                objectCollectTasks: JSON.stringify(this.tableDataMain),
                 agent_id: this.$route.query.agent_id,
                 odc_id: this.$route.query.odc_id
             }).then(res => {
-                if (res.code == 200) {
+                if (res && res.success) {
                     this.$router.push({
-                        name: "collectionStructureSet",
+                        name: "dataStorage",
                         query: {
                             agent_id: this.$route.query.agent_id,
                             odc_id: this.$route.query.odc_id
                         }
                     })
                 }
-
             })
-        }
+        },
     }
 }
 </script>
@@ -700,16 +629,6 @@ export default {
     margin-top: 1%;
     border: 1px solid #e6e6e6;
 }
-
-/* .collectFileOption .colTableContent {
-    margin-top: 1%;
-    padding: 0 .5% 2% .5%;
-    border: 1px solid #e6e6e6;
-} */
-
-/* .netxNUM {
-    color: transparent;
-} */
 
 .collectFileOption .partFour .el-button {
     margin-bottom: 20px;

@@ -69,7 +69,43 @@ export function searchObjectCollectTask(data) {
     })
 }
 /**(1)
- * 获取当前表的码表信息(操作码表)
+ * 查询半结构化采集列结构信息（有数据字典）
+ */
+export function getObjectCollectStruct(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStruct',
+        params: data
+    })
+}
+/**(2)
+ * 查询半结构化采集列结构信息（没有数据字典）
+ */
+export function getObjectCollectStructById(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructById',
+        params: data
+    })
+}
+/**(3)
+ * 查询半结构化采集列结构左边数的值（没有数据字典）
+ */
+export function getFirstLineTreeInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getFirstLineTreeInfo',
+        params: data
+    })
+}
+/**(4)
+ * 保存对象采集列结构信息
+ */
+export function saveObjectCollectStruct(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/saveObjectCollectStruct',
+        params: data
+    })
+}
+/**(5)
+ * 获取当前操作码表信息(有数据字典，没有数据字典调用代码项)
  */
 export function searchObjectHandleType(data) {
     return request({
@@ -77,15 +113,90 @@ export function searchObjectHandleType(data) {
         params: data
     })
 }
-/**(2)
- * 查询半结构化采集列结构树（没有数据字典）
+/**(6)
+ * 保存操作码表信息
  */
-export function getFirstLineInfo(data) {
+export function saveObjectHandleType(data) {
     return request({
-        url: '/B/agent/semistructured/collectfileconf/getFirstLineInfo',
+        url: '/B/agent/semistructured/collectfileconf/saveObjectHandleType',
         params: data
     })
 }
+/**(7)
+ * 获取对象采集树节点信息（下一级目录）
+ */
+export function getObjectCollectTreeInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectCollectTreeInfo',
+        params: data
+    })
+}
+/**(8)
+ * 保存文件设置信息
+ */
+export function saveObjectCollectTask(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/saveObjectCollectTask',
+        params: data
+    })
+}
+/**(9)
+ * 无数据字典时查询返回对象采集操作码表
+ */
+export function getObjectHandleType(data) {
+    return request({
+        url: '/B/agent/semistructured/collectfileconf/getObjectHandleType',
+        params: data
+    })
+}
+// dataStorage页面
+/**(1)
+ * 获取半结构化采集存储层配置初始化值
+ */
+export function getCollectStorageLayerInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/getCollectStorageLayerInfo',
+        params: data
+    })
+}
+//startMode页面
+/**(1)
+ * 获取当前半结构化采集任务下的作业信息
+ */
+export function getPreviewJob(data) {
+    return request({
+        url: '/B/agent/semistructured/startmodeconf/getPreviewJob',
+        params: data
+    })
+}
+/**(2)
+ * 获取任务Agent的部署路径及日志目录
+ */
+export function getAgentPath(data) {
+    return request({
+        url: '/B/agent/semistructured/startmodeconf/getAgentPath',
+        params: data
+    })
+}
+/**(3)
+ * 获取半结构化采集作业配置
+ */
+export function getEtlJobConfInfoFromObj(data) {
+    return request({
+        url: '/B/agent/semistructured/startmodeconf/getEtlJobConfInfoFromObj',
+        params: data
+    })
+}
+/**(4)
+ * 保存半结构化采集启动方式配置
+ */
+export function saveStartModeConfData(data) {
+    return request({
+        url: '/B/agent/semistructured/startmodeconf/saveStartModeConfData',
+        params: data
+    })
+}
+// ----end-------
 /**(2.1)
  * 查询半结构化采集列结构信息右边表格信息（没有数据字典）
  */
@@ -95,33 +206,9 @@ export function getObjectCollectStructList(data) {
         params: data
     })
 }
-/**(2.2)
- * 查询半结构化采集列结构信息根据表名（有数据字典）
- */
-export function getObjectCollectStructByTableName(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructByTableName',
-        params: data
-    })
-}
-/**(2.3)
- * 查询半结构化采集列结构信息根据id（有数据字典时采集列回显）
- */
-export function getObjectCollectStructById(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructById',
-        params: data
-    })
-}
-/**(3)
- * 保存操作码表
- */
-export function saveHandleType(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/saveObjectHandleType',
-        params: data
-    })
-}
+
+
+
 /**(4)
  * 保存对象采集结构信息（采集列结构）
  */
@@ -142,24 +229,8 @@ export function checkFieldsForSaveObjectCollectTask(data) {
         headers:  {  'Content-Type':   'application/x-www-form-urlencoded'  }
     })
 }
-/**(6)
- * 获取对象采集树节点信息
- */
-export function getObjectCollectTreeInfo(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/getObjectCollectTreeInfo',
-        params: data
-    })
-}
-/**(7)
- * 保存文件设置信息
- */
-export function saveObjectCollectTask(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/saveObjectCollectTask',
-        params: data
-    })
-}
+
+
 //collectionStructureSet页面
 /**(0)
  * 获取存储信息
