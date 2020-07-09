@@ -159,6 +159,69 @@ export function getCollectStorageLayerInfo(data) {
         params: data
     })
 }
+/**(2)
+ * 在配置字段存储信息时，更新表中文名
+ */
+export function updateTableZhName(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/updateTableZhName',
+        params: data
+    })
+}
+/**(3)
+ * 根据存储层配置ID获取当前存储层配置属性信息
+ */
+export function getStorageLayerAttrById(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/getStorageLayerAttrById',
+        params: data
+    })
+}
+/**(4)
+ * 获取当前表对应列存储信息
+ */
+export function getColumnStorageLayerInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/getColumnStorageLayerInfo',
+        params: data
+    })
+}
+/**(5)
+ * 根据对象采集任务编号获取存储目的地信息
+ */
+export function getStorageLayerDestById(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/getStorageLayerDestById',
+        params: data
+    })
+}
+/**(6)
+ *保存数据表存储关系表信息
+ */
+export function saveDtabRelationStoreInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/saveDtabRelationStoreInfo',
+        params: data
+    })
+}
+/**(7)
+ * 保存列存储层附加信息
+ */
+export function saveColRelationStoreInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/saveColRelationStoreInfo',
+        params: data
+    })
+}
+/**(8)
+ * 在配置字段存储信息时，更新字段中文名
+ */
+export function updateColumnZhName(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/updateColumnZhName',
+        params: data
+    })
+}
 //startMode页面
 /**(1)
  * 获取当前半结构化采集任务下的作业信息
@@ -197,101 +260,3 @@ export function saveStartModeConfData(data) {
     })
 }
 // ----end-------
-/**(2.1)
- * 查询半结构化采集列结构信息右边表格信息（没有数据字典）
- */
-export function getObjectCollectStructList(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/getObjectCollectStructList',
-        params: data
-    })
-}
-
-
-
-/**(4)
- * 保存对象采集结构信息（采集列结构）
- */
-export function saveCollectColumnStruct(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/saveObjectCollectStruct',
-        data:  Qs.stringify(data),
-                headers:  {  'Content-Type':   'application/x-www-form-urlencoded'  }
-    })
-}
-/**(5)
- * 检查采集文件设置
- */
-export function checkFieldsForSaveObjectCollectTask(data) {
-    return request({
-        url: '/B/agent/semistructured/collectfileconf/checkFieldsForSaveObjectCollectTask',
-        data:  Qs.stringify(data),
-        headers:  {  'Content-Type':   'application/x-www-form-urlencoded'  }
-    })
-}
-
-
-//collectionStructureSet页面
-/**(0)
- * 获取存储信息
- */
-export function searchObjectStorage(data) {
-    return request({
-        url: '/B/agent/objectcollect/searchObjectStorage',
-        params: data
-    })
-}
-/**(1)
- * 查询solr配置信息
- */
-export function searchSolrConfInfo(data) {
-    return request({
-        url: '/B/agent/objectcollect/searchSolrConfInfo',
-        params: data
-    })
-}
-/**(2)
- * 根据ocs_id查询hbase配置信息
- */
-export function searchHBaseConfInfo(data) {
-    return request({
-        url: '/B/agent/objectcollect/searchHBaseConfInfo',
-        params: data
-    })
-}
-/**(3)
- * 保存SOLR
- */
-export function saveSolrConfInfo(data) {
-    return request({
-        url: '/B/agent/objectcollect/saveSolrConfInfo',
-        params: data
-    })
-}
-/**(4)
- * 保存hbase
- */
-export function saveHBaseConfInfo(data) {
-    return request({
-        url: '/B/agent/objectcollect/saveHBaseConfInfo',
-        params: data
-    })
-}
-/**(4)
- * 保存对象文件配置信息时检查字段
- */
-export function checkFieldsForSaveObjectStorage(data) {
-    return request({
-        url: '/B/agent/objectcollect/checkFieldsForSaveObjectStorage',
-        params: data
-    })
-}
-/**(5)
- * 保存存储设置
- */
-export function saveObjectStorage(data) {
-    return request({
-        url: '/B/agent/objectcollect/saveObjectStorage',
-        params: data
-    })
-}
