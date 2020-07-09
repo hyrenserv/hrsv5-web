@@ -104,6 +104,43 @@ export function getStoDestDetail(data) {
         params: data
     })
 }
+// 贴元登记点击下一步保存
+export function saveRegisterData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/saveRegisterData',
+        params: data
+    })
+}
+// 编辑保存贴元登记
+export function updateRegisterData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/updateRegisterData',
+        params: data
+    })
+}
+// 编辑进来第一步贴元登记信息
+export function editStorageData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/editStorageData',
+        params: data
+    })
+}
+// 新增进来第一步贴元登记信息
+export function getInitStorageData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/getInitStorageData',
+        params: data
+    })
+}
+// 贴元第二步获取列信息getColumnsigleInfo
+// 贴元第二步保存
+export function saveregisterTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/saveTableData',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
 // steps2
 // 获取初始信息
 export function steps_getInitInfo(data) {
