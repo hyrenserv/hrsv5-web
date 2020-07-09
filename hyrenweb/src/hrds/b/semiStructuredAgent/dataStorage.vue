@@ -1,6 +1,6 @@
 <template>
 <div>
-     <el-row class="partOne">
+    <el-row class="partOne">
         <el-col :span="24">
             <Step :active="active"></Step>
         </el-col>
@@ -15,14 +15,14 @@
                     <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="表名" prop="table_name"  align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表名" prop="table_name" align="center" :show-overflow-tooltip="true">
                 <!--  <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default" >
                         <el-input size="medium" v-model="scope.row.table_name" style="width:160px" readonly></el-input>
                     </el-form-item>
                 </template> -->
             </el-table-column>
-            <el-table-column label="表中文名"  align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表中文名" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
                         <el-input size="medium" v-model="scope.row.table_ch_name" style="width:160px"></el-input>
@@ -43,70 +43,6 @@
                     </span>
                 </template>
             </el-table-column>
-            <!-- <el-table-column label=" 是否拉链存储" align="center">
-                <template slot="header">
-                    <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
-                        <span class="allclickColor">是否拉链存储</span>
-                    </el-checkbox>
-                </template>
-                <template slot-scope="scope">
-                    <el-checkbox :checked="scope.row.is_zipper" v-model="scope.row.is_zipper" v-if="scope.row.data_extract_type!='1'" @change="is_zipperFun(scope.row)"></el-checkbox>
-                </template>
-            </el-table-column> -->
-            <!-- <el-table-column label=" 存储方式" align="center">
-                <template slot="header">
-                    <el-checkbox v-if="Allis_zippercheck==false" disabled>
-                        <span class="allclickColor">存储方式</span>
-                    </el-checkbox>
-                    <el-popover v-else placement="right" width="120" height="50" v-model="visible">
-                        <el-select placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
-                            <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
-                        </el-select>
-                        <div style="text-align: right; margin:30px 0 5px 0">
-                            <el-button size="mini" type="text" @click="allStorageModeCloseFun()">取消</el-button>
-                            <el-button type="primary" size="mini" @click="allStorageModeFun()">确定</el-button>
-                        </div>
-                        <el-checkbox slot="reference" @change="allcunchuFun(allcunchu)" :checked="allcunchu" v-model="allcunchu">
-                            <span class="allclickColor">存储方式</span>
-                        </el-checkbox>
-                    </el-popover>
-                </template>
-                <template slot-scope="scope">
-                    <div v-if="scope.row.data_extract_typ!=='1'">
-                        <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium" v-if="scope.row.is_zipper==false" disabled>
-                            <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
-                        </el-select>
-                        <el-form-item v-else :prop="'ex_destinationData.'+scope.$index+'.storage_type'" :rules="rule.selected">
-                            <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium"> -->
-                                <!-- StorageType -->
-                                <!-- <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </div>
-                </template>
-            </el-table-column> -->
-            <!-- <el-table-column label=" 数据保留天数" align="center">
-                <template slot="header">
-                    <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
-                        <div class="alldays">
-                            <el-input size="medium" v-model="allSaveDay" style="width:66px"></el-input>
-                            <span style="margin-left: 10px;">天</span>
-                        </div>
-                        <div style="text-align: right; margin:10px">
-                            <el-button size="mini" type="danger" @click="allsaveDayCloseFun()">取消</el-button>
-                            <el-button type="primary" size="mini" @click="allsaveDaySubmitFun()">确定</el-button>
-                        </div>
-                        <el-checkbox slot="reference" @change="allsaveDayFun(allSaveDayActive)" :checked="allSaveDayActive" v-model="allSaveDayActive">
-                            <span class="allclickColor">数据保留天数(/天)</span>
-                        </el-checkbox>
-                    </el-popover>
-                </template>
-                <template slot-scope="scope">
-                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.storage_time'" :rules="rule.default" v-if="scope.row.data_extract_type!='1'">
-                        <el-input size="medium" v-model="scope.row.storage_time"></el-input>
-                    </el-form-item>
-                </template>
-            </el-table-column> -->
         </el-table>
     </el-form>
     <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.ex_destinationData.length" class="locationcenter"></el-pagination>
@@ -259,7 +195,7 @@
             </el-table-column>
             <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-             <el-table-column label="详情" width="160px" align="center">
+            <el-table-column label="详情" width="160px" align="center">
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
@@ -380,93 +316,36 @@ export default {
             }
         }
     },
-    created() {
-        // this.dbid = this.$route.query.id;
-        // this.aId = this.$route.query.agent_id;
-        // this.sourId = this.$route.query.source_id;
-        // this.sName = this.$Base64.decode(this.$route.query.source_name);
-    },
     mounted() {
-        // let params = {};
-        // params["colSetId"] = this.dbid;
-        // this.tableloadingInfo = "数据加载中...";
-        // addTaskAllFun.stodegetInitInfo(params).then(res => {
-        //     this.datasource_number = res.data.datasource_number
-        //     this.classify_num = res.data.classify_num
-        //     if (res) {
-        //         if (res.data.storageTableData.length == 0) {
-        //             this.tableloadingInfo = "暂无数据";
-        //         } else {
-        //             let arr = res.data.storageTableData;
-        //             let paramst = {};
-        //             paramst["colSetId"] = this.$route.query.id;
-        //             addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-        //                 if (res) {
-        //                     this.oldTbData = res.data != '' ? res.data : [];
-        //                 }
-        //                 if (this.oldTbData.length > 0) {
-        //                     for (var i = 0; i < arr.length; i++) {
-        //                         for (let j = 0; j < this.oldTbData.length; j++) {
-        //                             if (arr[i].table_id == this.oldTbData[j].tableId) {
-        //                                 if (this.oldTbData[j].dslIds.length > 0) {
-        //                                     arr[i].table_setting = true;
-        //                                 } else {
-        //                                     arr[i].table_setting = false;
-        //                                 }
-        //                             }
-        //                         }
-        //                         if (arr[i].is_zipper == "1") {
-        //                             arr[i].is_zipper = true;
-        //                         } else {
-        //                             arr[i].is_zipper = false;
-        //                         }
-        //                         if (!arr[i].storage_type) {
-        //                             arr[i].storage_type = "3";
-        //                         }
-        //                         if (!arr[i].storage_time) {
-        //                             arr[i].storage_time = 1;
-        //                         }
-        //                     }
-        //                     this.ruleForm.ex_destinationData = arr;
-        //                 } else {
-        //                     for (var i = 0; i < arr.length; i++) {
-        //                         if (arr[i].is_zipper == "1") {
-        //                             arr[i].is_zipper = true;
-        //                         } else {
-        //                             arr[i].is_zipper = false;
-        //                         }
-        //                         if (!arr[i].storage_type) {
-        //                             arr[i].storage_type = "3";
-        //                         }
-        //                         if (!arr[i].storage_time) {
-        //                             arr[i].storage_time = 1;
-        //                         }
-        //                     }
-        //                     this.ruleForm.ex_destinationData = arr;
-        //                 }
-
-        //             });
-        //         }
-        //     } else {
-        //         this.tableloadingInfo = "暂无数据";
-        //     }
-        // });
-        // let params2 = {};
-        // params2["category"] = "StorageType";
-        // this.$Code.getCategoryItems(params2).then(res => {
-        //     this.StorageType = res.data ? res.data : [];
-        // });
-        // this.storeTypeFun();
-        // this.specialfieldFun();
-        // this.getSaveDataFun();
+this.getCollectStorageLayerInfo();
     },
 
     methods: {
+        // 返回数据源Agent列表
         backFun() {
             this.$router.push({
                 path: "/agentList"
             });
         },
+        // 返回上一步
+        pre() {
+            this.$router.push({
+                name: "collectFileOption",
+                query: {
+                    agent_id: this.$route.query.agent_id,
+                    odc_id: this.$route.query.odc_id
+                }
+            })
+        },
+        // 获取页面初始值
+        getCollectStorageLayerInfo(){
+            functionAll.getCollectStorageLayerInfo({
+                odc_id:this.$route.query.odc_id
+            }).then(res=>{
+                console.log(res,' i am res')
+            })
+        },
+        // --------------end-----------------------------------------------------------
         //获取初始数据，数据抽取及入库
         getTbStoDestByColSetIdFun() {
 
@@ -514,7 +393,7 @@ export default {
                         for (let k = 0; k < this.oldTbData.length; k++) {
                             if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
                                 desDataArr[j].dslIds = this.oldTbData[k].dslIds;
-                                if (this.oldTbData[k].hyren_name != ''&&this.oldTbData[k].hyren_name!=undefined) {
+                                if (this.oldTbData[k].hyren_name != '' && this.oldTbData[k].hyren_name != undefined) {
                                     desDataArr[j].hyren_name = this.oldTbData[k].hyren_name
                                 }
                             }
@@ -525,7 +404,7 @@ export default {
                         for (let n = 0; n < this.dslIdString.length; n++) {
                             if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
                                 desDataArr[m].dslIds = this.dslIdString[n].dslIds;
-                                if (this.dslIdString[n].hyren_name != ''&&this.dslIdString[n].hyren_name!=undefined) {
+                                if (this.dslIdString[n].hyren_name != '' && this.dslIdString[n].hyren_name != undefined) {
                                     desDataArr[m].hyren_name = this.dslIdString[n].hyren_name
 
                                 }
@@ -595,39 +474,7 @@ export default {
                 query: data
             });
         },
-        pre() {
-            let data = {};
-            if (this.$route.query.edit == "yes") {
-                data = {
-                    agent_id: this.aId,
-                    id: this.dbid,
-                    source_id: this.sourId,
-                    source_name: this.$route.query.source_name,
-                    is_archived: this.$route.query.is_archived,
-                    edit: "yes"
-                };
-            } else {
-                data = {
-                    agent_id: this.aId,
-                    id: this.dbid,
-                    source_id: this.sourId,
-                    source_name: this.$route.query.source_name,
-                    is_archived: this.$route.query.is_archived,
-                };
-            }
-            if (this.$route.query.is_archived == 'no') {
-                this.$router.push({
-                    path: "/collection4_3",
-                    query: data
-                });
-            } else {
-                this.$router.push({
-                    path: "/collection4_4",
-                    query: data
-                });
-            }
 
-        },
         /*   // 获取编辑状态下原有存储数据
         getSaveDataFun() {
           let paramst = {};
