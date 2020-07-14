@@ -314,11 +314,9 @@ export default {
         },
         //导出指标3数据
         exportIndicator3Results(task_id, file_name) {
-            console.log(task_id);
             if ("" !== task_id) {
                 rrFun.exportIndicator3Results({ task_id: task_id }).then(res => {
-                    console.log(res);
-                    this.filename = file_name + ".xlsx";
+                    this.filename = file_name + ".csv";
                     const blob = new Blob([res.data]);
                     if (window.navigator.msSaveOrOpenBlob) {
                         // 兼容IE10
