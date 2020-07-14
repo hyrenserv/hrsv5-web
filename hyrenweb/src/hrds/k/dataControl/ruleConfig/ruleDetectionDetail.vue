@@ -90,7 +90,7 @@
     <el-row v-if="form_dq_result.is_saveindex3 === '1'">
         <el-row>指标3结果</el-row>
         <el-col :span="20" :offset="2">
-            <el-button type="success" size="small" class="goIndex" @click="exportIndicator3Results(form_dq_result.task_id,form_dq_result.target_tab+form_dq_result.verify_date)">导出指标3结果集</el-button>
+            <el-button type="success" size="small" class="goIndex" @click="exportIndicator3Results(form_dq_result.task_id,form_dq_result.target_tab+'_'+form_dq_result.verify_date)">导出指标3结果集</el-button>
             <el-table :data="check_index3_list" border size="mini">
                 <el-table-column v-for="(index, item) in check_index3_list[0]" :key="check_index3_list.$index" :label="item" :prop="item">
                     <!-- 数据的遍历 scope.row 就代表数据的每一个对象-->
