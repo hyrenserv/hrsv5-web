@@ -37,7 +37,7 @@
             <el-tabs v-model="activeName" type="border-card">
                 <el-tab-pane label="表查询" name="tableQuery">
                     <el-table :data="dataByTableName" stripe border size="medium">
-                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="dataByTableName.$index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
+                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                         </el-table-column>
@@ -54,7 +54,7 @@
                         </el-button>
                     </el-col>
                     <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
-                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="dataBySQL.$index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
+                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                         </el-table-column>
