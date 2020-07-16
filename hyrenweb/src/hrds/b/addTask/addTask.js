@@ -141,6 +141,14 @@ export function saveregisterTableData(data) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
+// 贴元登记编辑第二步保存
+export function updateTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/updateTableData',
+        params: data,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
 // steps2
 // 获取初始信息
 export function steps_getInitInfo(data) {
@@ -664,5 +672,12 @@ export function saveJobDataToDatabase(data) {
         // params: data
         data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+
+export function getTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/getTableData',
+        params: data
     })
 }
