@@ -353,7 +353,7 @@ export default {
             params["databaseId"] = this.dbid;
             params["agent_id"] = this.agentId;
             params["source_id"] = this.sourceId;
-            params["tableInfos"] = this.selectTable;
+            params["tableInfos"] = JSON.stringify(this.selectTable);
             params["tableColumns"] = JSON.stringify(tableColumns);
             params["dsl_id"] = this.$route.query.dsl_id;
             console.log(params)

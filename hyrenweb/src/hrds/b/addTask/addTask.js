@@ -137,7 +137,7 @@ export function getInitStorageData(data) {
 export function saveregisterTableData(data) {
     return request({
         url: '/B/agent/resourcerecod/tableregister/saveTableData',
-        data: Qs.stringify(data),
+        params: data,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
