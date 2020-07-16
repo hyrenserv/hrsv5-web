@@ -130,35 +130,20 @@ export default {
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
         // this.getAllTableInfo()
-
+        this.getTableData()
     },
     mounted() {
-        this.getTableData
     },
     methods: {
         // 获取表格数据
         getTableData() {
-            functionAll.getTableData({
-                colSetId: this.$route.query.id
+            addTaskAllFun.getTableData({
+                databaseId: this.$route.query.id
             }).then(res => {
-                // let data = res.data
-                let data = [{
-                    collectState: true,
-                    is_md5: "0",
-                    is_parallel: "0",
-                    table_ch_name: "agent_down_info",
-                    table_name: "agent_down_info",
-                    table_id: 111
-                }]
-                for (let i = 0; i < data.length; i++) {
-                    if (data[i].table_id && data[i].table_id != "") {
-                        // data[i].is_get = '1';
-                        this.$refs.ty_Table.toggleRowSelection(data[i], true)
-                    } else {
-                        // data[i].is_get = '0';
-                    }
-                }
-                this.tableData = data;
+                this.tableData = res.data;
+                this.tableData.forEach(item=>{
+                    this.$refs.ty_Table.toggleRowSelection(item,true)
+                })
             })
         },
         ty_handleSizeChange(size) {

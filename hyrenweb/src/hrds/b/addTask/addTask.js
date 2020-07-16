@@ -666,3 +666,10 @@ export function saveJobDataToDatabase(data) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
+
+export function getTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/getTableData',
+        params: data
+    })
+}

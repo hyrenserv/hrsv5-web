@@ -206,7 +206,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="10">
-                            <el-form-item label="数据库名称" prop="database_name" >
+                            <el-form-item label="数据库名称" prop="database_name">
                                 <el-col :span="16">
                                     <el-input v-model="ruleFormSecond.database_name" disabled size="medium" @input="jdbcChangeFun()"></el-input>
                                 </el-col>
@@ -222,7 +222,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="10">
-                            <el-form-item label="数据库端口" prop="database_port" >
+                            <el-form-item label="数据库端口" prop="database_port">
                                 <el-col :span="16">
                                     <el-input v-model="ruleFormSecond.database_port" disabled size="medium" @input="jdbcChangeFun()"></el-input>
                                 </el-col>
@@ -547,7 +547,8 @@ export default {
             StorageTier_pagesize: 10,
             viewDatilsData: [],
             radioSave: null, //存储层弹框单选
-            tyAddSave:false
+            tyAddSave: false,
+            dsl_id: ''
         };
     },
     created() {
@@ -569,26 +570,29 @@ export default {
             let params = {};
             params["databaseId"] = this.dbid;
             addTaskAllFun.getDBConfInfo(params).then(res => {
-                if (res.data) {
-                    this.ruleForm = res.data[0];
-                    this.radio = res.data[0].classify_id;
+                if (res.data.length != 0) {
+                    this.ruleForm = res.data;
+                    this.radio = res.data.classify_id;
+                    let params = {};
+                    params["dbType"] = String(res.data.database_type);
+                    addTaskAllFun.getDBConnectionProp(params).then(res => {
+                        if (res.data) {
+                            this.ipPlaceholder = res.data.ipPlaceholder;
+                            this.portPlaceholder = res.data.portPlaceholder;
+                            this.urlPrefix = res.data.urlPrefix;
+                            this.urlSuffix = res.data.urlSuffix;
+                        }
+                    });
+                } else {
+                    // 贴元登记editStorageData
+                    addTaskAllFun.editStorageData(params).then(res => {
+                        this.activeNames = 'second'
+                        this.ruleFormSecond = res.data[0]
+                        this.radioSave = this.ruleFormSecond.dsl_id
+                    })
                 }
-                let params = {};
-                params["dbType"] = String(res.data[0].database_type);
-                addTaskAllFun.getDBConnectionProp(params).then(res => {
-                    if (res.data) {
-                        this.ipPlaceholder = res.data.ipPlaceholder;
-                        this.portPlaceholder = res.data.portPlaceholder;
-                        this.urlPrefix = res.data.urlPrefix;
-                        this.urlSuffix = res.data.urlSuffix;
-                    }
-                });
-                //
             });
-            // 贴元登记editStorageData
-            addTaskAllFun.editStorageData(params).then(res => {
-                console.log(res)
-            })
+
         } else {
             let params = {};
             params["databaseId"] = this.sourceId;
@@ -618,24 +622,24 @@ export default {
             paramst["agent_id"] = this.$route.query.agent_id
             addTaskAllFun.getInitStorageData(paramst).then(res => {
                 console.log(res)
-                if(res.data.length!==0){
-                    this.tyAddSave=true
+                if (res.data.length !== 0) {
+                    this.tyAddSave = true
                 }
-                this.ruleFormSecond.task_name=res.data[0].task_name,
-                this.ruleFormSecond.database_number=res.data[0].database_number,
-                this.ruleFormSecond.classify_num=res.data[0].classify_num,
-                this.ruleFormSecond.classify_name=res.data[0].classify_name,
-                this.ruleFormSecond.database_drive=res.data[0].database_drive,
-                this.ruleFormSecond.database_name=res.data[0].database_name,
-                this.ruleFormSecond.database_ip=res.data[0].database_ip,
-                this.ruleFormSecond.database_port=res.data[0].database_port,
-                this.ruleFormSecond.user_name=res.data[0].user_name,
-                this.ruleFormSecond.database_pad=res.data[0].database_pad,
-                this.ruleFormSecond.jdbc_url=res.data[0].jdbc_url,
-                this.ruleFormSecond.database_type=res.data[0].database_type
-                this.dbid=res.data[0].database_id
-                this.radioSave=res.data[0].dsl_id
-                this.radio2=res.data[0].classify_id
+                this.ruleFormSecond.task_name = res.data[0].task_name,
+                    this.ruleFormSecond.database_number = res.data[0].database_number,
+                    this.ruleFormSecond.classify_num = res.data[0].classify_num,
+                    this.ruleFormSecond.classify_name = res.data[0].classify_name,
+                    this.ruleFormSecond.database_drive = res.data[0].database_drive,
+                    this.ruleFormSecond.database_name = res.data[0].database_name,
+                    this.ruleFormSecond.database_ip = res.data[0].database_ip,
+                    this.ruleFormSecond.database_port = res.data[0].database_port,
+                    this.ruleFormSecond.user_name = res.data[0].user_name,
+                    this.ruleFormSecond.database_pad = res.data[0].database_pad,
+                    this.ruleFormSecond.jdbc_url = res.data[0].jdbc_url,
+                    this.ruleFormSecond.database_type = res.data[0].database_type
+                this.dbid = res.data[0].database_id
+                this.radioSave = res.data[0].dsl_id
+                this.radio2 = res.data[0].classify_id
                 // this.ruleFormSecond=res.data
             })
         }
@@ -706,10 +710,10 @@ export default {
                     });
                 } else {
                     //贴元登记点击下一步保存saveRegisterData
-                    params["dsl_id"] = this.radioSave;
+                    // params["dsl_id"] = this.radioSave;
                     if (this.edit == "yes") {
                         // 编辑保存 updateRegisterData
-                        addTaskAllFun.updateRegisterData(params).then(res => {
+                        addTaskAllFun.updateRegisterData(this.ruleFormSecond).then(res => {
                             this.isLoading = false
                             if (res.code == "200") {
                                 let data = {};
@@ -718,7 +722,7 @@ export default {
                                     id: this.dbid,
                                     source_id: this.sourceId,
                                     source_name: this.$Base64.encode(this.sourceName),
-                                    dsl_id:this.radioSave,
+                                    dsl_id: this.radioSave,
                                     edit: "yes"
                                 };
                                 this.$router.push({
@@ -727,44 +731,45 @@ export default {
                                 });
                             }
                         });
-                    }else{
-                        if(this.tyAddSave==true){
-                             addTaskAllFun.updateRegisterData(params).then(res => {
-                            this.isLoading = false
-                            if (res.code == "200") {
-                                let data = {};
-                                data = {
-                                    agent_id: this.agentId,
-                                    id: this.dbid,
-                                    source_id: this.sourceId,
-                                    source_name: this.$Base64.encode(this.sourceName),
-                                    dsl_id:this.radioSave,
-                                };
-                                this.$router.push({
-                                    path: "/collection1_t2",
-                                    query: data
-                                });
-                            }
-                        });
-                        }else{
-                    addTaskAllFun.saveRegisterData(params).then(res => {
-                        this.isLoading = false
-                        if (res.code == "200") {
-                            let data = {};
-                            data = {
-                                id: res.data,
-                                source_id: this.sourceId,
-                                agent_id: this.agentId,
-                                dsl_id:this.radioSave,
-                                source_name: this.$Base64.encode(this.sourceName)
-                            };
-                            this.$router.push({
-                                path: "/collection1_t2",
-                                query: data
+                    } else {
+                        if (this.tyAddSave == true) {
+                            addTaskAllFun.updateRegisterData(params).then(res => {
+                                this.isLoading = false
+                                if (res.code == "200") {
+                                    let data = {};
+                                    data = {
+                                        agent_id: this.agentId,
+                                        id: this.dbid,
+                                        source_id: this.sourceId,
+                                        source_name: this.$Base64.encode(this.sourceName),
+                                        dsl_id: this.radioSave,
+                                    };
+                                    this.$router.push({
+                                        path: "/collection1_t2",
+                                        query: data
+                                    });
+                                }
+                            });
+                        } else {
+                            addTaskAllFun.saveRegisterData(params).then(res => {
+                                this.isLoading = false
+                                if (res.code == "200") {
+                                    let data = {};
+                                    data = {
+                                        id: res.data,
+                                        source_id: this.sourceId,
+                                        agent_id: this.agentId,
+                                        dsl_id: this.radioSave,
+                                        source_name: this.$Base64.encode(this.sourceName)
+                                    };
+                                    this.$router.push({
+                                        path: "/collection1_t2",
+                                        query: data
+                                    });
+                                }
                             });
                         }
-                    });}
- }
+                    }
                 }
 
             }
@@ -1023,7 +1028,6 @@ export default {
             this.dialogChooseStorageTier = true
             //    AlldestinationData
             addTaskAllFun.getStorageData().then(res => {
-                console.log(res)
                 let arr = JSON.parse(JSON.stringify(res.data));
                 let data = this.storeTypeData;
                 for (let i = 0; i < arr.length; i++) {
@@ -1098,16 +1102,16 @@ export default {
                         if (arr[i].storage_property_key == "jdbc_url") {
                             this.ruleFormSecond.jdbc_url = arr[i].storage_property_val
                         }
-                          if (arr[i].storage_property_key == "database_name") {
-                              this.ruleFormSecond.database_name = arr[i].storage_property_val
-                          }
-                           if (arr[i].storage_property_key == "database_ip") {
-                              this.ruleFormSecond.database_ip = arr[i].storage_property_val
-                          }
-                           if (arr[i].storage_property_key == "database_port") {
-                              this.ruleFormSecond.database_port = arr[i].storage_property_val
-                          }
-                      /*   this.ruleFormSecond.database_port = '32001'
+                        if (arr[i].storage_property_key == "database_name") {
+                            this.ruleFormSecond.database_name = arr[i].storage_property_val
+                        }
+                        if (arr[i].storage_property_key == "database_ip") {
+                            this.ruleFormSecond.database_ip = arr[i].storage_property_val
+                        }
+                        if (arr[i].storage_property_key == "database_port") {
+                            this.ruleFormSecond.database_port = arr[i].storage_property_val
+                        }
+                        /*   this.ruleFormSecond.database_port = '32001'
                         this.ruleFormSecond.database_ip = '47.103.83.1'
                         this.ruleFormSecond.database_name = 'hrsdxg'
  */
