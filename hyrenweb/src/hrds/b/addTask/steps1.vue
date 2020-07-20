@@ -564,7 +564,7 @@ export default {
         this.edit = this.$route.query.edit;
         this.storeTypeFun()
     },
-    mounted() {
+    beforeMount() {
         if (this.edit == "yes") {
             this.show = true;
             let params = {};
@@ -585,8 +585,8 @@ export default {
                     });
                 } else {
                     // 贴元登记editStorageData
+                    this.activeNames = 'second'
                     addTaskAllFun.editStorageData(params).then(res => {
-                        this.activeNames = 'second'
                         this.ruleFormSecond = res.data[0]
                         this.radioSave = this.ruleFormSecond.dsl_id
                     })
@@ -623,23 +623,25 @@ export default {
             addTaskAllFun.getInitStorageData(paramst).then(res => {
                 console.log(res)
                 if (res.data.length !== 0) {
+                    this.activeNames = 'second'
                     this.tyAddSave = true
+                    this.ruleFormSecond.task_name = res.data[0].task_name,
+                        this.ruleFormSecond.database_number = res.data[0].database_number,
+                        this.ruleFormSecond.classify_num = res.data[0].classify_num,
+                        this.ruleFormSecond.classify_name = res.data[0].classify_name,
+                        this.ruleFormSecond.database_drive = res.data[0].database_drive,
+                        this.ruleFormSecond.database_name = res.data[0].database_name,
+                        this.ruleFormSecond.database_ip = res.data[0].database_ip,
+                        this.ruleFormSecond.database_port = res.data[0].database_port,
+                        this.ruleFormSecond.user_name = res.data[0].user_name,
+                        this.ruleFormSecond.database_pad = res.data[0].database_pad,
+                        this.ruleFormSecond.jdbc_url = res.data[0].jdbc_url,
+                        this.ruleFormSecond.database_type = res.data[0].database_type
+                    this.dbid = res.data[0].database_id
+                    this.radioSave = res.data[0].dsl_id
+                    this.radio2 = res.data[0].classify_id
                 }
-                this.ruleFormSecond.task_name = res.data[0].task_name,
-                    this.ruleFormSecond.database_number = res.data[0].database_number,
-                    this.ruleFormSecond.classify_num = res.data[0].classify_num,
-                    this.ruleFormSecond.classify_name = res.data[0].classify_name,
-                    this.ruleFormSecond.database_drive = res.data[0].database_drive,
-                    this.ruleFormSecond.database_name = res.data[0].database_name,
-                    this.ruleFormSecond.database_ip = res.data[0].database_ip,
-                    this.ruleFormSecond.database_port = res.data[0].database_port,
-                    this.ruleFormSecond.user_name = res.data[0].user_name,
-                    this.ruleFormSecond.database_pad = res.data[0].database_pad,
-                    this.ruleFormSecond.jdbc_url = res.data[0].jdbc_url,
-                    this.ruleFormSecond.database_type = res.data[0].database_type
-                this.dbid = res.data[0].database_id
-                this.radioSave = res.data[0].dsl_id
-                this.radio2 = res.data[0].classify_id
+
                 // this.ruleFormSecond=res.data
             })
         }
@@ -710,7 +712,7 @@ export default {
                     });
                 } else {
                     //贴元登记点击下一步保存saveRegisterData
-                    // params["dsl_id"] = this.radioSave;
+                    params["dsl_id"] = this.radioSave;
                     if (this.edit == "yes") {
                         // 编辑保存 updateRegisterData
                         addTaskAllFun.updateRegisterData(this.ruleFormSecond).then(res => {
