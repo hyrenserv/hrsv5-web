@@ -551,6 +551,19 @@ export default new Router({
                         { name: '工程详情' },
                     ],
                 },
+                 //元数据管理-创建表
+                 {
+                    path: '/createTable',
+                    name: 'createTable',
+                    title: '元数据管理创建表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '元数据管理创建表' },
+                    ],
+                },
                 //血缘分析
                 {
                     path: '/bloodAnalysis',
