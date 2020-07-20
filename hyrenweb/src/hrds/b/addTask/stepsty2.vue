@@ -44,11 +44,11 @@
     </el-tabs>
     <el-row>
         <el-col :span="12">
-            <el-button type="primary" size="medium" class="leftbtn">返回</el-button>
+            <el-button type="primary" size="medium" class="leftbtn" @click="allbackFun()">返回</el-button>
         </el-col>
         <el-col :span="12">
             <el-button type="primary" size="medium" class="rightbtn" @click="finshSubmit()">完成</el-button>
-            <el-button type="primary" size="medium" class="rightbtn">上一步</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="backFun()">上一步</el-button>
         </el-col>
     </el-row>
     <!-- 第一个页面 选择列弹层 -->
@@ -132,8 +132,7 @@ export default {
         // this.getAllTableInfo()
         this.getTableData()
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
         // 获取表格数据
         getTableData() {
@@ -141,8 +140,8 @@ export default {
                 databaseId: this.$route.query.id
             }).then(res => {
                 this.tableData = res.data;
-                this.tableData.forEach(item=>{
-                    this.$refs.ty_Table.toggleRowSelection(item,true)
+                this.tableData.forEach(item => {
+                    this.$refs.ty_Table.toggleRowSelection(item, true)
                 })
             })
         },
@@ -154,11 +153,13 @@ export default {
         },
         // 搜索
         schfilter(val) {
+               this.isLoading = true
             if (val != "") {
                 let params = {};
                 params["colSetId"] = this.dbid;
                 params["inputString"] = val;
                 addTaskAllFun.getTableInfo(params).then(res => {
+                       this.isLoading = false
                     if (res.data.length > 0) {
                         let data = res.data;
                         /* for (let i = 0; i < data.length; i++) {
@@ -196,24 +197,35 @@ export default {
             addTaskAllFun.getAllTableInfo(params).then(res => {
                 this.isLoading = false
                 let data = res.data;
-                /*  for (let i = 0; i < data.length; i++) {
-                     if (data[i].table_id && data[i].table_id != "") {
-                         data[i].is_get = '1';
-                     } else {
-                         data[i].is_get = '0';
-                     }
-                 } */
+                this.tableData.length = 0
                 this.tableData = JSON.parse(JSON.stringify(data));
             });
         },
         // 选择列
         selectColFun(value, row) {
             this.dialogSelectColumn = true
-            this.SelectColumnShowFun(
-                row.table_name,
-                row.table_id,
-                row.collectState
-            );
+            if (this.SelectColumn2.length > 0) {
+                for (let i = 0; i < this.SelectColumn2.length; i++) {
+                    if (this.SelectColumn2[i].tablename == this.coltable_name) {
+                        let list = this.SelectColumn2[i].data
+                        for (let j = 0; j < list.length; j++) {
+                            if (list[j].is_get == '1') {
+                                this.$refs.table.toggleRowSelection(list[j], true);
+                            }
+                        }
+                        this.SelectColumnData = list
+                        break;
+                    }
+                }
+
+            } else {
+                this.SelectColumnShowFun(
+                    row.table_name,
+                    row.table_id,
+                    row.collectState
+                );
+            }
+
         },
         //第一页 选择列弹框回显数据调接口
         SelectColumnShowFun(name, id, collectState) {
@@ -325,6 +337,7 @@ export default {
         }, */
         // 最终完成点击
         finshSubmit() {
+            this.isLoading = true
             let tableColumns = {}
             // this.selectTable和this.SelectColumn2对比表明相同合并
             for (let i = 0; i < this.selectTable.length; i++) {
@@ -342,10 +355,58 @@ export default {
             params["tableColumns"] = JSON.stringify(tableColumns);
             params["dsl_id"] = this.$route.query.dsl_id;
             console.log(params)
-            addTaskAllFun.saveregisterTableData(params).then(res => {
-                console.log(res.data)
-            })
+            if (this.$route.query.edit == 'yes') {
+                addTaskAllFun.updateTableData(params).then(res => {
+                    this.isLoading = false
+                    if (res.code == '200') {
+                        this.$router.push({
+                            path: "/agentList",
+                        });
+                    }
+                })
+            } else {
+                addTaskAllFun.saveregisterTableData(params).then(res => {
+                    this.isLoading = false
+                    if (res.code == '200') {
+                        this.$router.push({
+                            path: "/agentList",
+                        });
+                    }
+                })
+            }
 
+        },
+        // 返回上一步
+        backFun() {
+            let data = {};
+            if (this.$route.query.edit == 'yes') {
+                data = {
+                    agent_id: this.agentId,
+                    id: this.dbid,
+                    source_id: this.sourceId,
+                    source_name: this.$Base64.encode(this.sourceName),
+                    dsl_id: this.$route.query.dsl_id,
+                    edit: 'yes'
+                };
+            } else {
+                data = {
+                    agent_id: this.agentId,
+                    id: this.dbid,
+                    source_id: this.sourceId,
+                    source_name: this.$Base64.encode(this.sourceName),
+                    dsl_id: this.$route.query.dsl_id,
+                };
+            }
+            this.$router.push({
+                path: "/collection1_1",
+                query: data
+            });
+        },
+        // 返回
+        allbackFun(){
+             this.$router.push({
+                            path: "/agentList",
+                        });
         }
     }
 
