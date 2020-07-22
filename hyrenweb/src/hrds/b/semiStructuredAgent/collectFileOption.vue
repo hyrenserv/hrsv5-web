@@ -9,8 +9,12 @@
     <el-row class="partTwo">
         <el-row class="spanCollect"><i class="fa fa-signal"></i>采集文件列表</el-row>
         <div class="partTwoContent">
-            <el-table :data="tableDataMain" border stripe size="medium">
-                <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
+            <el-table :data="tableDataMain.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)" border stripe size="medium">
+                <el-table-column label="序号" width="64" align="center">
+                    <template scope="scope">
+                        <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
+                    </template>
+                </el-table-column>
 
                 <el-table-column prop="en_name" label="英文名" align="center">
                     <template slot-scope="scope">
@@ -60,13 +64,9 @@
                     </template>
                 </el-table-column>
             </el-table>
-
-            <!-- 分页内容 -->
-            <!-- <el-row class="pagination">
-                <el-pagination prev-text="上一页" next-text="下一页" @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
-            </el-row> -->
         </div>
     </el-row>
+    <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableDataMain.length" class="locationcenter"></el-pagination>
     <el-row class="partFour">
         <el-col :span="12">
             <el-button type="primary" @click="goBackQuit" size="medium"> 返回</el-button>
@@ -122,8 +122,8 @@
 
                     <el-table-column label="操作" width="134" align="center">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="moveUp(scope.$index,scope.row,tableDataColum) " class="buttonSpeical">上移</el-button>
-                            <el-button type="primary" size="mini" @click="moveDown(scope.$index, scope.row,tableDataColum)" class="buttonSpeical">下移</el-button>
+                            <!-- <el-button type="primary" size="mini" @click="moveUp(scope.$index,scope.row,tableDataColum) " class="buttonSpeical">上移</el-button>
+                            <el-button type="primary" size="mini" @click="moveDown(scope.$index, scope.row,tableDataColum)" class="buttonSpeical">下移</el-button> -->
                             <el-button type="danger" size="mini" @click="deleteArry(scope.$index, scope.row)" class="buttonSpeical">删除</el-button>
                         </template>
                     </el-table-column>
@@ -205,7 +205,9 @@ export default {
             offset: '',
             isDictionary: '',
             ocSid: '',
-            handeleType_ocSid: ''
+            handeleType_ocSid: '',
+            ex_destinationcurrentPage: 1,
+            ex_destinationpagesize: 100,
 
         }
     },
@@ -453,13 +455,24 @@ export default {
         },
         // 上一步
         backSteps() {
-            this.$router.push({
-                name: "collectOption",
-                query: {
-                    agent_id: this.$route.query.agent_id,
-                    id: this.$route.query.odc_id
-                }
-            })
+            if (this.$route.query.edit == 'yes') {
+                this.$router.push({
+                    name: "collectOption",
+                    query: {
+                        agent_id: this.$route.query.agent_id,
+                        id: this.$route.query.odc_id,
+                        edit: this.$route.query.edit
+                    }
+                })
+            } else {
+                this.$router.push({
+                    name: "collectOption",
+                    query: {
+                        agent_id: this.$route.query.agent_id,
+                        id: this.$route.query.odc_id
+                    }
+                })
+            }
         },
         // 下一步
         nextSteps() {
@@ -550,16 +563,34 @@ export default {
                 odc_id: this.$route.query.odc_id
             }).then(res => {
                 if (res && res.success) {
-                    this.$router.push({
-                        name: "dataStorage",
-                        query: {
-                            agent_id: this.$route.query.agent_id,
-                            odc_id: this.$route.query.odc_id
-                        }
-                    })
+                    if (this.$route.query.edit == 'yes') {
+                        this.$router.push({
+                            name: "dataStorage",
+                            query: {
+                                agent_id: this.$route.query.agent_id,
+                                odc_id: this.$route.query.odc_id,
+                                edit: this.$route.query.edit
+                            }
+                        })
+                    } else {
+                        this.$router.push({
+                            name: "dataStorage",
+                            query: {
+                                agent_id: this.$route.query.agent_id,
+                                odc_id: this.$route.query.odc_id
+                            }
+                        })
+                    }
                 }
             })
         },
+        //分页
+        ex_destination_handleCurrentChange(current) {
+            this.ex_destinationcurrentPage = current;
+        },
+        ex_destination_handleSizeChange(size) {
+            this.ex_destinationpagesize = size;
+        }
     }
 }
 </script>
@@ -603,18 +634,14 @@ export default {
     margin-bottom: 20px;
 }
 
-.collectFileOption .buttonSpeical {
+/* .collectFileOption .buttonSpeical {
     padding: 7px 1px;
-}
+} */
 
 /* 分页 */
-.pagination {
-    margin-top: 20px;
-    width: 100%;
-}
-
-.el-pagination {
-    float: right;
+.locationcenter {
+    text-align: center;
+    margin-top: 5px;
 }
 
 /* 弹出框样式 */
