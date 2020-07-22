@@ -258,6 +258,7 @@ export default {
         },
         // 新增任务  根据不同类型跳转不同页面
         addtask(row, sourceName) {
+            console.log(row)
             for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == row.agent_type) {
                     this.agentType = this.CollectType[i].code;

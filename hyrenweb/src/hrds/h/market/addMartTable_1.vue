@@ -31,7 +31,7 @@
             </el-col>
 
             <el-col :span="10">
-                <el-form-item label="表名可能重复" prop="repeat_flag" :rules="rule.selected">
+                <el-form-item label="是否已经存在的表" prop="repeat_flag" :rules="rule.selected">
                     <el-select @change="changerepeat()" :disabled="repeatiflock" v-model="dm_datatable.repeat_flag"
                                placeholder="请选择">
                         <el-option v-for="item in isflag" :key="item.value" :label="item.value"

@@ -139,7 +139,7 @@ export default {
             table_ch_name_input: true,
             column_ch_name_input: true,
             currentPage: 1,
-            pageSize: 5,
+            pageSize: 10,
             totalSize: 0,
             mdmActiveName: "mdm",
             mdmTreeList: [],
@@ -215,6 +215,8 @@ export default {
         },
         //点击源数据管理树节点触发
         mdmHandleClick(data) {
+            this.currentPage = 1;
+            this.pageSize = 10;
             this.mouseVisible = false;
             //初始化输入框
             this.table_ch_name_input = true;
@@ -268,6 +270,8 @@ export default {
         },
         //点击回收站树节点触发
         drbHandleClick(data) {
+            this.currentPage = 1;
+            this.pageSize = 10;
             this.recoverMouseVisible = false;
             if (data.file_id !== "") {
                 mdmFun
@@ -323,6 +327,7 @@ export default {
                     this.isLoading = true;
                     mdmFun
                         .tableSetToInvalid({
+                            dsl_id: this.node_data.dsl_id,
                             data_layer: this.node_data.data_layer,
                             file_id: this.node_data.file_id
                         })
@@ -383,6 +388,7 @@ export default {
                     this.isLoading = true;
                     mdmFun
                         .removeCompletelyTable({
+                            dsl_id: this.node_data.dsl_id,
                             file_id: this.node_data.file_id
                         })
                         .then(res => {
