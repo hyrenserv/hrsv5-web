@@ -15,37 +15,32 @@
                     <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="表名" prop="table_name" align="center" :show-overflow-tooltip="true">
-                <!--  <template slot-scope="scope">
-                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default" >
-                        <el-input size="medium" v-model="scope.row.table_name" style="width:160px" readonly></el-input>
-                    </el-form-item>
-                </template> -->
+            <el-table-column label="表名" prop="en_name" align="center" :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column label="表中文名" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
-                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
-                        <el-input size="medium" v-model="scope.row.table_ch_name" style="width:160px"></el-input>
+                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.zh_name'" :rules="rule.default">
+                        <el-input size="medium" v-model="scope.row.zh_name" style="width:90%"></el-input>
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column label=" 选择目的地" width="190" align="center">
+            <el-table-column label=" 选择目的地" width="200" align="center">
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
-                        <div slot="content">请至少选择一个目的地,当选择的目的地是oracle时,落地表名长度不能大于27</div>
+                        <div slot="content">请至少选择一个目的地</div>
                         <i class="el-icon-question" aria-hidden="true">选择目的地</i>
                     </el-tooltip>
                 </template>
                 <template slot-scope="scope">
                     <span class="settingbtn" v-if="scope.row.data_extract_type!='1'">
-                        <el-button type="success" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
+                        <el-button type="success" size="mini" v-if="scope.row.dsl_id !=undefined" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
                         <el-button type="warning" size="mini" v-else @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
                     </span>
                 </template>
             </el-table-column>
         </el-table>
     </el-form>
-    <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.ex_destinationData.length" class="locationcenter"></el-pagination>
+    <!-- <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" :page-sizes="[100, 200, 300, 400]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="ruleForm.ex_destinationData.length" class="locationcenter"></el-pagination> -->
     <el-row>
         <el-col :span="12">
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
@@ -61,14 +56,6 @@
             <span class="dialogtitle el-icon-caret-right">选择目的地</span>
         </div>
         <el-form ref="digForm" :model="digForm" label-width="20%">
-            <!-- <el-row>
-                <el-col :span="12">
-                    <el-form-item label="落地表名:" prop="hyren_name" :rules="filter_rules([{required: true,dataType:'compositions'}])">
-                        <el-input placeholder="表名" v-model="digForm.hyren_name" size="mini">
-                            <template slot="prepend">{{datasource_number}}_{{classify_num}}_</template></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row> -->
         </el-form>
         <el-table stripe :data="destinationData.slice((destination_currentPage - 1) * destination_pagesize, destination_currentPage * destination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="getRowKeys">
             <el-table-column width="55" align="center" prop="selectionState">
@@ -131,43 +118,27 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">配置字段属性(根据目的地选择字段存储)</span>
         </div>
-        <!--   <el-button
-        type="success"
-        size="mini"
-        width="20"
-        @click="FieldProperty_addRow(FieldProperty)"
-        class="addline"
-      >新增行</el-button>-->
         <el-table stripe :data="FieldProperty.slice((fieldProperty_currentPage - 1) * fieldProperty_pagesize, fieldProperty_currentPage * fieldProperty_pagesize)" border size="medium" highlight-current-row>
             <el-table-column label="序号" width="60px" align="center">
                 <template scope="scope">
                     <span>{{scope.$index+(fieldProperty_currentPage - 1) * fieldProperty_pagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column :label="item.value" :property="item.id" v-for="item in selectedColumnList" :key="item.id" align="center">
+            <el-table-column label="列名" align="center" show-overflow-tooltip prop="column_name">
+            </el-table-column>
+            <el-table-column prop="column_name" label="列中文名" align="center">
+                <template slot-scope="scope">
+                    <el-input placeholder="列中文名" v-model="scope.row.data_desc"></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column :label="item.value" v-for="(item,index) in columnHeader" :key="item.dsla_storelayer" align="center">
                 <template slot-scope="scope" slot="header">
-                    <span :key="scope.column.property" class="allclickColor" v-if="item.id=='column_name'||item.id=='column_ch_name'">{{item.value}}</span>
-                    <el-checkbox :key="scope.column.property" v-else @change="allSelectFun(item.id,item.active)" v-model="item.active" :checked="item.active">
+                    <el-checkbox :key="item.dsla_storelayer" :checked="item.colTrueFalse" v-model="item.colTrueFalse" @change="allSelectFun(FieldProperty,item.colTrueFalse,index)">
                         <span class="allclickColor">{{item.value}}</span>
                     </el-checkbox>
                 </template>
                 <template slot-scope="scope">
-                    <span v-if="scope.column.property=='column_name'">{{ scope.row[scope.column.property] }}</span>
-                    <el-input v-else-if="scope.column.property=='column_ch_name'" v-model="scope.row[scope.column.property]" :title="scope.row[scope.column.property]" placeholder="列中文名" size="medium"></el-input>
-                    <div v-else>
-                        <el-checkbox v-if="scope.row[scope.column.property]" checked v-model="scope.row[scope.column.property]"></el-checkbox>
-                        <el-checkbox v-else v-model="scope.row[scope.column.property]"></el-checkbox>
-                    </div>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" v-if="Hbase">
-                <template slot-scope="scope">
-                    <el-button size="mini" :disabled="scope.$index===0" @click="moveUp(scope.$index,scope.row,FieldProperty)">
-                        <i class="el-icon-arrow-up"></i>
-                    </el-button>
-                    <el-button size="mini" :disabled="scope.$index===(FieldProperty.length-1)" @click="moveDown(scope.$index,scope.row,FieldProperty)">
-                        <i class="el-icon-arrow-down"></i>
-                    </el-button>
+                    <el-checkbox :checked="scope.row['trueFalse'+index] " @change="changeMarknum(scope.row,index)" v-model="scope.row['trueFalse'+index]"></el-checkbox>
                 </template>
             </el-table-column>
         </el-table>
@@ -181,9 +152,6 @@
     <el-dialog title=" 选择目的地" :visible.sync="dialogAllChooseDestination" width="70%" class="alltable">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">全表选择目的地设置</span>
-            <span class="dialogtoptxt">
-                <p class="dialogtopname">(存储名称选择存在oracle时，落地表名长度不能大于27，需单独设置并更改对应落地表名)</p>
-            </span>
         </div>
         <el-table stripe :data="AlldestinationData.slice((Alldestination_currentPage - 1) * Alldestination_pagesize,Alldestination_currentPage * Alldestination_pagesize)" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark" :row-key="(row)=>{ return row.dsl_id}" @selection-change="AllhandleSelectionChange" @select-all='allselectD'>
             <el-table-column width="55" align="center" type="selection">
@@ -243,6 +211,7 @@ export default {
             visible: false,
             saveDayvisible: false,
             Allis_destination: false,
+            colTrueFalse: false,
             ex_destinationcurrentPage: 1,
             ex_destinationpagesize: 100,
             destination_currentPage: 1,
@@ -295,6 +264,9 @@ export default {
             dialogAllChooseDestination: false, //全表设置目的地
             AlldestinationData: [],
             Alldestinationchoose: [],
+            ocsId: '',
+            columnHeader: [],
+            dataALLindex: ''
         };
     },
     computed: {
@@ -317,7 +289,7 @@ export default {
         }
     },
     mounted() {
-this.getCollectStorageLayerInfo();
+        this.getCollectStorageLayerInfo();
     },
 
     methods: {
@@ -338,11 +310,362 @@ this.getCollectStorageLayerInfo();
             })
         },
         // 获取页面初始值
-        getCollectStorageLayerInfo(){
+        getCollectStorageLayerInfo() {
             functionAll.getCollectStorageLayerInfo({
-                odc_id:this.$route.query.odc_id
-            }).then(res=>{
-                console.log(res,' i am res')
+                odc_id: this.$route.query.odc_id
+            }).then(res => {
+                this.ruleForm.ex_destinationData = res.data;
+            })
+        },
+        //根据ocs_id获取每行的目的存储数据
+        ChooseDestination(row, index) {
+            this.ocsId = row.ocs_id;
+            this.dataALLindex = index;
+            this.storeTypeFun(); //调用代码项
+            let getDslId = new Promise((resolve, reject) => { //查询是否为已选择项回显数据
+                functionAll.getStorageLayerDestById({
+                    ocs_id: row.ocs_id
+                }).then(res => {
+                    if (res && res.success) {
+                        resolve(res.data)
+                    } else {
+                        reject()
+                    }
+
+                })
+            })
+
+            let getSearchDataStore = new Promise((resolve, reject) => { //获取选择目的地信息
+                functionAll.searchDataStore().then(res => {
+                    if (res && res.success) {
+                        res.data.forEach(item => {
+                            item.usedflag = false;
+                            this.storeTypeData.forEach(val => {
+                                if (item.store_type == val.code) {
+                                    item.store_type = val.value;
+                                }
+                            })
+                        })
+                        resolve(res.data)
+                    } else {
+                        reject()
+                    }
+
+                    Promise.all([getDslId, getSearchDataStore]).then(res => {
+                        let arr1 = res[0]; //查询dsl_id是否存在回显
+                        let arr2 = res[1]; //选择目的地表格内容
+                        arr1.forEach(item1 => {
+                            arr2.forEach(item2 => {
+                                if (item1.dsl_id != undefined) {
+                                    if (item1.dsl_id == item2.dsl_id) {
+                                        item2.usedflag = true;
+                                    }
+                                }
+                            })
+                        })
+                        this.dialogChooseDestination = true;
+                        this.destinationData = arr2;
+                    })
+                })
+            })
+
+        },
+        // 代码项获取
+        // store_type
+        storeTypeFun() {
+            let params = {};
+            params["category"] = "Store_type";
+            this.$Code.getCategoryItems(params).then(res => {
+                if (res) {
+                    this.storeTypeData = res.data;
+                }
+            });
+        },
+        // 点击查看选择目的弹出框当前行详情
+        getStoDestDetailFun(row) {
+            functionAll.getStorageLayerAttrById({
+                dsl_id: row.dsl_id
+            }).then(res => {
+                if (res.data) {
+                    this.dialogViewDetails = true;
+                    this.viewDatilsData = res.data;
+                }
+            });
+        },
+        // 点击配置选择目的弹出框当前行属性获取数据
+        getColumnStoInfoFun(row) {
+            this.specialfieldFun(); //调用代码项获取值
+            functionAll.getColumnStorageLayerInfo({
+                ocs_id: this.ocsId,
+                dsl_id: row.dsl_id
+            }).then(res => {
+                this.dialogFieldProperty = true;
+                this.columnHeader = res.data[0].dslaStorelayerList;
+                //对动态列数据进行处理匹配
+                res.data.forEach((item) => {
+                    if (item.dsla_storelayer && item.dsla_storelayer.length > 0) {
+                        let arry = [];
+                        this.columnHeader.forEach((val2, index) => {
+                            arry.push(val2.dsla_storelayer);
+                        });
+                        item.dsla_storelayer.forEach(val => {
+                            let i = arry.indexOf(val);
+                            item['trueFalse' + i] = true;
+                            item['markNum' + i] = i;
+                            item['dslad_id'] = [];
+                        })
+                    } else {
+                        for (let i = 0; i < this.columnHeader.length; i++) {
+                            item['trueFalse' + i] = false;
+                            item['markNum' + i] = i;
+                            item['dslad_id'] = [];
+                        }
+                    }
+
+                })
+                this.columnHeader.forEach((item, index) => {
+                    item['markNum' + index] = index;
+                    this.StoreData.forEach(value => {
+                        if (item.dsla_storelayer == value.code) {
+                            this.columnHeader[index].value = value.value
+                        }
+                    })
+                })
+                this.FieldProperty = res.data;
+            })
+        },
+        //  获取代码项的值
+        specialfieldFun() {
+            let params = {};
+            params["category"] = "StoreLayerAdded";
+            this.$Code.getCategoryItems(params).then(res => {
+                if (res.data) {
+                    this.StoreData = res.data;
+                }
+            });
+        },
+        // 选择CHECKBOX更改markNum
+        changeMarknum(row, index) {
+            this.FieldProperty.forEach(item => {
+                if (row.column_name == item.column_name) {
+                    item['markNum' + index] = index;
+                }
+            })
+        },
+        // 保存配置字段属性
+        ConfigureFieldPropertiesSubmitFun() {
+            // 更新列字段中文名
+            let saveName = new Promise((resolve, reject) => {
+                // 处理数据
+                let arr = [];
+                arr = JSON.parse(JSON.stringify(this.FieldProperty))
+                this.columnHeader.forEach((val, index) => {
+                    arr.forEach(item => {
+                        if (item.dslaStorelayerList) {
+                            delete item.dslaStorelayerList;
+                        }
+                        delete item['trueFalse' + index];
+                        delete item['markNum' + index];
+                        delete item.dslad_id;
+                    })
+                })
+                //保存列存储层的附加信息
+                functionAll.updateColumnZhName({
+                    objectCollectStructs: JSON.stringify(arr)
+                }).then(res => {
+                    if (res && res.success) {
+                        resolve(res.code)
+                    } else {
+                        reject()
+                    }
+                })
+            })
+
+            let saveColinfo = new Promise((resolve, reject) => {
+                //处理数据
+                let arr = [];
+                let arr2 = [];
+                this.columnHeader.forEach((item, index) => {
+                    this.FieldProperty.forEach(val => {
+                        if (item['markNum' + index] == val['markNum' + index] && val['trueFalse' + index] == true) {
+                            val['dslad_id'].push(item.dslad_id)
+                        }
+                    })
+                })
+                arr = JSON.parse(JSON.stringify(this.FieldProperty));
+                arr.forEach((val, imdex) => {
+                    if (val.dslad_id.length > 0) {
+                        if (val.csi_number != undefined) {
+                            arr2.push({
+                                columnId: val.struct_id,
+                                dsladIds: val.dslad_id,
+                                csiNumber: val.csi_number
+                            })
+                        } else {
+                            arr2.push({
+                                columnId: val.struct_id,
+                                dsladIds: val.dslad_id
+                            })
+                        }
+
+                    }
+                })
+                arr2.forEach(item => { //数组去重
+                    for (var i = 0; i < item.dsladIds.length; i++) {
+                        for (var j = i + 1; j < item.dsladIds.length;) {
+                            if (item.dsladIds[i] == item.dsladIds[j]) {
+                                item.dsladIds.splice(j, 1);
+                            } else j++;
+                        }
+                    }
+                })
+                functionAll.saveColRelationStoreInfo({
+                    ocs_id: this.ocsId,
+                    colStoParams: JSON.stringify(arr2)
+                }).then(res => {
+                    if (res && res.success) {
+                        resolve(res.code)
+                    } else {
+                        reject()
+                    }
+                })
+            })
+
+            Promise.all([saveName, saveColinfo]).then(res => {
+                let code1 = res[0];
+                let code2 = res[1];
+                if (code1 == "200" && code2 == "200") {
+                    message.customizTitle('配置字段属性保存成功', 'success');
+                    this.dialogFieldProperty = false;
+                    this.FieldProperty = [];
+                }
+            }).catch(err => {
+
+            })
+        },
+        // 配置字段属性取消按钮
+        ConfigureFieldPropertiesCloseFun() {
+            this.dialogFieldProperty = false;
+            this.FieldProperty = [];
+        },
+        //选择目的地弹框全选
+        Allis_destinationFun(items, e) {
+            let that = this;
+            items.forEach((item, j) => {
+                if (e) {
+                    item.usedflag = true;
+                } else {
+                    item.usedflag = false;
+                }
+            });
+        },
+        // 选择目的地弹框选择单独一个
+        destination_evercheck(val, name) {
+            if (val == true) {
+                for (let i = 0; i < this.destinationData.length; i++) {
+                    if (this.destinationData[i].dsl_name == name) {
+                        this.destinationData[i].usedflag = true;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.destinationData.length; i++) {
+                    if (this.destinationData[i].dsl_name == name) {
+                        this.destinationData[i].usedflag = false;
+                    }
+                }
+            }
+        },
+        //选择目的地弹框提交确定按钮
+        ChooseDestinationSubmitFun(formName) {
+            let arr = [];
+            let arr2 = [];
+            this.destinationData.forEach(item => {
+                if (item.usedflag == true) {
+                    arr.push(item)
+                }
+            })
+
+            arr.forEach(item => {
+                arr2.push(
+                    item.dsl_id
+                )
+            })
+            functionAll.saveDtabRelationStoreInfo({
+                odc_id: this.$route.query.odc_id,
+                ocs_id: this.ocsId,
+                dslIds: arr2
+            }).then(res => {
+                if (res && res.success) {
+                    this.getCollectStorageLayerInfo(); //更新表格信息
+                    message.customizTitle('选择目的地保存成功', 'success');
+                    this.destinationData = [];
+                    this.dialogChooseDestination = false;
+                }
+            })
+        },
+        // 选择配置字段属性全选与反选
+        allSelectFun(FieldProperty, colTrueFalse, val) {
+            this.columnHeader[val].colTrueFalse = !this.columnHeader[val].colTrueFalse;
+            this.FieldProperty.forEach((item, j) => {
+                if (this.columnHeader[val].colTrueFalse == true) {
+                    item['trueFalse' + val] = false;
+                } else {
+                    item['trueFalse' + val] = true;
+                }
+            });
+        },
+        // 下一步保存前检查
+        checkDtabRelationStore() {
+            let arr = [];
+            this.ruleForm.ex_destinationData.forEach(item => {
+                if (item.dsl_id != undefined) {
+                    arr.push(item.ocs_id);
+                }
+            })
+            functionAll.checkDtabRelationStore({
+                ocsIds: arr
+            }).then((res) => {
+                if (res && res.success) {
+                    this.updateTableZhName();
+                }
+            })
+        },
+        // 下一步保存
+        next(formName) {
+            this.checkDtabRelationStore();
+        },
+        //保存接口
+        updateTableZhName() {
+            functionAll.updateTableZhName({
+                objectCollectTasks: JSON.stringify(this.ruleForm.ex_destinationData)
+            }).then(res => {
+                if (res && res.success) {
+                    // this.$router.push({
+                    //     name: "startMode",
+                    //     query: {
+                    //         agent_id: this.$route.query.agent_id,
+                    //         odc_id: this.$route.query.odc_id
+                    //     }
+                    // })
+                }
+            })
+        },
+        // 所有表设置目的地
+        AllSettingDestinationFun() {
+            this.storeTypeFun(); //调用代码项
+            functionAll.searchDataStore().then(res => {
+                if (res && res.success) {
+                    res.data.forEach(item => {
+                        // item.usedflag = false;
+                        this.storeTypeData.forEach(val => {
+                            if (item.store_type == val.code) {
+                                item.store_type = val.value;
+                            }
+                        })
+                    })
+                    this.dialogAllChooseDestination = true
+                    this.AlldestinationData = res.data;
+                }
             })
         },
         // --------------end-----------------------------------------------------------
@@ -350,105 +673,7 @@ this.getCollectStorageLayerInfo();
         getTbStoDestByColSetIdFun() {
 
         },
-        next(formName) {
-            let dataAll = this.ruleForm.ex_destinationData,
-                datasource_number1 = this.datasource_number,
-                classify_num1 = this.classify_num;
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    // oldTbData this.dslIdString
-                    let tbStoInfoString = [],
-                        tableString = [],
-                        arr = dataAll,
-                        desDataArr = [],
-                        dslIdString = [];
-                    for (let i = 0; i < arr.length; i++) {
-                        /* if (arr[i].is_zipper == true) {
-                          arr[i].is_zipper = "1";
-                        }else{
-                          arr[i].is_zipper = "0";
-                        } */
-                        if (arr[i].data_extract_type != "1") {
-                            tbStoInfoString.push({
-                                is_zipper: arr[i].is_zipper == true ? "1" : "0",
-                                storage_time: parseInt(arr[i].storage_time),
-                                storage_type: arr[i].storage_type,
-                                table_id: arr[i].table_id
-                            });
-                            desDataArr.push({
-                                tableId: arr[i].table_id,
-                                dslIds: [],
-                                hyren_name: datasource_number1 + '_' + classify_num1 + '_' + arr[i].table_name
-                            });
-                        }
 
-                        tableString.push({
-                            table_id: arr[i].table_id,
-                            table_ch_name: arr[i].table_ch_name,
-                            table_name: arr[i].table_name
-                        });
-                    }
-                    // 判断获得的表里面
-                    for (let j = 0; j < desDataArr.length; j++) {
-                        for (let k = 0; k < this.oldTbData.length; k++) {
-                            if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
-                                desDataArr[j].dslIds = this.oldTbData[k].dslIds;
-                                if (this.oldTbData[k].hyren_name != '' && this.oldTbData[k].hyren_name != undefined) {
-                                    desDataArr[j].hyren_name = this.oldTbData[k].hyren_name
-                                }
-                            }
-                        }
-                    }
-
-                    for (let m = 0; m < desDataArr.length; m++) {
-                        for (let n = 0; n < this.dslIdString.length; n++) {
-                            if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
-                                desDataArr[m].dslIds = this.dslIdString[n].dslIds;
-                                if (this.dslIdString[n].hyren_name != '' && this.dslIdString[n].hyren_name != undefined) {
-                                    desDataArr[m].hyren_name = this.dslIdString[n].hyren_name
-
-                                }
-                            }
-                        }
-                    }
-                    dslIdString = desDataArr;
-                    if (tbStoInfoString.length > 0) {
-                        let params = {};
-                        params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
-                        params["colSetId"] = parseInt(this.dbid);
-                        params["dslIdString"] = JSON.stringify(dslIdString);
-                        addTaskAllFun.saveTbStoInfo(params).then(res => {
-                            if (res.code == 200) {
-                                this.submit_1 = true;
-                            }
-                        });
-                    } else {
-                        this.submit_1 = true;
-                    }
-
-                    // 保存表名
-                    if (tableString.length > 0) {
-                        let params0 = {};
-                        params0["tableString"] = JSON.stringify(tableString);
-                        addTaskAllFun.updateTableName(params0).then(res => {
-                            if (res.code == 200) {
-                                this.submit_0 = true;
-                                // this.dbid = res.data;
-                            } else {
-                                this.$message({
-                                    showClose: true,
-                                    message: res.message,
-                                    type: "error"
-                                });
-                            }
-                        });
-                    } else {
-                        this.submit_0 = true;
-                    }
-
-                }
-            });
-        },
         nextLinkfun() {
             let data = {};
             if (this.$route.query.edit == "yes") {
@@ -480,19 +705,10 @@ this.getCollectStorageLayerInfo();
           let paramst = {};
           paramst["colSetId"] = this.$route.query.id;
           addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
-            console.log(res);
+
           });
         }, */
-        // store_type
-        storeTypeFun() {
-            let params = {};
-            params["category"] = "Store_type";
-            this.$Code.getCategoryItems(params).then(res => {
-                if (res) {
-                    this.storeTypeData = res.data;
-                }
-            });
-        },
+
         ex_destination_handleSizeChange(size) {
             this.ex_destinationpagesize = size;
         },
@@ -540,64 +756,7 @@ this.getCollectStorageLayerInfo();
                 }
             });
         },
-        ChooseDestination(row, index) {
-            this.dataExtractypeindex = index;
-            this.tableId = row.table_id;
-            if (this.dslIdString.length > 0) {
-                let aartrue = [],
-                    aarfalse = [],
-                    arrall = [];
-                for (let m = 0; m < this.dslIdString.length; m++) {
-                    arrall.push(this.dslIdString[m].tableId);
-                }
-                if (arrall.indexOf(row.table_id) != -1) {
-                    arrall.length = 0
-                    for (let m = 0; m < this.dslIdString.length; m++) {
-                        if (this.dslIdString[m].tableId == row.table_id) {
-                            let params = {},
-                                dslIds = this.dslIdString[m].dslIds;
-                            let data = this.storeTypeData;
-                            params["tableId"] = row.table_id;
-                            addTaskAllFun.getStoDestByTableId(params).then(res => {
-                                let arr = JSON.parse(JSON.stringify(res.data.tableStorage));
-                                if (dslIds.length > 0) {
-                                    for (let yn = 0; yn < arr.length; yn++) {
-                                        arr[yn].usedflag = false;
-                                        for (let n = 0; n < dslIds.length; n++) {
-                                            if (arr[yn].dsl_id == dslIds[n]) {
-                                                arr[yn].usedflag = true;
-                                            }
-                                        }
-                                        for (let j = 0; j < data.length; j++) {
-                                            if (data[j].code == arr[yn].store_type) {
-                                                arr[yn].store_type = data[j].value;
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    for (let yn = 0; yn < arr.length; yn++) {
-                                        arr[yn].usedflag = false;
-                                        for (let j = 0; j < data.length; j++) {
-                                            if (data[j].code == arr[yn].store_type) {
-                                                arr[yn].store_type = data[j].value;
-                                            }
-                                        }
-                                    }
-                                }
-                                this.destinationData = arr;
-                            })
-                            this.digForm.hyren_name = this.dslIdString[m].new_name
 
-                        }
-                    }
-                } else {
-                    this.destinationOldDataFun(row.table_id, row.table_name);
-                }
-            } else {
-                this.destinationOldDataFun(row.table_id, row.table_name);
-            }
-            this.dialogChooseDestination = true;
-        },
         //目的地弹框初始数据
         destinationOldDataFun(id, tablename) {
             let params = {};
@@ -624,104 +783,7 @@ this.getCollectStorageLayerInfo();
                 }
             });
         },
-        // 点击查看详情
-        getStoDestDetailFun(row) {
-            this.dialogViewDetails = true;
-            let params = {};
-            params["dslId"] = row.dsl_id;
-            addTaskAllFun.getStoDestDetail(params).then(res => {
-                if (res.data) {
-                    this.viewDatilsData = res.data;
-                }
-            });
-        },
-        // 点击配置属性按钮
-        getColumnStoInfoFun(row) {
-            this.type = row.store_type;
-            this.dslid = row.dsl_id;
-            if (row.store_type == "Hbase") {
-                this.Hbase = true;
-            } else {
-                this.Hbase = false;
-            }
-            this.dialogFieldProperty = true;
-            // 获取表头
-            let params0 = {};
-            params0["dslId"] = row.dsl_id;
-            addTaskAllFun.getColumnHeader(params0).then(res => {
-                if (res.data) {
-                    let arr = [];
-                    for (var key in res.data) {
-                        if (key == "column_name") {
-                            arr.push({
-                                id: key,
-                                value: res.data[key]
-                            });
-                        }
-                    }
-                    for (var key in res.data) {
-                        if (key == "column_ch_name") {
-                            arr.push({
-                                id: key,
-                                value: res.data[key]
-                            });
-                        }
-                    }
-                    for (var key in res.data) {
-                        if (key != "column_name" && key != "column_ch_name") {
-                            arr.push({
-                                id: key,
-                                value: "是否" + res.data[key],
-                                active: false
-                            });
-                        }
-                    }
-                    this.selectedColumnList = arr;
-                }
-            });
-            // 获取数据
-            let params = {};
-            params["dslId"] = row.dsl_id;
-            params["tableId"] = this.tableId;
-            addTaskAllFun.getColumnStoInfo(params).then(res => {
-                if (res.data) {
-                    let arr = JSON.parse(JSON.stringify(res.data));
-                    for (let i = 0; i < arr.length; i++) {
-                        for (let key in arr[i]) {
-                            if (
-                                key == "column_id" ||
-                                key == "column_ch_name" ||
-                                key == "column_name" ||
-                                key == "csi_number"
-                            ) {
-                                key = arr[i][key];
-                            } else {
-                                if (arr[i][key] == "0") {
-                                    arr[i][key] = false;
-                                } else {
-                                    arr[i][key] = true;
-                                }
-                            }
-                        }
-                    }
-                    this.FieldProperty = arr;
-                }
-            });
-        },
-        allSelectFun(tit, e) {
-            let data = this.FieldProperty;
-            for (let i = 0; i < data.length; i++) {
-                for (let key in data[i]) {
-                    if (key == tit) {
-                        if (e) {
-                            data[i][key] = true;
-                        } else {
-                            data[i][key] = false;
-                        }
-                    }
-                }
-            }
-        },
+
         //上移
         moveUp(index, row, tableData) {
             if (index > 0) {
@@ -742,133 +804,7 @@ this.getCollectStorageLayerInfo();
                 tableData.splice(index, 0, downDate);
             }
         },
-        //  获取特殊字段值
-        specialfieldFun() {
-            let params = {};
-            params["category"] = "StoreLayerAdded";
-            this.$Code.getCategoryItems(params).then(res => {
-                if (res.data) {
-                    this.StoreData = res.data;
-                }
-            });
-        },
-        // 配置字段属性
-        ConfigureFieldPropertiesSubmitFun() {
-            let data = this.FieldProperty;
-            let arr = data,
-                columnString = [],
-                count = 0,
-                specialfield = [],
-                arrlist = [];
-            // 调特殊字段接口dslid
-            let params0 = {};
-            params0["dslId"] = this.dslid;
-            addTaskAllFun.getDataStoreLayerAddedId(params0).then(res => {
-                if (res.data) {
-                    let data = res.data,
-                        arr2 = [];
-                    // 将获得的id以固定形式给arr2
-                    if (data) {
-                        for (let item in data) {
-                            arr2.push({
-                                key: item,
-                                value: data[item]
-                            });
-                        }
-                        // 将特殊字段对应id组成新的数组给specialfield
-                        for (let i = 0; i < this.StoreData.length; i++) {
-                            for (let j = 0; j < arr2.length; j++) {
-                                if (this.StoreData[i].code == arr2[j].key) {
-                                    specialfield.push({
-                                        key: this.StoreData[i].value,
-                                        value: arr2[j].value
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    //columnString
-                    for (let i = 0; i < arr.length; i++) {
-                        columnString.push({
-                            column_id: arr[i].column_id,
-                            column_ch_name: arr[i].column_ch_name
-                        });
-                        delete arr[i].column_name;
-                        delete arr[i].column_ch_name;
-                        arr[i].dsladIds = [];
-                        // Hbase类型增加csiNumber字段
-                        if (this.type == "Hbase") {
-                            delete arr[i].csiNumber;
-                            if (arr[i].rowkey) {
-                                if (arr[i].rowkey == true) {
-                                    count = count + 1;
-                                    arr[i].csiNumber = count;
-                                }
-                            }
-                        }
-                        // 遍历得到dsladIds数组
-                        for (let key in arr[i]) {
-                            if (
-                                key != "csiNumber" &&
-                                key != "column_id" &&
-                                key != "dsladIds" &&
-                                key != "csi_number"
-                            ) {
-                                if (key) {
-                                    if (arr[i][key] == true) {
-                                        delete arr[i][key];
-                                        arr[i].dsladIds.push(key);
-                                    } else {
-                                        delete arr[i][key];
-                                    }
-                                }
-                            }
-                            if (key == "column_id") {
-                                arr[i].columnId = arr[i][key];
-                                delete arr[i][key];
-                            }
-                            if (key == "csi_number") {
-                                delete arr[i][key];
-                            }
-                        }
-                    }
-                    arrlist = JSON.parse(JSON.stringify(arr));
-                    // dslIds空的删除，并替换对应特殊字段id
-                    for (let j = 0; j < arrlist.length; j++) {
-                        if (arrlist[j].dsladIds.length == "0") {
-                            arrlist.splice(j, 1);
-                            j--;
-                        } else {
-                            for (let n = 0; n < arrlist[j].dsladIds.length; n++) {
-                                for (let m = 0; m < specialfield.length; m++) {
-                                    if (specialfield[m].key == arrlist[j].dsladIds[n]) {
-                                        arrlist[j].dsladIds[n] = specialfield[m].value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // 保存特殊字段
-                    let params = {};
-                    params["colStoInfoString"] = JSON.stringify(arrlist);
-                    params["tableId"] = this.tableId;
-                    addTaskAllFun.saveColStoInfo(params).then(res => {
-                        message.saveSuccess(res);
-                    });
-                    // 保存修改的中文列名
-                    let params1 = {};
-                    params1["columnString"] = JSON.stringify(columnString);
-                    addTaskAllFun.updateColumnZhName(params1).then(res => {
-                        // message.saveSuccess(res);
-                        this.dialogFieldProperty = false;
-                    });
-                }
-            });
-        },
-        // 配置字段属性取消按钮
-        ConfigureFieldPropertiesCloseFun() {
-            this.dialogFieldProperty = false;
-        },
+
         // 改变所有存储方式确定按钮方法
         allcunchuFun(e) {
             if (e) {
@@ -906,91 +842,7 @@ this.getCollectStorageLayerInfo();
                 this.saveDayvisible = false;
             }
         },
-        //选择目的地弹框提交确定按钮
-        ChooseDestinationSubmitFun(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    let data = JSON.parse(JSON.stringify(this.destinationData)),
-                        str = '',
-                        searcharr = [];
-                    for (let i = 0; i < data.length; i++) {
-                        if (data[i].usedflag == true) {
-                            searcharr.push(data[i].dsl_name.toLowerCase())
-                        }
-                    }
-                    if (searcharr.indexOf('oracle') == -1) {
-                        str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
-                        let dslIds = [];
-                        if (this.dslIdString.length > 0) {
-                            for (let j = 0; j < this.dslIdString.length; j++) {
-                                if (this.dslIdString[j].tableId == this.tableId) {
-                                    this.dslIdString.splice(j, 1);
-                                    j--
-                                }
-                            }
-                        }
-                        for (let i = 0; i < data.length; i++) {
-                            if (data[i].usedflag == true) {
-                                dslIds.push(data[i].dsl_id);
-                            }
-                        }
-                        if (dslIds.length != 0) {
-                            this.dslIdString.push({
-                                dslIds: dslIds,
-                                tableId: this.tableId,
-                                hyren_name: str,
-                                new_name: this.digForm.hyren_name
-                            });
-                            this.dialogChooseDestination = false;
-                            this.ruleForm.ex_destinationData[
-                                this.dataExtractypeindex
-                            ].table_setting = true;
-                        } else {
-                            this.open();
-                        }
-                    } else {
-                        str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
-                        if (str.length > 27) {
-                            this.$message({
-                                showClose: true,
-                                message: "选择目的地存在oracl时,落地表名长度不能超过27,请修改落地表名",
-                                type: "error"
-                            });
-                        } else {
-                            let dslIds = [];
-                            if (this.dslIdString.length > 0) {
-                                for (let j = 0; j < this.dslIdString.length; j++) {
-                                    if (this.dslIdString[j].tableId == this.tableId) {
-                                        this.dslIdString.splice(j, 1);
-                                        j--
-                                    }
-                                }
-                            }
-                            for (let i = 0; i < data.length; i++) {
-                                if (data[i].usedflag == true) {
-                                    dslIds.push(data[i].dsl_id);
-                                }
-                            }
-                            if (dslIds.length != 0) {
-                                this.dslIdString.push({
-                                    dslIds: dslIds,
-                                    tableId: this.tableId,
-                                    hyren_name: str,
-                                    new_name: this.digForm.hyren_name
-                                });
-                                this.dialogChooseDestination = false;
-                                this.ruleForm.ex_destinationData[
-                                    this.dataExtractypeindex
-                                ].table_setting = true;
-                            } else {
-                                this.open();
-                            }
-                        }
-                    }
-                }
-            })
 
-        },
         open() {
             this.$message({
                 showClose: true,
@@ -1003,51 +855,7 @@ this.getCollectStorageLayerInfo();
         },
 
         //
-        //选择目的地弹框全选
-        Allis_destinationFun(items, e) {
-            let that = this;
-            items.forEach((item, j) => {
-                if (e) {
-                    item.usedflag = true;
-                } else {
-                    item.usedflag = false;
-                }
-            });
-        },
-        // 选择目的地弹框选择某一个
-        destination_evercheck(val, name) {
-            if (val == true) {
-                for (let i = 0; i < this.destinationData.length; i++) {
-                    if (this.destinationData[i].dsl_name == name) {
-                        this.destinationData[i].usedflag = true;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.destinationData.length; i++) {
-                    if (this.destinationData[i].dsl_name == name) {
-                        this.destinationData[i].usedflag = false;
-                    }
-                }
-            }
-        },
-        // 全表设置目的地
-        AllSettingDestinationFun() {
-            this.dialogAllChooseDestination = true
-            //    AlldestinationData
-            addTaskAllFun.getStorageData().then(res => {
-                let arr = JSON.parse(JSON.stringify(res.data));
-                let data = this.storeTypeData;
-                for (let i = 0; i < arr.length; i++) {
-                    for (let j = 0; j < data.length; j++) {
-                        if (data[j].code == arr[i].store_type) {
-                            arr[i].store_type = data[j].value;
-                        }
-                    }
-                }
-                this.AlldestinationData = arr;
-            })
 
-        },
         // 全表设置目的地确定提交
         ChooseAllDestinationSubmitFun() {
             if (this.Alldestinationchoose.length > 0) {
@@ -1066,7 +874,6 @@ this.getCollectStorageLayerInfo();
                     this.ruleForm.ex_destinationData[i].table_setting = true
                 }
                 this.dialogAllChooseDestination = false
-                console.log(this.dslIdString)
             } else {
                 this.open()
             }
@@ -1229,14 +1036,12 @@ this.getCollectStorageLayerInfo();
 
 .cleanbtn {
     width: 100%;
-    background: #f3f1f1;
-    padding: 10px 0;
+    margin-bottom: 2px;
     overflow: hidden;
     position: relative;
 }
 
 .cleanbtn>button {
     float: right;
-    margin: 0 10px;
 }
 </style>

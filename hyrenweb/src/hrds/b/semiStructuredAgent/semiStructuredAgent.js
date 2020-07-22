@@ -222,6 +222,33 @@ export function updateColumnZhName(data) {
         params: data
     })
 }
+/**(9)
+ * 查询数据存储层配置信息
+ */
+export function searchDataStore(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/searchDataStore',
+        params: data
+    })
+}
+/**(10)
+ * 保存前检查
+ */
+export function checkDtabRelationStore(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/checkDtabRelationStore',
+        params: data
+    })
+}
+/**(11)
+ * 设置所有表的目的地
+ */
+export function batchSaveDtabRelationStoreInfo(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/batchSaveDtabRelationStoreInfo',
+        params: data
+    })
+}
 //startMode页面
 /**(1)
  * 获取当前半结构化采集任务下的作业信息
