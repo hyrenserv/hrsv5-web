@@ -197,6 +197,17 @@ export default new Router({
                         { name: '系统列表' },
                     ],
                 },
+                 // 码值维护
+                 {
+                    path: '/codeMaintenance',
+                    name: 'codeMaintenance',
+                    title: '系统列表',
+                    component: () => import('@/hrds/a/codeMaintenance/codeMaintenance.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '系统列表' },
+                    ],
+                },
                 // 半结构化agent采集
                 {
                     path: '/collection5_1',
