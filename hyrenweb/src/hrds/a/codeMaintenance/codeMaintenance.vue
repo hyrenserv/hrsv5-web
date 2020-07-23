@@ -12,7 +12,7 @@
             </el-row>
             <el-table stripe :data="codeMaintenanceTableData" border size="medium" :span-method="arraySpanMethod">
 
-                <el-table-column type="index" label="序号" width="62" align="center">
+                <el-table-column label="序号" width="62" align="center">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
                     </template>
@@ -73,7 +73,7 @@
                 <el-row class="hiddenOrshowRow">
                     <el-col :span="24">
                         <strong class="strongSpan"> 编码分类:</strong>
-                        <el-select v-model="form.job_status" size="small" placeholder="--选择编码分类--" @change="changeValue">
+                        <el-select v-model="job_status" size="small" placeholder="--选择编码分类--" @change="changeValue">
                             <el-option v-for="item in jobStatus" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
@@ -366,6 +366,7 @@ export default {
             totalItem: 0,
             currentPage: 1,
             pageSize: 10,
+            job_status: '',
             jobStatus: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleUpdate: false,
@@ -517,7 +518,7 @@ export default {
                     colspan: _col
                 }
             }
-            if (columnIndex === 2 || columnIndex === 5) {
+            if (columnIndex === 0 ||columnIndex === 2 || columnIndex === 5) {
                 const _row = this.spanArr2[rowIndex];
                 const _col = _row > 0 ? 1 : 0;
                 return {
@@ -621,6 +622,7 @@ export default {
                             this.getOrigSysInfo();
                             this.dialogFormVisibleAddScoure = false;
                             this.$refs.formScoure.resetFields();
+
                         }
                     })
                 } else {
@@ -652,9 +654,12 @@ export default {
         },
         // 返回上一步
         saveOrgohome() {
+            this.job_status = '';
+            this.formScoureAdd.codeMaintenanceTableDataScoureAdd = [];
             this.hiddenOrshow = false;
             this.showOrhidden = true;
             this.getOrigSysInfo();
+
         },
         // 获取select对应的选择值
         changeValue(val) {
@@ -732,7 +737,7 @@ export default {
                     colspan: _col
                 }
             }
-            if (columnIndex === 2 || columnIndex === 6) {
+            if (columnIndex === 0||columnIndex === 2 || columnIndex === 6) {
                 const _row = this.spanArr2[rowIndex];
                 const _col = _row > 0 ? 1 : 0;
                 return {
@@ -898,6 +903,17 @@ export default {
 .codeValue>>>.el-table {
     margin-bottom: 20px;
 }
+
+/* .codeValue>>>.el-table .el-form-item__error {
+    color: #F56C6C;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    position: absolute;
+    top: 25%;
+    right: -60%;
+    z-index: 1000;
+} */
 
 .tabaleSpan {
     color: #337ab7;

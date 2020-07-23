@@ -33,7 +33,7 @@
                 </template>
                 <template slot-scope="scope">
                     <span class="settingbtn" v-if="scope.row.data_extract_type!='1'">
-                        <el-button type="success" size="mini" v-if="scope.row.dsl_id !=undefined" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
+                        <el-button type="success" size="mini" v-if="scope.row.dslIds.length !=0 || scope.row.dsl_id !=undefined" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
                         <el-button type="warning" size="mini" v-else @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
                     </span>
                 </template>
@@ -266,7 +266,7 @@ export default {
             Alldestinationchoose: [],
             ocsId: '',
             columnHeader: [],
-            dataALLindex: ''
+            dataALLindex: '',
         };
     },
     computed: {
@@ -314,7 +314,12 @@ export default {
             functionAll.getCollectStorageLayerInfo({
                 odc_id: this.$route.query.odc_id
             }).then(res => {
+                res.data.forEach((item) => {
+                    item.dslIds = [];
+                })
                 this.ruleForm.ex_destinationData = res.data;
+
+                console.log(this.ruleForm.ex_destinationData)
             })
         },
         //根据ocs_id获取每行的目的存储数据
@@ -322,52 +327,73 @@ export default {
             this.ocsId = row.ocs_id;
             this.dataALLindex = index;
             this.storeTypeFun(); //调用代码项
-            let getDslId = new Promise((resolve, reject) => { //查询是否为已选择项回显数据
-                functionAll.getStorageLayerDestById({
-                    ocs_id: row.ocs_id
-                }).then(res => {
-                    if (res && res.success) {
-                        resolve(res.data)
-                    } else {
-                        reject()
-                    }
-
-                })
-            })
-
-            let getSearchDataStore = new Promise((resolve, reject) => { //获取选择目的地信息
+            if (row.dslIds.length > 0) {
                 functionAll.searchDataStore().then(res => {
                     if (res && res.success) {
                         res.data.forEach(item => {
-                            item.usedflag = false;
+                            row.dslIds.forEach(value => {
+                                if (value == item.dsl_id) {
+                                    item.usedflag = true;
+                                }
+                            })
+
                             this.storeTypeData.forEach(val => {
                                 if (item.store_type == val.code) {
                                     item.store_type = val.value;
                                 }
                             })
                         })
-                        resolve(res.data)
-                    } else {
-                        reject()
-                    }
-
-                    Promise.all([getDslId, getSearchDataStore]).then(res => {
-                        let arr1 = res[0]; //查询dsl_id是否存在回显
-                        let arr2 = res[1]; //选择目的地表格内容
-                        arr1.forEach(item1 => {
-                            arr2.forEach(item2 => {
-                                if (item1.dsl_id != undefined) {
-                                    if (item1.dsl_id == item2.dsl_id) {
-                                        item2.usedflag = true;
-                                    }
-                                }
-                            })
-                        })
+                        this.destinationData = res.data;
                         this.dialogChooseDestination = true;
-                        this.destinationData = arr2;
+                    }
+                })
+            } else {
+                let getDslId = new Promise((resolve, reject) => { //查询是否为已选择项回显数据
+                    functionAll.getStorageLayerDestById({
+                        ocs_id: row.ocs_id
+                    }).then(res => {
+                        if (res && res.success) {
+                            resolve(res.data)
+                        } else {
+                            reject()
+                        }
+
                     })
                 })
-            })
+
+                let getSearchDataStore = new Promise((resolve, reject) => { //获取选择目的地信息
+                    functionAll.searchDataStore().then(res => {
+                        if (res && res.success) {
+                            res.data.forEach(item => {
+                                item.usedflag = false;
+                                this.storeTypeData.forEach(val => {
+                                    if (item.store_type == val.code) {
+                                        item.store_type = val.value;
+                                    }
+                                })
+                            })
+                            resolve(res.data)
+                        } else {
+                            reject()
+                        }
+                    })
+                })
+                Promise.all([getDslId, getSearchDataStore]).then(res => {
+                    let arr1 = res[0]; //查询dsl_id是否存在回显
+                    let arr2 = res[1]; //选择目的地表格内容
+                    arr1.forEach(item1 => {
+                        arr2.forEach(item2 => {
+                            if (item1.dsl_id != undefined) {
+                                if (item1.dsl_id == item2.dsl_id) {
+                                    item2.usedflag = true;
+                                }
+                            }
+                        })
+                    })
+                    this.dialogChooseDestination = true;
+                    this.destinationData = arr2;
+                })
+            }
 
         },
         // 代码项获取
@@ -590,18 +616,29 @@ export default {
                     item.dsl_id
                 )
             })
-            functionAll.saveDtabRelationStoreInfo({
-                odc_id: this.$route.query.odc_id,
-                ocs_id: this.ocsId,
-                dslIds: arr2
-            }).then(res => {
-                if (res && res.success) {
-                    this.getCollectStorageLayerInfo(); //更新表格信息
-                    message.customizTitle('选择目的地保存成功', 'success');
-                    this.destinationData = [];
-                    this.dialogChooseDestination = false;
+
+            arr.forEach(item => {
+                if (this.ruleForm.ex_destinationData[this.dataALLindex].dslIds.indexOf(item.dsl_id) == -1) {
+                    this.ruleForm.ex_destinationData[this.dataALLindex].dslIds.push(
+                        item.dsl_id
+                    )
                 }
             })
+            this.destinationData = [];
+            this.dialogChooseDestination = false;
+            console.log(this.ruleForm.ex_destinationData)
+            // functionAll.saveDtabRelationStoreInfo({
+            //     odc_id: this.$route.query.odc_id,
+            //     ocs_id: this.ocsId,
+            //     dslIds: arr2
+            // }).then(res => {
+            //     if (res && res.success) {
+            //         this.getCollectStorageLayerInfo(); //更新表格信息
+            //         message.customizTitle('选择目的地保存成功', 'success');
+            //         this.destinationData = [];
+            //         this.dialogChooseDestination = false;
+            //     }
+            // })
         },
         // 选择配置字段属性全选与反选
         allSelectFun(FieldProperty, colTrueFalse, val) {
@@ -618,7 +655,7 @@ export default {
         checkDtabRelationStore() {
             let arr = [];
             this.ruleForm.ex_destinationData.forEach(item => {
-                if (item.dsl_id != undefined) {
+                if (item.dslIds.length > 0) {
                     arr.push(item.ocs_id);
                 }
             })
@@ -626,27 +663,63 @@ export default {
                 ocsIds: arr
             }).then((res) => {
                 if (res && res.success) {
-                    this.updateTableZhName();
+                    console.log("222")
+
                 }
             })
         },
         // 下一步保存
         next(formName) {
-            this.checkDtabRelationStore();
+            console.log(this.ruleForm.ex_destinationData)
+            this.gotoNextSteps();
+
         },
         //保存接口
-        updateTableZhName() {
-            functionAll.updateTableZhName({
-                objectCollectTasks: JSON.stringify(this.ruleForm.ex_destinationData)
-            }).then(res => {
-                if (res && res.success) {
-                    // this.$router.push({
-                    //     name: "startMode",
-                    //     query: {
-                    //         agent_id: this.$route.query.agent_id,
-                    //         odc_id: this.$route.query.odc_id
-                    //     }
-                    // })
+        gotoNextSteps() {
+
+            let batchSaveDtabRelationStoreInfo = new Promise((resolve, reject) => { //查询是否为已选择项回显数据
+                let arr = [];
+                this.ruleForm.ex_destinationData.forEach((item) => {
+                    arr.push({
+                        tableId: item.ocs_id,
+                        dslIds: item.dslIds
+                    })
+                })
+                functionAll.batchSaveDtabRelationStoreInfo({
+                    odc_id: this.$route.query.odc_id,
+                    dataStoRelaParams: JSON.stringify(arr)
+                }).then(res => {
+                    if (res && res.success) {
+                        resolve(res.code)
+                    } else {
+                        reject()
+                    }
+                })
+            })
+
+            let updateTableZhName = new Promise((resolve, reject) => { //获取选择目的地信息
+                functionAll.updateTableZhName({
+                    objectCollectTasks: JSON.stringify(this.ruleForm.ex_destinationData)
+                }).then(res => {
+                    if (res && res.success) {
+                        resolve(res.code)
+                    } else {
+                        reject()
+                    }
+                })
+
+            })
+            Promise.all([batchSaveDtabRelationStoreInfo, updateTableZhName]).then(res => {
+                let num0 = res[0];
+                let num1 = res[1];
+                if (num0 == 200 && num1 == 200) {
+                    this.$router.push({
+                        name: "startMode",
+                        query: {
+                            agent_id: this.$route.query.agent_id,
+                            odc_id: this.$route.query.odc_id
+                        }
+                    })
                 }
             })
         },
@@ -668,6 +741,32 @@ export default {
                 }
             })
         },
+        // 全表设置目的地全选
+        AllhandleSelectionChange(item) {
+            this.Alldestinationchoose = item
+        },
+        // 全表设置目的地单个勾选
+        allselectD(item) {
+            this.Alldestinationchoose = item
+        },
+        // 全表设置目的地确定提交
+        ChooseAllDestinationSubmitFun() {
+            console.log(this.Alldestinationchoose)
+            this.Alldestinationchoose.forEach(item => {
+                this.ruleForm.ex_destinationData.forEach(val => {
+                    if (val.dslIds.indexOf(item.dsl_id) == -1) {
+                        val.dslIds.push(
+                            item.dsl_id
+                        )
+                    }
+
+                })
+            })
+            this.dialogAllChooseDestination = false;
+            console.log(this.ruleForm.ex_destinationData)
+
+        },
+
         // --------------end-----------------------------------------------------------
         //获取初始数据，数据抽取及入库
         getTbStoDestByColSetIdFun() {
@@ -856,36 +955,6 @@ export default {
 
         //
 
-        // 全表设置目的地确定提交
-        ChooseAllDestinationSubmitFun() {
-            if (this.Alldestinationchoose.length > 0) {
-                this.dslIdString.length = 0
-                let dslIds = []
-                for (let i = 0; i < this.Alldestinationchoose.length; i++) {
-                    dslIds.push(this.Alldestinationchoose[i].dsl_id)
-                }
-                for (let i = 0; i < this.ruleForm.ex_destinationData.length; i++) {
-                    this.dslIdString.push({
-                        dslIds: dslIds,
-                        tableId: this.ruleForm.ex_destinationData[i].table_id,
-                        hyren_name: this.datasource_number + '_' + this.classify_num + '_' + this.ruleForm.ex_destinationData[i].table_name,
-                        new_name: this.ruleForm.ex_destinationData[i].table_name
-                    });
-                    this.ruleForm.ex_destinationData[i].table_setting = true
-                }
-                this.dialogAllChooseDestination = false
-            } else {
-                this.open()
-            }
-        },
-        // 全表设置目的地全选
-        AllhandleSelectionChange(item) {
-            this.Alldestinationchoose = item
-        },
-        // 全表设置目的地单个勾选
-        allselectD(item) {
-            this.Alldestinationchoose = item
-        }
     }
 };
 </script>

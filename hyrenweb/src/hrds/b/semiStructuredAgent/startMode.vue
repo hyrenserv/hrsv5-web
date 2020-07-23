@@ -5,36 +5,36 @@
         <div class="startupform">
             <el-row type="flex" justify="center">
                 <el-col :span="8">
-                    <el-form-item label="工程编号" prop="Project_num" :rules="filter_rules([{required: true}])">
+                    <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.Project_num" size="medium" readonly placeholder="工程编号">
+                            <el-input v-model="ruleForm.etl_sys_cd" size="medium" readonly placeholder="工程编号">
                                 <el-button slot="append" icon="el-icon-zoom-in" @click="Projectnumdialog=true;getEtlSysDataFun()"></el-button>
                             </el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="任务编号" prop="work_num" :rules="filter_rules([{required: true}])">
+                    <el-form-item label="任务编号" prop="sub_sys_cd" :rules="filter_rules([{required: true}])">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.work_num" size="medium" readonly placeholder="任务编号">
+                            <el-input v-model="ruleForm.sub_sys_cd" size="medium" readonly placeholder="任务编号">
                                 <el-button slot="append" icon="el-icon-zoom-in" @click="getwork_numFun()"></el-button>
                             </el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                    <el-form-item label="作业程序类型" prop="work_type" :rules="rule.default">
+                    <el-form-item label="作业程序类型" prop="pro_type" :rules="rule.default">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.work_type" size="medium" readonly placeholder="作业程序类型"></el-input>
+                            <el-input v-model="ruleForm.pro_type" size="medium" readonly placeholder="作业程序类型"></el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row type="flex" justify="center">
                 <el-col :span="8">
-                    <el-form-item label="作业程序名称" prop="work_name">
+                    <el-form-item label="作业程序名称" prop="pro_name">
                         <el-col :span="16">
-                            <el-input v-model="ruleForm.work_name" size="medium" readonly></el-input>
+                            <el-input v-model="ruleForm.pro_name" size="medium" readonly></el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
@@ -97,17 +97,17 @@
             </el-row>
             <el-row type="flex" justify="center">
                 <el-col :span="10">
-                    <el-form-item label="作业程序目录" prop="work_path" :rules="rule.default" class='ml_lable'>
+                    <el-form-item label="作业程序目录" prop="pro_dic" :rules="rule.default" class='ml_lable'>
                         <el-col :span="24">
-                            <el-input v-model="ruleForm.work_path" placeholder="作业程序目录" size="medium">
+                            <el-input v-model="ruleForm.pro_dic" placeholder="作业程序目录" size="medium">
                             </el-input>
                         </el-col>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-form-item label="日志目录" prop="log_path" :rules="rule.default" class='ml_lable'>
+                    <el-form-item label="日志目录" prop="log_dic" :rules="rule.default" class='ml_lable'>
                         <el-col :span="24">
-                            <el-input v-model="ruleForm.log_path" placeholder="日志目录" size="medium">
+                            <el-input v-model="ruleForm.log_dic" placeholder="日志目录" size="medium">
                             </el-input>
                         </el-col>
                     </el-form-item>
@@ -116,7 +116,7 @@
             </el-row>
         </div>
         <div class="steps4">
-            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
+            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
                 <el-table-column label="序号" align="center" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -146,7 +146,7 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="作业优先级" align="center" :show-overflow-tooltip="true" width="90">
+                <el-table-column label="作业优先级" align="center" :show-overflow-tooltip="true" width="110">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.job_priority'" :rules="rule.default">
                             <el-input style="width:100%" v-model="scope.row.job_priority" placeholder="0" size="mini"></el-input>
@@ -163,7 +163,7 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="调度时间位移" align="center" :show-overflow-tooltip="true" width="90">
+                <el-table-column label="调度时间位移" align="center" :show-overflow-tooltip="true" width="110">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.disp_offset'" :rules="rule.default" v-if="scope.row.disp_type==='T'||scope.row.disp_type==='Z'">
                             <el-input style="width:100%" v-model="scope.row.disp_offset" placeholder="0" size="mini"></el-input>
@@ -206,7 +206,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">选择工程编号</span>
         </div>
-        <el-table stripe  :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
+        <el-table stripe :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="projnum_radio" :label="scope.row">&thinsp;</el-radio>
@@ -268,23 +268,21 @@
         </span>
     </el-dialog>
     <!-- 加载过度 -->
-    <transition name="fade">
+    <!-- <transition name="fade">
         <loading v-if="isLoading" />
-    </transition>
+    </transition> -->
 </div>
 </template>
 
 <script>
 import Step from "./step";
 import * as functionAll from "./semiStructuredAgent";
-import Loading from '../../components/loading'
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as message from "@/utils/js/message";
 export default {
     components: {
-        Step,
-        Loading
+        Step
     },
     data() {
         return {
@@ -307,12 +305,12 @@ export default {
             tableloadingInfo: '数据加载中...',
             rule: validator.default,
             ruleForm: {
-                Project_num: "",
-                work_num: "",
-                work_type: "",
-                work_name: "",
-                work_path: "",
-                log_path: "",
+                etl_sys_cd: "",
+                sub_sys_cd: "",
+                pro_type: "",
+                pro_name: "",
+                pro_dic: "",
+                log_dic: "",
                 Dispatching_frequency: "",
                 Dispatching_timedrift: "",
                 Dispatching_time: "",
@@ -333,22 +331,11 @@ export default {
             // TandZ: '0',
         };
     },
-    created() {
-        this.dbid = this.$route.query.id;
-        this.aId = this.$route.query.agent_id;
-        this.sourId = this.$route.query.source_id;
-        // this.sName = this.$Base64.decode(this.$route.query.source_name);
-        this.getAgentPathFun() //获取目录
-    },
     mounted() {
         //Dispatch_Frequency
-        // this.getPreJobName() //获取上游作业名称
-
-        if (this.$route.query.edit) {
-            this.getEtlJobDataFun() //获取编辑任务下的作业信息
-        } else {
-            this.getPreviewJobFun() //获取任务下的作业信息
-        }
+        this.getPreviewJob();
+        this.getAgentPath();
+        this.getEtlJobConfInfoFromObj();
         // 调度频率
         this.$Code.getCategoryItems({
             'category': 'Dispatch_Frequency'
@@ -362,13 +349,13 @@ export default {
             'category': 'Dispatch_Type'
         }).then(res => {
             if (res.data) {
-                 let data = res.data
-                    for (let i = 0; i < data.length; i++) {
-                        if (data[i].code == 'A' || data[i].code == 'B') {
-                            data.splice(i, 1);
-                            i--
-                        }
+                let data = res.data
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].code == 'A' || data[i].code == 'B') {
+                        data.splice(i, 1);
+                        i--
                     }
+                }
                 this.Dispatching_mode = res.data;
             }
         });
@@ -382,77 +369,199 @@ export default {
         });
     },
     methods: {
+        // 返回上一步
+        pre() {
+            this.$router.push({
+                name: "dataStorage",
+                query: {
+                    agent_id: this.$route.query.agent_id,
+                    odc_id: this.$route.query.odc_id
+                }
+            })
+        },
+        // 返回采集列表
         backFun() {
             this.$router.push({
                 path: "/agentList"
             });
         },
+        // 获取定义启动方式初始值
+        getPreviewJob() { //获取当前半结构化采集任务下的作业信息(新增的时候)
+            functionAll.getPreviewJob({
+                odc_id: this.$route.query.odc_id
+            }).then(res => {
+                this.ruleForm.startuptableData = res.data
+            })
+        },
+        getAgentPath() { //获取任务Agent的部署路径及日志目录
+            functionAll.getAgentPath({
+                odc_id: this.$route.query.odc_id
+            }).then(res => {
+                this.ruleForm.log_dic = res.data.log_dic;
+                this.ruleForm.pro_dic = res.data.pro_dic;
+                this.ruleForm.pro_name = res.data.pro_name;
+                this.ruleForm.pro_type = res.data.pro_type;
+            })
+        },
+        getEtlJobConfInfoFromObj() { //获取半结构化采集作业配置(编辑的时候)
+            functionAll.getEtlJobConfInfoFromObj({
+                odc_id: this.$route.query.odc_id
+            }).then(res => {
+
+            })
+        },
+        // 获取工程信息
+        getEtlSysDataFun() {
+            this.tableloadingInfo = '数据加载中...'
+            functionAll.getEtlSysData().then(res => {
+                if (res.data.length > 0) {
+                    this.ProjectnumData = res.data
+                } else {
+                    this.tableloadingInfo = '暂无数据'
+                }
+            })
+        },
+        //点击任务编号按钮
+        getwork_numFun() {
+            //调接口显示内容
+            if (this.ruleForm.etl_sys_cd != undefined && this.ruleForm.etl_sys_cd != '') {
+                this.Worknumdialog = true
+                functionAll.getEtlSubSysData({
+                    'etl_sys_cd': this.ruleForm.etl_sys_cd
+                }).then(res => {
+                    this.WorknumData = res.data
+                })
+            } else {
+                this.$message({
+                    message: '工程编号未选择',
+                    type: "error"
+                });
+            }
+
+        },
+        // 获取上游作业下拉
+        getPreJobName() {
+            let arr = [];
+            if (this.ruleForm.etl_sys_cd != undefined && this.ruleForm.etl_sys_cd != '') {
+                functionAll.searchEtlJob({
+                    'etl_sys_cd': this.ruleForm.etl_sys_cd
+                }).then(res => {
+                    if (res !== undefined && res.data.length > 0) {
+                        res.data.forEach((item) => {
+                            arr.push({
+                                'value': item,
+                                'code': item
+                            });
+                        });
+                        this.preJobName = arr;
+                    }
+                });
+            } else {
+                this.$message({
+                    message: '工程编号未选择',
+                    type: "error"
+                });
+            }
+        },
+
+        // ---------------------------end-------------
         next(formName) {
+            console.log(this.ruleForm)
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    this.isLoading = true
-                    let params = {};
-                    params["colSetId"] = parseInt(this.dbid);
-                    params["etl_sys_cd"] = this.ruleForm.Project_num;
-                    params["pro_dic"] = this.ruleForm.work_path;
-                    params["log_dic"] = this.ruleForm.log_path;
-                    params["sub_sys_cd"] = this.ruleForm.work_num;
-                    params["source_id"] = this.sourId;
-                    let arrdata = this.ruleForm.startuptableData
-                    let etlJobs = [],
-                        type = this.ruleForm.Dispatching_mode,
-                        ded_arr = [];
-                    let jobRelation = {}
-                    for (let i = 0; i < arrdata.length; i++) {
-                        ded_arr.push(arrdata[i].ded_id)
-                        if (arrdata[i].disp_type == 'D') {
-                            etlJobs.push({
-                                'pro_type': this.ruleForm.work_type,
-                                'pro_name': this.ruleForm.work_name,
-                                'disp_type': arrdata[i].disp_type,
-                                'pro_dic': this.ruleForm.work_path,
-                                'log_dic': this.ruleForm.log_path,
-                                'sub_sys_cd': this.ruleForm.work_num,
-                                'etl_job': arrdata[i].etl_job,
-                                'etl_job_desc': arrdata[i].etl_job_desc,
-                                'disp_freq': arrdata[i].disp_freq,
-                                'job_priority': parseInt(arrdata[i].job_priority),
-                                'pre_etl_job': arrdata[i].pre_etl_job,
-                                'pro_para': arrdata[i].pro_para,
-                                'etl_sys_cd': this.ruleForm.Project_num,
-                            })
-                            jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join('^');
-                        } else {
-                            etlJobs.push({
-                                'pro_type': this.ruleForm.work_type,
-                                'pro_name': this.ruleForm.work_name,
-                                'disp_type': arrdata[i].disp_type,
-                                'pro_dic': this.ruleForm.work_path,
-                                'log_dic': this.ruleForm.log_path,
-                                'sub_sys_cd': this.ruleForm.work_num,
-                                'etl_job': arrdata[i].etl_job,
-                                'etl_job_desc': arrdata[i].etl_job_desc,
-                                'disp_freq': arrdata[i].disp_freq,
-                                'job_priority': parseInt(arrdata[i].job_priority),
-                                'disp_offset': parseInt(arrdata[i].disp_offset),
-                                'disp_time': arrdata[i].disp_time,
-                                 'pro_para': arrdata[i].pro_para,
-                                'etl_sys_cd': this.ruleForm.Project_num,
-                            })
-                        }
-                    }
-                    params["etlJobs"] = JSON.stringify(etlJobs)
-                    params["ded_arr"] = ded_arr.join('^')
-                    params["jobRelations"] = JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation)
-                    sendTask.saveJobDataToDatabase(params).then(res => {
-                        if (res.code && res.code == 200) {
-                            this.isLoading = false
-                            this.active = 6;
-                            this.finishDialogVisible = true
-                        } else {
-                            this.isLoading = false
-                        }
+                    let arr = JSON.parse(JSON.stringify(this.ruleForm.startuptableData))
+                    arr.forEach(item => {
+                        item.etl_sys_cd = this.ruleForm.etl_sys_cd;
+                        item.sub_sys_cd = this.ruleForm.sub_sys_cd;
+                        item.pro_type = this.ruleForm.pro_type;
+                        item.pro_name = this.ruleForm.pro_name;
+                        item.log_dic = this.ruleForm.log_dic;
+                        item.pro_dic = this.ruleForm.pro_dic;
                     })
+                    console.log(arr)
+                    let arr2 = [];
+                    arr.forEach(item => {
+                        arr2.push({
+                            pre_etl_job: item.pre_etl_job,
+                            pro_dic: item.pro_dic,
+                            log_dic: item.log_dic,
+                            etl_sys_cd: item.etl_sys_cd,
+                            etl_job: item.etl_job,
+                            sub_sys_cd: item.sub_sys_cd,
+                            ocs_id: item.ocs_id
+                        })
+                    })
+                    console.log(arr2, 'i am')
+                    functionAll.saveStartModeConfData({
+                        odc_id: this.$route.query.odc_id,
+                        etlJobDefs: JSON.stringify(arr),
+                        jobStartConfs: JSON.stringify(arr2)
+                    }).then(res => {
+
+                    })
+                    // this.isLoading = true
+                    //         let params = {};
+                    //         params["colSetId"] = parseInt(this.dbid);//odc_id
+                    //         params["etl_sys_cd"] = this.ruleForm.Project_num;
+                    //         params["pro_dic"] = this.ruleForm.work_path;
+                    //         params["log_dic"] = this.ruleForm.log_path;
+                    //         params["sub_sys_cd"] = this.ruleForm.work_num;
+                    //         params["source_id"] = this.sourId;
+                    //         let arrdata = this.ruleForm.startuptableData
+                    //         let etlJobs = [],
+                    //             type = this.ruleForm.Dispatching_mode,
+                    //             ded_arr = [];
+                    //         let jobRelation = {}
+                    //         for (let i = 0; i < arrdata.length; i++) {
+                    //             ded_arr.push(arrdata[i].ded_id)
+                    //             if (arrdata[i].disp_type == 'D') {
+                    //                 etlJobs.push({
+                    //                     'pro_type': this.ruleForm.work_type,
+                    //                     'pro_name': this.ruleForm.work_name,
+                    //                     'disp_type': arrdata[i].disp_type,
+                    //                     'pro_dic': this.ruleForm.work_path,
+                    //                     'log_dic': this.ruleForm.log_path,
+                    //                     'sub_sys_cd': this.ruleForm.work_num,
+                    //                     'etl_job': arrdata[i].etl_job,
+                    //                     'etl_job_desc': arrdata[i].etl_job_desc,
+                    //                     'disp_freq': arrdata[i].disp_freq,
+                    //                     'job_priority': parseInt(arrdata[i].job_priority),
+                    //                     'pre_etl_job': arrdata[i].pre_etl_job,
+                    //                     'pro_para': arrdata[i].pro_para,
+                    //                     'etl_sys_cd': this.ruleForm.Project_num,
+                    //                 })
+                    //                 jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join('^');
+                    //             } else {
+                    //                 etlJobs.push({
+                    //                     'pro_type': this.ruleForm.work_type,
+                    //                     'pro_name': this.ruleForm.work_name,
+                    //                     'disp_type': arrdata[i].disp_type,
+                    //                     'pro_dic': this.ruleForm.work_path,
+                    //                     'log_dic': this.ruleForm.log_path,
+                    //                     'sub_sys_cd': this.ruleForm.work_num,
+                    //                     'etl_job': arrdata[i].etl_job,
+                    //                     'etl_job_desc': arrdata[i].etl_job_desc,
+                    //                     'disp_freq': arrdata[i].disp_freq,
+                    //                     'job_priority': parseInt(arrdata[i].job_priority),
+                    //                     'disp_offset': parseInt(arrdata[i].disp_offset),
+                    //                     'disp_time': arrdata[i].disp_time,
+                    //                     'pro_para': arrdata[i].pro_para,
+                    //                     'etl_sys_cd': this.ruleForm.Project_num,
+                    //                 })
+                    //             }
+                    //         }
+                    //         params["etlJobs"] = JSON.stringify(etlJobs)
+                    //         params["ded_arr"] = ded_arr.join('^')
+                    //         params["jobRelations"] = JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation)
+                    //         sendTask.saveJobDataToDatabase(params).then(res => {
+                    //             if (res.code && res.code == 200) {
+                    //                 this.isLoading = false
+                    //                 this.active = 6;
+                    //                 this.finishDialogVisible = true
+                    //             } else {
+                    //                 this.isLoading = false
+                    //             }
+                    //         })
                 }
             })
         },
@@ -464,32 +573,7 @@ export default {
                 }
             }
         },
-        pre() {
-            let data = {}
-            if (this.$route.query.edit == 'yes') {
-                data = {
-                    agent_id: this.aId,
-                    id: this.dbid,
-                    source_id: this.sourId,
-                    source_name: this.$route.query.source_name,
-                    is_archived: this.$route.query.is_archived,
-                    edit: "yes"
-                }
-            } else {
-                data = {
-                    agent_id: this.aId,
-                    id: this.dbid,
-                    source_id: this.sourId,
-                    agent_id: this.aId,
-                    source_name: this.$route.query.source_name,
-                    is_archived: this.$route.query.is_archived,
-                }
-            }
-            this.$router.push({
-                path: "/collection4_5",
-                query: data
-            });
-        },
+
         // 编辑状态下获取作业信息
         getEtlJobDataFun() {
             sendTask.getEtlJobData({
@@ -502,42 +586,7 @@ export default {
                 }
             })
         },
-        // 获取工程信息
-        getEtlSysDataFun() {
-            this.tableloadingInfo = '数据加载中...'
-            sendTask.getEtlSysData().then(res => {
-                if (res.data.length > 0) {
-                    this.ProjectnumData = res.data
-                } else {
-                    this.tableloadingInfo = '暂无数据'
-                }
-            })
-        },
-        // 获取路径
-        getAgentPathFun() {
-            sendTask.getAgentPath({
-                colSetId: this.dbid
-            }).then(res => {
-                this.ruleForm.work_name = res.data.pro_name
-                this.ruleForm.work_type = res.data.pro_type
-                this.ruleForm.log_path = res.data.log_dic
-                this.ruleForm.work_path = res.data.pro_dic
-                this.ruleForm.work_num = res.data.sub_sys_cd
-                this.ruleForm.Project_num = res.data.etl_sys_cd
-            })
-        },
-        // 获取作业列表
-        getPreviewJobFun() {
-            sendTask.getPreviewJob({
-                colSetId: this.dbid
-            }).then(res => {
-                if (res.data.length > 0) {
-                    this.ruleForm.startuptableData = res.data
-                } else {
-                    this.tableloadingInfo = '暂无数据'
-                }
-            })
-        },
+
         finishSubmit() {
             sendTask.sendDBCollectTaskById({
                 colSetId: this.dbid
@@ -545,10 +594,10 @@ export default {
                 if (res.success) {
                     this.finishDialogVisible = false
                     this.$message({
-                                    showClose: true,
-                                    message: '发送成功',
-                                    type: "success"
-                                });
+                        showClose: true,
+                        message: '发送成功',
+                        type: "success"
+                    });
                     this.$router.push({
                         path: "/agentList"
                     });
@@ -603,63 +652,20 @@ export default {
                 }
             })
         },
-        // 获取上游作业下拉
-        getPreJobName() {
-            let arr = [];
-            if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
-                sendTask.searchEtlJob({
-                    'etl_sys_cd': this.ruleForm.Project_num
-                }).then(res => {
-                    if (res !== undefined && res.data.length > 0) {
-                        res.data.forEach((item) => {
-                            arr.push({
-                                'value': item,
-                                'code': item
-                            });
-                        });
-                        this.preJobName = arr;
-                    }
-                });
-            } else {
-                this.$message({
-                    showClose: true,
-                    message: '工程编号未选择',
-                    type: "error"
-                });
-            }
-        },
-        projNumCloseFun(){
-            this.projnum_radio={}
+        projNumCloseFun() {
+            this.projnum_radio = {}
         },
         // 选择工程弹框确定
         projNumSubmitFun() {
-            this.ruleForm.Project_num = this.projnum_radio.etl_sys_cd
+            this.ruleForm.etl_sys_cd = this.projnum_radio.etl_sys_cd
             this.ruleForm.Project_name = this.projnum_radio.etl_sys_name
-            this.ruleForm.work_num = ''
+            this.ruleForm.sub_sys_cd = ''
             this.Projectnumdialog = false
         },
-        //点击任务编号按钮
-        getwork_numFun() {
-            //调接口显示内容
-            if (this.ruleForm.Project_num != undefined && this.ruleForm.Project_num != '') {
-                this.Worknumdialog = true
-                sendTask.getEtlSubSysData({
-                    'etl_sys_cd': this.ruleForm.Project_num
-                }).then(res => {
-                    this.WorknumData = res.data
-                })
-            } else {
-                this.$message({
-                    showClose: true,
-                    message: '工程编号未选择',
-                    type: "error"
-                });
-            }
 
-        },
         // 任务编号提交
         worknumSubmitFun() {
-            this.ruleForm.work_num = this.worknum_radio
+            this.ruleForm.sub_sys_cd = this.worknum_radio
             this.Worknumdialog = false
         },
         // 调度频率改变时
@@ -798,15 +804,18 @@ export default {
 .fdcColor>>>.el-input__inner {
     color: #f19b00;
 }
-#steps6>>>.el-tag.el-tag--info{
+
+#steps6>>>.el-tag.el-tag--info {
     max-width: 88%;
 }
-#steps6>>>.el-select__tags-text{
+
+#steps6>>>.el-select__tags-text {
     display: inline-flex;
     overflow: hidden;
     max-width: 90%;
 }
-#steps6>>>.el-select .el-tag__close.el-icon-close{
+
+#steps6>>>.el-select .el-tag__close.el-icon-close {
     right: -1px !important;
 }
 </style>
