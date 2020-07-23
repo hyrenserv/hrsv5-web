@@ -88,7 +88,7 @@ export function getStorageLayerConfInfo(data) {
 export function createTable(data) {
     return request({
         url: '/K/dm/metadatamanage/createTable',
-        params: data,
+        data: Qs.stringify(data),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
