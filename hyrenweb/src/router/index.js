@@ -540,6 +540,26 @@ export default new Router({
                         { name: '数据对标' },
                     ],
                 },
+                {path: '/Databenchmarking',
+                name: 'Databenchmarking',
+                title: 'Databenchmarking',
+                component: () => import('@/hrds/k/tdb/Databenchmarking.vue'),
+                meta: [
+                    { name: '首页' },
+                    { name: '数据对标',url: '/tdb'},
+                    { name: '数据分析' },
+                ],
+                },
+                {path: '/DimensionDivision',
+                name: 'DimensionDivision',
+                title: 'DimensionDivision',
+                component: () => import('@/hrds/k/tdb/DimensionDivision.vue'),
+                meta: [
+                    { name: '首页' },
+                    { name: '数据对标',url: '/tdb'},
+                    { name: '维度划分' },
+                ],
+                },
                 {
                     path: '/dataControl',
                     name: 'dataControl',
@@ -560,6 +580,19 @@ export default new Router({
                         { name: '首页' },
                         { name: '数据管控', url: '/dataControl' },
                         { name: '工程详情' },
+                    ],
+                },
+                 //元数据管理-创建表
+                 {
+                    path: '/createTable',
+                    name: 'createTable',
+                    title: '元数据管理创建表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '元数据管理创建表' },
                     ],
                 },
                 //血缘分析

@@ -541,3 +541,10 @@ export function saveJobDataToDatabase(data) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
  }
+ //发送此次任务
+export function sendJDBCCollectTaskById(data) {
+    return request({
+        url: '/B/agent/sendJDBCCollectTaskById',
+        params: data
+    })
+}

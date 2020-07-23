@@ -1,271 +1,544 @@
 <template>
 <div>
     <Step :active="active" :typeinfo='typeinfo'></Step>
-    <el-tabs v-model="activeNames" type="border-card">
-        <el-tab-pane label="数据采集" name="first">
-            <div id="dataAcquisition">
-                <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" class="demo-ruleForm">
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.task_name" size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
-                                    <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
-                                </el-col>
-                                <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
-                                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
-                                </el-tooltip>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.classify_num" size="medium" disabled placeholder="分类编号">
-                                        <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('1');outerVisible = true"></el-button>
-                                    </el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据源" prop="sourceName">
-                                <el-col :span="16">
-                                    <el-input v-model="sourceName" size="medium" disabled></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
-                                <el-col :span="16">
-                                    <el-select placeholder="数据库类型" v-model="ruleForm.database_type" @change="dbTypeFun" size="medium">
-                                        <el-option v-for="(item,index) in DatabaseType" :key="index" :label="item.value" :value="item.code"></el-option>
-                                    </el-select>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据库驱动" prop="database_drive">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.database_drive" size="medium" disabled></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="数据库名称" prop="database_name" :rules="rule.default">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.database_name" size="medium" @input="jdbcChangeFun()"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据库服务器IP" prop="database_ip" :rules="filter_rules([{required: true,dataType:'ip_verification'}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.database_ip" size="medium" @input="jdbcChangeFun()"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="数据库端口" prop="database_port" :rules="filter_rules([{required: true,dataType:'port_verification'}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.database_port" size="medium" @input="jdbcChangeFun()"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="用户名" :rules="rule.default" prop="user_name">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.user_name" size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10" prop="database_pad">
-                            <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="24">
-                            <el-form-item label="jdbcURL" prop="jdbc_url" :rules="rule.default" style="width: 70%;">
-                                <el-col :span="24">
-                                    <el-input style="width: 124%;" v-model="ruleForm.jdbc_url" size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter="20">
-                        <el-col :span="6" style="text-align:right;">
-                            <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
-                        </el-col>
-                    </el-row>
-                </el-form>
+    <div v-if="isshow=='all'">
+        <el-tabs v-model="activeNames"  type="border-card" key='1'>
+            <el-tab-pane label="数据采集" name="first">
+                <div id="dataAcquisition">
+                    <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" class="demo-ruleForm">
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.task_name" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
+                                        <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
+                                    </el-col>
+                                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                                        <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                                    </el-tooltip>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.classify_num" size="medium" disabled placeholder="分类编号">
+                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('1');outerVisible = true"></el-button>
+                                        </el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据源" prop="sourceName">
+                                    <el-col :span="16">
+                                        <el-input v-model="sourceName" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
+                                    <el-col :span="16">
+                                        <el-select placeholder="数据库类型" v-model="ruleForm.database_type" @change="dbTypeFun" size="medium">
+                                            <el-option v-for="(item,index) in DatabaseType" :key="index" :label="item.value" :value="item.code"></el-option>
+                                        </el-select>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库驱动" prop="database_drive">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_drive" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库名称" prop="database_name" :rules="rule.default">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_name" size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库服务器IP" prop="database_ip" :rules="filter_rules([{required: true,dataType:'ip_verification'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_ip" size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库端口" prop="database_port" :rules="filter_rules([{required: true,dataType:'port_verification'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_port" size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="用户名" :rules="rule.default" prop="user_name">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.user_name" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10" prop="database_pad">
+                                <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="jdbcURL" prop="jdbc_url" :rules="rule.default" style="width: 70%;">
+                                    <el-col :span="24">
+                                        <el-input style="width: 124%;" v-model="ruleForm.jdbc_url" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-col :span="6" style="text-align:right;">
+                                <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-form>
 
-            </div>
-        </el-tab-pane>
-        <el-tab-pane label="贴源登记" name="second">
-            <div>
-                <el-row>
-                    <el-col :span="12" :offset="1">
-                        <el-button type="primary" size='medium' @click="chooseStorageTierFun()">选择存储层</el-button>
-                        <span class="dialogtoptxt">
-                            <p class="dialogtopname">选择存储层确定后自动回显对应的数据库信息</p>
-                        </span>
-                    </el-col>
-                </el-row>
-                <el-form :model="ruleFormSecond" status-icon ref="ruleFormSecond" label-width="30%" class="demo-ruleForm ruleFormSe">
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.task_name" size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
-                                    <el-input v-model="ruleFormSecond.database_number" size="medium" v-else placeholder="作业编号"></el-input>
-                                </el-col>
-                                <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
-                                    <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
-                                </el-tooltip>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.classify_num" size="medium" readonly placeholder="分类编号">
-                                        <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('2');outerVisible = true"></el-button>
-                                    </el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据源" prop="sourceName">
-                                <el-col :span="16">
-                                    <el-input v-model="sourceName" size="medium" disabled></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
-                                <el-col :span="16">
-                                    <el-select placeholder="数据库类型" v-model="ruleFormSecond.database_type" disabled @change="dbTypeFun" size="medium">
-                                        <el-option v-for="(item,index) in DatabaseType" :key="index" :label="item.value" :value="item.code"></el-option>
-                                    </el-select>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据库驱动" prop="database_drive">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.database_drive" size="medium" disabled></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="数据库名称" prop="database_name">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.database_name" disabled size="medium" @input="jdbcChangeFun()"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="数据库服务器IP" prop="database_ip">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.database_ip" disabled size="medium" @input="jdbcChangeFun()"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10">
-                            <el-form-item label="数据库端口" prop="database_port">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.database_port" disabled size="medium" @input="jdbcChangeFun()"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" justify="center">
-                        <el-col :span="10">
-                            <el-form-item label="用户名" :rules="rule.default" prop="user_name">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.user_name" disabled size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="10" prop="database_pad">
-                            <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
-                                <el-col :span="16">
-                                    <el-input v-model="ruleFormSecond.database_pad" disabled size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="贴源登记" name="second">
+                <div>
                     <el-row>
-                        <el-col :span="24">
-                            <el-form-item label="jdbcURL" prop="jdbc_url" :rules="rule.default" style="width: 70%;">
-                                <el-col :span="24">
-                                    <el-input style="width: 124%;" v-model="ruleFormSecond.jdbc_url" disabled size="medium"></el-input>
-                                </el-col>
-                            </el-form-item>
+                        <el-col :span="12" :offset="1">
+                            <el-button type="primary" size='medium' @click="chooseStorageTierFun()">选择存储层</el-button>
+                            <span class="dialogtoptxt">
+                                <p class="dialogtopname">选择存储层确定后自动回显对应的数据库信息</p>
+                            </span>
                         </el-col>
                     </el-row>
-                    <el-row :gutter="20">
-                        <el-col :span="6" style="text-align:right;">
-                            <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
+                    <el-form :model="ruleFormSecond" status-icon ref="ruleFormSecond" label-width="30%" class="demo-ruleForm ruleFormSe">
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.task_name" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
+                                        <el-input v-model="ruleFormSecond.database_number" size="medium" v-else placeholder="作业编号"></el-input>
+                                    </el-col>
+                                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                                        <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                                    </el-tooltip>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.classify_num" size="medium" readonly placeholder="分类编号">
+                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('2');outerVisible = true"></el-button>
+                                        </el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据源" prop="sourceName">
+                                    <el-col :span="16">
+                                        <el-input v-model="sourceName" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
+                                    <el-col :span="16">
+                                        <el-select placeholder="数据库类型" v-model="ruleFormSecond.database_type" disabled @change="dbTypeFun" size="medium">
+                                            <el-option v-for="(item,index) in DatabaseType" :key="index" :label="item.value" :value="item.code"></el-option>
+                                        </el-select>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库驱动" prop="database_drive">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_drive" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库名称" prop="database_name">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_name" disabled size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库服务器IP" prop="database_ip">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_ip" disabled size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库端口" prop="database_port">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_port" disabled size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="用户名" :rules="rule.default" prop="user_name">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.user_name" disabled size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10" prop="database_pad">
+                                <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_pad" disabled size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="jdbcURL" prop="jdbc_url" :rules="rule.default" style="width: 70%;">
+                                    <el-col :span="24">
+                                        <el-input style="width: 124%;" v-model="ruleFormSecond.jdbc_url" disabled size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-col :span="6" style="text-align:right;">
+                                <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
+     <div v-if="isshow=='first'">
+        <el-tabs v-model="activeNames"  type="border-card"  key='2'>
+            <el-tab-pane id='first' label="数据采集" name="first">
+                <div id="dataAcquisition">
+                    <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" class="demo-ruleForm">
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.task_name" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
+                                        <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
+                                    </el-col>
+                                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                                        <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                                    </el-tooltip>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.classify_num" size="medium" disabled placeholder="分类编号">
+                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('1');outerVisible = true"></el-button>
+                                        </el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据源" prop="sourceName">
+                                    <el-col :span="16">
+                                        <el-input v-model="sourceName" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
+                                    <el-col :span="16">
+                                        <el-select placeholder="数据库类型" v-model="ruleForm.database_type" @change="dbTypeFun" size="medium">
+                                            <el-option v-for="(item,index) in DatabaseType" :key="index" :label="item.value" :value="item.code"></el-option>
+                                        </el-select>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库驱动" prop="database_drive">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_drive" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库名称" prop="database_name" :rules="rule.default">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_name" size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库服务器IP" prop="database_ip" :rules="filter_rules([{required: true,dataType:'ip_verification'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_ip" size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库端口" prop="database_port" :rules="filter_rules([{required: true,dataType:'port_verification'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_port" size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="用户名" :rules="rule.default" prop="user_name">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.user_name" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10" prop="database_pad">
+                                <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleForm.database_pad" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="jdbcURL" prop="jdbc_url" :rules="rule.default" style="width: 70%;">
+                                    <el-col :span="24">
+                                        <el-input style="width: 124%;" v-model="ruleForm.jdbc_url" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-col :span="6" style="text-align:right;">
+                                <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
+     <div v-if="isshow=='second'">
+        <el-tabs v-model="activeNames"  type="border-card"  key='3'>
+            <el-tab-pane label="贴源登记" name="second">
+                <div>
+                    <el-row>
+                        <el-col :span="12" :offset="1">
+                            <el-button type="primary" size='medium' @click="chooseStorageTierFun()">选择存储层</el-button>
+                            <span class="dialogtoptxt">
+                                <p class="dialogtopname">选择存储层确定后自动回显对应的数据库信息</p>
+                            </span>
                         </el-col>
                     </el-row>
-                </el-form>
-            </div>
-        </el-tab-pane>
-    </el-tabs>
+                    <el-form :model="ruleFormSecond" status-icon ref="ruleFormSecond" label-width="30%" class="demo-ruleForm ruleFormSe">
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据采集任务名" prop="task_name" :rules="filter_rules([{required: true}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.task_name" size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="作业编号" prop="database_number" :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
+                                        <el-input v-model="ruleFormSecond.database_number" size="medium" v-else placeholder="作业编号"></el-input>
+                                    </el-col>
+                                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                                        <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                                    </el-tooltip>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.classify_num" size="medium" readonly placeholder="分类编号">
+                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('2');outerVisible = true"></el-button>
+                                        </el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="分类名称" prop="classify_name" :rules="rule.default">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.classify_name" size="medium" disabled placeholder="分类名称"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据源" prop="sourceName">
+                                    <el-col :span="16">
+                                        <el-input v-model="sourceName" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库" prop="database_type" :rules="rule.selected">
+                                    <el-col :span="16">
+                                        <el-select placeholder="数据库类型" v-model="ruleFormSecond.database_type" disabled @change="dbTypeFun" size="medium">
+                                            <el-option v-for="(item,index) in DatabaseType" :key="index" :label="item.value" :value="item.code"></el-option>
+                                        </el-select>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库驱动" prop="database_drive">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_drive" size="medium" disabled></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库名称" prop="database_name">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_name" disabled size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="数据库服务器IP" prop="database_ip">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_ip" disabled size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="数据库端口" prop="database_port">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_port" disabled size="medium" @input="jdbcChangeFun()"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="10">
+                                <el-form-item label="用户名" :rules="rule.default" prop="user_name">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.user_name" disabled size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10" prop="database_pad">
+                                <el-form-item label="密码" :rules="filter_rules([{required: true}])" prop="database_pad">
+                                    <el-col :span="16">
+                                        <el-input v-model="ruleFormSecond.database_pad" disabled size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="jdbcURL" prop="jdbc_url" :rules="rule.default" style="width: 70%;">
+                                    <el-col :span="24">
+                                        <el-input style="width: 124%;" v-model="ruleFormSecond.jdbc_url" disabled size="medium"></el-input>
+                                    </el-col>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-col :span="6" style="text-align:right;">
+                                <el-button type="primary" :loading="linkloading" @click="testLinkFun('1')" size="mini">测试连接</el-button>
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button type="success" @click="viewLogFun()" size="mini">查看日志</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
     <el-row>
         <el-col :span="12">
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
@@ -548,7 +821,8 @@ export default {
             viewDatilsData: [],
             radioSave: null, //存储层弹框单选
             tyAddSave: false,
-            dsl_id: ''
+            dsl_id: '',
+            isshow:'all',
         };
     },
     created() {
@@ -564,13 +838,23 @@ export default {
         this.edit = this.$route.query.edit;
         this.storeTypeFun()
     },
-    beforeMount() {
+    mounted() {
+        /*   this.$nextTick(() => {
+              this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "none"
+              this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "none"
+
+          }) */
         if (this.edit == "yes") {
             this.show = true;
             let params = {};
             params["databaseId"] = this.dbid;
             addTaskAllFun.getDBConfInfo(params).then(res => {
                 if (res.data.length != 0) {
+                   /*  this.$nextTick(function () {
+                        this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
+                    }) */
+                    this.isshow='first'
+                    this.activeNames='first'
                     this.ruleForm = res.data;
                     this.radio = res.data.classify_id;
                     let params = {};
@@ -585,6 +869,10 @@ export default {
                     });
                 } else {
                     // 贴元登记editStorageData
+                   /*  this.$nextTick(function () {
+                        this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "inline-block"
+                    }) */
+                    this.isshow='second'
                     this.activeNames = 'second'
                     addTaskAllFun.editStorageData(params).then(res => {
                         this.ruleFormSecond = res.data[0]
@@ -594,11 +882,19 @@ export default {
             });
 
         } else {
+           
             let params = {};
             params["databaseId"] = this.sourceId;
             params["agent_id"] = this.$route.query.agent_id
             addTaskAllFun.addDBConfInfo(params).then(res => {
                 if (res.data.length != 0) {
+                    console.log('1')
+                   /*  this.$nextTick(function () {
+                        this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
+                        this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "none"
+                    }) */
+                    this.isshow='first'
+                    this.activeNames='first'
                     this.ruleForm = res.data[0];
                     this.radio = res.data[0].classify_id;
                     this.dbid = res.data[0].database_id;
@@ -614,38 +910,48 @@ export default {
                             }
                         });
                     }
+                } else {
+                    // getInitStorageData
+                    let paramst = {};
+                    paramst["source_id"] = this.sourceId;
+                    paramst["agent_id"] = this.$route.query.agent_id
+                    addTaskAllFun.getInitStorageData(paramst).then(res => {
+                        if (res.data.length !== 0) {
+                           /*  this.$nextTick(function () {
+                                this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "inline-block"
+                                this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "none"
+                            }) */
+                            this.isshow='second'
+                            this.activeNames = 'second'
+                            this.tyAddSave = true
+                            this.ruleFormSecond.task_name = res.data[0].task_name,
+                                this.ruleFormSecond.database_number = res.data[0].database_number,
+                                this.ruleFormSecond.classify_num = res.data[0].classify_num,
+                                this.ruleFormSecond.classify_name = res.data[0].classify_name,
+                                this.ruleFormSecond.database_drive = res.data[0].database_drive,
+                                this.ruleFormSecond.database_name = res.data[0].database_name,
+                                this.ruleFormSecond.database_ip = res.data[0].database_ip,
+                                this.ruleFormSecond.database_port = res.data[0].database_port,
+                                this.ruleFormSecond.user_name = res.data[0].user_name,
+                                this.ruleFormSecond.database_pad = res.data[0].database_pad,
+                                this.ruleFormSecond.jdbc_url = res.data[0].jdbc_url,
+                                this.ruleFormSecond.database_type = res.data[0].database_type
+                            this.dbid = res.data[0].database_id
+                            this.radioSave = res.data[0].dsl_id
+                            this.radio2 = res.data[0].classify_id
+                        } else {
+                            this.dbcShow = true;
+                            this.dbtyShow = true;
+                        }
+
+                        // this.ruleFormSecond=res.data
+                    })
                 }
             });
-            // getInitStorageData
-            let paramst = {};
-            paramst["source_id"] = this.sourceId;
-            paramst["agent_id"] = this.$route.query.agent_id
-            addTaskAllFun.getInitStorageData(paramst).then(res => {
-                console.log(res)
-                if (res.data.length !== 0) {
-                    this.activeNames = 'second'
-                    this.tyAddSave = true
-                    this.ruleFormSecond.task_name = res.data[0].task_name,
-                        this.ruleFormSecond.database_number = res.data[0].database_number,
-                        this.ruleFormSecond.classify_num = res.data[0].classify_num,
-                        this.ruleFormSecond.classify_name = res.data[0].classify_name,
-                        this.ruleFormSecond.database_drive = res.data[0].database_drive,
-                        this.ruleFormSecond.database_name = res.data[0].database_name,
-                        this.ruleFormSecond.database_ip = res.data[0].database_ip,
-                        this.ruleFormSecond.database_port = res.data[0].database_port,
-                        this.ruleFormSecond.user_name = res.data[0].user_name,
-                        this.ruleFormSecond.database_pad = res.data[0].database_pad,
-                        this.ruleFormSecond.jdbc_url = res.data[0].jdbc_url,
-                        this.ruleFormSecond.database_type = res.data[0].database_type
-                    this.dbid = res.data[0].database_id
-                    this.radioSave = res.data[0].dsl_id
-                    this.radio2 = res.data[0].classify_id
-                }
 
-                // this.ruleFormSecond=res.data
-            })
         }
     },
+
     methods: {
         next(formName) {
             this.isLoading = true

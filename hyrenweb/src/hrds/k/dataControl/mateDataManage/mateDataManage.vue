@@ -8,7 +8,7 @@
             </el-button>
         </router-link>
     </el-row>
-    <el-row :gutter="42">
+    <el-row :gutter="10">
         <el-col :span="6">
             <el-tabs v-model="mdmActiveName" type="border-card" @tab-click="tagHandleClick">
                 <el-tab-pane label="源数据列表" name="mdm">
@@ -108,13 +108,23 @@
     <div v-show="mouseVisible">
         <ul id="menu" class="menu">
             <li class="menu_item" @click="tableSetToInvalid()">删除</li>
+            <li class="menu_item" @click="allTableSetToInvalid()">删除所有表</li>
+        </ul>
+    </div>
+    <!--源数据列表自定义层二级右键弹框-->
+     <div v-show="mouseZdyVisible">
+        <ul id="menu_zdy" class="menu_zdy">
+            <li class="menu_item" @click="tableSetToInvalidZdy()">创建表</li>
+            <li class="menu_item" @click="allTableSetToInvalid()">删除所有表</li>
         </ul>
     </div>
     <!--数据回收站右键弹框-->
     <div v-show="recoverMouseVisible">
         <ul id="menu2" class="menu2">
             <li class="menu_item2" @click="restoreDRBTable()">恢复表</li>
+            <li class="menu_item2" @click="restoreDRBAllTable()">恢复所有表</li>
             <li class="menu_item2" @click="removeCompletelyTable()">彻底删除表</li>
+            <li class="menu_item2" @click="removeCompletelyAllTable()">彻底删除所有表</li>
         </ul>
     </div>
     <!-- 加载过度 -->
@@ -146,6 +156,7 @@ export default {
             drbTreeList: [],
             filterText: "",
             mouseVisible: false,
+            mouseZdyVisible:false,
             recoverMouseVisible: false,
             isLoading: false,
             data_meta_info: {
@@ -215,6 +226,9 @@ export default {
         },
         //点击源数据管理树节点触发
         mdmHandleClick(data) {
+             this.mouseVisible = false;
+            this.recoverMouseVisible = false;
+            this.mouseZdyVisible=false;
             this.currentPage = 1;
             this.pageSize = 10;
             this.mouseVisible = false;
@@ -240,6 +254,15 @@ export default {
         },
         //源数据管理树节点鼠标右击事件
         MDMRightMouseClick(event, object, node) {
+            if(node.level === 2&&node.parent.label=='自定义层'){
+               this.mouseZdyVisible = true;
+                const menu = document.querySelector("#menu_zdy");
+                document.addEventListener("click", this.foo);
+                menu.style.display = "block";
+                menu.style.left = event.pageX + 20 + "px";
+                menu.style.top = event.pageY - 8 + "px";
+                this.node_data = object;
+            }
             if (node.level === 3) {
                 this.mouseVisible = true;
                 const menu = document.querySelector("#menu");
@@ -253,6 +276,7 @@ export default {
         foo() {
             this.mouseVisible = false;
             this.recoverMouseVisible = false;
+            this.mouseZdyVisible=false;
             document.removeEventListener("click", this.foo); //关闭事件监听
         },
         // 回收站树节点鼠标右击事件
@@ -343,6 +367,33 @@ export default {
                 })
                 .catch(() => {});
         },
+         //删除所有表(表设置为无效)
+        allTableSetToInvalid(){
+             this.$Msg
+                .confirmMsg(
+                    "确定要将所有表放入数据回收站吗？",
+                    "提示", {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                    }
+                )
+                .then(() => {
+                    this.isLoading = true;
+                    mdmFun
+                        .allTableSetToInvalid()
+                        .then(res => {
+                            this.isLoading = false;
+                            if (res.success) {
+                                message.customizTitle("将所有表放入回收站成功", "success");
+                                //重新获取树数据
+                                this.getMDMTreeData();
+                                this.data_meta_info = { table_id: "", column_info_list: [] };
+                            }
+                        });
+                })
+                .catch(() => {});
+        },
         //恢复数据回收站的表
         restoreDRBTable() {
             this.$Msg
@@ -366,6 +417,33 @@ export default {
                             this.isLoading = false;
                             if (res.success) {
                                 message.customizTitle("恢复表成功", "success");
+                                this.getDRBTreeData();
+                                this.data_meta_info = { table_id: "", column_info_list: [] };
+                            }
+                        });
+                })
+                .catch(() => {});
+        },
+        // 恢复所有表
+        restoreDRBAllTable(){
+             this.$Msg
+                .confirmMsg(
+                    "确定要将回收站所有表恢复吗?",
+                    "提示", {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                    }
+                )
+                .then(() => {
+                    this.isLoading = true;
+                    mdmFun
+                        .restoreDRBAllTable()
+                        .then(res => {
+                            //重新获取树数据
+                            this.isLoading = false;
+                            if (res.success) {
+                                message.customizTitle("恢复所有表成功", "success");
                                 this.getDRBTreeData();
                                 this.data_meta_info = { table_id: "", column_info_list: [] };
                             }
@@ -400,6 +478,43 @@ export default {
                         });
                 })
                 .catch(() => {});
+        },
+        // 彻底删除所有表
+        removeCompletelyAllTable(){
+             this.$Msg
+                .confirmMsg(
+                    "确定要将回收站所有表彻底删除吗?",
+                    "提示", {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                    }
+                )
+                .then(() => {
+                    this.isLoading = true;
+                    mdmFun
+                        .removeCompletelyAllTable()
+                        .then(res => {
+                            this.isLoading = false;
+                            message.deleteSuccess(res);
+                            //重新获取树数据
+                            this.getDRBTreeData();
+                            this.data_meta_info = { table_id: "", column_info_list: [] };
+                        });
+                })
+                .catch(() => {});
+        },
+        tableSetToInvalidZdy(){
+            console.log( this.node_data)
+            if(this.node_data.dsl_store_type=='1'){
+                this.$router.push({
+                path:'createTable',
+                query: {
+                        dsl_id: this.node_data.dsl_id,
+                        label: this.$Base64.encode(this.node_data.label),
+                        }
+            })
+            }
         }
     }
 };
@@ -414,9 +529,9 @@ export default {
     font-size: 12px;
 }
 
-.menu {
-    height: 20px;
-    width: 40px;
+.menu,.menu_zdy {
+    height: 42px;
+    width: 68px;
     position: absolute;
     border: 1px solid #999999;
     background-color: #f5f5f5;
@@ -431,8 +546,8 @@ export default {
 }
 
 .menu2 {
-    height: 40px;
-    width: 80px;
+    height: 82px;
+    width: 90px;
     position: absolute;
     border: 1px solid #999999;
     background-color: #f5f5f5;

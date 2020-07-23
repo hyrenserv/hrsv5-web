@@ -112,6 +112,7 @@
         </el-col>
         <el-col :span="12">
             <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
+            <el-button type="success" size="medium" class='rightbtn' @click="startButtonFun()">立即启动</el-button>
             <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
         </el-col>
     </el-row>
@@ -271,6 +272,17 @@
             <el-button type="primary" @click="ChooseAllDestinationSubmitFun()" size="mini">确 定</el-button>
         </div>
     </el-dialog>
+     <!--完成  -->
+    <el-dialog title="提示信息" :visible.sync="finishDialogVisible" width="30%">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">提示信息</span>
+        </div>
+        <span>确定立即执行吗？</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 </template>
 
@@ -289,6 +301,7 @@ export default {
     },
     data() {
         return {
+            finishDialogVisible:false,
             rule: validator.default,
             tableloadingInfo: "数据加载中...",
             dbid: null,
@@ -372,7 +385,11 @@ export default {
     watch: {
         address(val) {
             if (val.submit_0 == true && val.submit_1 == true) {
+                 if (this.startButton == true) {
+                                this.sendSubmit()
+                            }else{
                 this.nextLinkfun();
+                            }
             }
         }
     },
@@ -458,6 +475,25 @@ export default {
     },
 
     methods: {
+         sendSubmit() {
+            addTaskAllFun
+                .sendJDBCCollectTaskById({
+                    colSetId: this.dbid
+                })
+                .then(res => {
+                    if (res.success) {
+                        this.finishDialogVisible = false;
+                        this.$message({
+                            showClose: true,
+                            message: '发送成功',
+                            type: "success"
+                        });
+                        this.$router.push({
+                            path: "/agentList"
+                        });
+                    }
+                });
+        },
         backFun() {
             this.$router.push({
                 path: "/agentList"
@@ -1227,7 +1263,15 @@ export default {
         // 全表设置目的地单个勾选
         allselectD(item) {
             this.Alldestinationchoose = item
-        }
+        },
+        // 立即启动
+         startButtonFun() {
+            this.finishDialogVisible = true
+        },
+         finishSubmit() {
+            this.startButton = true
+            this.next('ruleForm')
+        },
     }
 };
 </script>
