@@ -66,7 +66,7 @@
                                                :rules="filter_rules([{required: true}])"
                                                @change="caseTypeChange(form_dq_data.case_type)"
                                                filterable placeholder="请选择">
-                                        <el-option v-if="i.case_type!==''" v-for="i in dq_rule_def_s"
+                                        <el-option v-for="i in dq_rule_def_s"
                                                    :key="i.case_type"
                                                     :value="i.case_type"
                                                    :label="i.case_type+' : '+i.case_type_desc" >
@@ -223,17 +223,17 @@
                                 <el-col :span="7" :offset=1>
                                     <span class="control-label" :title="dq_help_info_map.index1">检测指标1含义<i
                                             class="el-icon-warning"/></span>
-                                    <el-input disabled :disabled="check_index_desc" :value="form_dq_data.index_desc1"/>
+                                    <el-input :disabled="check_index_desc" :value="form_dq_data.index_desc1"/>
                                 </el-col>
                                 <el-col :span="7" :offset=1>
                                     <span class="control-label" :title="dq_help_info_map.index2">检测指标2含义
                                         <i class="el-icon-warning"/></span>
-                                    <el-input disabled :disabled="check_index_desc" :value="form_dq_data.index_desc2"/>
+                                    <el-input :disabled="check_index_desc" :value="form_dq_data.index_desc2"/>
                                 </el-col>
                                 <el-col :span="6" :offset=1>
                                     <span class="control-label" :title="dq_help_info_map.index3">检测指标3含义
                                         <i class="el-icon-warning"/></span>
-                                    <el-input disabled :disabled="check_index_desc" :value="form_dq_data.index_desc3"/>
+                                    <el-input :disabled="check_index_desc" :value="form_dq_data.index_desc3"/>
                                 </el-col>
                             </el-row>
                         </div>

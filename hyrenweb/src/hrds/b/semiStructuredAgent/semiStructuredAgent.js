@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import  Qs  from  'qs'
+import Qs from 'qs'
 
 //collectOption页面
 /**(0)
@@ -283,7 +283,36 @@ export function getEtlJobConfInfoFromObj(data) {
 export function saveStartModeConfData(data) {
     return request({
         url: '/B/agent/semistructured/startmodeconf/saveStartModeConfData',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+
+/**(5)
+ * 获取工程信息
+ */
+export function getEtlSysData() {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlSysData',
+    })
+}
+/**(5)
+ * 根据工程编号获取任务
+ */
+export function getEtlSubSysData(data) {
+    return request({
+        url: '/B/agent/dbagentconf/startwayconf/getEtlSubSysData',
         params: data
     })
 }
+/**(6)
+ * 查询作业下拉框信息
+ */
+export function searchEtlJob(data) {
+    return request({
+        url: '/C/jobconfig/searchEtlJob',
+        params: data
+    })
+}
+
 // ----end-------

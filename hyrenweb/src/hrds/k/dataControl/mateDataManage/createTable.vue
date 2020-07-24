@@ -8,15 +8,15 @@
         <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" style='clear:both;'>
             <div class="startupform">
                 <el-row type="flex" justify="center">
-                    <el-col :span="8">
+                    <!-- <el-col>
                         <el-form-item label="表空间名" prop="table_kjname" :rules="filter_rules([{required: true}])">
                             <el-col :span="16">
                                 <el-input v-model="ruleForm.table_kjname" size="medium" placeholder="表空间名">
                                 </el-input>
                             </el-col>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
+                    </el-col> -->
+                    <el-col>
                         <el-form-item label="表名" prop="table_name" :rules="filter_rules([{required: true}])">
                             <el-col :span="16">
                                 <el-input v-model="ruleForm.table_name" size="medium" placeholder="表名">
@@ -24,7 +24,7 @@
                             </el-col>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col>
                         <el-form-item label="表中文名" prop="table_ch_name" :rules="rule.default">
                             <el-col :span="16">
                                 <el-input v-model="ruleForm.table_ch_name" size="medium" placeholder="表中文名"></el-input>
@@ -33,7 +33,7 @@
                     </el-col>
                 </el-row>
                 <el-row type="flex" justify="center">
-                    <el-col :span="8">
+                    <el-col>
                         <el-form-item label="是否数据溯源" prop="isdata">
                             <el-col :span="16">
                                 <el-radio-group v-model="ruleForm.isdata">
@@ -44,22 +44,22 @@
                         </el-form-item>
                     </el-col>
                    
-                    <el-col :span="8">
+                    <el-col>
                         <el-form-item label="备注" prop="remarks">
                             <el-col :span="16">
                                 <el-input v-model="ruleForm.remarks" size="medium" type="textarea"></el-input>
                             </el-col>
                         </el-form-item>
                     </el-col>
-                     <el-col :span="8">
-                       <!--  <el-form-item label="表类型" prop="remarks">
+                     <!-- <el-col :span="8">
+                        <el-form-item label="表类型" prop="remarks">
                             <el-col :span="16">
                                 <el-select v-model="ruleForm.table_type" placeholder="表类型" clearable size="medium">
                                     <el-option v-for="item in fileFormat" :key="item.code" :label="item.value" :value="item.code"></el-option>
                                 </el-select>
                             </el-col>
-                        </el-form-item> -->
-                    </el-col>
+                        </el-form-item>
+                    </el-col> -->
                 </el-row>
             </div>
             <div class="steps4">

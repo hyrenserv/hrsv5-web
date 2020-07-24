@@ -10,9 +10,9 @@
             <el-row>
                 <el-button size="small" type="primary" @click="dialogFormVisibleAdd = true;" class="addCodeButton"> <i class="el-icon-circle-plus-outline"></i>新增统一编码</el-button>
             </el-row>
-            <el-table stripe :data="codeMaintenanceTableData" border size="medium" :span-method="arraySpanMethod">
+            <el-table stripe :data=" codeMaintenanceTableData.slice((currentPage - 1) * pageSize, currentPage *pageSize)" border size="medium" :span-method="arraySpanMethod">
 
-                <el-table-column type="index" label="序号" width="62" align="center">
+                <el-table-column label="序号" width="62" align="center">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
                     </template>
@@ -35,20 +35,20 @@
             </el-table>
 
             <!-- 分页内容 -->
-            <!-- <el-row class="pagination">
-                <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
-            </el-row> -->
+            <el-row class="pagination">
+                <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="codeMaintenanceTableData.length"></el-pagination>
+            </el-row>
         </el-tab-pane>
         <el-tab-pane label="源系统编码" name="源系统编码">
             <div v-show="showOrhidden">
                 <el-row>
                     <el-button size="small" type="primary" @click="dialogFormVisibleAddScoure = true;" class="addCodeButton"> <i class="el-icon-circle-plus-outline"></i>新增源系统编码</el-button>
                 </el-row>
-                <el-table stripe :data="sourceCodeTabledata" border size="medium">
+                <el-table stripe :data="sourceCodeTabledata.slice((currentPageScoure - 1) * pageSizeScoure, currentPageScoure *pageSizeScoure)" border size="medium">
 
                     <el-table-column type="index" label="序号" width="62" align="center">
                         <template slot-scope="scope">
-                            <span>{{scope.$index+(currentPage - 1) * pageSize + 1}}</span>
+                            <span>{{scope.$index+(currentPageScoure - 1) * pageSizeScoure + 1}}</span>
                         </template>
                     </el-table-column>
 
@@ -64,25 +64,30 @@
                 </el-table>
 
                 <!-- 分页内容 -->
-                <!-- <el-row class="pagination">
-                    <el-pagination @current-change="handleCurrentChangeList" :current-page="currentPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalItem"></el-pagination>
-                </el-row> -->
+                <el-row class="pagination">
+                    <el-pagination @current-change="handleCurrentChangeListScoure" :current-page="currentPageScoure" @size-change="handleSizeChangeScoure" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSizeScoure" layout=" total,sizes,prev, pager, next,jumper" :total="sourceCodeTabledata.length"></el-pagination>
+                </el-row>
             </div>
 
             <div v-show="hiddenOrshow">
                 <el-row class="hiddenOrshowRow">
                     <el-col :span="24">
                         <strong class="strongSpan"> 编码分类:</strong>
-                        <el-select v-model="form.job_status" size="small" placeholder="--选择编码分类--" @change="changeValue">
+                        <el-select v-model="job_status" size="small" placeholder="--选择编码分类--" @change="changeValue">
                             <el-option v-for="item in jobStatus" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
                         <el-button class="buttonAdd" size="small" type="primary" @click="addFromaJAX">新增</el-button>
+
+                        <div class="saveOrgohome">
+                            <el-button size="small" type="primary" @click="saveOrgohome">返回</el-button>
+                            <el-button size="small" type="success" @click="saveCodeList('formScoureAdd')">保存</el-button>
+                        </div>
                     </el-col>
 
                 </el-row>
                 <el-form ref="formScoureAdd" :model="formScoureAdd">
-                    <el-table stripe :data="formScoureAdd.codeMaintenanceTableDataScoureAdd" border size="medium" :span-method="arraySpanMethodScoure">
+                    <el-table stripe :data="formScoureAdd.codeMaintenanceTableDataScoureAdd.slice((currentPageScoureinfo - 1) * pageSizeScoureinfo, currentPageScoureinfo *pageSizeScoureinfo)" border size="medium" :span-method="arraySpanMethodScoure">
 
                         <el-table-column type="index" label="序号" width="62" align="center">
                             <template slot-scope="scope">
@@ -101,9 +106,9 @@
                         <el-table-column label="源系统编码值" align="center">
                             <template slot-scope="scope">
                                 <el-form-item v-if="scope.row.show == false" :prop="`codeMaintenanceTableDataScoureAdd.${scope.$index}.orig_value`" :rules="filter_rules([{required: true}])">
-                                    <el-input size="small" v-model="scope.row.orig_value" placeholder="源系统编码值"></el-input>
+                                    <el-input size="mini" v-model="scope.row.orig_value" placeholder="源系统编码值"></el-input>
                                 </el-form-item>
-                                <el-input size="small" v-else v-model="scope.row.orig_value" disabled placeholder="源系统编码值"></el-input>
+                                <el-input size="mini" v-else v-model="scope.row.orig_value" readonly placeholder="源系统编码值"></el-input>
                             </template>
                         </el-table-column>
 
@@ -115,26 +120,24 @@
                         </el-table-column>
                     </el-table>
 
-                    <el-col :span="24">
-                        <div class="saveOrgohome">
-                            <el-button size="small" type="primary" @click="saveOrgohome">返回</el-button>
-                            <el-button size="small" type="success" @click="saveCodeList('formScoureAdd')">保存</el-button>
-                        </div>
-                    </el-col>
+                    <!-- 分页内容 -->
+                    <el-row class="pagination">
+                        <el-pagination @current-change="handleCurrentChangeListScoureinfo" :current-page="currentPageScoureinfo" @size-change="handleSizeChangeScoureinfo" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSizeScoureinfo" layout=" total,sizes,prev, pager, next,jumper" :total="formScoureAdd.codeMaintenanceTableDataScoureAdd.length"></el-pagination>
+                    </el-row>
                 </el-form>
             </div>
         </el-tab-pane>
     </el-tabs>
 
     <!-- 添加统一编码 -->
-    <el-dialog title="统一编码" :visible.sync="dialogFormVisibleAdd" :before-close="beforeCloseAdd" width="80%">
+    <el-dialog title="统一编码" :visible.sync="dialogFormVisibleAdd" :before-close="beforeCloseAdd" width="900px">
         <el-row class="partOne">
             <el-form ref="form" :model="form" label-width="140px">
                 <el-row>
                     <el-col :span="12">
                         <el-col>
                             <el-form-item label="编码分类" prop="code_classify" :rules="filter_rules([{required: true}])">
-                                <el-input v-model="form.code_classify" placeholder="编码分类"></el-input>
+                                <el-input v-model="form.code_classify" size="small" placeholder="编码分类"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-col>
@@ -142,7 +145,7 @@
                     <el-col :span="12">
                         <el-col>
                             <el-form-item label="编码分类名称" prop="code_classify_name" :rules="filter_rules([{required: true}])">
-                                <el-input v-model="form.code_classify_name	" placeholder="编码分类名称"></el-input>
+                                <el-input v-model="form.code_classify_name" size="small" placeholder="编码分类名称"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-col>
@@ -151,7 +154,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="备注" prop="code_remark">
-                            <el-input v-model="form.code_remark	" placeholder="备注"></el-input>
+                            <el-input v-model="form.code_remark	" size="small" placeholder="备注"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -164,7 +167,7 @@
                     <el-table-column label="编码名称" align="center">
                         <template slot-scope="scope">
                             <el-form-item :prop="`tableData.${scope.$index}.code_type_name`" :rules="filter_rules([{required: true}])">
-                                <el-input size="meduim" v-model="scope.row.code_type_name" placeholder="编码名称"></el-input>
+                                <el-input size="mini" v-model="scope.row.code_type_name" placeholder="编码名称"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
@@ -172,7 +175,7 @@
                     <el-table-column label="编码值" align="center">
                         <template slot-scope="scope">
                             <el-form-item :prop="`tableData.${scope.$index}.code_value`" :rules="filter_rules([{required: true}])">
-                                <el-input size="meduim" placeholder="编码名称" v-model="scope.row.code_value"></el-input>
+                                <el-input size="mini" placeholder="编码名称" v-model="scope.row.code_value"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
@@ -194,14 +197,14 @@
     </el-dialog>
 
     <!-- 更新统一编码信息 -->
-    <el-dialog title="更新统一编码信息" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeCloseupdate" width="80%">
+    <el-dialog title="更新统一编码信息" :visible.sync="dialogFormVisibleUpdate" :before-close="beforeCloseupdate" width="900px">
         <el-row class="partOne">
             <el-form ref="formUpdate" :model="formUpdate" label-width="140px">
                 <el-row>
                     <el-col :span="12">
                         <el-col>
                             <el-form-item class="elformitem" label="编码分类" prop="code_classify" :rules="filter_rules([{required: true}])">
-                                <el-input v-model="formUpdate.code_classify" readonly placeholder="编码分类"></el-input>
+                                <el-input v-model="formUpdate.code_classify" size="small" readonly placeholder="编码分类"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-col>
@@ -209,7 +212,7 @@
                     <el-col :span="12">
                         <el-col>
                             <el-form-item class="elformitem" label="编码分类名称" prop="code_classify_name" :rules="filter_rules([{required: true}])">
-                                <el-input v-model="formUpdate.code_classify_name	" placeholder="编码分类名称"></el-input>
+                                <el-input v-model="formUpdate.code_classify_name" size="small" placeholder="编码分类名称"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-col>
@@ -218,7 +221,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="备注" prop="code_remark">
-                            <el-input v-model="formUpdate.code_remark	" placeholder="备注"></el-input>
+                            <el-input v-model="formUpdate.code_remark" size="small" placeholder="备注"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -231,7 +234,7 @@
                     <el-table-column label="编码名称" align="center">
                         <template slot-scope="scope">
                             <el-form-item :prop="`tableData.${scope.$index}.code_type_name`" :rules="filter_rules([{required: true}])">
-                                <el-input size="meduim" v-model="scope.row.code_type_name" placeholder="编码名称"></el-input>
+                                <el-input size="mini" v-model="scope.row.code_type_name" placeholder="编码名称"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
@@ -239,7 +242,7 @@
                     <el-table-column label="编码值" align="center">
                         <template slot-scope="scope">
                             <el-form-item :prop="`tableData.${scope.$index}.code_value`" :rules="filter_rules([{required: true}])">
-                                <el-input size="meduim" placeholder="编码名称" v-model="scope.row.code_value"></el-input>
+                                <el-input size="mini" placeholder="编码名称" v-model="scope.row.code_value"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
@@ -268,7 +271,7 @@
                 <el-col :span="24">
                     <el-col>
                         <el-form-item label="源系统编码" prop="orig_sys_code" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="formScoure.orig_sys_code" style="width:284px" placeholder="源系统编码"></el-input>
+                            <el-input v-model="formScoure.orig_sys_code" size="small" style="width:284px" placeholder="源系统编码"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-col>
@@ -276,14 +279,14 @@
                 <el-col :span="24">
                     <el-col>
                         <el-form-item label="源系统名称" prop="orig_sys_name" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="formScoure.orig_sys_name	" style="width:284px" placeholder="源系统名称"></el-input>
+                            <el-input v-model="formScoure.orig_sys_name	" size="small" style="width:284px" placeholder="源系统名称"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="描述" prop="orig_sys_remark">
-                        <el-input v-model="formScoure.orig_sys_remark" style="width:284px" placeholder="描述"></el-input>
+                        <el-input v-model="formScoure.orig_sys_remark" size="small" style="width:284px" placeholder="描述"></el-input>
                     </el-form-item>
                 </el-col>
 
@@ -298,14 +301,14 @@
     </el-dialog>
 
     <!-- 编辑源系统编码 -->
-    <el-dialog title="源系统编码" :visible.sync="dialogFormVisibleUpdateScoure" :before-close="beforeCloseupdateScoure" width="80%">
+    <el-dialog title="源系统编码" :visible.sync="dialogFormVisibleUpdateScoure" :before-close="beforeCloseupdateScoure" width="900px">
         <el-row class="partOne">
             <el-form ref="formScoureRef" :model="formScoureRef" label-width="140px">
 
                 <el-col :span="12">
                     <el-col>
                         <el-form-item label="编码分类" prop="code_classify" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="formScoureRef.code_classify" disabled style="width:284px" placeholder="编码分类"></el-input>
+                            <el-input v-model="formScoureRef.code_classify" size="small" readonly style="width:284px" placeholder="编码分类"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-col>
@@ -313,7 +316,7 @@
                 <el-col :span="12">
                     <el-col>
                         <el-form-item label="编码分类名称" prop="code_classify_name" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="formScoureRef.code_classify_name" disabled style="width:284px" placeholder="编码分类名称"></el-input>
+                            <el-input v-model="formScoureRef.code_classify_name" size="small" readonly style="width:284px" placeholder="编码分类名称"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-col>
@@ -327,7 +330,7 @@
                     <el-table-column label="源系统编码值" align="center">
                         <template slot-scope="scope">
                             <el-form-item :prop="`tableData.${scope.$index}.orig_value`" :rules="filter_rules([{required: true}])">
-                                <el-input size="meduim" v-model="scope.row.orig_value" placeholder="源系统编码值"></el-input>
+                                <el-input size="mini" v-model="scope.row.orig_value" placeholder="源系统编码值"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
@@ -365,7 +368,12 @@ export default {
             sourceCodeTabledata: [],
             totalItem: 0,
             currentPage: 1,
-            pageSize: 10,
+            pageSize: 50,
+            currentPageScoure: 1,
+            pageSizeScoure: 50,
+            currentPageScoureinfo: 1,
+            pageSizeScoureinfo: 50,
+            job_status: '',
             jobStatus: [],
             dialogFormVisibleAdd: false,
             dialogFormVisibleUpdate: false,
@@ -621,6 +629,7 @@ export default {
                             this.getOrigSysInfo();
                             this.dialogFormVisibleAddScoure = false;
                             this.$refs.formScoure.resetFields();
+
                         }
                     })
                 } else {
@@ -652,9 +661,12 @@ export default {
         },
         // 返回上一步
         saveOrgohome() {
+            this.job_status = '';
+            this.formScoureAdd.codeMaintenanceTableDataScoureAdd = [];
             this.hiddenOrshow = false;
             this.showOrhidden = true;
             this.getOrigSysInfo();
+
         },
         // 获取select对应的选择值
         changeValue(val) {
@@ -820,18 +832,33 @@ export default {
                 this.getOrigSysInfo();
             }
         },
-        // 获取数据管理列表数据实现分页功能
-        // handleCurrentChangeList(val) {
-        //     //把val赋给当前页面
-        //     this.currentPage = val;
-        //     this.getDepartmentInfoAll();
-        // },
+        // 统一编码分页功能
+        handleCurrentChangeList(val) {
+            //把val赋给当前页面
+            this.currentPage = val;
+        },
         // 改变每页显示条数
-        // handleSizeChange(val) {
-        //     this.pageSize = val;
-        //     this.getDepartmentInfoAll();
-        //     this.currentPage = 1;
-        // },
+        handleSizeChange(val) {
+            this.pageSize = val;
+        },
+        // 源编码系统分页功能
+        handleCurrentChangeListScoure(val) {
+            //把val赋给当前页面
+            this.currentPageScoure = val;
+        },
+        // 改变每页显示条数
+        handleSizeChangeScoure(val) {
+            this.pageSizeScoure = val;
+        },
+        // 源编码系统信息详情分页功能
+        handleCurrentChangeListScoureinfo(val) {
+            //把val赋给当前页面
+            this.currentPageScoureinfo = val;
+        },
+        // 改变每页显示条数
+        handleSizeChangeScoureinfo(val) {
+            this.pageSizeScoureinfo = val;
+        },
     }
 }
 </script>
@@ -889,14 +916,27 @@ export default {
 /* 表格input */
 .codeValue>>>.el-table .el-form-item__content {
     margin-left: 0px !important;
+    line-height: 20px;
 }
 
 .codeValue>>>.el-table .el-form-item {
-    margin-bottom: 20px;
+    margin-bottom: 0 !important;
 }
 
 .codeValue>>>.el-table {
     margin-bottom: 20px;
+}
+
+.codeValue>>>.el-table td>.cell {
+    height: 40px !important;
+}
+
+.codeValue>>>.el-table--medium td {
+    padding: 12px 0 0 0 !important;
+}
+
+.codeValue>>>.el-table .el-form-item__error {
+    padding-top: 0 !important;
 }
 
 .tabaleSpan {
@@ -922,7 +962,6 @@ export default {
 }
 
 .saveOrgohome {
-    margin: 20px 0 10px 0;
     float: right;
 }
 

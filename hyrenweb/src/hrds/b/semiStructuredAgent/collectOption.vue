@@ -87,7 +87,7 @@
             </el-col>
 
             <el-col :span="12">
-                <el-form-item label="文件后缀名" :label-width="formLabelWidth"  prop="file_suffix" :rules="filter_rules([{required: true}])">
+                <el-form-item label="文件后缀名" :label-width="formLabelWidth" prop="file_suffix" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.file_suffix"></el-input>
                 </el-form-item>
             </el-col>
@@ -362,37 +362,59 @@ export default {
                     duration: 0
                 })
             } else {
-                if (this.$route.query.id) {
+                if (this.$route.query.id) {//更新
                     this.$refs[formName].validate(valid => {
                         if (valid) {
                             this.form['odc_id'] = this.$route.query.id;
                             this.form.agent_id = this.$route.query.agent_id;
                             functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
-                                    this.$router.push({
-                                        name: "collectFileOption",
-                                        query: {
-                                            agent_id: this.$route.query.agent_id,
-                                            odc_id: res.data
-                                        }
-                                    })
+                                    if (this.$route.query.edit == 'yes') {
+                                        this.$router.push({
+                                            name: "collectFileOption",
+                                            query: {
+                                                agent_id: this.$route.query.agent_id,
+                                                odc_id: res.data,
+                                                edit: this.$route.query.edit
+                                            }
+                                        })
+                                    } else {
+                                        this.$router.push({
+                                            name: "collectFileOption",
+                                            query: {
+                                                agent_id: this.$route.query.agent_id,
+                                                odc_id: res.data
+                                            }
+                                        })
+                                    }
                                 }
                             })
                         }
                     });
-                } else {
+                } else {//新增
                     this.$refs[formName].validate(valid => {
                         if (valid) {
                             this.form.agent_id = this.$route.query.agent_id;
                             functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
-                                    this.$router.push({
-                                        name: "collectFileOption",
-                                        query: {
-                                            agent_id: this.$route.query.agent_id,
-                                            odc_id: res.data
-                                        }
-                                    })
+                                    if (this.$route.query.edit == 'yes') {
+                                        this.$router.push({
+                                            name: "collectFileOption",
+                                            query: {
+                                                agent_id: this.$route.query.agent_id,
+                                                odc_id: res.data,
+                                                edit: this.$route.query.edit
+                                            }
+                                        })
+                                    } else {
+                                        this.$router.push({
+                                            name: "collectFileOption",
+                                            query: {
+                                                agent_id: this.$route.query.agent_id,
+                                                odc_id: res.data
+                                            }
+                                        })
+                                    }
                                 }
                             })
                         }
