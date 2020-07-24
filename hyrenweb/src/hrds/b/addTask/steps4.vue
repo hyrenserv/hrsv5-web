@@ -328,6 +328,8 @@ export default {
             delcomData: [],
             startButton: false, //是否点击了立即执行
             finishDialogVisible: false,
+            yesF:'',
+            noF:'',
         };
     },
     created() {
@@ -376,8 +378,26 @@ export default {
                 this.DataBaseCode = res.data;
             }
         });
+        this.IsFlag()
     },
     methods: {
+        // 是否代码项
+        IsFlag(){
+            let params2 = {};
+        params2["category"] = "IsFlag";
+        this.$Code.getCategoryItems(params2).then(res => {
+            if (res.data) {
+                res.data.forEach((item)=>{
+                 if(item.value=='是'){
+                    this.yesF=item.code
+                 }else{
+                     this.noF=item.code
+                 }
+                })
+                console.log(this.noF)
+            }
+        });
+        },
         backFun() {
             this.$router.push({
                 path: "/agentList"
@@ -433,7 +453,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].orc_ml,
-                                        'is_header': '0',
+                                        'is_header': this.noF,
                                         'database_code': dataAll[i].orc_database_code,
                                         'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
@@ -443,7 +463,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].seq_ml,
-                                        'is_header': '0',
+                                        'is_header': this.noF,
                                         'database_code': dataAll[i].seq_database_code,
                                         'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })
@@ -453,7 +473,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].par_ml,
-                                        'is_header': '0',
+                                        'is_header': this.noF,
                                         'database_code': dataAll[i].par_database_code,
                                         'dbfile_format': this.getExtractDataTypecodeFun(dataAll[i].dbfile_format[j])
                                     })

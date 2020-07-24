@@ -385,7 +385,11 @@ export default {
     watch: {
         address(val) {
             if (val.submit_0 == true && val.submit_1 == true) {
+                 if (this.startButton == true) {
+                                this.sendSubmit()
+                            }else{
                 this.nextLinkfun();
+                            }
             }
         }
     },
@@ -471,6 +475,25 @@ export default {
     },
 
     methods: {
+         sendSubmit() {
+            addTaskAllFun
+                .sendJDBCCollectTaskById({
+                    colSetId: this.dbid
+                })
+                .then(res => {
+                    if (res.success) {
+                        this.finishDialogVisible = false;
+                        this.$message({
+                            showClose: true,
+                            message: '发送成功',
+                            type: "success"
+                        });
+                        this.$router.push({
+                            path: "/agentList"
+                        });
+                    }
+                });
+        },
         backFun() {
             this.$router.push({
                 path: "/agentList"

@@ -10,10 +10,8 @@
     </el-row>
     <el-row class="rowDioloag">
         <el-col :span="7" class="colContent">
-             <happy-scroll color="rgba(204, 200, 200, 0.6)" size="5" resize>
             <el-tree :data="data2" show-checkbox>
             </el-tree>
-             </happy-scroll>
         </el-col>
         <el-col :span="16" class="colTableContent" :offset="1">
             <el-table :data="tableData" border stripe size="medium">
@@ -35,10 +33,105 @@
                 <el-table-column prop="cName" label="表中文名" align="center">
                 </el-table-column>
             </el-table>
-            <el-pagination :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" style='text-align: center;margin-top: 10px;'></el-pagination>
-            <el-row style=" margin-top: 30px;">
-                <Gojs/>
-           </el-row>
+            <el-pagination :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" style='    text-align: center;
+    margin-top: 10px;'></el-pagination>
+            <el-row style="
+    margin-top: 30px;">
+                <el-col :span="7" style="     background: rgba(233, 243, 192, 0.51);
+    padding: 5px;
+    border-radius: 5px;
+    min-height: 140px;
+    margin-right: 32px;
+    position: relative;">
+                    <el-checkbox></el-checkbox> <span class='duibiaostyle'> 数据分析</span>
+                    <div style='    padding-left: 19px;
+    font-size: 16px;color:#4d5052'>
+                        <el-row>
+                            <el-checkbox></el-checkbox> 数据类型探索
+                        </el-row>
+                        <el-row>
+                            <el-checkbox></el-checkbox> 银标分类
+                        </el-row>
+                        <el-row>
+                            <el-checkbox></el-checkbox> 主键探索
+                        </el-row>
+                        <el-row>
+                            <el-checkbox></el-checkbox> 外键探索
+                        </el-row>
+                    </div>
+                    <div style="    position: absolute;
+    top: 40%;
+    right: -28px;
+    font-size: 24px;
+    color: rgb(177, 212, 41);"><i class='el-icon-right'></i></div>
+                </el-col>
+                <el-col :span="7" style="    background: rgba(204, 232, 210, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+    min-height: 140px;
+    margin-right: 32px;
+    position: relative;">
+                    <el-checkbox></el-checkbox> <span class='duibiaostyle'> 维度划分</span>
+                    <div style="    position: absolute;
+    top: 40%;
+    right: -28px;
+    font-size: 24px;
+    color: rgb(177, 212, 41);"><i class='el-icon-right'></i></div>
+                </el-col>
+                <el-col :span="7" style=" background: rgba(226, 209, 209, 0.52);
+    padding: 5px;
+    border-radius: 5px;
+    min-height: 140px;">
+                    <el-checkbox></el-checkbox> <span class='duibiaostyle'> 数据血缘</span>
+                </el-col>
+            </el-row>
+            <!--   <el-row style="
+    margin-top: 30px;">
+                <el-col  style="    background: #e9f3c0;
+    padding: 5px;
+    border-radius: 5px;
+    min-height: 50px;
+    margin-right: 32px; line-hright:50px;">
+                    <el-checkbox></el-checkbox> <span class='duibiaostyle'> 数据分析</span>
+                    <div style='    padding-left: 19px;
+    font-size: 16px;color:#4d5052'>
+                        <el-row>
+                            <el-col :span='6' style="    text-align: center;">
+                            <el-checkbox></el-checkbox> 数据类型探索</el-col>
+                             <el-col :span='6'  style="    text-align: center;"><el-checkbox></el-checkbox> 银标分类</el-col>
+                             <el-col :span='6'  style="    text-align: center;"><el-checkbox></el-checkbox> 主键探索</el-col>
+                             <el-col :span='6'  style="    text-align: center;"><el-checkbox></el-checkbox> 外键探索</el-col>
+                        </el-row>
+                    </div>
+                </el-col>
+                <el-col  style="background: #cce8d2;
+    padding: 5px;
+    border-radius: 5px;
+    min-height: 50px;
+    margin-right: 32px;
+    margin-top:5px;margin-bottom:5px;
+    line-hright:50px;
+    ">
+                    <el-checkbox></el-checkbox> <span class='duibiaostyle'> 维度划分</span>
+                </el-col>
+                <el-col style="    background: #e2d1d1;
+    padding: 5px;
+    border-radius: 5px;
+    min-height: 50px; line-hright:50px;">
+                    <el-checkbox></el-checkbox> <span class='duibiaostyle'> 数据血缘</span>
+                </el-col>
+            </el-row> -->
+            <el-row>
+                <el-col style="color: red;margin-top: 10px;">
+                    备注：
+                </el-col>
+                <el-col style="color: red;padding-left:30px;font-size:14px">
+                    1：如果选择数据分析，即会显示数据分析下的四个选项(数据类型探索/银标分类/主键探索/外键探索)供选择；
+                </el-col>
+                <el-col style="color: red;padding-left:30px;font-size:14px">
+                    2：如果选择了维度划分、数据血缘，则数据分析必选，且数据分析下的四个选项必选
+                </el-col>
+            </el-row>
         </el-col>
     </el-row>
     <div slot="footer" class="dialog-footer">
@@ -49,11 +142,7 @@
 </template>
 
 <script>
-import Gojs from './gojs'
 export default {
-    components:{
-        Gojs:Gojs,
-    },
     data() {
         return {
             currentPage: 1,
