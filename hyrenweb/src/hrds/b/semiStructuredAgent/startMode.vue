@@ -8,7 +8,7 @@
                     <el-form-item label="工程编号" prop="etl_sys_cd" :rules="filter_rules([{required: true}])">
                         <el-col :span="16">
                             <el-input v-model="ruleForm.etl_sys_cd" size="medium" readonly placeholder="工程编号">
-                                <el-button slot="append" icon="el-icon-zoom-in" @click="Projectnumdialog=true;getEtlSysDataFun()"></el-button>
+                                <el-button slot="append" icon="el-icon-zoom-in" :disabled="disableds" @click="Projectnumdialog=true;getEtlSysDataFun()"></el-button>
                             </el-input>
                         </el-col>
                     </el-form-item>
@@ -17,7 +17,7 @@
                     <el-form-item label="任务编号" prop="sub_sys_cd" :rules="filter_rules([{required: true}])">
                         <el-col :span="16">
                             <el-input v-model="ruleForm.sub_sys_cd" size="medium" readonly placeholder="任务编号">
-                                <el-button slot="append" icon="el-icon-zoom-in" @click="getwork_numFun()"></el-button>
+                                <el-button slot="append" icon="el-icon-zoom-in" :disabled="disableds" @click="getwork_numFun()"></el-button>
                             </el-input>
                         </el-col>
                     </el-form-item>
@@ -302,6 +302,7 @@ export default {
             finishDialogVisible: false,
             Projectnumdialog: false,
             Worknumdialog: false,
+            disableds: false,
             tableloadingInfo: '数据加载中...',
             rule: validator.default,
             ruleForm: {
@@ -332,10 +333,14 @@ export default {
         };
     },
     mounted() {
-        //Dispatch_Frequency
-        this.getPreviewJob();
         this.getAgentPath();
-        this.getEtlJobConfInfoFromObj();
+        if (this.$route.query.edit == 'yes') {
+            this.disableds = true;
+            this.getEtlJobConfInfoFromObj();
+        } else {
+            this.disableds = false;
+            this.getPreviewJob();
+        }
         // 调度频率
         this.$Code.getCategoryItems({
             'category': 'Dispatch_Frequency'
@@ -371,13 +376,24 @@ export default {
     methods: {
         // 返回上一步
         pre() {
-            this.$router.push({
-                name: "dataStorage",
-                query: {
-                    agent_id: this.$route.query.agent_id,
-                    odc_id: this.$route.query.odc_id
-                }
-            })
+            if (this.$route.query.edit == 'yes') {
+                this.$router.push({
+                    name: "dataStorage",
+                    query: {
+                        agent_id: this.$route.query.agent_id,
+                        odc_id: this.$route.query.odc_id,
+                        edit: this.$route.query.edit
+                    }
+                })
+            } else {
+                this.$router.push({
+                    name: "dataStorage",
+                    query: {
+                        agent_id: this.$route.query.agent_id,
+                        odc_id: this.$route.query.odc_id
+                    }
+                })
+            }
         },
         // 返回采集列表
         backFun() {
@@ -407,7 +423,9 @@ export default {
             functionAll.getEtlJobConfInfoFromObj({
                 odc_id: this.$route.query.odc_id
             }).then(res => {
-
+                this.ruleForm.etl_sys_cd = res.data[0].etl_sys_cd;
+                this.ruleForm.sub_sys_cd = res.data[0].sub_sys_cd;
+                this.ruleForm.startuptableData = res.data
             })
         },
         // 获取工程信息
@@ -463,10 +481,7 @@ export default {
                 });
             }
         },
-
-        // ---------------------------end-------------
         next(formName) {
-            console.log(this.ruleForm)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     let arr = JSON.parse(JSON.stringify(this.ruleForm.startuptableData))
@@ -478,7 +493,6 @@ export default {
                         item.log_dic = this.ruleForm.log_dic;
                         item.pro_dic = this.ruleForm.pro_dic;
                     })
-                    console.log(arr)
                     let arr2 = [];
                     arr.forEach(item => {
                         arr2.push({
@@ -491,77 +505,16 @@ export default {
                             ocs_id: item.ocs_id
                         })
                     })
-                    console.log(arr2, 'i am')
                     functionAll.saveStartModeConfData({
                         odc_id: this.$route.query.odc_id,
                         etlJobDefs: JSON.stringify(arr),
                         jobStartConfs: JSON.stringify(arr2)
                     }).then(res => {
-
+                        if (res && res.success) {
+                            this.finishDialogVisible = true;
+                        }
                     })
-                    // this.isLoading = true
-                    //         let params = {};
-                    //         params["colSetId"] = parseInt(this.dbid);//odc_id
-                    //         params["etl_sys_cd"] = this.ruleForm.Project_num;
-                    //         params["pro_dic"] = this.ruleForm.work_path;
-                    //         params["log_dic"] = this.ruleForm.log_path;
-                    //         params["sub_sys_cd"] = this.ruleForm.work_num;
-                    //         params["source_id"] = this.sourId;
-                    //         let arrdata = this.ruleForm.startuptableData
-                    //         let etlJobs = [],
-                    //             type = this.ruleForm.Dispatching_mode,
-                    //             ded_arr = [];
-                    //         let jobRelation = {}
-                    //         for (let i = 0; i < arrdata.length; i++) {
-                    //             ded_arr.push(arrdata[i].ded_id)
-                    //             if (arrdata[i].disp_type == 'D') {
-                    //                 etlJobs.push({
-                    //                     'pro_type': this.ruleForm.work_type,
-                    //                     'pro_name': this.ruleForm.work_name,
-                    //                     'disp_type': arrdata[i].disp_type,
-                    //                     'pro_dic': this.ruleForm.work_path,
-                    //                     'log_dic': this.ruleForm.log_path,
-                    //                     'sub_sys_cd': this.ruleForm.work_num,
-                    //                     'etl_job': arrdata[i].etl_job,
-                    //                     'etl_job_desc': arrdata[i].etl_job_desc,
-                    //                     'disp_freq': arrdata[i].disp_freq,
-                    //                     'job_priority': parseInt(arrdata[i].job_priority),
-                    //                     'pre_etl_job': arrdata[i].pre_etl_job,
-                    //                     'pro_para': arrdata[i].pro_para,
-                    //                     'etl_sys_cd': this.ruleForm.Project_num,
-                    //                 })
-                    //                 jobRelation[arrdata[i].etl_job] = arrdata[i].pre_etl_job.join('^');
-                    //             } else {
-                    //                 etlJobs.push({
-                    //                     'pro_type': this.ruleForm.work_type,
-                    //                     'pro_name': this.ruleForm.work_name,
-                    //                     'disp_type': arrdata[i].disp_type,
-                    //                     'pro_dic': this.ruleForm.work_path,
-                    //                     'log_dic': this.ruleForm.log_path,
-                    //                     'sub_sys_cd': this.ruleForm.work_num,
-                    //                     'etl_job': arrdata[i].etl_job,
-                    //                     'etl_job_desc': arrdata[i].etl_job_desc,
-                    //                     'disp_freq': arrdata[i].disp_freq,
-                    //                     'job_priority': parseInt(arrdata[i].job_priority),
-                    //                     'disp_offset': parseInt(arrdata[i].disp_offset),
-                    //                     'disp_time': arrdata[i].disp_time,
-                    //                     'pro_para': arrdata[i].pro_para,
-                    //                     'etl_sys_cd': this.ruleForm.Project_num,
-                    //                 })
-                    //             }
-                    //         }
-                    //         params["etlJobs"] = JSON.stringify(etlJobs)
-                    //         params["ded_arr"] = ded_arr.join('^')
-                    //         params["jobRelations"] = JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation)
-                    //         sendTask.saveJobDataToDatabase(params).then(res => {
-                    //             if (res.code && res.code == 200) {
-                    //                 this.isLoading = false
-                    //                 this.active = 6;
-                    //                 this.finishDialogVisible = true
-                    //             } else {
-                    //                 this.isLoading = false
-                    //             }
-                    //         })
+
                 }
             })
         },
@@ -588,21 +541,9 @@ export default {
         },
 
         finishSubmit() {
-            sendTask.sendDBCollectTaskById({
-                colSetId: this.dbid
-            }).then(res => {
-                if (res.success) {
-                    this.finishDialogVisible = false
-                    this.$message({
-                        showClose: true,
-                        message: '发送成功',
-                        type: "success"
-                    });
-                    this.$router.push({
-                        path: "/agentList"
-                    });
-                }
-            })
+            this.$router.push({
+                path: "/agentList"
+            });
         },
         handleSizeChange(size) {
             this.pagesize = size
