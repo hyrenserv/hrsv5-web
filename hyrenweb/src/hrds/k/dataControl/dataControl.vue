@@ -3,77 +3,96 @@
         <el-row class='topTitle'>
             <span>数据管控</span>
         </el-row>
-        <el-row>
-            <span class="tab_class">
-                存储层表统计信息</span>
-        </el-row>
-        <el-row class="bottomMargin">
-            <el-col v-for="item in this.tableStatistics" :key="item.dsl_name" class="elcolFor" :span="4">
-                <el-button type="success" class="elcolForbutton">
-                    <el-row>{{item.dsl_name}}表数</el-row>
-                    <el-row class="elcolCount">{{item.count}}</el-row>
-                </el-button>
-            </el-col>
-        </el-row>
-        <el-row>
-            <span class="tab_class">规则检查统计信息</span>
-        </el-row>
-        <el-row class="elButttonSheetrow">
-            <div class="elButttonSheet">
-                <el-button class="elButttonSheetbutton elButttonSheetbutton1">
-                    <el-row>检查通过数</el-row>
-                    <el-row class="elcolCount">{{this.ruleStatistics.check_passes_number}}</el-row>
-                </el-button>
-            </div>
-            <div class="elButttonSheet">
-                <el-button class="elButttonSheetbutton elButttonSheetbutton1">
-                    <el-row>检查异常数</el-row>
-                    <el-row class="elcolCount">{{this.ruleStatistics.check_exception_number}}</el-row>
-                </el-button>
-            </div>
-            <div class="elButttonSheet">
-                <el-button class="elButttonSheetbutton elButttonSheetbutton1">
-                    <el-row>执行失败数</el-row>
-                    <el-row class="elcolCount">{{this.ruleStatistics.execution_failed_number}}</el-row>
-                </el-button>
-            </div>
-            <div class="elButttonSheet">
-                <el-button class="elButttonSheetbutton elButttonSheetbutton1">
-                    <el-row>规则总数</el-row>
-                    <el-row class="elcolCount">{{this.ruleStatistics.rule_total_number}}</el-row>
-                </el-button>
-            </div>
-        </el-row>
-        <el-row>
+         <el-row>
             <span class="tab_class">元数据管理功能列表</span>
         </el-row>
         <el-row class="elButttonSheetrow">
             <div class="elButttonSheet">
                 <router-link to="/mateDataManagement">
-                    <el-button class="elButttonSheetbutton elButttonSheetbutton1">元数据管理</el-button>
+                <!-- <i class='iconfont icon-peizhi'></i> -->
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-guanli">元数据管理</el-button>
                 </router-link>
             </div>
             <div class="elButttonSheet">
                 <router-link to="/bloodAnalysis">
-                    <el-button class="elButttonSheetbutton elButttonSheetbutton1">血缘分析</el-button>
+                <!-- <i class='iconfont icon-fenxi'></i> -->
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-fenxi">血缘分析</el-button>
                 </router-link>
             </div>
             <div class="elButttonSheet">
                 <router-link to="/variableConfig">
-                    <el-button class="elButttonSheetbutton elButttonSheetbutton1">变量配置</el-button>
+                <!-- <i class='iconfont icon-peizhi1'></i> -->
+
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-peizhi">变量配置</el-button>
                 </router-link>
             </div>
             <div class="elButttonSheet">
                 <router-link to="/ruleConfig">
-                    <el-button class="elButttonSheetbutton elButttonSheetbutton1">规则配置</el-button>
+                <!-- <i class='iconfont icon-guanli'></i> -->
+
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-peizhi1">规则配置</el-button>
                 </router-link>
             </div>
             <div class="elButttonSheet">
                 <router-link to="/ruleResults">
-                    <el-button class="elButttonSheetbutton elButttonSheetbutton1">规则结果</el-button>
+                <!-- <i class='iconfont icon-fenxijieguo'></i> -->
+
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-fenxijieguo">规则结果</el-button>
                 </router-link>
             </div>
         </el-row>
+        <el-row>
+            <span class="tab_class">
+                存储层表统计信息</span>
+        </el-row>
+        <el-row class="bottomMargin" :gutter="20">
+            <el-col v-for="item in this.tableStatistics" :key="item.dsl_name"  :span="3">
+                <div class="elcolFor">
+                    <i class='el-icon-menu' style="font-size:30px"></i>
+                    <el-row><div style="font-size: 12px;
+    padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" >{{item.dsl_name}}表数</div></el-row>
+                    <el-row class="elcolCount">{{item.count}}</el-row>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row>
+            <span class="tab_class">规则检查统计信息</span>
+        </el-row>
+        <el-row class="bottomMargin" :gutter="20">
+            <el-col   :span="6">
+                <div class="elcolFor">
+                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
+                    <el-row><div style="font-size: 12px;
+    padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">检查通过数</div></el-row>
+                    <el-row class="elcolCount">{{this.ruleStatistics.check_passes_number}}</el-row>
+                </div>
+            </el-col>
+             <el-col   :span="6">
+                 <div class="elcolFor">
+                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
+                    <el-row><div style="font-size: 12px;
+    padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">检查异常数</div></el-row>
+                    <el-row class="elcolCount">{{this.ruleStatistics.check_exception_number}}</el-row>
+                 </div>
+            </el-col>
+             <el-col   :span="6">
+               <div class="elcolFor">
+                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
+                    <el-row><div style="font-size: 12px;
+    padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">执行失败数</div></el-row>
+                    <el-row class="elcolCount">{{this.ruleStatistics.execution_failed_number}}</el-row>
+               </div>
+            </el-col>
+             <el-col   :span="6">
+                  <div class="elcolFor">
+                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
+                    <el-row><div style="font-size: 12px;
+    padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">规则总数</div></el-row>
+                    <el-row class="elcolCount">{{this.ruleStatistics.rule_total_number}}</el-row>
+                  </div>
+            </el-col>
+        </el-row>
+       
         <el-row>
             <el-col :span="8">
                 <span class="tab_class">检查通过TOP5</span>
@@ -173,14 +192,22 @@
     #dataControl .bottomMargin {
         border: 1px solid #e6e6e6;
         padding: 10px;
+            margin: 0 !important;
     }
 
     #dataControl .bottomMargin .elcolFor {
-        text-align: center
+        text-align: center;
+        padding-left: 10px;
+    padding-right: 10px;
+    background: #3d8dd2;;
+    padding: 10px 0;
+    border-radius: 4px;
+    color: #fff;
+    margin:0 10px;
     }
 
     #dataControl .bottomMargin .elcolForbutton {
-        height: 60px;
+        /* height: px; */
         width: 120px;
         border-radius: 10px;
         cursor: default;
@@ -225,4 +252,5 @@
         font-size: 16px;
         padding-left: 5px;
     }
+   
 </style>
