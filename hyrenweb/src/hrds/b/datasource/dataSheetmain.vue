@@ -226,13 +226,13 @@ export default {
 }
 
 .dataSheetmainDiv {
-    margin-bottom: 50px;
+    margin-bottom: 46px;
     padding-top: 10px;
     width: 100px;
     height: 80px;
     background: #337ab7;
     border-radius: 10px;
-    margin-right: 50px;
+    margin-right: 30px;
     text-align: center;
     float: left;
     position: relative;
