@@ -477,7 +477,7 @@ export default {
     methods: {
          sendSubmit() {
             addTaskAllFun
-                .sendJDBCCollectTaskById({
+                .sendDBCollectTaskById({
                     colSetId: this.dbid
                 })
                 .then(res => {
