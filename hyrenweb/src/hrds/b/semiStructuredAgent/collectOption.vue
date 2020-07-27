@@ -247,6 +247,7 @@ export default {
                     this.form.is_dictionary = res.data.is_dictionary;
                     this.form.file_suffix = res.data.file_suffix;
                     this.form.file_path = res.data.file_path;
+                    this.form.is_sendok = res.data.is_sendok;
                 })
             } else {
                 // 新增初始页面
