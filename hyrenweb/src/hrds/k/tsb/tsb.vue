@@ -81,7 +81,8 @@ export default {
             ruleForm: {
                 tableData: []
             },
-
+            data_layer: '',
+            file_id: ''
         }
     },
     created() {
@@ -89,15 +90,20 @@ export default {
     },
     methods: {
         dbsubmitFun() {
-            console.log(this.ruleForm.tableData);
+            console.log(this.data_layer, this.file_id)
             this.isLoading = true;
             tsbFun.predictBenchmarking({
+                'data_layer': this.data_layer,
+                'file_id': this.file_id,
                 'dbmColInfos': JSON.stringify(this.ruleForm.tableData),
             }).then(res => {
                 if (res.success) {
                     this.isLoading = false;
                     this.$router.push({
-                        name: 'tsb_result'
+                        name: 'tsb_result',
+                        query: {
+                            'detect_id': res.data,
+                        }
                     })
                 } else {
                     this.isLoading = false;
@@ -122,6 +128,8 @@ export default {
             this.currentPage = currentPage;
         },
         handleNodeClick(data) {
+            this.data_layer = data.data_layer;
+            this.file_id = data.file_id;
             if (data.file_id !== '') {
                 let params = {};
                 params["data_layer"] = data.data_layer;
