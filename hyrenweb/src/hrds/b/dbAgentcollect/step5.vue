@@ -273,11 +273,17 @@
         </div>
     </el-dialog>
      <!--完成  -->
-    <el-dialog title="提示信息" :visible.sync="finishDialogVisible" width="30%">
+    <el-dialog title="设置启动时间" :visible.sync="finishDialogVisible" width="30%">
         <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">提示信息</span>
+            <span class="dialogtitle el-icon-caret-right">设置启动时间</span>
         </div>
-        <span>确定立即执行吗？</span>
+         <div>
+            <el-form>
+                <el-form-item>
+                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
+                </el-form-item>
+            </el-form>
+        </div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
             <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
@@ -368,6 +374,7 @@ export default {
             dialogAllChooseDestination: false, //全表设置目的地
             AlldestinationData: [],
             Alldestinationchoose: [],
+            etl_date:''
         };
     },
     computed: {
@@ -478,14 +485,15 @@ export default {
          sendSubmit() {
             addTaskAllFun
                 .sendDBCollectTaskById({
-                    colSetId: this.dbid
+                    colSetId: this.dbid,
+                    etl_date:this.etl_date
                 })
                 .then(res => {
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$message({
                             showClose: true,
-                            message: '发送成功',
+                            message: '启动发送成功',
                             type: "success"
                         });
                         this.$router.push({
@@ -1267,6 +1275,8 @@ export default {
         // 立即启动
          startButtonFun() {
             this.finishDialogVisible = true
+              let date=new Date()
+            this.etl_date=date.getFullYear()+(date.getMonth()+1>10?date.getMonth()+1:'0'+(date.getMonth()+1))+date.getDate()
         },
          finishSubmit() {
             this.startButton = true
