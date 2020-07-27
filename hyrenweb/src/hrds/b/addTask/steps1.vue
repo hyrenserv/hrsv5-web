@@ -849,16 +849,17 @@ export default {
             let params = {};
             params["databaseId"] = this.dbid;
             addTaskAllFun.getDBConfInfo(params).then(res => {
+                console.log(res.data)
                 if (res.data.length != 0) {
                    /*  this.$nextTick(function () {
                         this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
                     }) */
                     this.isshow='first'
                     this.activeNames='first'
-                    this.ruleForm = res.data;
-                    this.radio = res.data.classify_id;
+                    this.ruleForm = res.data[0];
+                    this.radio = res.data[0].classify_id;
                     let params = {};
-                    params["dbType"] = String(res.data.database_type);
+                    params["dbType"] = String(res.data[0].database_type);
                     addTaskAllFun.getDBConnectionProp(params).then(res => {
                         if (res.data) {
                             this.ipPlaceholder = res.data.ipPlaceholder;
@@ -1253,6 +1254,7 @@ export default {
         },
         // 根据数据库类型获取数据驱动
         dbTypeFun(sval) {
+            console.log(sval)
             let params = {};
             params["dbType"] = String(sval);
             addTaskAllFun.getJDBCDriver(params).then(res => {
