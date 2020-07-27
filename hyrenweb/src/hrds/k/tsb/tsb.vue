@@ -89,6 +89,7 @@ export default {
     },
     methods: {
         dbsubmitFun() {
+            console.log(this.ruleForm.tableData);
             this.isLoading = true;
             tsbFun.predictBenchmarking({
                 'dbmColInfos': JSON.stringify(this.ruleForm.tableData),
