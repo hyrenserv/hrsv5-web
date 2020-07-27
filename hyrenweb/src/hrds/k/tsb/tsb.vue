@@ -90,7 +90,6 @@ export default {
     },
     methods: {
         dbsubmitFun() {
-            console.log(this.data_layer, this.file_id)
             this.isLoading = true;
             tsbFun.predictBenchmarking({
                 'data_layer': this.data_layer,

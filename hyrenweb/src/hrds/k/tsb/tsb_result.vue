@@ -434,7 +434,6 @@ export default {
         //初始化页面数据方法
         getPredictResult(detect_id) {
             tsbFun.getPredictResult({ 'detect_id': detect_id }).then(res => {
-                console.log(res.data)
                 if (res.success) {
                     this.tableData = res.data;
                 }
