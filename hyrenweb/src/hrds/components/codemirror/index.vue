@@ -64,7 +64,7 @@
                 lineNumbers: true,
                 matchBrackets: true,
                 cursorHeight: 1,
-                lineWrapping: true,
+                lineWrapping: false,
                 readOnly: this.readOnly,
                 //theme: theme,
                 // autofocus: true,
@@ -102,7 +102,7 @@
   color: black;
   direction: ltr;
   line-height: 22px;
-  height: 200px !important;
+  height: 300px !important;
 }
 .codesql>>>.CodeMirror-hints{
   z-index: 9999 !important;
