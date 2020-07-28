@@ -350,7 +350,6 @@ export default {
         this.$Code.getCategoryItems(params).then(res => {
             if (res.data) {
                 let arrlist = JSON.parse(JSON.stringify(res.data))
-                console.log(arrlist)
                 for (let i = 0; i < arrlist.length; i++) {
                     if (arrlist[i].value == 'SEQUENCEFILE') {
                         arrlist.splice(i, 1)
@@ -365,7 +364,6 @@ export default {
                         i--
                     }
                 }
-                console.log(arrlist)
                 this.delExtractDataType = arrlist
                 this.ExtractDataType = res.data;
             }
@@ -401,7 +399,6 @@ export default {
                             this.noF = item.code
                         }
                     })
-                    console.log(this.noF)
                 }
             });
         },
@@ -412,7 +409,6 @@ export default {
         },
         next(formName) {
             var a = this.ruleForm.unloadingFileData;
-            console.log(a)
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.isLoading = true
@@ -502,7 +498,6 @@ export default {
                         params["colSetId"] = this.databaseId;
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
                         params['dedId'] = JSON.parse(JSON.stringify(dedid)).join('^')
-                        console.log(extractionDefString)
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
                             if (res.code == 200 && this.startButton == false) {
@@ -604,7 +599,6 @@ export default {
             params["colSetId"] = this.databaseId;
             this.tableloadingInfo = "数据加载中...";
             addTaskAllFun.getInitInfo(params).then(res => {
-                console.log(res)
                 if (res) {
                     if (res.data.length == 0) {
                         this.tableloadingInfo = "暂无数据";
@@ -668,7 +662,6 @@ export default {
                             }
                         }
                         this.ruleForm.unloadingFileData = arrData;
-                        console.log(arrData)
                     }
                 }
             });
@@ -709,7 +702,6 @@ export default {
                                 alldata[i].dbfile_format.push(this.separatorData.Extractformat)
                             }
                         } else {
-                            console.log(alldata[i].unload_type)
                             alldata[i].dbfile_format.push(this.separatorData.Extractformat)
                         }
                         if (this.separatorData.Extractformat == '定长') {
@@ -788,7 +780,6 @@ export default {
         },
         // 选项改变时
         IsExChangeDataFun(row) {
-            console.log(row)
             row.fdc = false
             row.dc = false
             row.orc = false
@@ -823,14 +814,12 @@ export default {
         exchangeFun() {
             this.separatorData.newlineCharacter = "";
             this.separatorData.dataColumnSeparator = "";
-            console.log(this.separatorData)
             if (this.separatorData.Extractformat == 'SEQUENCEFILE' || this.separatorData.Extractformat == 'PARQUET' || this.separatorData.Extractformat == 'ORC') {
                 this.separatorData.is_header = '0'
             }
         },
         // 设置全表表头改变时
         isheaderChange() {
-            console.log(this.separatorData)
             if (this.separatorData.Extractformat == 'SEQUENCEFILE' || this.separatorData.Extractformat == 'PARQUET' || this.separatorData.Extractformat == 'ORC') {
                 this.separatorData.Extractformat = ''
             }
@@ -977,7 +966,6 @@ export default {
         },
         // 判断是否有表头
         isheaderFun(row) {
-            console.log('1')
             if (row.includes('非定长')) {
                 return true
             } else if (row.includes('定长')) {

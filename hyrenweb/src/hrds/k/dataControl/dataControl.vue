@@ -55,13 +55,12 @@
                 </div>
             </el-col>
         </el-row>
-        <el-row>
+       <!--  <el-row>
             <span class="tab_class">规则检查统计信息</span>
-        </el-row>
-        <el-row class="bottomMargin" :gutter="20">
+        </el-row> -->
+        <!-- <el-row class="bottomMargin" :gutter="20">
             <el-col   :span="6">
                 <div class="elcolFor">
-                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
                     <el-row><div style="font-size: 12px;
     padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">检查通过数</div></el-row>
                     <el-row class="elcolCount">{{this.ruleStatistics.check_passes_number}}</el-row>
@@ -69,7 +68,6 @@
             </el-col>
              <el-col   :span="6">
                  <div class="elcolFor">
-                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
                     <el-row><div style="font-size: 12px;
     padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">检查异常数</div></el-row>
                     <el-row class="elcolCount">{{this.ruleStatistics.check_exception_number}}</el-row>
@@ -77,7 +75,6 @@
             </el-col>
              <el-col   :span="6">
                <div class="elcolFor">
-                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
                     <el-row><div style="font-size: 12px;
     padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">执行失败数</div></el-row>
                     <el-row class="elcolCount">{{this.ruleStatistics.execution_failed_number}}</el-row>
@@ -85,13 +82,12 @@
             </el-col>
              <el-col   :span="6">
                   <div class="elcolFor">
-                    <!-- <i class='el-icon-bank-card' style="font-size:30px"></i> -->
                     <el-row><div style="font-size: 12px;
     padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">规则总数</div></el-row>
                     <el-row class="elcolCount">{{this.ruleStatistics.rule_total_number}}</el-row>
                   </div>
             </el-col>
-        </el-row>
+        </el-row> -->
        
         <el-row>
             <el-col :span="8">

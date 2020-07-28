@@ -170,7 +170,6 @@ export default {
                             }
                         } */
                         this.tableData = res.data;
-                        console.log(this.tableData)
                     } else {
                         this.tableData = [];
                     }
@@ -234,7 +233,6 @@ export default {
             params["tableName"] = name;
             params["tableId"] = id ? id : "";
             addTaskAllFun.getColumnsigleInfo(params).then(res => {
-                console.log(res.data)
                 let list = res.data.columnInfo
                 this.coltable_name = res.data.tableName
                 for (let i = 0; i < list.length; i++) {
@@ -265,8 +263,6 @@ export default {
                 });
             }
             this.dialogSelectColumn = false
-            console.log(this.SelectColumn2)
-
         },
         //第一页 选择列的弹框复选框全选
         Allis_SelectColumnFun(items, e) {
@@ -299,12 +295,10 @@ export default {
         // 表全选
         AllhandleSelectionChange(item) {
             this.selectTable = item
-            console.log(this.selectTable)
         },
         // 表单个选择
         allselectD(item) {
             this.selectTable = item
-            console.log(this.selectTable)
         },
         // 改变中文名
         inputblur(row) {
@@ -354,7 +348,6 @@ export default {
             params["tableInfos"] = JSON.stringify(this.selectTable);
             params["tableColumns"] = JSON.stringify(tableColumns);
             params["dsl_id"] = this.$route.query.dsl_id;
-            console.log(params)
             if (this.$route.query.edit == 'yes') {
                 addTaskAllFun.updateTableData(params).then(res => {
                     this.isLoading = false

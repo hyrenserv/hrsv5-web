@@ -271,7 +271,6 @@ export default {
             functionAll.getInitDataTransfer({
                 colSetId: this.$route.query.id
             }).then(res => {
-                console.log(res.data)
                 if (res.data.length > 0) {
                     let getData = res.data
                     for (let i = 0; i < getData.length; i++) {

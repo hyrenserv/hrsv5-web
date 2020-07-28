@@ -104,7 +104,6 @@ export default {
             tdbFun.saveTDBTable({
                 'tdb_table_bean_s': JSON.stringify(this.tableData)
             }).then(res => {
-                console.log(res.data)
                 if (res.code == '200') {
                     this.$router.push({
                         name: 'choiceTable',
