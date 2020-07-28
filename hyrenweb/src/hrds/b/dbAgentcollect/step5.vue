@@ -256,7 +256,7 @@
             </el-table-column>
             <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-             <el-table-column label="详情" width="160px" align="center">
+            <el-table-column label="详情" width="160px" align="center">
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
@@ -272,12 +272,12 @@
             <el-button type="primary" @click="ChooseAllDestinationSubmitFun()" size="mini">确 定</el-button>
         </div>
     </el-dialog>
-     <!--完成  -->
+    <!--完成  -->
     <el-dialog title="设置启动时间" :visible.sync="finishDialogVisible" width="30%">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">设置启动时间</span>
         </div>
-         <div>
+        <div>
             <el-form>
                 <el-form-item>
                     <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
@@ -307,7 +307,7 @@ export default {
     },
     data() {
         return {
-            finishDialogVisible:false,
+            finishDialogVisible: false,
             rule: validator.default,
             tableloadingInfo: "数据加载中...",
             dbid: null,
@@ -374,7 +374,7 @@ export default {
             dialogAllChooseDestination: false, //全表设置目的地
             AlldestinationData: [],
             Alldestinationchoose: [],
-            etl_date:''
+            etl_date: ''
         };
     },
     computed: {
@@ -392,11 +392,11 @@ export default {
     watch: {
         address(val) {
             if (val.submit_0 == true && val.submit_1 == true) {
-                 if (this.startButton == true) {
-                                this.sendSubmit()
-                            }else{
-                this.nextLinkfun();
-                            }
+                if (this.startButton == true) {
+                    this.sendSubmit()
+                } else {
+                    this.nextLinkfun();
+                }
             }
         }
     },
@@ -482,11 +482,11 @@ export default {
     },
 
     methods: {
-         sendSubmit() {
+        sendSubmit() {
             addTaskAllFun
                 .sendDBCollectTaskById({
                     colSetId: this.dbid,
-                    etl_date:this.etl_date
+                    etl_date: this.etl_date
                 })
                 .then(res => {
                     if (res.success) {
@@ -554,7 +554,7 @@ export default {
                         for (let k = 0; k < this.oldTbData.length; k++) {
                             if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
                                 desDataArr[j].dslIds = this.oldTbData[k].dslIds;
-                                if (this.oldTbData[k].hyren_name != ''&&this.oldTbData[k].hyren_name!=undefined) {
+                                if (this.oldTbData[k].hyren_name != '' && this.oldTbData[k].hyren_name != undefined) {
                                     desDataArr[j].hyren_name = this.oldTbData[k].hyren_name
                                 }
                             }
@@ -565,7 +565,7 @@ export default {
                         for (let n = 0; n < this.dslIdString.length; n++) {
                             if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
                                 desDataArr[m].dslIds = this.dslIdString[n].dslIds;
-                                if (this.dslIdString[n].hyren_name != ''&&this.dslIdString[n].hyren_name!=undefined) {
+                                if (this.dslIdString[n].hyren_name != '' && this.dslIdString[n].hyren_name != undefined) {
                                     desDataArr[m].hyren_name = this.dslIdString[n].hyren_name
 
                                 }
@@ -576,7 +576,7 @@ export default {
                     if (tbStoInfoString.length > 0) {
                         let params = {};
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
-                        params["colSetId"] =this.dbid;
+                        params["colSetId"] = this.dbid;
                         params["dslIdString"] = JSON.stringify(dslIdString);
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
@@ -1272,12 +1272,12 @@ export default {
             this.Alldestinationchoose = item
         },
         // 立即启动
-         startButtonFun() {
+        startButtonFun() {
             this.finishDialogVisible = true
-              let date=new Date()
-            this.etl_date=date.getFullYear()+(date.getMonth()+1>10?date.getMonth()+1:'0'+(date.getMonth()+1))+date.getDate()
+            let date = new Date()
+            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + date.getDate()
         },
-         finishSubmit() {
+        finishSubmit() {
             this.startButton = true
             this.next('ruleForm')
         },

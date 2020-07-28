@@ -522,8 +522,7 @@ export default {
                                     path: "/collection1_5",
                                     query: data
                                 });
-                            }
-                            if (res.code == 200 && this.startButton == true) {
+                            }else if(res.code == 200 && this.startButton == true) {
                                 this.sendSubmit()
                             }
                         });
