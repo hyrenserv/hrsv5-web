@@ -44,15 +44,19 @@
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="Sql查询" name="sqlQuery">
-                    <el-col :span="20">
-                        <div style="min-height:30px">
-                            <codemirror v-model="code" @input="onCmCodeChange" :options="cmOptions" />
+                    <el-row>
+                         <el-button class="query-sql-btn" style="float: right;" type="primary" @click="getDataBySQL()" size="small">查询
+                        </el-button>
+                         <el-button type="success" style="float: right;" size="small" class="sql-btn" @click="formaterSql (basicInfoForm.sqlMain)">格式化sql</el-button>
+                    </el-row>
+                     <el-row>
+                    <el-col>
+                        <div >
+                        <SqlEditor ref="sqleditor" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
                         </div>
                     </el-col>
-                    <el-col :span="4">
-                        <el-button class="query-sql-btn" type="primary" @click="getDataBySQL()" size="small">查询
-                        </el-button>
-                    </el-col>
+                     </el-row>
+                   
                     <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
                         <el-table-column v-for="(index, item) in dataBySQL[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip min-width="210">
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
@@ -77,12 +81,14 @@ import {
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/duotone-dark.css'
 import 'codemirror/mode/sql/sql.js'
-
+import sqlFormatter from 'sql-formatter'
+import SqlEditor from '../../components/codemirror'
 export default {
     name: "codeMirror",
     components: {
         Loading,
-        codemirror
+        codemirror,
+        SqlEditor
     },
     data() {
         return {
@@ -96,26 +102,9 @@ export default {
             dataByTableName: [],
             dataBySQL: [],
             copydata: '',
-            code: '',
-            cmOptions: {
-                mode: 'text/x-sql',
-                theme: 'duotone-dark',
-                indentWithTabs: true,
-                smartIndent: true,
-                lineWrapping: true,
-                matchBrackets: true,
-                autofocus: true,
-                extraKeys: {
-                    "Ctrl-Space": "autocomplete"
-                },
-                hintOptions: { //自定义提示选项
-                    tables: {
-                        users: ['name', 'score', 'birthDate'],
-                        countries: ['name', 'population', 'size']
-                    },
-
-                }
-            },
+            basicInfoForm:{
+        		sqlMain: ''
+			},
             webSqlTreeData: [],
         };
     },
@@ -142,10 +131,10 @@ export default {
                 this.webSqlTreeData = res.data;
             });
         },
-        //   获取编辑器新值
+       /*  //   获取编辑器新值
         onCmCodeChange(newCode) {
             this.code = newCode
-        },
+        }, */
         //树点击触发
         handleNodeClick(data) {
             this.isLoading = true;
@@ -167,7 +156,7 @@ export default {
 
         // 根据SQL查询数据
         getDataBySQL() {
-            let querySQL = this.code;
+            let querySQL = this.basicInfoForm.sqlMain;
             if (querySQL === '') {
                 this.$message({
                     type: 'warning',
@@ -214,6 +203,13 @@ export default {
             document.execCommand("Copy"); // 执行浏览器复制命令
             oInput.remove();
         },
+        changeTextarea(val) {
+            this.$set(this.basicInfoForm, 'sqlMain', val)
+        },
+        formaterSql(val) {
+            let dom = this.$refs.sqleditor
+            dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+        },
     }
 }
 </script>
@@ -252,5 +248,12 @@ export default {
     height: 60px;
     background: #fff;
     margin-bottom: 10px;
+}
+.textasql>>>.CodeMirror{
+    height: 200px !important;
+    /* width:200px !important; */
+}
+.sql-btn{
+    margin-bottom: 20px;
 }
 </style>

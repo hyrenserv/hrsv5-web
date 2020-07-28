@@ -540,6 +540,17 @@ export default new Router({
                         { name: '数据对标' },
                     ],
                 },
+                {
+                    path: '/choiceTable',
+                    name: 'choiceTable',
+                    title: 'choiceTable',
+                    component: () => import('@/hrds/k/tdb/choiceTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据对标',url: '/tdb' },
+                        { name: '选择表结果' },
+                    ],
+                },
                 {path: '/Databenchmarking',
                 name: 'Databenchmarking',
                 title: 'Databenchmarking',

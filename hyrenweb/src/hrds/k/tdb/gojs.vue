@@ -1,6 +1,6 @@
 <template>
 <div class="goDemo">
-    <div id="mygoChart" style="width:600px; height:130px; background-color: #fff;"></div>
+    <div id="mygoChart" style="width:600px; height:130px; background-color: #fff;margin: 0 auto;"></div>
 </div>
 </template>
 
