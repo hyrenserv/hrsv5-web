@@ -394,6 +394,7 @@ export default {
             if (val.submit_0 == true && val.submit_1 == true) {
                 if (this.startButton == true) {
                     this.sendSubmit()
+                    this.startButton=false
                 } else {
                     this.nextLinkfun();
                 }
