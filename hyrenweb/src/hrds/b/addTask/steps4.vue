@@ -524,6 +524,7 @@ export default {
                                 });
                             }else if(res.code == 200 && this.startButton == true) {
                                 this.sendSubmit()
+                                this.startButton=false
                             }
                         });
                     }
