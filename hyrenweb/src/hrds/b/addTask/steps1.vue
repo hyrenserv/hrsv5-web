@@ -849,7 +849,6 @@ export default {
             let params = {};
             params["databaseId"] = this.dbid;
             addTaskAllFun.getDBConfInfo(params).then(res => {
-                console.log(res.data)
                 if (res.data.length != 0) {
                    /*  this.$nextTick(function () {
                         this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
@@ -889,7 +888,6 @@ export default {
             params["agent_id"] = this.$route.query.agent_id
             addTaskAllFun.addDBConfInfo(params).then(res => {
                 if (res.data.length != 0) {
-                    console.log('1')
                    /*  this.$nextTick(function () {
                         this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
                         this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "none"
@@ -1121,7 +1119,6 @@ export default {
         // 采集任务分类确定提交时
 
         updataClassNumBtn(row) {
-            console.log(this.activeNames)
             if (row.length > 0) {
                 if (this.activeNames == 'second') {
                     if (this.radio2 != '') {
@@ -1254,7 +1251,6 @@ export default {
         },
         // 根据数据库类型获取数据驱动
         dbTypeFun(sval) {
-            console.log(sval)
             let params = {};
             params["dbType"] = String(sval);
             addTaskAllFun.getJDBCDriver(params).then(res => {
@@ -1302,7 +1298,6 @@ export default {
         },
         // 点击测试连接
         testLinkFun(n) {
-            console.log(this.activeNames)
             if (n == '1') {
                 this.linkloading = true
             }
@@ -1389,13 +1384,11 @@ export default {
         },
         ChooseStorageTierSubmitFun() {
             this.dialogChooseStorageTier = false
-            console.log(this.radioSave)
             let params = {};
             params["dslId"] = this.radioSave;
             addTaskAllFun.getStoDestDetail(params).then(res => {
                 if (res.data) {
                     let arr = res.data
-                    console.log(arr)
                     for (let i = 0; i < arr.length; i++) {
                         if (arr[i].storage_property_key == 'database_type') {
                             this.ruleFormSecond.database_type = arr[i].storage_property_val

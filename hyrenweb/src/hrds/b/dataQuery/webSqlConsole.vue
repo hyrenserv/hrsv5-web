@@ -34,10 +34,10 @@
             </div>
         </el-col>
         <el-col :span="18" :offset="1">
-            <el-tabs v-model="activeName" type="border-card">
+            <el-tabs v-model="activeName" type="border-card" @tab-click='tabClick()'>
                 <el-tab-pane label="表查询" name="tableQuery">
                     <el-table :data="dataByTableName" stripe border size="medium">
-                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip min-width="210">
+                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip >
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                         </el-table-column>
@@ -45,20 +45,20 @@
                 </el-tab-pane>
                 <el-tab-pane label="Sql查询" name="sqlQuery">
                     <el-row>
-                         <el-button class="query-sql-btn" style="float: right;" type="primary" @click="getDataBySQL()" size="small">查询
+                        <el-button class="query-sql-btn" style="float: right;" type="primary" @click="getDataBySQL()" size="small">查询
                         </el-button>
-                         <el-button type="success" style="float: right;" size="small" class="sql-btn" @click="formaterSql (basicInfoForm.sqlMain)">格式化sql</el-button>
+                        <el-button type="success" style="float: right;" size="small" class="sql-btn" @click="formaterSql (basicInfoForm.sqlMain)">格式化sql</el-button>
                     </el-row>
-                     <el-row>
-                    <el-col>
-                        <div >
-                        <SqlEditor ref="sqleditor" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
-                        </div>
-                    </el-col>
-                     </el-row>
-                   
+                    <el-row>
+                        <el-col>
+                            <div>
+                                <SqlEditor ref="sqleditor" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            </div>
+                        </el-col>
+                    </el-row>
+
                     <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
-                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip min-width="210">
+                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip >
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                         </el-table-column>
@@ -75,19 +75,19 @@
 <script>
 import * as dataQuery from "./dataQuery";
 import Loading from '../../components/loading';
-import {
+/* import {
     codemirror
 } from 'vue-codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/duotone-dark.css'
-import 'codemirror/mode/sql/sql.js'
+import 'codemirror/mode/sql/sql.js' */
 import sqlFormatter from 'sql-formatter'
 import SqlEditor from '../../components/codemirror'
 export default {
     name: "codeMirror",
     components: {
         Loading,
-        codemirror,
+        // codemirror,
         SqlEditor
     },
     data() {
@@ -102,9 +102,9 @@ export default {
             dataByTableName: [],
             dataBySQL: [],
             copydata: '',
-            basicInfoForm:{
-        		sqlMain: ''
-			},
+            basicInfoForm: {
+                sqlMain: ''
+            },
             webSqlTreeData: [],
         };
     },
@@ -119,6 +119,13 @@ export default {
         this.getWebSQLTreeData();
     },
     methods: {
+        tabClick() {
+            if (this.activeName == 'sqlQuery') {
+                this.$nextTick(() => {
+                    this.$refs.sqleditor.refresh();
+                });
+            }
+        },
         // 节点搜索
         filterNode(value, data) {
             // 如果检索内容为空,直接返回
@@ -131,10 +138,6 @@ export default {
                 this.webSqlTreeData = res.data;
             });
         },
-       /*  //   获取编辑器新值
-        onCmCodeChange(newCode) {
-            this.code = newCode
-        }, */
         //树点击触发
         handleNodeClick(data) {
             this.isLoading = true;
@@ -203,6 +206,7 @@ export default {
             document.execCommand("Copy"); // 执行浏览器复制命令
             oInput.remove();
         },
+
         changeTextarea(val) {
             this.$set(this.basicInfoForm, 'sqlMain', val)
         },
@@ -222,7 +226,7 @@ export default {
 
 /* 查询sql按钮*/
 .query-sql-btn {
-    margin-left: 5%;
+    margin-left: 2%;
 }
 
 .websqlconsole .menu {
@@ -249,11 +253,13 @@ export default {
     background: #fff;
     margin-bottom: 10px;
 }
-.textasql>>>.CodeMirror{
+
+.textasql>>>.CodeMirror {
     height: 200px !important;
     /* width:200px !important; */
 }
-.sql-btn{
-    margin-bottom: 20px;
+
+.sql-btn {
+    margin-bottom: 5px;
 }
 </style>

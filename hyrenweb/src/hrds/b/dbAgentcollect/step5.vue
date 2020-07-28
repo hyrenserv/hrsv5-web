@@ -1259,7 +1259,6 @@ export default {
                     this.ruleForm.ex_destinationData[i].table_setting = true
                 }
                 this.dialogAllChooseDestination = false
-                console.log(this.dslIdString)
             } else {
                 this.open()
             }
