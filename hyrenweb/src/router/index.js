@@ -913,7 +913,8 @@ export default new Router({
                     name: 'addMarketIndex',
                     title: 'addMarketIndex',
                     component: () => import('@/hrds/h/market/addMarketIndex.vue')
-
+                },
+                {
                     path: '/marketVersionManage',
                     name: 'marketVersionManage',
                     title: 'marketVersionManage',
