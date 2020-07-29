@@ -9,10 +9,11 @@
                 <!--树菜单-->
                 <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                 <div class='mytree'>
-                    <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description">{{node.label}}</span>
-                        </span>
+                    <el-tree class="filter-tree" :data="treedata" :indent='0'
+                             @node-click="showtablecolumn">
+                         <span class="span-ellipsis" slot-scope="{ node, data }">
+                             <span :title="data.description">{{node.label}}</span>
+                         </span>
                     </el-tree>
                 </div>
             </el-col>
@@ -20,26 +21,180 @@
                 <el-tabs type="card">
                     <el-row>
                         <span>SQL查询</span>
-                        <el-col :span='10' style="float:right">
-                            <el-input placeholder="SQL中使用#{}进行替换，例如#{abc};参数处填写abc=123,多个参数时,中间用分号;隔开" size="mini"
+                        <el-col :span='10' style="float:right;width: 60%;margin-bottom: 10px;">
+                            <el-input placeholder="SQL中使用#{}进行替换，例如#{abc};参数处填写abc=123,多个参数时,中间用分号;隔开"
+                                      size="mini"
                                       v-model="sqlparameter">
                             </el-input>
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入查询SQL 如果需使用参数,则使用#{}进行替换"
-                                  v-model="querysql"/>
+                        <div style="border:1px solid #ccc;">
+                            <SqlEditor ref="sqleditor" :value="basicInfoForm.sqlMain"
+                                       @changeTextarea="changeTextarea($event)" class='textasql'/>
+                        </div>
                     </el-row>
                     <el-row class="partFour">
                         <div class="elButton">
                             <el-button type="primary" @click="getdatabysql()" size="medium">查询</el-button>
-                            <el-button :disabled="iflock" type="primary" @click="getcolumnbysql()" size="medium">确定
+                            <el-button :disabled="iflock" type="primary" @click="getcolumnbysql()"
+                                       size="medium">确定
+                            </el-button>
+                            <el-button type="primary" size="medium" class="sql-btn"
+                                       @click="formaterSql (basicInfoForm.sqlMain)">格式化sql
                             </el-button>
                         </div>
                     </el-row>
                 </el-tabs>
             </el-col>
         </el-row>
+        <el-button type="primary" size="medium" @click="selectTableCreateVisible = true">选择表创建</el-button>
+        <el-dialog title="选择表创建" :visible.sync="selectTableCreateVisible" width="80%">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline"
+                     :label-position="labelPosition" label-width="80px">
+                <el-row :gutter="20">
+                    <el-col>
+                        <el-form-item label="select">
+                            <el-input v-model="formInline.selectColumns" placeholder="选择列"/>
+                        </el-form-item>
+                    </el-col>
+                    <el-col>
+                        <el-form-item label="表名称">
+                            <el-input v-model="formInline.table_name" placeholder="表名称">
+                                <el-button slot="append" @click="getTableTreeData(-1)">选择表</el-button>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <label type="text">T1</label>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="addRelationTable" size="medium">
+                                添加关联表
+                            </el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col v-for="(item,index) in relationNums" :span="24">
+                        <el-form-item label="JOIN 条件">
+                            <el-select v-model="formInline['joinCondition'+index]" placeholder="请选择join条件"
+                                       style="width: 160px">
+                                <el-option label="LEFT JOIN" value="LEFT JOIN"/>
+                                <el-option label="RIGHT JOIN" value="RIGHT JOIN"/>
+                                <el-option label="FULL JOIN" value="FULL JOIN"/>
+                                <el-option label="INNER JOIN" value="INNER JOIN"/>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="关联表">
+                            <el-input v-model="formInline['tableName'+index]" placeholder="表名称">
+                                <el-button slot="append" @click="getTableTreeData(index)">选择表</el-button>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <label type="text">T{{index+2}}</label>
+                        </el-form-item>
+                        <el-form-item>
+                            <template type="text">ON</template>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-input type="textarea" v-model="formInline['onCondition'+index]"
+                                      placeholder="关联条件"/>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="danger" @click="deleteRelation(index)" size="medium">删除
+                            </el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col>
+                        <el-form-item label="where">
+                            <el-input placeholder="过滤条件,如果使用占位符，使用方式如：column=#{column}"
+                                      v-model="formInline.whereColumns" style="width: 500px">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col>
+                        <el-form-item label="group by">
+                            <el-input placeholder="分组条件" v-model="formInline.groupColumns">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-form-item>
+                        <el-button type="primary" size="medium" @click="selectTableCreateVisible = false">
+                            取消
+                        </el-button>
+                        <el-button type="primary" size="medium" @click="addSql">确定</el-button>
+                    </el-form-item>
+                </el-row>
+            </el-form>
+        </el-dialog>
+        <!--选择表弹出框-->
+        <el-dialog title="选择表" :visible.sync="selectTableVisible" width="60%">
+            <el-row :gutter="20">
+                <el-col :span='6'>
+                    <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini">
+                    </el-input>
+                    <div class="mytree" hight='200'>
+                        <el-tree class="filter-tree" :data="treedata" :indent='0'
+                                 :filter-node-method="filterNode"
+                                 ref="tree" @node-click="handleNodeClick">
+                        <span class="span-ellipsis" slot-scope="{ node, data }"
+                              v-if="data.description.length >0">
+                            <span :title="data.description" v-if="data.file_id.length > 0">
+                                <i class=" el-icon-document"/>{{node.label}}
+                            </span>
+                            <span :title="data.description" v-else>
+                                <i class="el-icon-folder-opened"/>{{node.label}}
+                            </span>
+                            </span>
+                            <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
+                            <span :title="data.label" v-if="data.file_id.length > 0">
+                                <i class=" el-icon-document"/>{{node.label}}
+                            </span>
+                            <span :title="data.label" v-else>
+                                <i class="el-icon-folder-opened"/>{{node.label}}
+                            </span>
+                         </span>
+                        </el-tree>
+                    </div>
+                </el-col>
+                <!--表信息列表-->
+                <el-col :span='18' style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
+                    <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage*pageSize)"
+                              border style="width: 100%" size="medium" ref="multipleTable"
+                              :row-key="(row)=>{ return row.id}"
+                              @selection-change="selectionChange">
+                        <el-table-column width="40" align="center" type="selection"
+                                         :reserve-selection="true">
+                        </el-table-column>
+                        <el-table-column label="序号" width="50px" align="center">
+                            <template slot-scope="scope">
+                                <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="table_name" label="采集原始表名" align="center"/>
+                        <el-table-column prop="original_name" label="原始表中文名" align="center"/>
+                        <el-table-column prop="selectColumn" label="选择字段" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini"
+                                           @click="showtablecolumn(scope.row,scope.$index)">
+                                    选择字段
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!-- 分页内容 -->
+                    <el-row class="pagination">
+                        <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage"
+                                       @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]"
+                                       :page-size="pageSize"
+                                       layout=" total,sizes,prev, pager, next,jumper"
+                                       :total="totalSize" class='locationcenter'/>
+                    </el-row>
+                </el-col>
+            </el-row>
+            <el-row slot="footer" class="dialog-footer">
+                <el-button @click="selectTableVisible=false" size="mini">取 消</el-button>
+                <el-button type="primary" @click="addTable" size="mini">确 认</el-button>
+            </el-row>
+        </el-dialog>
         <el-tabs type="card">
             <el-row>
                 <el-col :span='2' style="float:right">
@@ -89,7 +244,8 @@
                     <el-table-column prop="field_length" label="字段长度" width="90" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-input :disabled="iflock" width="90" v-model="scope.row.field_length" autocomplete="off"
+                            <el-input :disabled="iflock" width="90" v-model="scope.row.field_length"
+                                      autocomplete="off"
                                       placeholder="长度"></el-input>
                         </template>
                     </el-table-column>
@@ -117,7 +273,8 @@
                                            :value="item.code"></el-option>
                             </el-select>
 
-                            <el-input :disabled="iflock" v-else v-model="scope.row.process_para" autocomplete="off"
+                            <el-input :disabled="iflock" v-else v-model="scope.row.process_para"
+                                      autocomplete="off"
                                       placeholder="处理方式参数"></el-input>
 
                         </template>
@@ -176,7 +333,8 @@
         <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
             <el-row>
                 <el-table :data="databysql" border size="mini">
-                    <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item"
+                    <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index"
+                                     :label="item"
                                      :prop="item">
                         <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                         <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
@@ -187,7 +345,8 @@
                 <el-button :disabled="iflock" type="primary" size="medium" class="rightbtn"
                            @click="querydatadialogshow = false ; getcolumnbysql()">确定
                 </el-button>
-                <el-button type="primary" size="medium" class="rightbtn" @click="querydatadialogshow = false">取消
+                <el-button type="primary" size="medium" class="rightbtn" @click="querydatadialogshow = false">
+                    取消
                 </el-button>
             </el-row>
         </el-dialog>
@@ -207,9 +366,11 @@
                     <el-table-column label="操作" show-overflow-tooltip
                                      align="center">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="medium" @click="hbaseupcolumn(scope.$index,scope.row)">上移
+                            <el-button type="primary" size="medium"
+                                       @click="hbaseupcolumn(scope.$index,scope.row)">上移
                             </el-button>
-                            <el-button type="primary" size="medium" @click="hbasedowncolumn(scope.$index,scope.row)">下移
+                            <el-button type="primary" size="medium"
+                                       @click="hbasedowncolumn(scope.$index,scope.row)">下移
                             </el-button>
                         </template>
                     </el-table-column>
@@ -218,7 +379,8 @@
             </el-row>
             <el-row>
                 <el-button type="primary" size="mini" class="rightbtn" @click="next()">确定</el-button>
-                <el-button type="primary" size="mini" class="rightbtn" @click="dismissifhbasesort()">取消</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="dismissifhbasesort()">取消
+                </el-button>
             </el-row>
         </el-dialog>
 
@@ -248,7 +410,8 @@
             </el-row>
             <el-row>
                 <el-button type="primary" size="mini" class="rightbtn" @click="changesql()">确定</el-button>
-                <el-button type="primary" size="mini" class="rightbtn" @click="dismissiftablecolumn()">取消</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="dismissiftablecolumn()">取消
+                </el-button>
             </el-row>
         </el-dialog>
 
@@ -259,7 +422,8 @@
                     <!--树菜单-->
                     <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                     <div class='mytree'>
-                        <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
+                        <el-tree class="filter-tree" :data="treedata" :indent='0'
+                                 @node-click="showtablecolumn">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="data.description">{{node.label}}</span>
                         </span>
@@ -269,14 +433,16 @@
                 <el-col :span="16">
                     <el-tabs type="card">
                         <el-row>
-                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL,多个SQL用;;分隔"
+                            <el-input class="inputframe" type="textarea" rows="5"
+                                      placeholder="请输入SQL,多个SQL用;;分隔"
                                       v-model="presql"/>
                         </el-row>
                     </el-tabs>
                 </el-col>
             </el-row>
             <el-row>
-                <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定
+                </el-button>
                 <el-button type="primary" size="mini" class="rightbtn" @click="cancelprejob()">取消</el-button>
             </el-row>
         </el-dialog>
@@ -287,7 +453,8 @@
                     <!--树菜单-->
                     <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
                     <div class='mytree'>
-                        <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
+                        <el-tree class="filter-tree" :data="treedata" :indent='0'
+                                 @node-click="showtablecolumn">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="data.description">{{node.label}}</span>
                         </span>
@@ -297,19 +464,20 @@
                 <el-col :span="16">
                     <el-tabs type="card">
                         <el-row>
-                            <el-input class="inputframe" type="textarea" rows="5" placeholder="请输入SQL,多个SQL用;;分隔"
+                            <el-input class="inputframe" type="textarea" rows="5"
+                                      placeholder="请输入SQL,多个SQL用;;分隔"
                                       v-model="aftersql"/>
                         </el-row>
                     </el-tabs>
                 </el-col>
             </el-row>
             <el-row>
-                <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定</el-button>
-                <el-button type="primary" size="mini" class="rightbtn" @click="cancelafterjob()">取消</el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定
+                </el-button>
+                <el-button type="primary" size="mini" class="rightbtn" @click="cancelafterjob()">取消
+                </el-button>
             </el-row>
         </el-dialog>
-
-
         <transition name="fade">
             <loading v-if="isLoading"/>
         </transition>
@@ -321,11 +489,14 @@
     import * as message from "@/utils/js/message";
     import Loading from '../../components/loading'
     import Step from "./step";
+    import sqlFormatter from 'sql-formatter'
+    import SqlEditor from '../../components/codemirror'
 
     export default {
         components: {
             Step,
-            Loading
+            Loading,
+            SqlEditor
         },
         data() {
             return {
@@ -361,6 +532,25 @@
                 sqltablename: "",
                 isLoading: false,
                 iflock: false,
+                formInline: {
+                    table_name: '',
+                    selectColumns: '',
+                    whereColumns: '',
+                    groupColumns: ''
+                },
+                selectTableVisible: false,
+                selectTableCreateVisible: false,
+                labelPosition: 'right',
+                currPage: 1,
+                pageSize: 10,
+                totalSize: 0,
+                selectRow: [],
+                tableData: [],
+                relationNums: [],
+                relationIndex: 1,
+                basicInfoForm: {
+                    sqlMain: ''
+                }
             };
         },
         watch: {
@@ -375,16 +565,17 @@
             this.getallfield_process();
             this.getcolumnmore();
             this.getcolumnfromdatabase(this.datatable_id);
-            this.getquerysql();
             this.getifhbase();
             this.getfromcolumnlist(this.datatable_id);
         },
         mounted() {
             this.checkifrepeat();
+            this.getquerysql();
+
         },
         methods: {
             checkifrepeat() {
-                debugger;
+                // debugger;
                 if (this.ifrepeat == "true" || this.ifrepeat == true) {
                     functionAll.getTableIdFromSameNameTableId({
                         "datatable_id": this.datatable_id
@@ -476,10 +667,16 @@
             getquerysql() {
                 let params = {
                     "datatable_id": this.datatable_id,
-                };
+                },that=this;
                 functionAll.getQuerySql(params).then((res) => {
                     // if (res.data.length != 0) {
-                        this.querysql = res.data;
+                    this.querysql = res.data;
+                    // this.basicInfoForm.sqlMain = this.querysql;
+                    that.$set(that.basicInfoForm,'sqlMain',res.data)
+                    this.$nextTick(() => {
+                        this.$refs.sqleditor.refresh();
+                    });
+                    console.log(this.basicInfoForm.sqlMain, "aaa")
                     // }
                 })
             },
@@ -902,10 +1099,121 @@
                     }
                 });
             },
+            // 树节点触发
+            handleNodeClick(data) {
+                this.tableData = [];
+                if (data.file_id === "" && data.classify_id !== "") {
+                    if (typeof data.children !== "undefined")
+                        this.tableData = data.children;
+                } else if (data.data_layer === "DML" && data.file_id === "") {
+                    if (typeof data.children !== "undefined")
+                        this.tableData = data.children;
+                } else if (data.file_id !== "") {
+                    this.tableData.push(data);
+                }
+            },
+            // 搜索过滤节点
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
+            // 表复选框选中
+            selectionChange(selectTrue) {
+                this.selectRow = selectTrue;
+            },
+            //表数据实现分页功能
+            handleCurrentChangeList(currPage) {
+                //把val赋给当前页面
+                this.currPage = currPage;
+            },
+            // 改变每页显示条数
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+            },
+            changeTextarea(val) {
+                this.$set(this.basicInfoForm, 'sqlMain', val)
+            },
+            formaterSql(val) {
+                let dom = this.$refs.sqleditor
+                dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+            },
+            addSql() {
+                // 提示信息
+                let sql = "select " + this.formInline.selectColumns + " from " +
+                    this.formInline.table_name;
+                if (this.relationNums.length !== 0) {
+                    for (let i = 0; i < this.relationNums.length; i++) {
+                        sql = sql + " " + this.formInline["joinCondition" + i] + " "
+                            + this.formInline["tableName" + i] + " T" + i + 2
+                            + " ON " + this.formInline["onCondition" + i]
+                    }
+                    sql = sql + " where " + this.formInline.whereColumns;
+                } else if (this.formInline.groupColumns.length !== 0) {
+                    sql = sql + " group by " + this.formInline.groupColumns;
+                }
+                this.querysql = sql;
+                this.basicInfoForm.sqlMain = this.querysql;
+                console.log(this.basicInfoForm.sqlMain)
+                this.selectTableVisible = false;
+                this.selectTableCreateVisible = false;
+            },
+            // 添加关联表
+            addRelationTable() {
+                this.relationNums.push({});
+            },
+            // 删除关联表
+            deleteRelation(index) {
+                this.relationNums.splice(index, 1);
+            },
+            // 选择表
+            getTableTreeData(index) {
+                this.relationIndex = index + 2;
+                this.selectTableVisible = true;
+                this.gettreeData()
+            },
+            // 确认
+            addTable() {
+                const len = this.selectRow.length;
+                let selectColumns = "";
+                if (this.relationIndex === 1) {
+                    this.formInline.table_name = this.selectRow[len - 1].hyren_name;
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        if (this.tablecolumn[i].selectionstate === true) {
+                            selectColumns += "T1." + this.tablecolumn[i].columnname + ","
+                        }
+                    }
+                } else {
+                    this.formInline['tableName' + (this.relationIndex - 2)] =
+                        this.selectRow[len - 1].hyren_name;
+                    for (let i = 0; i < this.tablecolumn.length; i++) {
+                        if (this.tablecolumn[i].selectionstate === true) {
+                            selectColumns += "T" + this.relationIndex + "." +
+                                this.tablecolumn[i].columnname + ","
+                        }
+                    }
+                }
+                if (this.formInline.selectColumns.length === 0) {
+                    this.formInline.selectColumns = selectColumns.substr(0, selectColumns.length - 1);
+                } else {
+                    this.formInline.selectColumns = this.formInline.selectColumns + "," +
+                        selectColumns.substr(0, selectColumns.length - 1);
+                }
+                this.selectTableVisible = false;
+                this.$refs.multipleTable.clearSelection();
+                this.tableData = [];
+            },
         }
     }
 </script>
 <style scoped>
+    .textasql >>> .CodeMirror {
+        height: 200px !important;
+        /* width:200px !important; */
+    }
+
+    .sql-btn {
+        margin-bottom: 20px;
+    }
 
     /* 按钮样式 */
     .elButton {
@@ -922,6 +1230,10 @@
     /* 查询sql按钮*/
     .query-sql-btn {
         margin-left: 5%;
+    }
+
+    .partFour {
+        margin-top: 10px;
     }
 
     .rightbtn {
