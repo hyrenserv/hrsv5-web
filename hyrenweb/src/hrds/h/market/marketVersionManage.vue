@@ -1,6 +1,6 @@
 <template>
 <div id='bbgl'>
-      <el-row class='topTitle'>
+    <el-row class='topTitle'>
         <span class='el-icon-location'>集市版本管理</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
@@ -12,7 +12,6 @@
         <el-col :span="5">
             <div class="mytree" hight='200'>
                 <el-tree :data="data" :indent='0' show-checkbox class="filter-tree" node-key="id" :default-expanded-keys="[1]" :default-checked-keys="[2]" :props="defaultProps">
-
                     <span class="span-ellipsis" slot-scope="{ node, data }">
                         <span :title="data.label" v-if="data.type=='wb'">
                             <i class=" el-icon-document" />{{node.label}}
@@ -32,153 +31,224 @@
                 <el-tab-pane label="数据结构对比" name="first">
                     <div class="text item">
                         <div class='bd contrast'>
-                            <div class="bar" id="bar" style="position: static; left: 0px; top: 0px;">
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td id="bar_1" style="background:#1890ff;color: #fff;text-align: center;">当前<div style="position: absolute;top: 13px;"></div>
-                                            </td>
-                                            <td id="bar_2" style="background:#1890ff;color: #fff;text-align: center;">2020-03-24<div style="position: absolute;top: 13px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                            <td id="bar_3" style="background:#1890ff;color: #fff;text-align: center;">2020-03-30<div style="position: absolute;top: 13px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                            <td id="bar_4" class="last" style="background:#1890ff;color: #fff;text-align: center;">2020-04-30<div style="position: absolute;top: 13px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="ctxt" name="ctxt">
-                                <table>
-                                    <!-- <caption style="text-align: center;">数据结构对比</caption> -->
-                                    <tbody>
-                                        <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                            <!-- <th id="ctxt_0_F176">用户评分</th> -->
-                                            <td id="ctxt_1_F176" style="font-weight: bold;">字段</td>
-                                            <td id="ctxt_2_F176" style="font-weight: bold;">中文</td>
-                                            <td id="ctxt_3_F176" style="font-weight: bold;">类型</td>
-                                            <td id="ctxt_1_F176" style="font-weight: bold;">字段</td>
-                                            <td id="ctxt_2_F176" style="font-weight: bold;">中文</td>
-                                            <td id="ctxt_3_F176" style="font-weight: bold;">类型</td>
-                                            <td id="ctxt_1_F176" style="font-weight: bold;">字段</td>
-                                            <td id="ctxt_2_F176" style="font-weight: bold;">中文</td>
-                                            <td id="ctxt_3_F176" style="font-weight: bold;">类型</td>
-                                            <td id="ctxt_1_F176" style="font-weight: bold;">字段</td>
-                                            <td id="ctxt_2_F176" style="font-weight: bold;">中文</td>
-                                            <td id="ctxt_3_F176" style="font-weight: bold;">类型</td>
-                                        </tr>
-                                        <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                            <!-- <th id="ctxt_0_F187">参考报价</th> -->
-                                            <td id="ctxt_1_F187">agent_type</td>
-                                            <td id="ctxt_2_F187">agent类型</td>
-                                            <td id="ctxt_3_F187">varchar(1)</td>
-                                            <td id="ctxt_4_F187">agent_type</td>
-                                            <td id="ctxt_1_F187">agent类型</td>
-                                            <td id="ctxt_2_F187">varchar(1)</td>
-                                            <td id="ctxt_3_F187">agent_type</td>
-                                            <td id="ctxt_4_F187">agent类型</td>
-                                            <td id="ctxt_1_F187">varchar(1)</td>
-                                            <td id="ctxt_2_F187">agent_type</td>
-                                            <td id="ctxt_3_F187">agent类型</td>
-                                            <td id="ctxt_4_F187">varchar(1)</td>
-                                        </tr>
-                                        <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                            <!-- <th id="ctxt_0_F80">手机类型</th> -->
-                                            <td id="ctxt_1_F80">agent_name</td>
-                                            <td id="ctxt_2_F80">agent名称</td>
-                                            <td id="ctxt_3_F80" style="color:#b70707">varchar(100)</td>
-                                            <td id="ctxt_4_F80">agent_name</td>
-                                            <td id="ctxt_4_F80">agent名称</td>
-                                            <td id="ctxt_4_F80" style="color:#b70707">varchar(10)</td>
-                                            <td id="ctxt_4_F80">agent_name</td>
-                                            <td id="ctxt_4_F80">agent名称</td>
-                                            <td id="ctxt_4_F80" style="color:#b70707">varchar(100)</td>
-                                            <td id="ctxt_4_F80">agent_name</td>
-                                            <td id="ctxt_4_F80">agent名称</td>
-                                            <td id="ctxt_4_F80" style="color:#b70707">varchar(100)</td>
-                                        </tr>
-                                        <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                            <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                            <td id="ctxt_1_F14" style="color:#b70707">create_time</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">创建时间</td>
-                                            <td id="ctxt_3_F14" style="color:#b70707">varchar(8)</td>
-                                            <td id="ctxt_4_F14">-</td>
-                                            <td id="ctxt_1_F14">-</td>
-                                            <td id="ctxt_2_F14">-</td>
-                                            <td id="ctxt_3_F14">-</td>
-                                            <td id="ctxt_4_F14">-</td>
-                                            <td id="ctxt_1_F14">-</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">create_time</td>
-                                            <td id="ctxt_3_F14" style="color:#b70707">创建时间</td>
-                                            <td id="ctxt_4_F14" style="color:#b70707">varchar(8)</td>
-                                        </tr>
-                                        <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                            <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                            <td id="ctxt_1_F14">-</td>
-                                            <td id="ctxt_2_F14">-</td>
-                                            <td id="ctxt_3_F14">-</td>
-                                            <td id="ctxt_4_F14" style="color:#b70707">create_date</td>
-                                            <td id="ctxt_1_F14" style="color:#b70707">创建日期</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">varchar(8)</td>
-                                            <td id="ctxt_3_F14" style="color:#b70707">create_date</td>
-                                            <td id="ctxt_4_F14" style="color:#b70707">创建日期</td>
-                                            <td id="ctxt_1_F14" style="color:#b70707">varchar(8)</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">create_date</td>
-                                            <td id="ctxt_3_F14" style="color:#b70707">创建日期</td>
-                                            <td id="ctxt_4_F14" style="color:#b70707">varchar(8)</td>
-                                        </tr>
-                                        <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                            <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                            <td id="ctxt_1_F14">agent_desc</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">描述</td>
-                                            <td id="ctxt_3_F14">varchar(1024)</td>
-                                            <td id="ctxt_4_F14">agent_desc</td>
-                                            <td id="ctxt_1_F14" style="color:#b70707">备注</td>
-                                            <td id="ctxt_2_F14">varchar(1024)</td>
-                                            <td id="ctxt_1_F14">agent_desc</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">备注</td>
-                                            <td id="ctxt_3_F14">varchar(1024)</td>
-                                            <td id="ctxt_4_F14">agent_desc</td>
-                                            <td id="ctxt_2_F14" style="color:#b70707">描述</td>
-                                            <td id="ctxt_3_F14">varchar(1024)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <el-row type="flex" justify="start" :gutter="2">
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;">当前<div style="position: absolute;top: 13px;"></div>
+                                                    </td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
+                                                    <td style="font-weight: bold;">字段</td>
+                                                    <td style="font-weight: bold;">中文</td>
+                                                    <td style="font-weight: bold;">类型</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
+                                                    <td>agent_type</td>
+                                                    <td>agent类型</td>
+                                                    <td>varchar(1)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
+                                                    <td>agent_name</td>
+                                                    <td>agent名称</td>
+                                                    <td style="color:#b70707">varchar(100)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td style="color:#b70707">create_time</td>
+                                                    <td style="color:#b70707">创建时间</td>
+                                                    <td style="color:#b70707">varchar(8)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>agent_desc</td>
+                                                    <td style="color:#b70707">描述</td>
+                                                    <td>varchar(1024)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </el-col>
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-24<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                    </td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
+                                                    <td style="font-weight: bold;">字段</td>
+                                                    <td style="font-weight: bold;">中文</td>
+                                                    <td style="font-weight: bold;">类型</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
+                                                    <td>agent_type</td>
+                                                    <td>agent类型</td>
+                                                    <td>varchar(1)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
+                                                    <td>agent_name</td>
+                                                    <td>agent名称</td>
+                                                    <td style="color:#b70707">varchar(100)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td style="color:#b70707">create_time</td>
+                                                    <td style="color:#b70707">创建时间</td>
+                                                    <td style="color:#b70707">varchar(8)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>agent_desc</td>
+                                                    <td style="color:#b70707">描述</td>
+                                                    <td>varchar(1024)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </el-col>
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                    </td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
+                                                    <td style="font-weight: bold;">字段</td>
+                                                    <td style="font-weight: bold;">中文</td>
+                                                    <td style="font-weight: bold;">类型</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
+                                                    <td>agent_type</td>
+                                                    <td>agent类型</td>
+                                                    <td>varchar(1)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
+                                                    <td>agent_name</td>
+                                                    <td>agent名称</td>
+                                                    <td style="color:#b70707">varchar(100)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td style="color:#b70707">create_time</td>
+                                                    <td style="color:#b70707">创建时间</td>
+                                                    <td style="color:#b70707">varchar(8)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>agent_desc</td>
+                                                    <td style="color:#b70707">描述</td>
+                                                    <td>varchar(1024)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </el-col>
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-04-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                    </td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
+                                                    <td style="font-weight: bold;">字段</td>
+                                                    <td style="font-weight: bold;">中文</td>
+                                                    <td style="font-weight: bold;">类型</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
+                                                    <td>agent_type</td>
+                                                    <td>agent类型</td>
+                                                    <td>varchar(1)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
+                                                    <td>agent_name</td>
+                                                    <td>agent名称</td>
+                                                    <td style="color:#b70707">varchar(100)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td style="color:#b70707">create_time</td>
+                                                    <td style="color:#b70707">创建时间</td>
+                                                    <td style="color:#b70707">varchar(8)</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
+                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
+                                                    <td>agent_desc</td>
+                                                    <td style="color:#b70707">描述</td>
+                                                    <td>varchar(1024)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </el-col>
+                            </el-row>
                         </div>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="数据mapping对比" name="second">
                     <div class="text item">
                         <div class='bd contrast'>
-                            <div class="bar" id="bar" style="position: static; left: 0px; top: 0px;">
-                                <table>
-                                    <tbody>
+                            <el-row type="flex" justify="start" :gutter="2">
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
                                         <tr>
                                             <td id="bar_1" style="background:#1890ff;color: #fff;text-align: center;">当前<div style="position: absolute;top: 0;"></div>
                                             </td>
-                                            <td id="bar_2" style="background:#1890ff;color: #fff;text-align: center;">2020-03-24<div style="position: absolute;top: 13px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                            <td id="bar_3" style="background:#1890ff;color: #fff;text-align: center;">2020-03-30<div style="position: absolute;top: 13px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                            <td id="bar_4" class="last" style="background:#1890ff;color: #fff;text-align: center;">2020-04-30<div style="position: absolute;top: 13px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
                                         </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="ctxt" name="ctxt">
-                                    <!-- <caption style="text-align: center;">数据mapping对比</caption> -->
+                                        <tr>
                                             <td style="text-align:left;padding-top:0">
                                                 <p class='topp'>select</p>
                                                 <p class='pding'>,dt.d_year</p>
-                                                <p class='pding'  style="color:#b70707">,ppa.i_category_id</p>
+                                                <p class='pding' style="color:#b70707">,ppa.i_category_id</p>
                                                 <p class='pding'>,ppa.i_category</p>
-                                                <p class='pding'  style="color:#b70707">,sum(ss_ext_sales_price)</p>
+                                                <p class='pding' style="color:#b70707">,sum(ss_ext_sales_price)</p>
                                                 <p class='topp'>from</p>
                                                 <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
                                                 <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding'  style="color:#b70707">,pocc_pol7_item ppa</p>
+                                                <p class='pding' style="color:#b70707">,pocc_pol7_item ppa</p>
                                                 <p class='topp'>where</p>
                                                 <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
                                                 <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
@@ -186,39 +256,29 @@
                                                 <p class='topp'>and dt.d_moy=12</p>
                                                 <p class='pding'>and dt.d_year=1998</p>
                                                 <p class='topp'>group by</p>
-                                                <p class='pding'  style="color:#b70707">ppa.i_category_id</p>
+                                                <p class='pding' style="color:#b70707">ppa.i_category_id</p>
                                                 <p class='pding'>,ppa.i_category</p>
                                             </td>
-                                            <td id="ctxt_2_F176">
-                                                <p class='topp'>select</p>
-                                                <p class='pding'>,dt.d_year</p>
-                                                <p class='pding'  style="color:#b70707">,pps.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                                <p class='pding'  style="color:#b70707">,count(ss_ext_sales_price)</p>
-                                                <p class='topp'>from</p>
-                                                <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
-                                                <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding'  style="color:#b70707">,pocc_pol7_item_appendix ppa</p>
-                                                <p class='topp'>where</p>
-                                                <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
-                                                <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
-                                                <p class='pding'  style="color:#b70707">and ppa.i_manager_id=1</p>
-                                                <p class='topp'>and dt.d_moy=12</p>
-                                                <p class='pding'>and dt.d_year=1998</p>
-                                                <p class='topp'>group by</p>
-                                                <p class='pding'  style="color:#b70707">pps.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
+                                        </tr>
+                                    </div>
+                                </el-col>
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <tr>
+                                            <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-24<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                             </td>
-                                            <td id="ctxt_2_F176">
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 <p class='topp'> select</p>
                                                 <p class='pding'> ,dt.d_year</p>
-                                                <p class='pding'  style="color:#b70707"> ,ppa.i_category_id</p>
+                                                <p class='pding' style="color:#b70707"> ,ppa.i_category_id</p>
                                                 <p class='pding'> ,ppa.i_category</p>
-                                                <p class='pding'  style="color:#b70707"> ,sum(ss_ext_sales_price)</p>
+                                                <p class='pding' style="color:#b70707"> ,sum(ss_ext_sales_price)</p>
                                                 <p class='topp'> from</p>
                                                 <p class='pding'> pocc_pol7_date_dim_appendix dt</p>
                                                 <p class='pding'> ,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding'  style="color:#b70707"> ,pocc_pol7_item ppa</p>
+                                                <p class='pding' style="color:#b70707"> ,pocc_pol7_item ppa</p>
                                                 <p class='topp'> where</p>
                                                 <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
                                                 <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
@@ -226,31 +286,73 @@
                                                 <p class='topp'>and dt.d_moy=12</p>
                                                 <p class='pding'>and dt.d_year=1998</p>
                                                 <p class='topp'> group by</p>
-                                                <p class='pding'  style="color:#b70707">ppa.i_category_id</p>
+                                                <p class='pding' style="color:#b70707">ppa.i_category_id</p>
                                                 <p class='pding'> ,ppa.i_category</p>
                                             </td>
-                                            <td id="ctxt_2_F176">
+                                        </tr>
+                                    </div>
+                                </el-col>
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <tr>
+                                            <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 <p class='topp'>select</p>
                                                 <p class='pding'>,dt.d_year</p>
-                                                <p class='pding'  style="color:#b70707">,pps.i_category_id</p>
+                                                <p class='pding' style="color:#b70707">,pps.i_category_id</p>
                                                 <p class='pding'>,ppa.i_category</p>
-                                                <p class='pding'  style="color:#b70707">,sum(ss_ext_sales_price)</p>
+                                                <p class='pding' style="color:#b70707">,sum(ss_ext_sales_price)</p>
                                                 <p class='topp'>from</p>
                                                 <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
                                                 <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding'  style="color:#b70707">,pocc_pol7_item_appendix ppa</p>
+                                                <p class='pding' style="color:#b70707">,pocc_pol7_item_appendix ppa</p>
                                                 <p class='topp'>where</p>
                                                 <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
                                                 <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
-                                                <p class='pding'  style="color:#b70707">and ppa.i_manager_id = 1</p>
+                                                <p class='pding' style="color:#b70707">and ppa.i_manager_id = 1</p>
                                                 <p class='topp'>and dt.d_moy=12</p>
                                                 <p class='pding'>and dt.d_year=1998</p>
                                                 <p class='topp'>group by</p>
-                                                <p class='pding'  style="color:#b70707">pps.i_category_id</p>
+                                                <p class='pding' style="color:#b70707">pps.i_category_id</p>
                                                 <p class='pding'>,ppa.i_category</p>
                                             </td>
-                            </div>
-
+                                        </tr>
+                                    </div>
+                                </el-col>
+                                <el-col>
+                                    <div class="ctxt" name="ctxt">
+                                        <tr>
+                                            <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-04-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p class='topp'>select</p>
+                                                <p class='pding'>,dt.d_year</p>
+                                                <p class='pding' style="color:#b70707">,pps.i_category_id</p>
+                                                <p class='pding'>,ppa.i_category</p>
+                                                <p class='pding' style="color:#b70707">,sum(ss_ext_sales_price)</p>
+                                                <p class='topp'>from</p>
+                                                <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
+                                                <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
+                                                <p class='pding' style="color:#b70707">,pocc_pol7_item_appendix ppa</p>
+                                                <p class='topp'>where</p>
+                                                <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
+                                                <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
+                                                <p class='pding' style="color:#b70707">and ppa.i_manager_id = 1</p>
+                                                <p class='topp'>and dt.d_moy=12</p>
+                                                <p class='pding'>and dt.d_year=1998</p>
+                                                <p class='topp'>group by</p>
+                                                <p class='pding' style="color:#b70707">pps.i_category_id</p>
+                                                <p class='pding'>,ppa.i_category</p>
+                                            </td>
+                                        </tr>
+                                    </div>
+                                </el-col>
+                            </el-row>
                         </div>
                     </div>
                 </el-tab-pane>
@@ -374,11 +476,12 @@ li {
 
 .contrast .ctxt {
     /* margin: 2px auto 9px; */
-    border: 1px solid #c3c3c3;
     color: #000;
     width: 100%;
     line-height: 14px;
     box-sizing: border-box;
+    border: solid #e5e5e5;
+    border-width: 0px 1px 1px 0px;
 }
 
 #bbgl>>>.table {
@@ -486,7 +589,8 @@ table {
 .pding {
     padding-left: 28px;
 }
-#bbgl>>>.el-tabs__header{
+
+#bbgl>>>.el-tabs__header {
     margin: 0 !important;
 }
 </style>
