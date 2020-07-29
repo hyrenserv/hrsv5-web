@@ -34,194 +34,100 @@
                             <el-row type="flex" justify="start" :gutter="2">
                                 <el-col>
                                     <div class="ctxt" name="ctxt">
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;">当前<div style="position: absolute;top: 13px;"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
-                                                    <td style="font-weight: bold;">字段</td>
-                                                    <td style="font-weight: bold;">中文</td>
-                                                    <td style="font-weight: bold;">类型</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
-                                                    <td>agent_type</td>
-                                                    <td>agent类型</td>
-                                                    <td>varchar(1)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
-                                                    <td>agent_name</td>
-                                                    <td>agent名称</td>
-                                                    <td style="color:#b70707">varchar(100)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td style="color:#b70707">create_time</td>
-                                                    <td style="color:#b70707">创建时间</td>
-                                                    <td style="color:#b70707">varchar(8)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>agent_desc</td>
-                                                    <td style="color:#b70707">描述</td>
-                                                    <td>varchar(1024)</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </el-col>
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-24<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                                    </td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
-                                                    <td style="font-weight: bold;">字段</td>
-                                                    <td style="font-weight: bold;">中文</td>
-                                                    <td style="font-weight: bold;">类型</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
-                                                    <td>agent_type</td>
-                                                    <td>agent类型</td>
-                                                    <td>varchar(1)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
-                                                    <td>agent_name</td>
-                                                    <td>agent名称</td>
-                                                    <td style="color:#b70707">varchar(100)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td style="color:#b70707">create_time</td>
-                                                    <td style="color:#b70707">创建时间</td>
-                                                    <td style="color:#b70707">varchar(8)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>agent_desc</td>
-                                                    <td style="color:#b70707">描述</td>
-                                                    <td>varchar(1024)</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </el-col>
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                                    </td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
-                                                    <td style="font-weight: bold;">字段</td>
-                                                    <td style="font-weight: bold;">中文</td>
-                                                    <td style="font-weight: bold;">类型</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
-                                                    <td>agent_type</td>
-                                                    <td>agent类型</td>
-                                                    <td>varchar(1)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
-                                                    <td>agent_name</td>
-                                                    <td>agent名称</td>
-                                                    <td style="color:#b70707">varchar(100)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td style="color:#b70707">create_time</td>
-                                                    <td style="color:#b70707">创建时间</td>
-                                                    <td style="color:#b70707">varchar(8)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>agent_desc</td>
-                                                    <td style="color:#b70707">描述</td>
-                                                    <td>varchar(1024)</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </el-col>
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-04-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                                    </td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F176">用户评分</th> -->
-                                                    <td style="font-weight: bold;">字段</td>
-                                                    <td style="font-weight: bold;">中文</td>
-                                                    <td style="font-weight: bold;">类型</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F187">参考报价</th> -->
-                                                    <td>agent_type</td>
-                                                    <td>agent类型</td>
-                                                    <td>varchar(1)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F80">手机类型</th> -->
-                                                    <td>agent_name</td>
-                                                    <td>agent名称</td>
-                                                    <td style="color:#b70707">varchar(100)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td style="color:#b70707">create_time</td>
-                                                    <td style="color:#b70707">创建时间</td>
-                                                    <td style="color:#b70707">varchar(8)</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                </tr>
-                                                <tr onmouseover="this.className='overbgh'" onmouseout="this.className='outbgh'" class="outbgh">
-                                                    <!-- <th id="ctxt_0_F14">网络模式</th> -->
-                                                    <td>agent_desc</td>
-                                                    <td style="color:#b70707">描述</td>
-                                                    <td>varchar(1024)</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <el-table :data="tableData" style="width: 100%">
+                                            <el-table-column label="当前">
+                                                <el-table-column prop="ziduan" label="字段">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.ziduan[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="chinese" label="中文">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.chinese[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="type" label="类型">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.type[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                            </el-table-column>
+                                            <el-table-column label="2020-03-24">
+                                                <template slot="header">
+                                                    <span>2020-03-24</span>
+                                                    <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                </template>
+                                                <el-table-column prop="ziduan" label="字段">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.ziduan[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="chinese" label="中文">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.chinese[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="type" label="类型">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.type[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                            </el-table-column>
+                                            <el-table-column label="2020-03-30">
+                                                <template slot="header">
+                                                    <span>2020-03-30</span>
+                                                    <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                </template>
+                                                <el-table-column prop="ziduan" label="字段">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.ziduan[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="chinese" label="中文">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.chinese[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="type" label="类型">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.type[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                            </el-table-column>
+                                            <el-table-column label="2020-04-30">
+                                                <template slot="header">
+                                                    <span>2020-04-30</span>
+                                                    <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                </template>
+                                                <el-table-column prop="ziduan" label="字段">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.ziduan[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="chinese" label="中文">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.chinese[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column prop="type" label="类型">
+                                                    <template slot-scope="scope">
+                                                        <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
+                                                        <p v-else>{{scope.row.type[0].title}}</p>
+                                                    </template>
+                                                </el-table-column>
+                                            </el-table-column>
+                                        </el-table>
                                     </div>
                                 </el-col>
                             </el-row>
@@ -231,128 +137,53 @@
                 <el-tab-pane label="数据mapping对比" name="second">
                     <div class="text item">
                         <div class='bd contrast'>
-                            <el-row type="flex" justify="start" :gutter="2">
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <tr>
-                                            <td id="bar_1" style="background:#1890ff;color: #fff;text-align: center;">当前<div style="position: absolute;top: 0;"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:left;padding-top:0">
-                                                <p class='topp'>select</p>
-                                                <p class='pding'>,dt.d_year</p>
-                                                <p class='pding' style="color:#b70707">,ppa.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                                <p class='pding' style="color:#b70707">,sum(ss_ext_sales_price)</p>
-                                                <p class='topp'>from</p>
-                                                <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
-                                                <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding' style="color:#b70707">,pocc_pol7_item ppa</p>
-                                                <p class='topp'>where</p>
-                                                <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
-                                                <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
-                                                <p class='pding'>&nbsp;</p>
-                                                <p class='topp'>and dt.d_moy=12</p>
-                                                <p class='pding'>and dt.d_year=1998</p>
-                                                <p class='topp'>group by</p>
-                                                <p class='pding' style="color:#b70707">ppa.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                            </td>
-                                        </tr>
-                                    </div>
-                                </el-col>
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <tr>
-                                            <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-24<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class='topp'> select</p>
-                                                <p class='pding'> ,dt.d_year</p>
-                                                <p class='pding' style="color:#b70707"> ,ppa.i_category_id</p>
-                                                <p class='pding'> ,ppa.i_category</p>
-                                                <p class='pding' style="color:#b70707"> ,sum(ss_ext_sales_price)</p>
-                                                <p class='topp'> from</p>
-                                                <p class='pding'> pocc_pol7_date_dim_appendix dt</p>
-                                                <p class='pding'> ,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding' style="color:#b70707"> ,pocc_pol7_item ppa</p>
-                                                <p class='topp'> where</p>
-                                                <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
-                                                <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
-                                                <p class='pding'>&nbsp;</p>
-                                                <p class='topp'>and dt.d_moy=12</p>
-                                                <p class='pding'>and dt.d_year=1998</p>
-                                                <p class='topp'> group by</p>
-                                                <p class='pding' style="color:#b70707">ppa.i_category_id</p>
-                                                <p class='pding'> ,ppa.i_category</p>
-                                            </td>
-                                        </tr>
-                                    </div>
-                                </el-col>
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <tr>
-                                            <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-03-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class='topp'>select</p>
-                                                <p class='pding'>,dt.d_year</p>
-                                                <p class='pding' style="color:#b70707">,pps.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                                <p class='pding' style="color:#b70707">,sum(ss_ext_sales_price)</p>
-                                                <p class='topp'>from</p>
-                                                <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
-                                                <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding' style="color:#b70707">,pocc_pol7_item_appendix ppa</p>
-                                                <p class='topp'>where</p>
-                                                <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
-                                                <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
-                                                <p class='pding' style="color:#b70707">and ppa.i_manager_id = 1</p>
-                                                <p class='topp'>and dt.d_moy=12</p>
-                                                <p class='pding'>and dt.d_year=1998</p>
-                                                <p class='topp'>group by</p>
-                                                <p class='pding' style="color:#b70707">pps.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                            </td>
-                                        </tr>
-                                    </div>
-                                </el-col>
-                                <el-col>
-                                    <div class="ctxt" name="ctxt">
-                                        <tr>
-                                            <td id="bar_1" colspan="3" style="background:#1890ff;color: #fff;text-align: center;position:relative">2020-04-30<div style="position: absolute;top: 0px;right: 3px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class='topp'>select</p>
-                                                <p class='pding'>,dt.d_year</p>
-                                                <p class='pding' style="color:#b70707">,pps.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                                <p class='pding' style="color:#b70707">,sum(ss_ext_sales_price)</p>
-                                                <p class='topp'>from</p>
-                                                <p class='pding'>pocc_pol7_date_dim_appendix dt</p>
-                                                <p class='pding'>,pocc_pol7_store_sales_appendix pps</p>
-                                                <p class='pding' style="color:#b70707">,pocc_pol7_item_appendix ppa</p>
-                                                <p class='topp'>where</p>
-                                                <p class='pding'>dt.d_date_sk=pps.ss_sold_date_sk</p>
-                                                <p class='pding'>and pps.ss_item_sk=ppa.i_item_sk</p>
-                                                <p class='pding' style="color:#b70707">and ppa.i_manager_id = 1</p>
-                                                <p class='topp'>and dt.d_moy=12</p>
-                                                <p class='pding'>and dt.d_year=1998</p>
-                                                <p class='topp'>group by</p>
-                                                <p class='pding' style="color:#b70707">pps.i_category_id</p>
-                                                <p class='pding'>,ppa.i_category</p>
-                                            </td>
-                                        </tr>
-                                    </div>
-                                </el-col>
-                            </el-row>
+                            <el-table :data="tableData2" style="width: 100%">
+                                    <el-table-column prop="ziduan" label="当前">
+                                        <template slot-scope="scope">
+                                            <div v-for="(item,index) in scope.row.title1" :key="index">
+                                            <p v-if="item.inden=='true'" >{{item.title}}</p>
+                                            <p v-if="item.color=='red'&&item.inden=='true'" class='redmarkred'>{{item.title}}</p>
+                                            <p v-else class='markinden'>{{item.title}}</p>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column  label="2020-03-24">
+                                         <template slot="header">
+                                        <span>2020-03-24</span>
+                                        <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                    </template>
+                                        <template slot-scope="scope">
+                                           <div v-for="(item,index) in scope.row.title2" :key="index">
+                                            <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
+                                            <p v-else>{{item.title}}</p>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column  label="2020-03-30">
+                                         <template slot="header">
+                                        <span>2020-03-30</span>
+                                        <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                    </template>
+                                        <template slot-scope="scope">
+                                          <div v-for="(item,index) in scope.row.title3" :key="index">
+                                            <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
+                                            <p v-else>{{item.title}}</p>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="2020-04-30">
+                                        <template slot="header">
+                                        <span>2020-04-30</span>
+                                        <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
+                                    </template>
+                                        <template slot-scope="scope">
+                                           <div v-for="(item,index) in scope.row.title4" :key="index">
+                                            <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
+                                            <p v-else>{{item.title}}</p>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                            </el-table>
                         </div>
                     </div>
                 </el-tab-pane>
@@ -368,6 +199,106 @@ export default {
     data() {
         return {
             activeName: 'first',
+            tableData: [{
+                ziduan: [{
+                    title: 'eeee',
+                    color: 'red',
+                }],
+                chinese: [{
+                    title: 'ppp',
+                    color: 'black'
+                }],
+                type: [{
+                    title: 'yyy',
+                    color: 'red'
+                }],
+
+            }, {
+                ziduan: [{
+                    title: 'eeee',
+                    color: 'red'
+                }],
+                chinese: [{
+                    title: 'ppp',
+                    color: 'black'
+                }],
+                type: [{
+                    title: 'yyy',
+                    color: 'red'
+                }],
+            }, {
+                ziduan: [{
+                    title: 'eeee',
+                    color: 'black'
+                }],
+                chinese: [{
+                    title: 'ppp',
+                    color: 'black'
+                }],
+                type: [{
+                    title: 'yyy',
+                    color: 'red'
+                }],
+            }, {
+                ziduan: [{
+                    title: 'eeee',
+                    color: 'black'
+                }],
+                chinese: [{
+                    title: 'ppp',
+                    color: 'black'
+                }],
+                type: [{
+                    title: 'yyy',
+                    color: 'red'
+                }],
+            }, ],
+            tableData2: [{
+                    title1:[{
+                         title: 'select',
+                          color: 'red',
+                          inden:'true',
+                    },{
+                         title: 'eeett',
+                          color: 'red'
+                    },{
+                         title: 'eeee14',
+                          color: 'black'
+                    }],
+                   title2:[{
+                         title: 'select',
+                          color: 'red',
+                          inden:'true',
+                    },{
+                         title: 'eeett',
+                          color: 'red'
+                    },{
+                         title: 'eeee14',
+                          color: 'black'
+                    }],
+                     title3:[{
+                         title: 'select',
+                          color: 'red',
+                          inden:'true',
+                    },{
+                         title: 'eeett',
+                          color: 'red'
+                    },{
+                         title: 'eeee14',
+                          color: 'black'
+                    }],
+                    title4:[{
+                         title: 'select',
+                          color: 'red',
+                          inden:'true',
+                    },{
+                         title: 'eeett',
+                          color: 'red'
+                    },{
+                         title: 'eeee14',
+                          color: 'black'
+                    }],
+                }],
             data: [{
                 id: 1,
                 type: 'wj',
@@ -592,5 +523,17 @@ table {
 
 #bbgl>>>.el-tabs__header {
     margin: 0 !important;
+}
+
+/*  */
+.markred {
+    color: #b70707
+}
+.markinden{
+text-indent: 2rem;
+}
+.redmarkinden{
+color: #b70707;
+text-indent: 2rem;
 }
 </style>
