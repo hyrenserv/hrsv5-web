@@ -567,10 +567,11 @@
             this.getcolumnfromdatabase(this.datatable_id);
             this.getifhbase();
             this.getfromcolumnlist(this.datatable_id);
+            this.getquerysql();
+
         },
         mounted() {
             this.checkifrepeat();
-            this.getquerysql();
 
         },
         methods: {
@@ -667,17 +668,10 @@
             getquerysql() {
                 let params = {
                     "datatable_id": this.datatable_id,
-                },that=this;
+                };
                 functionAll.getQuerySql(params).then((res) => {
-                    // if (res.data.length != 0) {
-                    this.querysql = res.data;
-                    // this.basicInfoForm.sqlMain = this.querysql;
-                    that.$set(that.basicInfoForm,'sqlMain',res.data)
-                    this.$nextTick(() => {
-                        this.$refs.sqleditor.refresh();
-                    });
-                    console.log(this.basicInfoForm.sqlMain, "aaa")
-                    // }
+                   this.$refs.sqleditor.setmVal(res.data)
+                   this.formaterSql(res.data)
                 })
             },
             getcolumnfromdatabase(datatable_id) {
