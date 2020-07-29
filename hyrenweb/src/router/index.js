@@ -899,6 +899,21 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/dataMart',
+                    name: 'dataMart',
+                    title: 'dataMart',
+                    component: () => import('@/hrds/h/market/marketIndex.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' },
+                    ],
+                },
+                {
+                    path: '/addMarketIndex',
+                    name: 'addMarketIndex',
+                    title: 'addMarketIndex',
+                    component: () => import('@/hrds/h/market/addMarketIndex.vue')
+
                     path: '/marketVersionManage',
                     name: 'marketVersionManage',
                     title: 'marketVersionManage',
