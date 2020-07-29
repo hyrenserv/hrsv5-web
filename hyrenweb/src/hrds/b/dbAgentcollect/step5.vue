@@ -112,6 +112,7 @@
         </el-col>
         <el-col :span="12">
             <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
+            <el-button type="success" size="medium" class='rightbtn' @click="startButtonFun()">立即启动</el-button>
             <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
         </el-col>
     </el-row>
@@ -255,7 +256,7 @@
             </el-table-column>
             <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-             <el-table-column label="详情" width="160px" align="center">
+            <el-table-column label="详情" width="160px" align="center">
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="24" class="delbtn">
@@ -270,6 +271,23 @@
             <el-button @click="dialogAllChooseDestination = false" type="danger" size="mini">取 消</el-button>
             <el-button type="primary" @click="ChooseAllDestinationSubmitFun()" size="mini">确 定</el-button>
         </div>
+    </el-dialog>
+    <!--完成  -->
+    <el-dialog title="设置启动时间" :visible.sync="finishDialogVisible" width="30%">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">设置启动时间</span>
+        </div>
+        <div>
+            <el-form>
+                <el-form-item>
+                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
+                </el-form-item>
+            </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
+        </span>
     </el-dialog>
 </div>
 </template>
@@ -289,6 +307,7 @@ export default {
     },
     data() {
         return {
+            finishDialogVisible: false,
             rule: validator.default,
             tableloadingInfo: "数据加载中...",
             dbid: null,
@@ -355,6 +374,7 @@ export default {
             dialogAllChooseDestination: false, //全表设置目的地
             AlldestinationData: [],
             Alldestinationchoose: [],
+            etl_date: ''
         };
     },
     computed: {
@@ -372,7 +392,12 @@ export default {
     watch: {
         address(val) {
             if (val.submit_0 == true && val.submit_1 == true) {
-                this.nextLinkfun();
+                if (this.startButton == true) {
+                    this.sendSubmit()
+                    this.startButton=false
+                } else {
+                    this.nextLinkfun();
+                }
             }
         }
     },
@@ -458,6 +483,26 @@ export default {
     },
 
     methods: {
+        sendSubmit() {
+            addTaskAllFun
+                .sendDBCollectTaskById({
+                    colSetId: this.dbid,
+                    etl_date: this.etl_date
+                })
+                .then(res => {
+                    if (res.success) {
+                        this.finishDialogVisible = false;
+                        this.$message({
+                            showClose: true,
+                            message: '启动发送成功',
+                            type: "success"
+                        });
+                        this.$router.push({
+                            path: "/agentList"
+                        });
+                    }
+                });
+        },
         backFun() {
             this.$router.push({
                 path: "/agentList"
@@ -510,7 +555,7 @@ export default {
                         for (let k = 0; k < this.oldTbData.length; k++) {
                             if (desDataArr[j].tableId == this.oldTbData[k].tableId) {
                                 desDataArr[j].dslIds = this.oldTbData[k].dslIds;
-                                if (this.oldTbData[k].hyren_name != ''&&this.oldTbData[k].hyren_name!=undefined) {
+                                if (this.oldTbData[k].hyren_name != '' && this.oldTbData[k].hyren_name != undefined) {
                                     desDataArr[j].hyren_name = this.oldTbData[k].hyren_name
                                 }
                             }
@@ -521,7 +566,7 @@ export default {
                         for (let n = 0; n < this.dslIdString.length; n++) {
                             if (desDataArr[m].tableId == this.dslIdString[n].tableId) {
                                 desDataArr[m].dslIds = this.dslIdString[n].dslIds;
-                                if (this.dslIdString[n].hyren_name != ''&&this.dslIdString[n].hyren_name!=undefined) {
+                                if (this.dslIdString[n].hyren_name != '' && this.dslIdString[n].hyren_name != undefined) {
                                     desDataArr[m].hyren_name = this.dslIdString[n].hyren_name
 
                                 }
@@ -532,7 +577,7 @@ export default {
                     if (tbStoInfoString.length > 0) {
                         let params = {};
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
-                        params["colSetId"] =this.dbid;
+                        params["colSetId"] = this.dbid;
                         params["dslIdString"] = JSON.stringify(dslIdString);
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
@@ -1215,7 +1260,6 @@ export default {
                     this.ruleForm.ex_destinationData[i].table_setting = true
                 }
                 this.dialogAllChooseDestination = false
-                console.log(this.dslIdString)
             } else {
                 this.open()
             }
@@ -1227,7 +1271,17 @@ export default {
         // 全表设置目的地单个勾选
         allselectD(item) {
             this.Alldestinationchoose = item
-        }
+        },
+        // 立即启动
+        startButtonFun() {
+            this.finishDialogVisible = true
+            let date = new Date()
+            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + date.getDate()
+        },
+        finishSubmit() {
+            this.startButton = true
+            this.next('ruleForm')
+        },
     }
 };
 </script>

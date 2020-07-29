@@ -541,6 +541,37 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/choiceTable',
+                    name: 'choiceTable',
+                    title: 'choiceTable',
+                    component: () => import('@/hrds/k/tdb/choiceTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据对标',url: '/tdb' },
+                        { name: '选择表结果' },
+                    ],
+                },
+                {path: '/Databenchmarking',
+                name: 'Databenchmarking',
+                title: 'Databenchmarking',
+                component: () => import('@/hrds/k/tdb/Databenchmarking.vue'),
+                meta: [
+                    { name: '首页' },
+                    { name: '数据对标',url: '/tdb'},
+                    { name: '数据分析' },
+                ],
+                },
+                {path: '/DimensionDivision',
+                name: 'DimensionDivision',
+                title: 'DimensionDivision',
+                component: () => import('@/hrds/k/tdb/DimensionDivision.vue'),
+                meta: [
+                    { name: '首页' },
+                    { name: '数据对标',url: '/tdb'},
+                    { name: '维度划分' },
+                ],
+                },
+                {
                     path: '/dataControl',
                     name: 'dataControl',
                     title: 'dataControl',
@@ -560,6 +591,19 @@ export default new Router({
                         { name: '首页' },
                         { name: '数据管控', url: '/dataControl' },
                         { name: '工程详情' },
+                    ],
+                },
+                 //元数据管理-创建表
+                 {
+                    path: '/createTable',
+                    name: 'createTable',
+                    title: '元数据管理创建表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '元数据管理创建表' },
                     ],
                 },
                 //血缘分析
@@ -869,6 +913,22 @@ export default new Router({
                     name: 'addMarketIndex',
                     title: 'addMarketIndex',
                     component: () => import('@/hrds/h/market/addMarketIndex.vue')
+
+                    path: '/marketVersionManage',
+                    name: 'marketVersionManage',
+                    title: 'marketVersionManage',
+                    component: () => import('@/hrds/h/market/marketVersionManage.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' },
+                        { name: '集市版本管理' },
+                    ],
+                },
+                {
+                    path: '/detailMart',
+                    name: 'detailMart',
+                    title: 'detailMart',
+                    component: () => import('@/hrds/h/market/detailMart.vue')
                 },
                 {
                     path: '/addMartTable_1',

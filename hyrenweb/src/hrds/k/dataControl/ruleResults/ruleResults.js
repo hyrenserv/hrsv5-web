@@ -39,3 +39,15 @@ export function getCheckIndex3(data) {
         params: data,
     })
 }
+
+//导出指标3的数据集
+export function exportIndicator3Results(data) {
+    return request({
+        url: '/K/dm/ruleresults/exportIndicator3Results',
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}

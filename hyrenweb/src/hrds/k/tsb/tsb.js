@@ -24,9 +24,10 @@ export function predictBenchmarking(data) {
 }
 
 //对标结果显示数据
-export function getPredictResult() {
+export function getPredictResult(data) {
     return request({
         url: '/K/tsb/getPredictResult',
+        params: data,
     })
 }
 
