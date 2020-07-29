@@ -148,7 +148,7 @@ export default {
                 //{ curve: go.Link.Bezier },  // 贝塞尔曲线
                 {
                     routing: go.Link.Orthogonal,
-                    corner: 10
+                    corner: 8
                 },
                 MAKE(go.Shape, {
                     strokeWidth: 1,
@@ -261,6 +261,7 @@ export default {
                {from:"4",to:"5"},
               {from:"5",to:"6"},
                {from:"5",to:"7"},
+              {from:"6",to:"8"},
               {from:"7",to:"8"},
             ];
            /*  function diagramInfo(myModel) {
