@@ -83,6 +83,10 @@ export default {
         })
     },
     methods: {
+        // 页面进入默认设置值
+        setmVal(value){
+         this.editor.setValue(value)
+        },
         setVal() {
             if (this.editor) {
                 if (this.value === '') {
