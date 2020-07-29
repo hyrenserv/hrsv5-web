@@ -899,6 +899,17 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/marketVersionManage',
+                    name: 'marketVersionManage',
+                    title: 'marketVersionManage',
+                    component: () => import('@/hrds/h/market/marketVersionManage.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' },
+                        { name: '集市版本管理' },
+                    ],
+                },
+                {
                     path: '/detailMart',
                     name: 'detailMart',
                     title: 'detailMart',
