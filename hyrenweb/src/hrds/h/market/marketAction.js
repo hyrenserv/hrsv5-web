@@ -406,3 +406,59 @@ export function checkOracle(data) {
         params: data
     })
 }
+//保存集市分类
+export function saveDmCategory(data) {
+    return request({
+        url: '/H/market/saveDmCategory',
+        params: data
+    })
+}
+//根据数据集市id查询集市分类信息
+export function getDmCategoryInfo(data) {
+    return request({
+        url: '/H/market/getDmCategoryInfo',
+        params: data
+    })
+}
+//获取数的数据信息
+export function getDmCategoryTreeData(data) {
+    return request({
+        url: '/H/market/getDmCategoryTreeData',
+        params: data
+    })
+}
+//根据集市id删除分类信息
+export function deleteDmCategory(data) {
+    return request({
+        url: '/H/market/deleteDmCategory',
+        params: data
+    })
+}
+//获取所有节点分类信息
+export function getDmCategoryNodeInfo(data) {
+    return request({
+        url: '/H/market/getDmCategoryNodeInfo',
+        params: data
+    })
+}
+//获取数据表所有信息分类集合
+export function getDmCategoryForDmDataTable(data) {
+    return request({
+        url: '/H/market/getDmCategoryForDmDataTable',
+        params: data
+    })
+}
+//修改分类名称
+export function updateDmCategoryName(data) {
+    return request({
+        url: '/H/market/updateDmCategoryName',
+        params: data
+    })
+}
+//获取分类信息
+export function getDmCategoryNodeInfoByIdAndName(data) {
+    return request({
+        url: '/H/market/getDmCategoryNodeInfoByIdAndName',
+        params: data
+    })
+}

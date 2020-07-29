@@ -39,7 +39,7 @@
 
             <el-col :span="12">
                 <el-form-item label="是否支持外部表" prop="is_hadoopclient" :rules="rule.selected" label-width="150px">
-                    <el-radio-group v-model="form.is_hadoopclient">
+                    <el-radio-group v-model="form.is_hadoopclient" @change="changeRadioValue">
                         <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -87,7 +87,7 @@
                 <el-table-column label="value" prop="storage_property_val" align="center" v-if="showValue" :key="3">
                     <template slot-scope="scope">
                         <el-form-item v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" :prop="`tableData.${scope.$index}.storage_property_val`" :rules="rule.selected">
-                            <el-select v-model="scope.row.storage_property_val" style="width:98%">
+                            <el-select v-model="scope.row.storage_property_val" style="width:98%" @change="changeTabledataInfos">
                                 <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </el-form-item>
@@ -209,6 +209,7 @@ export default {
                 store_type: '',
                 dsla_storelayer: [],
                 tableData: [],
+                is_hadoopclient: '0'
             },
             formDialog: {},
             showValue: true,
@@ -448,6 +449,30 @@ export default {
             this.$router.push({
                 name: "dataStoreActionIndex"
             })
+        },
+        //当存储层类型为1时，外部表的不同获取不同的keys
+        changeTabledataInfos(value) {
+
+            if (this.form.is_hadoopclient == "0") {
+                console.log(value);
+                console.log(this.form.is_hadoopclient);
+            } else {
+                // 调用接口 和现在的做判断然后看看可以可以添加到下面都是input
+            }
+        },
+        // 根据是否为外部表动态显示key
+        changeRadioValue(val) {
+            console.log(valueIndex)
+            if (valueIndex == undefined) {
+                message.customizTitle("存储层配置存储类型未选择", "warning");
+                this.form.is_hadoopclient = "0";
+            } else {
+                if (valueIndex != "1" && val != "0") {
+                    // 接口调用，有值就直接做逻辑吧
+                    // 把那边的超过来
+                    console.log('ss')
+                }
+            }
         },
         // 根据存储类型动态显示key
         changedata(val) {
