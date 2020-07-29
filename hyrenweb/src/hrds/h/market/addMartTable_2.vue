@@ -48,11 +48,13 @@
                 </el-tabs>
             </el-col>
         </el-row>
-        <el-button type="primary" size="medium" @click="selectTableCreateVisible = true">选择表创建</el-button>
-        <el-dialog title="选择表创建" :visible.sync="selectTableCreateVisible" width="80%">
+        <el-row style="text-align: right;margin-bottom: 10px">
+            <el-button type="primary" size="medium" @click="selectTableCreateVisible = true">选择表创建</el-button>
+        </el-row>
+        <el-dialog title="选择表创建" :visible.sync="selectTableCreateVisible" width="85%">
             <el-form :inline="true" :model="formInline" class="demo-form-inline"
                      :label-position="labelPosition" label-width="80px">
-                <el-row :gutter="20">
+                <el-row :gutter="10">
                     <el-col>
                         <el-form-item label="select">
                             <el-input v-model="formInline.selectColumns" placeholder="选择列"/>
@@ -84,7 +86,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="关联表">
-                            <el-input v-model="formInline['tableName'+index]" placeholder="表名称">
+                            <el-input v-model="formInline['tableName'+index]" placeholder="关联表表名称">
                                 <el-button slot="append" @click="getTableTreeData(index)">选择表</el-button>
                             </el-input>
                         </el-form-item>
@@ -116,6 +118,8 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
+                </el-row>
+                <el-row style="text-align: right">
                     <el-form-item>
                         <el-button type="primary" size="medium" @click="selectTableCreateVisible = false">
                             取消
@@ -126,9 +130,9 @@
             </el-form>
         </el-dialog>
         <!--选择表弹出框-->
-        <el-dialog title="选择表" :visible.sync="selectTableVisible" width="60%">
-            <el-row :gutter="20">
-                <el-col :span='6'>
+        <el-dialog title="选择表" :visible.sync="selectTableVisible" width="80%">
+            <el-row :gutter="10">
+                <el-col :span='8'>
                     <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini">
                     </el-input>
                     <div class="mytree" hight='200'>
@@ -156,13 +160,17 @@
                     </div>
                 </el-col>
                 <!--表信息列表-->
-                <el-col :span='18' style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
+                <el-col :span='16' style="border-left: 1px #e0dcdc dashed;min-height: 600px;">
                     <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage*pageSize)"
-                              border style="width: 100%" size="medium" ref="multipleTable"
-                              :row-key="(row)=>{ return row.id}"
-                              @selection-change="selectionChange">
-                        <el-table-column width="40" align="center" type="selection"
-                                         :reserve-selection="true">
+                              border size="medium" highlight-current-row ref="multipleTable"
+                              @current-change="handleSelectionChange" @row-click="chooseone">
+                        <!--                        <el-table-column width="40" align="center" type="selection"-->
+                        <!--                                         :reserve-selection="true">-->
+                        <!--                        </el-table-column>-->
+                        <el-table-column property label="选择" width="60px" type="index" align="center">
+                            <template slot-scope="scope">
+                                <el-radio v-model="radioSelect" :label="scope.row.file_id">&thinsp;</el-radio>
+                            </template>
                         </el-table-column>
                         <el-table-column label="序号" width="50px" align="center">
                             <template slot-scope="scope">
@@ -387,7 +395,7 @@
         <el-dialog title="表字段" :visible.sync="iftablecolumn" width="30%" class='data_edit'>
             <el-row>
                 <el-table :data="tablecolumn" border size="mini" ref="filterTable">
-                    <el-table-column prop="selectionstate" width="50" align="center">
+                    <el-table-column prop="selectionstate" width="50" align="center" ref="multipleColumn">
                         <template slot="header" slot-scope="scope">
                             <el-checkbox @change="Allis_selectionstateFun()"
                                          v-model="Allis_selectionstate"
@@ -544,13 +552,17 @@
                 currPage: 1,
                 pageSize: 10,
                 totalSize: 0,
-                selectRow: [],
+                selectRow: {},
                 tableData: [],
                 relationNums: [],
                 relationIndex: 1,
                 basicInfoForm: {
                     sqlMain: ''
-                }
+                },
+                radioSelect: '',
+                reSelectColumns: '',
+                selectColumns1: '',
+                tableNameList: []
             };
         },
         watch: {
@@ -588,7 +600,8 @@
                     });
                 }
             },
-            showtablecolumn(node) {
+            showtablecolumn(node, index) {
+                this.index = index;
                 if (this.checkiftable(node)) {
                     functionAll.queryAllColumnOnTableName({
                         'source': node.data_layer,
@@ -670,8 +683,8 @@
                     "datatable_id": this.datatable_id,
                 };
                 functionAll.getQuerySql(params).then((res) => {
-                   this.$refs.sqleditor.setmVal(res.data)
-                   this.formaterSql(res.data)
+                    this.$refs.sqleditor.setmVal(res.data)
+                    this.formaterSql(res.data)
                 })
             },
             getcolumnfromdatabase(datatable_id) {
@@ -1111,10 +1124,6 @@
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-            // 表复选框选中
-            selectionChange(selectTrue) {
-                this.selectRow = selectTrue;
-            },
             //表数据实现分页功能
             handleCurrentChangeList(currPage) {
                 //把val赋给当前页面
@@ -1123,6 +1132,15 @@
             // 改变每页显示条数
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
+            },
+            // 选择表单选
+            handleSelectionChange(row) {
+                if (row) {
+                    this.selectRow = row;
+                }
+            },
+            chooseone(row) {
+                this.radio = row.classify_id;
             },
             changeTextarea(val) {
                 this.$set(this.basicInfoForm, 'sqlMain', val)
@@ -1134,22 +1152,22 @@
             addSql() {
                 // 提示信息
                 let sql = "select " + this.formInline.selectColumns + " from " +
-                    this.formInline.table_name;
+                    this.formInline.table_name + " T1 ";
                 if (this.relationNums.length !== 0) {
                     for (let i = 0; i < this.relationNums.length; i++) {
-                        sql = sql + " " + this.formInline["joinCondition" + i] + " "
-                            + this.formInline["tableName" + i] + " T" + i + 2
+                        sql = sql + this.formInline["joinCondition" + i] + " "
+                            + this.formInline["tableName" + i] + " T" + (i + 2)
                             + " ON " + this.formInline["onCondition" + i]
                     }
                     sql = sql + " where " + this.formInline.whereColumns;
                 } else if (this.formInline.groupColumns.length !== 0) {
                     sql = sql + " group by " + this.formInline.groupColumns;
                 }
-                this.querysql = sql;
-                this.basicInfoForm.sqlMain = this.querysql;
-                console.log(this.basicInfoForm.sqlMain)
+                this.$refs.sqleditor.setmVal(sql)
+                this.basicInfoForm.sqlMain = sql;
                 this.selectTableVisible = false;
                 this.selectTableCreateVisible = false;
+                this.formInline = {};
             },
             // 添加关联表
             addRelationTable() {
@@ -1158,6 +1176,21 @@
             // 删除关联表
             deleteRelation(index) {
                 this.relationNums.splice(index, 1);
+                this.formInline["joinCondition" + index] = '';
+                this.formInline["onCondition" + index] = '';
+                if (this.formInline.selectColumns.length !== 0) {
+                    let columns = this.formInline.selectColumns.split(",");
+                    for (let i = 0; i < columns.length; i++) {
+                        let arr = columns[i].split(".");
+                        if (arr[0] === "T" + this.relationIndex) {
+                            let indexof = columns.indexOf(columns[i]);
+                            if (indexof !== -1) {
+                                columns.splice(indexof, 1);
+                            }
+                        }
+                    }
+                    this.formInline.selectColumns = columns.join(",")
+                }
             },
             // 选择表
             getTableTreeData(index) {
@@ -1167,34 +1200,56 @@
             },
             // 确认
             addTable() {
-                const len = this.selectRow.length;
                 let selectColumns = "";
                 if (this.relationIndex === 1) {
-                    this.formInline.table_name = this.selectRow[len - 1].hyren_name;
+                    // 选择表
+                    this.formInline.table_name = this.selectRow.hyren_name;
+                    this.selectColumns1 = "";
                     for (let i = 0; i < this.tablecolumn.length; i++) {
                         if (this.tablecolumn[i].selectionstate === true) {
                             selectColumns += "T1." + this.tablecolumn[i].columnname + ","
                         }
                     }
+                    this.selectColumns1 = selectColumns.substr(0, selectColumns.length - 1);
                 } else {
-                    this.formInline['tableName' + (this.relationIndex - 2)] =
-                        this.selectRow[len - 1].hyren_name;
+                    // 选择关联表
+                    this.formInline['tableName' + (this.relationIndex - 2)] = this.selectRow.hyren_name;
                     for (let i = 0; i < this.tablecolumn.length; i++) {
                         if (this.tablecolumn[i].selectionstate === true) {
                             selectColumns += "T" + this.relationIndex + "." +
                                 this.tablecolumn[i].columnname + ","
                         }
                     }
+                    // 如果选择列中已经出现当前表的字段，则先删除
+                    if (this.formInline.selectColumns.length !== 0) {
+                        let columns = this.formInline.selectColumns.split(",");
+                        for (let i = 0; i < columns.length; i++) {
+                            let arr = columns[i].split(".");
+                            if (arr[0] === "T" + this.relationIndex) {
+                                let indexof = columns.indexOf(columns[i]);
+                                if (indexof !== -1) {
+                                    columns.splice(indexof, 1);
+                                }
+                            }
+                        }
+                        this.formInline.selectColumns = columns.join(",")
+                    }
+                    this.reSelectColumns = selectColumns.substr(0, selectColumns.length - 1);
                 }
-                if (this.formInline.selectColumns.length === 0) {
-                    this.formInline.selectColumns = selectColumns.substr(0, selectColumns.length - 1);
+                if (this.reSelectColumns.length === 0) {
+                    // 选择表
+                    this.formInline.selectColumns = this.selectColumns1;
                 } else {
-                    this.formInline.selectColumns = this.formInline.selectColumns + "," +
-                        selectColumns.substr(0, selectColumns.length - 1);
+                    // 选择关联表
+                    if (this.formInline.selectColumns.length !== 0) {
+                        this.formInline.selectColumns = this.formInline.selectColumns + "," + this.reSelectColumns;
+                    } else {
+                        this.formInline.selectColumns = this.reSelectColumns;
+                    }
                 }
                 this.selectTableVisible = false;
-                this.$refs.multipleTable.clearSelection();
                 this.tableData = [];
+                this.$refs.multipleTable.clearSelection();
             },
         }
     }
