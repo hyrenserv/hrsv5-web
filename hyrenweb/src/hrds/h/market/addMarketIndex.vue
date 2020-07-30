@@ -10,7 +10,7 @@
     </el-row>
 
     <el-row>
-        <el-col :span="8" class="elCol8Marketindex" style="height:70vh">
+        <el-col :span="6" class="elCol8Marketindex" style="height:70vh">
             <el-row>
                 <p class="workInfoMarketindex">
                     工程分类信息
@@ -26,7 +26,7 @@
             </el-row>
         </el-col>
 
-        <el-col :span="16">
+        <el-col :span="18">
             <el-row>
                 <el-col :span="23" :offset="1" class="elCol8Marketindex">
                     <div class="workInfoMarketindex">
