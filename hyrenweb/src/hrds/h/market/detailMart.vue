@@ -20,23 +20,23 @@
     <el-table :data="tableData" border style="width: 100%">
         <el-table-column type="index" width="60" label="序号" align='center'>
         </el-table-column>
-        <el-table-column prop="datatable_id" width="110" label="作业参数" align='center'>
+        <el-table-column prop="datatable_id" width="110" show-overflow-tooltip label="作业参数" align='center'>
         </el-table-column>
         <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
         </el-table-column>
         <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip align='center'>
         </el-table-column>
-        <el-table-column prop="datatable_lifecycle" width="80" label="生命周期" align='center'>
+        <el-table-column prop="datatable_lifecycle" width="80" show-overflow-tooltip label="生命周期" align='center'>
         </el-table-column>
-        <el-table-column prop="etl_date" width="90" label="跑批日期" align='center'>
+        <el-table-column prop="etl_date" width="90" show-overflow-tooltip label="跑批日期" align='center'>
         </el-table-column>
-        <!-- <el-table-column prop="datatable_id" width="110" label="分类名称" align='center'>
-        </el-table-column> -->
-        <el-table-column prop="is_successful" width="90" label="执行状态" align='center'>
+        <el-table-column prop="category_name" width="110" show-overflow-tooltip label="分类名称" align='center'>
         </el-table-column>
-        <el-table-column prop="datatable_create_date" width="90" label="创建日期" align='center'>
+        <el-table-column prop="is_successful" width="90" show-overflow-tooltip label="执行状态" align='center'>
         </el-table-column>
-        <el-table-column prop="datatable_due_date" width="90" label="到期日期" align='center'>
+        <el-table-column prop="datatable_create_date" show-overflow-tooltip width="90" label="创建日期" align='center'>
+        </el-table-column>
+        <el-table-column prop="datatable_due_date" show-overflow-tooltip width="90" label="到期日期" align='center'>
         </el-table-column>
         <el-table-column label="操作" width="250" align='center'>
             <template slot-scope="scope">
