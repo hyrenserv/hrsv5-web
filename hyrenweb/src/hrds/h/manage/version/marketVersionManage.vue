@@ -11,16 +11,16 @@
     <el-row>
         <el-col :span="5">
             <div class="mytree" hight='200'>
-                <el-tree :data="data" :indent='0' show-checkbox class="filter-tree" node-key="id" :default-expanded-keys="[1]" :default-checked-keys="[2]" :props="defaultProps">
+                <el-tree :data="versionManageTreeData" :indent='0' show-checkbox class="filter-tree" @node-click="VMHandleClick"  node-key="id" :default-expanded-keys="[1]" :default-checked-keys="[2]" :props="defaultProps">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.label" v-if="data.type=='wb'">
+                        <span :title="data.description" v-if="data.type=='wb'">
                             <i class=" el-icon-document" />{{node.label}}
                         </span>
-                        <span :title="data.label" v-else-if="data.type=='wj'">
+                        <span :title="data.description" v-else-if="data.type=='wj'">
                             <i class="el-icon-folder-opened" />{{node.label}}
                         </span>
-                        <span :title="data.label" v-else>
-                            <i />{{node.label}}
+                        <span :title="data.description" v-else>
+                            <i />{{data.label}}
                         </span>
                     </span>
                 </el-tree>
@@ -138,51 +138,51 @@
                     <div class="text item">
                         <div class='bd contrast'>
                             <el-table :data="tableData2" style="width: 100%">
-                                    <el-table-column prop="ziduan" label="当前">
-                                        <template slot-scope="scope">
-                                            <div v-for="(item,index) in scope.row.title1" :key="index">
-                                            <p v-if="item.inden=='true'" >{{item.title}}</p>
+                                <el-table-column prop="ziduan" label="当前">
+                                    <template slot-scope="scope">
+                                        <div v-for="(item,index) in scope.row.title1" :key="index">
+                                            <p v-if="item.inden=='true'">{{item.title}}</p>
                                             <p v-if="item.color=='red'&&item.inden=='true'" class='redmarkred'>{{item.title}}</p>
                                             <p v-else class='markinden'>{{item.title}}</p>
-                                            </div>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column  label="2020-03-24">
-                                         <template slot="header">
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="2020-03-24">
+                                    <template slot="header">
                                         <span>2020-03-24</span>
                                         <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                     </template>
-                                        <template slot-scope="scope">
-                                           <div v-for="(item,index) in scope.row.title2" :key="index">
+                                    <template slot-scope="scope">
+                                        <div v-for="(item,index) in scope.row.title2" :key="index">
                                             <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
                                             <p v-else>{{item.title}}</p>
-                                            </div>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column  label="2020-03-30">
-                                         <template slot="header">
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="2020-03-30">
+                                    <template slot="header">
                                         <span>2020-03-30</span>
                                         <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                     </template>
-                                        <template slot-scope="scope">
-                                          <div v-for="(item,index) in scope.row.title3" :key="index">
+                                    <template slot-scope="scope">
+                                        <div v-for="(item,index) in scope.row.title3" :key="index">
                                             <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
                                             <p v-else>{{item.title}}</p>
-                                            </div>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column label="2020-04-30">
-                                        <template slot="header">
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="2020-04-30">
+                                    <template slot="header">
                                         <span>2020-04-30</span>
                                         <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                     </template>
-                                        <template slot-scope="scope">
-                                           <div v-for="(item,index) in scope.row.title4" :key="index">
+                                    <template slot-scope="scope">
+                                        <div v-for="(item,index) in scope.row.title4" :key="index">
                                             <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
                                             <p v-else>{{item.title}}</p>
-                                            </div>
-                                        </template>
-                                    </el-table-column>
+                                        </div>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </div>
                     </div>
@@ -195,6 +195,8 @@
 </template>
 
 <script>
+import * as mvmFunc from "./marketVersionManage";
+
 export default {
     data() {
         return {
@@ -212,7 +214,6 @@ export default {
                     title: 'yyy',
                     color: 'red'
                 }],
-
             }, {
                 ziduan: [{
                     title: 'eeee',
@@ -254,107 +255,74 @@ export default {
                 }],
             }, ],
             tableData2: [{
-                    title1:[{
-                         title: 'select',
-                          color: 'red',
-                          inden:'true',
-                    },{
-                         title: 'eeett',
-                          color: 'red'
-                    },{
-                         title: 'eeee14',
-                          color: 'black'
-                    }],
-                   title2:[{
-                         title: 'select',
-                          color: 'red',
-                          inden:'true',
-                    },{
-                         title: 'eeett',
-                          color: 'red'
-                    },{
-                         title: 'eeee14',
-                          color: 'black'
-                    }],
-                     title3:[{
-                         title: 'select',
-                          color: 'red',
-                          inden:'true',
-                    },{
-                         title: 'eeett',
-                          color: 'red'
-                    },{
-                         title: 'eeee14',
-                          color: 'black'
-                    }],
-                    title4:[{
-                         title: 'select',
-                          color: 'red',
-                          inden:'true',
-                    },{
-                         title: 'eeett',
-                          color: 'red'
-                    },{
-                         title: 'eeee14',
-                          color: 'black'
-                    }],
+                title1: [{
+                    title: 'select',
+                    color: 'red',
+                    inden: 'true',
+                }, {
+                    title: 'eeett',
+                    color: 'red'
+                }, {
+                    title: 'eeee14',
+                    color: 'black'
                 }],
-            data: [{
-                id: 1,
-                type: 'wj',
-                label: '贴源层',
-                children: [{
-                    id: 4,
-                    type: 'wj',
-                    label: 'PSQL',
-                    children: [{
-                        id: 9,
-                        type: 'wb',
-                        label: 'agent_info',
-                        children: [{
-                            id: 10,
-                            type: 'time',
-                            label: '2020-03-24'
-                        }, {
-                            id: 110,
-                            type: 'time',
-                            label: '2020-03-30'
-                        }, {
-                            id: 111,
-                            type: 'time',
-                            label: '2020-04-30'
-                        }]
-                    }]
-                }]
-            }, {
-                id: 2,
-                label: '集市层',
-                type: 'wj',
-                children: [{
-                    id: 5,
-                    label: '二级 2-1'
+                title2: [{
+                    title: 'select',
+                    color: 'red',
+                    inden: 'true',
                 }, {
-                    id: 6,
-                    label: '二级 2-2'
-                }]
-            }, {
-                id: 3,
-                label: '管控层',
-                type: 'wj',
-                children: [{
-                    id: 7,
-                    label: '二级 3-1'
+                    title: 'eeett',
+                    color: 'red'
                 }, {
-                    id: 8,
-                    label: '二级 3-2'
-                }]
+                    title: 'eeee14',
+                    color: 'black'
+                }],
+                title3: [{
+                    title: 'select',
+                    color: 'red',
+                    inden: 'true',
+                }, {
+                    title: 'eeett',
+                    color: 'red'
+                }, {
+                    title: 'eeee14',
+                    color: 'black'
+                }],
+                title4: [{
+                    title: 'select',
+                    color: 'red',
+                    inden: 'true',
+                }, {
+                    title: 'eeett',
+                    color: 'red'
+                }, {
+                    title: 'eeee14',
+                    color: 'black'
+                }],
             }],
+            versionManageTreeData: [],
             defaultProps: {
                 children: 'children',
                 label: 'label'
             }
         }
     },
+    created() {
+        //页面初始化时获取源数据列表树
+        this.getMarketVerManageTreeData();
+    },
+    methods: {
+        //获取集市版本树菜单数据
+        getMarketVerManageTreeData() {
+            mvmFunc.getMarketVerManageTreeData().then(res => {
+                this.versionManageTreeData = res.data;
+            });
+        },
+        //点击源数据管理树节点触发
+        VMHandleClick(data) {
+            console.log(data);
+        }
+    }
 
 }
 </script>
@@ -529,11 +497,13 @@ table {
 .markred {
     color: #b70707
 }
-.markinden{
-text-indent: 2rem;
+
+.markinden {
+    text-indent: 2rem;
 }
-.redmarkinden{
-color: #b70707;
-text-indent: 2rem;
+
+.redmarkinden {
+    color: #b70707;
+    text-indent: 2rem;
 }
 </style>

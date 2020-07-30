@@ -918,7 +918,7 @@ export default new Router({
                     path: '/marketVersionManage',
                     name: 'marketVersionManage',
                     title: 'marketVersionManage',
-                    component: () => import('@/hrds/h/market/marketVersionManage.vue'),
+                    component: () => import('@/hrds/h/manage/version/marketVersionManage.vue'),
                     meta: [
                         { name: '首页' },
                         { name: '数据集市' },
