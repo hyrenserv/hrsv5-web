@@ -441,9 +441,10 @@
                 <el-col :span="16">
                     <el-tabs type="card">
                         <el-row>
-                            <el-input class="inputframe" type="textarea" rows="5"
-                                      placeholder="请输入SQL,多个SQL用;;分隔"
-                                      v-model="presql"/>
+                            <div style="border:1px solid #ccc;">
+                                <SqlEditor ref="sqleditor" :value="preJobForm.preSql"
+                                           @changeTextarea="changeTextarea($event)" class='textasql'/>
+                            </div>
                         </el-row>
                     </el-tabs>
                 </el-col>
@@ -472,9 +473,10 @@
                 <el-col :span="16">
                     <el-tabs type="card">
                         <el-row>
-                            <el-input class="inputframe" type="textarea" rows="5"
-                                      placeholder="请输入SQL,多个SQL用;;分隔"
-                                      v-model="aftersql"/>
+                            <div style="border:1px solid #ccc;">
+                                <SqlEditor ref="sqleditor" :value="afterJobForm.afterSql"
+                                           @changeTextarea="changeTextarea($event)" class='textasql'/>
+                            </div>
                         </el-row>
                     </el-tabs>
                 </el-col>
@@ -558,6 +560,12 @@
                 relationIndex: 1,
                 basicInfoForm: {
                     sqlMain: ''
+                },
+                preJobForm: {
+                    preSql: ''
+                },
+                afterJobForm: {
+                    afterSql: ''
                 },
                 radioSelect: '',
                 reSelectColumns: '',
@@ -1030,6 +1038,9 @@
                 } else {
                     this.querysql = sql;
                 }
+                this.$refs.sqleditor.setmVal(sql)
+                this.formaterSql(sql)
+                this.basicInfoForm.sqlMain = sql;
                 this.iftablecolumn = false;
                 this.Allis_selectionstate = false;
             },

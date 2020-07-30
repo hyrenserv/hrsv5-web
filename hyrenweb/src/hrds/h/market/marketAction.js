@@ -462,3 +462,11 @@ export function getDmCategoryNodeInfoByIdAndName(data) {
         params: data
     })
 }
+//获取详情表信息
+export function getDmDataTableByDmCategory(data) {
+    return request({
+        url: '/H/market/getDmDataTableByDmCategory',
+        params: data
+    })
+}
+

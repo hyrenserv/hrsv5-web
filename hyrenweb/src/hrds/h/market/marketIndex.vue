@@ -4,16 +4,33 @@
         <span>数据集市</span>
     </el-row>
     <span class="top3title">存储层表数量</span>
-    <div class="dataSheetmain">
-        <div class="dataSheetmainDiv2" v-for="(item,index) in alldslinfomart" :key="index">
-            <i class="fa fa-database fa-3x tree"></i>
-            <p>{{item.dsl_name}}</p>
-            <p class="postionP">集市表个数：{{item.count}} </p>
-            <span>{{item.count}}</span>
+    <el-row class="bottomMargins" :gutter="20">
+        <el-col v-for="item in alldslinfomart" :key="item.dsl_name" :span="3">
+            <div class="elcolFor">
+                <i class='el-icon-menu' style="font-size:30px"></i>
+                <el-row>
+                    <div style="font-size: 12px;padding: 0 4px;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{item.dsl_name}}表数</div>
+                </el-row>
+                <el-row class="elcolCount">{{item.count}}</el-row>
+            </div>
+        </el-col>
+    </el-row>
+
+    <el-row>
+        <div>
+            <span class="top3title">集市列表</span>
+            <div class="elButton">
+                <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;" size="small">
+                    <i class="el-icon-circle-plus-outline"></i>新增集市
+                </el-button>
+                <el-upload class="buttonStyle" accept=".hrds" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
+                    <el-button size="small" type="primary">
+                        <i class="fa fa-cloud-upload"></i> 导入集市
+                    </el-button>
+                </el-upload>
+            </div>
         </div>
-    </div>
-    <el-row class='top3style'>
-        <span class="top3title">集市列表</span>
+        <!-- <span class="top3title">集市列表</span>
         <div class="elButton">
             <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;" size="small">
                 <i class="el-icon-circle-plus-outline"></i>新增集市
@@ -23,8 +40,7 @@
                     <i class="fa fa-cloud-upload"></i> 导入集市
                 </el-button>
             </el-upload>
-
-        </div>
+        </div> -->
     </el-row>
     <div class="dataSheetmain">
         <div class="dataSheetmainDiv" v-for="(item,index) in marketinfo" :key="index">
@@ -49,34 +65,36 @@
         </div>
     </div>
     <span class="top3title">存储层表top5</span>
-    <div class="dataSheetmain">
-        <el-row>
-            <el-col :span="8" v-for="(item,index) in tabletop5indsl" :key="index">
-                <div class="">
-                    <el-row>
-                        <el-col :span="6" :offset="10">
-                            <span class="top3title">
-                                <p>{{item.dsl_name}}</p>
-                            </span>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-table :data="item.result" border size="medium ">
-                            <el-table-column label="集市数据表名" prop="datatable_en_name" align="center">
-                                <template slot-scope="scope">
-                                    <p>{{scope.row.datatable_en_name}}</p>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="占用空间大小" prop="soruce_size" align="center">
-                                <template slot-scope="scope">
-                                    <p>{{scope.row.soruce_size}}</p>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-row>
-                </div>
-            </el-col>
-        </el-row>
+    <div>
+        <!-- <div class="dataSheetmain"> -->
+        <!-- <el-row> -->
+        <el-col :span="8" v-for="(item,index) in tabletop5indsl" :key="index">
+            <div class="tableDiv">
+                <el-row>
+                    <!-- <el-col :span="6" :offset="10"> -->
+                    <!-- <span class="top3title"> -->
+                    <p style="text-align: center;">{{item.dsl_name}}</p>
+                    <!-- 居中对齐宽度百分之90%一行显示超出隐藏。。。 -->
+                    <!-- </span> -->
+                    <!-- </el-col> -->
+                </el-row>
+                <el-row>
+                    <el-table :data="item.result" border size="medium " height="266">
+                        <el-table-column label="集市数据表名" show-overflow-tooltip prop="datatable_en_name" align="center">
+                            <!-- <template slot-scope="scope">
+                                <p>{{scope.row.datatable_en_name}}</p>
+                            </template> -->
+                        </el-table-column>
+                        <el-table-column label="占用空间大小" show-overflow-tooltip prop="soruce_size" align="center">
+                            <!-- <template slot-scope="scope">
+                                <p>{{scope.row.soruce_size}}</p>
+                            </template> -->
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+            </div>
+        </el-col>
+        <!-- </el-row> -->
     </div>
 
     <el-row class="bottomMargin">
@@ -700,7 +718,7 @@ export default {
 }
 
 .dataSheetmainDiv {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     padding-top: 10px;
     width: 100px;
     height: 80px;
@@ -895,13 +913,9 @@ export default {
 /* 底部边距 */
 .bottomMargin {
     margin-bottom: 1%;
-    /* margin-left: 40px; */
 }
 
 .top3title {
-    /*border-bottom: 1px solid #e6e3e3;*/
-    margin-bottom: 15px;
-    /*margin-left: px;*/
     width: 100%;
     height: 40px;
     line-height: 40px;
@@ -910,8 +924,8 @@ export default {
 
 .elButton {
     float: right;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 4px;
+   
 }
 
 .addNew {
@@ -929,5 +943,30 @@ export default {
     float: left;
     margin-right: 10px;
     margin-left: 0px;
+}
+
+/* top3设置 */
+.tableDiv {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.elcolFor {
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #3d8dd2;
+    ;
+    padding: 10px 0;
+    border-radius: 4px;
+    color: #fff;
+    margin: 0 10px;
+}
+
+.bottomMargins {
+    border: 1px solid #e6e6e6;
+    padding: 10px;
+    margin:0 important;
+    margin-bottom:10px !important; ;
 }
 </style>
