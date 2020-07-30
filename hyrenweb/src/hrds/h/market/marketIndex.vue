@@ -67,7 +67,7 @@
                     <div class="titlep">存储层:{{item.dsl_name}}</div>
                 </el-row>
                 <el-row>
-                    <el-table :data="item.result" border size="medium " height="266">
+                    <el-table :data="item.result" border stripe size="medium " height="266">
                         <el-table-column label="集市数据表名" show-overflow-tooltip prop="datatable_en_name" align="center">
                         </el-table-column>
                         <el-table-column label="占用空间大小" show-overflow-tooltip prop="soruce_size" align="center">
@@ -94,13 +94,12 @@
                     <el-input v-model="formAdd.mart_number" size="small" autocomplete="off" placeholder="集市编号" style="width:284px"></el-input>
                 </el-form-item>
             </el-col>
-            <!-- <el-col :span="24"> -->
+           
             <el-col :span="12">
                 <el-form-item label="备注" :label-width="formLabelWidth" prop="mart_desc">
                     <el-input type="textarea" v-model="formAdd.mart_desc" size="small" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
                 </el-form-item>
             </el-col>
-            <!-- </el-col> -->
 
             <el-col :span="24">
                 <el-button size="small" class="addNew" @click="addNewData" type="primary">新建分类</el-button>
@@ -185,7 +184,7 @@
 
     <el-dialog title="分类信息" :visible.sync="chooseScopeIdDiolag" :before-close="chooseScopeIdDiolagcancel" width="680px">
         <div class="mytree"  hight='200'>
-            <el-tree :data="dataTree" :check-strictly="true" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+            <el-tree :data="dataTree" show-checkbox :indent='0' node-key="label" ref="tree" :check-strictly="true" :props="defaultProps" @check-change="handleNodeClick"></el-tree>
         </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="chooseScopeIdDiolagcancel" size="mini" type="danger">取消</el-button>
@@ -244,9 +243,11 @@ export default {
                 label: 'label'
             },
             dataTree: [],
-            shortTimeMark: '',
             shortRowMark: '',
             addOrUpdate: false,
+            nodeMark: '',
+            markLength: '',
+            markLengthTable: '',
         };
     },
     mounted() {
@@ -472,7 +473,6 @@ export default {
                 })
                 this.dataTree = arr3;
                 this.formAdd = arr1;
-
                 this.treeForeach(arr3, node => {
                     arr2.forEach(val => {
                         if (val.parent_category_id == node.id) {
@@ -481,6 +481,10 @@ export default {
                         }
                     })
                 })
+                this.markLengthTable = arr2.length;
+                this.markLength = this.dataTree.length;
+                console.log(this.markLengthTable)
+                console.log(this.markLength)
                 this.formAdd.tableDataAdd = arr2;
             })
         },
@@ -544,6 +548,7 @@ export default {
                     label: '',
                     children: []
                 })
+                console.log(this.dataTree)
             } else if (this.addOrUpdate == false) {
                 this.formAdd.tableDataAdd.push({
                     category_num: '',
@@ -619,17 +624,8 @@ export default {
         },
         // 确认上级分类弹出框
         chooseScopeIdDiolagsave() {
-            this.treeForeach(this.dataTree, node => {
-                if (node.label == this.shortTimeMark) {
-                    node.children.push({
-                        label: this.chooseScopeIdRow.category_name,
-                        children: []
-                    })
-                }
-            })
-            let index = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
-            this.dataTree.splice(index, 1);
-            this.chooseScopeIdDiolag = false;
+            this.$refs.tree.setCheckedKeys([]); //清空树的选中状态
+            this.chooseScopeIdDiolag = false; //关闭弹出框
         },
         //树循环递归
         treeForeach(tree, func) {
@@ -639,14 +635,28 @@ export default {
             })
         },
         // 选择节点或者点击node
-        handleNodeClick(val) {
-            this.shortTimeMark = val.label;
+        handleNodeClick(val, val2, val3) {
+            if (val2 == true) { //选中状态时
+                if (val.label == this.chooseScopeIdRow.category_name) {
+                    this.$refs.tree.setCheckedKeys([{ //改变更改的状态
+                        label: val.label
+                    }]);
+                    message.customizTitle("不能选择同名的分类", "warning");
+                } else {
+                    let obj = {};
+                    obj.label = this.chooseScopeIdRow.category_name;
+                    obj.children = [];
+                    val.children.push(obj);
+                    let index = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                    this.dataTree.splice(index, 1);
+                }
+            }
             this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_id = val.label;
         },
-        // 填写每一个名称改变数的label\
+        // 填写每一个名称改变数的label
         changScopeValue(row, index) {
             this.shortRowMark = row;
-            this.dataTree[index].label = row.category_name;
+            this.dataTree[index - this.markLengthTable + this.markLength].label = row.category_name;
         },
         // 查看集市详情
         viewmart(name, id) {
@@ -767,10 +777,12 @@ export default {
     color: #2196f3;
     font-size: 16px;
 }
-.titleSpan{
+
+.titleSpan {
     border-bottom: 1px solid #e6e3e3;
     width: 100%;
 }
+
 .elButton {
     float: right;
     margin-top: 4px;
