@@ -234,7 +234,7 @@
 
                 <el-table-column prop="process_para" label="来源值" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
-                        <el-select :disabled="iflock" v-if="scope.row.field_process == '3' || scope.row.field_process == '5'" v-model="scope.row.process_para" placeholder="请选择">
+                        <el-select :disabled="iflock" v-if="scope.row.field_process == '3' || scope.row.field_process == '5'" v-model="scope.row.process_mapping" placeholder="请选择">
                             <el-option v-for="item in allfromcolumn" :key="item.value" :label="item.value" :value="item.value"></el-option>
                         </el-select>
                         <el-input :disabled="iflock" v-else-if="scope.row.field_process != '4'" v-model="scope.row.process_mapping" autocomplete="off" placeholder="处理方式参数"></el-input>
@@ -848,34 +848,6 @@ export default {
                     });
                     return false;
                 }
-                if (field_process == '3') {
-                    var process_para = this.columnbysql[i].process_para;
-                    if (process_para === '' || process_para == undefined) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行来源值为空"
-                        });
-                        return false;
-                    }
-                }
-                if (field_process == '5') {
-                    var process_para = this.columnbysql[i].process_para;
-                    if (process_para === '' || process_para == undefined) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行来源值为空"
-                        });
-                        return false;
-                    }
-                    var group_mapping = this.columnbysql[i].group_mapping;
-                    if (group_mapping === '' || group_mapping == undefined) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行分组映射为空"
-                        });
-                        return false;
-                    }
-                }
 
                 if (field_process == '4') {
                     var process_mapping = this.columnbysql[i].process_mapping;
@@ -886,7 +858,28 @@ export default {
                         });
                         return false;
                     }
+                } else {
+                    var process_mapping = this.columnbysql[i].process_mapping;
+                    if (process_mapping === '' || process_mapping == undefined) {
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行来源值为空"
+                        });
+                        return false;
+                    }
                 }
+
+                if (field_process == '5') {
+                    var group_mapping = this.columnbysql[i].group_mapping;
+                    if (group_mapping === '' || group_mapping == undefined) {
+                        this.$message({
+                            type: "warning",
+                            message: "第" + (i + 1) + "行分组映射为空"
+                        });
+                        return false;
+                    }
+                }
+
                 var field_type = this.columnbysql[i].field_type;
                 if (field_type == "decimal" || field_type == "varchar") {
                     if (!this.columnbysql[i].hasOwnProperty("field_length")) {
