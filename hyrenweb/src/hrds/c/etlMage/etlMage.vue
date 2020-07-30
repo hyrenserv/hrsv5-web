@@ -357,7 +357,9 @@ export default {
             let params = {};
             etlMageAllFun.searchEtlSys(params).then(res => {
                 for (let index = 0; index < res.data.length; index++) {
-                    res.data[index].curr_bath_date = fixedAll.dateFormat(res.data[index].curr_bath_date);
+                    if (res.data[index].curr_bath_date) {
+                        res.data[index].curr_bath_date = fixedAll.dateFormat(res.data[index].curr_bath_date);
+                    }
                 }
                 let arr = [];
                 let arr2 = [];
