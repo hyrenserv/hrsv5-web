@@ -94,7 +94,7 @@
                     <el-input v-model="formAdd.mart_number" size="small" autocomplete="off" placeholder="集市编号" style="width:284px"></el-input>
                 </el-form-item>
             </el-col>
-           
+
             <el-col :span="12">
                 <el-form-item label="备注" :label-width="formLabelWidth" prop="mart_desc">
                     <el-input type="textarea" v-model="formAdd.mart_desc" size="small" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
@@ -296,11 +296,12 @@ export default {
                         item.parent_category_id = item.parent_category_ids
                         delete item.parent_category_ids;
                     } else { //更新时新添加的
+                        item.parent_category_name = item.parent_category_id;
                         item.parent_category_id = null;
                     }
                 }))
                 functionAll.saveDmCategory({
-                    dmCategories: JSON.stringify(arr),
+                    categoryRelationBeans: JSON.stringify(arr),
                     data_mart_id: val
                 }).then((res => {
                     if (res && res.success) {
@@ -319,10 +320,11 @@ export default {
                 }))
             } else if (this.addOrUpdate == false) {
                 arr.forEach(item => {
+                    item.parent_category_name = item.parent_category_id;
                     item.parent_category_id = null;
                 })
                 functionAll.saveDmCategory({
-                    dmCategories: JSON.stringify(arr),
+                    categoryRelationBeans: JSON.stringify(arr),
                     data_mart_id: val
                 }).then((res => {
                     if (res && res.success) {
