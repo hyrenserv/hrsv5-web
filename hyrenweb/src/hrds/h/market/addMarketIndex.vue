@@ -26,28 +26,60 @@
 
             </el-row>
         </el-col>
+
         <el-col :span="16">
-            <el-row>
+            <!-- <el-row>
                 <div class="buttonDiv">
-                    <el-button @click="changeName">修改</el-button>
-                    <el-button @click="deleteName">删除</el-button>
-                    <el-button @click="addDataName">新建分类</el-button>
+                    <el-button type="primary" size="small" @click="changeName">修改</el-button>
+                    <el-button type="danger" size="small" @click="deleteName">删除</el-button>
+                    <el-button type="success" size="small" @click="addDataName">新建分类</el-button>
                 </div>
 
-            </el-row>
+            </el-row> -->
+
             <el-row>
                 <el-col :span="23" :offset="1" class="elCol8">
-                    <p class="workInfo">
-                        分类节点信息
-                    </p>
+                    <div class="workInfo">
+                        <span>分类节点信息</span>
+                        <div class="buttonDiv">
+                            <el-button type="primary" size="mini" @click="changeName">修改</el-button>
+                            <el-button type="danger" size="mini" @click="deleteName">删除</el-button>
+                            <el-button type="success" size="mini" @click="addDataName">新建分类</el-button>
+                        </div>
+                    </div>
                     <div id="jsmind_container" @click="getclickNode" :style="{width: '100%', height: '180px'}"></div>
                 </el-col>
             </el-row>
+
             <el-row>
-                <el-col :span="23" :offset="1">
+                <el-col :span="23" :offset="1" >
                     <p class="workInfo">
                         该分类下的模型表
                     </p>
+                    <el-table :data="tableData" border stripe size="medium" style="width: 100%">
+                        <el-table-column type="index" width="60" label="序号" align='center'>
+                        </el-table-column>
+                        <el-table-column prop="datatable_id" width="110" label="分类名称" align='center'>
+                        </el-table-column>
+                        <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
+                        </el-table-column>
+                        <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip align='center'>
+                        </el-table-column>
+                        <el-table-column label="操作" width="250" align='center'>
+                            <template slot-scope="scope">
+                                <el-button size="mini" type="text" @click="editdmdatatable(scope.row)">编辑
+                                </el-button>
+                                <el-button size="mini" type="text"  @click="producefun(scope.row)">生成作业
+                                </el-button>
+                                <el-button size="mini" type="text"  @click="pushtoaddmart3(scope.row)">立即执行
+                                </el-button>
+                                <el-button size="mini" type="text"  @click="downloaddmdatatable(scope.row)">导出
+                                </el-button>
+                                <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-col>
             </el-row>
         </el-col>
@@ -97,6 +129,37 @@
             <el-button type="primary" @click="addDataNamesave('formDataName')" size="mini">保存</el-button>
         </div>
     </el-dialog>
+
+    <!-- 生成作业 -->
+    <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">生成作业</span>
+        </div>
+        <el-form ref="separatorData" label-width="240px" text-align="center">
+            <el-form-item label="选择工程">
+                <el-select placeholder="选择工程" v-model="selectedetlsys" @change="queryetltaskbyetlsys" style="width: 190px;" size="medium">
+                    <el-option v-for="(item,index) in alletlsys" :key="index" :label="item.etl_sys_cd" :value="item.etl_sys_cd"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="选择任务">
+                <el-select placeholder="选择任务" v-model="selectedetltask" style="width: 190px;" size="medium">
+                    <el-option v-for="(item,index) in alletltask" :key="index" :label="item.sub_sys_cd" :value="item.sub_sys_cd"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialogProdeceJobs = false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 导入excel表 -->
+    <!-- <el-dialog title="导入Excel" :visible.sync="dialogImportData" :before-close="importDatacancel">
+        <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
+            <el-button type="primary" @click="importData" size="mini">保存</el-button>
+        </div>
+    </el-dialog> -->
 </div>
 </template>
 
@@ -119,6 +182,8 @@ export default {
             dataTree: [],
             dialogchangeName: false,
             dialogDataName: false,
+            dialogProdeceJobs: false,
+            dialogImportData: false,
             formChangeName: {
                 category_name: '',
             },
@@ -132,15 +197,21 @@ export default {
             timeObj: {},
             codeStatus: [],
             rule: validator.default,
+            tableData: [{},{}],
+            alletlsys: [],
+            alletltask: [],
+            selecteddatatable_id: "",
+            selectedetltask: "",
+            selectedetlsys: "",
         }
 
     },
     mounted() {
+        // 获取页面初始数据
         this.getDmCategoryTreeData(this.$route.query.id);
         this.getDmCategoryNodeInfo(this.$route.query.id);
-        // this.getDmCategoryForDmDataTable(this.$route.query.id);
+        this.getDmDataTableByDmCategory(this.$route.query.id);
         flag = 0;
-
     },
     methods: {
         // 获取初始的数据
@@ -164,13 +235,14 @@ export default {
                 }
             })
         },
-        // getDmCategoryForDmDataTable(data_mart_id) { //获取所有信息表
-        //     functionAll.getDmCategoryForDmDataTable({
-        //         data_mart_id: data_mart_id
-        //     }).then((res) => {
-
-        //     })
-        // },
+        getDmDataTableByDmCategory(data_mart_id) { //获取所有信息表
+            functionAll.getDmDataTableByDmCategory({
+                data_mart_id: data_mart_id
+            }).then((res) => {
+                console.log(res.data)
+                // this.tableData = res.data;
+            })
+        },
 
         // 点击树获取对应的节点信息详情
         handleNodeClick(val) {
@@ -330,7 +402,116 @@ export default {
         cancleDataName() {
             this.dialogDataName = false;
             this.$refs.formDataName.resetFields();
-        }
+        },
+        //编辑表格信息
+        editdmdatatable(row) {
+            this.$router.push({
+                name: 'addMartTable_1',
+                query: {
+                    data_mart_id: this.data_mart_id,
+                    datatable_id: row.datatable_id,
+                    is_add: 1
+                }
+            });
+        },
+        // 生成作业
+        producefun(row) {
+            this.dialogProdeceJobs = true;
+            this.selecteddatatable_id = row.datatable_id;
+            functionAll.queryAllEtlSys().then((res) => {
+                if (res && res.success) {
+                    this.alletlsys = res.data;
+                }
+            })
+        },
+        // 更改select选择项
+        queryetltaskbyetlsys() {
+            functionAll.queryEtlTaskByEtlSys({
+                "etl_sys_cd": this.selectedetlsys
+            }).then((res) => {
+                if (res && res.success) {
+                    this.alletltask = res.data;
+                }
+            })
+        },
+        // 保存生成作业
+        savemartjobtoetl() {
+            let param = {
+                "etl_sys_cd": this.selectedetlsys,
+                "sub_sys_cd": this.selectedetltask,
+                "datatable_id": this.selecteddatatable_id,
+            }
+            functionAll.generateMartJobToEtl(param).then((res) => {
+                if (res && res.success) {
+                    this.$message({
+                        type: "success",
+                        message: "成功"
+                    });
+                }
+                this.dialogProdeceJobs = false;
+            })
+        },
+        // 立即执行
+        pushtoaddmart3(row) {
+            this.$router.push({
+                name: 'addMartTable_3',
+                query: {
+                    data_mart_id: this.data_mart_id,
+                    datatable_id: row.datatable_id,
+                }
+            });
+        },
+        // 立即导出
+        downloaddmdatatable(row) {
+            let datatable_id = row.datatable_id;
+            let datatable_en_name = row.datatable_en_name;
+            message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
+                let that = this;
+                functionAll.downloadDmDatatable({
+                    datatable_id: datatable_id
+                }).then(res => {
+                    // if (res && res.success) {
+                    let filename = datatable_en_name + ".xlsx"
+                    const blob = new Blob([res.data]);
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, filename);
+                    } else {
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        // document.body.appendChild(aTag);
+                        aTag.download = filename;
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
+                    }
+                })
+            }).catch(() => {})
+
+        },
+        // 删除表格的某一列
+        deletedmdatatable(row) {
+            let datatable_en_name = row.datatable_en_name;
+            message.confirmMsg('确定删除 ' + datatable_en_name + ' 吗').then(res => {
+                let param = {
+                    "datatable_id": row.datatable_id
+                }
+                functionAll.deleteDMDataTable(param).then((res) => {
+                    if (res && res.success) {
+                        message.deleteSuccess(res);
+                        location.reload(); //需要更改
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 还需要一个接口每次点击的时候获取对应的表格值
 
     }
 }
@@ -340,6 +521,8 @@ export default {
 /* 按钮设置 */
 .buttonDiv {
     float: right;
+    margin-bottom: 4px;
+    margin-right: 4px;
 }
 
 /* 左边数样式设置 */
