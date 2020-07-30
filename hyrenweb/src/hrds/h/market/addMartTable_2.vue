@@ -647,6 +647,7 @@ export default {
             functionAll.getQuerySql(params).then((res) => {
                 this.$refs.sqleditor.setmVal(res.data)
                 this.formaterSql(res.data)
+                this.sqlparameter = res.data
             })
         },
         getcolumnfromdatabase(datatable_id) {
