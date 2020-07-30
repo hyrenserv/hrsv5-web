@@ -1,8 +1,8 @@
 <template>
 <div id="marketIndex">
     <el-row class='topTitle1'>
-        <i class="block_icon fa text-warning fa-globe blue"></i>
-        <span>数据集市</span>
+        <!-- <i class="block_icon fa text-warning fa-globe blue"></i> -->
+        <span class="topTitleOspan">数据集市</span>
         <div class="elButton ">
             <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
                 <el-button size="mini" type="primary">
@@ -332,5 +332,9 @@ export default {
     width: 100%;
     height: 40px;
     line-height: 40px;
+}
+.topTitleOspan{
+    color: #2196f3;
+    font-size: 18px;
 }
 </style>
