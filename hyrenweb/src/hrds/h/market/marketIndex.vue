@@ -1,6 +1,6 @@
 <template>
 <div id="marketIndex">
-    <el-row class='topTitle'>
+    <el-row class='topTitle topTitleLocal'>
         <span>数据集市</span>
     </el-row>
     <span class="top3title">存储层表数量</span>
@@ -30,71 +30,52 @@
                 </el-upload>
             </div>
         </div>
-        <!-- <span class="top3title">集市列表</span>
-        <div class="elButton">
-            <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;" size="small">
-                <i class="el-icon-circle-plus-outline"></i>新增集市
-            </el-button>
-            <el-upload class="buttonStyle" accept=".hrds" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                <el-button size="small" type="primary">
-                    <i class="fa fa-cloud-upload"></i> 导入集市
-                </el-button>
-            </el-upload>
-        </div> -->
     </el-row>
     <div class="dataSheetmain">
-        <div class="dataSheetmainDiv" v-for="(item,index) in marketinfo" :key="index">
-            <div @click="gotomartdetail(item.data_mart_id)">
-                <i class="block_icon fa fa-archive fa-3x tree"></i>
-                <p>{{item.mart_name}}</p>
+        <el-col :span="3" v-for="(item,index) in marketinfo" :key="index">
+            <div class="dataSheetmainDiv">
+                <div @click="gotomartdetail(item.data_mart_id)" style="margin-top:6px;">
+                    <i class="block_icon fa fa-list-alt fa-2x tree"></i>
+                    <p>{{item.mart_name}}</p>
+                </div>
+                <div class="boxshletr">
+                    <el-button type="text" class="editBtn" title="编辑" @click="editmart(item.data_mart_id)">
+                        <i class="fa fa-pencil fa-lg" style="width:12px;height:12px"></i>
+                    </el-button>
+                    <el-button type="text" class="editBtn" title="下载" @click="downloadmart(item.mart_name,item.data_mart_id)">
+                        <i class="fa fa-download fa-lg"></i>
+                    </el-button>
+                    <el-button type="text" class="editBtn" title="查看集市信息" @click="viewmart(item.mart_name,item.data_mart_id)">
+                        <i class="fa fa-eye fa-lg"></i>
+                    </el-button>
+                    <el-button type="text" class="editBtn" title="删除" @click="deletemart(item.mart_name,item.data_mart_id)">
+                        <i class="fa fa-trash fa-lg"></i>
+                    </el-button>
+                </div>
             </div>
-            <div class="boxshletr">
-                <el-button type="text" class="editBtn" title="编辑" @click="editmart(item.data_mart_id)">
-                    <i class="fa fa-pencil fa-lg"></i>
-                </el-button>
-                <el-button type="text" class="editBtn" title="下载" @click="downloadmart(item.mart_name,item.data_mart_id)">
-                    <i class="fa fa-download fa-lg"></i>
-                </el-button>
-                <el-button type="text" class="editBtn" title="查看集市信息" @click="viewmart(item.mart_name,item.data_mart_id)">
-                    <i class="fa fa-eye fa-lg"></i>
-                </el-button>
-                <el-button type="text" class="editBtn" title="删除" @click="deletemart(item.mart_name,item.data_mart_id)">
-                    <i class="fa fa-trash fa-lg"></i>
-                </el-button>
-            </div>
-        </div>
+        </el-col>
+
     </div>
-    <span class="top3title">存储层表top5</span>
+    <div class="titleSpan">
+        <span class="top3title">存储层表top5</span>
+    </div>
+
     <div>
-        <!-- <div class="dataSheetmain"> -->
-        <!-- <el-row> -->
         <el-col :span="8" v-for="(item,index) in tabletop5indsl" :key="index">
             <div class="tableDiv">
                 <el-row>
-                    <!-- <el-col :span="6" :offset="10"> -->
-                    <!-- <span class="top3title"> -->
-                    <p style="text-align: center;">{{item.dsl_name}}</p>
-                    <!-- 居中对齐宽度百分之90%一行显示超出隐藏。。。 -->
-                    <!-- </span> -->
-                    <!-- </el-col> -->
+                    <div class="titlep">存储层:{{item.dsl_name}}</div>
                 </el-row>
                 <el-row>
                     <el-table :data="item.result" border size="medium " height="266">
                         <el-table-column label="集市数据表名" show-overflow-tooltip prop="datatable_en_name" align="center">
-                            <!-- <template slot-scope="scope">
-                                <p>{{scope.row.datatable_en_name}}</p>
-                            </template> -->
                         </el-table-column>
                         <el-table-column label="占用空间大小" show-overflow-tooltip prop="soruce_size" align="center">
-                            <!-- <template slot-scope="scope">
-                                <p>{{scope.row.soruce_size}}</p>
-                            </template> -->
                         </el-table-column>
                     </el-table>
                 </el-row>
             </div>
         </el-col>
-        <!-- </el-row> -->
     </div>
 
     <el-row class="bottomMargin">
@@ -659,7 +640,6 @@ export default {
         },
         // 选择节点或者点击node
         handleNodeClick(val) {
-            // console.log(val)
             this.shortTimeMark = val.label;
             this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_id = val.label;
         },
@@ -685,11 +665,12 @@ export default {
 
 <style scoped>
 .dataSheetmain {
-    padding-left: 44px;
+    padding-left: 30px;
     border: 1px solid #dddddd;
     min-height: 124px;
     padding-top: 30px;
     overflow: hidden;
+    margin-bottom: 10px;
 }
 
 /* 遮料层样式 */
@@ -699,9 +680,14 @@ export default {
     background: black;
     opacity: 0.6;
     position: absolute;
-    bottom: -20px;
-    left: -3px;
+    bottom: 0px;
+    left: 0px;
     display: none;
+    border-radius: 4px;
+}
+
+.topTitleLocal {
+    margin-bottom: 6px !important;
 }
 
 .dataSheetmainDiv:hover {
@@ -713,31 +699,15 @@ export default {
     display: block;
 }
 
-.dataSheetmainDiv2:hover .boxshletr {
-    display: block;
-}
-
 .dataSheetmainDiv {
+    margin: 0 auto;
     margin-bottom: 30px;
     padding-top: 10px;
-    width: 100px;
+    width: 106px;
     height: 80px;
-    background: #337ab7;
-    border-radius: 10px;
+    background: #337AB7;
+    border-radius: 4px;
     margin-right: 30px;
-    text-align: center;
-    float: left;
-    position: relative;
-}
-
-.dataSheetmainDiv2 {
-    margin-bottom: 50px;
-    padding-top: 10px;
-    width: 100px;
-    height: 80px;
-    background: #337ab7;
-    border-radius: 10px;
-    margin-right: 50px;
     text-align: center;
     float: left;
     position: relative;
@@ -748,18 +718,10 @@ export default {
 }
 
 .dataSheetmainDiv p {
+    margin-top: 4px;
     color: #fff;
     margin-left: 5px;
-    font-size: 18px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dataSheetmainDiv2 p {
-    color: #fff;
-    margin-left: 5px;
-    font-size: 18px;
+    font-size: 16px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -767,20 +729,6 @@ export default {
 
 /* 标签定位 */
 .dataSheetmainDiv span {
-    display: block;
-    width: 18px;
-    height: 18px;
-    background: #f89406;
-    border-radius: 50%;
-    color: white;
-    position: absolute;
-    right: -2px;
-    top: -3px;
-    font-size: 12px;
-}
-
-/* 标签定位 */
-.dataSheetmainDiv2 span {
     display: block;
     width: 18px;
     height: 18px;
@@ -802,112 +750,9 @@ export default {
     color: black;
 }
 
-/* 字体描述定位 */
-.dataSheetmainDiv2 .postionP {
-    position: absolute;
-    bottom: -20px;
-    left: 4px;
-    font-size: 13px;
-    color: black;
-}
-
 /* 小图标样式 */
 .tree {
     color: aliceblue;
-}
-
-/* #marketIndex {
-        padding: 0 40px; 
-    } */
-
-/* 图标字体设置 */
-/* .el-row {
-        width: 100%;
-        height: 64px;
-        line-height: 64px;
-    } */
-
-/*!* button样式设置 *!*/
-/*.goIndex {*/
-/*float: right;*/
-/*background: #337ab7;*/
-/*margin-top: 18px;*/
-/*margin-right: 14px;*/
-/*}*/
-
-/* 下划线样式 */
-.lines {
-    width: 100%;
-    min-height: 1px;
-    background: #dddddd;
-    margin-bottom: 15px;
-}
-
-.edilt {
-    text-align: center;
-    color: #4691ef;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.sendmsg {
-    text-align: center;
-    color: #4691ef;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.delbtn {
-    text-align: center;
-    color: #4691ef;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.taskEx>>>.el-dialog__body {
-    padding: 8px 20px;
-}
-
-.taskEx>>>.el-table__row>td {
-    padding: 0;
-}
-
-.title-sourceName,
-.title-agentType {
-    font-size: 18px;
-}
-
-.successlink {
-    color: rgb(3, 97, 3);
-}
-
-.unlink {
-    color: red;
-}
-
-.linking {
-    color: #000;
-}
-
-.editcolor {
-    color: #2bc73e;
-}
-
-.delcolor {
-    color: #e83a3a;
-}
-
-.sendcolor {
-    color: #76b8f1;
-}
-
-.workcolor {
-    color: #8c8b8b
-}
-
-.optheight {
-    height: 20px;
-    line-height: 20px;
 }
 
 /* 底部边距 */
@@ -920,12 +765,16 @@ export default {
     height: 40px;
     line-height: 40px;
     color: #2196f3;
+    font-size: 16px;
 }
-
+.titleSpan{
+    border-bottom: 1px solid #e6e3e3;
+    width: 100%;
+}
 .elButton {
     float: right;
     margin-top: 4px;
-   
+
 }
 
 .addNew {
@@ -955,8 +804,7 @@ export default {
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
-    background: #3d8dd2;
-    ;
+    background: #7BA9D0;
     padding: 10px 0;
     border-radius: 4px;
     color: #fff;
@@ -966,7 +814,20 @@ export default {
 .bottomMargins {
     border: 1px solid #e6e6e6;
     padding: 10px;
-    margin:0 important;
-    margin-bottom:10px !important; ;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    margin-bottom: 10px !important;
+}
+
+/* top5标题 */
+.titlep {
+    text-align: center;
+    font-size: 17px;
+    width: 100%;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #2196f3
 }
 </style>

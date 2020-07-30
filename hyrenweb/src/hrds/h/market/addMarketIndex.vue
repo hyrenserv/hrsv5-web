@@ -10,38 +10,28 @@
     </el-row>
 
     <el-row>
-        <el-col :span="8" class="elCol8">
+        <el-col :span="8" class="elCol8Marketindex" style="height:70vh">
             <el-row>
-                <p class="workInfo">
+                <p class="workInfoMarketindex">
                     工程分类信息
                 </p>
 
                 <div class="mytree"  hight='200'>
-                    <el-tree :data="dataTree" :check-strictly="true" :props="defaultProps" @node-click="handleNodeClick">
+                    <el-tree :indent='0' :data="dataTree" :check-strictly="true" :props="defaultProps" @node-click="handleNodeClick" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="node.label">{{ node.label }}</span>
                         </span>
                     </el-tree>
                 </div>
-
             </el-row>
         </el-col>
 
         <el-col :span="16">
-            <!-- <el-row>
-                <div class="buttonDiv">
-                    <el-button type="primary" size="small" @click="changeName">修改</el-button>
-                    <el-button type="danger" size="small" @click="deleteName">删除</el-button>
-                    <el-button type="success" size="small" @click="addDataName">新建分类</el-button>
-                </div>
-
-            </el-row> -->
-
             <el-row>
-                <el-col :span="23" :offset="1" class="elCol8">
-                    <div class="workInfo">
+                <el-col :span="23" :offset="1" class="elCol8Marketindex">
+                    <div class="workInfoMarketindex">
                         <span>分类节点信息</span>
-                        <div class="buttonDiv">
+                        <div class="buttonDivMarketindex">
                             <el-button type="primary" size="mini" @click="changeName">修改</el-button>
                             <el-button type="danger" size="mini" @click="deleteName">删除</el-button>
                             <el-button type="success" size="mini" @click="addDataName">新建分类</el-button>
@@ -52,14 +42,14 @@
             </el-row>
 
             <el-row>
-                <el-col :span="23" :offset="1" >
-                    <p class="workInfo">
+                <el-col :span="23" :offset="1">
+                    <p class="workInfoMarketindex">
                         该分类下的模型表
                     </p>
                     <el-table :data="tableData" border stripe size="medium" style="width: 100%">
                         <el-table-column type="index" width="60" label="序号" align='center'>
                         </el-table-column>
-                        <el-table-column prop="datatable_id" width="110" label="分类名称" align='center'>
+                        <el-table-column prop="category_name" width="110" label="分类名称" align='center'>
                         </el-table-column>
                         <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
                         </el-table-column>
@@ -69,11 +59,11 @@
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="editdmdatatable(scope.row)">编辑
                                 </el-button>
-                                <el-button size="mini" type="text"  @click="producefun(scope.row)">生成作业
+                                <el-button size="mini" type="text" @click="producefun(scope.row)">生成作业
                                 </el-button>
-                                <el-button size="mini" type="text"  @click="pushtoaddmart3(scope.row)">立即执行
+                                <el-button size="mini" type="text" @click="pushtoaddmart3(scope.row)">立即执行
                                 </el-button>
-                                <el-button size="mini" type="text"  @click="downloaddmdatatable(scope.row)">导出
+                                <el-button size="mini" type="text" @click="downloaddmdatatable(scope.row)">导出
                                 </el-button>
                                 <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
                                 </el-button>
@@ -197,7 +187,7 @@ export default {
             timeObj: {},
             codeStatus: [],
             rule: validator.default,
-            tableData: [{},{}],
+            tableData: [],
             alletlsys: [],
             alletltask: [],
             selecteddatatable_id: "",
@@ -210,7 +200,7 @@ export default {
         // 获取页面初始数据
         this.getDmCategoryTreeData(this.$route.query.id);
         this.getDmCategoryNodeInfo(this.$route.query.id);
-        this.getDmDataTableByDmCategory(this.$route.query.id);
+        this.querydmdatatable(this.$route.query.id);
         flag = 0;
     },
     methods: {
@@ -235,18 +225,19 @@ export default {
                 }
             })
         },
-        getDmDataTableByDmCategory(data_mart_id) { //获取所有信息表
+        getDmDataTableByDmCategory(data_mart_id, category_id) { //获取所有信息表通过节点
             functionAll.getDmDataTableByDmCategory({
-                data_mart_id: data_mart_id
+                data_mart_id: data_mart_id,
+                category_id: category_id
             }).then((res) => {
-                console.log(res.data)
-                // this.tableData = res.data;
+                this.tableData = res.data;
             })
         },
 
         // 点击树获取对应的节点信息详情
         handleNodeClick(val) {
-            this.getDmCategoryNodeInfoByIdAndName(val.label, val.id)
+            this.getDmCategoryNodeInfoByIdAndName(val.label, val.id); //树信息
+            this.getDmDataTableByDmCategory(this.$route.query.id, val.id) //表格信息
         },
         // 点击树节点获取jsmind对应信息
         getDmCategoryNodeInfoByIdAndName(name, id) {
@@ -291,6 +282,7 @@ export default {
             } else {
                 this.timeObj.category_id = _jm.get_selected_node().id;
                 this.timeObj.category_name = _jm.get_selected_node().topic;
+                this.getDmDataTableByDmCategory(this.$route.query.id, _jm.get_selected_node().id)
             }
         },
         // 修改分类名称
@@ -408,7 +400,7 @@ export default {
             this.$router.push({
                 name: 'addMartTable_1',
                 query: {
-                    data_mart_id: this.data_mart_id,
+                    data_mart_id: this.$route.query.id,
                     datatable_id: row.datatable_id,
                     is_add: 1
                 }
@@ -456,7 +448,7 @@ export default {
             this.$router.push({
                 name: 'addMartTable_3',
                 query: {
-                    data_mart_id: this.data_mart_id,
+                    data_mart_id: this.$route.query.id,
                     datatable_id: row.datatable_id,
                 }
             });
@@ -506,34 +498,43 @@ export default {
                 functionAll.deleteDMDataTable(param).then((res) => {
                     if (res && res.success) {
                         message.deleteSuccess(res);
-                        location.reload(); //需要更改
+                        this.querydmdatatable(this.$route.query.id);
                     }
                 })
             }).catch(() => {})
         },
-        // 还需要一个接口每次点击的时候获取对应的表格值
-
+        // 获取表格初始值
+        querydmdatatable(data_mart_id) {
+            let param = {
+                "data_mart_id": data_mart_id
+            }
+            functionAll.queryDMDataTableByDataMartID(param).then((res) => {
+                if (res && res.success) {
+                    this.tableData = res.data;
+                }
+            })
+        },
     }
 }
 </script>
 
-<style scoped>
+<style>
 /* 按钮设置 */
-.buttonDiv {
+.addMarketIndex .buttonDivMarketindex {
     float: right;
     margin-bottom: 4px;
     margin-right: 4px;
 }
 
 /* 左边数样式设置 */
-.elCol8 {
+.addMarketIndex .elCol8Marketindex {
     border: 1px solid #e6e6e6;
     border-radius: 4px;
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
 
-.workInfo {
+.addMarketIndex .workInfoMarketindex {
     height: 40px;
     line-height: 40px;
     background-color: #f5f5f5;
