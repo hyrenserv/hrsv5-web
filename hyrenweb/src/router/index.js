@@ -912,7 +912,11 @@ export default new Router({
                     path: '/addMarketIndex',
                     name: 'addMarketIndex',
                     title: 'addMarketIndex',
-                    component: () => import('@/hrds/h/market/addMarketIndex.vue')
+                    component: () => import('@/hrds/h/market/addMarketIndex.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' },
+                    ],
                 },
                 {
                     path: '/marketVersionManage',
@@ -929,25 +933,41 @@ export default new Router({
                     path: '/detailMart',
                     name: 'detailMart',
                     title: 'detailMart',
-                    component: () => import('@/hrds/h/market/detailMart.vue')
+                    component: () => import('@/hrds/h/market/detailMart.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' }
+                    ],
                 },
                 {
                     path: '/addMartTable_1',
                     name: 'addMartTable_1',
                     title: 'addMartTable_1',
-                    component: () => import('@/hrds/h/market/addMartTable_1.vue')
+                    component: () => import('@/hrds/h/market/addMartTable_1.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' }
+                    ],
                 },
                 {
                     path: '/addMartTable_2',
                     name: 'addMartTable_2',
                     title: 'addMartTable_2',
-                    component: () => import('@/hrds/h/market/addMartTable_2.vue')
+                    component: () => import('@/hrds/h/market/addMartTable_2.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' }
+                    ],
                 },
                 {
                     path: '/addMartTable_3',
                     name: 'addMartTable_3',
                     title: 'addMartTable_3',
-                    component: () => import('@/hrds/h/market/addMartTable_3.vue')
+                    component: () => import('@/hrds/h/market/addMartTable_3.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' }
+                    ],
                 },
                 {
                     path: '/serviceMage',
