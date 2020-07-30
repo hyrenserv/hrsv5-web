@@ -483,8 +483,6 @@ export default {
                 })
                 this.markLengthTable = arr2.length;
                 this.markLength = this.dataTree.length;
-                console.log(this.markLengthTable)
-                console.log(this.markLength)
                 this.formAdd.tableDataAdd = arr2;
             })
         },
@@ -548,7 +546,6 @@ export default {
                     label: '',
                     children: []
                 })
-                console.log(this.dataTree)
             } else if (this.addOrUpdate == false) {
                 this.formAdd.tableDataAdd.push({
                     category_num: '',
