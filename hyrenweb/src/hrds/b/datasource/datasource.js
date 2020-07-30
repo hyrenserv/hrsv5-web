@@ -32,6 +32,17 @@ export function uploadFile(data) {
     })
 }
 
+/**
+ * Excel点击上传按钮上传数据
+ */
+export function excelUploadFile(data) {
+    return request({
+        url: '/B/importexcel/importDatabaseByExcel',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
 /**(3)
  * 点击数据来源表添加按钮获取所属部门,或者传参获取source_id的所有信息
  */

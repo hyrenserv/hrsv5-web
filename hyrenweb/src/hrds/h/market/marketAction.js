@@ -470,3 +470,11 @@ export function getDmDataTableByDmCategory(data) {
     })
 }
 
+/////////////////////////////////////////////////////////////////////////////
+//获取规则信息
+export function getSparkSqlGram(data) {
+    return request({
+        url: '/H/market/getSparkSqlGram',
+        params: data
+    })
+}
