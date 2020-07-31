@@ -926,7 +926,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '数据集市' },
-                        { name: '集市版本管理' },
+                        { name: '版本管理' },
                     ],
                 },
                 {
