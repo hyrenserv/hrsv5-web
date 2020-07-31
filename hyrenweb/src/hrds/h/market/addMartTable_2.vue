@@ -1,11 +1,11 @@
 <template>
-<div>
+<div id="addMartable2">
     <Step :active="active"></Step>
     <el-row class='topTitle'>
         <span>配置SQL</span>
     </el-row>
     <el-row>
-        <el-col class="borderStyle" :span="7" style="margin-right: 10px;">
+        <el-col class="borderStyle" :span="7" style="margin-right: 10px;height:50vh;overflow:auto">
             <!--树菜单-->
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" />
             <div class='mytree'>
@@ -200,50 +200,77 @@
         </el-row>
         <el-row>
             <el-table :data="columnbysql" border size="mini">
-                <el-table-column type="index" label="序号" width="70px" align='center'></el-table-column>
-                <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip align="center">
+                <el-table-column type="index" label="序号" width="60" align='center'></el-table-column>
+                <el-table-column prop="field_en_name" label="字段英文名" show-overflow-tooltip align="center" width="260">
                     <template slot-scope="scope">
                         <el-input :disabled="iflock" v-model="scope.row.field_en_name" autocomplete="off" placeholder="英文名"></el-input>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="field_cn_name" label="字段中文名" show-overflow-tooltip align="center">
+                <el-table-column prop="field_cn_name" label="字段中文名" show-overflow-tooltip align="center" width="260">
                     <template slot-scope="scope">
                         <el-input :disabled="iflock" v-model="scope.row.field_cn_name" autocomplete="off" placeholder="中文名"></el-input>
                     </template>
                 </el-table-column>
-                <el-table-column prop="field_type" label="字段类型" width="120" show-overflow-tooltip align="center">
+                <el-table-column prop="field_type" label="字段类型" width="130" show-overflow-tooltip align="center">
                     <template slot-scope="scope" width="120">
                         <el-select :disabled="iflock" v-model="scope.row.field_type" placeholder="请选择">
                             <el-option v-for="item in allfield_type" :key="item.target_type" :label="item.target_type" :value="item.target_type"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column prop="field_length" label="字段长度" width="90" show-overflow-tooltip align="center">
+                <el-table-column prop="field_length" label="字段长度" width="100" show-overflow-tooltip align="center">
                     <template slot-scope="scope">
-                        <el-input :disabled="iflock" width="90" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
+                        <el-input :disabled="iflock" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column prop="field_process" label="处理方式" width="130" show-overflow-tooltip align="center">
-                    <template slot-scope="scope" width="130">
+                    <template slot="header">
+                        处理方式<el-tooltip class="tooltipHelp" effect="dark" content="映射仅赋值：源表字段的值直接给模型表；映射且修改：源表的值通过写映射规则进行修改，改变后的值给模型表；分组映射：源表字段的值直接给模型表，同时映射规则填写模型表的字段=某个类别，如type=1的格式进行分组（横表转竖表时用）" placement="right">
+                            <i class="fa fa-question-circle " aria-hidden="true"></i>
+                        </el-tooltip>
+                    </template>
+                    <template slot-scope="scope">
                         <el-select :disabled="iflock" v-model="scope.row.field_process" @change="changecolumnfiledproccess(scope.row)" placeholder="请选择">
                             <el-option v-for="item in allfield_process" :key="item.value" :label="item.value" :value="item.code"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="process_para" label="来源值" align="center" show-overflow-tooltip>
+                <!-- <el-table-column prop="process_para" label="来源值" width="200" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <el-select :disabled="iflock" v-if="scope.row.field_process == '3' || scope.row.field_process == '5'" v-model="scope.row.process_mapping" placeholder="请选择">
                             <el-option v-for="item in allfromcolumn" :key="item.value" :label="item.value" :value="item.value"></el-option>
                         </el-select>
                         <el-input :disabled="iflock" v-else-if="scope.row.field_process != '4'" v-model="scope.row.process_mapping" autocomplete="off" placeholder="处理方式参数"></el-input>
-                        <p style="height: 2px;" />
+
                         <el-input v-if="scope.row.field_process == '5'" v-model="scope.row.group_mapping" autocomplete="off" placeholder="分组映射填写"></el-input>
-                        <!-- <el-input v-if="scope.row.field_process == '4'" v-model="scope.row.process_mapping" autocomplete="off" placeholder="函数映射规则"></el-input> -->
+
                         <el-input v-if="scope.row.field_process == '4'" :title="scope.row.process_mapping" :clearable="true" placeholder="映射规则" v-model="scope.row.process_mapping">
                             <el-button slot="append" @click="settingRule(scope.$index)">设置</el-button>
                         </el-input>
+                    </template>
+                </el-table-column> -->
+
+                <el-table-column prop="process_para" label="来源值" min-width="400" show-overflow-tooltip align="center">
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.field_process != '5'">
+                            <el-select :disabled="iflock" v-if="scope.row.field_process == '3'" v-model="scope.row.process_mapping" style="width:100%" placeholder="请选择">
+                                <el-option v-for="item in allfromcolumn" :key="item.value" :label="item.value" :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-input :disabled="iflock" v-else-if="scope.row.field_process != '4'" v-model="scope.row.process_mapping" autocomplete="off" placeholder="处理方式参数"></el-input>
+                            <el-input v-if="scope.row.field_process == '4'" :title="scope.row.process_mapping" :clearable="true" placeholder="映射规则" v-model="scope.row.process_mapping">
+                                <el-button slot="append" @click="settingRule(scope.$index)">设置</el-button>
+                            </el-input>
+                        </div>
+                        <div v-if="scope.row.field_process == '5'">
+                            <el-select :disabled="iflock" v-model="scope.row.process_mapping" style="width:50%;" placeholder="请选择">
+                                <el-option v-for="item in allfromcolumn" :key="item.value" :label="item.value" :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-input style="width:50%" v-model="scope.row.group_mapping" autocomplete="off" placeholder="分组映射填写"></el-input>
+                        </div>
                     </template>
                 </el-table-column>
 
@@ -255,17 +282,17 @@
                 <!--</template>-->
                 <!--</el-table-column>-->
 
-                <el-table-column prop="field_desc" label="描述" show-overflow-tooltip align="center">
-                    <template slot-scope="scope">
-                        <el-input :disabled="iflock" v-model="scope.row.field_desc" autocomplete="off" placeholder="描述"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column v-for="index in columnmore" :label="index.dsla_storelayer" prop="index" align="center" width="50">
+                <el-table-column v-for="index in columnmore" :label="index.dsla_storelayer" :key="index" prop="index" align="center" width="70">
                     <template slot-scope="scope">
                         <el-checkbox :disabled="iflock" v-model="scope.row[scope.column.label]" :checked="scope.row[scope.column.label]"></el-checkbox>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" show-overflow-tooltip align="center" width="150">
+                <el-table-column prop="field_desc" label="描述" width="180" show-overflow-tooltip align="center">
+                    <template slot-scope="scope">
+                        <el-input :disabled="iflock" v-model="scope.row.field_desc" autocomplete="off" placeholder="描述"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" show-overflow-tooltip align="center" width="160">
                     <template slot-scope="scope">
                         <el-button :disabled="iflock" size="mini" icon="el-icon-arrow-up" title="上移" @click="upcolumn(scope.$index,scope.row)" circle type="primary">
                         </el-button>
@@ -1318,5 +1345,33 @@ export default {
 .inputframe {
     margin-top: 12px;
     margin-bottom: 10px;
+}
+
+/*滚动条样式*/
+
+::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 4px;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(193, 193, 193);
+    background: rgba(193, 193, 193);
+}
+
+::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(241, 241, 241);
+    border-radius: 0;
+    background: rgb(241, 241, 241);
+
+}
+/* 提示信息样式 */
+#addMartable2 .tooltipHelp{
+    padding:0 4px !important;
 }
 </style>

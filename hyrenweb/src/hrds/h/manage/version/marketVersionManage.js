@@ -7,3 +7,10 @@ export function getMarketVerManageTreeData(data) {
         params: data
     })
 }
+//获取数据表结构版本信息
+export function getDataTableStructureInfos(data) {
+        return request({
+            url: '/H/manage/version/getDataTableStructureInfos',
+            params: data
+        })
+    }
