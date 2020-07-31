@@ -16,7 +16,7 @@
                     <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
                             <span :title="data.description" v-if="data.file_id.length > 0&&data.label==data.id">
-                                <el-checkbox @change="choiceCheck($event,data)" ></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
+                                <el-checkbox @change="choiceCheck($event,data)"></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
                             </span>
                             <span :title="data.description" v-else-if='data.file_id.length > 0&&data.label!=data.id'>
                                 <i class="el-icon-document" />
@@ -51,7 +51,7 @@
                                     <div class="ctxt" name="ctxt">
                                         <el-table :data="tableData" style='min-height:400px'>
                                             <el-table-column v-for="(item,index) in table" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
-                                               <!--  <template slot="header">
+                                                <!--  <template slot="header">
                                                     <span>{{item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)}}</span>
                                                     <div style="position: absolute;top: 0px;" @click="deltime(item)"><i class='el-icon-close' style="color:#fff"></i></div>
                                                 </template> -->
@@ -85,49 +85,9 @@
                     <div class="text item">
                         <div class='bd contrast'>
                             <el-table :data="tableData2" border style='min-height:400px'>
-                                <el-table-column prop="ziduan" label="当前" align="center">
+                                <el-table-column v-for="(item,index) in table2" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
                                     <template slot-scope="scope">
-                                        <div v-for="(item,index) in scope.row.title1" :key="index">
-                                            <p v-if="item.inden=='true'">{{item.title}}</p>
-                                            <p v-if="item.color=='red'&&item.inden=='true'" class='redmarkred'>{{item.title}}</p>
-                                            <p v-else class='markinden'>{{item.title}}</p>
-                                        </div>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="2020-03-24" align="center">
-                                    <template slot="header">
-                                        <span>2020-03-24</span>
-                                        <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                    </template>
-                                    <template slot-scope="scope">
-                                        <div v-for="(item,index) in scope.row.title2" :key="index">
-                                            <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
-                                            <p v-else>{{item.title}}</p>
-                                        </div>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="2020-03-30" align="center">
-                                    <template slot="header">
-                                        <span>2020-03-30</span>
-                                        <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                    </template>
-                                    <template slot-scope="scope">
-                                        <div v-for="(item,index) in scope.row.title3" :key="index">
-                                            <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
-                                            <p v-else>{{item.title}}</p>
-                                        </div>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="2020-04-30" align="center">
-                                    <template slot="header">
-                                        <span>2020-04-30</span>
-                                        <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
-                                    </template>
-                                    <template slot-scope="scope">
-                                        <div v-for="(item,index) in scope.row.title4" :key="index">
-                                            <p v-if="item.color=='red'" class='markred'>{{item.title}}</p>
-                                            <p v-else>{{item.title}}</p>
-                                        </div>
+                                        <p v-html="scope.row['text'+item]"></p>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -144,61 +104,29 @@
 <script>
 import * as mvmFunc from "./marketVersionManage";
 import Scrollbar from '../../../components/scrollbar';
+import sqlFormatter from 'sql-formatter'
 export default {
     components: {
-        Scrollbar
+        Scrollbar,
     },
     data() {
         return {
             activeName: 'first',
             table: [],
             tableData: [],
-            tableData2: [{
-                title1: [{
-                    title: 'select',
-                    color: 'red',
-                    inden: 'true',
-                }, {
-                    title: 'eeett',
-                    color: 'red'
-                }, {
-                    title: 'eeee14',
-                    color: 'black'
-                }],
-                title2: [{
-                    title: 'select',
-                    color: 'red',
-                    inden: 'true',
-                }, {
-                    title: 'eeett',
-                    color: 'red'
-                }, {
-                    title: 'eeee14',
-                    color: 'black'
-                }],
-                title3: [{
-                    title: 'select',
-                    color: 'red',
-                    inden: 'true',
-                }, {
-                    title: 'eeett',
-                    color: 'red'
-                }, {
-                    title: 'eeee14',
-                    color: 'black'
-                }],
-                title4: [{
-                    title: 'select',
-                    color: 'red',
-                    inden: 'true',
-                }, {
-                    title: 'eeett',
-                    color: 'red'
-                }, {
-                    title: 'eeee14',
-                    color: 'black'
-                }],
-            }],
+            table2: [],
+            tableData2: [{}],
+            tableDatalist2: {
+                '20200202': {
+                    text: 'SELECT i_item_sk as i_item_sk, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
+                    compar: ['SELECT']
+                },
+                '20200203': {
+                    text: 'SELECT i_item_sk as i_item_skf, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
+                    compar: ['i_item_sk']
+                }
+
+            },
             versionManageTreeData: [],
             defaultProps: {
                 children: 'children',
@@ -211,6 +139,7 @@ export default {
     created() {
         //页面初始化时获取源数据列表树
         this.getMarketVerManageTreeData();
+        this.mappingFun()
     },
     methods: {
         //获取集市版本树菜单数据
@@ -234,13 +163,13 @@ export default {
                         }
                     }
                 } else {
-                    this.tableData=[]
-                    this.table=[]
+                    this.tableData = []
+                    this.table = []
                 }
             }
             if (this.version_date_s.length > 0) {
                 this.getDataTableStructureInfos()
-            } 
+            }
 
         },
         // 获取数据方法
@@ -279,7 +208,21 @@ export default {
                 this.tableData = []
                 this.table = []
             }
+        },
+        // mappingFun
+        mappingFun() {
+            let data = this.tableDatalist2
+            for (var key in data) {
+                this.table2.push(key)
+                for (let i = 0; i < data[key].compar.length; i++) {
+                                //   this.tableData2[0]['text' + key]=sqlFormatter.format(data[key].text)
+                    this.tableData2[0]['text' + key] = JSON.stringify(data[key].text).replace(data[key].compar[i], "<span style='color:red;'>" + data[key].compar[i] + "</span>");
+                    
+                }
+
+            }
         }
+        // 
     }
 
 }
