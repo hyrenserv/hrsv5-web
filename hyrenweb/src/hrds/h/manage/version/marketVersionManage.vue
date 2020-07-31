@@ -38,11 +38,10 @@
                         </span>
                     </el-tree>
                 </Scrollbar>
-
             </div>
         </el-col>
         <el-col :span="18">
-            <el-tabs v-model="activeName" type="border-card">
+            <el-tabs v-model="activeName" type="border-card" @tab-click='tabClick()'>
                 <el-tab-pane label="数据结构对比" name="first">
                     <div class="text item">
                         <div class='bd contrast'>
@@ -87,7 +86,7 @@
                             <el-table :data="tableData2" border style='min-height:400px'>
                                 <el-table-column v-for="(item,index) in table2" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
                                     <template slot-scope="scope">
-                                        <p v-html="scope.row['text'+item]"></p>
+                                        <SqlEditor  :ref="'sqleditor'+item" :readOnly='true' :lineNumbers='false' class='textasql' style="text-align: left;" />
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -105,9 +104,11 @@
 import * as mvmFunc from "./marketVersionManage";
 import Scrollbar from '../../../components/scrollbar';
 import sqlFormatter from 'sql-formatter'
+import SqlEditor from '../../../components/codemirror'
 export default {
     components: {
         Scrollbar,
+        SqlEditor
     },
     data() {
         return {
@@ -118,12 +119,16 @@ export default {
             tableData2: [{}],
             tableDatalist2: {
                 '20200202': {
-                    text: 'SELECT i_item_sk as i_item_sk, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
+                    text: 'SELECT i1_item_sk as i_item_sk, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
                     compar: ['SELECT']
                 },
                 '20200203': {
                     text: 'SELECT i_item_sk as i_item_skf, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
                     compar: ['i_item_sk']
+                },
+                '20200204': {
+                    text: 'SELECT i_item_sk as i_item_skf, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
+                    compar: ['i_item']
                 }
 
             },
@@ -133,7 +138,7 @@ export default {
                 label: 'label'
             },
             version_date_s: [],
-            datatable_id: ''
+            datatable_id: '',
         }
     },
     created() {
@@ -142,6 +147,16 @@ export default {
         this.mappingFun()
     },
     methods: {
+        tabClick() {
+            if (this.activeName == 'second') {
+                let that=this
+                this.$nextTick(() => {
+                    for (let keys in that.$refs) {
+                        that.$refs[keys][0].refresh()
+                    }
+                });
+            }
+        },
         //获取集市版本树菜单数据
         getMarketVerManageTreeData() {
             mvmFunc.getMarketVerManageTreeData().then(res => {
@@ -215,14 +230,18 @@ export default {
             for (var key in data) {
                 this.table2.push(key)
                 for (let i = 0; i < data[key].compar.length; i++) {
-                                //   this.tableData2[0]['text' + key]=sqlFormatter.format(data[key].text)
+                    // 下面这个是匹配相同改变颜色
                     this.tableData2[0]['text' + key] = JSON.stringify(data[key].text).replace(data[key].compar[i], "<span style='color:red;'>" + data[key].compar[i] + "</span>");
-                    
                 }
-
+                let that = this
+                this.$nextTick(() => {
+                    for (let keys in that.$refs) {
+                        that.$refs[keys][0].setmVal(data[key].text)
+                    }
+                });
             }
-        }
-        // 
+
+        },
     }
 
 }
