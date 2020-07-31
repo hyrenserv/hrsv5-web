@@ -248,7 +248,6 @@ export default {
             nodeMark: '',
             markLength: '',
             markLengthTable: '',
-            markParentId:'',
         };
     },
     mounted() {
@@ -293,13 +292,23 @@ export default {
             let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
             if (this.addOrUpdate == true) { //判断是新增还是更新
                 arr.forEach((item => {
-                    if (item.parent_category_ids) { //之前就存在的
-                        item.parent_category_id = item.parent_category_ids
-                        delete item.parent_category_ids;
-                    } else { //更新时新添加的
-
-                        item.parent_category_name = item.parent_category_id;
-                        item.parent_category_id = null;
+                    if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
+                        if (item.parent_category_idMarkNum == 'id') { //添加已经存入的后台数据为上一级信息
+                            item.parent_category_id = item.parent_category_idMark;
+                        } else if (item.parent_category_idMarkNum == 'label') { //新增时未保存到后台的数据作为上一级信息
+                            item.parent_category_name = item.parent_category_idMark;
+                            item.parent_category_id = null;
+                        }
+                        delete item.parent_category_idMark;
+                        delete item.parent_category_idMarkNum;
+                    } else {
+                        if (item.parent_category_ids) { //之前就存在的且没有更改这一项的东西
+                            item.parent_category_id = item.parent_category_ids
+                            delete item.parent_category_ids;
+                        } else { //单纯的点击新增分类且以集市工程为上一级
+                            item.parent_category_name = item.parent_category_id;
+                            item.parent_category_id = val;
+                        }
                     }
                 }))
                 functionAll.saveDmCategory({
@@ -656,6 +665,14 @@ export default {
                     let index = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
                     this.dataTree.splice(index, 1);
                 }
+            }
+            console.log(val)
+            if (val.id) {
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMarkNum = 'id';
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMark = val.id;
+            } else {
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMarkNum = 'label';
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMark = val.label;
             }
             this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_id = val.label;
         },
