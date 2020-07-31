@@ -20,7 +20,7 @@
         <div>
             <span class="top3title">集市列表</span>
             <div class="elButton">
-                <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;" size="small">
+                <el-button type="primary" tab-position="top" @click="addClickDiloag" size="small">
                     <i class="el-icon-circle-plus-outline"></i>新增集市
                 </el-button>
                 <el-upload class="buttonStyle" accept=".hrds" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
@@ -82,7 +82,7 @@
 
     </el-row>
 
-    <el-dialog title="新增集市" :visible.sync="dialogofmarketadd" width="1040px" :before-close="cancleAdd">
+    <el-dialog :title="titleChange" :visible.sync="dialogofmarketadd" width="1040px" :before-close="cancleAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-col :span="12">
                 <el-form-item label="集市名称" :label-width="formLabelWidth" prop="mart_name" :rules="rule.default">
@@ -248,7 +248,7 @@ export default {
             nodeMark: '',
             markLength: '',
             markLengthTable: '',
-            markParentId:'',
+            titleChange: '',
         };
     },
     mounted() {
@@ -293,13 +293,23 @@ export default {
             let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
             if (this.addOrUpdate == true) { //判断是新增还是更新
                 arr.forEach((item => {
-                    if (item.parent_category_ids) { //之前就存在的
-                        item.parent_category_id = item.parent_category_ids
-                        delete item.parent_category_ids;
-                    } else { //更新时新添加的
-
-                        item.parent_category_name = item.parent_category_id;
-                        item.parent_category_id = null;
+                    if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
+                        if (item.parent_category_idMarkNum == 'id') { //添加已经存入的后台数据为上一级信息
+                            item.parent_category_id = item.parent_category_idMark;
+                        } else if (item.parent_category_idMarkNum == 'label') { //新增时未保存到后台的数据作为上一级信息
+                            item.parent_category_name = item.parent_category_idMark;
+                            item.parent_category_id = null;
+                        }
+                        delete item.parent_category_idMark;
+                        delete item.parent_category_idMarkNum;
+                    } else {
+                        if (item.parent_category_ids) { //之前就存在的且没有更改这一项的东西
+                            item.parent_category_id = item.parent_category_ids
+                            delete item.parent_category_ids;
+                        } else { //单纯的点击新增分类且以集市工程为上一级
+                            item.parent_category_name = item.parent_category_id;
+                            item.parent_category_id = val;
+                        }
                     }
                 }))
                 functionAll.saveDmCategory({
@@ -365,6 +375,11 @@ export default {
             this.formAdd.tableDataAdd = [];
             this.$refs.formAdd.resetFields();
             this.dataTree = [];
+        },
+        // 打开新增集市框
+        addClickDiloag() {
+            this.titleChange = "新增集市";
+            this.dialogofmarketadd = true;
         },
         downloadmart(mart_name, data_mart_id) {
             message.confirmMsg('确定导出 ' + mart_name + ' 吗').then(res => {
@@ -442,6 +457,7 @@ export default {
         },
         // 编辑集市
         editmart(data_mart_id) {
+            this.titleChange = "编辑集市";
             this.addOrUpdate = true;
             this.dialogofmarketadd = true;
             let getformInfo = new Promise((resolve, reject) => {
@@ -656,6 +672,14 @@ export default {
                     let index = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
                     this.dataTree.splice(index, 1);
                 }
+            }
+            console.log(val)
+            if (val.id) {
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMarkNum = 'id';
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMark = val.id;
+            } else {
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMarkNum = 'label';
+                this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMark = val.label;
             }
             this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_id = val.label;
         },
