@@ -8,25 +8,40 @@
             </el-button>
         </router-link>
     </el-row>
-    <el-row>
-        <el-col :span="5">
-            <div class="mytree" hight='200'>
-                <el-tree :data="versionManageTreeData" :indent='0' show-checkbox class="filter-tree" @node-click="VMHandleClick"  node-key="id" :default-expanded-keys="[1]" :default-checked-keys="[2]" :props="defaultProps">
-                    <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.description" v-if="data.type=='wb'">
-                            <i class=" el-icon-document" />{{node.label}}
+    <el-row :gutter='20'>
+        <el-col :span="6">
+            <div class="mytree" hight='260'>
+                 <div style='height:0.1px'>&nbsp;</div>
+                 <Scrollbar>
+                 <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
+                        <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
+                            <span :title="data.description" v-if="data.file_id.length > 0&&data.label==data.id">
+                                <el-checkbox @change="choiceCheck($event,data)"></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
+                            </span>
+                            <span :title="data.description" v-else-if='data.file_id.length > 0&&data.label!=data.id'>
+                                <i class="el-icon-document" />
+                                {{node.label}}
+                            </span>
+                            <span :title="data.description" v-else>
+                                <i class="el-icon-folder-opened" />
+                                {{node.label}}
+                            </span>
                         </span>
-                        <span :title="data.description" v-else-if="data.type=='wj'">
-                            <i class="el-icon-folder-opened" />{{node.label}}
+                        <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
+                            <span :title="data.label" v-if="data.file_id.length > 0">
+                                 <i class="el-icon-document" />{{node.label}}
+                            </span>
+                            <span :title="data.label" v-else>
+                                <i class="el-icon-folder-opened" />
+                                {{node.label}}
+                            </span>
                         </span>
-                        <span :title="data.description" v-else>
-                            <i />{{data.label}}
-                        </span>
-                    </span>
-                </el-tree>
+                    </el-tree>
+                 </Scrollbar>
+            
             </div>
         </el-col>
-        <el-col :span="19">
+        <el-col :span="18">
             <el-tabs v-model="activeName" type="border-card">
                 <el-tab-pane label="数据结构对比" name="first">
                     <div class="text item">
@@ -35,92 +50,92 @@
                                 <el-col>
                                     <div class="ctxt" name="ctxt">
                                         <el-table :data="tableData" style="width: 100%">
-                                            <el-table-column label="当前">
+                                            <el-table-column label="当前" align="center">
                                                 <el-table-column prop="ziduan" label="字段">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.ziduan[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="chinese" label="中文">
+                                                <el-table-column prop="chinese" label="中文" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.chinese[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="type" label="类型">
+                                                <el-table-column prop="type" label="类型" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.type[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
                                             </el-table-column>
-                                            <el-table-column label="2020-03-24">
+                                            <el-table-column label="2020-03-24" align="center">
                                                 <template slot="header">
                                                     <span>2020-03-24</span>
                                                     <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                                 </template>
-                                                <el-table-column prop="ziduan" label="字段">
+                                                <el-table-column prop="ziduan" label="字段" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.ziduan[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="chinese" label="中文">
+                                                <el-table-column prop="chinese" label="中文" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.chinese[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="type" label="类型">
+                                                <el-table-column prop="type" label="类型" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.type[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
                                             </el-table-column>
-                                            <el-table-column label="2020-03-30">
+                                            <el-table-column label="2020-03-30" align="center">
                                                 <template slot="header">
                                                     <span>2020-03-30</span>
                                                     <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                                 </template>
-                                                <el-table-column prop="ziduan" label="字段">
+                                                <el-table-column prop="ziduan" label="字段" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.ziduan[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="chinese" label="中文">
+                                                <el-table-column prop="chinese" label="中文" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.chinese[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="type" label="类型">
+                                                <el-table-column prop="type" label="类型" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.type[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
                                             </el-table-column>
-                                            <el-table-column label="2020-04-30">
+                                            <el-table-column label="2020-04-30" align="center">
                                                 <template slot="header">
                                                     <span>2020-04-30</span>
                                                     <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
                                                 </template>
-                                                <el-table-column prop="ziduan" label="字段">
+                                                <el-table-column prop="ziduan" label="字段" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.ziduan[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.ziduan[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="chinese" label="中文">
+                                                <el-table-column prop="chinese" label="中文" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.chinese[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.chinese[0].title}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column prop="type" label="类型">
+                                                <el-table-column prop="type" label="类型" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row.type[0].color=='red'" class='markred'>{{scope.row.ziduan[0].title}}</p>
                                                         <p v-else>{{scope.row.type[0].title}}</p>
@@ -137,8 +152,8 @@
                 <el-tab-pane label="数据mapping对比" name="second">
                     <div class="text item">
                         <div class='bd contrast'>
-                            <el-table :data="tableData2" style="width: 100%">
-                                <el-table-column prop="ziduan" label="当前">
+                            <el-table :data="tableData2" style="width: 100%" border >
+                                <el-table-column prop="ziduan" label="当前" align="center">
                                     <template slot-scope="scope">
                                         <div v-for="(item,index) in scope.row.title1" :key="index">
                                             <p v-if="item.inden=='true'">{{item.title}}</p>
@@ -147,7 +162,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="2020-03-24">
+                                <el-table-column label="2020-03-24" align="center">
                                     <template slot="header">
                                         <span>2020-03-24</span>
                                         <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
@@ -159,7 +174,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="2020-03-30">
+                                <el-table-column label="2020-03-30" align="center">
                                     <template slot="header">
                                         <span>2020-03-30</span>
                                         <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
@@ -171,7 +186,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="2020-04-30">
+                                <el-table-column label="2020-04-30" align="center">
                                     <template slot="header">
                                         <span>2020-04-30</span>
                                         <div style="position: absolute;top: 0px;"><i class='el-icon-close' style="color:#fff"></i></div>
@@ -196,8 +211,11 @@
 
 <script>
 import * as mvmFunc from "./marketVersionManage";
-
+import Scrollbar from '../../../components/scrollbar';
 export default {
+     components: {
+        Scrollbar
+    },
     data() {
         return {
             activeName: 'first',
@@ -316,162 +334,33 @@ export default {
         getMarketVerManageTreeData() {
             mvmFunc.getMarketVerManageTreeData().then(res => {
                 this.versionManageTreeData = res.data;
+                console.log(res.data)
             });
         },
         //点击源数据管理树节点触发
         VMHandleClick(data) {
             console.log(data);
-        }
+        },
+        choiceCheck(e,data){
+            console.log(e,data)
+        },
     }
 
 }
 </script>
 
-<style scoped>
-.text {
-    font-size: 14px;
-}
-
-.item {
-    margin-bottom: 18px;
-}
-
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
-}
-
-.clearfix:after {
-    clear: both
-}
-
-#bbgl>>>.el-card__body {
-    padding: 4px !important;
-}
-
-.topp {
-    /* font-weight: bold; */
-    font-size: 14px;
-}
-
-.box-card {
-    width: 480px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-li {
-    border-bottom: 1px dashed #ccc;
-    height: 24px;
-    line-height: 24px;
-    font-size: 14px;
-    color: #706e6e;
-}
-
-.contrast .ctxt {
-    /* margin: 2px auto 9px; */
-    color: #000;
-    width: 100%;
-    line-height: 14px;
-    box-sizing: border-box;
-    border: solid #e5e5e5;
-    border-width: 0px 1px 1px 0px;
-}
-
-#bbgl>>>.table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-#bbgl>>>.contrast .ctxt caption {
-    display: table-caption;
-    background-color: #f9f9f9;
-    color: #1890ff;
-    height: 29px;
-    line-height: 29px;
-    padding-left: 15px;
-    font-weight: 700;
-}
-
-#bbgl>>>.caption,
-th {
-    text-align: center;
-}
-
-#bbgl>>>.outbgh {
-    background-color: #fff;
-}
-
-#bbgl>>>.tr {
-    display: table-row;
-    vertical-align: inherit;
-    border-color: inherit;
-}
-
-#bbgl>>>.contrast .ctxt .outbgh th {
-    background-color: #f9f9f9;
-}
-
-#bbgl>>>.contrast .ctxt th {
-    border-top: 1px solid #e5e5e5;
-    border-right: 1px solid #c3c3c3;
-    text-align: right;
-    padding: 12px 24px 12px 7px;
-    background-color: #f9f9f9;
-    width: 98px;
-}
-
-#bbgl>>>.contrast .ctxt td {
-    border: solid #e5e5e5;
-    border-width: 1px 0 0 1px;
-    padding: 4px 0px;
-    width: 216px;
-}
-
-.bar th {
-    width: 126px;
-}
-
-.bar td,
-.bar th {
-    font-weight: 700;
-    color: #fff;
-    background-color: #696969;
-    border-right: 1px solid #fff;
-    text-align: left;
-    width: 247px;
-    padding: 8px 2px;
-    line-height: 14px;
-}
-
-.bar {
-    margin: 0 auto;
-    overflow: hidden;
-    zoom: 1;
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-#bbgl>>>td {
+<style scoped lang="less">
+#bbgl /deep/ td {
     margin: 0 auto;
     color: #333;
     line-height: 22px;
     font-size: 12px;
     font-family: "宋体", Verdana, Geneva, sans-serif;
     background-color: #fff;
-    text-align: left;
+    text-align: center;
 
 }
-
-#bbgl>>>.el-tree-node .is-leaf+.el-checkbox .el-checkbox__inner {
+/* #bbgl>>>.el-tree-node .is-leaf+.span-ellipsis .el-checkbox .el-checkbox__inner {
     display: inline-block;
 }
 
@@ -479,20 +368,7 @@ table {
 
     display: none;
     margin: 0
-}
-
-#bbgl>>>.el-tree-node__content>label.el-checkbox {
-    margin-right: 3px;
-}
-
-.pding {
-    padding-left: 28px;
-}
-
-#bbgl>>>.el-tabs__header {
-    margin: 0 !important;
-}
-
+} */
 /*  */
 .markred {
     color: #b70707
@@ -505,5 +381,112 @@ table {
 .redmarkinden {
     color: #b70707;
     text-indent: 2rem;
+}
+#bbgl {
+    .mytree /deep/ {
+        .el-tree>.el-tree-node:after {
+            border-top: none;
+        }
+
+        .el-tree-node {
+            position: relative;
+            padding-left: 16px;
+        }
+
+        //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
+        /*  .el-tree-node__expand-icon.is-leaf {
+                    display: none;
+                } */
+
+        .el-tree-node__children {
+            padding-left: 16px;
+        }
+
+        .el-tree-node :last-child:before {
+            height: 38px;
+        }
+
+        .el-tree>.el-tree-node:before {
+            border-left: none;
+        }
+
+        .el-tree>.el-tree-node:after {
+            border-top: none;
+        }
+
+        .el-tree-node:before {
+            content: "";
+            left: -4px;
+            position: absolute;
+            right: auto;
+            border-width: 1px;
+        }
+
+        .el-tree-node:after {
+            content: "";
+            left: -4px;
+            position: absolute;
+            right: auto;
+            border-width: 1px;
+        }
+
+        .el-tree-node:before {
+            border-left: 1px dashed #4386c6;
+            bottom: 0;
+            height: 100%;
+            top: -26px;
+            width: 1px;
+        }
+
+        .el-tree-node__content {
+            padding: 0 !important;
+        }
+
+        .el-tree-node__content>.el-tree-node__expand-icon {
+            padding: 0;
+        }
+
+        .el-tree-node:after {
+            border-top: 1px dashed #4386c6;
+            height: 20px;
+            top: 12px;
+            width: 24px;
+        }
+    }
+
+    .title {
+        color: #2196f3;
+        line-height: 30px;
+        padding-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .dialog-footer {
+        float: right;
+        margin-top: 10px;
+    }
+
+    .span-ellipsis {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: block;
+        font-size: 14px;
+    }
+
+    .scrollbar-wrap {
+        width: 24% !important;
+        position: absolute;
+    }
+
+    .scrollbar__track {
+        width: 4px;
+    }
+
+    .locationcenter {
+        text-align: center;
+        margin-top: 5px;
+    }
 }
 </style>
