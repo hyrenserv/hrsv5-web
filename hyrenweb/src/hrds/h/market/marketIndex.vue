@@ -673,7 +673,6 @@ export default {
                     this.dataTree.splice(index, 1);
                 }
             }
-            console.log(val)
             if (val.id) {
                 this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMarkNum = 'id';
                 this.formAdd.tableDataAdd[this.chooseScopeIdIndex].parent_category_idMark = val.id;
@@ -737,6 +736,10 @@ export default {
 
 .dataSheetmainDiv:hover .boxshletr {
     display: block;
+}
+
+.fa {
+    color: white;
 }
 
 .dataSheetmainDiv {
