@@ -20,7 +20,7 @@
         <div>
             <span class="top3title">集市列表</span>
             <div class="elButton">
-                <el-button type="primary" tab-position="top" @click="dialogofmarketadd = true;" size="small">
+                <el-button type="primary" tab-position="top" @click="addClickDiloag" size="small">
                     <i class="el-icon-circle-plus-outline"></i>新增集市
                 </el-button>
                 <el-upload class="buttonStyle" accept=".hrds" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
@@ -82,7 +82,7 @@
 
     </el-row>
 
-    <el-dialog title="新增集市" :visible.sync="dialogofmarketadd" width="1040px" :before-close="cancleAdd">
+    <el-dialog :title="titleChange" :visible.sync="dialogofmarketadd" width="1040px" :before-close="cancleAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-col :span="12">
                 <el-form-item label="集市名称" :label-width="formLabelWidth" prop="mart_name" :rules="rule.default">
@@ -248,6 +248,7 @@ export default {
             nodeMark: '',
             markLength: '',
             markLengthTable: '',
+            titleChange: '',
         };
     },
     mounted() {
@@ -375,6 +376,11 @@ export default {
             this.$refs.formAdd.resetFields();
             this.dataTree = [];
         },
+        // 打开新增集市框
+        addClickDiloag() {
+            this.titleChange = "新增集市";
+            this.dialogofmarketadd = true;
+        },
         downloadmart(mart_name, data_mart_id) {
             message.confirmMsg('确定导出 ' + mart_name + ' 吗').then(res => {
                 let that = this;
@@ -451,6 +457,7 @@ export default {
         },
         // 编辑集市
         editmart(data_mart_id) {
+            this.titleChange = "编辑集市";
             this.addOrUpdate = true;
             this.dialogofmarketadd = true;
             let getformInfo = new Promise((resolve, reject) => {
