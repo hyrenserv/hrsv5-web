@@ -1,6 +1,6 @@
 <template>
 <div>
-    <textarea ref="mycode" class="codesql" v-model="value" style="height:200px">
+    <textarea ref="mycode" class="codesql" v-html="value" style="height:200px">
         </textarea>
 </div>
 </template>
@@ -15,10 +15,12 @@ require("codemirror/addon/selection/active-line");
 require("codemirror/mode/sql/sql");
 require("codemirror/addon/hint/show-hint");
 require("codemirror/addon/hint/sql-hint");
+import sqlFormatter from 'sql-formatter'
 export default {
     data() {
         return {
-            editor: null
+            editor: null,
+            // readOnly:true
         }
     },
     props: {
@@ -31,8 +33,13 @@ export default {
             default: 'default'
         },
         readOnly: {
-            type: [Boolean, String]
-        }
+            type: [Boolean],
+            defaule:false
+        },
+        lineNumbers:{
+            type: Boolean,
+            default: true
+        },
     },
     watch: {
         newVal(newV, oldV) {
@@ -57,7 +64,7 @@ export default {
             mode: mime, //选择对应代码编辑器的语言，我这边选的是数据库，根据个人情况自行设置即可
             indentWithTabs: true,
             smartIndent: true,
-            lineNumbers: true,
+            lineNumbers: this.lineNumbers,
             matchBrackets: true,
             cursorHeight: 1,
             lineWrapping: true,
@@ -85,7 +92,7 @@ export default {
     methods: {
         // 页面进入默认设置值
         setmVal(value){
-         this.editor.setValue(value)
+         this.editor.setValue(sqlFormatter.format(value))
         },
         setVal() {
             if (this.editor) {
