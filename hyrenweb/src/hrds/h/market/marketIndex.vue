@@ -248,6 +248,7 @@ export default {
             nodeMark: '',
             markLength: '',
             markLengthTable: '',
+            markParentId:'',
         };
     },
     mounted() {
@@ -296,6 +297,7 @@ export default {
                         item.parent_category_id = item.parent_category_ids
                         delete item.parent_category_ids;
                     } else { //更新时新添加的
+
                         item.parent_category_name = item.parent_category_id;
                         item.parent_category_id = null;
                     }
@@ -320,8 +322,13 @@ export default {
                 }))
             } else if (this.addOrUpdate == false) {
                 arr.forEach(item => {
-                    item.parent_category_name = item.parent_category_id;
-                    item.parent_category_id = null;
+                    if (item.parent_category_id == this.formAdd.mart_name) { //集市工程作为上一级
+                        item.parent_category_name = item.parent_category_id;
+                        item.parent_category_id = val;
+                    } else { //新建的分类信息作为上一级的关系
+                        item.parent_category_name = item.parent_category_id;
+                        item.parent_category_id = null;
+                    }
                 })
                 functionAll.saveDmCategory({
                     categoryRelationBeans: JSON.stringify(arr),
