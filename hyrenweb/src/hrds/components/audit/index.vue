@@ -138,66 +138,6 @@ export default {
             tableData: [],
             auditData: [],
             etlAllData: [],
-            data: {
-                'etlData': [{
-                        "id": "Agent_info",
-                        'isroot': true,
-                        "topic": "Easy to show",
-                        'parentid': 'sub1',
-                        'background-color': 'red'
-                    },
-                    {
-                        "id": "Agent_down_info",
-                        "topic": "Agent_down_info",
-                        "direction": "right",
-                        'parentid': 'Agent_info',
-                        'background-color': '#0000ff'
-                    },
-                    {
-                        "id": "easy3",
-                        "topic": "data_source",
-                        "direction": "left",
-                        'parentid': 'Agent_info',
-                        'background-color': 'green'
-                    },
-                    {
-                        "id": "easy4",
-                        "topic": "sys_user",
-                        "direction": "left",
-                        'parentid': 'Agent_info',
-                        'background-color': 'green'
-                    },
-                    {
-                        "id": "other3",
-                        "topic": "database_set",
-                        "direction": "right",
-                        'parentid': 'Agent_info',
-                        'background-color': '#0000ff'
-                    },
-                    {
-                        "id": "other4",
-                        "topic": "database_set",
-                        "direction": "right",
-                        'parentid': 'Agent_info',
-                        'background-color': '#0000ff'
-                    },
-                    {
-                        "id": "other5",
-                        "topic": "database_set",
-                        "direction": "right",
-                        'parentid': 'Agent_info',
-                        'background-color': '#0000ff'
-                    },
-                    {
-                        "id": "other6",
-                        "topic": "database_set",
-                        "direction": "Agent_info",
-                        'parentid': 'Agent_info',
-                        'background-color': '#0000ff'
-                    }
-                ],
-                'tableName': 'ccccc'
-            },
             dclTable: []
 
         }
@@ -221,7 +161,7 @@ export default {
             obj['tableName'] = 'dclTable' + key;
             this.etlJob.push(obj)
         }
-        
+
         /////////////////////////////////表影影响///////////////////////////////
         for (let key in this.excelAuditData.dclTable) {
             let obj = {}
