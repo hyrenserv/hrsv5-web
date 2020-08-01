@@ -280,7 +280,7 @@
         <div>
             <el-form>
                 <el-form-item>
-                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
+                    <el-date-picker type="date" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
             </el-form>
         </div>
