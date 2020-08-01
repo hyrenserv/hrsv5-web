@@ -45,8 +45,8 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormExcelImport = false;" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="excelUpload('formExcelImport')" size="mini">上传</el-button>
+            <el-button @click="cancelExcel" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="excelUpload(false)" size="mini">上传</el-button>
         </div>
     </el-dialog>
 
@@ -115,7 +115,7 @@ export default {
             filesr: "",
             formLabelWidth: "150px",
             excelFileList: [],
-            excelAuditData: []
+            excelAuditData: {}
         };
     },
     methods: {
@@ -161,7 +161,8 @@ export default {
         },
         excelCathInfo() {
             this.dialogFormExcelImport = true
-            this.excelAuditData = []
+            this.excelAuditData = {}
+            this.dialogFormAudit = false
         },
         // 获取上传的文件详情excelHandleChange
         handleChange(file, fileList) {
@@ -190,17 +191,23 @@ export default {
             })
         },
         // Excel点击上传数据
-        excelUpload(formName) {
-            this.$refs[formName].validate(valid => {
+        excelUpload(upload) {
+
+            this.dialogFormAudit = false
+            this.$refs['formExcelImport'].validate(valid => {
                 if (valid) {
                     let param = new FormData() // 创建form对象
                     param.append('file', this.excelFileList[0].raw);
+                    param.append('upload', upload);
                     functionAll.excelUploadFile(param).then(res => {
-                        this.excelAuditData = res.data
-                        this.dialogFormAudit = true
-                        this.$emit("addEvent");
-                        this.dialogFormExcelImport = false;
-                        this.formExcelImport = {};
+                        if(res.success) {
+                            this.excelAuditData = res.data
+                            // console.log(this.excelAuditData);
+                            this.dialogFormAudit = !upload
+                            this.$emit("addEvent");
+                            this.dialogFormExcelImport = false;
+                            this.formExcelImport = {};
+                        }
                     });
                 }
             })
@@ -226,6 +233,11 @@ export default {
             this.formImport = {};
             this.dialogFormVisibleImport = false;
             this.$refs.formAdd.resetFields();
+        },
+        //取消Excel上传
+        cancelExcel(){
+            this.dialogFormAudit = false
+            this.dialogFormExcelImport = false
         }
     },
     watch: {
