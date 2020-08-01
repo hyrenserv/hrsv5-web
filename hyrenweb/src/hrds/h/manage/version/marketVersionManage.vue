@@ -13,7 +13,7 @@
             <div class="mytree" hight='260'>
                 <div style='height:0.1px'>&nbsp;</div>
                 <Scrollbar>
-                    <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
+                    <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree" :default-expand-all="true">
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
                             <span :title="data.description" v-if="data.file_id.length > 0&&data.label==data.id">
                                 <el-checkbox @change="choiceCheck($event,data)"></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
@@ -48,12 +48,8 @@
                             <el-row type="flex" justify="start" :gutter="2">
                                 <el-col>
                                     <div class="ctxt" name="ctxt">
-                                        <el-table :data="tableData" style='min-height:400px'>
-                                            <el-table-column v-for="(item,index) in table" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
-                                                <!--  <template slot="header">
-                                                    <span>{{item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)}}</span>
-                                                    <div style="position: absolute;top: 0px;" @click="deltime(item)"><i class='el-icon-close' style="color:#fff"></i></div>
-                                                </template> -->
+                                        <el-table :data="tableStructureInfo" style='min-height:400px'>
+                                            <el-table-column v-for="(item,index) in tableVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
                                                 <el-table-column label="中文" :prop="'field_ch_name' +item" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_cn_name'+item]}}</p>
@@ -84,9 +80,9 @@
                     <div class="text item">
                         <div class='bd contrast'>
                             <el-table :data="tableData2" border style='min-height:400px'>
-                                <el-table-column v-for="(item,index) in table2" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
-                                    <template slot-scope="scope">
-                                        <SqlEditor  :ref="'sqleditor'+item" :readOnly='true' :lineNumbers='false' class='textasql' style="text-align: left;" />
+                                <el-table-column v-for="(item,index) in mappingVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
+                                    <template>
+                                        <SqlEditor :ref="'sqleditor'+item" :readOnly='true' :lineNumbers='false' class='textasql' style="text-align: left;" />
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -112,44 +108,30 @@ export default {
     },
     data() {
         return {
-            activeName: 'first',
-            table: [],
-            tableData: [],
-            table2: [],
-            tableData2: [{}],
-            tableDatalist2: {
-                '20200202': {
-                    text: 'SELECT i1_item_sk as i_item_sk, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
-                    compar: ['SELECT']
-                },
-                '20200203': {
-                    text: 'SELECT i_item_sk as i_item_skf, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
-                    compar: ['i_item_sk']
-                },
-                '20200204': {
-                    text: 'SELECT i_item_sk as i_item_skf, i_item_id as i_item_id,i_rec_start_date as i_rec_start_date',
-                    compar: ['i_item']
-                }
-
-            },
+            //页面默认显示数据结构对比标签
+            activeName: 'second',
+            //表结构信息对比变量
+            tableStructureInfo: [],
+            tableVersionData: [],
+            //表Mapping信息变量
+            tableMappingData: [],
+            mappingVersionData: {},
+            //版本管理树数据
             versionManageTreeData: [],
-            defaultProps: {
-                children: 'children',
-                label: 'label'
-            },
+            //版本日期数组变量
             version_date_s: [],
+            //数据表id
             datatable_id: '',
         }
     },
     created() {
         //页面初始化时获取源数据列表树
         this.getMarketVerManageTreeData();
-        this.mappingFun()
     },
     methods: {
         tabClick() {
             if (this.activeName == 'second') {
-                let that=this
+                let that = this
                 this.$nextTick(() => {
                     for (let keys in that.$refs) {
                         that.$refs[keys][0].refresh()
@@ -178,72 +160,61 @@ export default {
                         }
                     }
                 } else {
-                    this.tableData = []
-                    this.table = []
+                    this.tableStructureInfo = []
+                    this.tableVersionData = []
                 }
             }
             if (this.version_date_s.length > 0) {
                 this.getDataTableStructureInfos()
+                this.getDataTableMappingInfos()
             }
 
         },
-        // 获取数据方法
+        // 获取数据表结构数据方法
         getDataTableStructureInfos() {
             let params = {}
             params["datatable_id"] = this.datatable_id;
             params["version_date_s"] = this.version_date_s;
             mvmFunc.getDataTableStructureInfos(params).then(res => {
-                this.tableData = []
-                this.table = []
+                this.tableStructureInfo = []
+                this.tableVersionData = []
                 for (var key in res.data) {
-                    this.table.push(key)
+                    this.tableVersionData.push(key)
                     for (let i = 0; i < res.data[key].length; i++) {
-                        if (this.tableData.length < res.data[key].length) {
-                            this.tableData.push({})
+                        if (this.tableStructureInfo.length < res.data[key].length) {
+                            this.tableStructureInfo.push({})
                         }
-                        this.tableData[i]['field_cn_name' + key] = res.data[key][i].datatable_field_info.field_cn_name
-                        this.tableData[i]['field_en_name' + key] = res.data[key][i].datatable_field_info.field_cn_name
-                        this.tableData[i]['field_type' + key] = res.data[key][i].datatable_field_info.field_type
-                        this.tableData[i]['is_same' + key] = res.data[key][i].is_same
+                        this.tableStructureInfo[i]['field_cn_name' + key] = res.data[key][i].datatable_field_info.field_cn_name
+                        this.tableStructureInfo[i]['field_en_name' + key] = res.data[key][i].datatable_field_info.field_cn_name
+                        this.tableStructureInfo[i]['field_type' + key] = res.data[key][i].datatable_field_info.field_type
+                        this.tableStructureInfo[i]['is_same' + key] = res.data[key][i].is_same
                     }
                 }
             });
         },
-        //表上删除
-        deltime(time) {
-            for (let i = 0; i < this.version_date_s.length; i++) {
-                if (this.version_date_s[i] == time) {
-                    this.version_date_s.splice(i, 1)
-                    break;
+        // 获取数据表Mapping数据方法
+        getDataTableMappingInfos() {
+            let params = {}
+            this.mappingVersionData = [];
+            params["datatable_id"] = this.datatable_id;
+            params["version_date_s"] = this.version_date_s;
+            mvmFunc.getDataTableMappingInfos(params).then(res => {
+                let data = res.data
+                // let data = this.tableDatalist2
+                for (let key in data) {
+                    this.mappingVersionData.push(key)
+                    let that = this
+                    this.$nextTick(() => {
+                        for (let keys in that.$refs) {
+                            if (keys == "sqleditor" + key) {
+                                that.$refs[keys][0].setmVal(data[key].execute_sql)
+                            }
+                        }
+                    });
                 }
-            }
-            if (this.version_date_s.length > 0) {
-                this.getDataTableStructureInfos()
-            } else {
-                this.tableData = []
-                this.table = []
-            }
-        },
-        // mappingFun
-        mappingFun() {
-            let data = this.tableDatalist2
-            for (var key in data) {
-                this.table2.push(key)
-                for (let i = 0; i < data[key].compar.length; i++) {
-                    // 下面这个是匹配相同改变颜色
-                    this.tableData2[0]['text' + key] = JSON.stringify(data[key].text).replace(data[key].compar[i], "<span style='color:red;'>" + data[key].compar[i] + "</span>");
-                }
-                let that = this
-                this.$nextTick(() => {
-                    for (let keys in that.$refs) {
-                        that.$refs[keys][0].setmVal(data[key].text)
-                    }
-                });
-            }
-
+            });
         },
     }
-
 }
 </script>
 

@@ -80,7 +80,7 @@ const childrenMemus = {
         {
             path: '/marketVersionManage',
             name: 'marketVersionManage',
-            title: '版本管理',
+            title: '集市版本管理',
             icon: 'el-icon-monitor',
         }
     ]
