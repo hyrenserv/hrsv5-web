@@ -169,7 +169,7 @@
         <span v-if="fileList != ''">确认导入 “ {{fileList[0].name}} ” </span>
         <div slot="footer" class="dialog-footer">
             <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
-            <el-button type="primary" @click="importData" size="mini">确定</el-button>
+            <el-button type="primary" @click="getImportFilePath" size="mini">确定</el-button>
         </div>
     </el-dialog>
 
@@ -412,32 +412,6 @@ export default {
                 })
             }).catch(() => {})
         },
-        // upload(formName) {
-        //     this.isLoading = true;
-        //     this.$refs[formName].validate(valid => {
-        //         console.log(this.fileList[0]);
-        //         if (valid) {
-        //             let param = new FormData() // 创建form对象
-        //             param.append('file', this.fileList[0].raw);
-        //             functionAll.uploadFile(param).then(res => {
-        //                 this.isLoading = false;
-        //                 if (res && res.success) {
-        //                     this.$message({
-        //                         type: "success",
-        //                         message: "上传成功!"
-        //                     });
-        //                     // 隐藏对话框
-        //                     this.dialogFormVisibleImport = false;
-        //                     // 表单清空
-        //                     this.formImport = {};
-        //                     location.reload();
-        //                 } else {
-        //                     this.$emit(response.message);
-        //                 }
-        //             });
-        //         }
-        //     })
-        // },
         deletemart(mart_name, data_mart_id) {
             message.confirmMsg('确定删除 ' + mart_name + ' 吗').then(res => {
                 this.isLoading = true;
@@ -528,6 +502,28 @@ export default {
             this.dialogImportData = false;
             this.fileList = [];
             this.$message.info('已取消上传');
+        },
+        getImportFilePath() {
+            if (arr.length > 0) {
+                let param = new FormData() // 创建form对象
+                for (let i = 0; i < arr.length; i++) {
+                    param.append('file', arr[i].raw);
+                }
+                this.isLoading = true;
+                functionAll.getImportFilePath(param).then(res => {
+                    this.isLoading = false;
+                    this.dialogImportData = false;
+                    this.$router.push({
+                        path:'importReview',
+                        query: {
+                            file_path: res.data,
+                                }
+                            })
+                     });
+                this.isLoading = false;
+            } else {
+                message.customizTitle("请选择上传文件", "warning");
+            }
         },
         importData() {
             if (arr.length > 0) {

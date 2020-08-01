@@ -960,6 +960,16 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/importReview',
+                    name: 'importReview',
+                    title: '集市工程导入审核',
+                    component: () => import('@/hrds/h/market/importReview.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据集市' },
+                    ],
+                },
+                {
                     path: '/serviceMage',
                     name: 'serviceMage',
                     title: '服务接口管理',

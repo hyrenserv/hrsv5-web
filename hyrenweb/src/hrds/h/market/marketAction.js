@@ -308,11 +308,24 @@ export function downloadDmDatatable(data) {
 export function uploadFile(data) {
     return request({
         url: '/H/market/uploadFile',
+        params: data,
+    })
+}
+//获取集市工程审核文件路径
+export function getImportFilePath(data) {
+    return request({
+        url: '/H/market/getImportFilePath',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
-
+//导入集市工程审核
+export function getImportReviewData(data) {
+    return request({
+        url: '/H/market/getImportReviewData',
+        params: data,
+    })
+}
 //删除集市工程
 export function deleteMart(data) {
     return request({
