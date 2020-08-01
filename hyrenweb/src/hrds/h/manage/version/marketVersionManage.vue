@@ -50,6 +50,10 @@
                                     <div class="ctxt" name="ctxt">
                                         <el-table :data="tableStructureInfo" style='min-height:400px'>
                                             <el-table-column v-for="(item,index) in tableVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
+                                                <!--  <template slot="header">
+                                                    <span>{{item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)}}</span>
+                                                    <div style="position: absolute;top: 0px;" @click="deltime(item)"><i class='el-icon-close' style="color:#fff"></i></div>
+                                                </template> -->
                                                 <el-table-column label="中文" :prop="'field_ch_name' +item" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_cn_name'+item]}}</p>
@@ -79,9 +83,9 @@
                 <el-tab-pane label="数据mapping对比" name="second">
                     <div class="text item">
                         <div class='bd contrast'>
-                            <el-table :data="tableData2" border style='min-height:400px'>
+                            <el-table :data="tableMappingData" border style='min-height:400px'>
                                 <el-table-column v-for="(item,index) in mappingVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
-                                    <template>
+                                    <template slot-scope="scope">
                                         <SqlEditor :ref="'sqleditor'+item" :readOnly='true' :lineNumbers='false' class='textasql' style="text-align: left;" />
                                     </template>
                                 </el-table-column>
@@ -109,13 +113,13 @@ export default {
     data() {
         return {
             //页面默认显示数据结构对比标签
-            activeName: 'second',
+            activeName: 'first',
             //表结构信息对比变量
             tableStructureInfo: [],
             tableVersionData: [],
             //表Mapping信息变量
-            tableMappingData: [],
-            mappingVersionData: {},
+            tableMappingData: [{}],
+            mappingVersionData: [],
             //版本管理树数据
             versionManageTreeData: [],
             //版本日期数组变量
@@ -143,7 +147,6 @@ export default {
         getMarketVerManageTreeData() {
             mvmFunc.getMarketVerManageTreeData().then(res => {
                 this.versionManageTreeData = res.data;
-                console.log(res.data)
             });
         },
         //点击源数据管理树节点触发
@@ -200,13 +203,12 @@ export default {
             params["version_date_s"] = this.version_date_s;
             mvmFunc.getDataTableMappingInfos(params).then(res => {
                 let data = res.data
-                // let data = this.tableDatalist2
                 for (let key in data) {
                     this.mappingVersionData.push(key)
-                    let that = this
                     this.$nextTick(() => {
+                        let that = this
                         for (let keys in that.$refs) {
-                            if (keys == "sqleditor" + key) {
+                            if (keys === "sqleditor" + key) {
                                 that.$refs[keys][0].setmVal(data[key].execute_sql)
                             }
                         }
@@ -215,6 +217,7 @@ export default {
             });
         },
     }
+
 }
 </script>
 
