@@ -13,7 +13,7 @@
             <div class="mytree" hight='260'>
                 <div style='height:0.1px'>&nbsp;</div>
                 <Scrollbar>
-                    <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree" :default-expand-all="true">
+                    <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
                             <span :title="data.description" v-if="data.file_id.length > 0&&data.label==data.id">
                                 <el-checkbox @change="choiceCheck($event,data)"></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
