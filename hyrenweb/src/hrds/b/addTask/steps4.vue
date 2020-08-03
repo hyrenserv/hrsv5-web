@@ -538,19 +538,21 @@ export default {
         startButtonFun() {
             this.finishDialogVisible = true
             let date=new Date()
-            this.etl_date=date.getFullYear()+(date.getMonth()+1>10?date.getMonth()+1:'0'+(date.getMonth()+1))+(date.getDate()>10?date.getDate():'0'+(date.getDate()))
+            this.etl_date=date.getFullYear()+(date.getMonth()+1>9?date.getMonth()+1:'0'+(date.getMonth()+1))+(date.getDate()>9?date.getDate():'0'+(date.getDate()))
         },
         finishSubmit() {
             this.startButton = true
             this.next('ruleForm')
         },
         sendSubmit() {
+            this.isLoading=true
             addTaskAllFun
                 .sendJDBCCollectTaskById({
                     colSetId: this.dbid,
                     etl_date:this.etl_date
                 })
                 .then(res => {
+                    this.isLoading=false
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$message({
