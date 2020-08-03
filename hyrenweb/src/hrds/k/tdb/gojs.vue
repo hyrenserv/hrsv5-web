@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import go from '@/assets/js/go.js'
+import go from '../../../../public/go'
 export default {
     data() {
         return {}
