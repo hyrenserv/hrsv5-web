@@ -205,7 +205,7 @@ export default new Router({
                     component: () => import('@/hrds/a/codeMaintenance/codeMaintenance.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '系统列表' },
+                        { name: '码值维护' },
                     ],
                 },
                 // 半结构化agent采集
@@ -378,7 +378,12 @@ export default new Router({
                     path: '/dataStoreAction',
                     name: 'dataStoreAction',
                     title: 'dataStoreAction',
-                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue')
+                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据存储层定义' },
+                        { name: '新增数据存储层' },
+                    ],
                 },
                 {
                     path: '/typeLengthContrastInfo',
@@ -400,7 +405,7 @@ export default new Router({
                         { name: '首页' },
                         { name: '数据存储层定义' },
                         { name: '数据长度对比', url: '/typeLengthContrastInfo' },
-                        { name: '数据类型对比' },
+                        { name: '新增数据类型长度对照表' },
                     ],
                 },
                 {
