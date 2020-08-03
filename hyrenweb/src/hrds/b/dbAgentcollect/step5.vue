@@ -289,6 +289,10 @@
             <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
         </span>
     </el-dialog>
+     <!-- 加载过度 -->
+    <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -374,7 +378,8 @@ export default {
             dialogAllChooseDestination: false, //全表设置目的地
             AlldestinationData: [],
             Alldestinationchoose: [],
-            etl_date: ''
+            etl_date: '',
+            isLoading:false
         };
     },
     computed: {
@@ -484,12 +489,14 @@ export default {
 
     methods: {
         sendSubmit() {
+             this.isLoading=true
             addTaskAllFun
                 .sendDBCollectTaskById({
                     colSetId: this.dbid,
                     etl_date: this.etl_date
                 })
                 .then(res => {
+                     this.isLoading=false
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$message({
@@ -1276,7 +1283,7 @@ export default {
         startButtonFun() {
             this.finishDialogVisible = true
             let date = new Date()
-            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 10 ? date.getDate() : '0' + (date.getDate()))
+            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 9 ? date.getDate() : '0' + (date.getDate()))
         },
         finishSubmit() {
             this.startButton = true
