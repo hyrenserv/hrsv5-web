@@ -275,92 +275,156 @@ export default {
         addmarket(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    // 调用添加方法
-                    functionAll.addMarket(this.formAdd).then(response => {
-                        if (response && response.success) {
-                            this.saveDmCategory(response.data)
-                        } else {
-                            this.$emit(response.message);
-                        }
-                    });
+                    let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
+                    if (this.addOrUpdate == true) { //判断是新增还是更新
+                        arr.forEach((item => {
+                            if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
+                                if (item.parent_category_idMarkNum == 'id') { //添加已经存入的后台数据为上一级信息
+                                    item.parent_category_id = item.parent_category_idMark;
+                                } else if (item.parent_category_idMarkNum == 'label') { //新增时未保存到后台的数据作为上一级信息
+                                    item.parent_category_name = item.parent_category_idMark;
+                                    item.parent_category_id = null;
+                                }
+                                delete item.parent_category_idMark;
+                                delete item.parent_category_idMarkNum;
+                            } else {
+                                if (item.parent_category_ids) { //之前就存在的且没有更改这一项的东西
+                                    item.parent_category_id = item.parent_category_ids
+                                    delete item.parent_category_ids;
+                                } else { //单纯的点击新增分类且以集市工程为上一级
+                                    item.parent_category_name = item.parent_category_id;
+                                    item.parent_category_id = null;
+                                }
+                            }
+                        }))
+                        this.formAdd.categoryRelationBeans = arr;
+                        this.formAdd.categoryRelationBeans = JSON.stringify(this.formAdd.categoryRelationBeans)
+                        let obj = Object.assign({}, this.formAdd)
+                        delete obj.tableDataAdd;
+                        functionAll.addMarket(obj).then((res => {
+                            if (res && res.success) {
+                                this.$message({
+                                    type: "success",
+                                    message: "更新成功!"
+                                });
+                                // 隐藏对话框
+                                this.dialogofmarketadd = false;
+                                // 表单清空
+                                this.formAdd.tableDataAdd = [];
+                                this.$refs.formAdd.resetFields();
+                                this.getMarketInfo();
+                                this.dataTree = [];
+                            }
+                        }))
+                    } else if (this.addOrUpdate == false) {
+                        arr.forEach(item => {
+                            if (item.parent_category_id == this.formAdd.mart_name) { //集市工程作为上一级
+                                item.parent_category_name = item.parent_category_id;
+                                item.parent_category_id = null;
+                            } else { //新建的分类信息作为上级的关系
+                                item.parent_category_name = item.parent_category_id;
+                                item.parent_category_id = null;
+                            }
+                        })
+                        this.formAdd.categoryRelationBeans = arr;
+                        this.formAdd.categoryRelationBeans = JSON.stringify(this.formAdd.categoryRelationBeans)
+                        let obj = Object.assign({}, this.formAdd)
+                        delete obj.tableDataAdd;
+                        // console.log( this.formAdd.categoryRelationBeans)
+                        functionAll.addMarket(obj).then((res => {
+                            if (res && res.success) {
+                                this.$message({
+                                    type: "success",
+                                    message: "添加成功!"
+                                });
+                                // 隐藏对话框
+                                this.dialogofmarketadd = false;
+                                // 表单清空
+                                this.formAdd.tableDataAdd = [];
+                                this.$refs.formAdd.resetFields();
+                                this.getMarketInfo();
+                                this.dataTree = [];
+                            }
+                        }))
+                    }
                 } else {
                     return false;
                 }
             });
         },
-        // 保存集市分类
-        saveDmCategory(val) {
-            let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
-            if (this.addOrUpdate == true) { //判断是新增还是更新
-                arr.forEach((item => {
-                    if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
-                        if (item.parent_category_idMarkNum == 'id') { //添加已经存入的后台数据为上一级信息
-                            item.parent_category_id = item.parent_category_idMark;
-                        } else if (item.parent_category_idMarkNum == 'label') { //新增时未保存到后台的数据作为上一级信息
-                            item.parent_category_name = item.parent_category_idMark;
-                            item.parent_category_id = null;
-                        }
-                        delete item.parent_category_idMark;
-                        delete item.parent_category_idMarkNum;
-                    } else {
-                        if (item.parent_category_ids) { //之前就存在的且没有更改这一项的东西
-                            item.parent_category_id = item.parent_category_ids
-                            delete item.parent_category_ids;
-                        } else { //单纯的点击新增分类且以集市工程为上一级
-                            item.parent_category_name = item.parent_category_id;
-                            item.parent_category_id = val;
-                        }
-                    }
-                }))
-                functionAll.saveDmCategory({
-                    categoryRelationBeans: JSON.stringify(arr),
-                    data_mart_id: val
-                }).then((res => {
-                    if (res && res.success) {
-                        this.$message({
-                            type: "success",
-                            message: "更新成功!"
-                        });
-                        // 隐藏对话框
-                        this.dialogofmarketadd = false;
-                        // 表单清空
-                        this.formAdd.tableDataAdd = [];
-                        this.$refs.formAdd.resetFields();
-                        this.getMarketInfo();
-                        this.dataTree = [];
-                    }
-                }))
-            } else if (this.addOrUpdate == false) {
-                arr.forEach(item => {
-                    if (item.parent_category_id == this.formAdd.mart_name) { //集市工程作为上一级
-                        item.parent_category_name = item.parent_category_id;
-                        item.parent_category_id = val;
-                    } else { //新建的分类信息作为上一级的关系
-                        item.parent_category_name = item.parent_category_id;
-                        item.parent_category_id = null;
-                    }
-                })
-                functionAll.saveDmCategory({
-                    categoryRelationBeans: JSON.stringify(arr),
-                    data_mart_id: val
-                }).then((res => {
-                    if (res && res.success) {
-                        this.$message({
-                            type: "success",
-                            message: "添加成功!"
-                        });
-                        // 隐藏对话框
-                        this.dialogofmarketadd = false;
-                        // 表单清空
-                        this.formAdd.tableDataAdd = [];
-                        this.$refs.formAdd.resetFields();
-                        this.getMarketInfo();
-                        this.dataTree = [];
-                    }
-                }))
-            }
+        // // 保存集市分类
+        // saveDmCategory(val) {
+        //     let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
+        //     if (this.addOrUpdate == true) { //判断是新增还是更新
+        //         arr.forEach((item => {
+        //             if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
+        //                 if (item.parent_category_idMarkNum == 'id') { //添加已经存入的后台数据为上一级信息
+        //                     item.parent_category_id = item.parent_category_idMark;
+        //                 } else if (item.parent_category_idMarkNum == 'label') { //新增时未保存到后台的数据作为上一级信息
+        //                     item.parent_category_name = item.parent_category_idMark;
+        //                     item.parent_category_id = null;
+        //                 }
+        //                 delete item.parent_category_idMark;
+        //                 delete item.parent_category_idMarkNum;
+        //             } else {
+        //                 if (item.parent_category_ids) { //之前就存在的且没有更改这一项的东西
+        //                     item.parent_category_id = item.parent_category_ids
+        //                     delete item.parent_category_ids;
+        //                 } else { //单纯的点击新增分类且以集市工程为上一级
+        //                     item.parent_category_name = item.parent_category_id;
+        //                     item.parent_category_id = val;
+        //                 }
+        //             }
+        //         }))
+        //         functionAll.saveDmCategory({
+        //             categoryRelationBeans: JSON.stringify(arr),
+        //             data_mart_id: val
+        //         }).then((res => {
+        //             if (res && res.success) {
+        //                 this.$message({
+        //                     type: "success",
+        //                     message: "更新成功!"
+        //                 });
+        //                 // 隐藏对话框
+        //                 this.dialogofmarketadd = false;
+        //                 // 表单清空
+        //                 this.formAdd.tableDataAdd = [];
+        //                 this.$refs.formAdd.resetFields();
+        //                 this.getMarketInfo();
+        //                 this.dataTree = [];
+        //             }
+        //         }))
+        //     } else if (this.addOrUpdate == false) {
+        //         arr.forEach(item => {
+        //             if (item.parent_category_id == this.formAdd.mart_name) { //集市工程作为上一级
+        //                 item.parent_category_name = item.parent_category_id;
+        //                 item.parent_category_id = val;
+        //             } else { //新建的分类信息作为上一级的关系
+        //                 item.parent_category_name = item.parent_category_id;
+        //                 item.parent_category_id = null;
+        //             }
+        //         })
+        //         functionAll.saveDmCategory({
+        //             categoryRelationBeans: JSON.stringify(arr),
+        //             data_mart_id: val
+        //         }).then((res => {
+        //             if (res && res.success) {
+        //                 this.$message({
+        //                     type: "success",
+        //                     message: "添加成功!"
+        //                 });
+        //                 // 隐藏对话框
+        //                 this.dialogofmarketadd = false;
+        //                 // 表单清空
+        //                 this.formAdd.tableDataAdd = [];
+        //                 this.$refs.formAdd.resetFields();
+        //                 this.getMarketInfo();
+        //                 this.dataTree = [];
+        //             }
+        //         }))
+        //     }
 
-        },
+        // },
         gotomartdetail(data_mart_id) {
             this.$router.push({
                 name: 'detailMart',
@@ -514,12 +578,12 @@ export default {
                     this.isLoading = false;
                     this.dialogImportData = false;
                     this.$router.push({
-                        path:'importReview',
-                        query: {
-                            file_path: res.data,
-                                }
-                            })
-                     });
+                        path: 'importReview',
+                        query: {
+                            file_path: res.data,
+                        }
+                    })
+                });
                 this.isLoading = false;
             } else {
                 message.customizTitle("请选择上传文件", "warning");
