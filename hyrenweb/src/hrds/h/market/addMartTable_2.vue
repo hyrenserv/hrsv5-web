@@ -76,7 +76,7 @@
                             </el-button>
                         </el-form-item>
                     </el-col>
-                    <el-col v-for="(item,index) in relationNums" :span="24">
+                    <el-col v-for="(item,index) in relationNums" :key="index" :span="24">
                         <el-form-item label="JOIN 条件">
                             <el-select v-model="formInline['joinCondition'+index]" placeholder="请选择join条件"
                                        style="width: 160px">
@@ -240,7 +240,7 @@
                                      align="center">
                         <template slot-scope="scope" width="120">
                             <el-select :disabled="iflock" v-model="scope.row.field_type" placeholder="请选择">
-                                <el-option v-for="item in allfield_type" :key="item.target_type"
+                                <el-option v-for="(item,index) in allfield_type" :key="index"
                                            :label="item.target_type" :value="item.target_type"></el-option>
                             </el-select>
                         </template>
@@ -265,7 +265,7 @@
                         <template slot-scope="scope">
                             <el-select :disabled="iflock" v-model="scope.row.field_process"
                                        @change="changecolumnfiledproccess(scope.row)" placeholder="请选择">
-                                <el-option v-for="item in allfield_process" :key="item.value"
+                                <el-option v-for="(item,index) in allfield_process" :key="index"
                                            :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </template>
@@ -293,7 +293,7 @@
                                 <el-select :disabled="iflock" v-if="scope.row.field_process == '3'"
                                            v-model="scope.row.process_mapping" style="width:100%"
                                            placeholder="请选择">
-                                    <el-option v-for="item in allfromcolumn" :key="item.value"
+                                    <el-option v-for="(item,index) in allfromcolumn" :key="index"
                                                :label="item.value" :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -309,7 +309,7 @@
                             <div v-if="scope.row.field_process == '5'">
                                 <el-select :disabled="iflock" v-model="scope.row.process_mapping"
                                            style="width:50%;" placeholder="请选择">
-                                    <el-option v-for="item in allfromcolumn" :key="item.value"
+                                    <el-option v-for="(item,index) in allfromcolumn" :key="index"
                                                :label="item.value" :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -327,7 +327,7 @@
                     <!--</template>-->
                     <!--</el-table-column>-->
 
-                    <el-table-column v-for="index in columnmore" :label="index.dsla_storelayer" :key="index"
+                    <el-table-column v-for="(index,item) in columnmore" :label="index.dsla_storelayer" :key="item"
                                      prop="index" align="center" width="70">
                         <template slot-scope="scope">
                             <el-checkbox :disabled="iflock" v-model="scope.row[scope.column.label]"
