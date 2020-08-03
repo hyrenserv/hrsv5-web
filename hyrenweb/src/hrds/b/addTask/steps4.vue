@@ -13,11 +13,6 @@
             </el-table-column>
             <el-table-column prop="table_name" label="表名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="table_ch_name" label="表中文名" width="110" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="is_header" width="94" label="是否有表头" align="center">
-                <template slot-scope="scope">
-                    <el-checkbox v-if="isheaderFun(scope.row.dbfile_format)" :true-label="'1'" :false-label="'0'" v-model="scope.row.is_header"></el-checkbox>
-                </template>
-            </el-table-column>
             <el-table-column label=" 抽取数据存储方式" align="center">
                 <template slot-scope="scope">
                     <!-- <el-button type="success"  size="mini" @click="dialogDatasaveType=true">选择数据存储方式</el-button> -->
@@ -29,6 +24,11 @@
                             <el-option size="medium" v-for="(item,index) in delExtractDataType" :key="index+scope.$index" :label="item.value" :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
+                </template>
+            </el-table-column>
+            <el-table-column prop="is_header" width="94" label="是否有表头" align="center">
+                <template slot-scope="scope">
+                    <el-checkbox v-if="isheaderFun(scope.row.dbfile_format)" :true-label="'1'" :false-label="'0'" v-model="scope.row.is_header"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column label="落地目录" align="center" width="260">
@@ -423,7 +423,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].fdc_ml,
-                                        'is_header': dataAll[i].is_header,
+                                        'is_header': dataAll[i].is_header?dataAll[i].is_header:'0',
                                         'row_separator': dataAll[i].fdc_row_separator,
                                         'database_separatorr': dataAll[i].fdc_database_separatorr,
                                         'database_code': dataAll[i].fdc_database_code,
@@ -434,7 +434,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].dc_ml,
-                                        'is_header': dataAll[i].is_header,
+                                        'is_header': dataAll[i].is_header?dataAll[i].is_header:'0',
                                         'row_separator': dataAll[i].dc_row_separator,
                                         'database_separatorr': dataAll[i].dc_database_separatorr,
                                         'database_code': dataAll[i].dc_database_code,
@@ -445,7 +445,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].csv_ml,
-                                        'is_header': dataAll[i].is_header,
+                                        'is_header': dataAll[i].is_header?dataAll[i].is_header:'0',
                                         'row_separator': dataAll[i].csv_row_separator,
                                         'database_separatorr': dataAll[i].csv_database_separatorr,
                                         'database_code': dataAll[i].csv_database_code,
@@ -498,6 +498,7 @@ export default {
                         params["colSetId"] = this.databaseId;
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
                         params['dedId'] = JSON.parse(JSON.stringify(dedid)).join('^')
+                        console.log(extractionDefString)
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
                             if (res.code == 200 && this.startButton == false) {
