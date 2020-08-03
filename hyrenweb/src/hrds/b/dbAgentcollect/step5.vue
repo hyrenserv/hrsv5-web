@@ -394,7 +394,7 @@ export default {
             if (val.submit_0 == true && val.submit_1 == true) {
                 if (this.startButton == true) {
                     this.sendSubmit()
-                    this.startButton=false
+                    this.startButton = false
                 } else {
                     this.nextLinkfun();
                 }
@@ -1276,7 +1276,7 @@ export default {
         startButtonFun() {
             this.finishDialogVisible = true
             let date = new Date()
-            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + date.getDate()
+            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 10 ? date.getDate() : '0' + (date.getDate()))
         },
         finishSubmit() {
             this.startButton = true

@@ -537,7 +537,7 @@ export default {
         startButtonFun() {
             this.finishDialogVisible = true
             let date=new Date()
-            this.etl_date=date.getFullYear()+(date.getMonth()+1>10?date.getMonth()+1:'0'+(date.getMonth()+1))+date.getDate()
+            this.etl_date=date.getFullYear()+(date.getMonth()+1>10?date.getMonth()+1:'0'+(date.getMonth()+1))+(date.getDate()>10?date.getDate():'0'+(date.getDate()))
         },
         finishSubmit() {
             this.startButton = true
