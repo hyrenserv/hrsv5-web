@@ -182,10 +182,14 @@ export default {
             classify_id: '',
             hiddenshow: true,
             addClassTask: {
-
+                classify_num: '',
+                classify_name: '',
+                remark: ''
             },
             editClassTask: {
-
+                classify_num: '',
+                classify_name: '',
+                remark: ''
             },
             fileMark: '',
             updateMark: '',
