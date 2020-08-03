@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-!/node_modules/gojs
+!/node_modules/gojs/
 # local env files
 .env.local
 .env.*.local
