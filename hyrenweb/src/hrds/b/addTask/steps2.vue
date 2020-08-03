@@ -837,7 +837,7 @@ export default {
         getAllTableInfoFun() {
             this.onclickAll = true;
             this.Allis_selectionState = false;
-            this.tableData.length = 0;
+            this.tableData=[];
             this.getAllTableInfo()
         },
         // 全表点击单个复选框
