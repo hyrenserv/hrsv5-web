@@ -273,9 +273,9 @@
         </div>
     </el-dialog>
     <!--完成  -->
-    <el-dialog title="设置启动时间" :visible.sync="finishDialogVisible" width="30%">
+    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="30%">
         <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">设置启动时间</span>
+            <span class="dialogtitle el-icon-caret-right">设置数据跑批日期</span>
         </div>
         <div>
             <el-form>
