@@ -184,7 +184,10 @@
 
     <el-dialog title="分类信息" :visible.sync="chooseScopeIdDiolag" :before-close="chooseScopeIdDiolagcancel" width="680px">
         <div class="mytree"  hight='200'>
-            <el-tree :data="dataTree" show-checkbox :indent='0' node-key="label" ref="tree" :check-strictly="true" :props="defaultProps" @check-change="handleNodeClick"></el-tree>
+            <el-tree :data="dataTree" show-checkbox :indent='0' node-key="label" ref="tree" :check-strictly="true" :props="defaultProps" @check-change="handleNodeClick">
+                <span class="custom-tree-node" slot-scope="{ node, data }">
+                    <span @click="() => remove(node, data)">{{ node.label }}</span></span>
+            </el-tree>
         </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="chooseScopeIdDiolagcancel" size="mini" type="danger">取消</el-button>
@@ -272,6 +275,7 @@ export default {
                 this.marketinfo = res.data;
             })
         },
+
         addmarket(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -330,7 +334,6 @@ export default {
                         this.formAdd.categoryRelationBeans = JSON.stringify(this.formAdd.categoryRelationBeans)
                         let obj = Object.assign({}, this.formAdd)
                         delete obj.tableDataAdd;
-                        // console.log( this.formAdd.categoryRelationBeans)
                         functionAll.addMarket(obj).then((res => {
                             if (res && res.success) {
                                 this.$message({
@@ -352,79 +355,6 @@ export default {
                 }
             });
         },
-        // // 保存集市分类
-        // saveDmCategory(val) {
-        //     let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
-        //     if (this.addOrUpdate == true) { //判断是新增还是更新
-        //         arr.forEach((item => {
-        //             if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
-        //                 if (item.parent_category_idMarkNum == 'id') { //添加已经存入的后台数据为上一级信息
-        //                     item.parent_category_id = item.parent_category_idMark;
-        //                 } else if (item.parent_category_idMarkNum == 'label') { //新增时未保存到后台的数据作为上一级信息
-        //                     item.parent_category_name = item.parent_category_idMark;
-        //                     item.parent_category_id = null;
-        //                 }
-        //                 delete item.parent_category_idMark;
-        //                 delete item.parent_category_idMarkNum;
-        //             } else {
-        //                 if (item.parent_category_ids) { //之前就存在的且没有更改这一项的东西
-        //                     item.parent_category_id = item.parent_category_ids
-        //                     delete item.parent_category_ids;
-        //                 } else { //单纯的点击新增分类且以集市工程为上一级
-        //                     item.parent_category_name = item.parent_category_id;
-        //                     item.parent_category_id = val;
-        //                 }
-        //             }
-        //         }))
-        //         functionAll.saveDmCategory({
-        //             categoryRelationBeans: JSON.stringify(arr),
-        //             data_mart_id: val
-        //         }).then((res => {
-        //             if (res && res.success) {
-        //                 this.$message({
-        //                     type: "success",
-        //                     message: "更新成功!"
-        //                 });
-        //                 // 隐藏对话框
-        //                 this.dialogofmarketadd = false;
-        //                 // 表单清空
-        //                 this.formAdd.tableDataAdd = [];
-        //                 this.$refs.formAdd.resetFields();
-        //                 this.getMarketInfo();
-        //                 this.dataTree = [];
-        //             }
-        //         }))
-        //     } else if (this.addOrUpdate == false) {
-        //         arr.forEach(item => {
-        //             if (item.parent_category_id == this.formAdd.mart_name) { //集市工程作为上一级
-        //                 item.parent_category_name = item.parent_category_id;
-        //                 item.parent_category_id = val;
-        //             } else { //新建的分类信息作为上一级的关系
-        //                 item.parent_category_name = item.parent_category_id;
-        //                 item.parent_category_id = null;
-        //             }
-        //         })
-        //         functionAll.saveDmCategory({
-        //             categoryRelationBeans: JSON.stringify(arr),
-        //             data_mart_id: val
-        //         }).then((res => {
-        //             if (res && res.success) {
-        //                 this.$message({
-        //                     type: "success",
-        //                     message: "添加成功!"
-        //                 });
-        //                 // 隐藏对话框
-        //                 this.dialogofmarketadd = false;
-        //                 // 表单清空
-        //                 this.formAdd.tableDataAdd = [];
-        //                 this.$refs.formAdd.resetFields();
-        //                 this.getMarketInfo();
-        //                 this.dataTree = [];
-        //             }
-        //         }))
-        //     }
-
-        // },
         gotomartdetail(data_mart_id) {
             this.$router.push({
                 name: 'detailMart',
@@ -444,6 +374,7 @@ export default {
         addClickDiloag() {
             this.titleChange = "新增集市";
             this.dialogofmarketadd = true;
+            this.addOrUpdate = false;
         },
         downloadmart(mart_name, data_mart_id) {
             message.confirmMsg('确定导出 ' + mart_name + ' 吗').then(res => {
@@ -621,7 +552,7 @@ export default {
         },
         //添加新分类
         addNewData() {
-            if (this.addOrUpdate == true) {
+            if (this.addOrUpdate == true) { //编辑
                 this.formAdd.tableDataAdd.push({
                     category_num: '',
                     category_name: '',
@@ -631,7 +562,8 @@ export default {
                     label: '',
                     children: []
                 })
-            } else if (this.addOrUpdate == false) {
+
+            } else if (this.addOrUpdate == false) { //新增
                 this.formAdd.tableDataAdd.push({
                     category_num: '',
                     category_name: '',
@@ -658,12 +590,37 @@ export default {
                     })
                 } else { //编辑时删除前台的表格信息
                     this.formAdd.tableDataAdd.splice(index, 1);
-                    this.dataTree.splice(index, 1);
+                    let indexinfo = this.dataTree.findIndex(item => item.label == row.category_name);
+                    if (indexinfo != -1) {
+                        this.dataTree.splice(indexinfo, 1);
+                    } else {
+                        this.treeForeach(this.dataTree, node => {
+                            if (node.children.length > 0) {
+                                let i = node.children.findIndex(item => item.label == row.category_name);
+                                if (i != -1) {
+                                    this.$refs.tree.remove(node.children[i])
+                                }
+                            }
+                        })
+                    }
+
                 }
 
             } else if (this.addOrUpdate == false) { //新增时候
                 this.formAdd.tableDataAdd.splice(index, 1);
-                this.dataTree.splice(index, 1);
+                let indexinfo = this.dataTree.findIndex(item => item.label == row.category_name);
+                if (indexinfo != -1) {
+                    this.dataTree.splice(indexinfo, 1);
+                } else {
+                    this.treeForeach(this.dataTree, node => {
+                        if (node.children.length > 0) {
+                            let i = node.children.findIndex(item => item.label == row.category_name);
+                            if (i != -1) {
+                                this.$refs.tree.remove(node.children[i])
+                            }
+                        }
+                    })
+                }
             }
         },
         // 添加描述分类信息
@@ -702,6 +659,7 @@ export default {
         },
         // 取消上级分类弹出框
         chooseScopeIdDiolagcancel() {
+            this.$refs.tree.setCheckedKeys([]);
             this.chooseScopeIdDiolag = false;
         },
         // 确认上级分类弹出框
@@ -718,19 +676,66 @@ export default {
         },
         // 选择节点或者点击node
         handleNodeClick(val, val2, val3) {
-            if (val2 == true) { //选中状态时
-                if (val.label == this.chooseScopeIdRow.category_name) {
-                    this.$refs.tree.setCheckedKeys([{ //改变更改的状态
-                        label: val.label
-                    }]);
-                    message.customizTitle("不能选择同名的分类", "warning");
-                } else {
-                    let obj = {};
-                    obj.label = this.chooseScopeIdRow.category_name;
-                    obj.children = [];
-                    val.children.push(obj);
-                    let index = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
-                    this.dataTree.splice(index, 1);
+            let object = {};
+            let id = '';
+            if (this.addOrUpdate == true) { //编辑
+                // 新增上级为新增的和已存在的，
+                if (val2 == true) { //选中状态时
+                    if (val.label == this.chooseScopeIdRow.category_name) {
+                        this.$refs.tree.setCheckedKeys([{ //改变更改的状态
+                            label: val.label
+                        }]);
+                        message.customizTitle("不能选择同名的分类", "warning");
+                    } else {
+                        this.treeForeach(this.dataTree, node => { //获取新增节点的信息
+                            if (node.label == this.chooseScopeIdRow.category_name) {
+                                object = Object.assign({}, node);
+                                id = node.parent_id;
+                            }
+                        })
+                        val.children.push(object); //新增数
+                        let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                        if (indexs != -1) { //代表在节点在第一层
+                            this.dataTree.splice(indexs, 1);
+                        } else { //节点不在第一层
+                            this.treeForeach(this.dataTree, node => { //删除原有节点
+                                if (node.id == id) {
+                                    let indexs2 = node.children.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                                    this.$refs.tree.remove(node.children[indexs2])
+                                }
+                            })
+                        }
+                    }
+                }
+            } else if (this.addOrUpdate == false) { //新增
+                if (val2 == true) { //选中状态时
+                    if (val.label == this.chooseScopeIdRow.category_name) {
+                        this.$refs.tree.setCheckedKeys([{ //改变更改的状态
+                            label: val.label
+                        }]);
+                        message.customizTitle("不能选择同名的分类", "warning");
+                    } else {
+                        let object = {};
+                        this.treeForeach(this.dataTree, node => { //获取新增节点的信息
+                            if (node.label == this.chooseScopeIdRow.category_name) {
+                                object = Object.assign({}, node);
+                            }
+                        })
+                        val.children.push(object); //新增数
+                        let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                        if (indexs != -1) { //代表在第一层删除树
+                            this.dataTree.splice(indexs, 1);
+                        } else { //遍历寻找他的父节点然后去删除
+                            this.treeForeach(this.dataTree, node => {
+                                if (node.children.length > 0) {
+                                    let i = node.children.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                                    if (i != -1) {
+                                        this.$refs.tree.remove(node.children[i])
+                                    }
+                                }
+                            })
+                        }
+                    }
                 }
             }
             if (val.id) {
@@ -745,7 +750,12 @@ export default {
         // 填写每一个名称改变数的label
         changScopeValue(row, index) {
             this.shortRowMark = row;
-            this.dataTree[index - this.markLengthTable + this.markLength].label = row.category_name;
+            if (this.addOrUpdate == true) { //编辑
+                this.dataTree[index - this.markLengthTable + this.markLength].label = row.category_name;
+            } else { //新增
+                this.dataTree[index].label = row.category_name;
+            }
+
         },
         // 查看集市详情
         viewmart(name, id) {
