@@ -15,10 +15,10 @@
                 <Scrollbar>
                     <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                            <span :title="data.description" v-if="data.file_id.length > 0&&data.label==data.id">
+                            <span :title="data.description" v-if="data.file_id.length > 0&&data.tree_page_source=='market_version_manage'">
                                 <el-checkbox @change="choiceCheck($event,data)"></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
                             </span>
-                            <span :title="data.description" v-else-if='data.file_id.length > 0&&data.label!=data.id'>
+                            <span :title="data.description" v-else-if="data.file_id.length > 0&&data.tree_page_source!='market_version_manage'">
                                 <i class="el-icon-document" />
                                 {{node.label}}
                             </span>
@@ -153,11 +153,11 @@ export default {
         choiceCheck(e, data) {
             this.datatable_id = data.file_id
             if (e) {
-                this.version_date_s.push(data.id);
+                this.version_date_s.push(data.label);
             } else {
                 if (this.version_date_s.length > 0) {
                     for (let i = 0; i < this.version_date_s.length; i++) {
-                        if (this.version_date_s[i] == data.id) {
+                        if (this.version_date_s[i] == data.label) {
                             this.version_date_s.splice(i, 1)
                             break;
                         }
