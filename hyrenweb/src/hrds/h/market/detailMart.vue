@@ -283,28 +283,27 @@ export default {
             this.fileList = [];
             this.$message.info('已取消上传');
         },
-        importData() {
-            if (arr.length > 0) {
-                let param = new FormData() // 创建form对象
-                for (let i = 0; i < arr.length; i++) {
-                    param.append('file', arr[i].raw);
-                }
-                param.append('data_mart_id', this.data_mart_id);
-                this.isLoading = true;
-                functionAll.uploadExcelFile(param).then(res => {
-                    this.isLoading = false;
-                    this.dialogImportData = false;
-                    if (res.code == 200) {
-                        message.customizTitle("文件上传成功", "success");
-                        this.querydmdatatable(this.data_mart_id);
-                        this.fileList = [];
-                    }
-                });
-                this.isLoading = false;
-            } else {
-                message.customizTitle("请选择上传文件", "warning");
-            }
-        },
+         importData() {
+            if (arr.length > 0) {
+                let param = new FormData() // 创建form对象
+                for (let i = 0; i < arr.length; i++) {
+                    param.append('file', arr[i].raw);
+                }
+                param.append('data_mart_id', this.data_mart_id);
+                this.isLoading = true;
+                functionAll.uploadExcelFile(param).then(res => {
+                    this.isLoading = false;
+                    if (res && res.success) {
+                        this.dialogImportData = false;
+                        message.customizTitle("文件上传成功", "success");
+                        this.querydmdatatable(this.data_mart_id);
+                        this.fileList = [];
+                    }
+                });
+            } else {
+                message.customizTitle("请选择上传文件", "warning");
+            }
+        },
     }
 };
 </script>
