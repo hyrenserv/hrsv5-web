@@ -186,7 +186,7 @@
         <div class="mytree"  hight='200'>
             <el-tree :data="dataTree" show-checkbox :indent='0' node-key="label" ref="tree" :check-strictly="true" :props="defaultProps" @check-change="handleNodeClick">
                 <span class="custom-tree-node" slot-scope="{ node, data }">
-                    <span @click="() => remove(node, data)">{{ node.label }}</span></span>
+                    <span>{{ node.label }}</span></span>
             </el-tree>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -676,73 +676,40 @@ export default {
         },
         // 选择节点或者点击node
         handleNodeClick(val, val2, val3) {
-            let object = {};
-            let id = '';
-            if (this.addOrUpdate == true) { //编辑
-                // 新增上级为新增的和已存在的，
-                if (val2 == true) { //选中状态时
-                    if (val.label == this.chooseScopeIdRow.category_name) {
-                        this.$refs.tree.setCheckedKeys([{ //改变更改的状态
-                            label: val.label
-                        }]);
-                        message.customizTitle("不能选择同名的分类", "warning");
-                    } else {
-                        this.treeForeach(this.dataTree, node => { //获取新增节点的信息
-                            if (node.label == this.chooseScopeIdRow.category_name) {
-                                object = Object.assign({}, node);
-                                id = node.parent_id;
-                            }
-                        })
-                        let indexmark = val.children.findIndex(item => item.label == object.label);
-                        if (indexmark == -1) {
-                            val.children.push(object); //新增数
+            if (val2 == true) { //选中状态时
+                if (val.label == this.chooseScopeIdRow.category_name) {
+                    this.$refs.tree.setCheckedKeys([{ //改变更改的状态
+                        label: val.label
+                    }]);
+                    message.customizTitle("不能选择同名的分类", "warning");
+                } else {
+                    let object = {};
+                    this.treeForeach(this.dataTree, node => { //获取新增节点的信息
+                        if (node.label == this.chooseScopeIdRow.category_name) {
+                            object = Object.assign({}, node);
                         }
-                        let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
-                        if (indexs != -1) { //代表在节点在第一层
-                            this.dataTree.splice(indexs, 1);
-                        } else { //节点不在第一层
-                            this.treeForeach(this.dataTree, node => { //删除原有节点
-                                if (node.id == id) {
-                                    let indexs2 = node.children.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
-                                    this.$refs.tree.remove(node.children[indexs2])
-                                }
-                            })
-                        }
-                    }
-                }
-            } else if (this.addOrUpdate == false) { //新增
-                if (val2 == true) { //选中状态时
-                    if (val.label == this.chooseScopeIdRow.category_name) {
-                        this.$refs.tree.setCheckedKeys([{ //改变更改的状态
-                            label: val.label
-                        }]);
-                        message.customizTitle("不能选择同名的分类", "warning");
-                    } else {
-                        let object = {};
-                        this.treeForeach(this.dataTree, node => { //获取新增节点的信息
-                            if (node.label == this.chooseScopeIdRow.category_name) {
-                                object = Object.assign({}, node);
-                            }
-                        })
+                    })
 
-                        let indexmark = val.children.findIndex(item => item.label == object.label);
-                        if (indexmark == -1) {
-                            val.children.push(object); //新增数
-                        }
-                        let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
-                        if (indexs != -1) { //代表在第一层删除树
-                            this.dataTree.splice(indexs, 1);
-                        } else { //遍历寻找他的父节点然后去删除
-                            this.treeForeach(this.dataTree, node => {
-                                if (node.children.length > 0) {
-                                    let i = node.children.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
-                                    if (i != -1) {
-                                        this.$refs.tree.remove(node.children[i])
-                                    }
-                                }
-                            })
-                        }
+                    let indexmark = val.children.findIndex(item => item.label == object.label);
+                    if (indexmark == -1) {
+                        val.children.push(object); //新增数
                     }
+                    let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                    if (indexs != -1) { //代表在第一层删除树
+                        this.dataTree.splice(indexs, 1);
+                    } else { //遍历寻找他的父节点然后去删除
+                        this.treeForeach(this.dataTree, node => {
+                            if (node.children.length > 0) {
+                                let i = node.children.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
+                                if (i != -1) {
+                                    this.$refs.tree.remove(node.children[i])
+                                }
+                            }
+                        })
+                    }
+                    this.$refs.tree.setCheckedNodes([//只选中当前的节点
+                       { label:val.label}
+                    ])
                 }
             }
             if (val.id) {
