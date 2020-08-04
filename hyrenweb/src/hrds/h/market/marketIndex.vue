@@ -693,7 +693,10 @@ export default {
                                 id = node.parent_id;
                             }
                         })
-                        val.children.push(object); //新增数
+                        let indexmark = val.children.findIndex(item => item.label == object.label);
+                        if (indexmark == -1) {
+                            val.children.push(object); //新增数
+                        }
                         let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
                         if (indexs != -1) { //代表在节点在第一层
                             this.dataTree.splice(indexs, 1);
@@ -721,7 +724,11 @@ export default {
                                 object = Object.assign({}, node);
                             }
                         })
-                        val.children.push(object); //新增数
+
+                        let indexmark = val.children.findIndex(item => item.label == object.label);
+                        if (indexmark == -1) {
+                            val.children.push(object); //新增数
+                        }
                         let indexs = this.dataTree.findIndex(item => item.label == this.chooseScopeIdRow.category_name);
                         if (indexs != -1) { //代表在第一层删除树
                             this.dataTree.splice(indexs, 1);
