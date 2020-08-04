@@ -13,10 +13,10 @@
             <div class="mytree" hight='260'>
                 <div style='height:0.1px'>&nbsp;</div>
                 <Scrollbar>
-                    <el-tree class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
+                    <el-tree accordion class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
                             <span :title="data.description" v-if="data.file_id.length > 0&&data.tree_page_source=='market_version_manage'">
-                                <el-checkbox @change="choiceCheck($event,data)"></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
+                                <el-checkbox @change="choiceCheck($event,data)" v-model="data.ischoice" :key='data.id'></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
                             </span>
                             <span :title="data.description" v-else-if="data.file_id.length > 0&&data.tree_page_source!='market_version_manage'">
                                 <i class="el-icon-document" />
@@ -126,6 +126,8 @@ export default {
             version_date_s: [],
             //数据表id
             datatable_id: '',
+            chioceId: '',
+            version_date_id: [],//存树勾选的id
         }
     },
     created() {
@@ -138,7 +140,9 @@ export default {
                 let that = this
                 this.$nextTick(() => {
                     for (let keys in that.$refs) {
-                        that.$refs[keys][0].refresh()
+                        if (that.$refs[keys].length > 0) {
+                            that.$refs[keys][0].refresh()
+                        }
                     }
                 });
             }
@@ -149,16 +153,56 @@ export default {
                 this.versionManageTreeData = res.data;
             });
         },
+        //树循环递归
+        treeForeach(tree, func) {
+            tree.forEach(data => {
+                func(data)
+                data.children && this.treeForeach(data.children, func) // 遍历子树
+            })
+        },
         //点击源数据管理树节点触发
         choiceCheck(e, data) {
             this.datatable_id = data.file_id
+            data.ischoice = e
             if (e) {
-                this.version_date_s.push(data.label);
+                if (this.chioceId != '') {
+                    if (this.chioceId == data.file_id) {
+                        this.version_date_s.push(data.label);
+                        this.version_date_id.push(data.id)
+                    } else {
+                        this.chioceId = data.file_id
+                        this.$Msg.customizTitle("不属于同一个文件,之前将被清空");
+                        this.$refs = {}
+                        this.treeForeach(this.versionManageTreeData, node => { 
+                            for (let i = 0; i < this.version_date_id.length; i++) {
+                                if (node.id == this.version_date_id[i]) {
+                                    node.ischoice = false//将之前勾选的都为false
+                                }
+                            }
+
+                        })
+                        this.version_date_s = []//之前存储的清空
+                        this.version_date_s.push(data.label);//加入新的
+                        this.version_date_id.push(data.id)
+                    }
+                    // data.ischoice = true
+                } else {
+                    this.version_date_s.push(data.label);
+                    this.version_date_id.push(data.id)
+                    this.chioceId = data.file_id
+                }
+
             } else {
                 if (this.version_date_s.length > 0) {
                     for (let i = 0; i < this.version_date_s.length; i++) {
                         if (this.version_date_s[i] == data.label) {
                             this.version_date_s.splice(i, 1)
+                            break;
+                        }
+                    }
+                    for (let i = 0; i < this.version_date_id.length; i++) {
+                        if (this.version_date_id[i] == data.id) {
+                            this.version_date_id.splice(i, 1)
                             break;
                         }
                     }
