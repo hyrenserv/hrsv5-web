@@ -955,6 +955,8 @@
                             });
                             return false;
                         }
+                    } else if (field_process == '2') {
+                        //不进行验证
                     } else {
                         var process_mapping = this.columnbysql[i].process_mapping;
                         if (process_mapping === '' || process_mapping == undefined) {
