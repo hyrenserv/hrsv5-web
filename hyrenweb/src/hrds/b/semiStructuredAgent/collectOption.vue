@@ -254,14 +254,47 @@ export default {
                 functionAll.getAddObjectCollectConf({
                     agent_id: this.$route.query.agent_id
                 }).then(res => {
-                    this.form.system_name = res.data.osName;
-                    this.form.host_name = res.data.userName;
+                if(res.success&&res.data.odc_id!==undefined){
+                    // 新增但是没有执行成功
+                    this.form.system_name = res.data.system_name;
+                    this.form.host_name = res.data.host_name;
                     // 处理传来的年月日服务器日期和时分秒
-                    this.form.server_date = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
+                    this.form.server_date = res.data.server_date;
                     // 处理传来的年月日本地日期和时分秒
-                    this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localTime);
+                    this.form.local_time = res.data.local_time;
+                    this.form.obj_number = res.data.obj_number;
+                    this.form.obj_collect_name = res.data.obj_collect_name;
+                    this.form.s_date = res.data.s_date;
+                    this.form.e_date = res.data.e_date;
+                    this.form.database_code = res.data.database_code;
+                    if (res.data.is_dictionary == "0") {
+                        this.showData_date = true;
+                        this.form.data_date = res.data.data_date;
+                    } else {
+                        this.showData_date = false;
+                    }
+                    this.form.is_dictionary = res.data.is_dictionary;
+                    this.form.file_suffix = res.data.file_suffix;
+                    this.form.file_path = res.data.file_path;
+                    this.form.is_sendok = res.data.is_sendok;
+                    }else{
+                        // 新增
+                        this.getInitObjectCollectConf();
+                    }
                 })
             }
+        },
+        getInitObjectCollectConf(){
+            functionAll.getInitObjectCollectConf({
+                agent_id: this.$route.query.agent_id
+            }).then(res => {
+                this.form.system_name = res.data.osName;
+                this.form.host_name = res.data.userName;
+                // 处理传来的年月日服务器日期和时分秒
+                this.form.server_date = fixedAll.dateFormat(res.data.agentdate) + " " + fixedAll.hourFormat(res.data.agenttime);
+                // 处理传来的年月日本地日期和时分秒
+                this.form.local_time = fixedAll.dateFormat(res.data.localDate) + " " + fixedAll.hourFormat(res.data.localTime);
+            })
         },
         // 获取目录结构
         seletFilePath() {
