@@ -86,7 +86,7 @@
         <el-form :model="formAdd" ref="formAdd">
             <el-col :span="12">
                 <el-form-item label="集市名称" :label-width="formLabelWidth" prop="mart_name" :rules="rule.default">
-                    <el-input v-model="formAdd.mart_name" @input="getInputvalue" size="small" autocomplete="off" placeholder="集市名称" style="width:284px"></el-input>
+                    <el-input v-model="formAdd.mart_name" @input="getInputvalue" @focus="focusData" size="small" autocomplete="off" placeholder="集市名称" style="width:284px"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -248,10 +248,10 @@ export default {
             dataTree: [],
             shortRowMark: '',
             addOrUpdate: false,
-            nodeMark: '',
             markLength: '',
             markLengthTable: '',
             titleChange: '',
+            focusDataTable: [],
         };
     },
     mounted() {
@@ -507,15 +507,17 @@ export default {
                 this.isLoading = true;
                 functionAll.getImportFilePath(param).then(res => {
                     this.isLoading = false;
-                    this.dialogImportData = false;
-                    this.$router.push({
-                        path: 'importReview',
-                        query: {
-                            file_path: res.data,
-                        }
-                    })
+                    if (res && res.success) {
+                        this.dialogImportData = false;
+                        this.$router.push({
+                            path: 'importReview',
+                            query: {
+                                file_path: res.data,
+                            }
+                        })
+                        this.fileList = [];
+                    }
                 });
-                this.isLoading = false;
             } else {
                 message.customizTitle("请选择上传文件", "warning");
             }
@@ -545,10 +547,19 @@ export default {
         //根据默认显示
         getInputvalue(val) {
             if (this.formAdd.tableDataAdd.length != 0) {
-                this.formAdd.tableDataAdd.forEach(item => {
-                    item.parent_category_id = this.formAdd.mart_name
+                this.focusDataTable.forEach((item, index) => {
+                    this.formAdd.tableDataAdd[item].parent_category_id = this.formAdd.mart_name;
                 })
             }
+        },
+        // 更改前获取上一次的值
+        focusData(val) {
+            this.focusDataTable = []; //每次清空缓存
+            this.formAdd.tableDataAdd.forEach((item, index) => {
+                if (item.parent_category_id == this.formAdd.mart_name) {
+                    this.focusDataTable.push(index)
+                }
+            })
         },
         //添加新分类
         addNewData() {
@@ -707,8 +718,10 @@ export default {
                             }
                         })
                     }
-                    this.$refs.tree.setCheckedNodes([//只选中当前的节点
-                       { label:val.label}
+                    this.$refs.tree.setCheckedNodes([ //只选中当前的节点
+                        {
+                            label: val.label
+                        }
                     ])
                 }
             }
