@@ -11,7 +11,7 @@
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
                 <div class="singleTableinner">
-                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
+                    <el-table ref="filterTable" :height="tableHeight" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -256,21 +256,22 @@
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-            <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
+             <!-- :rules="rule.default" -->
+            <el-form-item label="删除SQL" prop="delete">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="insert" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="insert">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="update" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="update">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd.update" type="textarea" autosize size="medium" style="width:284px"></el-input>
@@ -290,21 +291,21 @@
         </div>
         <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
         <el-form :model="xstypeadd2" ref="xstypeadd2" status-icon label-width="30%">
-            <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
+            <el-form-item label="删除SQL" prop="delete">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd2.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="insert" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="insert">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd2.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="update" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="update">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd2.update" type="textarea" autosize size="medium" style="width:284px"></el-input>
@@ -650,6 +651,7 @@ export default {
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
             secondTrue: true,
+            tableHeight : ''
         };
     },
     created() {
@@ -666,6 +668,7 @@ export default {
         // 获取进入页面的总数据
         this.steps_getInitInfo();
         this.editzdySQLFun();
+        this.tableHeight = window.innerHeight - 200
     },
     computed: {
         address() {
