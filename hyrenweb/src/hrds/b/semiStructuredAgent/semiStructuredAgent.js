@@ -5,6 +5,15 @@ import Qs from 'qs'
 /**(0)
  * 获取半结构化采集配置页面初始化的值
  */
+export function getInitObjectCollectConf(data) {
+    return request({
+        url: '/B/agent/semistructured/collectconf/getInitObjectCollectConf',
+        params: data
+    })
+}
+/**(0)
+ * 获取新增时未发送的采集任务
+ */
 export function getAddObjectCollectConf(data) {
     return request({
         url: '/B/agent/semistructured/collectconf/getAddObjectCollectConf',
