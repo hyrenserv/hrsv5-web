@@ -143,7 +143,7 @@
         </div>
     </el-dialog>
 
-    <el-dialog title="选择已有的集市表" :visible.sync="ifalreadyexisttablename" width="35%">
+    <el-dialog title="选择已有的工程表" :visible.sync="ifalreadyexisttablename" width="35%">
         <el-table :data="alldatatable_en_name" border stripe size="medium">
             <el-table-column property label="选择" type="index" align="center" width='60'>
                 <template slot-scope="scope">

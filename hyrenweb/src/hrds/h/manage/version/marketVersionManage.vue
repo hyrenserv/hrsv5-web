@@ -1,7 +1,7 @@
 <template>
 <div id='bbgl'>
     <el-row class='topTitle'>
-        <span class='el-icon-location'>集市版本管理</span>
+        <span class='el-icon-location'>加工版本管理</span>
         <router-link to="/collectmonitor">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
