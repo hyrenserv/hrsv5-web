@@ -73,7 +73,7 @@ const childrenMemus = {
         {
             path: '/dataMart',
             name: 'dataMart',
-            title: '数据集市',
+            title: '数据加工',
             icon: 'el-icon-s-finance',
             component: () => import('@/hrds/h/market/marketIndex.vue'),
         },
