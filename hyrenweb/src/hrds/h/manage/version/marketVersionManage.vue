@@ -127,7 +127,7 @@ export default {
             //数据表id
             datatable_id: '',
             chioceId: '',
-            version_date_id: [],//存树勾选的id
+            version_date_id: [], //存树勾选的id
         }
     },
     created() {
@@ -162,6 +162,7 @@ export default {
         },
         //点击源数据管理树节点触发
         choiceCheck(e, data) {
+            console.log(e, data);
             this.datatable_id = data.file_id
             data.ischoice = e
             if (e) {
@@ -173,24 +174,25 @@ export default {
                         this.chioceId = data.file_id
                         this.$Msg.customizTitle("不属于同一个文件,之前将被清空");
                         this.$refs = {}
-                        this.treeForeach(this.versionManageTreeData, node => { 
+                        this.treeForeach(this.versionManageTreeData, node => {
                             for (let i = 0; i < this.version_date_id.length; i++) {
                                 if (node.id == this.version_date_id[i]) {
-                                    node.ischoice = false//将之前勾选的都为false
+                                    node.ischoice = false //将之前勾选的都为false
                                 }
                             }
 
                         })
-                        this.version_date_s = []//之前存储的清空
-                        this.version_date_s.push(data.label);//加入新的
+                        this.version_date_s = [] //之前存储的清空
+                        this.version_date_s.push(data.label); //加入新的
                         this.version_date_id.push(data.id)
                     }
-                    // data.ischoice = true
+
                 } else {
                     this.version_date_s.push(data.label);
                     this.version_date_id.push(data.id)
                     this.chioceId = data.file_id
                 }
+                data.ischoice = true
 
             } else {
                 if (this.version_date_s.length > 0) {
@@ -210,6 +212,7 @@ export default {
                     this.tableStructureInfo = []
                     this.tableVersionData = []
                 }
+                data.ischoice = false;
             }
             if (this.version_date_s.length > 0) {
                 this.getDataTableStructureInfos()
