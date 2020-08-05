@@ -1,7 +1,7 @@
 <template>
     <div id='bbgl'>
         <el-row class='topTitle'>
-            <span class='el-icon-location'>集市导入审核</span>
+            <span class='el-icon-location'>加工导入审核</span>
             <router-link  to="/dataMart">            
                 <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
@@ -15,22 +15,22 @@
         <el-divider/>
         <el-row>
             <el-col v-if="tableData.dm_info!==undefined && tableData.dm_info!==''">
-                集市工程差异 ：<p>{{tableData.dm_info}}</p>
+                加工工程差异 ：<p>{{tableData.dm_info}}</p>
             </el-col>
             <el-col v-if="tableData.dm_datatable!==undefined && tableData.dm_datatable!==''">
                 数据表差异：<p v-for="(item,index) in tableData.dm_datatable">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.dm_category!==undefined && tableData.dm_category!==''">
-                集市分类差异： <p v-for="(item,index) in tableData.dm_category">{{item}}</p>
+                加工分类差异： <p v-for="(item,index) in tableData.dm_category">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.datatable_field_info!==undefined && tableData.datatable_field_info!==''">
-                集市数据表字段差异：<p v-for="(item,index) in tableData.datatable_field_info">{{item}}</p>
+                加工数据表字段差异：<p v-for="(item,index) in tableData.datatable_field_info">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.dm_operation_info!==undefined && tableData.dm_operation_info!==''">
-                集市数据操作差异：<p v-for="(item,index) in tableData.dm_operation_info">{{item}}</p>
+                加工数据操作差异：<p v-for="(item,index) in tableData.dm_operation_info">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.dm_relevant_info!==undefined && tableData.dm_relevant_info!==''">
-                集市前后置作业差异：<p v-for="(item,index) in tableData.dm_relevant_info">{{item}}</p>
+                加工前后置作业差异：<p v-for="(item,index) in tableData.dm_relevant_info">{{item}}</p>
             </el-col>
         </el-row>
         <!-----------------------------表作业影响--------------------------->

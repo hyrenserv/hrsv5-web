@@ -1,7 +1,7 @@
 <template>
 <div id="marketIndex">
     <el-row class='topTitle topTitleLocal'>
-        <span>数据集市</span>
+        <span>数据加工</span>
     </el-row>
     <span class="top3title">存储层表数量</span>
     <el-row class="bottomMargins" :gutter="20">
@@ -18,14 +18,14 @@
 
     <el-row>
         <div>
-            <span class="top3title">集市列表</span>
+            <span class="top3title">工程列表</span>
             <div class="elButton">
                 <el-button type="primary" tab-position="top" @click="addClickDiloag" size="small">
-                    <i class="el-icon-circle-plus-outline"></i>新增集市
+                    <i class="el-icon-circle-plus-outline"></i>新增工程
                 </el-button>
                 <el-upload class="buttonStyle" accept=".hrds" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
                     <el-button size="small" type="primary">
-                        <i class="fa fa-cloud-upload"></i> 导入集市
+                        <i class="fa fa-cloud-upload"></i> 导入工程
                     </el-button>
                 </el-upload>
             </div>
@@ -45,7 +45,7 @@
                     <el-button type="text" class="editBtn" title="下载" @click="downloadmart(item.mart_name,item.data_mart_id)">
                         <i class="fa fa-download fa-lg"></i>
                     </el-button>
-                    <el-button type="text" class="editBtn" title="查看集市信息" @click="viewmart(item.mart_name,item.data_mart_id)">
+                    <el-button type="text" class="editBtn" title="查看工程信息" @click="viewmart(item.mart_name,item.data_mart_id)">
                         <i class="fa fa-eye fa-lg"></i>
                     </el-button>
                     <el-button type="text" class="editBtn" title="删除" @click="deletemart(item.mart_name,item.data_mart_id)">
@@ -68,7 +68,7 @@
                 </el-row>
                 <el-row>
                     <el-table :data="item.result" border stripe size="medium " height="266">
-                        <el-table-column label="集市数据表名" show-overflow-tooltip prop="datatable_en_name" align="center">
+                        <el-table-column label="工程数据表名" show-overflow-tooltip prop="datatable_en_name" align="center">
                         </el-table-column>
                         <el-table-column label="占用空间大小" show-overflow-tooltip prop="soruce_size" align="center">
                         </el-table-column>
@@ -85,13 +85,13 @@
     <el-dialog :title="titleChange" :visible.sync="dialogofmarketadd" width="1040px" :before-close="cancleAdd">
         <el-form :model="formAdd" ref="formAdd">
             <el-col :span="12">
-                <el-form-item label="集市名称" :label-width="formLabelWidth" prop="mart_name" :rules="rule.default">
-                    <el-input v-model="formAdd.mart_name" @input="getInputvalue" @focus="focusData" size="small" autocomplete="off" placeholder="集市名称" style="width:284px"></el-input>
+                <el-form-item label="工程名称" :label-width="formLabelWidth" prop="mart_name" :rules="rule.default">
+                    <el-input v-model="formAdd.mart_name" @input="getInputvalue" @focus="focusData" size="small" autocomplete="off" placeholder="工程名称" style="width:284px"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="集市编号" :label-width="formLabelWidth" prop="mart_number" :rules="rule.default">
-                    <el-input v-model="formAdd.mart_number" size="small" autocomplete="off" placeholder="集市编号" style="width:284px"></el-input>
+                <el-form-item label="工程编号" :label-width="formLabelWidth" prop="mart_number" :rules="rule.default">
+                    <el-input v-model="formAdd.mart_number" size="small" autocomplete="off" placeholder="工程编号" style="width:284px"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -372,7 +372,7 @@ export default {
         },
         // 打开新增集市框
         addClickDiloag() {
-            this.titleChange = "新增集市";
+            this.titleChange = "新增工程";
             this.dialogofmarketadd = true;
             this.addOrUpdate = false;
         },
@@ -426,7 +426,7 @@ export default {
         },
         // 编辑集市
         editmart(data_mart_id) {
-            this.titleChange = "编辑集市";
+            this.titleChange = "编辑工程";
             this.addOrUpdate = true;
             this.dialogofmarketadd = true;
             let getformInfo = new Promise((resolve, reject) => {

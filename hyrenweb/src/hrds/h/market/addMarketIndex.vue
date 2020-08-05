@@ -1,7 +1,7 @@
 <template>
 <div class="addMarketIndex">
     <el-row class='topTitle'>
-        <span>集市信息</span>
+        <span>工程信息</span>
         <router-link to="/dataMart">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页

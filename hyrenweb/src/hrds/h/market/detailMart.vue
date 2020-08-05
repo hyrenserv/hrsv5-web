@@ -2,7 +2,7 @@
 <div id="marketIndex">
     <el-row class='topTitle1'>
         <!-- <i class="block_icon fa text-warning fa-globe blue"></i> -->
-        <span class="topTitleOspan">数据集市</span>
+        <span class="topTitleOspan">数据加工</span>
         <div class="elButton ">
             <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
                 <el-button size="mini" type="primary">
