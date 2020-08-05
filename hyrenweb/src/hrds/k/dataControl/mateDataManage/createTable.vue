@@ -237,9 +237,7 @@ export default {
             mdmFun.getStorageLayerConfInfo({
                 'dsl_id': dsl_id
             }).then(res => {
-                console.log(res.data)
                 if (res.data.dsl_added_s.length > 0) {
-                    console.log(res.data.dsl_added_s)
                     let typeArr = res.data.dsl_added_s
                     for (let i = 0; i < typeArr.length; i++) {
                         for (let j = 0; j < this.CollectType.length; j++) {
@@ -278,7 +276,7 @@ export default {
                 column_name: "",
                 column_type: "",
                 column_length: "",
-                is_null: '',
+                is_null: 0,
                 dq_remark: ''
             });
         },
@@ -329,7 +327,6 @@ export default {
                         params["is_trace"] = this.ruleForm.isdata;
                         params["dq_remark"] = this.ruleForm.remarks;
                         params["dqTableColumnBeans"] = JSON.stringify(this.ruleForm.startuptableData);
-                        console.log(params)
                         mdmFun.createTable(params).then(res => {
                             that.isLoading = false
                             if (res.code == '200') {
