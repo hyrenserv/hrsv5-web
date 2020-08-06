@@ -326,6 +326,12 @@ export function getImportReviewData(data) {
         params: data,
     })
 }
+export function deleteImportFilePath(data) {
+    return request({
+        url: '/H/market/deleteImportFilePath',
+        params: data,
+    })
+}
 //删除集市工程
 export function deleteMart(data) {
     return request({

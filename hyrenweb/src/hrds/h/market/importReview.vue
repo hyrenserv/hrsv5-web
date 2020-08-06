@@ -1,12 +1,10 @@
 <template>
     <div id='bbgl'>
         <el-row class='topTitle'>
-            <span class='el-icon-location'>加工导入审核</span>
-            <router-link  to="/dataMart">            
-                <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
-                    返回首页
-                </el-button>
-            </router-link>
+            <span class='el-icon-location'>加工导入审核</span>        
+            <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home" @click="deleteImportFilePath">
+                取消
+            </el-button>
             <el-button type="success" size="mini" @click="upload"
                        style="position: relative;float: right;right: 20px;">审核
             </el-button>
@@ -14,22 +12,22 @@
         <el-row>基本信息</el-row>
         <el-divider/>
         <el-row>
-            <el-col v-if="tableData.dm_info!==undefined && tableData.dm_info!==''">
+            <el-col v-if="tableData.dm_info!==undefined && JSON.stringify(tableData.dm_info)!='{}'">
                 加工工程差异 ：<p>{{tableData.dm_info}}</p>
             </el-col>
-            <el-col v-if="tableData.dm_datatable!==undefined && tableData.dm_datatable!==''">
+            <el-col v-if="tableData.dm_datatable!==undefined && tableData.dm_datatable.length!=0">
                 数据表差异：<p v-for="(item,index) in tableData.dm_datatable">{{item}}</p>
             </el-col>
-            <el-col v-if="tableData.dm_category!==undefined && tableData.dm_category!==''">
+            <el-col v-if="tableData.dm_category!==undefined && tableData.dm_category.length!=0">
                 加工分类差异： <p v-for="(item,index) in tableData.dm_category">{{item}}</p>
             </el-col>
-            <el-col v-if="tableData.datatable_field_info!==undefined && tableData.datatable_field_info!==''">
+            <el-col v-if="tableData.datatable_field_info!==undefined && tableData.datatable_field_info.length!=0">
                 加工数据表字段差异：<p v-for="(item,index) in tableData.datatable_field_info">{{item}}</p>
             </el-col>
-            <el-col v-if="tableData.dm_operation_info!==undefined && tableData.dm_operation_info!==''">
+            <el-col v-if="tableData.dm_operation_info!==undefined && tableData.dm_operation_info.length!=0">
                 加工数据操作差异：<p v-for="(item,index) in tableData.dm_operation_info">{{item}}</p>
             </el-col>
-            <el-col v-if="tableData.dm_relevant_info!==undefined && tableData.dm_relevant_info!==''">
+            <el-col v-if="tableData.dm_relevant_info!==undefined && tableData.dm_relevant_info.length!=0">
                 加工前后置作业差异：<p v-for="(item,index) in tableData.dm_relevant_info">{{item}}</p>
             </el-col>
         </el-row>
@@ -105,6 +103,15 @@
                         })
                     }, 1000)
                 });
+            },
+            deleteImportFilePath(){
+                functionAll.deleteImportFilePath({'file_path':this.$route.query.file_path}).then(res => {
+                    if (res.success) {
+                        this.$router.push({
+                            path: 'dataMart'
+                        })
+                    }
+                })
             },
             upload() {
                 this.isLoading = true;
