@@ -12,6 +12,9 @@
         <el-button type="success" class="els" @click="excelCathInfo()" size="small">
             <i class="fa fa-cloud-upload"></i>Excel导入
         </el-button>
+        <el-button type="success" class="els" @click="downloadExcel()" size="small">
+            <i class="fa fa-cloud-download"></i>Excel模板下载
+        </el-button>
     </el-row>
 
     <!-- 实现点击导入按钮进行页面数据导入-->
@@ -200,7 +203,7 @@ export default {
                     param.append('file', this.excelFileList[0].raw);
                     param.append('upload', upload);
                     functionAll.excelUploadFile(param).then(res => {
-                        if(res.success) {
+                        if (res.success) {
                             this.excelAuditData = res.data
                             // console.log(this.excelAuditData);
                             this.dialogFormAudit = !upload
@@ -235,14 +238,41 @@ export default {
             this.$refs.formAdd.resetFields();
         },
         //取消Excel上传
-        cancelExcel(){
+        cancelExcel() {
             this.dialogFormAudit = false
             this.dialogFormExcelImport = false
+        },
+        //下载Excel模板
+        downloadExcel() {
+            functionAll.downloadExcel().then(res => {
+                console.log(res);
+                const blob = new Blob([res.data]);
+                let filename = res.headers["content-disposition"].split('=')[1];
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    // document.body.appendChild(aTag);
+                    aTag.download = filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
+            })
         }
     },
     watch: {
         // excelAuditData() {
-            
+
         // }
     }
 };
