@@ -22,6 +22,9 @@
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
         </el-table-column>
         <el-table-column prop="sub_sys_cd" show-overflow-tooltip label="任务编号" align='center'>
+            <template slot-scope="scope">
+                <span @click="gotoWorkDetail(scope.row.sub_sys_cd)" style="color:#409EFF;cursor:pointer "> {{scope.row.sub_sys_cd}}</span>
+            </template>
         </el-table-column>
         <el-table-column prop="sub_sys_desc" show-overflow-tooltip label="任务名称" align='center'>
         </el-table-column>
@@ -395,6 +398,19 @@ export default {
                     URL.revokeObjectURL(aTag.href);
                 }
             })
+        },
+        gotoWorkDetail(val) {//根据作业编号跳转作业
+            this.$router.push({
+                name: 'etlJobDef',
+                query: {
+                    name: '/etlJobDef',
+                    dec: this.$Base64.encode('作业'),
+                    etl_sys_name: this.$route.query.etl_sys_name,
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    sub_sys_cd:val 
+                }
+            });
+             this.$emit('viewIn', '/etlJobDef', '作业');
         }
     },
     mounted() {

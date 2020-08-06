@@ -110,3 +110,10 @@ export function agentDeployData(data) {
         params:data
     })
 }
+
+// 立即启动SQL占位符号
+export function getSqlParamPlaceholder() {
+    return request({
+        url: '/B/agent/getSqlParamPlaceholder',
+    })
+}

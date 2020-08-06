@@ -421,7 +421,11 @@ export default {
                             // 隐藏对话框
                             this.dialogFormVisibleDelte = false;
                             // 表单清空
-                            this.form = {};
+                            this.form = {
+                                agent_name: "",
+                                agent_ip: "",
+                                agent_port: "",
+                            }
                             // // 重新渲染页面
                             this.getAgentAllData(agentTupe);
                         }

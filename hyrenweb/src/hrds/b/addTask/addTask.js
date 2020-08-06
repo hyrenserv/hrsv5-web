@@ -531,6 +531,13 @@ export function saveFileConf(data) {
     })
 }
 
+// 立即启动SQL占位符号
+export function getSqlParamPlaceholder() {
+    return request({
+        url: '/B/agent/dbagentconf/fileconf/getSqlParamPlaceholder',
+    })
+}
+
 // 第五步  存储目的地
 
 export function stodegetInitInfo(data) {

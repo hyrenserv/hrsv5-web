@@ -107,7 +107,11 @@ export default {
                             });
                             this.$emit("addEvent");
                             this.dialogFormVisibleAdd = false;
-                            this.formUpdate = {};
+                            this.formUpdate = {
+                                datasource_name: "",
+                                datasource_number: "",
+                                source_remark: "",
+                            }
                             this.depIds = [];
                         }
                     });
@@ -119,7 +123,11 @@ export default {
         // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
-            this.formUpdate = {};
+            this.formUpdate = {
+                datasource_name: "",
+                datasource_number: "",
+                source_remark: "",
+            }
             this.depIds = [];
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;

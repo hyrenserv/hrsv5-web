@@ -1,6 +1,6 @@
 <template>
 <div class="singlesearch" id="singleTable">
-     <Step :active="active" :typeinfo='typeinfo'></Step>
+    <Step :active="active" :typeinfo='typeinfo'></Step>
     <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="单表查询" name="first">
             <div id="singleTable">
@@ -75,7 +75,7 @@
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
-            <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+            <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
                 <el-table stripe :height="tableHeight" :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
@@ -171,7 +171,7 @@
                 <p class="dialogtopname">{{sqlFiltSetData_tablename}}</p>
             </span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form ref="addClassTask">
             <el-row type="flex" justify="center">
                 <el-col :span="24">
@@ -254,9 +254,9 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-             <!-- :rules="rule.default" -->
+            <!-- :rules="rule.default" -->
             <el-form-item label="删除SQL" prop="delete">
                 <el-row type="flex" justify="center">
                     <el-col>
@@ -289,7 +289,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="xstypeadd2" ref="xstypeadd2" status-icon label-width="30%">
             <el-form-item label="删除SQL" prop="delete">
                 <el-row type="flex" justify="center">
@@ -323,7 +323,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-全量</span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="xstypeadd2q" status-icon ref="xstypeadd2q" label-width="30%">
             <el-form-item label="SQL" prop="insert" :rules="rule.default">
                 <el-row type="flex" justify="center">
@@ -347,7 +347,7 @@
                 <p class="topcolumename">{{EXtable_name}}</p>
             </span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
             <el-row type="flex" style="text-align:right;padding-right:10px;">
                 <el-col :span="24">
@@ -520,7 +520,7 @@ export default {
     data() {
         return {
             active: 1,
-            typeinfo:1,
+            typeinfo: 1,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
             Allis_selectionState: false,
@@ -651,11 +651,11 @@ export default {
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
             secondTrue: true,
-            tableHeight : ''
+            tableHeight: ''
         };
     },
     created() {
-        this.dbid =this.$route.query.id;
+        this.dbid = this.$route.query.id;
         this.agentId = this.$route.query.agent_id;
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
@@ -840,7 +840,7 @@ export default {
         getAllTableInfoFun() {
             this.onclickAll = true;
             this.Allis_selectionState = false;
-            this.tableData=[];
+            this.tableData = [];
             this.getAllTableInfo()
         },
         // 全表点击单个复选框
@@ -953,7 +953,7 @@ export default {
                         }
                         this.tableData = res.data;
                     } else {
-                         this.tableData = [];
+                        this.tableData = [];
                         this.tableloadingInfo = "暂无数据";
                     }
                 });
@@ -996,7 +996,7 @@ export default {
                                 }
                             }
                             tableDatalin = this.callTable3.concat(this.firstTableInfo)
-                            for (let i = 0; i <tableDatalin.length; i++) {
+                            for (let i = 0; i < tableDatalin.length; i++) {
                                 if (tableDatalin[i].selectionState == true) {
                                     tableData.push(tableDatalin[i])
                                 }
@@ -1102,7 +1102,7 @@ export default {
                                     //第一个页面卸数方式是增量存在的
                                     let params1 = {};
                                     params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
-                                    params1["colSetId"] =this.dbid;
+                                    params1["colSetId"] = this.dbid;
                                     params1["tableIds"] =
                                         JSON.stringify(tableidArr1) === "{}" ?
                                         "" :
@@ -1308,7 +1308,7 @@ export default {
                 let params1 = {};
                 params1["tableInfoArray"] =
                     twotabledata.length > 0 ? JSON.stringify(twotabledata) : "";
-                params1["colSetId"] =this.dbid;
+                params1["colSetId"] = this.dbid;
                 params1["tableColumn"] =
                     JSON.stringify(tableColumn) === "{}" ?
                     "" :
@@ -1448,7 +1448,7 @@ export default {
                     if (arrData[k].unload_type == "增量") {
                         tableInfoString.push({
                             database_id: this.dbid,
-                            table_id: (arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                            table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                             is_parallel: "0",
                             is_md5: arrData[k].is_md5 == true ? "1" : "0",
                             table_ch_name: arrData[k].table_ch_name,
@@ -1461,7 +1461,7 @@ export default {
                             if (arrData[k].is_customize_sql == "1") {
                                 tableInfoString.push({
                                     database_id: this.dbid,
-                                    table_id:(arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                                    table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                                     is_parallel: "1",
                                     unload_type: "1",
                                     is_customize_sql: "1",
@@ -1475,7 +1475,7 @@ export default {
                                 tableInfoString.push({
                                     database_id: this.dbid,
                                     unload_type: "1",
-                                    table_id: (arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                                    table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                                     is_parallel: "1",
                                     is_customize_sql: "0",
                                     is_md5: arrData[k].is_md5 == true ? "1" : "0",
@@ -1496,7 +1496,7 @@ export default {
                             tableInfoString.push({
                                 database_id: this.dbid,
                                 unload_type: "1",
-                                table_id:(arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                                table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                                 is_parallel: "0",
                                 is_md5: arrData[k].is_md5 == true ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
@@ -1573,7 +1573,7 @@ export default {
                     });
                 }
                 let collstring = collTbConfParamString;
-                params2["colSetId"] =this.dbid;
+                params2["colSetId"] = this.dbid;
                 params2["tableInfoString"] = JSON.stringify(this.tablein);
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
                 params2["delTbString"] =
@@ -1912,7 +1912,7 @@ export default {
         getTableDataCountFun() {
             let params = {};
             params["tableName"] = this.EXtable_name;
-            params["colSetId"] =this.dbid;
+            params["colSetId"] = this.dbid;
             addTaskAllFun.getTableDataCount(params).then(res => {
                 var nowDate = new Date();
                 let date = {
@@ -2270,8 +2270,8 @@ export default {
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);
             params["sql"] = sql;
-            params["tableId"] = row.table_id?row.table_id : "";
-            params['tableName']=row.table_name
+            params["tableId"] = row.table_id ? row.table_id : "";
+            params['tableName'] = row.table_name
             addTaskAllFun.getSqlColumnData(params).then(res => {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";

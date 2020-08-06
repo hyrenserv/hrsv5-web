@@ -10,80 +10,100 @@
     <el-row class='topTitle'>
         <span>基础配置</span>
     </el-row>
-    <el-form :model="dm_datatable" ref="dm_datatable" class="demo-form-inline" :inline="true" label-width="170px">
-        <el-col :span="10">
-            <el-form-item label="表英文名" prop="datatable_en_name" :rules="rule.default">
-                <el-input :disabled="ennameiflock" v-model="dm_datatable.datatable_en_name" @change="checkrepeat()" placeholder="表英文名">
-                    <el-button slot="append" icon="el-icon-zoom-in" @click="showalreadyexisttablename()"></el-button>
-                </el-input>
-            </el-form-item>
-
-        </el-col>
-        <el-col :span="10">
-            <el-form-item label="表中文名" prop="datatable_cn_name" :rules="rule.default">
-                <el-input :disabled="iflock" v-model="dm_datatable.datatable_cn_name" autocomplete="off" placeholder="表中文名"></el-input>
-            </el-form-item>
-        </el-col>
-
-        <el-col :span="10">
-            <el-form-item label="是否已经存在的表" prop="repeat_flag" :rules="rule.selected">
-                <el-select @change="changerepeat()" :disabled="repeatiflock" v-model="dm_datatable.repeat_flag" placeholder="请选择">
+    <el-form :model="dm_datatable" ref="dm_datatable" class="demo-form-inline" :inline="true" label-width="200px">
+        <el-row>
+            <el-col :span="10">
+                <el-form-item label="表英文名" prop="datatable_en_name" :rules="rule.default">
+                    <el-input :disabled="ennameiflock" v-model="dm_datatable.datatable_en_name" @change="checkrepeat()" placeholder="表英文名">
+                        <el-button slot="append" icon="el-icon-zoom-in" @click="showalreadyexisttablename()"></el-button>
+                    </el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="表中文名" prop="datatable_cn_name" :rules="rule.default">
+                    <el-input :disabled="iflock" v-model="dm_datatable.datatable_cn_name" autocomplete="off" placeholder="表中文名"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="10">
+                <el-form-item label="是否已经存在的表" prop="repeat_flag" :rules="rule.selected">
+                    <!-- <el-select @change="changerepeat()" :disabled="repeatiflock" v-model="dm_datatable.repeat_flag" placeholder="请选择">
                     <el-option v-for="item in isflag" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-col>
+                </el-select> -->
+                    <el-radio-group @change="changerepeat()" :disabled="repeatiflock" v-model="dm_datatable.repeat_flag">
+                        <el-radio :disabled="iflock" v-for="item in isflag" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-col>
 
-        <el-col :span="10">
-            <el-form-item label="执行引擎" prop="sql_engine" :rules="rule.selected">
-                <el-select :disabled="iflock" v-model="dm_datatable.sql_engine" placeholder="请选择">
+            <el-col :span="12">
+                <el-form-item label="执行引擎" prop="sql_engine" :rules="rule.selected">
+                    <!-- <el-select :disabled="iflock" v-model="dm_datatable.sql_engine" placeholder="请选择">
                     <el-option v-for="item in allsqlengine" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-col>
+                </el-select> -->
+                    <el-radio-group v-model="dm_datatable.sql_engine">
+                        <el-radio :disabled="iflock" v-for="item in allsqlengine" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="10">
+                <el-form-item label="表描述" prop="datatable_desc">
+                    <el-input :disabled="iflock" type="text" v-model="dm_datatable.datatable_desc" autocomplete="off" placeholder="表描述"></el-input>
+                </el-form-item>
+            </el-col>
 
-        <el-col :span="10">
-            <el-form-item label="表描述" prop="datatable_desc">
-                <el-input :disabled="iflock" type="text" v-model="dm_datatable.datatable_desc" autocomplete="off" placeholder="表描述"></el-input>
-            </el-form-item>
-        </el-col>
-
-        <el-col :span="10">
-            <el-form-item label="进数方式" prop="storage_type" :rules="rule.selected">
-                <el-select :disabled="iflock" v-model="dm_datatable.storage_type" placeholder="请选择">
+            <el-col :span="12">
+                <el-form-item label="进数方式" prop="storage_type" :rules="rule.selected">
+                    <el-radio-group v-model="dm_datatable.storage_type">
+                        <el-radio :disabled="iflock" v-for="item in allstoragetype" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    </el-radio-group>
+                    <!-- <el-select :disabled="iflock" v-model="dm_datatable.storage_type" placeholder="请选择">
                     <el-option v-for="item in allstoragetype" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-col>
-
-        <el-col :span="10">
-            <el-form-item label="数据存储方式" prop="table_storage" :rules="rule.selected">
-                <el-select :disabled="iflock" v-model="dm_datatable.table_storage" placeholder="请选择">
+                </el-select> -->
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="10">
+                <el-form-item label="数据存储方式" prop="table_storage" :rules="rule.selected">
+                    <!-- <el-select :disabled="iflock" v-model="dm_datatable.table_storage" placeholder="请选择">
                     <el-option v-for="item in alltablestorage" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-col>
+                </el-select> -->
+                    <el-radio-group v-model="dm_datatable.table_storage">
+                        <el-radio :disabled="iflock" v-for="item in alltablestorage" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-col>
 
-        <el-col :span="10">
-            <el-form-item label="数据生命周期" prop="datatable_lifecycle" :rules="rule.selected">
-                <el-select :disabled="iflock" v-model="dm_datatable.datatable_lifecycle" placeholder="请选择" @change="changeDataLifeCycle">
+            <el-col :span="12">
+                <el-form-item label="数据生命周期" prop="datatable_lifecycle" :rules="rule.selected">
+                    <!-- <el-select :disabled="iflock" v-model="dm_datatable.datatable_lifecycle" placeholder="请选择" @change="changeDataLifeCycle">
                     <el-option v-for="item in alldatatablelifecycle" :key="item.value" :label="item.value" :value="item.code"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-col>
+                </el-select> -->
+                    <el-radio-group v-model="dm_datatable.datatable_lifecycle" @change="changeDataLifeCycle">
+                        <el-radio :disabled="iflock" v-for="item in alldatatablelifecycle" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="10">
+                <el-form-item label="选择分类信息" prop="category_id" :rules="rule.selected">
+                    <el-select :disabled="iflock" v-model="dm_datatable.category_id" placeholder="请选择">
+                        <el-option v-for="item in categoryData" :key="item.category_id" :label="item.category_name" :value="item.category_id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
 
-        <el-col :span="10">
-            <el-form-item label="选择分类信息" prop="category_id" :rules="rule.selected">
-                <el-select :disabled="iflock" v-model="dm_datatable.category_id" placeholder="请选择">
-                    <el-option v-for="item in categoryData" :key="item.category_id" :label="item.category_name" :value="item.category_id"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-col>
-
-        <el-col :span="10" v-if="showData_date">
-            <el-form-item label="数据表到期日期" prop="datatable_due_date" :rules="rule.selected">
-                <el-date-picker :disabled="iflock" v-model="dm_datatable.datatable_due_date" value-format="yyyyMMdd" align="right" placeholder="选择日期"></el-date-picker>
-            </el-form-item>
-        </el-col>
+            <el-col :span="12" v-if="showData_date">
+                <el-form-item label="数据表到期日期" prop="datatable_due_date" :rules="rule.selected">
+                    <el-date-picker :disabled="iflock" v-model="dm_datatable.datatable_due_date" value-format="yyyyMMdd" align="right" placeholder="选择日期"></el-date-picker>
+                </el-form-item>
+            </el-col>
+        </el-row>
     </el-form>
 
     <el-col :span='13'>&nbsp;</el-col>

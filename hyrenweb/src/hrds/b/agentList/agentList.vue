@@ -100,7 +100,7 @@
                     <!-- <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button> -->
                     <el-button type="text" class="workcolor">生成作业</el-button>
                     <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
-                    <el-button else type="text" @click="downTaskData(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
+                    <el-button else type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -130,6 +130,24 @@
             <el-button type="primary" size="mini" @click="workSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
+    <!--下载数据字典时,数据库的采集任务中或许存在着SQL占位符,所以这里需要填写-->
+    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="40%">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">设置数据跑批日期</span>
+        </div>
+        <div>
+            <el-form>
+                <el-form-item>
+                    SQL中如果存在占位符,请填写占位符的值...多个参数之间请使用{{ParamPlaceholder}}进行分割,例如: column1=123{{ParamPlaceholder}}column2=456
+                    <el-input type="textarea" placeholder="采集任务中的SQL占位参数值" v-model="sqlParam" style="width:100%;"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="finishDialogVisible = false" type="danger" size="mini">取 消</el-button>
+            <el-button type="primary" @click="downloadDirc()" size="mini">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 </template>
 
@@ -149,6 +167,7 @@ export default {
             rule: validator.default,
             dialogTableVisible: false,
             dialogProdeceJobs: false,
+            finishDialogVisible : false,
             agentType: "",
             sourceName: "",
             agentStatus: "",
@@ -162,7 +181,12 @@ export default {
             Allproject: [],
             Alltask: [{
                 value: '2'
-            }]
+            }],
+            getValue : {},
+            sqlParam : '',
+            type : '',
+            id : '',
+            ParamPlaceholder : ''
         };
     },
     mounted() {
@@ -171,6 +195,10 @@ export default {
         });
         this.getType();
         this.getStatus();
+        this.getTypeValue()
+        agentList.getSqlParamPlaceholder().then(res=>{
+            this.ParamPlaceholder = res.data
+        })
     },
     methods: {
         //获取类型
@@ -180,6 +208,14 @@ export default {
             params["category"] = "AgentType";
             this.$Code.getCategoryItems(params).then(res => {
                 this.CollectType = res.data ? res.data : [];
+            });
+        },
+        getTypeValue() {
+            // CollectType
+            let params = {};
+            params["category"] = "AgentType";
+            this.$Code.getCodeItems(params).then(res => {
+                this.getValue = res.data
             });
         },
         // 获取状态
@@ -440,13 +476,14 @@ export default {
         workSubmitFun() {
 
         },
-        downTaskData(type, row) {
+        downloadDirc() {
             for (let i = 0; i < this.CollectType.length; i++) {
-                if (this.CollectType[i].value == type) {
-                    if (this.CollectType[i].code == '1') {
+                if (this.CollectType[i].value == this.type) {
+                    if (this.CollectType[i].code == this.getValue.ShuJuKu) {
                         agentList.sendJDBCCollectTaskById({
-                            'colSetId': row.id,
-                            'is_download': 'true'
+                            'colSetId': this.id,
+                            'is_download': 'true',
+                            'sqlParam': this.sqlParam
                         }).then(res => {
                             const blob = new Blob([JSON.stringify(res.data)]);
                             let filename = res.headers["content-disposition"].split('=')[1];
@@ -472,6 +509,10 @@ export default {
                     }
                 }
             }
+        },
+        settingDownloadDirc(type, row) {
+            this.type = type
+            this.id = row.id
         }
     }
 };
