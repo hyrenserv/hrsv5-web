@@ -45,10 +45,16 @@
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_sys_cd" label="工程编号" width="88" align='center'>
+            <template slot-scope="scope">
+                <span @click="gotoWorkId(scope.row.etl_sys_cd)" style="color:#409EFF;cursor:pointer "> {{scope.row.etl_sys_cd}}</span>
+            </template>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="sub_sys_cd" label="任务编号" width="88" align='center'>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_job" label="作业名称" align='center'>
+            <template slot-scope="scope">
+                <span @click="gotoWorkRely(scope.row.etl_job)" style="color:#409EFF;cursor:pointer "> {{scope.row.etl_job}}</span>
+            </template>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="etl_job_desc" label="作业描述" align='center'>
         </el-table-column>
@@ -592,6 +598,9 @@ export default {
         this.getTable();
         this.getProType();
         this.getJobName();
+        if (this.$route.query.sub_sys_cd != undefined) { //判断从哪里来的
+            this.form.sub_sys_cd = this.$route.query.sub_sys_cd;
+        }
     },
     methods: {
         //下拉框数据强制渲染
@@ -1328,6 +1337,31 @@ export default {
             } else {
                 this.formAdd.status = ""
             }
+        },
+        gotoWorkRely(val) { //根据作业名称跳转作业依赖
+            this.$router.push({
+                name: 'etlDependency',
+                query: {
+                    name: '/etlDependency',
+                    dec: this.$Base64.encode('作业依赖'),
+                    etl_sys_name: this.$route.query.etl_sys_name,
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    etl_job: val
+                }
+            });
+            this.$emit('viewIn', '/etlDependency', '作业依赖');
+        },
+        gotoWorkId() { // 返回任务页面
+            this.$router.push({
+                name: 'menus',
+                query: {
+                    name: '/subSystem',
+                    dec: this.$Base64.encode('任务'),
+                    etl_sys_name: this.$route.query.etl_sys_name,
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                }
+            });
+            this.$emit('viewIn', '/subSystem', '任务');
         }
     },
 };

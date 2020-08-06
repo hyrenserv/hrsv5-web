@@ -34,6 +34,9 @@
         <el-table-column type="selection" align='center'>
         </el-table-column>
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
+            <template slot-scope="scope">
+                <span @click="gotoWorkId(scope.row.etl_sys_cd)" style="color:#409EFF;cursor:pointer "> {{scope.row.etl_sys_cd}}</span>
+            </template>
         </el-table-column>
         <el-table-column prop="etl_job" show-overflow-tooltip label="作业名称" align='center'>
         </el-table-column>
@@ -187,6 +190,9 @@ export default {
         this.getTable();
         this.getProName();
         this.getJobName();
+        if (this.$route.query.etl_job != undefined) { //判断从哪里来的
+            this.form.etl_job = this.$route.query.etl_job;
+        }
     },
     methods: {
         //刷新表格
@@ -570,6 +576,18 @@ export default {
                     URL.revokeObjectURL(aTag.href);
                 }
             })
+        },
+        gotoWorkId() { // 返回任务页面
+            this.$router.push({
+                name: 'menus',
+                query: {
+                    name: '/subSystem',
+                    dec: this.$Base64.encode('任务'),
+                    etl_sys_name: this.$route.query.etl_sys_name,
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                }
+            });
+            this.$emit('viewIn', '/subSystem', '任务');
         }
     },
 };

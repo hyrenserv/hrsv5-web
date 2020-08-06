@@ -729,7 +729,12 @@ export default {
         closeCON() {
             this.$refs.formRecordCON.resetFields();
             this.dialogFormVisibleRecordCON = false;
-            this.formRecordCON = {};
+            this.formRecordCON = {
+                etl_sys_cd: "",
+                readNum: "",
+                curr_bath_date: "",
+                project_records: ""
+            }
         },
         //TRIGGER日志查看按钮
         onViewTRI() {
@@ -772,7 +777,12 @@ export default {
         closeTRI() {
             this.$refs.formRecordTRI.resetFields();
             this.dialogFormVisibleRecordTRI = false;
-            this.formRecordTRI = {};
+            this.formRecordTRI = {
+                etl_sys_cd: "",
+                readNum: "",
+                curr_bath_date: "",
+                project_records: "",
+            }
         },
 
         //表格编辑
@@ -840,12 +850,14 @@ export default {
         handleRecordco(index, row) {
             this.dialogFormVisibleRecordCON = true;
             this.formRecordCON.etl_sys_cd = row.etl_sys_cd;
+            this.formRecordCON.readNum = 100;
             this.dialogInfo = row.etl_sys_cd;
         },
         //表格TRIGGER日志信息按钮
         handleRecordtr(index, row) {
             this.dialogFormVisibleRecordTRI = true;
             this.formRecordTRI.etl_sys_cd = row.etl_sys_cd;
+            this.formRecordTRI.readNum = 100;
             this.dialogInfoTri = row.etl_sys_cd;
         },
         // 全屏幕显示
