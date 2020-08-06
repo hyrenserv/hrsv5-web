@@ -162,7 +162,6 @@ export default {
         },
         //点击源数据管理树节点触发
         choiceCheck(e, data) {
-            console.log(e, data);
             this.datatable_id = data.file_id
             data.ischoice = e
             if (e) {
@@ -180,7 +179,6 @@ export default {
                                     node.ischoice = false //将之前勾选的都为false
                                 }
                             }
-
                         })
                         this.version_date_s = [] //之前存储的清空
                         this.version_date_s.push(data.label); //加入新的

@@ -937,7 +937,7 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMartTable_2.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据加工' }
+                        { name: '数据加工 ' }
                     ],
                 },
                 {
@@ -953,12 +953,12 @@ export default new Router({
                 {
                     path: '/importReview',
                     name: 'importReview',
-                    title: '集市工程导入审核',
+                    title: '加工工程导入审核',
                     component: () => import('@/hrds/h/market/importReview.vue'),
                     meta: [
                         { name: '首页' },
                         { name: '数据加工',url:'dataMart' },
-                        { name: '集市工程导入审核' },
+                        { name: '加工工程导入审核' },
                     ],
                 },
                 {
