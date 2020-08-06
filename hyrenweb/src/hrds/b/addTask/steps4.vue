@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="AllTable_SeparatorFun()" class="alltables">所有表分隔符设置</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
-        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
+        <el-table :height="tableHeight" :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
             <el-table-column label="序号" align="center" width="60">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
@@ -194,7 +194,7 @@
             <el-button type="primary" size="medium" class="leftbtn" @click="backFun()">返回</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">下一步</el-button>
+            <el-button type="primary" size="medium" class='rightbtn' @click="next('ruleForm')">生成作业配置</el-button>
             <el-button type="success" size="medium" class='rightbtn' @click="startButtonFun()">立即启动</el-button>
             <el-button type="primary" size="medium" class='rightbtn' @click="pre()">上一步</el-button>
         </el-col>
@@ -217,7 +217,7 @@
         </div>
     </el-dialog>
     <!--完成  -->
-    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="30%">
+    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="40%">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">设置数据跑批日期</span>
         </div>
@@ -225,6 +225,10 @@
             <el-form>
                 <el-form-item>
                     <el-date-picker type="date" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    SQL中如果存在占位符,请填写占位符的值...多个参数之间请使用{{ParamPlaceholder}}进行分割,例如: column1=123{{ParamPlaceholder}}column2=456
+                    <el-input type="textarea" placeholder="采集任务中的SQL占位参数值" v-model="sqlParam" style="width:100%;"></el-input>
                 </el-form-item>
             </el-form>
         </div>
@@ -257,6 +261,8 @@ export default {
     },
     data() {
         return {
+            tableHeight: '',
+            sqlParam: '',
             etl_date: '',
             active: 3,
             typeinfo: 1,
@@ -337,9 +343,13 @@ export default {
             finishDialogVisible: false,
             yesF: '',
             noF: '',
+            ParamPlaceholder: ''
         };
     },
     created() {
+        addTaskAllFun.getSqlParamPlaceholder().then(res => {
+            this.ParamPlaceholder = res.data
+        })
         this.dbid = this.$route.query.id;
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
@@ -368,6 +378,7 @@ export default {
                 this.ExtractDataType = res.data;
             }
         });
+        this.tableHeight = window.innerHeight - 325
     },
     mounted() {
 
@@ -423,7 +434,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].fdc_ml,
-                                        'is_header': dataAll[i].is_header?dataAll[i].is_header:'0',
+                                        'is_header': dataAll[i].is_header ? dataAll[i].is_header : '0',
                                         'row_separator': dataAll[i].fdc_row_separator,
                                         'database_separatorr': dataAll[i].fdc_database_separatorr,
                                         'database_code': dataAll[i].fdc_database_code,
@@ -434,7 +445,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].dc_ml,
-                                        'is_header': dataAll[i].is_header?dataAll[i].is_header:'0',
+                                        'is_header': dataAll[i].is_header ? dataAll[i].is_header : '0',
                                         'row_separator': dataAll[i].dc_row_separator,
                                         'database_separatorr': dataAll[i].dc_database_separatorr,
                                         'database_code': dataAll[i].dc_database_code,
@@ -445,7 +456,7 @@ export default {
                                     extractionDefString.push({
                                         'table_id': dataAll[i].table_id,
                                         'plane_url': dataAll[i].csv_ml,
-                                        'is_header': dataAll[i].is_header?dataAll[i].is_header:'0',
+                                        'is_header': dataAll[i].is_header ? dataAll[i].is_header : '0',
                                         'row_separator': dataAll[i].csv_row_separator,
                                         'database_separatorr': dataAll[i].csv_database_separatorr,
                                         'database_code': dataAll[i].csv_database_code,
@@ -523,9 +534,9 @@ export default {
                                     path: "/collection1_5",
                                     query: data
                                 });
-                            }else if(res.code == 200 && this.startButton == true) {
+                            } else if (res.code == 200 && this.startButton == true) {
                                 this.sendSubmit()
-                                this.startButton=false
+                                this.startButton = false
                             }
                         });
                     }
@@ -537,22 +548,23 @@ export default {
         },
         startButtonFun() {
             this.finishDialogVisible = true
-            let date=new Date()
-            this.etl_date=date.getFullYear()+(date.getMonth()+1>9?date.getMonth()+1:'0'+(date.getMonth()+1))+(date.getDate()>9?date.getDate():'0'+(date.getDate()))
+            let date = new Date()
+            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 9 ? date.getDate() : '0' + (date.getDate()))
         },
         finishSubmit() {
             this.startButton = true
             this.next('ruleForm')
         },
         sendSubmit() {
-            this.isLoading=true
+            this.isLoading = true
             addTaskAllFun
                 .sendJDBCCollectTaskById({
                     colSetId: this.dbid,
-                    etl_date:this.etl_date
+                    etl_date: this.etl_date,
+                    sqlParam: this.sqlParam
                 })
                 .then(res => {
-                    this.isLoading=false
+                    this.isLoading = false
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$message({
