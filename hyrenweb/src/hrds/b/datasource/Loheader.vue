@@ -245,7 +245,6 @@ export default {
         //下载Excel模板
         downloadExcel() {
             functionAll.downloadExcel().then(res => {
-                console.log(res);
                 const blob = new Blob([res.data]);
                 let filename = res.headers["content-disposition"].split('=')[1];
                 if (window.navigator.msSaveOrOpenBlob) {
