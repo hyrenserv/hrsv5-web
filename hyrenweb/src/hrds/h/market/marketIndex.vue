@@ -375,6 +375,12 @@ export default {
             this.titleChange = "新增工程";
             this.dialogofmarketadd = true;
             this.addOrUpdate = false;
+            this.formAdd = {
+                mart_name: "",
+                mart_number: "",
+                mart_desc: "",
+                tableDataAdd: [],
+            }
         },
         downloadmart(mart_name, data_mart_id) {
             message.confirmMsg('确定导出 ' + mart_name + ' 吗').then(res => {
