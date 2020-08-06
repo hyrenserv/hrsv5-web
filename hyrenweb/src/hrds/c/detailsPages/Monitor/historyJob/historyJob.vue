@@ -9,13 +9,13 @@
         </el-col>
         <el-col :span="7">
             <el-form-item label="开始批量日期">
-                <el-date-picker size="mini" style="width:126px;" v-model="form.start_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" placeholder="开始日期">
+                <el-date-picker size="mini" style="width:126px;" v-model="form.start_date" value-format="yyyyMMdd" type="date" placeholder="开始日期">
                 </el-date-picker>
             </el-form-item>
         </el-col>
         <el-col :span="8">
             <el-form-item label="结束批量日期">
-                <el-date-picker size="mini" style="width:126px;" v-model="form.end_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" placeholder="结束日期">
+                <el-date-picker size="mini" style="width:126px;" v-model="form.end_date" value-format="yyyyMMdd" type="date" placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -51,7 +51,7 @@
                 </el-tooltip>
             </el-form-item>
             <el-form-item label=" 日志日期" :label-width="formLabelWidth" prop="curr_bath_date" :rules="filter_rules([{required: true}])">
-                <el-date-picker v-model="formAdd.curr_bath_date" format="yyyy-MM-dd" value-format="yyyyMMdd" type="date" style="width:284px" placeholder="开始批量日期">
+                <el-date-picker v-model="formAdd.curr_bath_date" value-format="yyyyMMdd" type="date" style="width:284px" placeholder="开始批量日期">
                 </el-date-picker>
                 <el-button class="download" @click="downLoad('formAdd')" :loading="downLoading" type="primary" size="small">下 载</el-button>
             </el-form-item>
@@ -85,7 +85,7 @@ export default {
                 etl_sys_cd: this.$route.query.etl_sys_cd,
             },
             formAdd: {
-                readNum: '',
+                readNum: 100,
                 curr_bath_date: ''
             },
             journalData: '',
