@@ -21,7 +21,7 @@ const childrenMemus = {
             component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')
         }
     ],
-    37: [
+    55: [
         {
             path: '/dbck',
             name: 'dbck',
@@ -60,7 +60,7 @@ const childrenMemus = {
             component: () => import('@/hrds/b/dataQuery/webSqlConsole.vue')
         }
     ],
-    55: [
+    37: [
         {
             path: '/dbm',
             name: 'dbm',
