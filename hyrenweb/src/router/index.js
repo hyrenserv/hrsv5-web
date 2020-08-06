@@ -886,7 +886,7 @@ export default new Router({
                     component: () => import('@/hrds/h/market/marketIndex.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' },
+                        { name: '数据加工' },
                     ],
                 },
                 {
@@ -896,7 +896,7 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMarketIndex.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' },
+                        { name: '数据加工' },
                     ],
                 },
                 {
@@ -906,7 +906,7 @@ export default new Router({
                     component: () => import('@/hrds/h/manage/version/marketVersionManage.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' },
+                        { name: '数据加工' },
                         { name: '版本管理' },
                     ],
                 },
@@ -917,7 +917,7 @@ export default new Router({
                     component: () => import('@/hrds/h/market/detailMart.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' }
+                        { name: '数据加工' }
                     ],
                 },
                 {
@@ -927,7 +927,7 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMartTable_1.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' }
+                        { name: '数据加工' }
                     ],
                 },
                 {
@@ -937,7 +937,7 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMartTable_2.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' }
+                        { name: '数据加工 ' }
                     ],
                 },
                 {
@@ -947,18 +947,18 @@ export default new Router({
                     component: () => import('@/hrds/h/market/addMartTable_3.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市' }
+                        { name: '数据加工' }
                     ],
                 },
                 {
                     path: '/importReview',
                     name: 'importReview',
-                    title: '集市工程导入审核',
+                    title: '加工工程导入审核',
                     component: () => import('@/hrds/h/market/importReview.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据集市',url:'dataMart' },
-                        { name: '集市工程导入审核' },
+                        { name: '数据加工',url:'dataMart' },
+                        { name: '加工工程导入审核' },
                     ],
                 },
                 {
