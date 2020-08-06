@@ -162,7 +162,6 @@ export default {
         },
         //点击源数据管理树节点触发
         choiceCheck(e, data) {
-            console.log(e, data);
             this.datatable_id = data.file_id
             data.ischoice = e
             if (e) {
