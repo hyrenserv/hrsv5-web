@@ -643,7 +643,6 @@
         },
         methods: {
             checkifrepeat() {
-                // debugger;
                 if (this.ifrepeat == "true" || this.ifrepeat == true) {
                     functionAll.getTableIdFromSameNameTableId({
                         "datatable_id": this.datatable_id
@@ -657,7 +656,7 @@
             },
             showtablecolumn(node, index) {
                 this.index = index;
-                if (this.checkiftable(node)) {
+                if (node.file_id != "") {
                     functionAll.queryAllColumnOnTableName({
                         'source': node.data_layer,
                         'id': node.id
@@ -667,19 +666,6 @@
                         this.iftablecolumn = true;
                         this.Allis_selectionstate = false;
                     });
-                }
-            },
-            checkiftable(node) {
-                if (!node.hasOwnProperty("children")) {
-                    if (node.data_layer == "DCL" && node.file_id != "") {
-                        return true;
-                    } else if (node.data_layer == "DML" && node.datatable_id != "") {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
                 }
             },
             getifhbase() {
