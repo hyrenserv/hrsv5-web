@@ -305,7 +305,7 @@
                         <el-table-column type="selection" label="选择" align="center">
                         </el-table-column>
                         <el-table-column prop="column_name" label="字段名" align="center"/>
-                        <el-table-column prop="tc_remark" label="字段描述" align="center"/>
+                        <el-table-column prop="column_ch_name" label="字段描述" align="center"/>
                     </el-table>
                 </el-col>
             </el-row>
