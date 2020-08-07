@@ -12,23 +12,24 @@
         <el-row>基本信息</el-row>
         <el-divider/>
         <el-row>
-            <el-col v-if="tableData.dm_info!==undefined && JSON.stringify(tableData.dm_info)!='{}'">
-                加工工程差异 ：<p>{{tableData.dm_info}}</p>
+            <el-col v-if="tableData.dm_info!==undefined && tableData.dm_info.length!=0">
+                加工工程表差异 ：<p>{{tableData.dm_info}}</p>
             </el-col>
             <el-col v-if="tableData.dm_datatable!==undefined && tableData.dm_datatable.length!=0">
-                数据表差异：<p v-for="(item,index) in tableData.dm_datatable">{{item}}</p>
+                <span style="color:red">数据表差异：</span><p v-for="(item,index) in tableData.dm_datatable">{{item}}</p>
             </el-col>
-            <el-col v-if="tableData.dm_category!==undefined && tableData.dm_category.length!=0">
-                加工分类差异： <p v-for="(item,index) in tableData.dm_category">{{item}}</p>
+            <el-col v-if="tableData.dm_category!==undefined && tableData.dm_category.length!==0">
+                {{tableData.dm_category.length}}
+               <span style="color:red"> 分类表差异：</span> <p v-for="(item,index) in tableData.dm_category">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.datatable_field_info!==undefined && tableData.datatable_field_info.length!=0">
-                加工数据表字段差异：<p v-for="(item,index) in tableData.datatable_field_info">{{item}}</p>
+               <span style="color:red"> 数据表字段差异：</span><p v-for="(item,index) in tableData.datatable_field_info">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.dm_operation_info!==undefined && tableData.dm_operation_info.length!=0">
-                加工数据操作差异：<p v-for="(item,index) in tableData.dm_operation_info">{{item}}</p>
+               <span style="color:red"> 数据表操作差异：</span><p v-for="(item,index) in tableData.dm_operation_info">{{item}}</p>
             </el-col>
             <el-col v-if="tableData.dm_relevant_info!==undefined && tableData.dm_relevant_info.length!=0">
-                加工前后置作业差异：<p v-for="(item,index) in tableData.dm_relevant_info">{{item}}</p>
+               <span style="color:red"> 前后置作业表差异：</span><p v-for="(item,index) in tableData.dm_relevant_info">{{item}}</p>
             </el-col>
         </el-row>
         <!-----------------------------表作业影响--------------------------->
