@@ -15,12 +15,14 @@
                 <div class="mytree" height='260'>
                     <el-tree class="filter-tree" :data="data2" :indent="0" id="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                            <span :title="data.description" v-if="data.file_id.length > 0">
-                                <el-checkbox @change="choiceTable($event,data.data_layer,data.file_id,data.hyren_name,data.original_name)"></el-checkbox>{{node.label}}
+                            <span :title="data.description" v-if="data.file_id !== ''">
+                                <el-checkbox @change="choiceTable($event,data.data_layer,data.file_id,data.hyren_name,data.original_name)"></el-checkbox>
+                                <template v-if="data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                <template v-else>{{data.hyren_name}}</template>
                             </span>
                             <span :title="data.description" v-else>
-                                <i class="el-icon-folder-opened" />
-                                {{node.label}}
+                                <i class="el-icon-folder-opened" />{{node.label}}
                             </span>
                         </span>
                         <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
@@ -28,7 +30,6 @@
                                 <el-checkbox @change="choiceTable($event,data.id,data.file_id,data.hyren_name,data.original_name)"></el-checkbox>{{node.label}}
                             </span>
                             <span :title="data.label" v-else>
-
                                 <i class="el-icon-folder-opened" />
                                 {{node.label}}
                             </span>

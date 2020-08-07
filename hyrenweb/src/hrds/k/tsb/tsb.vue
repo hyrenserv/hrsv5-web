@@ -15,7 +15,15 @@
                 <div class="mytree" height='260'>
                     <el-tree class="filter-tree" :data="data2" :indent='0' @node-click="handleNodeClick">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description">{{node.label}}</span>
+                            <span :title="data.description" v-if="data.file_id !== ''">
+                                <i class=" el-icon-document"></i>
+                                <template v-if="data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                <template v-else>{{data.hyren_name}}</template>
+                            </span>
+                            <span :title="data.description" v-else>
+                                <i class="el-icon-folder-opened"></i>{{node.label}}
+                            </span>
                         </span>
                     </el-tree>
                 </div>
@@ -31,16 +39,12 @@
                     </el-table-column>
                     <el-table-column prop="column_ch_name" label="字段中文名" align="center">
                         <template slot-scope="scope">
-                            <!-- <el-form-item prop="cName"> -->
                             <el-input v-model="scope.row.column_ch_name" size="medium" />
-                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
                     <el-table-column prop="tc_remark" label="描述" align="center">
                         <template slot-scope="scope">
-                            <!-- <el-form-item prop="describe"> -->
                             <el-input type="textarea" v-model="scope.row.tc_remark" autosize />
-                            <!-- </el-form-item> -->
                         </template>
                     </el-table-column>
                 </el-table>

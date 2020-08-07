@@ -20,7 +20,9 @@
                             </span>
                             <span :title="data.description" v-else-if="data.file_id.length > 0&&data.tree_page_source!='market_version_manage'">
                                 <i class="el-icon-document" />
-                                {{node.label}}
+                                <template v-if="data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                <template v-else>{{data.hyren_name}}</template>
                             </span>
                             <span :title="data.description" v-else>
                                 <i class="el-icon-folder-opened" />
@@ -50,10 +52,6 @@
                                     <div class="ctxt" name="ctxt">
                                         <el-table :data="tableStructureInfo" style='min-height:400px'>
                                             <el-table-column v-for="(item,index) in tableVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
-                                                <!--  <template slot="header">
-                                                    <span>{{item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)}}</span>
-                                                    <div style="position: absolute;top: 0px;" @click="deltime(item)"><i class='el-icon-close' style="color:#fff"></i></div>
-                                                </template> -->
                                                 <el-table-column label="中文" :prop="'field_ch_name' +item" align="center">
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_cn_name'+item]}}</p>

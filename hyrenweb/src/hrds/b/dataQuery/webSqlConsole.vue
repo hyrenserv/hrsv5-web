@@ -14,19 +14,14 @@
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
             <div class='mytree'>
                 <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
-                    <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                        <span :title="data.description" v-if="data.file_id.length > 0">
-                            <i class=" el-icon-document"></i>{{node.label}}
+                    <span class="span-ellipsis" slot-scope="{ node, data }">
+                        <span :title="data.description" v-if="data.file_id !== ''">
+                            <i class=" el-icon-document"></i>
+                            <template v-if="data.original_name !== ''">{{data.original_name}}</template>
+                            <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                            <template v-else>{{data.hyren_name}}</template>
                         </span>
                         <span :title="data.description" v-else>
-                            <i class="el-icon-folder-opened"></i>{{node.label}}
-                        </span>
-                    </span>
-                    <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
-                        <span :title="data.label" v-if="data.file_id.length > 0">
-                            <i class=" el-icon-document"></i>{{node.label}}
-                        </span>
-                        <span :title="data.label" v-else>
                             <i class="el-icon-folder-opened"></i>{{node.label}}
                         </span>
                     </span>
@@ -37,7 +32,7 @@
             <el-tabs v-model="activeName" type="border-card" @tab-click='tabClick()'>
                 <el-tab-pane label="表查询" name="tableQuery">
                     <el-table :data="dataByTableName" stripe border size="medium">
-                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip >
+                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip>
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                         </el-table-column>
@@ -58,7 +53,7 @@
                     </el-row>
 
                     <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
-                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip >
+                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip>
                             <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                             <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                         </el-table-column>
