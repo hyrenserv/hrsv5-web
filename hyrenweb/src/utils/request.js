@@ -69,7 +69,7 @@ service.interceptors.response.use(
         Message({
           message: '服务器异常',
           type: 'error',
-          duration: 5 * 1000
+          duration: 0
         })
       }
       else if (headers['content-type'] === 'APPLICATION/OCTET-STREAM;charset=utf-8'||headers['content-type'] === 'APPLICATION/OCTET-STREAM') {
@@ -80,7 +80,7 @@ service.interceptors.response.use(
         Message({
           message: res.message,
           type: 'error',
-          duration: 5 * 1000
+          duration: 0
         })
         
         return res;
