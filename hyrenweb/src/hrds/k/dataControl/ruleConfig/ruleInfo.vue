@@ -796,7 +796,6 @@
                     sql = sql.substr(0, sql.length - 4);
                     //设置检查的总记录数
                 } else if ("SQL" === case_type) {
-                    this.form_dq_data.specify_sql = "";
                     return false;
                 } else if ("COL NAN" === case_type) {
                     //初始化sql
