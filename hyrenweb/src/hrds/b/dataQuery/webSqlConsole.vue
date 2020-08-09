@@ -15,9 +15,9 @@
             <div class='mytree'>
                 <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.description" v-if="data.file_id !== ''">
+                        <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
                             <i class=" el-icon-document"></i>
-                            <template v-if="data.original_name !== ''">{{data.original_name}}</template>
+                            <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
                             <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
                             <template v-else>{{data.hyren_name}}</template>
                         </span>
@@ -136,7 +136,7 @@ export default {
         //树点击触发
         handleNodeClick(data) {
             this.isLoading = true;
-            if (data.file_id !== '') {
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
                 // 查询数据
                 this.dataByTableName = [];
                 dataQuery.queryDataBasedOnTableName({

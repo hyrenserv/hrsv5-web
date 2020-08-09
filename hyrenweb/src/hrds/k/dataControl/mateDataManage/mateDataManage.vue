@@ -15,24 +15,15 @@
                     <div class="mytree">
                         <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
                         <el-tree class="filter-tree" :data="mdmTreeList" :indent="0" @node-click="mdmHandleClick" @node-contextmenu="MDMRightMouseClick" :filter-node-method="filterNode" ref="tree1">
-                            <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                                <span :title="data.description" v-if="data.file_id.length > 0">
-                                    <i class="el-icon-document" />
-                                    {{node.label}}
+                            <span class="span-ellipsis" slot-scope="{ node, data }">
+                                <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                                    <i class=" el-icon-document"></i>
+                                    <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                                    <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                    <template v-else>{{data.hyren_name}}</template>
                                 </span>
                                 <span :title="data.description" v-else>
-                                    <i class="el-icon-folder-opened" />
-                                    {{node.label}}
-                                </span>
-                            </span>
-                            <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
-                                <span :title="data.label" v-if="data.file_id.length > 0">
-                                    <i class="el-icon-document" />
-                                    {{node.label}}
-                                </span>
-                                <span :title="data.label" v-else>
-                                    <i class="el-icon-folder-opened" />
-                                    {{node.label}}
+                                    <i class="el-icon-folder-opened"></i>{{node.label}}
                                 </span>
                             </span>
                         </el-tree>
@@ -43,7 +34,15 @@
                         <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
                         <el-tree class="filter-tree" :data="drbTreeList" :indent="0" @node-click="drbHandleClick" @node-contextmenu="DRBRightMouseClick" :filter-node-method="filterNode" ref="tree2">
                             <span class="span-ellipsis" slot-scope="{node, data}">
-                                <span :title="data.description">{{node.label}}</span>
+                                <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                                    <i class=" el-icon-document"></i>
+                                    <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                                    <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                    <template v-else>{{data.hyren_name}}</template>
+                                </span>
+                                <span :title="data.description" v-else>
+                                    <i class="el-icon-folder-opened"></i>{{node.label}}
+                                </span>
                             </span>
                         </el-tree>
                     </div>
@@ -112,7 +111,7 @@
         </ul>
     </div>
     <!--源数据列表自定义层二级右键弹框-->
-     <div v-show="mouseZdyVisible">
+    <div v-show="mouseZdyVisible">
         <ul id="menu_zdy" class="menu_zdy">
             <li class="menu_item" @click="tableSetToInvalidZdy()">创建表</li>
             <li class="menu_item" @click="allTableSetToInvalid()">删除所有表</li>
@@ -156,7 +155,7 @@ export default {
             drbTreeList: [],
             filterText: "",
             mouseVisible: false,
-            mouseZdyVisible:false,
+            mouseZdyVisible: false,
             recoverMouseVisible: false,
             isLoading: false,
             data_meta_info: {
@@ -226,9 +225,9 @@ export default {
         },
         //点击源数据管理树节点触发
         mdmHandleClick(data) {
-             this.mouseVisible = false;
+            this.mouseVisible = false;
             this.recoverMouseVisible = false;
-            this.mouseZdyVisible=false;
+            this.mouseZdyVisible = false;
             this.currentPage = 1;
             this.pageSize = 10;
             this.mouseVisible = false;
@@ -237,25 +236,20 @@ export default {
             this.column_ch_name_input = true;
             //初始化查询结果
             this.data_meta_info = { table_id: "", column_info_list: [] };
-            if (data.file_id !== "") {
-                mdmFun
-                    .getMDMTableColumnInfo({
-                        data_layer: data.data_layer,
-                        file_id: data.file_id
-                    })
-                    .then(res => {
-                        if (res.success) {
-                            this.data_meta_info = res.data;
-                        } else {
-                            this.data_meta_info = { table_id: "", column_info_list: [] };
-                        }
-                    });
+            if ('undefined' !== typeof data.file_id && data.file_id !== "") {
+                mdmFun.getMDMTableColumnInfo({ 'data_layer': data.data_layer, 'file_id': data.file_id }).then(res => {
+                    if (res.success) {
+                        this.data_meta_info = res.data;
+                    } else {
+                        this.data_meta_info = { table_id: "", column_info_list: [] };
+                    }
+                });
             }
         },
         //源数据管理树节点鼠标右击事件
         MDMRightMouseClick(event, object, node) {
-            if(node.level === 2&&node.parent.label=='自定义层'){
-               this.mouseZdyVisible = true;
+            if (node.level === 2 && node.parent.label == '自定义层') {
+                this.mouseZdyVisible = true;
                 const menu = document.querySelector("#menu_zdy");
                 document.addEventListener("click", this.foo);
                 menu.style.display = "block";
@@ -276,7 +270,7 @@ export default {
         foo() {
             this.mouseVisible = false;
             this.recoverMouseVisible = false;
-            this.mouseZdyVisible=false;
+            this.mouseZdyVisible = false;
             document.removeEventListener("click", this.foo); //关闭事件监听
         },
         // 回收站树节点鼠标右击事件
@@ -294,10 +288,11 @@ export default {
         },
         //点击回收站树节点触发
         drbHandleClick(data) {
+            console.log(data)
             this.currentPage = 1;
             this.pageSize = 10;
             this.recoverMouseVisible = false;
-            if (data.file_id !== "") {
+            if ('undefined' !== typeof data.file_id && data.file_id !== "") {
                 mdmFun
                     .getDRBTableColumnInfo({ failure_table_id: data.file_id })
                     .then(res => {
@@ -367,9 +362,9 @@ export default {
                 })
                 .catch(() => {});
         },
-         //删除所有表(表设置为无效)
-        allTableSetToInvalid(){
-             this.$Msg
+        //删除所有表(表设置为无效)
+        allTableSetToInvalid() {
+            this.$Msg
                 .confirmMsg(
                     "确定要将所有表放入数据回收站吗？",
                     "提示", {
@@ -425,8 +420,8 @@ export default {
                 .catch(() => {});
         },
         // 恢复所有表
-        restoreDRBAllTable(){
-             this.$Msg
+        restoreDRBAllTable() {
+            this.$Msg
                 .confirmMsg(
                     "确定要将回收站所有表恢复吗?",
                     "提示", {
@@ -480,8 +475,8 @@ export default {
                 .catch(() => {});
         },
         // 彻底删除所有表
-        removeCompletelyAllTable(){
-             this.$Msg
+        removeCompletelyAllTable() {
+            this.$Msg
                 .confirmMsg(
                     "确定要将回收站所有表彻底删除吗?",
                     "提示", {
@@ -504,16 +499,15 @@ export default {
                 })
                 .catch(() => {});
         },
-        tableSetToInvalidZdy(){
-            console.log( this.node_data)
-            if(this.node_data.dsl_store_type=='1'){
+        tableSetToInvalidZdy() {
+            if (this.node_data.dsl_store_type == '1') {
                 this.$router.push({
-                path:'createTable',
-                query: {
+                    path: 'createTable',
+                    query: {
                         dsl_id: this.node_data.dsl_id,
                         label: this.$Base64.encode(this.node_data.label),
-                        }
-            })
+                    }
+                })
             }
         }
     }
@@ -529,7 +523,8 @@ export default {
     font-size: 12px;
 }
 
-.menu,.menu_zdy {
+.menu,
+.menu_zdy {
     height: 42px;
     width: 68px;
     position: absolute;

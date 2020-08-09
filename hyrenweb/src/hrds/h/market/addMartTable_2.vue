@@ -17,10 +17,10 @@
             <div class='mytree'>
                 <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.description" v-if="data.file_id !== ''">
+                        <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
                             <i class=" el-icon-document"></i>
-                            <template v-if="data.original_name !== ''">{{data.original_name}}</template>
-                            <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                            <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                            <template v-else-if="data.original_name === '' && data.table_name !== ''">{{data.table_name}}</template>
                             <template v-else>{{data.hyren_name}}</template>
                         </span>
                         <span :title="data.description" v-else>
@@ -599,12 +599,13 @@ export default {
                 });
             }
         },
-        showtablecolumn(node, index) {
+        showtablecolumn(data, index) {
+            console.log(data);
             this.index = index;
-            if (node.file_id != "") {
+            if ('undefined' !== typeof data.file_id && data.file_id != "") {
                 functionAll.queryAllColumnOnTableName({
-                    'source': node.data_layer,
-                    'id': node.id
+                    'source': data.data_layer,
+                    'id': data.id
                 }).then((res) => {
                     this.tablecolumn = res.data.columnresult;
                     this.sqltablename = res.data.tablename;
@@ -631,7 +632,7 @@ export default {
         // },
         gettreeData() {
             functionAll.getTreeDataInfo().then(res => {
-                this.treedata = res.data.marketTreeList;
+                this.treedata = res.data;
             });
         },
         // loadNode(node, resolve) {
