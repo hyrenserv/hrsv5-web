@@ -36,10 +36,10 @@
                                 <el-row>
                                     <!-- <el-col :span="19"> -->
                                     <el-radio-group v-model="scope.row.unload_type" v-if="scope.row.collectState==false">
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}</el-radio>
                                     </el-radio-group>
                                     <el-radio-group v-model="scope.row.unload_type" v-else>
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun(scope.row,item.value)">{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun(scope.row,item.value)">{{item.value}}</el-radio>
                                     </el-radio-group>
                                 </el-row>
                             </template>
@@ -104,10 +104,10 @@
                                 <!-- <el-col :span="19"> -->
                                 <el-form-item :prop="'sqlExtractData.'+scope.$index+'.unload_type'" :rules="rule.selected">
                                     <el-radio-group v-model="scope.row.unload_type" v-if="scope.row.collectState==false">
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}</el-radio>
                                     </el-radio-group>
                                     <el-radio-group v-model="scope.row.unload_type" v-else>
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun2(scope.row,item.value)">{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun2(scope.row,item.value)">{{item.value}}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
                             </el-row>
@@ -2891,15 +2891,15 @@ export default {
     margin-top: 6px;
 }
 
-.singleTableinner>>>.el-radio {
+/* .singleTableinner>>>.el-radio {
     color: #3d8dd2;
-    margin: 6px 0 0 0;
+    margin: 6px 10px 0 0;
 }
 
 .twopageradior>>>.el-radio {
     color: #3d8dd2;
     margin: -6px 6px 0 0;
-}
+} */
 
 /* #singleTable >>> .el-table__header tr,
 #singleTable >>> .el-table__header th {

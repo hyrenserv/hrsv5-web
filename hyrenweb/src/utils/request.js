@@ -68,6 +68,7 @@ service.interceptors.response.use(
       else if (res.code == 500) {//如果返回的状态是 500表示服务器异常
         Message({
           message: '服务器异常',
+          showClose: true,
           type: 'error',
           duration: 0
         })
@@ -79,6 +80,7 @@ service.interceptors.response.use(
         
         Message({
           message: res.message,
+          showClose: true,
           type: 'error',
           duration: 0
         })

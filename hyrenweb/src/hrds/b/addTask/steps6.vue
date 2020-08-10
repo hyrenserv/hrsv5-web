@@ -118,14 +118,14 @@
                 <el-table-column label="作业名称" width="160" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job'" :rules="rule.default">
-                            <el-input v-model="scope.row.etl_job" placeholder="作业名称" size="mini"></el-input>
+                            <el-input type="textarea" :autosize="true" v-model="scope.row.etl_job" placeholder="作业名称" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
                 <el-table-column label="作业描述" align="center">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job_desc'" :rules="rule.default">
-                            <el-input v-model="scope.row.etl_job_desc" type="textarea" placeholder="作业描述" size="mini"></el-input>
+                            <el-input v-model="scope.row.etl_job_desc" :autosize="true" type="textarea" placeholder="作业描述" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>

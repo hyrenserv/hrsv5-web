@@ -287,7 +287,7 @@
                                         <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
                                         <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
                                     </el-col>
-                                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                                    <el-tooltip class="item" effect="dark" content="手动执行脚本时,此参数可作为第一个参数" placement="right">
                                         <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
                                     </el-tooltip>
                                 </el-form-item>
@@ -298,7 +298,7 @@
                                 <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
                                     <el-col :span="16">
                                         <el-input v-model="ruleForm.classify_num" size="medium" disabled placeholder="分类编号">
-                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('1');outerVisible = true"></el-button>
+                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('1');outerVisible = true">设置分类</el-button>
                                         </el-input>
                                     </el-col>
                                 </el-form-item>
@@ -427,7 +427,7 @@
                                         <el-input v-model="ruleFormSecond.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
                                         <el-input v-model="ruleFormSecond.database_number" size="medium" v-else placeholder="作业编号"></el-input>
                                     </el-col>
-                                    <el-tooltip class="item" effect="dark" content="在命令触发中使用，第一个参数可以是当前输入的值(作业编号不能有中文或者中文字符)" placement="right">
+                                    <el-tooltip class="item" effect="dark" content="手动执行采集作业脚本时,此参数可作为第一个参数" placement="right">
                                         <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
                                     </el-tooltip>
                                 </el-form-item>
@@ -438,7 +438,7 @@
                                 <el-form-item label="分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])">
                                     <el-col :span="16">
                                         <el-input v-model="ruleFormSecond.classify_num" size="medium" readonly placeholder="分类编号">
-                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('2');outerVisible = true"></el-button>
+                                            <el-button slot="append" icon="el-icon-zoom-in" @click="collTaskClassFun('2');outerVisible = true">设置分类</el-button>
                                         </el-input>
                                     </el-col>
                                 </el-form-item>
