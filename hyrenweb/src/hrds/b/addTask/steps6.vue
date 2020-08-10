@@ -277,7 +277,7 @@ export default {
     data() {
         return {
             active: 4,
-            typeinfo:1,
+            typeinfo: 1,
             isLoading: false,
             dbid: null,
             aId: null,
@@ -386,7 +386,7 @@ export default {
                 if (valid) {
                     this.isLoading = true;
                     let params = {};
-                    params["colSetId"] =this.dbid;
+                    params["colSetId"] = this.dbid;
                     params["etl_sys_cd"] = this.ruleForm.Project_num;
                     params["pro_dic"] = this.ruleForm.work_path;
                     params["log_dic"] = this.ruleForm.log_path;
