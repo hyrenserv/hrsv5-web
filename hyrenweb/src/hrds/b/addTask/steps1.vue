@@ -2,7 +2,7 @@
 <div>
     <Step :active="active" :typeinfo='typeinfo'></Step>
     <div v-if="isshow=='all'">
-        <el-tabs v-model="activeNames"  type="border-card" key='1'>
+        <el-tabs v-model="activeNames" type="border-card" key='1'>
             <el-tab-pane label="数据采集" name="first">
                 <div id="dataAcquisition">
                     <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" class="demo-ruleForm">
@@ -15,7 +15,7 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
-                                 <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
+                                <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
                                 <el-form-item label="作业编号" prop="database_number">
                                     <el-col :span="16">
                                         <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
@@ -152,7 +152,7 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
-                                 <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
+                                <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
                                 <el-form-item label="作业编号" prop="database_number">
                                     <el-col :span="16">
                                         <el-input v-model="ruleFormSecond.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
@@ -270,8 +270,8 @@
             </el-tab-pane>
         </el-tabs>
     </div>
-     <div v-if="isshow=='first'">
-        <el-tabs v-model="activeNames"  type="border-card"  key='2'>
+    <div v-if="isshow=='first'">
+        <el-tabs v-model="activeNames" type="border-card" key='2'>
             <el-tab-pane id='first' label="数据采集" name="first">
                 <div id="dataAcquisition">
                     <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" class="demo-ruleForm">
@@ -284,7 +284,7 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
-                                 <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
+                                <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
                                 <el-form-item label="作业编号" prop="database_number">
                                     <el-col :span="16">
                                         <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
@@ -403,8 +403,8 @@
             </el-tab-pane>
         </el-tabs>
     </div>
-     <div v-if="isshow=='second'">
-        <el-tabs v-model="activeNames"  type="border-card"  key='3'>
+    <div v-if="isshow=='second'">
+        <el-tabs v-model="activeNames" type="border-card" key='3'>
             <el-tab-pane label="贴源登记" name="second">
                 <div>
                     <el-row>
@@ -426,7 +426,7 @@
                             </el-col>
                             <el-col :span="10">
                                 <!-- :rules="filter_rules([{required: true,dataType:'noLengthVaild'}])" -->
-                                <el-form-item label="作业编号" prop="database_number" >
+                                <el-form-item label="作业编号" prop="database_number">
                                     <el-col :span="16">
                                         <el-input v-model="ruleFormSecond.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
                                         <el-input v-model="ruleFormSecond.database_number" size="medium" v-else placeholder="作业编号"></el-input>
@@ -826,7 +826,7 @@ export default {
             radioSave: null, //存储层弹框单选
             tyAddSave: false,
             dsl_id: '',
-            isshow:'all',
+            isshow: 'all',
         };
     },
     created() {
@@ -854,11 +854,11 @@ export default {
             params["databaseId"] = this.dbid;
             addTaskAllFun.getDBConfInfo(params).then(res => {
                 if (res.data.length != 0) {
-                   /*  this.$nextTick(function () {
-                        this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
-                    }) */
-                    this.isshow='first'
-                    this.activeNames='first'
+                    /*  this.$nextTick(function () {
+                         this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
+                     }) */
+                    this.isshow = 'first'
+                    this.activeNames = 'first'
                     this.ruleForm = res.data[0];
                     this.radio = res.data[0].classify_id;
                     let params = {};
@@ -873,10 +873,10 @@ export default {
                     });
                 } else {
                     // 贴元登记editStorageData
-                   /*  this.$nextTick(function () {
-                        this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "inline-block"
-                    }) */
-                    this.isshow='second'
+                    /*  this.$nextTick(function () {
+                         this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "inline-block"
+                     }) */
+                    this.isshow = 'second'
                     this.activeNames = 'second'
                     addTaskAllFun.editStorageData(params).then(res => {
                         this.ruleFormSecond = res.data[0]
@@ -886,18 +886,18 @@ export default {
             });
 
         } else {
-           
+
             let params = {};
             params["databaseId"] = this.sourceId;
             params["agent_id"] = this.$route.query.agent_id
             addTaskAllFun.addDBConfInfo(params).then(res => {
                 if (res.data.length != 0) {
-                   /*  this.$nextTick(function () {
-                        this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
-                        this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "none"
-                    }) */
-                    this.isshow='first'
-                    this.activeNames='first'
+                    /*  this.$nextTick(function () {
+                         this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "inline-block"
+                         this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "none"
+                     }) */
+                    this.isshow = 'first'
+                    this.activeNames = 'first'
                     this.ruleForm = res.data[0];
                     this.radio = res.data[0].classify_id;
                     this.dbid = res.data[0].database_id;
@@ -920,11 +920,11 @@ export default {
                     paramst["agent_id"] = this.$route.query.agent_id
                     addTaskAllFun.getInitStorageData(paramst).then(res => {
                         if (res.data.length !== 0) {
-                           /*  this.$nextTick(function () {
-                                this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "inline-block"
-                                this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "none"
-                            }) */
-                            this.isshow='second'
+                            /*  this.$nextTick(function () {
+                                 this.$refs.tabs.$children[0].$refs.tabs[1].style.display = "inline-block"
+                                 this.$refs.tabs.$children[0].$refs.tabs[0].style.display = "none"
+                             }) */
+                            this.isshow = 'second'
                             this.activeNames = 'second'
                             this.tyAddSave = true
                             this.ruleFormSecond.task_name = res.data[0].task_name,
@@ -1517,5 +1517,9 @@ export default {
     padding: 10px;
     border-bottom: 1px solid #ccc;
     box-sizing: border-box;
+}
+
+.el-col>>>.el-input-group__append {
+    padding: 0 8px !important;
 }
 </style>
