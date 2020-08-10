@@ -15,7 +15,7 @@
             <span>SQL</span>
         </el-row>
         <el-row>
-            <el-input class="inputframe" type="textarea" autosize="true" readonly v-model="querysql" />
+            <el-input class="inputframe" type="textarea" :autosize="true" readonly v-model="querysql" />
         </el-row>
         <el-row>
             <el-col :span="20">

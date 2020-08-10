@@ -562,7 +562,8 @@ export default {
             radioSelect: '',
             reSelectColumns: '',
             selectColumns1: '',
-            tableNameList: []
+            tableNameList: [],
+            checkColumnData: ['varchar', 'varchar2', 'text', 'char', 'string']
         };
     },
     watch: {
@@ -832,14 +833,18 @@ export default {
             if (this.querysql == "") {
                 this.$message({
                     type: "warning",
-                    message: "请填写sql"
+                    message: "请填写sql",
+                    showClose: true,
+                    duration: 0
                 });
                 return false;
             }
             if (this.columnbysql.length == 0) {
                 this.$message({
                     type: "warning",
-                    message: "请先点击确定 生成字段"
+                    message: "请先点击确定 生成字段",
+                    showClose: true,
+                    duration: 0
                 });
                 return false;
             }
@@ -848,7 +853,9 @@ export default {
                 if (field_en_name === "" || field_en_name == undefined) {
                     this.$message({
                         type: "warning",
-                        message: "第" + (i + 1) + "行字段英文名为空"
+                        message: "第" + (i + 1) + "行字段英文名为空",
+                        showClose: true,
+                        duration: 0
                     });
                     return false;
                 }
@@ -856,15 +863,20 @@ export default {
                 if (field_cn_name === "" || field_cn_name == undefined) {
                     this.$message({
                         type: "warning",
-                        message: "第" + (i + 1) + "行字段中文名为空"
+                        message: "第" + (i + 1) + "行字段中文名为空",
+                        showClose: true,
+                        duration: 0
                     });
                     return false;
                 }
                 var field_type = this.columnbysql[i].field_type;
+
                 if (field_type === "" || field_type == undefined) {
                     this.$message({
                         type: "warning",
-                        message: "第" + (i + 1) + "行字段类型名为空"
+                        message: "第" + (i + 1) + "行字段类型名为空",
+                        showClose: true,
+                        duration: 0
                     });
                     return false;
                 }
@@ -872,7 +884,9 @@ export default {
                 if (field_process === "" || field_process == undefined) {
                     this.$message({
                         type: "warning",
-                        message: "第" + (i + 1) + "行字段处理方式为空"
+                        message: "第" + (i + 1) + "行字段处理方式为空",
+                        showClose: true,
+                        duration: 0
                     });
                     return false;
                 }
@@ -882,7 +896,9 @@ export default {
                     if (process_mapping === '' || process_mapping == undefined) {
                         this.$message({
                             type: "warning",
-                            message: "第" + (i + 1) + "行函数映射为空"
+                            message: "第" + (i + 1) + "行函数映射为空",
+                            showClose: true,
+                            duration: 0
                         });
                         return false;
                     }
@@ -890,13 +906,29 @@ export default {
                     //不进行验证
                 } else {
                     var process_mapping = this.columnbysql[i].process_mapping;
-                    if (process_mapping === '' || process_mapping == undefined) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行来源值为空"
-                        });
-                        return false;
+                    let regx = /^\'(\S*)\'$/;
+                    if (this.checkColumnData.includes(field_type.toLowerCase()) && field_process == '1') {
+                        if (!regx.test(process_mapping)) {
+                            this.$message({
+                                type: "warning",
+                                message: "第" + (i + 1) + "行来源值为空填写不正确,请将值使用单引号包裹...",
+                                showClose: true,
+                                duration: 0
+                            });
+                            return false;
+                        }
+                    } else {
+                        if (process_mapping === '' || process_mapping == undefined) {
+                            this.$message({
+                                type: "warning",
+                                message: "第" + (i + 1) + "行来源值为空",
+                                showClose: true,
+                                duration: 0
+                            });
+                            return false;
+                        }
                     }
+
                 }
 
                 if (field_process == '5') {
@@ -904,7 +936,9 @@ export default {
                     if (group_mapping === '' || group_mapping == undefined) {
                         this.$message({
                             type: "warning",
-                            message: "第" + (i + 1) + "行分组映射为空"
+                            message: "第" + (i + 1) + "行分组映射为空",
+                            showClose: true,
+                            duration: 0
                         });
                         return false;
                     }
@@ -915,7 +949,9 @@ export default {
                     if (!this.columnbysql[i].hasOwnProperty("field_length")) {
                         this.$message({
                             type: "warning",
-                            message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度"
+                            message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度",
+                            showClose: true,
+                            duration: 0
                         });
                         return false;
                     } else {
@@ -923,7 +959,9 @@ export default {
                         if (field_length == "") {
                             this.$message({
                                 type: "warning",
-                                message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度"
+                                message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度",
+                                showClose: true,
+                                duration: 0
                             });
                             return false;
                         }
