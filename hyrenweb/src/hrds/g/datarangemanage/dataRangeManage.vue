@@ -221,10 +221,18 @@ export default {
         // 树节点触发
         handleNodeClick(data) {
             this.tableData = [];
-            if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id ) {
-                if (typeof data.children !== "undefined")
-                    this.tableData = data.children;
-            } else if (data.file_id !== "") {
+            //如果节点的file_id为未定义并且节点的分类id不为空并且节点分类不是未定义,代表该节点是分类信息,则添加分类下节点数据到展示区
+            if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id) {
+                //如果该节点的子节点信息不是未定义,则添加该节点下所有表信息
+                if (typeof data.children !== "undefined") {
+                    data.children.forEach(element => {
+                        //判断如果该节点下每个子节点的file_id不是未定义,并且不为空,代表该子节点是表信息,则添加该子节点到数据展示区
+                        if ('undefined' !== typeof element.file_id && element.file_id !== "") {
+                            this.tableData.push(element);
+                        }
+                    });
+                }
+            } else if ('undefined' !== typeof data.file_id && data.file_id !== "") {
                 this.tableData.push(data);
             }
         },
