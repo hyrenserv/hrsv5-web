@@ -109,8 +109,14 @@
             <el-form-item label="Agent服务器密码" prop="user_pwd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formDeploy.user_pwd" style="width:270px" show-password></el-input>
             </el-form-item>
-            <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.serv_file_path" style="width:270px"></el-input>
+            <el-form-item label="自定义部署目录" prop="isCustomize" :rules="rule.selected">
+                <el-radio-group v-model="formDeploy.isCustomize">
+                    <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])" v-if="formDeploy.isCustomize =='1'">
+                <el-input v-model="formDeploy.serv_file_path" style="width:270px">
+                </el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -244,6 +250,7 @@
 <script>
 import * as etlMageAllFun from "./etlMage";
 import * as functionAll from "../detailsPages/Monitor/currentBatch/currentBatch.js";
+import * as validator from "@/utils/js/validator";
 import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
@@ -305,6 +312,7 @@ export default {
                 user_name: "",
                 user_pwd: "",
                 serv_file_path: "",
+                isCustomize: '0'
             },
             formStartCON: {
                 etl_sys_cd: "",
@@ -340,7 +348,8 @@ export default {
             isViewCon: false,
             isViewDowntri: false,
             isViewTri: false,
-            timer: ''
+            timer: '',
+            rule: validator.default,
         };
     },
     mounted() {
@@ -571,9 +580,12 @@ export default {
                     let params = {};
                     params["etl_sys_cd"] = this.formDeploy.etl_sys_cd;
                     params["etl_serv_ip"] = this.formDeploy.etl_serv_ip;
-                    params["serv_file_path"] = this.formDeploy.serv_file_path;
                     params["user_name"] = this.formDeploy.user_name;
                     params["user_pwd"] = this.formDeploy.user_pwd;
+                    params["isCustomize"] = this.formDeploy.isCustomize;
+                    if (this.formDeploy.isCustomize == "1") {
+                        params["serv_file_path"] = this.formDeploy.serv_file_path;
+                    }
                     etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
                         this.isLoadings = false;
                         if (res && res.success) {
@@ -820,9 +832,15 @@ export default {
         //表格部署按钮
         handleDeploy(index, row) {
             this.formDeploy.etl_sys_cd = row.etl_sys_cd;
+            this.getCategoryItems("IsFlag");
             etlMageAllFun.searchEtlSysById({
                 "etl_sys_cd": row.etl_sys_cd
             }).then(res => {
+                if (res.data.serv_file_path == undefined || res.data.serv_file_path == "") { //没有部署
+                    res.data.isCustomize = '0'
+                } else {
+                    res.data.isCustomize = '1'
+                }
                 this.formDeploy = res.data;
             });
             this.dialogFormVisibleDeploy = true;
@@ -1378,7 +1396,7 @@ export default {
                 this.formStartCON.curr_bath_date = ''
                 this.dateDisabled = false;
             }
-        }
+        },
     },
 };
 </script>
