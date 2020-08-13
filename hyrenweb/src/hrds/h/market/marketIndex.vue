@@ -307,10 +307,7 @@ export default {
                         delete obj.tableDataAdd;
                         functionAll.addMarket(obj).then((res => {
                             if (res && res.success) {
-                                this.$message({
-                                    type: "success",
-                                    message: "更新成功!"
-                                });
+                                this.$Msg.customizTitle('更新成功', 'success')
                                 // 隐藏对话框
                                 this.dialogofmarketadd = false;
                                 // 表单清空
@@ -336,10 +333,7 @@ export default {
                         delete obj.tableDataAdd;
                         functionAll.addMarket(obj).then((res => {
                             if (res && res.success) {
-                                this.$message({
-                                    type: "success",
-                                    message: "添加成功!"
-                                });
+                                this.$Msg.customizTitle('添加成功', 'success')
                                 // 隐藏对话框
                                 this.dialogofmarketadd = false;
                                 // 表单清空
@@ -421,10 +415,7 @@ export default {
                 }).then(res => {
                     this.isLoading = false;
                     if (res && res.success) {
-                        this.$message({
-                            type: "success",
-                            message: "删除成功"
-                        });
+                        this.$Msg.customizTitle('删除成功', 'success')
                         this.getMarketInfo();
                     }
                 });
