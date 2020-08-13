@@ -232,7 +232,13 @@ export default {
                         }
                     });
                 }
-            } else if ('undefined' !== typeof data.file_id && data.file_id !== "") {
+            }
+            //如果数据层是DQC或者UDL,并且父id是DQC或者UDL则添加存储层下的表信息到展示区 
+            else if ((data.data_layer === 'DQC' || data.data_layer === 'UDL') && (data.parent_id === 'DQC' || data.parent_id === 'UDL')) {
+                this.table_data = data.children;
+            }
+            //如果file_id不为空,代表该节点是表信息,添加表信息到展示区 
+            else if ('undefined' !== typeof data.file_id && data.file_id !== "") {
                 this.tableData.push(data);
             }
         },
