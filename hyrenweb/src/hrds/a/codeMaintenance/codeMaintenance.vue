@@ -596,12 +596,7 @@ export default {
                             this.getCodeInfo();
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
+            })
         },
         // 源系统编码
         // 查询源系统信息
@@ -721,12 +716,7 @@ export default {
                                 this.getOrigCodeInfo(this.markId);
                             }
                         })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
+                })
             }
         },
         // 合并行统一编码信息
