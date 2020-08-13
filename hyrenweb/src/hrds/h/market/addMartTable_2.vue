@@ -225,14 +225,14 @@
                 </el-table-column>
                 <el-table-column prop="field_type" label="字段类型" width="130" show-overflow-tooltip align="center">
                     <template slot-scope="scope" width="120">
-                        <el-select :disabled="iflock" v-model="scope.row.field_type" placeholder="请选择">
+                        <el-select :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_type" placeholder="请选择">
                             <el-option v-for="(item,index) in allfield_type" :key="index" :label="item.target_type" :value="item.target_type"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
                 <el-table-column prop="field_length" label="字段长度" width="100" show-overflow-tooltip align="center">
                     <template slot-scope="scope">
-                        <el-input :disabled="iflock" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
+                        <el-input :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column prop="field_process" label="处理方式" width="130" show-overflow-tooltip align="center">
@@ -443,7 +443,7 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :value="afterJobForm.afterSql" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            <SqlEditor ref="sqleditor" :value="aftersql" @changeTextarea="changeTextarea($event)" class='textasql' />
                         </div>
                     </el-row>
                 </el-tabs>
@@ -458,12 +458,16 @@
     </el-dialog>
 
     <!--规则显示-->
-    <el-dialog title="规则列表" :visible.sync="ruleDialog" width="60%">
-        <el-table stripe :data="tableDatalist" size="medium" border height="350">
-            <el-table-column prop="function_name" label="函数名" show-overflow-tooltip align="center"></el-table-column>
-            <el-table-column prop="function_example" label="例子" align="center" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="function_desc" label="描述" align="center" show-overflow-tooltip></el-table-column>
-            <!-- <el-table-column prop="fileType_zh" label="函数类型" align="center" show-overflow-tooltip></el-table-column> -->
+    <el-dialog title="规则列表" :visible.sync="ruleDialog" width="70%">
+        <el-table stripe :data="tableDatalist.filter(data => !search || (data.function_name.toLowerCase().includes(search.toLowerCase()))||data.function_example.toLowerCase().includes(search.toLowerCase()))" size="medium" height="400">
+            <el-table-column prop="function_name" label="函数名" show-overflow-tooltip align="left"></el-table-column>
+            <el-table-column prop="function_example" label="例子" align="left" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="function_desc" label="描述" align="left" show-overflow-tooltip></el-table-column>
+            <el-table-column align="left">
+                <template slot="header" slot-scope="scope">
+                    <el-input v-model="search" size="mini" placeholder="输入函数名或者列子进行搜索" />
+                </template>
+            </el-table-column>
         </el-table>
         <code>规则设置(请填写处理函数,如果使用跑批日期则填写:#{txdate}(跑批日期),#{txdate_pre}(跑批日期 - 1),#{txdate_next}(跑批日期 +
             1))</code>
@@ -484,7 +488,6 @@
 <script>
 import * as functionAll from "./marketAction";
 import * as validator from "@/utils/js/validator";
-import * as message from "@/utils/js/message";
 import Loading from '../../components/loading'
 import Step from "./step";
 import sqlFormatter from 'sql-formatter'
@@ -498,6 +501,7 @@ export default {
     },
     data() {
         return {
+            search: '',
             ruleDialog: false,
             tableDatalist: [],
             setRow: {},
@@ -601,7 +605,6 @@ export default {
             }
         },
         showtablecolumn(data, index) {
-            console.log(data);
             this.index = index;
             if ('undefined' !== typeof data.file_id && data.file_id != "") {
                 functionAll.queryAllColumnOnTableName({
@@ -696,10 +699,7 @@ export default {
         },
         getcolumnbysql() {
             if (this.querysql === '') {
-                this.$message({
-                    type: 'warning',
-                    message: '查询sql不能为空!'
-                });
+                this.$Msg.customizTitle('查询sql不能为空!', 'warning');
             } else {
                 this.isLoading = true;
                 let params = {
@@ -733,10 +733,7 @@ export default {
         // 根据SQL查询数据
         getdatabysql() {
             if (this.querysql === '') {
-                this.$message({
-                    type: 'warning',
-                    message: '查询sql不能为空!'
-                });
+                this.$Msg.customizTitle('查询sql不能为空!', 'warning');
             } else {
                 this.isLoading = true;
                 this.databysql = [];
@@ -831,75 +828,40 @@ export default {
         },
         next() {
             if (this.querysql == "") {
-                this.$message({
-                    type: "warning",
-                    message: "请填写sql",
-                    showClose: true,
-                    duration: 0
-                });
+                this.$Msg.customizTitle('请填写sql!', 'warning');
                 return false;
             }
             if (this.columnbysql.length == 0) {
-                this.$message({
-                    type: "warning",
-                    message: "请先点击确定 生成字段",
-                    showClose: true,
-                    duration: 0
-                });
+                this.$Msg.customizTitle('请先点击确定 生成字段', 'warning');
                 return false;
             }
             for (var i = 0; i < this.columnbysql.length; i++) {
                 var field_en_name = this.columnbysql[i].field_en_name;
                 if (field_en_name === "" || field_en_name == undefined) {
-                    this.$message({
-                        type: "warning",
-                        message: "第" + (i + 1) + "行字段英文名为空",
-                        showClose: true,
-                        duration: 0
-                    });
+                    this.$Msg.customizTitle("第" + (i + 1) + "行字段英文名为空", 'warning');
                     return false;
                 }
                 var field_cn_name = this.columnbysql[i].field_cn_name;
                 if (field_cn_name === "" || field_cn_name == undefined) {
-                    this.$message({
-                        type: "warning",
-                        message: "第" + (i + 1) + "行字段中文名为空",
-                        showClose: true,
-                        duration: 0
-                    });
+                    this.$Msg.customizTitle("第" + (i + 1) + "行字段中文名为空", 'warning');
                     return false;
                 }
                 var field_type = this.columnbysql[i].field_type;
 
                 if (field_type === "" || field_type == undefined) {
-                    this.$message({
-                        type: "warning",
-                        message: "第" + (i + 1) + "行字段类型名为空",
-                        showClose: true,
-                        duration: 0
-                    });
+                    this.$Msg.customizTitle("第" + (i + 1) + "行字段类型名为空", 'warning');
                     return false;
                 }
                 var field_process = this.columnbysql[i].field_process;
                 if (field_process === "" || field_process == undefined) {
-                    this.$message({
-                        type: "warning",
-                        message: "第" + (i + 1) + "行字段处理方式为空",
-                        showClose: true,
-                        duration: 0
-                    });
+                    this.$Msg.customizTitle("第" + (i + 1) + "行字段处理方式为空", 'warning');
                     return false;
                 }
 
                 if (field_process == '4') {
                     var process_mapping = this.columnbysql[i].process_mapping;
                     if (process_mapping === '' || process_mapping == undefined) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行函数映射为空",
-                            showClose: true,
-                            duration: 0
-                        });
+                        this.$Msg.customizTitle("第" + (i + 1) + "行函数映射为空", 'warning');
                         return false;
                     }
                 } else if (field_process == '2') {
@@ -909,22 +871,12 @@ export default {
                     let regx = /^\'(\S*)\'$/;
                     if (this.checkColumnData.includes(field_type.toLowerCase()) && field_process == '1') {
                         if (!regx.test(process_mapping)) {
-                            this.$message({
-                                type: "warning",
-                                message: "第" + (i + 1) + "行来源值为空填写不正确,请将值使用单引号包裹...",
-                                showClose: true,
-                                duration: 0
-                            });
+                            this.$Msg.customizTitle("第" + (i + 1) + "行来源值为空填写不正确,请将值使用单引号包裹...", 'warning');
                             return false;
                         }
                     } else {
                         if (process_mapping === '' || process_mapping == undefined) {
-                            this.$message({
-                                type: "warning",
-                                message: "第" + (i + 1) + "行来源值为空",
-                                showClose: true,
-                                duration: 0
-                            });
+                            this.$Msg.customizTitle("第" + (i + 1) + "行来源值为空", 'warning');
                             return false;
                         }
                     }
@@ -934,12 +886,7 @@ export default {
                 if (field_process == '5') {
                     var group_mapping = this.columnbysql[i].group_mapping;
                     if (group_mapping === '' || group_mapping == undefined) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行分组映射为空",
-                            showClose: true,
-                            duration: 0
-                        });
+                        this.$Msg.customizTitle("第" + (i + 1) + "行分组映射为空", 'warning');
                         return false;
                     }
                 }
@@ -947,22 +894,12 @@ export default {
                 var field_type = this.columnbysql[i].field_type;
                 if (field_type == "decimal" || field_type == "varchar") {
                     if (!this.columnbysql[i].hasOwnProperty("field_length")) {
-                        this.$message({
-                            type: "warning",
-                            message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度",
-                            showClose: true,
-                            duration: 0
-                        });
+                        this.$Msg.customizTitle("第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度", 'warning');
                         return false;
                     } else {
                         var field_length = this.columnbysql[i].field_length;
                         if (field_length == "") {
-                            this.$message({
-                                type: "warning",
-                                message: "第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度",
-                                showClose: true,
-                                duration: 0
-                            });
+                            this.$Msg.customizTitle("第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度", 'warning');
                             return false;
                         }
                     }
@@ -996,10 +933,7 @@ export default {
             functionAll.addDFInfo(param).then((res) => {
                 this.isLoading = false;
                 if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "保存成功!"
-                    });
+                    this.$Msg.customizTitle("保存成功", 'success');
                     this.ifhbasesort = false;
                     this.$router.push({
                         name: 'addMartTable_3',
@@ -1031,10 +965,7 @@ export default {
         },
         hbasedowncolumn(val, data) {
             if (val + 1 === this.hbasesort.length) {
-                this.$message({
-                    message: '已经是最后一条，不可下移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle("已经是最后一条，不可下移", 'warning');
             } else {
                 let downDate = this.hbasesort[val + 1];
                 this.hbasesort.splice(val + 1, 1);
@@ -1043,10 +974,7 @@ export default {
         },
         downcolumn(val, data) {
             if (val + 1 === this.columnbysql.length) {
-                this.$message({
-                    message: '已经是最后一条，不可下移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle("已经是最后一条，不可下移", 'warning');
             } else {
                 let downDate = this.columnbysql[val + 1];
                 this.columnbysql.splice(val + 1, 1);
@@ -1059,10 +987,7 @@ export default {
                 this.hbasesort.splice(val - 1, 1);
                 this.hbasesort.splice(val, 0, upDate);
             } else {
-                this.$message({
-                    message: '已经是第一条，不可上移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle("已经是第一条，不可上移", 'warning');
             }
         },
         upcolumn(val, data) {
@@ -1071,10 +996,7 @@ export default {
                 this.columnbysql.splice(val - 1, 1);
                 this.columnbysql.splice(val, 0, upDate);
             } else {
-                this.$message({
-                    message: '已经是第一条，不可上移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle("已经是第一条，不可上移", 'warning');
             }
         },
         dismissifhbasesort() {
@@ -1166,7 +1088,7 @@ export default {
         savePreAndAfterJob() {
             functionAll.savePreAndAfterJob({
                 "pre_work": this.presql,
-                "post_work": this.aftersql,
+                "post_work": this.basicInfoForm.sqlMain,
                 "datatable_id": this.datatable_id
             }).then((res) => {
                 if (res && res.success) {
@@ -1212,7 +1134,7 @@ export default {
             this.radio = row.classify_id;
         },
         changeTextarea(val) {
-            this.querysql = val
+            // this.querysql = val
             this.$set(this.basicInfoForm, 'sqlMain', val)
         },
         formaterSql(val) {
@@ -1226,17 +1148,11 @@ export default {
             if (this.relationNums.length !== 0) {
                 for (let i = 0; i < this.relationNums.length; i++) {
                     if (this.formInline["onCondition" + i] === undefined) {
-                        this.$message({
-                            message: '请输入ON条件',
-                            type: 'warning',
-                        });
+                        this.$Msg.customizTitle("请输入ON条件", 'warning');
                         return;
                     }
                     if (this.formInline["joinCondition" + i] === undefined) {
-                        this.$message({
-                            message: '请选择JOIN条件',
-                            type: 'warning',
-                        });
+                        this.$Msg.customizTitle("请选择JOIN条件", 'warning');
                         return;
                     }
                     sql = sql + this.formInline["joinCondition" + i] + " " +
