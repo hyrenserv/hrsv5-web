@@ -339,7 +339,7 @@
     <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
         <el-row>
             <el-table :data="databysql" border size="mini">
-                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item" :prop="item">
+                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item" show-overflow-tooltip :prop="item">
                     <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                     <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                 </el-table-column>
