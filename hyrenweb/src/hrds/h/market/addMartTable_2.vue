@@ -454,7 +454,7 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :value="aftersql" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            <SqlEditor ref="sqleditor" @changeTextarea="changeTextarea($event)" class='textasql' />
                         </div>
                     </el-row>
                 </el-tabs>
@@ -1072,11 +1072,13 @@ export default {
                 "datatable_id": this.datatable_id
             }).then((res) => {
                 if (res && res.success) {
-                    if (res.data.length > 0) {
-                        if (res.data.post_work != undefined)
-                            this.aftersql = res.data.post_work;
-                        if (res.data.pre_work != undefined)
-                            this.presql = res.data.pre_work;
+                    if (typeof res.data.post_work != 'undefined') {
+                        this.afterJobForm.afterSql = res.data.post_work;
+                        this.$refs.sqleditor.setmVal(this.afterJobForm.afterSql)
+                    }
+                    if (typeof res.data.pre_work != 'undefined') {
+                        this.preJobForm.preSql = res.data.pre_work;
+                        this.$refs.sqleditor.setmVal(this.preJobForm.preSql)
                     }
                 }
             });
