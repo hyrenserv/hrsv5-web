@@ -156,7 +156,7 @@
                                     保存不在范围内的记录数
                                 </el-checkbox>
                             </el-col>
-                            <el-col :span="12" :offset=1 >
+                            <el-col :span="12" :offset=1>
                                 <el-checkbox v-if="form_dq_data.case_type !=='TAB NAN'" true-label="1" false-label="0" v-model="form_dq_data.is_saveindex2">
                                     保存检查总记录数
                                 </el-checkbox>
@@ -312,7 +312,6 @@
 </template>
 
 <script>
-import * as message from '../../../../utils/js/message';
 import Loading from '@/hrds/components/loading';
 import * as validator from "@/utils/js/validator";
 import * as rcFun from "./ruleConfig";
@@ -416,7 +415,7 @@ export default {
             this.ruleTitle = '新增';
             this.operation_type = this.$route.query.operation_type;
         } else {
-            this.$message({ type: 'info', message: '操作类型错误!' });
+            this.$Msg.customizTitle('操作类型错误!', 'info');
         }
         //获取系统帮助提示信息
         this.getDqHelpInfo();
@@ -557,7 +556,7 @@ export default {
                     this.getTableColumns(this.form_dq_data.target_tab);
                     this.table_fields_dialog = true;
                 } else {
-                    this.$message({ type: 'warning', message: '请检查目标表名合法性!' });
+                    this.$Msg.customizTitle('请检查目标表名合法性!', 'warning');
                 }
             } else if ('opposite_tab' === type) {
                 //校验比对表名
@@ -567,7 +566,7 @@ export default {
                     this.getTableColumns(this.form_dq_data.opposite_tab);
                     this.table_fields_dialog = true;
                 } else {
-                    this.$message({ type: 'warning', message: '请检查比对表名合法性!' });
+                    this.$Msg.customizTitle('请检查比对表名合法性!', 'warning');
                 }
             }
         },
@@ -619,7 +618,7 @@ export default {
                         });
 
                     } else {
-                        this.$message({ type: 'info', message: '操作类型错误!' });
+                        this.$Msg.customizTitle('操作类型错误!', 'info');
                     }
                 }
             });

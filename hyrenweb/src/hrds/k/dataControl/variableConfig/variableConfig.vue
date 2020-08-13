@@ -173,7 +173,7 @@ export default {
                             }
                         })
                     } else {
-                        this.$message({ type: 'info', message: '操作类型错误!' });
+                        this.$Msg.customizTitle('操作类型错误!', 'info');
                     }
                 }
             });
@@ -193,7 +193,7 @@ export default {
                     }
                 })
             }).catch(() => {
-                this.$message({ type: 'info', message: '已取消删除申请!' });
+                this.$Msg.customizTitle('已取消删除申请!', 'info');
             });
         }
     },
