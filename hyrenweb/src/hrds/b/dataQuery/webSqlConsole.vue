@@ -31,11 +31,13 @@
         <el-col :span="18" :offset="1">
             <el-tabs v-model="activeName" type="border-card" @tab-click='tabClick()'>
                 <el-tab-pane label="表查询" name="tableQuery">
-                    <el-table :data="dataByTableName" stripe border size="medium">
-                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip>
-                            <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
-                            <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
-                        </el-table-column>
+                    <el-table :data="dataByTableName" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun">
+                        <template v-for="(index, item) in dataByTableName[0]">
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                                <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                                <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                            </el-table-column>
+                        </template>
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="Sql查询" name="sqlQuery">
@@ -51,12 +53,13 @@
                             </div>
                         </el-col>
                     </el-row>
-
-                    <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
-                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="item" :label="item" :prop="item" show-overflow-tooltip>
-                            <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
-                            <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
-                        </el-table-column>
+                    <el-table :data="dataBySQL" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun" v-show="showOrhidden">
+                        <template v-for="(index, item) in dataBySQL[0]">
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                                <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                                <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                            </el-table-column>
+                        </template>
                     </el-table>
                 </el-tab-pane>
             </el-tabs>
@@ -70,20 +73,15 @@
 <script>
 import * as dataQuery from "./dataQuery";
 import Loading from '../../components/loading';
-/* import {
-    codemirror
-} from 'vue-codemirror';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/duotone-dark.css'
-import 'codemirror/mode/sql/sql.js' */
 import sqlFormatter from 'sql-formatter'
 import SqlEditor from '../../components/codemirror'
+import scrollbar from '../../components/scrollbar/Scrollbar'
 export default {
     name: "codeMirror",
     components: {
         Loading,
-        // codemirror,
-        SqlEditor
+        SqlEditor,
+        scrollbar,
     },
     data() {
         return {
@@ -114,6 +112,23 @@ export default {
         this.getWebSQLTreeData();
     },
     methods: {
+        //表头居中
+        thStyleFun() {
+            return 'text-align:center'
+        },
+        //数据居中
+        cellStyleFun() {
+            return 'text-align:center'
+        },
+        //表头自适应
+        labelHead(h, { column, index }) {
+            let l = column.label.length
+            let f = 14 //每个字大小，其实是每个字的比例值，大概会比字体大小差不多大一点，
+            column.minWidth = f * l //字大小乘个数即长度 ,注意不要加px像素，这里minWidth只是一个比例值，不是真正的长度
+            //然后将列标题放在一个div块中，注意块的宽度一定要100%，否则表格显示不完全
+            return h('div', { class: 'table-head', style: { width: '100%' } }, [column.label])
+        },
+        //点击标签触发
         tabClick() {
             if (this.activeName == 'sqlQuery') {
                 this.$nextTick(() => {
