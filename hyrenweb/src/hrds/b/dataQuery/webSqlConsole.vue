@@ -33,7 +33,7 @@
                 <el-tab-pane label="表查询" name="tableQuery">
                     <el-table :data="dataByTableName" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun">
                         <template v-for="(index, item) in dataByTableName[0]">
-                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :scoped-slot="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
                                 <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                                 <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                             </el-table-column>
@@ -55,7 +55,7 @@
                     </el-row>
                     <el-table :data="dataBySQL" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun" v-show="showOrhidden">
                         <template v-for="(index, item) in dataBySQL[0]">
-                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :scoped-slot="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
                                 <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                                 <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                             </el-table-column>
@@ -171,10 +171,7 @@ export default {
         getDataBySQL() {
             let querySQL = this.basicInfoForm.sqlMain;
             if (querySQL === '') {
-                this.$message({
-                    type: 'warning',
-                    message: '查询sql不能为空!'
-                });
+                this.$Msg.customizTitle('查询sql不能为空', 'warning')
             } else {
                 this.dataBySQL = [];
                 dataQuery.queryDataBasedOnSql({
