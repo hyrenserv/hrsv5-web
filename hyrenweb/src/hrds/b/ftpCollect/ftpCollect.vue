@@ -338,7 +338,7 @@ export default {
                 this.form["ftp_id"] = this.$route.query.id;
                 functionAll.updateFtp_collect(this.form).then(res => {
                     if (res && res.success) {
-                        this.$Msg.customizTitle('更新成功', 'success')
+                        this.$Msg.customizTitle('更新成功!', 'success')
                         this.$router.push({
                             name: "agentList"
                         });
@@ -347,7 +347,7 @@ export default {
             } else {
                 functionAll.addFtp_collect(this.form).then(res => {
                     if (res && res.success) {
-                        this.$Msg.customizTitle('添加成功', 'success')
+                        this.$Msg.customizTitle('添加成功!', 'success')
                         this.$router.push({
                             name: "agentList"
                         });
@@ -441,7 +441,7 @@ export default {
         // 检查表单有没有填写完整
         submitForm(formName) {
             if (this.DifferenceValue < 0) {
-                this.$Msg.customizTitle('结束日期不能小于开始日期', 'warning')
+                this.$Msg.customizTitle('结束日期不能小于开始日期!', 'warning')
             } else {
                 this.$refs[formName].validate(valid => {
                     if (valid) {

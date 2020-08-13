@@ -71,7 +71,6 @@
 <script>
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
-import * as message from "@/utils/js/message";
 import regular from "@/utils/js/regular";
 export default {
     data() {
@@ -88,13 +87,13 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     if (this.form.tableData.length == 0) {
-                        message.customizTitle('字段类型为必填项,至少选择一项', 'warning')
+                        this.$Msg.customizTitle('字段类型为必填项,至少选择一项', 'warning')
                     } else if (this.form.tableData.length > 0) {
                         this.form['lengthInfo'] = JSON.stringify(this.form.tableData);
                         delete this.form.tableData;
                         functionAll.addTypeLengthContrastInfo(this.form).then((res) => {
                             if (res && res.success) {
-                                message.saveSuccess(res);
+                                this.$Msg.saveSuccess(res);
                                 this.$router.push({
                                     name: 'typeLengthContrastInfo'
                                 })
@@ -112,7 +111,7 @@ export default {
             if (this.form.tableData.length > 1) {
                 this.form.tableData.splice(index, 1)
             } else {
-                message.customizTitle('请至少选择一项', 'warning')
+                this.$Msg.customizTitle('请至少选择一项', 'warning')
             }
 
         },

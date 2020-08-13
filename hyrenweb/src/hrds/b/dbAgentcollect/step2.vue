@@ -62,7 +62,6 @@
 <script>
 import Step from "./step";
 import * as functionAll from "./dbAgentcollect";
-import * as message from "@/utils/js/message";
 export default {
     components: {
         Step
@@ -155,7 +154,7 @@ export default {
                 obj[this.table_name] = this.tableDataDialog;
                 this.tableColumn[this.table_name] = this.tableDataDialog;
                 this.innerVisible = false;
-                message.customizTitle("列保存成功", "success")
+                this.$Msg.customizTitle("列保存成功", "success")
             } else {
                 let obj = {};
                 obj.table_id = this.table_id;
@@ -163,7 +162,7 @@ export default {
                 functionAll.updateColumnByTableId(obj).then(res => {
                     if (res && res.success) {
                         this.innerVisible = false;
-                        message.customizTitle("列保存成功", "success");
+                        this.$Msg.customizTitle("列保存成功", "success");
                         this.tableDataDialog = [];
                     }
                 })

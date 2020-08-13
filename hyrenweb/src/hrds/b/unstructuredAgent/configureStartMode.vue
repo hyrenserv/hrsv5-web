@@ -227,7 +227,7 @@ export default {
         // 保存非结构化文件采集页面信息跳转下一步和更新非结构化文件采集到下一步
         unStructuredCollect(formName) {
             if (this.DifferenceValue < 0) {
-                this.$Msg.customizTitle('结束日期不能小于开始日期', 'warning')
+                this.$Msg.customizTitle('结束日期不能小于开始日期!', 'warning')
             } else {
                 this.$refs[formName].validate(valid => {
                     let fcs_id = this.$route.query.fcs_id;
@@ -243,7 +243,7 @@ export default {
                                 this.form
                             ).then((res) => {
                                 if (res && res.success) {
-                                    this.$Msg.customizTitle('更新成功', 'success')
+                                    this.$Msg.customizTitle('更新成功!', 'success')
                                     this.$router.push({
                                         path: "/configureFileOption",
                                         query: {
@@ -265,7 +265,7 @@ export default {
                                 this.form
                             ).then((res) => {
                                 if (res && res.success) {
-                                    this.$Msg.customizTitle('添加成功', 'success')
+                                    this.$Msg.customizTitle('添加成功!', 'success')
                                     this.$router.push({
                                         path: "/configureFileOption",
                                         query: {

@@ -304,7 +304,7 @@ export default {
                 file_sources_array: ArrJson
             }).then((res) => {
                 if (res && res.success) {
-                    this.$Msg.customizTitle('添加成功', 'success')
+                    this.$Msg.customizTitle('添加成功!', 'success')
                     this.dialogSelectOk = false;
                     this.$router.push({
                         name: "agentList"

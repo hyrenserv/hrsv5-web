@@ -170,7 +170,6 @@
 
 <script>
 import * as functionAll from "./semiStructuredAgent";
-import * as message from "@/utils/js/message";
 import Step from "./step";
 export default {
     components: {
@@ -311,7 +310,7 @@ export default {
                 objectCollectStructs: JSON.stringify(this.tableDataColum)
             }).then(res => {
                 if (res && res.success) {
-                    message.customizTitle('采集列结构保存成功', 'success');
+                    this.$Msg.customizTitle('采集列结构保存成功', 'success');
                     this.dialogCollectStructure = false;
                     this.data2 = [];
                     this.tableDataColum = [];
@@ -442,7 +441,7 @@ export default {
                 objectHandleTypes: JSON.stringify(arr)
             }).then(res => {
                 if (res && res.success) {
-                    message.customizTitle('操作码表保存成功', 'success');
+                    this.$Msg.customizTitle('操作码表保存成功', 'success');
                     this.operationCodeTable = false;
                 }
             })
@@ -542,13 +541,13 @@ export default {
                 tableData.splice(val - 1, 1);
                 tableData.splice(val, 0, upDate);
             } else {
-                message.customizTitle("已经是第一条，不可上移", "warning");
+                this.$Msg.customizTitle("已经是第一条，不可上移", "warning");
             }
         },
         // 数据下移
         moveDown(val, data, tableData) {
             if (val + 1 === tableData.length) {
-                message.customizTitle("已经是最后一条，不可下移", "warning");
+                this.$Msg.customizTitle("已经是最后一条，不可下移", "warning");
             } else {
                 let downDate = tableData[val + 1];
                 tableData.splice(val + 1, 1);

@@ -145,7 +145,7 @@ export default {
                 if (valid) {
                     functionAll.addSysPara(this.formAdd).then((res) => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('添加成功','success')
+                            this.$Msg.customizTitle('添加成功!', 'success')
                             this.getSysPara("1");
                             this.currentPage = 1;
                             this.dialogFormVisibleAdd = false;
@@ -187,7 +187,7 @@ export default {
                     this.formUpdate["para_id"] = this.para_id;
                     functionAll.updateSysPara(this.formUpdate).then((res) => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('更新成功','success')
+                            this.$Msg.customizTitle('更新成功!', 'success')
                             // 渲染页面
                             this.currentPage = savecurrentPage
                             this.getSysPara(savecurrentPage);

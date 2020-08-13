@@ -279,7 +279,6 @@ import Step from "./step";
 import * as functionAll from "./semiStructuredAgent";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as message from "@/utils/js/message";
 export default {
     components: {
         Step

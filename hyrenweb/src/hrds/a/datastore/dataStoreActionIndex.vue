@@ -239,7 +239,6 @@
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as message from "@/utils/js/message";
 let arr = [];
 let arr2 = [];
 let tableDataLength;
@@ -397,18 +396,24 @@ export default {
         },
         // 根据dsl_id删除对应的数据
         deleteArry(e) {
-            this.$Msg.confirmMsg('确定删除吗?').then(() => {
+            this.$confirm('确定删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
                 functionAll.deleteDataStore({
                         dsl_id: e,
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('删除成功','success')
+                            this.$Msg.customizTitle('删除成功', 'success')
                             // 重新渲染页面
                             this.searchDataStore();
                         }
                     })
-            })
+            }).catch(() => {
+                this.$Msg.customizTitle('已取消删除', 'info')
+            });
         },
         // 根据dsl_id更新对应的数据回显和更新
         updateData(e, row) {
@@ -600,7 +605,7 @@ export default {
                 if (valid) {
                     // 处理参数
                     if (this.form.tableDataConfigure.length == 0) {
-                        this.$Msg.customizTitle('表格数据信息为必填项','warning')
+                        this.$Msg.customizTitle('表格数据信息为必填项', 'warning')
                     } else if (this.form.tableDataConfigure.length > 0) {
                         this.change_storelayer = [];
                         this.form.dsla_storelayer.forEach((item) => {
@@ -691,7 +696,7 @@ export default {
                             param
                         ).then((res) => {
                             if (res && res.success) {
-                                this.$Msg.customizTitle('更新成功','success')
+                                this.$Msg.customizTitle('更新成功', 'success')
                                 // 重新渲染页面
                                 this.searchDataStore();
                                 // 关闭弹出层
@@ -906,12 +911,12 @@ export default {
         // 保存上传文件
         handleChange(file, fileList) {
             if (fileList.length > 1) {
-                message.customizTitle("最多上传一条,请删除多余项", "warning");
+                this.$Msg.customizTitle("最多上传一条,请删除多余项", "warning");
             } else {
                 if (dataKey == file.name) {
                     fileArry.push(file.raw);
                 } else {
-                    message.customizTitle("请选择与key命名相同的文件", "warning");
+                    this.$Msg.customizTitle("请选择与key命名相同的文件", "warning");
                 }
             }
         },
@@ -923,7 +928,7 @@ export default {
                 }
                 fileList.forEach((item) => {
                     if (item.name != dataKey) {
-                        message.customizTitle("请保留与key命名相同的文件", "warning");
+                        this.$Msg.customizTitle("请保留与key命名相同的文件", "warning");
                     }
                 })
             }
@@ -986,7 +991,7 @@ export default {
                 this.fileList = [];
                 this.selectedUploadValue = false;
             } else {
-                message.customizTitle("请选择上传文件保存", "warning");
+                this.$Msg.customizTitle("请选择上传文件保存", "warning");
             }
         },
         // 取消选择上传文件

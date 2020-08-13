@@ -308,7 +308,7 @@ export default {
                     this.formAdd['dep_id'] = this.formAdd.depIds;
                     functionAll.saveSysUser(this.formAdd).then((res) => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('添加成功', 'success')
+                            this.$Msg.customizTitle('添加成功!', 'success')
                             this.getSysUserInfoAll("1");
                             this.currentPage = 1;
                             this.dialogFormVisibleAdd = false;
@@ -373,7 +373,7 @@ export default {
                     this.formUpdate['usertype_group'] = JSON.stringify(this.formUpdate.usertype_group).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "");
                     functionAll.updateSysUser(this.formUpdate).then((res) => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('更新成功', 'success')
+                            this.$Msg.customizTitle('更新成功!', 'success')
                             // 表单清空
                             this.formUpdate = {};
                             this.getSysUserInfoAll(pageNow);
@@ -418,12 +418,16 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('删除成功', 'success')
+                            this.$Msg.customizTitle('删除成功!', 'success')
                             // 从新渲染表格
                             this.getSysUserInfoAll(pageNow);
                         }
                     })
-            })
+            }).catch(() => {
+                // 未删除时数据回显
+                this.getSysUserInfoAll(pageNow);
+                this.$Msg.customizTitle('已取消删除', 'info')
+            });
         },
         //用户列表数据实现分页功能
         handleCurrentChangeList(val) {

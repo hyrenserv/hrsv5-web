@@ -113,7 +113,7 @@ export default {
                 if (valid) {
                     functionAll.addDepartmentInfo(this.formAdd).then((res) => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('添加成功','success')
+                            this.$Msg.customizTitle('添加成功', 'success')
                             this.getDepartmentInfoAll();
                             this.dialogFormVisibleAdd = false;
                             this.formAdd = {};
@@ -151,7 +151,7 @@ export default {
                     this.formUpdate["dep_id"] = this.dep_id;
                     functionAll.updateDepartmentInfo(this.formUpdate).then((res) => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('更新成功','success')
+                            this.$Msg.customizTitle('更新成功', 'success')
                             this.getDepartmentInfoAll();
                             this.dialogFormVisibleUpdate = false;
                             this.formUpdate = {};
@@ -175,12 +175,14 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$Msg.customizTitle('删除成功','success')
+                            this.$Msg.customizTitle('删除成功', 'success')
                             // 从新渲染表格
                             this.getDepartmentInfoAll();
                         }
                     })
-            })
+            }).catch(() => {
+                this.$Msg.customizTitle('已取消删除', 'info')
+            });
         },
         // 关闭弹出框之前触发事件
         beforeClose() {

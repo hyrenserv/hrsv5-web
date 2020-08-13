@@ -70,7 +70,7 @@ export default {
 
                 })
             } else {
-                message.customizTitle('作业名称不能为空', 'warning');
+                this.$Msg.customizTitle('作业名称不能为空', 'warning');
             }
 
         },
