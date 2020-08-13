@@ -155,7 +155,6 @@
 
 <script>
 import * as functionAll from "./marketAction";
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as chartMind from 'jsmind';
@@ -288,7 +287,7 @@ export default {
         // 修改分类名称
         changeName() {
             if (JSON.stringify(this.timeObj) == "{}") {
-                message.customizTitle("请选择一个分类名称修改", "warning");
+                this.$Msg.customizTitle("请选择一个分类名称修改", "warning");
                 return false;
             } else {
                 this.dialogchangeName = true;
@@ -304,7 +303,7 @@ export default {
                         category_name: this.formChangeName.category_name
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('修改成功', 'success')
+                            this.$Msg.customizTitle('修改成功', 'success')
                             this.dialogchangeName = false;
                             this.$refs.formChangeName.resetFields();
                             this.getDmCategoryTreeData(this.$route.query.id);
@@ -324,7 +323,7 @@ export default {
         // 删除分类名称
         deleteName() {
             if (JSON.stringify(this.timeObj) == "{}") {
-                message.customizTitle("请选择一个分类名称删除", "warning");
+                this.$Msg.customizTitle("请选择一个分类名称删除", "warning");
                 return false;
             } else {
                 this.$confirm('确认删除吗?', '提示', {
@@ -336,17 +335,12 @@ export default {
                         category_id: this.timeObj.category_id
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('删除成功', 'success')
+                            this.$Msg.customizTitle('删除成功', 'success')
                             this.getDmCategoryTreeData(this.$route.query.id);
                             this.getDmCategoryNodeInfo(this.$route.query.id);
                         }
                     })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
+                })
             }
         },
         // 新建分类
@@ -378,7 +372,7 @@ export default {
                         dmCategories: JSON.stringify(arr)
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('添加成功', 'success')
+                            this.$Msg.customizTitle('添加成功', 'success')
                             this.dialogDataName = false;
                             this.$refs.formDataName.resetFields();
                             this.getDmCategoryTreeData(this.$route.query.id);
@@ -435,10 +429,7 @@ export default {
             }
             functionAll.generateMartJobToEtl(param).then((res) => {
                 if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "成功"
-                    });
+                    this.$Msg.customizTitle("成功", "success");
                 }
                 this.dialogProdeceJobs = false;
             })
@@ -457,7 +448,7 @@ export default {
         downloaddmdatatable(row) {
             let datatable_id = row.datatable_id;
             let datatable_en_name = row.datatable_en_name;
-            message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
+            this.$Msg.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
                 let that = this;
                 functionAll.downloadDmDatatable({
                     datatable_id: datatable_id
@@ -491,13 +482,13 @@ export default {
         // 删除表格的某一列
         deletedmdatatable(row) {
             let datatable_en_name = row.datatable_en_name;
-            message.confirmMsg('确定删除 ' + datatable_en_name + ' 吗').then(res => {
+            this.$Msg.confirmMsg('确定删除 ' + datatable_en_name + ' 吗').then(res => {
                 let param = {
                     "datatable_id": row.datatable_id
                 }
                 functionAll.deleteDMDataTable(param).then((res) => {
                     if (res && res.success) {
-                        message.deleteSuccess(res);
+                        this.$Msg.deleteSuccess(res);
                         this.querydmdatatable(this.$route.query.id);
                     }
                 })

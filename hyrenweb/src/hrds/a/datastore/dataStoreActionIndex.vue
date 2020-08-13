@@ -397,30 +397,18 @@ export default {
         },
         // 根据dsl_id删除对应的数据
         deleteArry(e) {
-            this.$confirm('确定删除吗?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning',
-            }).then(() => {
+            this.$Msg.confirmMsg('确定删除吗?').then(() => {
                 functionAll.deleteDataStore({
                         dsl_id: e,
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                            this.$Msg.customizTitle('删除成功','success')
                             // 重新渲染页面
                             this.searchDataStore();
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
+            })
         },
         // 根据dsl_id更新对应的数据回显和更新
         updateData(e, row) {
@@ -612,12 +600,7 @@ export default {
                 if (valid) {
                     // 处理参数
                     if (this.form.tableDataConfigure.length == 0) {
-                        this.$message({
-                            showClose: true,
-                            type: 'warning',
-                            message: '表格数据信息为必填项',
-                            duration: 0
-                        })
+                        this.$Msg.customizTitle('表格数据信息为必填项','warning')
                     } else if (this.form.tableDataConfigure.length > 0) {
                         this.change_storelayer = [];
                         this.form.dsla_storelayer.forEach((item) => {
@@ -708,10 +691,7 @@ export default {
                             param
                         ).then((res) => {
                             if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '更新成功!'
-                                });
+                                this.$Msg.customizTitle('更新成功','success')
                                 // 重新渲染页面
                                 this.searchDataStore();
                                 // 关闭弹出层

@@ -230,9 +230,21 @@
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column prop="field_length" label="字段长度" width="100" show-overflow-tooltip align="center">
+                <el-table-column prop="field_length" label="字段长度" width="140" align="center" class="fieldDesc">
+                    <!-- <template slot="header">
+                        字段长度
+                    </template> -->
                     <template slot-scope="scope">
-                        <el-input :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
+                        <el-input style="width:80%" :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
+                        <el-tooltip v-if="scope.row.field_type == 'NUMERIC' || scope.row.field_type == 'numeric'" class="tooltipHelp" effect="dark" placement="top">
+                            <div slot="content">
+                                　　说明: NUMERIC [ ( precision [ , scale ] ) ] ,写法如 : 15,3<br />
+                                　　 precision 一个在 1 到 127 范围内（含 1 和 127）的整数表达式，指定表达式中的位数。缺省设置为 30。<br />
+                                　　 scale 一个在 0 到 127 范围内（含 1 和 127）的整数表达式，指定小数点后的位数。小数位数值应始终小于或等于精度值。缺省设置为 6。 <br />
+
+                            </div>
+                            <i class="fa fa-question-circle " aria-hidden="true"></i>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column prop="field_process" label="处理方式" width="130" show-overflow-tooltip align="center">
@@ -328,7 +340,7 @@
     <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
         <el-row>
             <el-table :data="databysql" border size="mini">
-                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item" :prop="item">
+                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item" show-overflow-tooltip :prop="item">
                     <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                     <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                 </el-table-column>
@@ -443,7 +455,7 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :value="aftersql" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            <SqlEditor ref="sqleditor" @changeTextarea="changeTextarea($event)" class='textasql' />
                         </div>
                     </el-row>
                 </el-tabs>
@@ -1061,11 +1073,13 @@ export default {
                 "datatable_id": this.datatable_id
             }).then((res) => {
                 if (res && res.success) {
-                    if (res.data.length > 0) {
-                        if (res.data.post_work != undefined)
-                            this.aftersql = res.data.post_work;
-                        if (res.data.pre_work != undefined)
-                            this.presql = res.data.pre_work;
+                    if (typeof res.data.post_work != 'undefined') {
+                        this.afterJobForm.afterSql = res.data.post_work;
+                        this.$refs.sqleditor.setmVal(this.afterJobForm.afterSql)
+                    }
+                    if (typeof res.data.pre_work != 'undefined') {
+                        this.preJobForm.preSql = res.data.pre_work;
+                        this.$refs.sqleditor.setmVal(this.preJobForm.preSql)
                     }
                 }
             });
@@ -1345,5 +1359,9 @@ export default {
 /* 提示信息样式 */
 #addMartable2 .tooltipHelp {
     padding: 0 4px !important;
+}
+
+.fieldDesc>>>el-input {
+    width: 80% !important;
 }
 </style>
