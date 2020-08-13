@@ -136,10 +136,7 @@ export default {
                     this.formAdd["dep_id"] = this.formAdd.depIds;
                     functionAll.saveDataSource(this.formAdd).then(response => {
                         if (response && response.success) {
-                            this.$message({
-                                type: "success",
-                                message: "添加成功!"
-                            });
+                            this.$Msg.customizTitle('添加成功', 'success')
                             this.$emit("addEvent");
                             // 隐藏对话框
                             this.dialogFormVisibleAdd = false;

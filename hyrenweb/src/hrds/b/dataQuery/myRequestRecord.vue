@@ -147,17 +147,17 @@
             dataQuery.getCategoryItems({'category': 'FileType'}).then((res) => {
                 if (res.success) {
                     this.FileType = res.data;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             });
             dataQuery.getCategoryItems({'category': 'AuthType'}).then((res) => {
                 if (res.success) {
                     this.AuthType = res.data;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             });
             dataQuery.getCategoryItems({'category': 'ApplyType'}).then((res) => {
                 if (res.success) {
                     this.ApplyType = res.data;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             });
         },
         mounted() {
@@ -165,7 +165,7 @@
             dataQuery.myApplyRecord(this.myApplyRecordForm).then((res) => {
                 if (res.success) {
                     this.myApplyRecordData = res.data.file_rs;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             });
         },
         methods: {
@@ -185,7 +185,7 @@
                 dataQuery.myApplyRecord(this.myApplyRecordForm).then((res) => {
                     if (res.success) {
                         this.myApplyRecordData = res.data.file_rs;
-                    } else this.$message({type: 'error', message: res.message,})
+                    } else this.$Msg.customizTitle(res.message, 'error')
                 });
             },
             /* 权限申请 */
@@ -200,13 +200,11 @@
                             dataQuery.myApplyRecord(this.myApplyRecordForm).then((res) => {
                                 if (res.success) {
                                     this.myApplyRecordData = res.data.file_rs;
-                                } else this.$message({type: 'error', message: res.message,})
+                                } else this.$Msg.customizTitle(res.message, 'error')
                             })
-                        } else this.$message({type: 'error', message: res.message,})
+                        } else this.$Msg.customizTitle(res.message, 'error')
                     })
-                }).catch(() => {
-                    this.$message({type: 'info', message: '已取消申请!'});
-                });
+                })
             },
             /* 查看文件 */
             viewFile(fileId, fileType) {
@@ -214,7 +212,7 @@
                 dataQuery.viewFile({"fileId": fileId, "fileType": fileType,}).then((res) => {
                     if (res.success) {
                         console.log(res.data)
-                    } else this.$message({type: 'error', message: res.message,})
+                    } else this.$Msg.customizTitle(res.message, 'error')
                 })
             },
             /* 下载文件 */
@@ -223,7 +221,7 @@
                     if (res.success) {
                         // 转换数据流为文件
                         fileOperations.fileDownload(file_id, original_name)
-                    } else this.$message({type: 'error', message: res.message,})
+                    } else this.$Msg.customizTitle(res.message, 'error')
                 })
             },
         }

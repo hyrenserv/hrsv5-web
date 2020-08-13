@@ -567,11 +567,7 @@ export default {
                     this.isLoading = false
                     if (res.success) {
                         this.finishDialogVisible = false;
-                        this.$message({
-                            showClose: true,
-                            message: '启动发送成功',
-                            type: "success"
-                        });
+                        this.$Msg.customizTitle("启动发送成功", 'success')
                         this.$router.push({
                             path: "/agentList"
                         });

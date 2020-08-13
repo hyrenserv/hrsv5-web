@@ -456,11 +456,7 @@ export default {
                     // this.Alltask = res.data
                 })
             } else {
-                this.$message({
-                    showClose: true,
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle("工程编号未选择", 'error')
             }
 
         },

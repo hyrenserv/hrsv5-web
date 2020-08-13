@@ -551,11 +551,7 @@ export default {
                 .then(res => {
                     if (res.success) {
                         this.finishDialogVisible = false;
-                        this.$message({
-                            showClose: true,
-                            message: '发送成功',
-                            type: "success"
-                        });
+                        this.$Msg.customizTitle("发送成功", 'success')
                         this.$router.push({
                             path: "/agentList"
                         });
@@ -618,11 +614,7 @@ export default {
                         }
                     });
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "工程编号未选择",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("工程编号未选择", 'error')
             }
         },
         projNumCloseFun() {
@@ -656,11 +648,7 @@ export default {
                         }
                     });
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "工程编号未选择",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("工程编号未选择", 'error')
             }
         },
         // 任务编号提交

@@ -499,11 +499,7 @@ export default {
                      this.isLoading=false
                     if (res.success) {
                         this.finishDialogVisible = false;
-                        this.$message({
-                            showClose: true,
-                            message: '启动发送成功',
-                            type: "success"
-                        });
+                        this.$Msg.customizTitle('启动发送成功', 'success')
                         this.$router.push({
                             path: "/agentList"
                         });
@@ -604,11 +600,7 @@ export default {
                                 this.submit_0 = true;
                                 // this.dbid = res.data;
                             } else {
-                                this.$message({
-                                    showClose: true,
-                                    message: res.message,
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle(res.message, 'error')
                             }
                         });
                     } else {
@@ -1152,11 +1144,7 @@ export default {
                     } else {
                         str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
                         if (str.length > 27) {
-                            this.$message({
-                                showClose: true,
-                                message: "选择目的地存在oracl时,落地表名长度不能超过27,请修改落地表名",
-                                type: "error"
-                            });
+                            this.$Msg.customizTitle('选择目的地存在oracl时,落地表名长度不能超过27,请修改落地表名', 'error')
                         } else {
                             let dslIds = [];
                             if (this.dslIdString.length > 0) {
@@ -1193,11 +1181,7 @@ export default {
 
         },
         open() {
-            this.$message({
-                showClose: true,
-                message: "请至少选择一个存储目的地",
-                type: "error"
-            });
+            this.$Msg.customizTitle('请至少选择一个存储目的地', 'error')
         },
         getRowKeys(row) {
             return row.dsl_id;

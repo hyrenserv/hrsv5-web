@@ -156,10 +156,7 @@ export default {
         getDataBySQL() {
             let querySQL = this.basicInfoForm.sqlMain;
             if (querySQL === '') {
-                this.$message({
-                    type: 'warning',
-                    message: '查询sql不能为空!'
-                });
+                this.$Msg.customizTitle('查询sql不能为空', 'warning')
             } else {
                 this.dataBySQL = [];
                 dataQuery.queryDataBasedOnSql({
