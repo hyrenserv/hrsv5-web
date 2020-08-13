@@ -101,10 +101,7 @@ export default {
                     this.formUpdate["source_id"] = this.source_id;
                     functionAll.updateDataSource(this.formUpdate).then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功!"
-                            });
+                            this.$Msg.customizTitle('更新成功', 'success')
                             this.$emit("addEvent");
                             this.dialogFormVisibleAdd = false;
                             this.formUpdate = {
@@ -165,19 +162,11 @@ export default {
                     })
                     .then((res) => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                            this.$Msg.customizTitle('删除成功', 'success')
                             this.$emit("addEvent");
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
+            })
         },
 
         // 点击下载图标数据

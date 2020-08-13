@@ -155,7 +155,6 @@
 
 <script>
 import * as functionAll from "./marketAction";
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as chartMind from 'jsmind';
@@ -341,12 +340,7 @@ export default {
                             this.getDmCategoryNodeInfo(this.$route.query.id);
                         }
                     })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
+                })
             }
         },
         // 新建分类
@@ -435,10 +429,7 @@ export default {
             }
             functionAll.generateMartJobToEtl(param).then((res) => {
                 if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "成功"
-                    });
+                    this.$Msg.customizTitle("成功", "success");
                 }
                 this.dialogProdeceJobs = false;
             })
@@ -457,7 +448,7 @@ export default {
         downloaddmdatatable(row) {
             let datatable_id = row.datatable_id;
             let datatable_en_name = row.datatable_en_name;
-            message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
+            this.$Msg.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
                 let that = this;
                 functionAll.downloadDmDatatable({
                     datatable_id: datatable_id
@@ -491,13 +482,13 @@ export default {
         // 删除表格的某一列
         deletedmdatatable(row) {
             let datatable_en_name = row.datatable_en_name;
-            message.confirmMsg('确定删除 ' + datatable_en_name + ' 吗').then(res => {
+            this.$Msg.confirmMsg('确定删除 ' + datatable_en_name + ' 吗').then(res => {
                 let param = {
                     "datatable_id": row.datatable_id
                 }
                 functionAll.deleteDMDataTable(param).then((res) => {
                     if (res && res.success) {
-                        message.deleteSuccess(res);
+                        this.$Msg.deleteSuccess(res);
                         this.querydmdatatable(this.$route.query.id);
                     }
                 })

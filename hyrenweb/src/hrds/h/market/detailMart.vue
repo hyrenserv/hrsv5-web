@@ -257,10 +257,7 @@ export default {
             }
             functionAll.generateMartJobToEtl(param).then((res) => {
                 if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "成功"
-                    });
+                    this.$Msg.customizTitle('成功', 'success')
                 }
                 this.dialogProdeceJobs = false;
             })

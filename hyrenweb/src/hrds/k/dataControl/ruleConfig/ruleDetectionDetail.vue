@@ -277,6 +277,7 @@ export default {
         },
         //获取指标结果3的数据集
         getCheckIndex3(task_id) {
+            this.check_index3_list = [];
             rrFun
                 .getCheckIndex3({
                     task_id: task_id

@@ -354,7 +354,7 @@ export default {
         if ("undefined" !== typeof this.$route.query.detect_id) {
             this.detect_id = this.$route.query.detect_id;
         } else {
-            this.$message({ type: 'error', message: '页面错误,检测记录id不存在!' });
+            this.$Msg.customizTitle('页面错误,检测记录id不存在!', 'error');
         }
         // 获取数据类型下拉框
         this.$Code.getCategoryItems({
@@ -403,10 +403,7 @@ export default {
             tsbFun.saveTSBConfData({ "detect_id": this.detect_id, "tsb_result_bean_s": JSON.stringify(tsb_result_bean_s) }).then(res => {
                 if (res.success) {
                     this.isLoading = false;
-                    this.$message({
-                        type: 'success',
-                        message: '表结构对标结果保存成功!'
-                    });
+                    this.$Msg.customizTitle('表结构对标结果保存成功!', 'success');
                     //对标结果保存成功后,将对标结果置空
                     this.tableData = [];
                     //保存完成后,跳转到表结构对标首页

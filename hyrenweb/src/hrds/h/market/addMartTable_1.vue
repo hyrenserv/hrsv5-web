@@ -13,7 +13,7 @@
     <el-form :model="dm_datatable" ref="dm_datatable" class="demo-form-inline" :inline="true" label-width="200px">
         <el-row>
             <el-col :span="10">
-                <el-form-item label="表英文名" prop="datatable_en_name" :rules="rule.default">
+                <el-form-item label="表英文名" prop="datatable_en_name" :rules="filter_rules([{required:true, dataType:'table'}])">
                     <el-input :disabled="ennameiflock" v-model="dm_datatable.datatable_en_name" @change="checkrepeat()" placeholder="表英文名">
                         <el-button slot="append" icon="el-icon-zoom-in" @click="showalreadyexisttablename()"></el-button>
                     </el-input>
@@ -358,10 +358,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     if (this.dsl_id == "") {
-                        this.$message({
-                            type: "warning",
-                            message: "请选择存储目的地!"
-                        });
+                        this.$Msg.customizTitle("请选择存储目的地", "warning")
                         return false;
                     }
                     //判断是否为oracle
@@ -375,10 +372,7 @@ export default {
                             // debugger;
                             isorclaeok = res.data;
                             if (!res.data) {
-                                this.$message({
-                                    type: "warning",
-                                    message: "选择存储目的地为oracle,且表名长度大于26，请修改表名!"
-                                });
+                                this.$Msg.customizTitle("选择存储目的地为oracle,且表名长度大于26，请修改表名!", "warning");
                                 return false;
                             }
                             this.isLoading = true;
@@ -522,10 +516,7 @@ export default {
         },
         showalreadyexisttablename() {
             if (this.dm_datatable.repeat_flag == "0") {
-                this.$message({
-                    type: "warning",
-                    message: "表名不能重复，不能选择已有表名"
-                });
+                this.$Msg.customizTitle("表名不能重复，不能选择已有表名", "warning")
                 return false;
             }
             this.ifalreadyexisttablename = true;
@@ -536,10 +527,7 @@ export default {
         },
         confirmselecttable() {
             if (this.selecttablename == "") {
-                this.$message({
-                    type: "warning",
-                    message: "请选择表名"
-                });
+                this.$Msg.customizTitle("请选择表名", "warning")
                 return false;
             }
             this.ifalreadyexisttablename = false;

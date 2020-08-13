@@ -315,7 +315,6 @@
 
 <script>
 import * as dataBenchmarkingAllFun from './dbm'
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import Scrollbar from '../../components/scrollbar';
 import Loading from '../../components/loading'
@@ -769,11 +768,7 @@ export default {
                     that.getDbmNormbasicInfo(1, that.pagesize)
                 } else {
                     that.isLoading = false
-                    this.$message({
-                        showClose: true,
-                        message: res.message,
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle(res.message, 'error');
                 }
             });
         },
@@ -781,7 +776,7 @@ export default {
             return ''
         },
         exceedHander() {
-            this.$message.warning('请勿上传多个文件')
+            this.$Msg.customizTitle('请勿上传多个文件!', 'warning');
         },
         beforeAvatarUpload(file) {
             const Xls = file.name.split('.');
@@ -789,11 +784,11 @@ export default {
             if (Xls[Xls.length - 1] === 'xls' || Xls[Xls.length - 1] === 'xlsx') {
                 return file;
             } else {
-                this.$message.error('上传文件只能是 xls/xlsx 格式')
+                this.$Msg.customizTitle('上传文件只能是 xls/xlsx 格式!', 'error');
                 return false
             }
             if (!isLt2M) {
-                this.$message.error('上传模板大小不能超过 10MB')
+                this.$Msg.customizTitle('上传模板大小不能超过 10MB!', 'error');
                 return false;
             }
         },
@@ -816,7 +811,7 @@ export default {
         handleFirst1() {
             this.fileList.splice(0);
             this.importUserDialog = false;
-            this.$message.info('已取消上传');
+            this.$Msg.customizTitle('已取消上传!', 'info');
         },
         //过滤发布状态
         fulterChangeFun(filter) {

@@ -396,12 +396,7 @@ export default {
                         })
                     }
                 })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消' + apply_type_zh + '申请!'
-                });
-            });
+            })
         },
         /* 查看文件 */
         viewFile(fileId, fileType) {
