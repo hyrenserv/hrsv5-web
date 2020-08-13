@@ -155,10 +155,7 @@ export default {
                 if (valid) {
                     functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更改成功!"
-                            });
+                            this.$Msg.customizTitle('更改成功', 'success')
                             // 传入当前页数和当前需要的条数渲染
                             this.handleCurrentChange(this.currentPage);
                             // 隐藏对话框
@@ -255,19 +252,11 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '回收权限成功!'
-                            });
+                            this.$Msg.customizTitle('回收权限成功', 'success')
                             this.tableDatalist = res.data;
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消回收权限'
-                });
-            });
+            })
         },
         // 改变数据管理列表每页显示条数
         handleSizeChangelist(val) {

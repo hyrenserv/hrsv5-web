@@ -117,10 +117,7 @@ export default {
             params["etl_job_temp_para"] = arr;
             etlJobDefTemplateAllFun.saveEtlJobTemp(params).then(res => {
                 if (res && res.success) {
-                    this.$message({
-                        message: '保存成功',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("保存成功", "success");
                     this.formUpload = {};
                     this.dialogFormVisibleUpload = false;
                 }

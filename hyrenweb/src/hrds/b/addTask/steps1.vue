@@ -1134,11 +1134,7 @@ export default {
                             }
                         }
                     } else {
-                        this.$message({
-                            showClose: true,
-                            message: "请至少选择一项",
-                            type: "error"
-                        });
+                        this.$Msg.customizTitle('请至少选择一项', 'error')
                     }
                 } else {
                     if (this.radio != '') {
@@ -1150,21 +1146,12 @@ export default {
                             }
                         }
                     } else {
-                        this.$message({
-                            showClose: true,
-                            message: "请至少选择一项",
-                            type: "error"
-                        });
+                        this.$Msg.customizTitle('请至少选择一项', 'error')
                     }
                 }
 
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "请新增任务并选择",
-
-                    type: "error"
-                });
+                this.$Msg.customizTitle('请新增任务并选择', 'error')
             }
         },
         // 采集任务取消时

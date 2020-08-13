@@ -352,7 +352,6 @@
 import * as functionAll from "./codeMaintenance";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as message from "@/utils/js/message";
 export default {
     data() {
         return {
@@ -442,7 +441,7 @@ export default {
             if (this.form.tableData.length > 1) {
                 this.form.tableData.splice(index, 1)
             } else {
-                message.customizTitle('请至少选择一项', 'warning')
+                this.$Msg.customizTitle('请至少选择一项', 'warning')
             }
 
         },
@@ -457,7 +456,7 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     if (this.form.tableData.length == 0) {
-                        message.customizTitle('编码名称与编码值不能为空', 'warning')
+                        this.$Msg.customizTitle('编码名称与编码值不能为空', 'warning')
                     } else if (this.form.tableData.length > 0) {
                         this.form.tableData.forEach(item => {
                             item.code_classify = this.form.code_classify;
@@ -468,7 +467,7 @@ export default {
                             hyren_code_infos: JSON.stringify(this.form.tableData)
                         }).then((res) => {
                             if (res && res.success) {
-                                message.saveSuccess(res);
+                                this.$Msg.saveSuccess(res);
                                 this.$refs.form.resetFields();
                                 this.dialogFormVisibleAdd = false;
                                 this.getCodeInfo();
@@ -562,7 +561,7 @@ export default {
                         hyren_code_infos: JSON.stringify(this.formUpdate.tableData)
                     }).then((res) => {
                         if (res && res.success) {
-                            message.customizTitle('更新成功', 'success')
+                            this.$Msg.customizTitle('更新成功', 'success')
                             this.$refs.formUpdate.resetFields();
                             this.dialogFormVisibleUpdate = false;
                             this.getCodeInfo();
@@ -591,12 +590,14 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            message.customizTitle('删除成功', 'success')
+                            this.$Msg.customizTitle('删除成功', 'success')
                             // 从新渲染表格
                             this.getCodeInfo();
                         }
                     })
-            })
+            }).catch(() => {
+                this.$Msg.customizTitle('已取消删除', 'info')
+            });
         },
         // 源系统编码
         // 查询源系统信息
@@ -620,7 +621,7 @@ export default {
                         orig_sys_remark: this.formScoure.orig_sys_remark,
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('保存成功', 'success')
+                            this.$Msg.customizTitle('保存成功', 'success')
                             this.getOrigSysInfo();
                             this.dialogFormVisibleAddScoure = false;
                             this.$refs.formScoure.resetFields();
@@ -688,7 +689,7 @@ export default {
                 if (arr1.indexOf(this.onlyArry[0].code_classify) == -1) {
                     this.formScoureAdd.codeMaintenanceTableDataScoureAdd = [...this.formScoureAdd.codeMaintenanceTableDataScoureAdd, ...this.onlyArry];
                 } else {
-                    message.customizTitle('添加信息已存在', 'warning');
+                    this.$Msg.customizTitle('添加信息已存在', 'warning');
                 }
             }
             this.dataRosolve(this.formScoureAdd.codeMaintenanceTableDataScoureAdd);
@@ -711,12 +712,14 @@ export default {
                         })
                         .then(res => {
                             if (res && res.success) {
-                                message.customizTitle('删除成功', 'success')
+                                this.$Msg.customizTitle('删除成功', 'success')
                                 // 从新渲染表格
                                 this.getOrigCodeInfo(this.markId);
                             }
                         })
-                })
+                }).catch(() => {
+                    this.$Msg.customizTitle('已取消删除', 'info')
+                });
             }
         },
         // 合并行统一编码信息
@@ -762,7 +765,7 @@ export default {
                         orig_code_infos: JSON.stringify(data)
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('添加成功', 'success');
+                            this.$Msg.customizTitle('添加成功', 'success');
                             // 从新渲染表格
                             this.getOrigCodeInfo(this.markId);
                             this.$refs.formScoureAdd.resetFields();
@@ -796,7 +799,7 @@ export default {
                     }).then(res => {
                         // 从新渲染表格
                         if (res && res.success) {
-                            message.customizTitle('更新成功', 'success')
+                            this.$Msg.customizTitle('更新成功', 'success')
                             this.getOrigCodeInfo(this.markId);
                             this.$refs.formScoureRef.resetFields();
                             this.dialogFormVisibleUpdateScoure = false;

@@ -255,10 +255,7 @@ export default {
                 if (valid) {
                     functionAll.saveAgent(this.formAdd).then(response => {
                         if (response && response.success) {
-                            this.$message({
-                                type: "success",
-                                message: "添加成功!"
-                            });
+                            this.$Msg.customizTitle('删除成功', 'success')
                             // 隐藏对话框
                             this.dialogFormVisible = false;
                             this.getAgentAllData(this.agent_type);
@@ -383,10 +380,7 @@ export default {
                 if (valid) {
                     functionAll.updateAgent(this.form).then(response => {
                         if (response && response.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功!"
-                            });
+                            this.$Msg.customizTitle('更新成功', 'success')
                             // 重新渲染页面
                             this.getAgentAllData(agentTupe);
                             // 隐藏对话框
@@ -414,10 +408,7 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            });
+                            this.$Msg.customizTitle('删除成功', 'success')
                             // 隐藏对话框
                             this.dialogFormVisibleDelte = false;
                             // 表单清空
@@ -430,12 +421,7 @@ export default {
                             this.getAgentAllData(agentTupe);
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
+            })
         }
     }
 };

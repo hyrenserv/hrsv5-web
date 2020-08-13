@@ -1035,11 +1035,7 @@ export default {
                             if (rep_table2.length > 0) {
                                 this.secondTrue = false
                                 this.isLoading = false;
-                                this.$message({
-                                    showClose: true,
-                                    message: "sql抽取数据中存在表" + rep_table2 + "重复,请修改",
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle("sql抽取数据中存在表" + rep_table2 + "重复,请修改", 'error')
                                 this.activeName = "second";
                             } else {
                                 for (let j = 0; j < sqlExtractData.length; j++) {
@@ -1081,21 +1077,13 @@ export default {
                         if (istrue.length == 0) {
                             //判断第二步整体有没有表存在
                             this.isLoading = false;
-                            this.$message({
-                                showClose: true,
-                                message: "至少选择一张表",
-                                type: "error"
-                            });
+                            this.$Msg.customizTitle("至少选择一张表" + rep_table2 + "重复,请修改", 'error')
                         } else {
                             //checkTablePrimary
                             if (rep_table.length > 0) {
                                 //有重复表
                                 this.isLoading = false;
-                                this.$message({
-                                    showClose: true,
-                                    message: "单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改",
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle("单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改", 'error')
                             } else {
                                 //没有重复表
                                 if (isparmi.length > 0) {
@@ -1134,11 +1122,7 @@ export default {
                                                 if (arr.length > 0) {
                                                     //存在未设置主键
                                                     this.isLoading = false;
-                                                    this.$message({
-                                                        showClose: true,
-                                                        message: "单表查询中表" + arr + "未设置主键",
-                                                        type: "error"
-                                                    });
+                                                    this.$Msg.customizTitle("单表查询中表" + arr + "未设置主键", 'error')
                                                 } else {
                                                     //不存在继续下面方法
                                                     this.saveTableConfFun(tableData); //处理第一个页面数据
@@ -1157,11 +1141,7 @@ export default {
                                             if (arr.length > 0) {
                                                 //存在未设置主键的表
                                                 this.isLoading = false;
-                                                this.$message({
-                                                    showClose: true,
-                                                    message: "单表查询中表" + arr + "未设置主键",
-                                                    type: "error"
-                                                });
+                                                this.$Msg.customizTitle("单表查询中表" + arr + "未设置主键", 'error')
                                             } else {
                                                 //不存在未设置主键的表则继续下面整合数据方法
                                                 this.saveTableConfFun(tableData); //处理第一个页面数据
@@ -1871,11 +1851,7 @@ export default {
             this.ParallelExtractionLink = false;
             if (this.ruleForm_ParallelEx.EXtable_sql == undefined) {
                 this.linkloading = false
-                this.$message({
-                    showClose: true,
-                    message: "sql为空",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("sql为空", 'error')
             } else {
                 if (this.ruleForm_ParallelEx.EXtable_sql != '') {
                     let params = {};
@@ -1899,11 +1875,7 @@ export default {
                     });
                 } else {
                     this.linkloading = false
-                    this.$message({
-                        showClose: true,
-                        message: "sql为空",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle("sql为空", 'error')
                 }
 
             }
@@ -2019,11 +1991,7 @@ export default {
                 }
                 this.dialogTableVisible = false;
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "sql有误",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("sql有误", 'error')
             }
         },
         // 第一个页面md5
@@ -2208,11 +2176,7 @@ export default {
                                 this.getSqlColumnDataFun(row, sql);
                                 //   break
                             } else {
-                                this.$message({
-                                    showClose: true,
-                                    message: "请先为此表设置卸数方式sql语句",
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle("请先为此表设置卸数方式sql语句", 'error')
                             }
                         }
                     }
@@ -2238,11 +2202,7 @@ export default {
                 }
             } else {
                 if (arrdata.indexOf(row.table_name) == -1) {
-                    this.$message({
-                        showClose: true,
-                        message: "请先为此表设置卸数方式sql语句",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle("请先为此表设置卸数方式sql语句", 'error')
                 } else {
                     let sql = "";
                     if (row.unload_type == "增量") {
@@ -2370,11 +2330,7 @@ export default {
                     this.dialogSelectColumn = false;
                     this.tablename = "";
                 } else {
-                    this.$message({
-                        showClose: true,
-                        message: "请选择至少一个主键",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle("请选择至少一个主键", 'error')
                 }
             } else if (this.unloadType == "全量") {
                 if (hasprimaryKey == true) {
@@ -2462,11 +2418,7 @@ export default {
                 this.dialogSelectColumn2 = false;
                 this.tablename = "";
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "请选择至少一个主键",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("请选择至少一个主键", 'error')
             }
         },
         //第一页 选择列弹框关闭

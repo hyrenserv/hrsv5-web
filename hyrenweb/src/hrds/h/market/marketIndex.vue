@@ -307,10 +307,7 @@ export default {
                         delete obj.tableDataAdd;
                         functionAll.addMarket(obj).then((res => {
                             if (res && res.success) {
-                                this.$message({
-                                    type: "success",
-                                    message: "更新成功!"
-                                });
+                                this.$Msg.customizTitle('更新成功', 'success')
                                 // 隐藏对话框
                                 this.dialogofmarketadd = false;
                                 // 表单清空
@@ -336,10 +333,7 @@ export default {
                         delete obj.tableDataAdd;
                         functionAll.addMarket(obj).then((res => {
                             if (res && res.success) {
-                                this.$message({
-                                    type: "success",
-                                    message: "添加成功!"
-                                });
+                                this.$Msg.customizTitle('添加成功', 'success')
                                 // 隐藏对话框
                                 this.dialogofmarketadd = false;
                                 // 表单清空
@@ -421,10 +415,7 @@ export default {
                 }).then(res => {
                     this.isLoading = false;
                     if (res && res.success) {
-                        this.$message({
-                            type: "success",
-                            message: "删除成功"
-                        });
+                        this.$Msg.customizTitle('删除成功', 'success')
                         this.getMarketInfo();
                     }
                 });
@@ -525,7 +516,7 @@ export default {
                     }
                 });
             } else {
-                message.customizTitle("请选择上传文件", "warning");
+                this.$Msg.customizTitle("请选择上传文件", "warning");
             }
         },
         importData() {
@@ -539,7 +530,7 @@ export default {
                     this.isLoading = false;
                     this.dialogImportData = false;
                     if (res.code == 200) {
-                        message.customizTitle("文件上传成功", "success");
+                        this.$Msg.customizTitle("文件上传成功", "success");
                         this.querydmdatatable(this.data_mart_id);
                         this.fileList = [];
                         location.reload();
@@ -547,7 +538,7 @@ export default {
                 });
                 this.isLoading = false;
             } else {
-                message.customizTitle("请选择上传文件", "warning");
+                this.$Msg.customizTitle("请选择上传文件", "warning");
             }
         },
         //根据默认显示
@@ -669,7 +660,7 @@ export default {
                 return item.category_name != '' && item.category_num != ''
             })
             if (mark == false) {
-                message.customizTitle("请填写每项分类名称与编号", "warning");
+                this.$Msg.customizTitle("请填写每项分类名称与编号", "warning");
             } else if (mark == true) {
                 this.chooseScopeIdDiolag = true;
             }
@@ -698,7 +689,7 @@ export default {
                     this.$refs.tree.setCheckedKeys([{ //改变更改的状态
                         label: val.label
                     }]);
-                    message.customizTitle("不能选择同名的分类", "warning");
+                    this.$Msg.customizTitle("不能选择同名的分类", "warning");
                 } else {
                     let object = {};
                     this.treeForeach(this.dataTree, node => { //获取新增节点的信息

@@ -25,7 +25,7 @@
                                 <p>原名称：【{{scope.row[scope.row.tableName]['originTableName原表中文名']}}】</p>
                                 <p>修改后：【{{scope.row[scope.row.tableName]['updateTableChName更新后表中文名']}}】</p>
                             </div>
-                            <div v-else>
+                            <div v-else-if="scope.row[scope.row.tableName]['addTableChName新增表中文名'] != null">
                                 <p>新增表中文名：【{{scope.row[scope.row.tableName]['addTableChName新增表中文名']}}】</p>
                             </div>
                         </template>
@@ -39,7 +39,7 @@
                                 <p>原卸数方式：【{{scope.row[scope.row.tableName]['originUnloadType原卸数方式']}}】</p>
                                 <p>修改后：【{{scope.row[scope.row.tableName]['updateUnloadType更新后卸数方式']}}】</p>
                             </div>
-                            <div v-else>
+                            <div v-else-if="scope.row[scope.row.tableName]['addUnloadType新增卸数方式'] != null">
                                 <p>新增卸数：【{{scope.row[scope.row.tableName]['addUnloadType新增卸数方式']}}】</p>
                             </div>
                         </template>
@@ -54,7 +54,7 @@
                                 <p>原落地格式：【{{scope.row[scope.row.tableName]['originType原表落地方式']}}】</p>
                                 <p>修改后：【{{scope.row[scope.row.tableName]['updateType更新后表落地方式']}}】</p>
                             </div>
-                            <div v-else>
+                            <div v-else-if="scope.row[scope.row.tableName]['addTableType新增表落地方式'] != null">
                                 <p>新增落地格式：【{{scope.row[scope.row.tableName]['addTableType新增表落地方式']}}】</p>
                             </div>
                         </template>
@@ -69,7 +69,7 @@
                                     <dd>原类型【{{item.originColumnType原字段类型}}】</dd>
                                     <dt>修改后【{{item.updateColumnType更新字段类型}}】</dt>
                                 </dl>
-                                <dl v-else>
+                                <dl v-else-if="item.addColumnName字段 != null">
                                     <dt>新增字段【{{item.addColumnName字段}}】</dt>
                                     <dd>新增类型【{{item.addColumnType新增字段类型}}】</dd>
                                 </dl>

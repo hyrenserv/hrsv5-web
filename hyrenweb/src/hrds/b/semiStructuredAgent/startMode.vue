@@ -279,7 +279,6 @@ import Step from "./step";
 import * as functionAll from "./semiStructuredAgent";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as message from "@/utils/js/message";
 export default {
     components: {
         Step
@@ -450,10 +449,7 @@ export default {
                     this.WorknumData = res.data
                 })
             } else {
-                this.$message({
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle('工程编号未选择', 'error')
             }
 
         },
@@ -475,10 +471,7 @@ export default {
                     }
                 });
             } else {
-                this.$message({
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle('工程编号未选择', 'error')
             }
         },
         next(formName) {
