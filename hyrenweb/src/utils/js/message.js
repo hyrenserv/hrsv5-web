@@ -9,7 +9,8 @@ export function updateSuccess(data) {
         Message({
             message: '更新成功',
             type: 'success',
-            duration: 5 * 1000
+            duration: 0,
+            showClose: true
         })
     }
 }
@@ -23,7 +24,8 @@ export function deleteSuccess(data) {
         Message({
             message: '删除成功',
             type: 'success',
-            duration: 5 * 1000
+            duration: 0,
+            showClose: true
         })
     }
     else {
@@ -39,7 +41,8 @@ export function saveSuccess(data) {
         Message({
             message: '保存成功',
             type: 'success',
-            duration: 5 * 1000
+            duration: 0,
+            showClose: true
         })
     }
 }
@@ -53,7 +56,8 @@ export function customizTitle(message, type) {
     Message({
         message: message,
         type: typeof type != 'undefined' ? type : 'success',
-        duration: 5 * 1000
+        duration: 0,
+        showClose: true
     })
 }
 
@@ -79,7 +83,8 @@ export function issueSuccess(data) {
         Message({
             message: '发布成功',
             type: 'success',
-            duration: 5 * 1000
+            duration: 0,
+            showClose: true
         })
     }
 }
@@ -88,7 +93,8 @@ export function sendSuccess(data) {
         Message({
             message: '发送成功',
             type: 'success',
-            duration: 5 * 1000
+            duration: 0,
+            showClose: true
         })
     }
 }
