@@ -238,9 +238,10 @@
                         <el-input style="width:80%" :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
                         <el-tooltip v-if="scope.row.field_type == 'NUMERIC' || scope.row.field_type == 'numeric'" class="tooltipHelp" effect="dark" placement="top">
                             <div slot="content">
-                                　　说明: NUMERIC [ ( precision [ , scale ] ) ] <br />
+                                　　说明: NUMERIC [ ( precision [ , scale ] ) ] ,写法如 : 15,3<br />
                                 　　 precision 一个在 1 到 127 范围内（含 1 和 127）的整数表达式，指定表达式中的位数。缺省设置为 30。<br />
                                 　　 scale 一个在 0 到 127 范围内（含 1 和 127）的整数表达式，指定小数点后的位数。小数位数值应始终小于或等于精度值。缺省设置为 6。 <br />
+
                             </div>
                             <i class="fa fa-question-circle " aria-hidden="true"></i>
                         </el-tooltip>
