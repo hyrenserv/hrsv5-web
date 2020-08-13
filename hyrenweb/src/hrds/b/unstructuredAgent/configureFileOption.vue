@@ -304,10 +304,7 @@ export default {
                 file_sources_array: ArrJson
             }).then((res) => {
                 if (res && res.success) {
-                    this.$message({
-                        type: 'success',
-                        message: '添加成功!'
-                    })
+                    this.$Msg.customizTitle('添加成功!', 'success')
                     this.dialogSelectOk = false;
                     this.$router.push({
                         name: "agentList"
@@ -321,12 +318,7 @@ export default {
                 if (valid) {
                     this.dialogSelectOk = true;
                 } else {
-                    this.$message({
-                        showClose: true,
-                        message: '文件源路径为必填项',
-                        type: 'warning',
-                        duration: 0
-                    });
+                    this.$Msg.customizTitle('文件源路径为必填项', 'warning')
                 }
             });
 

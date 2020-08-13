@@ -502,7 +502,6 @@
 
 <script>
 import * as etlJobDefAllFun from "./etlJobDef";
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 let arr = [];
@@ -871,10 +870,7 @@ export default {
         //批量删除按钮
         handleBatchDelete() {
             if (this.multipleSelection.length == 0) {
-                this.$message({
-                    message: '请选择需要删除的数据',
-                    type: 'warning'
-                });
+                this.$Msg.customizTitle("请选择需要删除的数据", "warning");
             } else {
                 this.$confirm('确认批量删除吗?', '提示', {
                     confirmButtonText: '确定',
@@ -891,17 +887,12 @@ export default {
                     etlJobDefAllFun.batchDeleteEtlJobDef(params).then(res => {
                         if (res && res.success) {
                             this.getTable();
-                            this.$message({
-                                message: '批量删除成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("批量删除成功", "success");
                         }
                     })
                 }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消批量删除'
-                    });
+                    this.$Msg.customizTitle("已取消批量删除", "info");
+
                 });
             }
         },
@@ -954,17 +945,12 @@ export default {
                 etlJobDefAllFun.deleteEtlJobDef(params).then(res => {
                     if (res.code == 200) {
                         this.getTable();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("删除成功", "success");
+
                     }
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$Msg.customizTitle("已取消删除", "info");
             });
 
         },
@@ -1028,10 +1014,7 @@ export default {
                     if (this.jobTitle == '添加作业') {
                         etlJobDefAllFun.saveEtlJobDef(params).then(res => {
                             if (res && res.success) {
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
+                                this.$Msg.customizTitle("添加成功", "success");
                                 this.getTable();
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
@@ -1041,10 +1024,7 @@ export default {
                     } else if (this.jobTitle == '修改作业') {
                         etlJobDefAllFun.updateEtlJobDef(params).then(res => {
                             if (res && res.success) {
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
+                                this.$Msg.customizTitle("修改成功", "success");
                                 this.getTable();
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
@@ -1096,10 +1076,7 @@ export default {
                     if (this.jobTitle == '添加作业') {
                         etlJobDefAllFun.saveEtlJobDef(params).then(res => {
                             if (res && res.success) {
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
+                                this.$Msg.customizTitle("添加成功", "success");
                                 this.getTable();
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
@@ -1109,10 +1086,7 @@ export default {
                     } else if (this.jobTitle == '修改作业') {
                         etlJobDefAllFun.updateEtlJobDef(params).then(res => {
                             if (res && res.success) {
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
+                                this.$Msg.customizTitle("修改成功", "success");
                                 this.getTable();
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
@@ -1173,10 +1147,7 @@ export default {
                         etlJobDefAllFun.saveEtlJobDef(params).then(res => {
                             if (res && res.success) {
                                 this.getTable();
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
+                                this.$Msg.customizTitle("添加成功", "success");
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {};
                             }
@@ -1185,10 +1156,7 @@ export default {
                         etlJobDefAllFun.updateEtlJobDef(params).then(res => {
                             if (res && res.success) {
                                 this.getTable();
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
+                                this.$Msg.customizTitle("修改成功", "success");
                                 this.dialogFormVisibleAdd = false;
                                 this.formAdd = {}
                             };
@@ -1208,7 +1176,7 @@ export default {
         },
         //文件超出个数限制时的钩子
         handleExceed(files, fileList) {
-            this.$message.warning(`只能选择一个文件`);
+            this.$Msg.customizTitle("只能选择一个文件", "warning");
         },
         // 获取上传的文件详情
         handleChange(file, fileList) {
@@ -1224,7 +1192,7 @@ export default {
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
-            this.$message.info('已取消导入数据');
+            this.$Msg.customizTitle("已取消导入数据", "info");
         },
         //导入数据按钮
         importData() {
@@ -1237,7 +1205,7 @@ export default {
                 param.append('table_name', 'etl_job_def');
                 etlJobDefAllFun.uploadExcelFile(param).then(res => {
                     if (res && res.success) {
-                        message.customizTitle("导入数据成功", "success");
+                        this.$Msg.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;
@@ -1247,7 +1215,7 @@ export default {
                     }
                 });
             } else {
-                message.customizTitle("请选择上传文件", "warning");
+                this.$Msg.customizTitle("请选择上传文件", "warning");
             }
 
         },

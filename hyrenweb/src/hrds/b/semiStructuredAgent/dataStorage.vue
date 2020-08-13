@@ -196,7 +196,6 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as functionAll from "./semiStructuredAgent";
-import * as message from "@/utils/js/message";
 import Step from "./step";
 import {
     parse
@@ -587,7 +586,7 @@ export default {
                 let code1 = res[0];
                 let code2 = res[1];
                 if (code1 == "200" && code2 == "200") {
-                    message.customizTitle('配置字段属性保存成功', 'success');
+                    this.$Msg.customizTitle('配置字段属性保存成功', 'success');
                     this.dialogFieldProperty = false;
                     this.FieldProperty = [];
                 }

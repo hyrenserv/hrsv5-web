@@ -288,7 +288,7 @@ export default {
         // 修改分类名称
         changeName() {
             if (JSON.stringify(this.timeObj) == "{}") {
-                message.customizTitle("请选择一个分类名称修改", "warning");
+                this.$Msg.customizTitle("请选择一个分类名称修改", "warning");
                 return false;
             } else {
                 this.dialogchangeName = true;
@@ -304,7 +304,7 @@ export default {
                         category_name: this.formChangeName.category_name
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('修改成功', 'success')
+                            this.$Msg.customizTitle('修改成功', 'success')
                             this.dialogchangeName = false;
                             this.$refs.formChangeName.resetFields();
                             this.getDmCategoryTreeData(this.$route.query.id);
@@ -324,7 +324,7 @@ export default {
         // 删除分类名称
         deleteName() {
             if (JSON.stringify(this.timeObj) == "{}") {
-                message.customizTitle("请选择一个分类名称删除", "warning");
+                this.$Msg.customizTitle("请选择一个分类名称删除", "warning");
                 return false;
             } else {
                 this.$confirm('确认删除吗?', '提示', {
@@ -336,7 +336,7 @@ export default {
                         category_id: this.timeObj.category_id
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('删除成功', 'success')
+                            this.$Msg.customizTitle('删除成功', 'success')
                             this.getDmCategoryTreeData(this.$route.query.id);
                             this.getDmCategoryNodeInfo(this.$route.query.id);
                         }
@@ -378,7 +378,7 @@ export default {
                         dmCategories: JSON.stringify(arr)
                     }).then(res => {
                         if (res && res.success) {
-                            message.customizTitle('添加成功', 'success')
+                            this.$Msg.customizTitle('添加成功', 'success')
                             this.dialogDataName = false;
                             this.$refs.formDataName.resetFields();
                             this.getDmCategoryTreeData(this.$route.query.id);
