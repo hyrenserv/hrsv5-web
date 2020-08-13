@@ -33,7 +33,7 @@
                 <el-tab-pane label="表查询" name="tableQuery">
                     <el-table :data="dataByTableName" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun">
                         <template v-for="(index, item) in dataByTableName[0]">
-                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :scoped-slot="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
                                 <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                                 <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                             </el-table-column>
@@ -55,7 +55,7 @@
                     </el-row>
                     <el-table :data="dataBySQL" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun" v-show="showOrhidden">
                         <template v-for="(index, item) in dataBySQL[0]">
-                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :scoped-slot="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
                                 <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                                 <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                             </el-table-column>
@@ -121,7 +121,7 @@ export default {
             return 'text-align:center'
         },
         //表头自适应
-        labelHead(h, { column, index }) {
+        labelHead: function (h, { column, index }) {
             let l = column.label.length
             let f = 14 //每个字大小，其实是每个字的比例值，大概会比字体大小差不多大一点，
             column.minWidth = f * l //字大小乘个数即长度 ,注意不要加px像素，这里minWidth只是一个比例值，不是真正的长度
