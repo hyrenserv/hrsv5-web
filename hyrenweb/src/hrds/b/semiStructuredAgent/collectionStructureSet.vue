@@ -459,19 +459,13 @@ export default {
                 tableData.splice(val - 1, 1);
                 tableData.splice(val, 0, upDate);
             } else {
-                this.$message({
-                    message: '已经是第一条，不可上移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle('已经是第一条，不可上移', 'warning')
             }
         },
         // 数据下移
         moveDown(val, data, tableData) {
             if (val + 1 === tableData.length) {
-                this.$message({
-                    message: '已经是最后一条，不可下移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle('已经是最后一条，不可下移', 'warning')
             } else {
                 let downDate = tableData[val + 1];
                 tableData.splice(val + 1, 1);

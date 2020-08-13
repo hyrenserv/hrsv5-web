@@ -450,10 +450,7 @@ export default {
                     this.WorknumData = res.data
                 })
             } else {
-                this.$message({
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle('工程编号未选择', 'error')
             }
 
         },
@@ -475,10 +472,7 @@ export default {
                     }
                 });
             } else {
-                this.$message({
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle('工程编号未选择', 'error')
             }
         },
         next(formName) {

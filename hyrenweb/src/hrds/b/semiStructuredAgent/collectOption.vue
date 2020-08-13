@@ -389,12 +389,7 @@ export default {
         // 下一步
         nextSteps(formName) {
             if (this.DifferenceValue < 0) {
-                this.$message({
-                    showClose: true,
-                    type: 'warning',
-                    message: '结束日期不能小于开始日期!',
-                    duration: 0
-                })
+                this.$Msg.customizTitle('结束日期不能小于开始日期', 'warning')
             } else {
                 if (this.$route.query.id) {//更新
                     this.$refs[formName].validate(valid => {
