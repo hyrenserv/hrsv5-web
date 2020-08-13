@@ -71,7 +71,6 @@
 <script>
 import * as functionAll from "./marketAction";
 import * as validator from "@/utils/js/validator";
-import * as message from "@/utils/js/message";
 import Loading from '../../components/loading'
 import Step from "./step";
 
@@ -137,10 +136,7 @@ export default {
         },
         excutmartjob() {
             if (this.date === '') {
-                this.$message({
-                    type: 'warning',
-                    message: '日期不能为空!'
-                });
+                this.$Msg.customizTitle('日期不能为空!', 'warning');
                 return;
             }
             this.isLoading = true;
@@ -152,10 +148,7 @@ export default {
             functionAll.excutMartJob(param).then((res) => {
                 this.isLoading = false;
                 if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "执行成功!"
-                    });
+                    this.$Msg.customizTitle('执行成功!', 'success');
                 }
             })
         },
@@ -192,10 +185,7 @@ export default {
             }
             functionAll.generateMartJobToEtl(param).then((res) => {
                 if (res && res.success) {
-                    this.$message({
-                        type: "success",
-                        message: "成功"
-                    });
+                    this.$Msg.customizTitle('成功!', 'success');
                 }
                 this.dialogProdeceJobs = false;
             })

@@ -230,9 +230,20 @@
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column prop="field_length" label="字段长度" width="100" show-overflow-tooltip align="center">
+                <el-table-column prop="field_length" label="字段长度" width="140" align="center" class="fieldDesc">
+                    <!-- <template slot="header">
+                        字段长度
+                    </template> -->
                     <template slot-scope="scope">
-                        <el-input :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
+                        <el-input style="width:80%" :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_length" autocomplete="off" placeholder="长度"></el-input>
+                        <el-tooltip v-if="scope.row.field_type == 'NUMERIC' || scope.row.field_type == 'numeric'" class="tooltipHelp" effect="dark" placement="top">
+                            <div slot="content">
+                                　　说明: NUMERIC [ ( precision [ , scale ] ) ] <br />
+                                　　 precision 一个在 1 到 127 范围内（含 1 和 127）的整数表达式，指定表达式中的位数。缺省设置为 30。<br />
+                                　　 scale 一个在 0 到 127 范围内（含 1 和 127）的整数表达式，指定小数点后的位数。小数位数值应始终小于或等于精度值。缺省设置为 6。 <br />
+                            </div>
+                            <i class="fa fa-question-circle " aria-hidden="true"></i>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column prop="field_process" label="处理方式" width="130" show-overflow-tooltip align="center">
@@ -1345,5 +1356,9 @@ export default {
 /* 提示信息样式 */
 #addMartable2 .tooltipHelp {
     padding: 0 4px !important;
+}
+
+.fieldDesc>>>el-input {
+    width: 80% !important;
 }
 </style>
