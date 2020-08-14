@@ -291,17 +291,17 @@ export function downloadMart(data) {
 }
 
 //下载集市数据表
-export function downloadDmDatatable(data) {
-    return request({
-        url: '/H/market/downloadDmDatatable',
-        method: 'post',
-        params: data,
-        responseType: 'blob',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-}
+// export function downloadDmDatatable(data) {
+//     return request({
+//         url: '/H/market/downloadDmDatatable',
+//         method: 'post',
+//         params: data,
+//         responseType: 'blob',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     })
+// }
 
 
 //导入集市工程
@@ -373,7 +373,18 @@ export function getPreAndAfterJob(data) {
         params: data
     })
 }
-
+/**
+ * Excel模板下载
+ */
+export function downloadExcel() {
+    return request({
+        url: '/H/market/downloadExcel',
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 //上传execl表格
 export function uploadExcelFile(data) {
     return request({
