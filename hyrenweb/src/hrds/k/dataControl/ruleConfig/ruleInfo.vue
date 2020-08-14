@@ -242,13 +242,16 @@
     <el-dialog title="选择数据表" :visible.sync="data_source_dialog">
         <el-row>
             <el-col :span="8">
-                <div class="mytree">
-                    <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' @node-click="handleNodeClick">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description">{{node.label}}</span>
-                        </span>
-                    </el-tree>
-                </div>
+                <div style='height:0.1px'>&nbsp;</div>
+                <Scrollbar>
+                    <div class="mytree">
+                        <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' @node-click="handleNodeClick">
+                            <span class="span-ellipsis" slot-scope="{ node, data }">
+                                <span :title="data.description">{{node.label}}</span>
+                            </span>
+                        </el-tree>
+                    </div>
+                </Scrollbar>
             </el-col>
             <el-col :span="16" style="min-height: 400px;">
                 <el-table :data="table_data" size="mini">
@@ -315,11 +318,13 @@
 import Loading from '@/hrds/components/loading';
 import * as validator from "@/utils/js/validator";
 import * as rcFun from "./ruleConfig";
+import Scrollbar from '../../../components/scrollbar';
 
 export default {
     name: 'ruleInfo',
     components: {
         Loading,
+        Scrollbar,
     },
     data() {
         return {
@@ -990,3 +995,14 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.scrollbar-wrap {
+    width: 24% !important;
+    position: absolute;
+}
+
+.scrollbar__track {
+    width: 4px;
+}
+</style>

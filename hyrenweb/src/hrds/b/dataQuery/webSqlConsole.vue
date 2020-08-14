@@ -9,26 +9,29 @@
         </router-link>
     </el-row>
     <el-row>
-        <el-col class="borderStyle" :span="5">
+        <el-col :span="6">
             <!--树菜单-->
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
-            <div class='mytree'>
-                <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
-                    <span class="span-ellipsis" slot-scope="{ node, data }">
-                        <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
-                            <i class=" el-icon-document"></i>
-                            <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
-                            <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
-                            <template v-else>{{data.hyren_name}}</template>
+            <div style='height:0.1px'>&nbsp;</div>
+            <Scrollbar>
+                <div class='mytree' height='260'>
+                    <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                                <i class=" el-icon-document"></i>
+                                <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                <template v-else>{{data.hyren_name}}</template>
+                            </span>
+                            <span :title="data.description" v-else>
+                                <i class="el-icon-folder-opened"></i>{{node.label}}
+                            </span>
                         </span>
-                        <span :title="data.description" v-else>
-                            <i class="el-icon-folder-opened"></i>{{node.label}}
-                        </span>
-                    </span>
-                </el-tree>
-            </div>
+                    </el-tree>
+                </div>
+            </Scrollbar>
         </el-col>
-        <el-col :span="18" :offset="1">
+        <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 570px;">
             <el-tabs v-model="activeName" type="border-card" @tab-click='tabClick()'>
                 <el-tab-pane label="表查询" name="tableQuery">
                     <el-table :data="dataByTableName" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun">
@@ -75,13 +78,13 @@ import * as dataQuery from "./dataQuery";
 import Loading from '../../components/loading';
 import sqlFormatter from 'sql-formatter'
 import SqlEditor from '../../components/codemirror'
-import scrollbar from '../../components/scrollbar/Scrollbar'
+import Scrollbar from '../../components/scrollbar';
 export default {
     name: "codeMirror",
     components: {
         Loading,
         SqlEditor,
-        scrollbar,
+        Scrollbar,
     },
     data() {
         return {
@@ -141,7 +144,9 @@ export default {
             // 如果检索内容为空,直接返回
             if (!value) return true;
             // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
-            return data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+            if ('undefined' !== typeof data.hyren_name && data.hyren_name !== '') {
+                return data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+            }
         },
         getWebSQLTreeData() {
             dataQuery.getWebSQLTreeData().then(res => {
@@ -226,11 +231,6 @@ export default {
 </script>
 
 <style scoped>
-.borderStyle {
-    border: 1px solid #e6e6e6;
-    padding: 1%;
-}
-
 /* 查询sql按钮*/
 .query-sql-btn {
     margin-left: 2%;
@@ -268,5 +268,14 @@ export default {
 
 .sql-btn {
     margin-bottom: 5px;
+}
+
+.scrollbar-wrap {
+    width: 24% !important;
+    position: absolute;
+}
+
+.scrollbar__track {
+    width: 4px;
 }
 </style>
