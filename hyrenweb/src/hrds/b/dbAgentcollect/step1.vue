@@ -9,8 +9,13 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
+                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number">
+                    <el-col :span="22">
+                        <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
+                    </el-col>
+                    <el-tooltip class="item" effect="dark" content="执行采集脚本时,可作为第一个参数使用" placement="right">
+                        <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                    </el-tooltip>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
