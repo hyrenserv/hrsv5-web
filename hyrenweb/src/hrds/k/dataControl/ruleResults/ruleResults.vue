@@ -95,9 +95,9 @@
             <el-table-column prop="rule_src" label="规则来源" align="center" />
             <el-table-column prop="rule_tag" label="规则标签" align="center" />
             <el-table-column prop="target_tab" label="目标表名" align="center" />
-            <el-table-column prop="start_date_time" label="执行开始时间" align="center" width="130px">
+            <el-table-column prop="start_date_time" label="执行开始时间" align="center">
                 <template slot-scope="scope">
-                    {{scope.row.start_date+' '+scope.row.start_time}}
+                    {{(scope.row.start_date+scope.row.start_time).replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/g,'$1-$2-$3　$4:$5:$6')}}
                 </template>
             </el-table-column>
             <el-table-column prop="verify_result" label="检查结果" align="center">
