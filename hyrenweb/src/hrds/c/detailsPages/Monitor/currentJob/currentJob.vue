@@ -196,10 +196,7 @@ export default {
         //搜索按钮
         search() {
             if (this.form.etl_job == '') {
-                this.$message({
-                    message: '请选择需要搜索的作业名称',
-                    type: 'warning'
-                });
+                this.$Msg.customizTitle("请选择需要搜索的作业名称", "warning");
             } else {
                 let params = {};
                 params["etl_sys_cd"] = this.sys_cd;

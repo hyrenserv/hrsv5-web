@@ -71,7 +71,6 @@
 <script>
 import * as functionAll from "./historyJob";
 import Highcahrts from 'highcharts';
-import * as message from "@/utils/js/message";
 import regular from "@/utils/js/regular";
 let object = {};
 export default {

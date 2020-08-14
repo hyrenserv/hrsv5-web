@@ -263,10 +263,7 @@ export default {
                     this.getSystemInfo();
                     this.getCurrInfo();
                     this.getHistoryInfo();
-                    this.$message({
-                        message: '系统级暂停成功！',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("系统级暂停成功！", "success");
                     this.dialogVisiblePause = false;
                 }
             });
@@ -283,10 +280,7 @@ export default {
                     this.getSystemInfo();
                     this.getCurrInfo();
                     this.getHistoryInfo();
-                    this.$message({
-                        message: '系统级续跑成功！',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("系统级续跑成功！", "success");
                     this.dialogVisiblePlay = false;
                 }
             });
@@ -303,10 +297,7 @@ export default {
                     this.getSystemInfo();
                     this.getCurrInfo();
                     this.getHistoryInfo();
-                    this.$message({
-                        message: '系统级重跑成功！',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("系统级重跑成功！", "success");
                     this.dialogVisibleRefresh = false;
                 }
             });
@@ -323,10 +314,7 @@ export default {
                     this.getSystemInfo();
                     this.getCurrInfo();
                     this.getHistoryInfo();
-                    this.$message({
-                        message: '系统日切成功！',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("系统日切成功！", "success");
                     this.dialogVisibleNext = false;
                 }
             });
@@ -343,10 +331,7 @@ export default {
                     this.getSystemInfo();
                     this.getCurrInfo();
                     this.getHistoryInfo();
-                    this.$message({
-                        message: '系统停止成功！',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("系统停止成功！", "success");
                     this.dialogVisibleStop = false;
                 }
             });

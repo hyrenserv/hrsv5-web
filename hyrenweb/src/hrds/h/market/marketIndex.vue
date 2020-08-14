@@ -206,7 +206,6 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as functionAll from "./marketAction";
-import * as message from "@/utils/js/message";
 import Loading from '../../components/loading'
 
 let arr = [];
@@ -377,7 +376,7 @@ export default {
             }
         },
         downloadmart(mart_name, data_mart_id) {
-            message.confirmMsg('确定导出 ' + mart_name + ' 吗').then(res => {
+            this.$Msg.confirmMsg('确定导出 ' + mart_name + ' 吗').then(res => {
                 let that = this;
                 functionAll.downloadMart({
                     data_mart_id: data_mart_id
@@ -408,7 +407,7 @@ export default {
             }).catch(() => {})
         },
         deletemart(mart_name, data_mart_id) {
-            message.confirmMsg('确定删除 ' + mart_name + ' 吗').then(res => {
+            this.$Msg.confirmMsg('确定删除 ' + mart_name + ' 吗').then(res => {
                 this.isLoading = true;
                 functionAll.deleteMart({
                     "data_mart_id": data_mart_id
@@ -488,12 +487,13 @@ export default {
         },
         //文件超出个数限制时的钩子
         handleExceed(files, fileList) {
-            this.$message.warning(`只能选择一个文件`);
+            this.$Msg.customizTitle("只能选择一个文件", "warning");
+
         },
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
-            this.$message.info('已取消上传');
+            this.$Msg.customizTitle("已取消上传", "info");
         },
         getImportFilePath() {
             if (arr.length > 0) {
