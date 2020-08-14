@@ -502,7 +502,6 @@ export default {
         },
         //树点击触发
         handleNodeClick(data) {
-            console.log(data);
             this.table_data = [];
             //如果节点的file_id为未定义并且节点的分类id不为空并且节点分类不是未定义,代表该节点是分类信息,则添加分类下节点数据到展示区
             if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id) {
@@ -603,7 +602,7 @@ export default {
                     if (this.operation_type === 'add') {
                         rcFun.addDqDefinition(this.form_dq_data).then(res => {
                             if (res.success) {
-                                message.saveSuccess(res);
+                                this.$Msg.customizTitle("规则添加成功!", "success")
                                 //添加成功后跳转到规则配置页面
                                 this.$router.push({ name: 'ruleConfig', });
                             }
@@ -611,7 +610,7 @@ export default {
                     } else if (this.operation_type === 'edit') {
                         rcFun.updateDqDefinition(this.form_dq_data).then(res => {
                             if (res.success) {
-                                message.saveSuccess(res);
+                                this.$Msg.customizTitle("规则修改成功!", "success")
                                 //添加成功后跳转到规则配置页面
                                 this.$router.push({ name: 'ruleConfig', });
                             }
