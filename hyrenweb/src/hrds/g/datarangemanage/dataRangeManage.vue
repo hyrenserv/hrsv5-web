@@ -102,7 +102,6 @@
 <script>
 import * as interfaceFunctionAll from "./dataRangeManage";
 import * as validator from "@/utils/js/validator";
-import * as message from "@/utils/js/message";
 import Scrollbar from '../../components/scrollbar';
 import Loading from "../../components/loading/index";
 
@@ -168,7 +167,7 @@ export default {
             let params = {};
             let tableDataInfos = [];
             if (this.selectRow.length === 0) {
-                message.customizTitle("请至少选择一条数据", "warning");
+                this.$Msg.customizTitle("请至少选择一条数据", "warning");
                 return;
             }
             this.selectRow.forEach(row => {
@@ -194,7 +193,7 @@ export default {
                 if (valid) {
                     // 处理参数
                     interfaceFunctionAll.saveTableData(params).then((res) => {
-                        message.saveSuccess(res);
+                        this.$Msg.saveSuccess(res);
                         if (this.selectRow.selectColumn !== undefined) {
                             this.$refs.multipleColumnTable.clearSelection();
                         }

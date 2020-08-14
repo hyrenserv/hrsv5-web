@@ -175,7 +175,6 @@
 <script>
     import * as interfaceFunctionAll from "./interfaceUseMonitor";
     import * as validator from "@/utils/js/validator";
-    import * as message from "@/utils/js/message";
 
     export default {
         //写定义的变量数据方法等
@@ -266,9 +265,9 @@
             deleteInterfaceUseInfo(row) {
                 let params = {}
                 params["interface_use_id"] = row.interface_use_id;
-                message.confirmMsg('确定删除吗').then(res => {
+                this.$Msg.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteInterfaceUseInfo(params).then((res) => {
-                        message.deleteSuccess(res);
+                        this.$Msg.deleteSuccess(res);
                         this.searchInterfaceInfo();
                     })
                 }).catch(() => {
@@ -279,7 +278,7 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         interfaceFunctionAll.updateInterfaceUseInfo(this.form).then((res) => {
-                            message.updateSuccess(res);
+                            this.$Msg.updateSuccess(res);
                             this.searchInterfaceInfo();
                             this.dialogUpdateFormVisible = false;
                         })
@@ -298,13 +297,13 @@
                     params["use_state"] = "1";
                     confirmMessage = "确定启用" + row.interface_name + "接口吗？"
                 }
-                message.confirmMsg(confirmMessage).then(res => {
+                this.$Msg.confirmMsg(confirmMessage).then(res => {
                     interfaceFunctionAll.interfaceDisableEnable(params).then((res) => {
                         if (res && res.success) {
                             if (row.use_state == "1") {
-                                message.customizTitle("禁用" + row.interface_name + "接口成功", "success");
+                                this.$Msg.customizTitle("禁用" + row.interface_name + "接口成功", "success");
                             } else {
-                                message.customizTitle("启用" + row.interface_name + "接口成功", "success");
+                                this.$Msg.customizTitle("启用" + row.interface_name + "接口成功", "success");
                             }
                         }
                         this.searchInterfaceInfo();
@@ -334,9 +333,9 @@
             deleteDataTableUseInfo(row) {
                 let params = {}
                 params["use_id"] = row.use_id;
-                message.confirmMsg('确定删除吗').then(res => {
+                this.$Msg.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteDataTableUseInfo(params).then((res) => {
-                        message.deleteSuccess(res);
+                        this.$Msg.deleteSuccess(res);
                         this.searchTableData();
                     })
                 }).catch(() => {
