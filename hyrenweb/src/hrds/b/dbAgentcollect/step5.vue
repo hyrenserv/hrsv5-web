@@ -379,7 +379,8 @@ export default {
             AlldestinationData: [],
             Alldestinationchoose: [],
             etl_date: '',
-            isLoading:false
+            isLoading:false,
+            DatabaseType:[]
         };
     },
     computed: {
@@ -411,6 +412,11 @@ export default {
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
         // this.sName = this.$Base64.decode(this.$route.query.source_name);
+         let params = {};
+        params["category"] = "DatabaseType";
+        this.$Code.getCategoryItems(params).then(res => {
+            this.DatabaseType = res.data ? res.data : [];
+        });
     },
     mounted() {
         let params = {};
@@ -823,8 +829,18 @@ export default {
             let params = {};
             params["dslId"] = row.dsl_id;
             addTaskAllFun.getStoDestDetail(params).then(res => {
-                if (res.data) {
-                    this.viewDatilsData = res.data;
+                 if (res.data) {
+                    let arr = res.data
+                    for (let i = 0; i < arr.length; i++) {
+                        if (arr[i].storage_property_key == 'database_type') {
+                            for (let j = 0; j < this.DatabaseType.length; j++) {
+                                if (this.DatabaseType[j].code == arr[i].storage_property_val) {
+                                    arr[i].storage_property_val = this.DatabaseType[j].value
+                                }
+                            }
+                        }
+                    }
+                    this.viewDatilsData = arr;
                 }
             });
         },
