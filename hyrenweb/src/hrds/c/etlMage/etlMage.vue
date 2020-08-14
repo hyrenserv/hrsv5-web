@@ -532,10 +532,7 @@ export default {
                         params["comments"] = this.formAdd.comments;
                         etlMageAllFun.addEtlSys(params).then(res => {
                             if (res.code == 200) {
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
+                            this.$Msg.customizTitle("添加成功", "success");
                                 this.dialogFormVisibleAdd = false;
                                 this.getTable();
                                 this.formAdd = {};
@@ -549,10 +546,7 @@ export default {
                         params["comments"] = this.formAdd.comments;
                         etlMageAllFun.updateEtlSys(params).then(res => {
                             if (res.code == 200) {
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
+                            this.$Msg.customizTitle("修改成功", "success");
                                 this.dialogFormVisibleAdd = false;
                                 this.getTable();
                                 this.formAdd = {};
@@ -589,10 +583,7 @@ export default {
                     etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
                         this.isLoadings = false;
                         if (res && res.success) {
-                            this.$message({
-                                message: '部署成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("部署成功", "success");
                             this.getTable();
                             this.dialogFormVisibleDeploy = false;
                             this.formDeploy = {};
@@ -623,10 +614,7 @@ export default {
                     etlMageAllFun.startControl(params).then(res => {
                         this.isLoading = false;
                         if (res && res.success) {
-                            this.$message({
-                                message: '启动CONTROL成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("启动CONTROL成功", "success");
                             this.getTable();
                             this.dialogFormVisibleStartCON = false;
                             this.formStartCON = {};
@@ -656,10 +644,7 @@ export default {
             etlMageAllFun.startTrigger(params).then(res => {
                 this.isloadingTri = false;
                 if (res && res.success) {
-                    this.$message({
-                        message: '启动TRIGGER成功',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("启动TRIGGER成功", "success");
                     this.getTable();
                     this.formStartTRI = {};
                     this.dialogFormVisibleStartTRI = false;
@@ -816,17 +801,11 @@ export default {
                 }).then(res => {
                     if (res && res.success) {
                         this.getTable();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("删除成功", "success");
                     }
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$Msg.customizTitle("已取消删除", "info");
             });
         },
         //表格部署按钮
@@ -1373,18 +1352,12 @@ export default {
                     etl_sys_cd: row.etl_sys_cd
                 }).then(res => {
                     if (res && res.success) {
-                        this.$message({
-                            message: '停止工程成功',
-                            type: 'success'
-                        });
+                this.$Msg.customizTitle("停止工程成功", "success");
                         this.getTable();
                     }
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消停止'
-                });
+                this.$Msg.customizTitle("已取消停止", "info");
             });
         },
         // 是否续跑控制日期选择

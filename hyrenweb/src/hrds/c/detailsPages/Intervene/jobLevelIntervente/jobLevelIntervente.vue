@@ -473,10 +473,7 @@ export default {
         //批量干预按钮
         handleBatchIntervene() {
             if (this.multipleSelection.length == 0) {
-                this.$message({
-                    message: '请选择干预的作业',
-                    type: 'warning'
-                });
+                 this.$Msg.customizTitle("请选择干预的作业", "warning");
             } else {
                 this.dialogVisiblebatchInter = true;
             }
@@ -534,10 +531,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '批量作业停止成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("批量作业停止成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisibleStop = false;
@@ -556,10 +550,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '作业停止成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("作业停止成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisibleStop = false;
@@ -589,10 +580,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '批量作业跳过成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("批量作业跳过成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisiblePass = false;
@@ -611,10 +599,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '作业跳过成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("作业跳过成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisiblePass = false;
@@ -644,10 +629,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '批量作业重跑成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("批量作业重跑成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisibleRefresh = false;
@@ -666,10 +648,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '作业重跑成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("作业重跑成功！", "success");
                     }
                     this.tempForm = {};
                     this.multipleSelection = [];
@@ -699,10 +678,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '批量作业直接跑成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("批量作业直接跑成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisibleForce = false;
@@ -721,10 +697,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '作业直接跑成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("作业直接跑成功！", "success");
                         this.tempForm = {};
                         this.multipleSelection = [];
                         this.dialogVisibleForce = false;
@@ -753,10 +726,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '批量作业临时调整优先级成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("批量作业临时调整优先级成功！", "success");
                         this.tempForm = {};
                         this.formAdjust = {};
                         this.multipleSelection = [];
@@ -777,10 +747,7 @@ export default {
                         this.getJobInfo();
                         this.getCurrInfo();
                         this.getHistoryInfo();
-                        this.$message({
-                            message: '作业临时调整优先级成功！',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("作业临时调整优先级成功！", "success");
                         this.tempForm = {};
                         this.formAdjust = {};
                         this.multipleSelection = [];
