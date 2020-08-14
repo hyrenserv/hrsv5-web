@@ -155,7 +155,7 @@
             return {
                 isLoading: false,
                 currentPage: 1,
-                pageSize: 5,
+                pageSize: 10,
                 totalSize: 0,
                 search_dq_data: {},
                 rule_dqd_data_s: [],
