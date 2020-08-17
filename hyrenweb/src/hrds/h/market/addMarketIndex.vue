@@ -63,8 +63,8 @@
                                 </el-button>
                                 <el-button size="mini" type="text" @click="pushtoaddmart3(scope.row)">立即执行
                                 </el-button>
-                                <el-button size="mini" type="text" @click="downloaddmdatatable(scope.row)">导出
-                                </el-button>
+                                <!-- <el-button size="mini" type="text" @click="downloaddmdatatable(scope.row)">导出
+                                </el-button> -->
                                 <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
                                 </el-button>
                             </template>
@@ -445,40 +445,40 @@ export default {
             });
         },
         // 立即导出
-        downloaddmdatatable(row) {
-            let datatable_id = row.datatable_id;
-            let datatable_en_name = row.datatable_en_name;
-            this.$Msg.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
-                let that = this;
-                functionAll.downloadDmDatatable({
-                    datatable_id: datatable_id
-                }).then(res => {
-                    // if (res && res.success) {
-                    let filename = datatable_en_name + ".xlsx"
-                    const blob = new Blob([res.data]);
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // 兼容IE10
-                        navigator.msSaveBlob(blob, filename);
-                    } else {
-                        //  chrome/firefox
-                        let aTag = document.createElement("a");
-                        // document.body.appendChild(aTag);
-                        aTag.download = filename;
-                        aTag.href = URL.createObjectURL(blob);
-                        if (aTag.all) {
-                            aTag.click();
-                        } else {
-                            //  兼容firefox
-                            var evt = document.createEvent("MouseEvents");
-                            evt.initEvent("click", true, true);
-                            aTag.dispatchEvent(evt);
-                        }
-                        URL.revokeObjectURL(aTag.href);
-                    }
-                })
-            }).catch(() => {})
+        // downloaddmdatatable(row) {
+        //     let datatable_id = row.datatable_id;
+        //     let datatable_en_name = row.datatable_en_name;
+        //     this.$Msg.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
+        //         let that = this;
+        //         functionAll.downloadDmDatatable({
+        //             datatable_id: datatable_id
+        //         }).then(res => {
+        //             // if (res && res.success) {
+        //             let filename = datatable_en_name + ".xlsx"
+        //             const blob = new Blob([res.data]);
+        //             if (window.navigator.msSaveOrOpenBlob) {
+        //                 // 兼容IE10
+        //                 navigator.msSaveBlob(blob, filename);
+        //             } else {
+        //                 //  chrome/firefox
+        //                 let aTag = document.createElement("a");
+        //                 // document.body.appendChild(aTag);
+        //                 aTag.download = filename;
+        //                 aTag.href = URL.createObjectURL(blob);
+        //                 if (aTag.all) {
+        //                     aTag.click();
+        //                 } else {
+        //                     //  兼容firefox
+        //                     var evt = document.createEvent("MouseEvents");
+        //                     evt.initEvent("click", true, true);
+        //                     aTag.dispatchEvent(evt);
+        //                 }
+        //                 URL.revokeObjectURL(aTag.href);
+        //             }
+        //         })
+        //     }).catch(() => {})
 
-        },
+        // },
         // 删除表格的某一列
         deletedmdatatable(row) {
             let datatable_en_name = row.datatable_en_name;

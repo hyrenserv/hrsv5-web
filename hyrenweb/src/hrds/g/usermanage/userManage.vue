@@ -90,7 +90,6 @@
 </template>
 <script>
     import * as interfaceFunctionAll from "./userManage";
-    import * as message from "@/utils/js/message";
     import * as validator from "@/utils/js/validator";
 
     export default {
@@ -159,7 +158,7 @@
                     if (valid) {
                         // 处理参数
                         interfaceFunctionAll.addUser(this.userForm).then((res) => {
-                            message.saveSuccess(res)
+                            this.$Msg.saveSuccess(res);
                             this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
@@ -174,7 +173,7 @@
                     if (valid) {
                         // 处理参数
                         interfaceFunctionAll.updateUser(this.userForm).then((res) => {
-                            message.updateSuccess(res);
+                           this.$Msg.updateSuccess(res);
                             this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
@@ -187,9 +186,9 @@
             deleteUser(row) {
                 let params = {};
                 params["user_id"] = row.user_id;
-                message.confirmMsg('确定删除吗').then(res => {
+               this.$Msg.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteUser(params).then((res) => {
-                        message.deleteSuccess(res);
+                        this.$Msg.deleteSuccess(res);
                         this.selectUserInfo();
                     })
                 }).catch(() => {

@@ -5,9 +5,12 @@
         <span class="topTitleOspan">数据加工</span>
         <div class="elButton ">
             <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                <el-button size="mini" type="primary">
-                    <i class="el-icon-circle-plus-outline"></i> 导入数据</el-button>
+                <el-button size="mini" type="success">
+                    <i class="fa fa-cloud-upload"></i> 导入数据</el-button>
             </el-upload>
+              <el-button type="success" class="els" @click="downloadExcel()" size="mini">
+                <i class="fa fa-cloud-download"></i>Excel模板下载
+            </el-button>
             <el-button type="primary" @click="adddmdatatable()" size="mini">
                 <i class="el-icon-circle-plus-outline"></i>新增数据表
             </el-button>
@@ -46,8 +49,8 @@
                 </el-button>
                 <el-button size="mini" type="text" v-if="scope.row.isadd" @click="pushtoaddmart3(scope.row)">立即执行
                 </el-button>
-                <el-button size="mini" type="text" v-if="scope.row.isadd" @click="downloaddmdatatable(scope.row)">导出
-                </el-button>
+                <!-- <el-button size="mini" type="text" v-if="scope.row.isadd" @click="downloaddmdatatable(scope.row)">导出
+                </el-button> -->
                 <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
                 </el-button>
             </template>
@@ -170,40 +173,40 @@ export default {
                 }
             });
         },
-        downloaddmdatatable(row) {
-            let datatable_id = row.datatable_id;
-            let datatable_en_name = row.datatable_en_name;
-            message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
-                let that = this;
-                functionAll.downloadDmDatatable({
-                    datatable_id: datatable_id
-                }).then(res => {
-                    // if (res && res.success) {
-                    let filename = datatable_en_name + ".xlsx"
-                    const blob = new Blob([res.data]);
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // 兼容IE10
-                        navigator.msSaveBlob(blob, filename);
-                    } else {
-                        //  chrome/firefox
-                        let aTag = document.createElement("a");
-                        // document.body.appendChild(aTag);
-                        aTag.download = filename;
-                        aTag.href = URL.createObjectURL(blob);
-                        if (aTag.all) {
-                            aTag.click();
-                        } else {
-                            //  兼容firefox
-                            var evt = document.createEvent("MouseEvents");
-                            evt.initEvent("click", true, true);
-                            aTag.dispatchEvent(evt);
-                        }
-                        URL.revokeObjectURL(aTag.href);
-                    }
-                })
-            }).catch(() => {})
+        // downloaddmdatatable(row) {
+        //     let datatable_id = row.datatable_id;
+        //     let datatable_en_name = row.datatable_en_name;
+        //     message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
+        //         let that = this;
+        //         functionAll.downloadDmDatatable({
+        //             datatable_id: datatable_id
+        //         }).then(res => {
+        //             // if (res && res.success) {
+        //             let filename = datatable_en_name + ".xlsx"
+        //             const blob = new Blob([res.data]);
+        //             if (window.navigator.msSaveOrOpenBlob) {
+        //                 // 兼容IE10
+        //                 navigator.msSaveBlob(blob, filename);
+        //             } else {
+        //                 //  chrome/firefox
+        //                 let aTag = document.createElement("a");
+        //                 // document.body.appendChild(aTag);
+        //                 aTag.download = filename;
+        //                 aTag.href = URL.createObjectURL(blob);
+        //                 if (aTag.all) {
+        //                     aTag.click();
+        //                 } else {
+        //                     //  兼容firefox
+        //                     var evt = document.createEvent("MouseEvents");
+        //                     evt.initEvent("click", true, true);
+        //                     aTag.dispatchEvent(evt);
+        //                 }
+        //                 URL.revokeObjectURL(aTag.href);
+        //             }
+        //         })
+        //     }).catch(() => {})
 
-        },
+        // },
         producefun(row) {
             this.dialogProdeceJobs = true;
             this.selecteddatatable_id = row.datatable_id;
@@ -300,6 +303,32 @@ export default {
             } else {
                 this.$Msg.customizTitle("请选择上传文件", "warning");
             }
+        },
+         //下载Excel模板
+        downloadExcel() {
+            functionAll.downloadExcel().then(res => {
+                const blob = new Blob([res.data]);
+                let filename = res.headers["content-disposition"].split('=')[1];
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // 兼容IE10
+                    navigator.msSaveBlob(blob, filename);
+                } else {
+                    //  chrome/firefox
+                    let aTag = document.createElement("a");
+                    // document.body.appendChild(aTag);
+                    aTag.download = filename;
+                    aTag.href = URL.createObjectURL(blob);
+                    if (aTag.all) {
+                        aTag.click();
+                    } else {
+                        //  兼容firefox
+                        var evt = document.createEvent("MouseEvents");
+                        evt.initEvent("click", true, true);
+                        aTag.dispatchEvent(evt);
+                    }
+                    URL.revokeObjectURL(aTag.href);
+                }
+            })
         },
     }
 };

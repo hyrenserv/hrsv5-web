@@ -104,7 +104,6 @@
 <script>
     import * as interfaceFunctionAll from "./releaseManage";
     import * as validator from "@/utils/js/validator";
-    import * as message from "@/utils/js/message";
 
     export default {
         //写定义的变量数据方法等
@@ -176,7 +175,7 @@
                     if (valid) {
                         // 处理参数
                         interfaceFunctionAll.saveInterfaceUseInfo(this.form).then((res) => {
-                            message.saveSuccess(res);
+                            this.$Msg.saveSuccess(res);
                             this.form = {};
                             this.start_date = "";
                             this.end_date = "";

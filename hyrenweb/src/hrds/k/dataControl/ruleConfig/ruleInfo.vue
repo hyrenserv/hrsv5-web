@@ -242,13 +242,16 @@
     <el-dialog title="选择数据表" :visible.sync="data_source_dialog">
         <el-row>
             <el-col :span="8">
-                <div class="mytree">
-                    <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' @node-click="handleNodeClick">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description">{{node.label}}</span>
-                        </span>
-                    </el-tree>
-                </div>
+                <div style='height:0.1px'>&nbsp;</div>
+                <Scrollbar>
+                    <div class="mytree">
+                        <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' @node-click="handleNodeClick">
+                            <span class="span-ellipsis" slot-scope="{ node, data }">
+                                <span :title="data.description">{{node.label}}</span>
+                            </span>
+                        </el-tree>
+                    </div>
+                </Scrollbar>
             </el-col>
             <el-col :span="16" style="min-height: 400px;">
                 <el-table :data="table_data" size="mini">
@@ -315,11 +318,13 @@
 import Loading from '@/hrds/components/loading';
 import * as validator from "@/utils/js/validator";
 import * as rcFun from "./ruleConfig";
+import Scrollbar from '../../../components/scrollbar';
 
 export default {
     name: 'ruleInfo',
     components: {
         Loading,
+        Scrollbar,
     },
     data() {
         return {
@@ -502,7 +507,6 @@ export default {
         },
         //树点击触发
         handleNodeClick(data) {
-            console.log(data);
             this.table_data = [];
             //如果节点的file_id为未定义并且节点的分类id不为空并且节点分类不是未定义,代表该节点是分类信息,则添加分类下节点数据到展示区
             if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id) {
@@ -603,7 +607,7 @@ export default {
                     if (this.operation_type === 'add') {
                         rcFun.addDqDefinition(this.form_dq_data).then(res => {
                             if (res.success) {
-                                message.saveSuccess(res);
+                                this.$Msg.customizTitle("规则添加成功!", "success")
                                 //添加成功后跳转到规则配置页面
                                 this.$router.push({ name: 'ruleConfig', });
                             }
@@ -611,7 +615,7 @@ export default {
                     } else if (this.operation_type === 'edit') {
                         rcFun.updateDqDefinition(this.form_dq_data).then(res => {
                             if (res.success) {
-                                message.saveSuccess(res);
+                                this.$Msg.customizTitle("规则修改成功!", "success")
                                 //添加成功后跳转到规则配置页面
                                 this.$router.push({ name: 'ruleConfig', });
                             }
@@ -991,3 +995,14 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.scrollbar-wrap {
+    width: 24% !important;
+    position: absolute;
+}
+
+.scrollbar__track {
+    width: 4px;
+}
+</style>

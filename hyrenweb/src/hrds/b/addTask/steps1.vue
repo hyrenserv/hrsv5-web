@@ -21,7 +21,7 @@
                                         <el-input v-model="ruleForm.database_number" size="medium" v-if="show==true" disabled placeholder="作业编号"></el-input>
                                         <el-input v-model="ruleForm.database_number" size="medium" v-else placeholder="作业编号"></el-input>
                                     </el-col>
-                                    <el-tooltip class="item" effect="dark" content="手动执行脚本时,此参数可作为第一个参数" placement="right">
+                                    <el-tooltip class="item" effect="dark" content="执行采集脚本时,可作为第一个参数使用" placement="right">
                                         <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
                                     </el-tooltip>
                                 </el-form-item>
