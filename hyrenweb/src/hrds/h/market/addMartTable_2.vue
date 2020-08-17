@@ -41,7 +41,7 @@
                 </el-row>
                 <el-row>
                     <div style="border:1px solid #ccc;">
-                        <SqlEditor ref="sqleditor" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
+                        <SqlEditor ref="sqleditor" :data="1" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
                     </div>
                 </el-row>
                 <el-row class="partFour">
@@ -425,7 +425,7 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :value="preJobForm.preSql" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            <SqlEditor ref="sqleditor" :data="2" :value="preJobForm.preSql" @changeTextarea="changeTextarea($event)" class='textasql' />
                         </div>
                     </el-row>
                 </el-tabs>
@@ -455,7 +455,7 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            <SqlEditor ref="sqleditor" :data="3" :value="afterJobForm.afterSql" @changeTextarea="changeTextarea($event)" class='textasql' />
                         </div>
                     </el-row>
                 </el-tabs>
@@ -503,7 +503,7 @@ import * as validator from "@/utils/js/validator";
 import Loading from '../../components/loading'
 import Step from "./step";
 import sqlFormatter from 'sql-formatter'
-import SqlEditor from '../../components/codemirror'
+import SqlEditor from '../../components/codemirror/index2'
 
 export default {
     components: {
@@ -1152,8 +1152,9 @@ export default {
             this.$set(this.basicInfoForm, 'sqlMain', val)
         },
         formaterSql(val) {
-            let dom = this.$refs.sqleditor
-            dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+            // let dom = this.$refs.sqleditor
+            // dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+            this.$refs.sqleditor.sqlFormatter()
         },
         addSql() {
             // 提示信息

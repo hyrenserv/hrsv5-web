@@ -49,7 +49,7 @@
                     <el-row>
                         <el-col>
                             <div>
-                                <SqlEditor ref="sqleditor" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
+                                <SqlEditor ref="sqleditor" :data="1" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
                             </div>
                         </el-col>
                     </el-row>
@@ -98,6 +98,7 @@ export default {
             basicInfoForm: {
                 sqlMain: ''
             },
+            index1:1,
             webSqlTreeData: [],
         };
     },
