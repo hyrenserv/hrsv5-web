@@ -74,7 +74,7 @@
 import * as dataQuery from "./dataQuery";
 import Loading from '../../components/loading';
 import sqlFormatter from 'sql-formatter'
-import SqlEditor from '../../components/codemirror'
+import SqlEditor from '../../components/codemirror/index2'
 import scrollbar from '../../components/scrollbar/Scrollbar'
 export default {
     name: "codeMirror",
@@ -131,9 +131,9 @@ export default {
         //点击标签触发
         tabClick() {
             if (this.activeName == 'sqlQuery') {
-                this.$nextTick(() => {
-                    this.$refs.sqleditor.refresh();
-                });
+                // this.$nextTick(() => {
+                //     // this.$refs.sqleditor.refresh();
+                // });
             }
         },
         // 节点搜索
@@ -218,8 +218,9 @@ export default {
             this.$set(this.basicInfoForm, 'sqlMain', val)
         },
         formaterSql(val) {
-            let dom = this.$refs.sqleditor
-            dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+            // let dom = this.$refs.sqleditor
+            // dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+            this.$refs.sqleditor.sqlFormatter()
         },
     }
 }
