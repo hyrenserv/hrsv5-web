@@ -1,0 +1,125 @@
+<template>
+<div id="editor" style="width:100%;height:200px"></div>
+</template>
+
+<script>
+import * as commons from '@/utils/commons';
+import sqlFormatter from 'sql-formatter'
+export default {
+    data() {
+        return {
+            arry: [],
+            arryKeyWords: [],
+        }
+    },
+    mounted() {
+        this.getTablename();
+        let that = this;
+        var editor = ace.edit('editor')
+        editor.session.setMode('ace/mode/sql') // 设置语言
+        editor.setTheme('ace/theme/chrome') // 设置主题
+        editor.setFontSize(18); //字体大小
+        editor.setReadOnly(false); //设置只读（true时只读，用于展示代码）
+        //自动换行,设置为off关闭
+        editor.setOption("wrap", "free");
+        //启用提示菜单
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
+        });
+        editor.setHighlightActiveLine(true); //代码高亮
+        editor.setShowPrintMargin(false);
+        editor.getSession().setUseWorker(false);
+        editor.getSession().setUseWrapMode(true); //支持代码折叠
+        editor.selection.getCursor(); //获取光标所在行或列
+        editor.session.getLength(); //获取总行数
+        editor.getSession().setUseSoftTabs(true);
+        var langTools = ace.require("ace/ext/language_tools");
+        langTools.addCompleter({
+            getCompletions: function (editor, session, pos, prefix, callback) {
+                if (prefix.length === 0) {
+                    callback(null, []);
+                    return;
+                }
+                var value = editor.getValue() + "";
+                if (value.toLowerCase().indexOf("from") >= 0) {
+                    callback(null, that.arry);
+                }
+            }
+        });
+        editor.on("change", function (e) {
+            editor.execCommand("startAutocomplete");
+            that.$emit('changeTextarea', editor.session.getValue())
+            var execute_sql = editor.session.getValue() + "";
+            if (execute_sql.toLowerCase().indexOf("from") >= 0) {
+                that.getTablenameWords(execute_sql);
+            }
+        });
+        this.sqlFormatter() //格式化sql语句
+    },
+    methods: {
+        sqlFormatter() { //格式化sql语句
+            var editors = ace.edit('editor')
+            var beautifys = ace.require("ace/ext/beautify");
+            editors.session.setValue(sqlFormatter.format(editors.session.getValue()));
+            beautifys.beautify(editors.session);
+        },
+        getTablename() { //获取sql查询的全部表名
+            commons.getAllTableNameByPlatform().then(res => {
+                let arr = [];
+                res.data.forEach(item => {
+                    let obj = {
+                        meta: "表名",
+                        caption: "",
+                        value: "",
+                        score: 10000
+                    }
+                    obj.caption = item;
+                    obj.value = item;
+                    arr.push(obj);
+                })
+                this.arry = arr;
+            })
+        },
+
+        getTablenameWords(execute_sql) { //根据sql查询的表名获取对应的字段
+            if (this.arry.length > 0) {
+                this.arry.forEach(item => {
+                    let valueadd = item.value + "."
+                    if (execute_sql.indexOf(item.value) != -1) {
+                        commons.getColumnsByTableName({
+                            'table_name': item.value
+                        }).then(res => {
+                            let arr = [];
+                            res.data.forEach(item => {
+                                let obj = {
+                                    meta: "字段名",
+                                    caption: "",
+                                    value: "",
+                                    score: 10000
+                                }
+                                obj.caption = item.column_name;
+                                obj.value = item.column_name;
+                                arr.push(obj);
+                            })
+                            var langTools2 = ace.require("ace/ext/language_tools");
+                            langTools2.addCompleter({
+                                getCompletions: function (editor, session, pos, prefix, callback) {
+                                    return callback(null, arr);
+                                }
+                            });
+                        })
+                    }
+                })
+            }
+        }
+    }
+
+}
+</script>
+
+<style>
+
+</style>
