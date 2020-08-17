@@ -263,7 +263,7 @@
 </template>
 
 <script>
-import Step from "./step";
+import Step from "./step_coll";
 import * as sendTask from "./addTask";
 import Loading from "../../components/loading";
 import * as validator from "@/utils/js/validator";
@@ -484,7 +484,7 @@ export default {
                 };
             }
             this.$router.push({
-                path: "/collection1_4",
+                path: "/dbcollect_03",
                 query: data
             });
         },

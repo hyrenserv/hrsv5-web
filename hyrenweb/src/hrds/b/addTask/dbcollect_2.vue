@@ -47,7 +47,7 @@
             <el-button type="primary" size="medium" class="leftbtn" @click="allbackFun()">返回</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button type="primary" size="medium" class="rightbtn" @click="finshSubmit()">完成</el-button>
+            <el-button type="primary" size="medium" class="rightbtn" @click="finshSubmit()">下一步</el-button>
             <el-button type="primary" size="medium" class="rightbtn" @click="backFun()">上一步</el-button>
         </el-col>
     </el-row>
@@ -94,7 +94,7 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
-import Step from "./step_ty";
+import Step from "./step_coll";
 import Loading from "../../components/loading";
 
 export default {
@@ -136,7 +136,7 @@ export default {
         // 获取表格数据
         getTableData() {
             addTaskAllFun.getTableData({
-                databaseId: this.$route.query.id
+                databaseId: this.$route.query.id,
             }).then(res => {
                 this.tableData = res.data;
                 this.tableData.forEach(item => {
@@ -152,13 +152,13 @@ export default {
         },
         // 搜索
         schfilter(val) {
-               this.isLoading = true
+            this.isLoading = true
             if (val != "") {
                 let params = {};
                 params["colSetId"] = this.dbid;
                 params["inputString"] = val;
                 addTaskAllFun.getTableInfo(params).then(res => {
-                       this.isLoading = false
+                    this.isLoading = false
                     if (res.data.length > 0) {
                         let data = res.data;
                         /* for (let i = 0; i < data.length; i++) {
@@ -346,13 +346,24 @@ export default {
             params["source_id"] = this.sourceId;
             params["tableInfos"] = JSON.stringify(this.selectTable);
             params["tableColumns"] = JSON.stringify(tableColumns);
-            params["dsl_id"] = this.$route.query.dsl_id;
+            params["dsl_id"] = 123;
             if (this.$route.query.edit == 'yes') {
                 addTaskAllFun.updateTableData(params).then(res => {
                     this.isLoading = false
                     if (res.code == '200') {
+                        let data = {};
+                        data = {
+                            agent_id: this.agentId,
+                            id: this.dbid,
+                            source_id: this.sourceId,
+                            source_name: this.$Base64.encode(this.sourceName),
+                            // dsl_id: this.$route.query.dsl_id,
+                            edit: 'yes'
+                        };
+
                         this.$router.push({
-                            path: "/agentList",
+                            path: "/dbcollect_03",
+                            query: data
                         });
                     }
                 })
@@ -360,8 +371,17 @@ export default {
                 addTaskAllFun.saveregisterTableData(params).then(res => {
                     this.isLoading = false
                     if (res.code == '200') {
+                        let data = {};
+                        data = {
+                            agent_id: this.agentId,
+                            id: this.dbid,
+                            source_id: this.sourceId,
+                            source_name: this.$Base64.encode(this.sourceName),
+                            // dsl_id: this.$route.query.dsl_id,
+                        };
                         this.$router.push({
-                            path: "/agentList",
+                            path: "/dbcollect_03",
+                            query: data
                         });
                     }
                 })
@@ -377,7 +397,6 @@ export default {
                     id: this.dbid,
                     source_id: this.sourceId,
                     source_name: this.$Base64.encode(this.sourceName),
-                    dsl_id: this.$route.query.dsl_id,
                     edit: 'yes'
                 };
             } else {
@@ -386,7 +405,6 @@ export default {
                     id: this.dbid,
                     source_id: this.sourceId,
                     source_name: this.$Base64.encode(this.sourceName),
-                    dsl_id: this.$route.query.dsl_id,
                 };
             }
             this.$router.push({
@@ -395,10 +413,10 @@ export default {
             });
         },
         // 返回
-        allbackFun(){
-             this.$router.push({
-                            path: "/agentList",
-                        });
+        allbackFun() {
+            this.$router.push({
+                path: "/agentList",
+            });
         }
     }
 
