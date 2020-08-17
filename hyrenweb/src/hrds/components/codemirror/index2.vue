@@ -1,5 +1,5 @@
 <template>
-<div id="editor" style="width:100%;height:200px"></div>
+<div :id="'editor'+data" style="width:100%;height:200px"></div>
 </template>
 
 <script>
@@ -12,10 +12,12 @@ export default {
             arryKeyWords: [],
         }
     },
+    props: ['data'],
     mounted() {
+        var editordata = 'editor' + String(this.data);
         this.getTablename();
         let that = this;
-        var editor = ace.edit('editor')
+        var editor = ace.edit(editordata)
         editor.session.setMode('ace/mode/sql') // 设置语言
         editor.setTheme('ace/theme/chrome') // 设置主题
         editor.setFontSize(18); //字体大小
@@ -53,7 +55,7 @@ export default {
             editor.execCommand("startAutocomplete");
             that.$emit('changeTextarea', editor.session.getValue())
             var execute_sql = editor.session.getValue() + "";
-            if (execute_sql.toLowerCase().indexOf("from") >= 0) {
+            if (execute_sql.toLowerCase().indexOf("from") >= 0 || execute_sql.toLowerCase().indexOf("into") >= 0 || execute_sql.toLowerCase().indexOf("set") >= 0) {
                 that.getTablenameWords(execute_sql);
             }
         });
@@ -61,10 +63,17 @@ export default {
     },
     methods: {
         sqlFormatter() { //格式化sql语句
-            var editors = ace.edit('editor')
+            var editordata = 'editor' + String(this.data);
+            var editors = ace.edit(editordata)
             var beautifys = ace.require("ace/ext/beautify");
             editors.session.setValue(sqlFormatter.format(editors.session.getValue()));
             beautifys.beautify(editors.session);
+        },
+        // 页面进入默认设置值
+        setmVal(value) {
+            var editordata = 'editor' + String(this.data);
+            var editors = ace.edit(editordata)
+            editors.session.setValue(sqlFormatter.format(value))
         },
         getTablename() { //获取sql查询的全部表名
             commons.getAllTableNameByPlatform().then(res => {
