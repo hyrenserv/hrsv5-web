@@ -1,6 +1,6 @@
 <template>
 <div>
-    <Step :active="active" :typeinfo='typeinfo'></Step>
+    <Step :active="active"></Step>
     <div class="cleanbtn">
         <el-button size="mini" type="success" @click="dialogalltableClean=true;alltableClean(databaseId)">所有表清洗设置</el-button>
         <el-button size="mini" type="success" @click="dialogtableClean=true;allTableCleanPriorityFun(databaseId)">全表清洗优先级</el-button>
@@ -652,7 +652,6 @@ export default {
         return {
             tableHeight : '',
             active: 2,
-            typeinfo:1,
             isLoading: false,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,

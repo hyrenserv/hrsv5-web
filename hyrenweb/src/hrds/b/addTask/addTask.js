@@ -149,6 +149,36 @@ export function updateTableData(data) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
+//第三个 数据采集 获取新增时,为配置完成的数据信息
+export function getInitDatabase(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/getInitDatabase',
+        params: data
+    })
+}
+//第三个 数据采集编辑时获取的数据信息
+export function editorDatabase(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/editorDatabase',
+        params: data
+    })
+}
+//第三个 数据采集新增保存的接口
+export function saveDatabaseInfo(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/saveDatabaseInfo',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+//第三个 数据采集 更新的接口
+export function updateDatabaseInfo(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/updateDatabaseInfo',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
 // steps2
 // 获取初始信息
 export function steps_getInitInfo(data) {

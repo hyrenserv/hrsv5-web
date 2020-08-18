@@ -141,6 +141,42 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/dbcollect_02',
+                    name: '数据库采集2_02',
+                    title: '数据库采集2_02',
+                    component: () => import('@/hrds/b/addTask/dbcollect_2.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '数据库Agent' },
+                    ],
+                },
+                {
+                    path: '/dbcollect_03',
+                    name: '数据库采集2_03',
+                    title: '数据库采集2_03',
+                    component: () => import('@/hrds/b/addTask/dbcollect_3.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '数据库Agent' },
+                    ],
+                },
+                {
+                    path: '/dbcollect_04',
+                    name: '数据库采集2_04',
+                    title: '数据库采集2_04',
+                    component: () => import('@/hrds/b/addTask/dbcollect_4.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '数据库Agent' },
+                    ],
+                },
+                {
                     path: '/agentList',
                     name: 'agentList',
                     title: 'agent列表',
