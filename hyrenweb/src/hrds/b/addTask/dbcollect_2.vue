@@ -347,7 +347,7 @@ export default {
             params["tableInfos"] = JSON.stringify(this.selectTable);
             params["tableColumns"] = JSON.stringify(tableColumns);
             params["dsl_id"] = 123;
-            if (this.$route.query.edit == 'yes') {
+            if (this.tableData.length != 0) {
                 addTaskAllFun.updateTableData(params).then(res => {
                     this.isLoading = false
                     if (res.code == '200') {
@@ -357,8 +357,7 @@ export default {
                             id: this.dbid,
                             source_id: this.sourceId,
                             source_name: this.$Base64.encode(this.sourceName),
-                            // dsl_id: this.$route.query.dsl_id,
-                            edit: 'yes'
+                            // dsl_id: this.$route.query.dsl_id
                         };
 
                         this.$router.push({

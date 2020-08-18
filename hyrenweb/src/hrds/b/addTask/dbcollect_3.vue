@@ -272,12 +272,15 @@ import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "../dbAgentcollect/dbAgentcollect";
 import * as message from "@/utils/js/message";
 import Step from "./step_coll";
+import Loading from "../../components/loading";
+
 import {
     parse
 } from "path";
 export default {
     components: {
-        Step
+        Step,
+        Loading
     },
     data() {
         return {
@@ -475,10 +478,11 @@ export default {
             addTaskAllFun
                 .sendDBCollectTaskById({
                     colSetId: this.dbid,
-                    etl_date: this.etl_date
                 })
                 .then(res => {
                      this.isLoading=false
+                      this.submit_1=false
+                      this.submit_0=false
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$Msg.customizTitle('启动发送成功', 'success')
