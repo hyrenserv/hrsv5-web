@@ -46,20 +46,21 @@ export default {
                     return;
                 }
                 var value = editor.getValue() + "";
-                if (value.toLowerCase().indexOf("from") >= 0) {
+                if (value.toLowerCase().indexOf("from") >= 0 || value.toLowerCase().indexOf("into") >= 0 || value.toLowerCase().indexOf("set") >= 0) {
                     callback(null, that.arry);
                 }
             }
         });
-        editor.on("change", function (e) {
+        editor.on("change", that.debounce(function (e) {
             editor.execCommand("startAutocomplete");
             that.$emit('changeTextarea', editor.session.getValue())
             var execute_sql = editor.session.getValue() + "";
             if (execute_sql.toLowerCase().indexOf("from") >= 0 || execute_sql.toLowerCase().indexOf("into") >= 0 || execute_sql.toLowerCase().indexOf("set") >= 0) {
                 that.getTablenameWords(execute_sql);
             }
-        });
+        }))
         this.sqlFormatter() //格式化sql语句
+
     },
     methods: {
         sqlFormatter() { //格式化sql语句
@@ -92,11 +93,9 @@ export default {
                 this.arry = arr;
             })
         },
-
         getTablenameWords(execute_sql) { //根据sql查询的表名获取对应的字段
             if (this.arry.length > 0) {
                 this.arry.forEach(item => {
-                    let valueadd = item.value + "."
                     if (execute_sql.indexOf(item.value) != -1) {
                         commons.getColumnsByTableName({
                             'table_name': item.value
@@ -113,16 +112,27 @@ export default {
                                 obj.value = item.column_name;
                                 arr.push(obj);
                             })
-                            var langTools2 = ace.require("ace/ext/language_tools");
-                            langTools2.addCompleter({
+                            var editordata = 'editor' + String(this.data);
+                            var editors = ace.edit(editordata)
+                            editors.completers.push({
                                 getCompletions: function (editor, session, pos, prefix, callback) {
-                                    return callback(null, arr);
+                                    callback(null, arr);
                                 }
-                            });
+                            })
                         })
+                        return
                     }
                 })
             }
+        },
+        debounce(fn, interval = 500) { //事件防抖,减少服务器压力
+            let timeout = null;
+            return function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    fn.apply(this, arguments);
+                }, interval);
+            };
         }
     }
 
