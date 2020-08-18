@@ -50,7 +50,7 @@
                 <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="任务编号" prop="sub_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.sub_sys_cd" autocomplete="off" placeholder="工程名称"></el-input>
+                <el-input v-model="formAdd.sub_sys_cd" autocomplete="off" placeholder="任务编号"></el-input>
             </el-form-item>
             <el-form-item label="任务名称" prop="sub_sys_desc" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.sub_sys_desc" autocomplete="off" placeholder="任务名称"></el-input>
@@ -73,7 +73,7 @@
                 <el-input v-model="formModify.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="任务编号" prop="sub_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formModify.sub_sys_cd" autocomplete="off" placeholder="工程名称" disabled></el-input>
+                <el-input v-model="formModify.sub_sys_cd" autocomplete="off" placeholder="任务编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="任务名称" prop="sub_sys_desc" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formModify.sub_sys_desc" autocomplete="off" placeholder="任务名称"></el-input>
