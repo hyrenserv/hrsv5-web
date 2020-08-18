@@ -1383,7 +1383,7 @@ export default {
                             }
                         });
                     } else {
-                        if (this.tyAddSave == true) {
+                        if (this.dbcollect_AddSave == true) {
                             addTaskAllFun.updateDatabaseInfo(params).then(res => {
                                 this.isLoading = false
                                 if (res.code == "200") {
