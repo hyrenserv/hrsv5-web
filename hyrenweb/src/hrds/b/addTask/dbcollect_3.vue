@@ -288,7 +288,7 @@ export default {
             aId: null,
             sourId: null,
             sName: null,
-            active: 4,
+            active: 2,
             Allis_zippercheck: false,
             pzcheckAll: false,
             allcunchu: false,
