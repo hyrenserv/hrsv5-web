@@ -10,7 +10,7 @@
             </el-col>
             <el-col :span="12">
                 <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number">
-                    <el-col :span="22">
+                    <el-col :span="21">
                         <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
                     </el-col>
                     <el-tooltip class="item" effect="dark" content="执行采集脚本时,可作为第一个参数使用" placement="right">
@@ -21,7 +21,7 @@
             <el-col :span="12">
                 <el-form-item label="分类编号" :label-width="formLabelWidth" prop="classify_num" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.classify_num" disabled placeholder="分类编号" :size="size">
-                        <el-button slot="append" @click="getNumber()" class="addButton"> <i class="el-icon-circle-plus-outline"></i></el-button>
+                        <el-button slot="append" @click="getNumber()" class="addButton"> <i class="el-icon-circle-plus-outline"></i>设置分类</el-button>
                     </el-input>
                 </el-form-item>
             </el-col>
@@ -95,7 +95,7 @@
             </div>
         </el-dialog>
         <div slot="footer" class="dialog-footer">
-            <el-table :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium">
+            <el-table :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" @row-click="chooseone">
                 <el-table-column property label="选择" width="60px" type="index" align="center">
                     <template slot-scope="scope">
                         <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
@@ -182,7 +182,6 @@ export default {
             pagesize: 10,
             currentPage: 1,
             data2: [],
-            radio: "1",
             isLoading: false,
             classify_id: '',
             hiddenshow: true,
@@ -502,6 +501,9 @@ export default {
                 }
             })
         },
+        chooseone(row) {//点击单元格选中一行
+            this.radio = row.classify_id;
+        },
     },
 
 }
@@ -518,7 +520,7 @@ export default {
 
 /* 按钮设置 */
 .step1 .addButton {
-    color: black
+    color: #909399;
 }
 
 .step1>>>.el-input-group__prepend button.el-button {
