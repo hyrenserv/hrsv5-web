@@ -1171,7 +1171,7 @@ export default {
                             this.isshow = 'third'
                             this.activeNames = 'third'
                             addTaskAllFun.editorDatabase(params).then(res => {
-                                this.ruleFormSecond.task_name = res.data[0].task_name,
+                                this.ruleFormThird.task_name = res.data[0].task_name,
                                     this.ruleFormThird.database_number = res.data[0].database_number,
                                     this.ruleFormThird.classify_num = res.data[0].classify_num,
                                     this.ruleFormThird.classify_name = res.data[0].classify_name,
@@ -1252,7 +1252,7 @@ export default {
                                     this.isshow = 'third'
                                     this.activeNames = 'third'
                                     this.dbcollect_AddSave = true
-                                    this.ruleFormSecond.task_name = res.data[0].task_name,
+                                    this.ruleFormThird.task_name = res.data[0].task_name,
                                         this.ruleFormThird.database_number = res.data[0].database_number,
                                         this.ruleFormThird.classify_num = res.data[0].classify_num,
                                         this.ruleFormThird.classify_name = res.data[0].classify_name,
@@ -1520,7 +1520,13 @@ export default {
             }
         },
         chooseone(row) {
-            this.radio = row.classify_id;
+            if (this.activeNames == 'first') {
+                this.radio = row.classify_id;
+            } else if (this.activeNames == 'second') {
+                this.radio2 = row.classify_id;
+            } else {
+                this.radio3 = row.classify_id;
+            }
         },
         // 采集任务分类确定提交时
         updataClassNumBtn(row) {
