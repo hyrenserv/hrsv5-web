@@ -1251,7 +1251,7 @@ export default {
                                 if (res.data.length !== 0) {
                                     this.isshow = 'third'
                                     this.activeNames = 'third'
-                                    this.dbcollect_AddSave = true
+                                    // this.dbcollect_AddSave = true
                                     this.ruleFormThird.task_name = res.data[0].task_name,
                                         this.ruleFormThird.database_number = res.data[0].database_number,
                                         this.ruleFormThird.classify_num = res.data[0].classify_num,
@@ -1318,6 +1318,7 @@ export default {
                     params["database_pad"] = this.ruleFormSecond.database_pad;
                     params["jdbc_url"] = this.ruleFormSecond.jdbc_url;
                 } else {
+                    
                     params["task_name"] = this.ruleFormThird.task_name;
                     params["database_number"] = this.ruleFormThird.database_number;
                     params["classify_id"] = this.radio3;
@@ -1383,7 +1384,7 @@ export default {
                             }
                         });
                     } else {
-                        if (this.dbcollect_AddSave == true) {
+                        if (this.dbid && typeof this.dbid != 'undefined') {
                             addTaskAllFun.updateDatabaseInfo(params).then(res => {
                                 this.isLoading = false
                                 if (res.code == "200") {
