@@ -66,7 +66,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="资源类型" prop="resource_type" :rules="rule.selected">
-                <el-select style="width:217px" v-model="formAdd.resource_type" placeholder="作业名称">
+                <el-select style="width:217px" v-model="formAdd.resource_type" placeholder="资源类型">
                     <el-option v-for="item in formSelect.resourceType" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
