@@ -1,6 +1,6 @@
 <template>
 <div class="singlesearch" id="singleTable">
-    <Step :active="active" :typeinfo='typeinfo'></Step>
+    <Step :active="active"></Step>
     <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="单表查询" name="first">
             <div id="singleTable">
@@ -520,7 +520,6 @@ export default {
     data() {
         return {
             active: 1,
-            typeinfo: 1,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
             Allis_selectionState: false,
