@@ -11,7 +11,7 @@
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
                 <div class="singleTableinner">
-                    <el-table ref="filterTable" :height="tableHeight" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
+                    <el-table ref="filterTable"  v-if="tableHeight" :height="tableHeight" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -77,7 +77,7 @@
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
             <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
-                <el-table stripe :height="tableHeight" :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
+                <el-table stripe  v-if="tableHeight" :height="tableHeight" :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(sqlexcurrentPage - 1) * sqlexpagesize + 1}}</span>
