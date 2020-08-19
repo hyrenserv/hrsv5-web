@@ -402,7 +402,7 @@
     </div>
     <div v-if="isshow=='first'">
         <el-tabs v-model="activeNames" type="border-card" key='2'>
-            <el-tab-pane id='first' label="数据采集" name="first">
+            <el-tab-pane id='first' label="数据库抽数" name="first">
                 <div id="dataAcquisition">
                     <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%" class="demo-ruleForm">
                         <el-row type="flex" justify="center">
@@ -1125,9 +1125,8 @@ export default {
         this.storeTypeFun()
     },
     mounted() {
-
-        //  editorDatabase
         if (this.edit == "yes") {
+             this.isshow = 'first'
             this.show = true;
             let params = {};
             params["databaseId"] = this.dbid;
@@ -1148,10 +1147,11 @@ export default {
                         }
                     });
                 } else {
-                    this.isshow = 'second'
-                    this.activeNames = 'second'
+
                     addTaskAllFun.editStorageData(params).then(res => {
                         if (res.data.length != 0) {
+                            this.isshow = 'second'
+                            this.activeNames = 'second'
                             this.ruleFormSecond.task_name = res.data[0].task_name,
                                 this.ruleFormSecond.database_number = res.data[0].database_number,
                                 this.ruleFormSecond.classify_num = res.data[0].classify_num,
@@ -1193,6 +1193,7 @@ export default {
                 }
             });
         } else {
+             this.isshow = 'first'
             let params = {};
             params["databaseId"] = this.sourceId;
             params["agent_id"] = this.$route.query.agent_id
@@ -1267,6 +1268,8 @@ export default {
                                     this.dbid = res.data[0].database_id
                                     this.radioSave = res.data[0].dsl_id
                                     this.radio3 = res.data[0].classify_id
+                                }else{
+                                     this.isshow = 'all'
                                 }
                             })
                         }
@@ -1318,7 +1321,7 @@ export default {
                     params["database_pad"] = this.ruleFormSecond.database_pad;
                     params["jdbc_url"] = this.ruleFormSecond.jdbc_url;
                 } else {
-                    
+
                     params["task_name"] = this.ruleFormThird.task_name;
                     params["database_number"] = this.ruleFormThird.database_number;
                     params["classify_id"] = this.radio3;

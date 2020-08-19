@@ -245,16 +245,8 @@ export function getColumnsigleInfo(data) {
         params: data
     })
 }
-// 保存全部走下一步
-/* export function saveCollTbInfo(data) {
-    return request({
-        url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
-        method: 'post',
-        params:data
-    })
-} */
-// 保存全部走下一步
 
+// 保存全部走下一步
 export function saveCollTbInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
@@ -716,5 +708,12 @@ export function getTableData(data) {
     return request({
         url: '/B/agent/resourcerecod/tableregister/getTableData',
         params: data
+    })
+}
+//文件采集第三步--发送此次任务
+export function sendDBCollectTaskById(data) {
+    return request({
+        url: '/B/agent/sendDBCollectTaskById',
+        params:data
     })
 }
