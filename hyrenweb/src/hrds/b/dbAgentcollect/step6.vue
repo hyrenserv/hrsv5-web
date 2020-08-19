@@ -281,7 +281,6 @@ import Loading from '../../components/loading'
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as message from "@/utils/js/message";
-import Loading from '../../components/loading'
 export default {
     components: {
         Step,
