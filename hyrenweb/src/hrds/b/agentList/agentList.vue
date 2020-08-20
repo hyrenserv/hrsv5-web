@@ -88,10 +88,13 @@
         <el-table stripe :data="taskMang" border size="medium" :empty-text="tableloadingInfo">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-
-            <el-table-column property label="启动方式" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="采集频率" align="center" :show-overflow-tooltip="true"></el-table-column>
-
+            <el-table-column property='collect_type' v-if="collect_type==true" label="采集所属分类" align="center" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                   <el-tag v-if="scope.row.collect_type=='数据库采集'" type="info">{{scope.row.collect_type}}</el-tag>
+                    <el-tag v-else-if="scope.row.collect_type=='数据库抽数'" type="success">{{scope.row.collect_type}}</el-tag>
+                    <el-tag v-else type="primary">{{scope.row.collect_type}}</el-tag>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" width="300px" align="center">
                 <template slot-scope="scope">
                     <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
@@ -167,7 +170,7 @@ export default {
             rule: validator.default,
             dialogTableVisible: false,
             dialogProdeceJobs: false,
-            finishDialogVisible : false,
+            finishDialogVisible: false,
             agentType: "",
             sourceName: "",
             agentStatus: "",
@@ -182,11 +185,13 @@ export default {
             Alltask: [{
                 value: '2'
             }],
-            getValue : {},
-            sqlParam : '',
-            type : '',
-            id : '',
-            ParamPlaceholder : ''
+            getValue: {},
+            sqlParam: '',
+            type: '',
+            id: '',
+            ParamPlaceholder: '',
+            CollectTypeData: [],
+            collect_type:false
         };
     },
     mounted() {
@@ -196,9 +201,14 @@ export default {
         this.getType();
         this.getStatus();
         this.getTypeValue()
-        agentList.getSqlParamPlaceholder().then(res=>{
+        agentList.getSqlParamPlaceholder().then(res => {
             this.ParamPlaceholder = res.data
         })
+        let params = {};
+        params["category"] = "CollectType";
+        this.$Code.getCategoryItems(params).then(res => {
+            this.CollectTypeData = res.data
+        });
     },
     methods: {
         //获取类型
@@ -256,6 +266,7 @@ export default {
         },
         taskManagement(row) {
             rowName = row.agent_name;
+           this.collect_type=row.agent_type=='数据库Agent'?true:false
             this.dialogTableTask = true;
             let params = {};
             params["sourceId"] = row.source_id;
@@ -264,6 +275,11 @@ export default {
                 let arrdata = res ? res.data : [];
                 for (let i = 0; i < arrdata.length; i++) {
                     arrdata[i].agent_type = row.agent_type;
+                    for (let j = 0; j < this.CollectTypeData.length; j++) {
+                        if (arrdata[i].collect_type == this.CollectTypeData[j].code) {
+                            arrdata[i].collect_type = this.CollectTypeData[j].value
+                        }
+                    }
                 }
                 this.taskMang = arrdata;
                 if (arrdata.length > 0) {

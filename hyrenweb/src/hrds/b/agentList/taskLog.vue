@@ -18,7 +18,7 @@
                         <!-- <el-input  v-model="formInline.Host" placeholder="主机" style="width:100px" size="medium"></el-input> -->
                     </el-form-item>
                 </el-col>
-                <el-col :span="11">
+                <el-col :span="16">
                     <el-form-item label="日志位置 :">
                         <p class="tasklog_p">{{formInline.log_dir}}</p>
                         <!-- <el-input v-model="formInline.Loglocation" placeholder="日志位置" style="width:100px" size="medium"></el-input> -->
