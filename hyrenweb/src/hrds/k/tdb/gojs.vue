@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import go from 'gojs'
+// import go from 'gojs'
 export default {
     data() {
         return {}

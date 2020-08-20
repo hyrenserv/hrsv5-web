@@ -39,12 +39,22 @@
                     </span>
                 </template>
             </el-table-column>
+              <el-table-column label=" 是否拉链存储" align="center">
+                <template slot="header">
+                    <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
+                        <span class="allclickColor">是否拉链存储</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :checked="scope.row.is_zipper" v-model="scope.row.is_zipper" v-if="scope.row.data_extract_type!='1'" @change="is_zipperFun(scope.row)"></el-checkbox>
+                </template>
+            </el-table-column>
             <el-table-column label=" 存储方式" align="center">
                 <template slot="header">
-                  <!--   <el-checkbox v-if="Allis_zippercheck==false" disabled>
+                    <el-checkbox v-if="Allis_zippercheck==false" disabled>
                         <span class="allclickColor">存储方式</span>
-                    </el-checkbox> -->
-                    <el-popover  placement="right" width="120" height="50" v-model="visible">
+                    </el-checkbox>
+                    <el-popover v-else  placement="right" width="120" height="50" v-model="visible">
                         <el-select placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
                             <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select>
@@ -62,8 +72,11 @@
                        <!--  <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium" v-if="scope.row.is_zipper==false" disabled>
                             <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select> -->
-                          <el-radio-group v-model="scope.row.storage_type">
-    <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code">{{item.value}}</el-radio>
+                          <el-radio-group v-model="scope.row.storage_type" v-if="scope.row.is_zipper==false" >
+    <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code" disabled>{{item.value}}</el-radio>
+  </el-radio-group>
+  <el-radio-group v-model="scope.row.storage_type" v-else >
+    <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code" >{{item.value}}</el-radio>
   </el-radio-group>
                         <!-- <el-form-item  :prop="'ex_destinationData.'+scope.$index+'.storage_type'" :rules="rule.selected">
                             <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
@@ -71,6 +84,28 @@
                             </el-select>
                         </el-form-item> -->
                     </div>
+                </template>
+            </el-table-column>
+              <el-table-column label=" 数据保留天数" align="center">
+                <template slot="header">
+                    <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
+                        <div class="alldays">
+                            <el-input size="medium" v-model="allSaveDay" style="width:66px"></el-input>
+                            <span style="margin-left: 10px;">天</span>
+                        </div>
+                        <div style="text-align: right; margin:10px">
+                            <el-button size="mini" type="danger" @click="allsaveDayCloseFun()">取消</el-button>
+                            <el-button type="primary" size="mini" @click="allsaveDaySubmitFun()">确定</el-button>
+                        </div>
+                        <el-checkbox slot="reference" @change="allsaveDayFun(allSaveDayActive)" :checked="allSaveDayActive" v-model="allSaveDayActive">
+                            <span class="allclickColor">数据保留天数(/天)</span>
+                        </el-checkbox>
+                    </el-popover>
+                </template>
+                <template slot-scope="scope">
+                    <el-form-item :prop="'ex_destinationData.'+scope.$index+'.storage_time'" :rules="rule.default" v-if="scope.row.data_extract_type!='1'">
+                        <el-input size="medium" v-model="scope.row.storage_time"></el-input>
+                    </el-form-item>
                 </template>
             </el-table-column>
         </el-table>
@@ -295,6 +330,7 @@ export default {
             Allis_zippercheck: false,
             pzcheckAll: false,
             allcunchu: false,
+            allSaveDayActive: false,
             visible: false,
             saveDayvisible: false,
             Allis_destination: false,
@@ -337,6 +373,7 @@ export default {
             type: "",
             dslid: "",
             allstoragetype: "",
+              allSaveDay: "",
             StoreData: [],
             dslIdString: [],
             multipleSelection: [],
@@ -418,32 +455,32 @@ export default {
                                         }
                                     }
                                 }
-                              /*   if (arr[i].is_zipper == "1") {
+                                if (arr[i].is_zipper == "1") {
                                     arr[i].is_zipper = true;
                                 } else {
                                     arr[i].is_zipper = false;
-                                } */
+                                }
                                 if (!arr[i].storage_type) {
                                     arr[i].storage_type = "3";
                                 }
-                              /*   if (!arr[i].storage_time) {
+                                if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
-                                } */
+                                }
                             }
                             this.ruleForm.ex_destinationData = arr;
                         } else {
                             for (var i = 0; i < arr.length; i++) {
-                               /*  if (arr[i].is_zipper == "1") {
+                                if (arr[i].is_zipper == "1") {
                                     arr[i].is_zipper = true;
                                 } else {
                                     arr[i].is_zipper = false;
-                                } */
+                                }
                                 if (!arr[i].storage_type) {
                                     arr[i].storage_type = "3";
                                 }
-                               /*  if (!arr[i].storage_time) {
+                                if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
-                                } */
+                                }
                             }
                             this.ruleForm.ex_destinationData = arr;
                         }
@@ -517,8 +554,8 @@ export default {
                         } */
                         if (arr[i].data_extract_type != "1") {
                             tbStoInfoString.push({
-                                is_zipper:"1",
-                                storage_time:0,
+                               is_zipper: arr[i].is_zipper == true ? "1" : "0",
+                                storage_time: parseInt(arr[i].storage_time),
                                 storage_type: arr[i].storage_type,
                                 table_id: arr[i].table_id
                             });
@@ -693,6 +730,16 @@ export default {
             if (row.is_zipper == false) {
                 row.storage_type = "";
             }
+        },
+         Allis_zipperFun(items, e) {
+            items.forEach((item, i) => {
+                if (e) {
+                    item.is_zipper = true;
+                } else {
+                    item.is_zipper = false;
+                    item.storage_type = "";
+                }
+            });
         },
         ChooseDestination(row, index) {
             this.dataExtractypeindex = index;
