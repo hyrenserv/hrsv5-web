@@ -14,26 +14,17 @@
                 <div style='height:0.1px'>&nbsp;</div>
                 <Scrollbar>
                     <el-tree accordion class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
-                        <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                            <span :title="data.description" v-if="data.file_id.length > 0&&data.tree_page_source=='market_version_manage'">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source=='market_version_manage'">
                                 <el-checkbox @change="choiceCheck($event,data)" v-model="data.ischoice" :key='data.id'></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
                             </span>
-                            <span :title="data.description" v-else-if="data.file_id.length > 0&&data.tree_page_source!='market_version_manage'">
+                            <span :title="data.description" v-else-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source!='market_version_manage'">
                                 <i class="el-icon-document" />
-                                <template v-if="data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
                                 <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
                                 <template v-else>{{data.hyren_name}}</template>
                             </span>
                             <span :title="data.description" v-else>
-                                <i class="el-icon-folder-opened" />
-                                {{node.label}}
-                            </span>
-                        </span>
-                        <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
-                            <span :title="data.label" v-if="data.file_id.length > 0">
-                                <i class="el-icon-document" />{{node.label}}
-                            </span>
-                            <span :title="data.label" v-else>
                                 <i class="el-icon-folder-opened" />
                                 {{node.label}}
                             </span>
