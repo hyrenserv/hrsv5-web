@@ -517,7 +517,7 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
-import Step from "./step";
+import Step from "./step_coll";
 import Loading from "../../components/loading";
 
 export default {
