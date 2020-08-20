@@ -72,7 +72,7 @@
                 </div>
             </div>
         </el-tab-pane>
-        <el-tab-pane label="使用SQL抽取数据" name="second">
+        <el-tab-pane label="使用SQL采集数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
             <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
@@ -2169,6 +2169,7 @@ export default {
         SelectColumnShowFun2(row) {
             this.coltable_name = "";
             this.coltable_name = row.table_name;
+            this.getSqlColumnDataFun(row, row.sql);
            /*  let arrdata = [],
                 sql = "";
                 this.getSqlColumnDataFun(row, row.sql);
