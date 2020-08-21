@@ -200,7 +200,7 @@
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
                 表名:
-                <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
+                <p class="dialogtopname">{{coltable_name}}</p>
             </span>
         </div>
         <el-table stripe :data="SelectColumnData" border size="medium" highlight-current-row>
@@ -448,7 +448,7 @@
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
                 表名:
-                <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
+                <p class="dialogtopname">{{coltable_name}}</p>
             </span>
         </div>
         <el-table stripe :data="SelectColumnData2" border size="medium" highlight-current-row>
@@ -2248,6 +2248,7 @@ export default {
             params["sql"] = sql;
             params["tableId"] = row.table_id ? row.table_id : "";
             params['tableName'] = row.table_name
+            console.log(row)
             addTaskAllFun.getSqlColumnData(params).then(res => {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
