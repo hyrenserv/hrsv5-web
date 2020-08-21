@@ -221,7 +221,16 @@ export default {
         //树节点搜索调用方法
         filterNode(value, data) {
             if (!value) return true;
-            return data.label.indexOf(value) !== -1;
+            // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
+            // 检索内容为 original_name table_name hyren_name
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+                return (
+                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
+                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
+                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                )
+
+            }
         },
         //点击源数据管理树节点触发
         mdmHandleClick(data) {
@@ -288,7 +297,6 @@ export default {
         },
         //点击回收站树节点触发
         drbHandleClick(data) {
-            console.log(data)
             this.currentPage = 1;
             this.pageSize = 10;
             this.recoverMouseVisible = false;

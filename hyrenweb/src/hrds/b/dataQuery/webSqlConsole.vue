@@ -11,8 +11,8 @@
     <el-row>
         <el-col class="borderStyle" :span="5">
             <!--树菜单-->
-            <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
             <div class='mytree'>
+                <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
                 <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
                         <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
@@ -98,7 +98,7 @@ export default {
             basicInfoForm: {
                 sqlMain: ''
             },
-            index1:1,
+            index1: 1,
             webSqlTreeData: [],
         };
     },
@@ -142,7 +142,15 @@ export default {
             // 如果检索内容为空,直接返回
             if (!value) return true;
             // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
-            return data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+            // 检索内容为 original_name table_name hyren_name
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+                return (
+                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
+                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
+                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                )
+
+            }
         },
         getWebSQLTreeData() {
             dataQuery.getWebSQLTreeData().then(res => {
