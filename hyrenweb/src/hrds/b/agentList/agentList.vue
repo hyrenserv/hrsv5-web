@@ -88,7 +88,7 @@
         <el-table stripe :data="taskMang" border size="medium" :empty-text="tableloadingInfo">
             <el-table-column property="task_name" label="任务名称" width="140px" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="agent_type" label="采集类型" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column property='collect_type' v-if="collect_type==true" label="采集所属分类" align="center" :show-overflow-tooltip="true">
+            <el-table-column property='collect_type' v-if="collect_type==true" label="采集方式" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
                    <el-tag v-if="scope.row.collect_type=='数据库采集'" type="info">{{scope.row.collect_type}}</el-tag>
                     <el-tag v-else-if="scope.row.collect_type=='数据库抽数'" type="success">{{scope.row.collect_type}}</el-tag>
@@ -134,9 +134,9 @@
         </div>
     </el-dialog>
     <!--下载数据字典时,数据库的采集任务中或许存在着SQL占位符,所以这里需要填写-->
-    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="40%">
+    <el-dialog title="下载数据字典" :visible.sync="finishDialogVisible" width="40%">
         <div slot="title">
-            <span class="dialogtitle el-icon-caret-right">设置数据跑批日期</span>
+            <span class="dialogtitle el-icon-caret-right">下载数据字典</span>
         </div>
         <div>
             <el-form>
@@ -191,7 +191,7 @@ export default {
             id: '',
             ParamPlaceholder: '',
             CollectTypeData: [],
-            collect_type:false
+            collect_type:false,
         };
     },
     mounted() {
@@ -525,7 +525,7 @@ export default {
         settingDownloadDirc(type, row) {
             this.type = type
             this.id = row.id
-        }
+        },
     }
 };
 </script>
