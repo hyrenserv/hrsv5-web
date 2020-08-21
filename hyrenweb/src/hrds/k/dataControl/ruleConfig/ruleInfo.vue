@@ -247,7 +247,15 @@
                     <div class="mytree">
                         <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' @node-click="handleNodeClick">
                             <span class="span-ellipsis" slot-scope="{ node, data }">
-                                <span :title="data.description">{{node.label}}</span>
+                                <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                                    <i class=" el-icon-document"></i>
+                                    <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                                    <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                    <template v-else>{{data.hyren_name}}</template>
+                                </span>
+                                <span :title="data.description" v-else>
+                                    <i class="el-icon-folder-opened"></i>{{node.label}}
+                                </span>
                             </span>
                         </el-tree>
                     </div>
@@ -334,34 +342,7 @@ export default {
             ruleTitle: '',
             operation_type: '',
             collapse_names: ['基本信息', '配置信息', '结果信息'],
-            form_dq_data: {
-                reg_num: 0,
-                reg_name: '',
-                load_strategy: '',
-                group_seq: '',
-                target_tab: '',
-                target_key_fields: '',
-                check_limit_condition: '',
-                opposite_tab: '',
-                opposite_key_fields: '',
-                range_min_val: '',
-                range_max_val: '',
-                list_vals: '',
-                specify_sql: '',
-                err_data_sql: '',
-                index_desc1: '',
-                index_desc2: '',
-                index_desc3: '',
-                flags: '',
-                remark: '',
-                rule_tag: '',
-                mail_receive: '',
-                rule_src: '',
-                is_saveindex1: '0',
-                is_saveindex2: '0',
-                is_saveindex3: '0',
-                case_type: '',
-            },
+            form_dq_data: {},
             dq_rule_def_s: [{ case_type: '', case_type_desc: '' }],
             dq_rule_def_map: {},
             job_eff_flag_s: [],
@@ -373,27 +354,7 @@ export default {
             form_dq_data_reg_num: '',
             //系统帮助提示信息
             dq_help_info_s: [{ help_info_id: '', help_info_desc: '', help_info_dtl: '' }],
-            dq_help_info_map: {
-                scaduleF: '',
-                flag: '',
-                ruleSrc: '',
-                regName: '',
-                ruleType: '',
-                ruleTag: '',
-                targTab: '',
-                fields: '',
-                limit: '',
-                listVals: '',
-                opTab: '',
-                opField: '',
-                min: '',
-                max: '',
-                sql: '',
-                errSql: '',
-                index1: '',
-                index2: '',
-                index3: '',
-            },
+            dq_help_info_map: {},
             //数据源模态框相关
             data_source_dialog: false,
             table_fields_dialog: false,
