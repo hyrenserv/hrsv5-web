@@ -95,7 +95,7 @@
                     <el-tag v-else type="primary">{{scope.row.collect_type}}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="300px" align="center">
+            <el-table-column label="操作" width="300px" >
                 <template slot-scope="scope">
                     <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
                     <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
@@ -103,7 +103,7 @@
                     <!-- <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button> -->
                     <el-button type="text" class="workcolor">生成作业</el-button>
                     <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
-                    <el-button else type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
+                    <el-button v-if="scope.row.collect_type=='数据库抽数'"  type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
                 </template>
             </el-table-column>
         </el-table>
