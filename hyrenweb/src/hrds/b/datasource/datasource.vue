@@ -255,7 +255,7 @@ export default {
                 if (valid) {
                     functionAll.saveAgent(this.formAdd).then(response => {
                         if (response && response.success) {
-                            this.$Msg.customizTitle('删除成功', 'success')
+                            this.$Msg.customizTitle('添加成功', 'success')
                             // 隐藏对话框
                             this.dialogFormVisible = false;
                             this.getAgentAllData(this.agent_type);
