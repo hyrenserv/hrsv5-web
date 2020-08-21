@@ -515,6 +515,7 @@ export default {
             addTaskAllFun
                 .sendDBCollectTaskById({
                     colSetId: this.dbid,
+                     etl_date: this.etl_date
                 })
                 .then(res => {
                      this.isLoading=false
