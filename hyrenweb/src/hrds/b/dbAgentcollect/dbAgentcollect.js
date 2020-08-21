@@ -541,3 +541,13 @@ export function saveJobDataToDatabase(data) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
  }
+/**
+ * 点击上传按钮上传数据
+ */
+export function uploadDataDictionary(data) {
+    return request({
+        url: '/B/agent/uploadDataDictionary',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
