@@ -711,9 +711,9 @@ export function getTableData(data) {
     })
 }
 //文件采集第三步--发送此次任务
-export function sendDBCollectTaskById(data) {
+export function sendCollectDatabase(data) {
     return request({
-        url: '/B/agent/sendDBCollectTaskById',
+        url: '/B/agent/sendCollectDatabase',
         params:data
     })
 }

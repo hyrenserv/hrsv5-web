@@ -529,9 +529,7 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* 下划线样式 */
+<style scoped >
 .taskEx>>>.el-dialog__body {
     padding: 8px 20px;
 }
