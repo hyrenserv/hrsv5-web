@@ -23,7 +23,7 @@
         <el-col :span="12">
             <div class="partFourDiv">
                 <el-button type="primary" style="float:left" @click="backSteps" size="medium">上一步</el-button>
-                <el-button type="primary" style="float:right" @click="nextSteps" size="medium"> 下一步</el-button>
+                <el-button type="primary" style="float:right" @click="nextSteps" size="medium" :disabled="buttonDisabled"> 下一步</el-button>
             </div>
         </el-col>
     </div>
@@ -76,7 +76,8 @@ export default {
             innerVisible: false,
             table_id: '',
             table_name: '',
-            tableColumn: {}
+            tableColumn: {},
+            buttonDisabled: false,
         }
     },
     mounted() {
@@ -94,7 +95,13 @@ export default {
             functionAll.getTableData({
                 colSetId: this.$route.query.id
             }).then(res => {
-                this.tableData = res.data;
+                if (res.data.existsTable != undefined) {
+                    this.$Msg.customizTitle(res.data.existsTable, "error");
+                    this.buttonDisabled = true; //禁止下一步
+                } else {
+                    this.buttonDisabled = false;
+                }
+                this.tableData = res.data.dirTableList;
             })
         },
         // 查看列数据
