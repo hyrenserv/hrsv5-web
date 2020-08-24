@@ -68,7 +68,7 @@
             <span v-if="ftpAgent">FTP Agent</span>
             <!-- 添加数据表单弹出框  -->
             <el-button type="success" class="addAgent" size="small" v-if="sourceAgent" @click="dialogFormVisible = true;DataCathInfo()">新增数据库Agent</el-button>
-            <el-button type="success" class="addAgent" size="small" v-if="dataFile" @click="dialogFormVisible = true;DataCathInfo()">新增数据库文件AgentAgent</el-button>
+            <el-button type="success" class="addAgent" size="small" v-if="dataFile" @click="dialogFormVisible = true;DataCathInfo()">新增数据库文件Agent</el-button>
             <el-button type="success" class="addAgent" size="small" v-if="semiStructure" @click="dialogFormVisible = true;DataCathInfo()">新增半结构化 Agent</el-button>
             <el-button type="success" class="addAgent" size="small" v-if="nonStructural" @click="dialogFormVisible = true;DataCathInfo()">新增非结构化 Agent</el-button>
             <el-button type="success" class="addAgent" size="small" v-if="ftpAgent" @click="dialogFormVisible = true;DataCathInfo()">新增FTP Agent采集数据</el-button>
