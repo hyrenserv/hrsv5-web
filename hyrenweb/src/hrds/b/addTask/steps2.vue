@@ -906,11 +906,13 @@ export default {
         // 搜索
         schfilter(val) {
             if (val != "") {
+                 this.isLoading = true;
                 let params = {};
                 params["colSetId"] = this.dbid;
                 params["inputString"] = val;
                 this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
+                     this.isLoading = false;
                     if (res.data.length > 0) {
                         this.Searchzt = true
                         let data = res.data;

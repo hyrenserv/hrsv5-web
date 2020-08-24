@@ -544,7 +544,7 @@ export default {
         },
         finishSubmit() {
             sendTask
-                .sendJDBCCollectTaskById({
+                .sendCollectDatabase({
                     colSetId: this.dbid
                 })
                 .then(res => {

@@ -278,7 +278,7 @@
         </div>
     </el-dialog>
     <!--完成  -->
-    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="30%">
+    <el-dialog title="设置数据跑批日期" :visible.sync="finishDialogVisible" width="40%">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">设置数据跑批日期</span>
         </div>
@@ -286,6 +286,10 @@
             <el-form>
                 <el-form-item>
                     <el-date-picker type="date" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
+                </el-form-item>
+                 <el-form-item>
+                    SQL中如果存在占位符,请填写占位符的值...多个参数之间请使用{{ParamPlaceholder}}进行分割,例如: column1=123{{ParamPlaceholder}}column2=456
+                    <el-input type="textarea" placeholder="采集任务中的SQL占位参数值" v-model="sqlParam" style="width:100%;"></el-input>
                 </el-form-item>
             </el-form>
         </div>
@@ -304,7 +308,7 @@
 <script>
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as addTaskAllFun from "../dbAgentcollect/dbAgentcollect";
+import * as addTaskAllFun from "./addTask";
 import * as message from "@/utils/js/message";
 import Step from "./step_coll";
 import Loading from "../../components/loading";
@@ -319,6 +323,8 @@ export default {
     },
     data() {
         return {
+            sqlParam:'',
+            ParamPlaceholder: '',
             finishDialogVisible: false,
             rule: validator.default,
             tableloadingInfo: "数据加载中...",
@@ -425,6 +431,9 @@ export default {
         this.$Code.getCategoryItems(params).then(res => {
             this.DatabaseType = res.data ? res.data : [];
         });
+         addTaskAllFun.getSqlParamPlaceholder().then(res => {
+            this.ParamPlaceholder = res.data
+        })
     },
     mounted() {
         let params = {};
@@ -513,9 +522,10 @@ export default {
         sendSubmit() {
              this.isLoading=true
             addTaskAllFun
-                .sendDBCollectTaskById({
+                .sendCollectDatabase({
                     colSetId: this.dbid,
-                     etl_date: this.etl_date
+                     etl_date: this.etl_date,
+                      sqlParam: this.sqlParam
                 })
                 .then(res => {
                      this.isLoading=false
