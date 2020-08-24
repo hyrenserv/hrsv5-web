@@ -538,7 +538,7 @@ export default {
                             path: "/agentList"
                         });
                     }
-                });
+                })
         },
         backFun() {
             this.$router.push({
@@ -612,7 +612,6 @@ export default {
                         params["tbStoInfoString"] = JSON.stringify(tbStoInfoString);
                         params["colSetId"] = this.dbid;
                         params["dslIdString"] = JSON.stringify(dslIdString);
-                        console.log(params)
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
                             if (res.code == 200) {
                                 this.submit_1 = true;
