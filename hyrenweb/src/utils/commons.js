@@ -9,9 +9,9 @@ export function getAllTableNameByPlatform(data) {
 }
 
 //获取平台登记的表字段信息
-export function getColumnsByTableName(data) {
+export function getTableInfoByTableName_cache(data) {
     return request({
-        url: '/B/websqlquery/getColumnsByTableName',
+        url: '/B/websqlquery/getTableInfoByTableName_cache',
         params: data
     })
 }

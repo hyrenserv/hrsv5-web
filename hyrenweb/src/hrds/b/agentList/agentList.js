@@ -117,3 +117,17 @@ export function getSqlParamPlaceholder() {
         url: '/B/agent/getSqlParamPlaceholder',
     })
 }
+// 发送作业时的判断
+export function startJobType(data) {
+    return request({
+        url: '/B/agent/startJobType',
+        params:data
+    })
+}
+//文件采集第三步--发送此次任务
+export function sendCollectDatabase(data) {
+    return request({
+        url: '/B/agent/sendCollectDatabase',
+        params:data
+    })
+}
