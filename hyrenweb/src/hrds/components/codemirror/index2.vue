@@ -97,7 +97,7 @@ export default {
             if (this.arry.length > 0) {
                 this.arry.forEach(item => {
                     if (execute_sql.indexOf(item.value) != -1) {
-                        commons.getColumnsByTableName({
+                        commons.getTableInfoByTableName_cache({
                             'table_name': item.value
                         }).then(res => {
                             let arr = [];
@@ -108,8 +108,8 @@ export default {
                                     value: "",
                                     score: 10000
                                 }
-                                obj.caption = item.column_name;
-                                obj.value = item.column_name;
+                                obj.caption = item;
+                                obj.value = item;
                                 arr.push(obj);
                             })
                             var editordata = 'editor' + String(this.data);
