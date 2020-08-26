@@ -12,25 +12,23 @@
         <el-col :span="6">
             <div class="mytree" hight='260'>
                 <div style='height:0.1px'>&nbsp;</div>
-                <Scrollbar>
-                    <el-tree accordion class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source=='market_version_manage'">
-                                <el-checkbox @change="choiceCheck($event,data)" v-model="data.ischoice" :key='data.id'></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
-                            </span>
-                            <span :title="data.description" v-else-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source!='market_version_manage'">
-                                <i class="el-icon-document" />
-                                <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
-                                <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
-                                <template v-else>{{data.hyren_name}}</template>
-                            </span>
-                            <span :title="data.description" v-else>
-                                <i class="el-icon-folder-opened" />
-                                {{node.label}}
-                            </span>
+                <el-tree accordion class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
+                    <span class="span-ellipsis" slot-scope="{ node, data }">
+                        <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source=='market_version_manage'">
+                            <el-checkbox @change="choiceCheck($event,data)" v-model="data.ischoice" :key='data.id'></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
                         </span>
-                    </el-tree>
-                </Scrollbar>
+                        <span :title="data.description" v-else-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source!='market_version_manage'">
+                            <i class="el-icon-document" />
+                            <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                            <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                            <template v-else>{{data.hyren_name}}</template>
+                        </span>
+                        <span :title="data.description" v-else>
+                            <i class="el-icon-folder-opened" />
+                            {{node.label}}
+                        </span>
+                    </span>
+                </el-tree>
             </div>
         </el-col>
         <el-col :span="18">
@@ -91,12 +89,10 @@
 
 <script>
 import * as mvmFunc from "./marketVersionManage";
-import Scrollbar from '../../../components/scrollbar';
 import sqlFormatter from 'sql-formatter'
 import SqlEditor from '../../../components/codemirror'
 export default {
     components: {
-        Scrollbar,
         SqlEditor
     },
     data() {
@@ -381,15 +377,6 @@ export default {
         text-overflow: ellipsis;
         display: block;
         font-size: 14px;
-    }
-
-    .scrollbar-wrap {
-        width: 24% !important;
-        position: absolute;
-    }
-
-    .scrollbar__track {
-        width: 4px;
     }
 
     .locationcenter {
