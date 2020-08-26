@@ -1148,7 +1148,7 @@ export default {
             this.radio = row.classify_id;
         },
         changeTextarea(val) {
-            // this.querysql = val
+            this.querysql = val;
             this.$set(this.basicInfoForm, 'sqlMain', val)
         },
         formaterSql(val) {
