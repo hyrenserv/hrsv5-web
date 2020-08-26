@@ -161,7 +161,7 @@
                 <el-form-item>
                     <el-date-picker type="date" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item v-if="dbtype!='数据文件Agent'">
                     SQL中如果存在占位符,请填写占位符的值...多个参数之间请使用{{ParamPlaceholder}}进行分割,例如: column1=123{{ParamPlaceholder}}column2=456
                     <el-input type="textarea" placeholder="采集任务中的SQL占位参数值" v-model="sqlParam" style="width:100%;"></el-input>
                 </el-form-item>
@@ -449,7 +449,7 @@ export default {
             this.dbid = row.id
             this.dbtype = type
             this.dbcollectType = row.collect_type
-            console.log(row)
+            console.log(row,this.dbtype)
             agentList.startJobType(params).then(res => {
                 console.log(res.data)
                 if (res.data) {
