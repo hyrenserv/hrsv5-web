@@ -59,8 +59,6 @@ export default {
                 that.getTablenameWords(execute_sql);
             }
         }))
-        this.sqlFormatter() //格式化sql语句
-
     },
     methods: {
         sqlFormatter() { //格式化sql语句
