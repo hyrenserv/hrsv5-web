@@ -49,7 +49,7 @@
                 max: [],
                 min: [],
                 avg: [],
-                interface_name: [],
+                name: [],
             }
         },
         mounted() {
@@ -58,12 +58,13 @@
         methods: {
             interfaceResponseTime() {
                 interfaceFunctionAll.interfaceResponseTime().then(res => {
+                    var name =[];
                     if (res.data.length > 0) {
                         res.data.forEach(item => {
                             this.max.push(item.max);
                             this.min.push(item.min);
                             this.avg.push(Math.round(item.avg));
-                            this.interface_name.push(item.interface_name);
+                            name.push(item.interface_name);
                         });
                     }
                     // 基于准备好的dom，初始化echarts实例
@@ -103,7 +104,7 @@
                         },
                         title: {
                             text: '单位/ms',
-                            x: 'left',
+                            x: 'center',
                             y: '5%',
                             textStyle: {
                                 //字体粗细 'normal','bold','bolder','lighter'
@@ -113,7 +114,7 @@
                             }
                         },
                         // 控制legend颜色
-                        color: ['#FF0000', '#2db7f5', '#80FF80'],
+                        // color: ['#FF0000', '#2db7f5', '#80FF80'],
                         // 模块
                         legend: {
                             data: ['最大响应时间', '最小响应时间', '平均响应时间']
