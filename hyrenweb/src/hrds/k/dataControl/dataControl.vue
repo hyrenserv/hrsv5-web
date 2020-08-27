@@ -54,7 +54,7 @@
         </el-col>
         <el-col :span="11">
             <span class="tab_class">规则检测执行统计信息</span>
-            <ve-pie :data="ruleChartData" :settings="ruleChartSettings" />
+            <ve-ring :data="ruleChartData" :settings="ruleChartSettings" />
         </el-col>
     </el-row>
     <el-row>
@@ -130,7 +130,11 @@ export default {
             dataControlFun.getTableStatistics().then(res => {
                 this.tableStatistics = res.data;
                 // 初始化图表显示样式
-                this.dslChartSettings = { radius: 120, offsetY: '220', selectedMode: 'single' };
+                this.dslChartSettings = {
+                    radius: 120,
+                    offsetY: '220',
+                    limitShowNum: 5
+                };
                 // 初始化 v-charts 图表数据
                 this.dslChartData.columns = ['dsl_name', 'count'];
                 this.dslChartData.rows = res.data;
@@ -141,7 +145,26 @@ export default {
             dataControlFun.getRuleStatistics().then(res => {
                 this.ruleStatistics = res.data;
                 // 初始化图表显示样式
-                this.ruleChartSettings = { radius: 120, offsetY: '220', selectedMode: 'single' };
+                this.ruleChartSettings = {
+                    name: '规则统计结果',
+                    type: 'pie',
+                    radius: ['40%', '65%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    }
+                };
                 // 初始化 v-charts 图表数据
                 this.ruleChartData.columns = ['statistics_name', 'count'];
                 // console.log(this.ruleStatistics);
