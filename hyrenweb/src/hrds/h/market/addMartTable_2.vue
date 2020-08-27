@@ -225,7 +225,7 @@
                 </el-table-column>
                 <el-table-column prop="field_type" label="字段类型" width="130" show-overflow-tooltip align="center">
                     <template slot-scope="scope" width="120">
-                        <el-select :disabled="iflock || scope.row.field_process == '2'" v-model="scope.row.field_type" placeholder="请选择">
+                        <el-select :disabled="iflock || scope.row.field_process  == '2'" v-model="scope.row.field_type" placeholder="请选择">
                             <el-option v-for="(item,index) in allfield_type" :key="index" :label="item.target_type" :value="item.target_type"></el-option>
                         </el-select>
                     </template>
@@ -340,7 +340,7 @@
     <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
         <el-row>
             <el-table :data="databysql" border size="mini">
-                <el-table-column v-for="(index, item) in databysql[0]" :key="databysql.$index" :label="item" show-overflow-tooltip :prop="item">
+                <el-table-column v-for="(index, item) in databysql[0]" :key="index" :label="item" show-overflow-tooltip :prop="item">
                     <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
                     <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
                 </el-table-column>
@@ -387,7 +387,7 @@
         <el-row>
             <el-table :data="tablecolumn" border size="mini" ref="filterTable" height="400">
                 <el-table-column prop="selectionstate" width="50" align="center" ref="multipleColumn">
-                    <template slot="header" slot-scope="scope">
+                    <template slot="header">
                         <el-checkbox @change="Allis_selectionstateFun()" v-model="Allis_selectionstate" :checked="Allis_selectionstate"></el-checkbox>
                     </template>
                     <template slot-scope="scope">
@@ -477,7 +477,7 @@
             <el-table-column prop="function_desc" label="描述" align="left" show-overflow-tooltip></el-table-column>
             <el-table-column align="left">
                 <template slot="header" slot-scope="scope">
-                    <el-input v-model="search" size="mini" placeholder="输入函数名或者列子进行搜索" />
+                    <el-input v-model="search" size="mini" :key="scope.row" placeholder="输入函数名或者列子进行搜索" />
                 </template>
             </el-table-column>
         </el-table>
@@ -972,8 +972,7 @@ export default {
             this.columnbysql.push(param);
         },
         deletecolumn(row) {
-            let index = this.columnbysql.indexOf(row);
-            this.columnbysql.splice(index, 1);
+            this.columnbysql.splice(row, 1);
         },
         hbasedowncolumn(val, data) {
             if (val + 1 === this.hbasesort.length) {
