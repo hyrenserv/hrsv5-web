@@ -12,14 +12,14 @@
     <el-divider />
     <el-row>
         <el-col v-if="tableData.dm_info!==undefined && tableData.dm_info.length!=0">
-            加工工程表差异 ：<p>{{tableData.dm_info}}</p>
+            <span style="color:red">加工工程表差异 ：</span>
+            <p>{{tableData.dm_info}}</p>
         </el-col>
         <el-col v-if="tableData.dm_datatable!==undefined && tableData.dm_datatable.length!=0">
             <span style="color:red">数据表差异：</span>
             <p v-for="(item,index) in tableData.dm_datatable">{{item}}</p>
         </el-col>
         <el-col v-if="tableData.dm_category!==undefined && tableData.dm_category.length!==0">
-            {{tableData.dm_category.length}}
             <span style="color:red"> 分类表差异：</span>
             <p v-for="(item,index) in tableData.dm_category">{{item}}</p>
         </el-col>
@@ -62,6 +62,10 @@
             </el-carousel>
         </el-col>
     </el-row>
+    <!-- 加载过度 -->
+     <transition name="fade">
+        <loading v-if="isLoading" />
+    </transition>
 </div>
 </template>
 
@@ -73,11 +77,15 @@ import Loading from '../../components/loading'
 
 require('@/assets/css/jsmind.css');
 export default {
+    components: {
+        Loading
+    },
     data() {
         return {
             tableData: {},
             dclTable: [],
             etlJob: [],
+            isLoading: false
         }
     },
     mounted() {
@@ -123,14 +131,17 @@ export default {
             })
         },
         upload() {
-            this.isLoading = true;
             message.confirmMsg('确定审核吗').then(res => {
+                this.isLoading = true;
                 functionAll.uploadFile({
                     "file_path": this.$route.query.file_path
                 }).then(res => {
-                    this.isLoading = false;
                     if (res && res.success) {
+                        this.isLoading = false;
                         this.$Msg.customizTitle("审核成功", "success");
+                        this.$router.push({
+                            path: 'dataMart'
+                        })
                     }
                 });
             }).catch(() => {})
