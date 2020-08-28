@@ -49,23 +49,44 @@
                                 <el-checkbox v-model="scope.row.is_md5" v-else disabled :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column> -->
-                        <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center">
+                        <el-table-column prop="is_parallel" label=" 是否并行抽取" align="center" width="110">
                             <template slot-scope="scope">
                                 <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
                                 <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_parallelFun(scope.row)"></el-checkbox>
                             </template>
                         </el-table-column>
-
-                        <el-table-column prop="sqlFiltering" label="SQL过滤" align="center">
+                        <el-table-column prop="sqlFiltering" label="SQL过滤" align="center" width="110">
                             <template slot-scope="scope">
                                 <el-button size="mini" disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" type="success">定义过滤</el-button>
                                 <el-button size="mini" v-else @click="Sqlfilt(scope.$index, scope.row)" type="success">定义过滤</el-button>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="selectCol" label="选择列" align="center">
+                        <el-table-column prop="selectCol" label="选择列" align="center" >
                             <template slot-scope="scope">
                                 <el-button size="mini" @click="selectCol(scope.$index, scope.row)" type="info">选择列</el-button>
                             </template>
+                        </el-table-column>
+                        <el-table-column label="实时采集" align="center">
+                            <template slot-scope="scope">
+                            <!-- <el-popover placement="top" width="100" v-model="scope.row.time_visible"> -->
+                                <div v-show="scope.row.time_visible==true">
+                                <el-row>
+                                    <el-col :span="8">
+                                    <el-input size="mini" placeholder="时间(/s)-整数" @blur="time_visibleSubmit(scope.row)" v-model="scope.row.interval_time" style="margin-bottom:2px"></el-input>
+                                    </el-col>
+                                    <el-col :span="14">
+                                    <el-date-picker v-model="scope.row.over_date" size="mini" @change="time_visibleSubmit(scope.row)" type="date" value-format="yyyyMMdd" placeholder="结束日期" style="width:100%;"></el-date-picker>
+                                    </el-col>
+                                </el-row>
+                               <!--  <div style="text-align: right; margin: 2px">
+                                    <el-button size="mini" type="text" @click="scope.row.time_visible = false">取消</el-button>
+                                    <el-button type="text" size="mini" @click="scope.row.time_visible = false">确定</el-button>
+                                </div> -->
+                                </div>
+                                <!-- <el-button slot="reference" v-if="scope.row.interval_time!=''&&scope.row.over_date!=''" type="success" size="mini">已设置</el-button> -->
+                                <el-button   type="primary" size="mini" @click="RealTimeAcquisition(scope.row,$event)" v-show='scope.row.buttonNone!=true'>设置</el-button>
+                            <!-- </el-popover> -->
+                        </template>
                         </el-table-column>
                     </el-table>
                     <el-pagination @size-change="sig1_handleSizeChange" @current-change="sig1_handleCurrentChange" :current-page="currentPage" :page-sizes="[50, 100, 150, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"></el-pagination>
@@ -134,9 +155,31 @@
                             <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="selectCol" label="选择列" align="center">
+                    <el-table-column prop="selectCol" label="选择列" align="center" width="120">
                         <template slot-scope="scope">
                             <el-button size="mini" @click="selectCol2(scope.$index, scope.row)" type="info">选择列</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="实时采集" align="center">
+                        <template slot-scope="scope">
+                            <!-- <el-popover placement="top" width="100" v-model="scope.row.time_visible"> -->
+                                <div v-show="scope.row.time_visible==true">
+                                <el-row>
+                                    <el-col :span="8">
+                                    <el-input size="mini" placeholder="时间(/s)-整数" @blur="time_visibleSubmit(scope.row)" v-model="scope.row.interval_time" style="margin-bottom:2px"></el-input>
+                                    </el-col>
+                                    <el-col :span="16">
+                                    <el-date-picker v-model="scope.row.over_date" size="mini" @change="time_visibleSubmit(scope.row)" type="date" value-format="yyyyMMdd" placeholder="结束日期" style="width:100%;"></el-date-picker>
+                                    </el-col>
+                                </el-row>
+                               <!--  <div style="text-align: right; margin: 2px">
+                                    <el-button size="mini" type="text" @click="scope.row.time_visible = false">取消</el-button>
+                                    <el-button type="text" size="mini" @click="scope.row.time_visible = false">确定</el-button>
+                                </div> -->
+                                </div>
+                                <!-- <el-button slot="reference" v-if="scope.row.interval_time!=''&&scope.row.over_date!=''" type="success" size="mini">已设置</el-button> -->
+                                <el-button   type="primary" size="mini" @click="RealTimeAcquisition(scope.row)" v-show='scope.row.buttonNone!=true'>设置</el-button>
+                            <!-- </el-popover> -->
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" align="center" width="90px">
@@ -708,10 +751,17 @@ export default {
                 }
                 let data = res.data;
                 for (let i = 0; i < data.length; i++) {
+                    data[i].time_visible = false
                     if (data[i].table_id && data[i].table_id != "") {
                         data[i].selectionState = true;
                     } else {
                         data[i].selectionState = false;
+                    }
+                    if (data[i].interval_time == undefined) {
+                        data[i].interval_time = '';
+                    }
+                    if (data[i].over_date == undefined) {
+                        data[i].over_date = '';
                     }
                     if (data[i].is_parallel != "0") {
                         data[i].is_parallel = true;
@@ -756,10 +806,17 @@ export default {
             addTaskAllFun.getAllSQLs(params0).then(res => {
                 let data = res.data ? res.data : [];
                 for (let i = 0; i < data.length; i++) {
+                    data[i].time_visible = false
                     if (data[i].is_parallel != "0") {
                         data[i].is_parallel = true;
                     } else {
                         data[i].is_parallel = false;
+                    }
+                    if (data[i].interval_time == undefined) {
+                        data[i].interval_time = '';
+                    }
+                    if (data[i].over_date == undefined) {
+                        data[i].over_date = '';
                     }
                     /*  if (data[i].is_md5 != "0") {
                          data[i].is_md5 = true;
@@ -789,6 +846,7 @@ export default {
                 } else {
                     let data = res.data ? res.data : [];
                     for (let i = 0; i < data.length; i++) {
+                        data[i].time_visible = false
                         if (data[i].table_id) {
                             data[i].selectionState = true;
                         } else {
@@ -799,21 +857,29 @@ export default {
                         } else {
                             data[i].is_parallel = false;
                         }
-                       /*  if (data[i].is_md5 != "0") {
-                            data[i].is_md5 = true;
-                        } else {
-                            data[i].is_md5 = false;
-                        } */
-                         data[i].is_md5 = false;
-                         data[i].unload_type = "全量";
-                       /*  if (data[i].unload_type == "1") {
-                            data[i].unload_type = "全量";
-                        } else if (data[i].unload_type == "2") {
-                            data[i].unload_type = "增量";
-                        } else {
-                            data[i].unload_type = "";
-                        } */
+                        if (data[i].interval_time==undefined) {
+                            data[i].interval_time = '';
+                        }
+                        if (data[i].over_date==undefined) {
+                            data[i].over_date = '';
+                        }
+                        /*  if (data[i].is_md5 != "0") {
+                             data[i].is_md5 = true;
+                         } else {
+                             data[i].is_md5 = false;
+                         } */
+                        data[i].is_md5 = false;
+                        data[i].unload_type = "全量";
+                        /*  if (data[i].unload_type == "1") {
+                             data[i].unload_type = "全量";
+                         } else if (data[i].unload_type == "2") {
+                             data[i].unload_type = "增量";
+                         } else {
+                             data[i].unload_type = "";
+                         } */
                     }
+                console.log(data)
+
                     this.tableData = data;
                     this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
                     this.callTable2 = JSON.parse(JSON.stringify(data));
@@ -920,17 +986,25 @@ export default {
         // 搜索
         schfilter(val) {
             if (val != "") {
-                 this.isLoading = true;
+                this.isLoading = true;
                 let params = {};
                 params["colSetId"] = this.dbid;
                 params["inputString"] = val;
                 this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
-                     this.isLoading = false;
+                    this.isLoading = false;
+                    console.log(res.data)
                     if (res.data.length > 0) {
                         this.Searchzt = true
                         let data = res.data;
                         for (let i = 0; i < data.length; i++) {
+                            data[i].time_visible = false
+                            if (data[i].interval_time == undefined) {
+                                data[i].interval_time = '';
+                            }
+                            if (data[i].over_date == undefined) {
+                                data[i].over_date = '';
+                            }
                             if (data[i].table_id && data[i].table_id != "") {
                                 data[i].selectionState = true;
                             } else {
@@ -1186,7 +1260,7 @@ export default {
             // console.log(this.ParallelExtractionArr2, '第二个页面并行抽取保存数据')
             // console.log(this.zdycallTable, '编辑时原本的数据')
             // console.log(this.SelectColumn2, '第二个页面选择列保存数据')
-            let delold = [],
+            let delold = [],tableCycles={},
                 twotabledata = JSON.parse(JSON.stringify(this.ruleForm.sqlExtractData)),
                 twotabledata2 = JSON.parse(
                     JSON.stringify(this.ruleForm.sqlExtractData)
@@ -1227,6 +1301,11 @@ export default {
                     }
                 }
                 for (let i = 0; i < twotabledata.length; i++) {
+                    let listArr={}
+                    listArr.tc_id=twotabledata[i].tc_id
+                    listArr.over_date=twotabledata[i].over_date
+                    listArr.interval_time=twotabledata[i].interval_time!=''?parseInt(twotabledata[i].interval_time):0
+                    tableCycles[twotabledata[i].table_name]=listArr
                     if (twotabledata[i].unload_type == "增量") {
                         twotabledata[i].unload_type = "2";
                     } else {
@@ -1306,10 +1385,12 @@ export default {
                 params1["tableInfoArray"] =
                     twotabledata.length > 0 ? JSON.stringify(twotabledata) : "";
                 params1["colSetId"] = this.dbid;
+                params1["tableCycles"] = JSON.stringify(tableCycles);
                 params1["tableColumn"] =
                     JSON.stringify(tableColumn) === "{}" ?
                     "" :
                     JSON.stringify(tableColumn);
+                    console.log(twotabledata)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == "200") {
                         this.activeSec = true;
@@ -1347,9 +1428,10 @@ export default {
         },
         // 处理第一个页面数据
         saveTableConfFun(tableData) {
+            console.log(tableData)
             let arrData = [],
                 delJson = [],
-                tableInfoString = [],
+                tableInfoString = [],tableCycles={},
                 params = {};
             params["colSetId"] = this.dbid;
             addTaskAllFun.getSQLInfoByColSetId(params).then(res => {
@@ -1437,6 +1519,12 @@ export default {
                     }
                 }
                 for (let k = 0; k < arrData.length; k++) {
+                    let listArr={}
+                    listArr.tc_id=arrData[k].tc_id
+                    listArr.over_date=arrData[k].over_date
+                    listArr.interval_time=arrData[k].interval_time!=''?parseInt(arrData[k].interval_time):0
+                    // listArr.push({'table_id':arrData[k].table_id,'over_date':arrData[k].over_date,'interval_time':arrData[k].interval_time!=''?parseInt(arrData[k].interval_time):0})
+                    tableCycles[arrData[k].table_name]=listArr
                     if (arrData[k].unload_type == "增量") {
                         tableInfoString.push({
                             database_id: this.dbid,
@@ -1446,7 +1534,7 @@ export default {
                             table_ch_name: arrData[k].table_ch_name,
                             table_name: arrData[k].table_name,
                             sql: arrData[k].sql ? arrData[k].sql : "",
-                            unload_type: "2"
+                            unload_type: "2",
                         });
                     } else {
                         if (arrData[k].is_parallel == true) {
@@ -1461,7 +1549,7 @@ export default {
                                     table_ch_name: arrData[k].table_ch_name,
                                     table_name: arrData[k].table_name,
                                     page_sql: arrData[k].page_sql ? arrData[k].page_sql : "",
-                                    sql: arrData[k].sql ? arrData[k].sql : ""
+                                    sql: arrData[k].sql ? arrData[k].sql : "",
                                 });
                             } else {
                                 tableInfoString.push({
@@ -1480,8 +1568,7 @@ export default {
                                         parseInt(arrData[k].dataincrement) : 0,
                                     table_count: arrData[k].table_count ?
                                         "" + arrData[k].table_count : "",
-                                    rec_num_date: arrData[k].rec_num_date ?
-                                        arrData[k].rec_num_date : ""
+                                    rec_num_date: arrData[k].rec_num_date ?arrData[k].rec_num_date : "",
                                 });
                             }
                         } else {
@@ -1493,16 +1580,16 @@ export default {
                                 is_md5: arrData[k].is_md5 == true ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
                                 table_name: arrData[k].table_name,
-                                sql: arrData[k].sql ? arrData[k].sql : ""
+                                sql: arrData[k].sql ? arrData[k].sql : "",
                             });
                         }
                     }
                 }
                 this.tablein = tableInfoString;
-                this.saveTableInfofun(arrData, delJson);
+                this.saveTableInfofun(arrData, delJson,tableCycles);
             });
         },
-        saveTableInfofun(arrData, delJson) {
+        saveTableInfofun(arrData, delJson,tableCycles) {
             let collTbConfParamString = [],
                 params = {},
                 params2 = {},
@@ -1568,7 +1655,9 @@ export default {
                 params2["colSetId"] = this.dbid;
                 params2["tableInfoString"] = JSON.stringify(this.tablein);
                 params2["collTbConfParamString"] = JSON.stringify(collstring);
-                params2["delTbString"] =delJson.length > 0 ? JSON.stringify(delJson) : "";
+                params2["delTbString"] = delJson.length > 0 ? JSON.stringify(delJson) : "";
+                params2["tableCycles"] =JSON.stringify(tableCycles);
+                console.log(params2)
                 addTaskAllFun.saveCollTbInfo(params2).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;
@@ -2075,7 +2164,7 @@ export default {
         },
         //第二个  选择列
         selectCol2(value, row) {
-            if (row.sql != ''&&row.table_name!='') {
+            if (row.sql != '' && row.table_name != '') {
                 this.dialogSelectColumn2 = true;
                 this.tablename = row.table_name;
                 this.unloadType = row.unload_type;
@@ -2172,7 +2261,7 @@ export default {
             this.coltable_name = "";
             this.coltable_name = row.table_name;
             this.getSqlColumnDataFun(row, row.sql);
-           /*  let arrdata = [],
+            /*  let arrdata = [],
                 sql = "";
                 this.getSqlColumnDataFun(row, row.sql);
           /*   if (row.unload_type == "增量") {
@@ -2520,7 +2609,10 @@ export default {
                 unload_type: "全量",
                 is_md5: false,
                 is_parallel: false,
-                sql:''
+                sql: '',
+                interval_time:"",
+                over_date:"",
+                time_visible:false
             });
         },
         // 修改表名
@@ -2837,6 +2929,25 @@ export default {
                     this.dialog_xsall = false;
                 }
             });
+        },
+        // 实时采集确定
+        time_visibleSubmit(row){
+             if (this.firstTableInfo.length > 0) {
+                for (let i = 0; i < this.firstTableInfo.length; i++) {
+                    if (this.firstTableInfo[i].table_name == row.table_name) {
+                        this.firstTableInfo.splice(i, 1)
+                    }
+                }
+                this.firstTableInfo.push(row)
+            } else {
+                this.firstTableInfo.push(row)
+            }
+        },
+        // 实时采集设置点击
+        RealTimeAcquisition(row,e){
+         console.log(row,e)
+         row.time_visible=true
+         row.buttonNone=true
         }
     }
 };
