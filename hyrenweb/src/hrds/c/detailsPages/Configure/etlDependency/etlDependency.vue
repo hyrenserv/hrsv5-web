@@ -186,11 +186,14 @@ export default {
     mounted() {
         this.getCodeItems("Status");
         this.getStatu();
-        this.getTable();
+        this.sys_cd = sessionStorage.getItem('sys_cd');
         this.getProName();
         this.getJobName();
         if (this.$route.query.etl_job != undefined) { //判断从哪里来的
             this.form.etl_job = this.$route.query.etl_job;
+            this.searchBtn();
+        } else {
+            this.getTable();
         }
     },
     methods: {
