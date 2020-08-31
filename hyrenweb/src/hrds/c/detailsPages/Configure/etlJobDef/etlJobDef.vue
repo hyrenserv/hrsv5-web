@@ -594,11 +594,14 @@ export default {
         this.getCodeItems("Job_Effective_Flag");
         this.getCodeItems("Today_Dispatch_Flag");
         this.getSelect();
-        this.getTable();
+        this.sys_cd = sessionStorage.getItem('sys_cd');
         this.getProType();
         this.getJobName();
         if (this.$route.query.sub_sys_cd != undefined) { //判断从哪里来的
             this.form.sub_sys_cd = this.$route.query.sub_sys_cd;
+            this.searchBtn();
+        } else {
+            this.getTable();
         }
     },
     methods: {
