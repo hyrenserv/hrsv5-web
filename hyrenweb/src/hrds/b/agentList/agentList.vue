@@ -450,7 +450,6 @@ export default {
             this.dbid = row.id
             this.dbtype = type
             this.dbcollectType = row.collect_type
-            console.log(row, this.dbtype)
             agentList.startJobType(params).then(res => {
                 if (res.data) {
                     //立即启动
