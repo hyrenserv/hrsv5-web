@@ -537,6 +537,7 @@ export default {
         },
         //根据选中表名获取表字段信息
         getTableColumns(table_name) {
+            this.table_fields_info = [];
             let params = {};
             params["table_name"] = table_name;
             rcFun.getColumnsByTableName(params).then(res => {
@@ -681,7 +682,10 @@ export default {
             if ('undefined' !== typeof this.form_dq_data.list_vals) {
                 list_vals = this.form_dq_data.list_vals;
             }
-            let target_key_fields = this.form_dq_data.target_key_fields;
+            let target_key_fields = '';
+            if ('undefined' !== typeof this.form_dq_data.target_key_fields) {
+                target_key_fields = this.form_dq_data.target_key_fields;
+            }
             let opposite_key_fields = this.form_dq_data.opposite_key_fields;
             let range_min_val = this.form_dq_data.range_min_val;
             let range_max_val = this.form_dq_data.range_max_val;
@@ -842,7 +846,10 @@ export default {
             if ('undefined' !== typeof this.form_dq_data.list_vals) {
                 list_vals = this.form_dq_data.list_vals;
             }
-            let target_key_fields = this.form_dq_data.target_key_fields;
+            let target_key_fields = '';
+            if ('undefined' !== typeof this.form_dq_data.target_key_fields) {
+                target_key_fields = this.form_dq_data.target_key_fields;
+            }
             let opposite_key_fields = this.form_dq_data.opposite_key_fields;
             let range_min_val = this.form_dq_data.range_min_val;
             let range_max_val = this.form_dq_data.range_max_val;
