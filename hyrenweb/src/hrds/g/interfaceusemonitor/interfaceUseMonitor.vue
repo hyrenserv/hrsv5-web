@@ -33,17 +33,17 @@
             </el-row>
             <!--接口信息列表展示-->
             <el-table :data="interfaceData.slice((currPage - 1) * pageSize,currPage * pageSize)" border style="width: 100%" size="medium">
-                <el-table-column label="序号" width="50px" align="center">
+                <el-table-column label="序号" width="50px" align="left">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="interface_name" label="接口名称" align="center" />
-                <el-table-column prop="interface_code" label="接口代码" align="center" width="80px" />
+                <el-table-column prop="interface_name" label="接口名称" align="left" width="260px" />
+                <el-table-column prop="interface_code" label="接口代码" align="left" width="80px" />
                 <el-table-column prop="user_name" label="使用用户" align="left" width="120px" />
-                <el-table-column prop="start_use_date" :formatter="dateFormat" label="开始日期" align="center" width="100px" />
-                <el-table-column prop="use_valid_date" :formatter="dateFormat" label="结束日期" align="center" width="100px" />
-                <el-table-column prop="response_time" label="响应时间" align="center" width="">
+                <el-table-column prop="start_use_date" :formatter="dateFormat" label="开始日期" align="left" width="100px" />
+                <el-table-column prop="use_valid_date" :formatter="dateFormat" label="结束日期" align="left" width="100px" />
+                <el-table-column prop="response_time" label="响应时间" align="left">
                     <template slot-scope="scope">
                         <el-row>
                             <span>最大:</span><code style="color:#c7254e">{{scope.row.max}} ms</code>
@@ -52,10 +52,10 @@
                         </el-row>
                     </template>
                 </el-table-column>
-                <el-table-column prop="use_state" width="110px" label="接口使用状态" align="center">
+                <el-table-column prop="use_state" width="110px" label="接口使用状态" align="left">
                     <template slot-scope="scope">{{useState[scope.row.use_state]}}</template>
                 </el-table-column>
-                <el-table-column label="操作" align="center" width="130px">
+                <el-table-column label="操作" align="left" width="130px">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" class='sendcolor' @click="interfaceDisableEnable(scope.row)">
                             <!--如果是启用那么显示禁用-->
