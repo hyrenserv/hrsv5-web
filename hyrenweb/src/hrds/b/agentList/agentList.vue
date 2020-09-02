@@ -100,7 +100,7 @@
                     <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
                     <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
                     <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
-                    <el-button type="text" v-if="scope.row.collect_type=='数据库抽数'" class="workcolor" @click="ProdeceJobsFun(scope.row)">生成作业</el-button>
+                    <el-button type="text" v-if="scope.row.collect_type=='数据库抽数'||scope.row.agent_type=='数据文件Agent'"  class="workcolor" @click="ProdeceJobsFun(scope.row)">生成作业</el-button>
                     <!-- <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" class="workcolor">生成作业</el-button> -->
                     <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
                     <el-button v-if="scope.row.collect_type=='数据库抽数'" type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
@@ -464,6 +464,7 @@ export default {
 
         },
         ProdeceJobsFun(row) {
+            console.log(row)
             this.database_id = row.id
             this.dialogProdeceJobs = true
             agentList.getProjectInfo().then(res => {
