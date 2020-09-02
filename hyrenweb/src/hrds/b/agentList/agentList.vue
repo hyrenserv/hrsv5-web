@@ -14,27 +14,27 @@
         <el-table-column label="数据库 Agent" align="center">
 
             <template slot-scope="scope">
-                <el-button v-if="scope.row.dbflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,1)">任务配置</el-button>
+                <el-button v-if="scope.row.dbflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,getValue.ShuJuKu)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="数据文件 Agent" align="center">
             <template slot-scope="scope">
-                <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,4)">任务配置</el-button>
+                <el-button v-if="scope.row.dfflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,getValue.DBWenJian)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="非结构化 Agent" align="center">
             <template slot-scope="scope">
-                <el-button v-if="scope.row.nonstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,2)">任务配置</el-button>
+                <el-button v-if="scope.row.nonstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,getValue.WenJianXiTong)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="半结构化 Agent" align="center">
             <template slot-scope="scope">
-                <el-button v-if="scope.row.halfstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,5)">任务配置</el-button>
+                <el-button v-if="scope.row.halfstructflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,getValue.DuiXiang)">任务配置</el-button>
             </template>
         </el-table-column>
         <el-table-column label="Ftp Agent" align="center">
             <template slot-scope="scope">
-                <el-button v-if="scope.row.ftpflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,3)">任务配置</el-button>
+                <el-button v-if="scope.row.ftpflag!=0" type="success" size="mini" @click="dialogTableVisible = true;clickTaskflag(scope.row.source_id,getValue.FTP)">任务配置</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -100,7 +100,7 @@
                     <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
                     <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
                     <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
-                    <!-- <el-button type="text" class="workcolor" @click="ProdeceJobsFun()">生成作业</el-button> -->
+                    <el-button type="text" v-if="scope.row.collect_type=='数据库抽数'" class="workcolor" @click="ProdeceJobsFun(scope.row)">生成作业</el-button>
                     <!-- <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" class="workcolor">生成作业</el-button> -->
                     <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
                     <el-button v-if="scope.row.collect_type=='数据库抽数'" type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
@@ -116,20 +116,20 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">生成作业</span>
         </div>
-        <el-form ref="separatorData" :model="ProdeceJobsData" label-width="240px" text-align="center">
+        <el-form ref="ProdeceJobsData" :model="ProdeceJobsData" label-width="240px" text-align="center">
             <el-form-item label="选择工程" prop="project" :rules="rule.selected">
-                <el-select placeholder="选择工程" v-model="ProdeceJobsData.project" style="width: 190px;" size="medium">
-                    <el-option v-for="(item,index) in Allproject" :key="index" :label="item.etl_sys_cd" :value="item.etl_sys_name"></el-option>
+                <el-select placeholder="选择工程" filterable v-model="ProdeceJobsData.project" style="width: 190px;" size="medium">
+                    <el-option v-for="(item,index) in Allproject" :key="index" :label="item.etl_sys_cd+' ('+item.etl_sys_name+')'" :value="item.etl_sys_cd"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="选择任务" prop="task" :rules="rule.selected">
-                <el-select placeholder="选择任务" v-model="ProdeceJobsData.task" style="width: 190px;" size="medium" @focus="getbyidworkFun()">
-                    <el-option v-for="(item,index) in Alltask" :key="index" :label="item.value" :value="item.value"></el-option>
+                <el-select placeholder="选择任务" filterable v-model="ProdeceJobsData.task" style="width: 190px;" size="medium" @focus="getbyidworkFun()">
+                    <el-option v-for="(item,index) in Alltask" :key="index" :label="item.sub_sys_cd+' ('+item.sub_sys_desc+')'" :value="item.sub_sys_cd"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button type="danger" size="mini">取 消</el-button>
+            <el-button type="danger" @click="dialogProdeceJobs=false" size="mini">取 消</el-button>
             <el-button type="primary" size="mini" @click="workSubmitFun()">确 定</el-button>
         </div>
     </el-dialog>
@@ -216,9 +216,7 @@ export default {
                 task: ''
             },
             Allproject: [],
-            Alltask: [{
-                value: '2'
-            }],
+            Alltask: [],
             getValue: {},
             sqlParam: '',
             type: '',
@@ -230,7 +228,9 @@ export default {
             sendZYDialogVisible: false,
             dbid: '',
             dbtype: '',
-            dbcollectType: ''
+            dbcollectType: '',
+            checkAgentType: '',
+            database_id: ''
         };
     },
     mounted() {
@@ -276,6 +276,7 @@ export default {
             });
         },
         clickTaskflag(id, type) {
+            this.checkAgentType = type
             this.agentType = "";
             let params = {};
             params["sourceId"] = id;
@@ -449,9 +450,8 @@ export default {
             this.dbid = row.id
             this.dbtype = type
             this.dbcollectType = row.collect_type
-            console.log(row,this.dbtype)
+            console.log(row, this.dbtype)
             agentList.startJobType(params).then(res => {
-                console.log(res.data)
                 if (res.data) {
                     //立即启动
                     this.sendLJQDDialogVisible = true
@@ -464,9 +464,11 @@ export default {
             // 
 
         },
-        ProdeceJobsFun() {
+        ProdeceJobsFun(row) {
+            this.database_id = row.id
             this.dialogProdeceJobs = true
             agentList.getProjectInfo().then(res => {
+                this.$refs.ProdeceJobsData.resetFields()
                 this.Allproject = res.data
             });
         },
@@ -475,27 +477,28 @@ export default {
             //调接口显示内容
             if (this.ProdeceJobsData.project != undefined && this.ProdeceJobsData.project != '') {
                 agentList.getTaskInfoByTaskId({
-                    'taskId': this.getIDByAllproject(this.ProdeceJobsData.project)
+                    'taskId': this.ProdeceJobsData.project
                 }).then(res => {
-                    // console.log(res.data)
-                    // this.Alltask = res.data
+                    this.Alltask = res.data
                 })
             } else {
                 this.$Msg.customizTitle("工程编号未选择", 'error')
             }
 
         },
-        // 根据工程name获取工程对应id
-        getIDByAllproject(value) {
-            for (let i = 0; i < this.Allproject.length; i++) {
-                if (this.Allproject[i].etl_sys_name == value) {
-                    return this.Allproject[i].etl_sys_cd
-                }
-            }
-        },
         // 生成作业提交按钮
         workSubmitFun() {
-
+            agentList.saveEtlJobs({
+                database_id: this.database_id,
+                agent_type: this.checkAgentType,
+                etl_sys_cd: this.ProdeceJobsData.project,
+                sub_sys_cd: this.ProdeceJobsData.task
+            }).then(res => {
+                if (res && res.success) {
+                    this.$Msg.customizTitle("作业生成完成")
+                    this.dialogProdeceJobs = false
+                }
+            })
         },
         downloadDirc() {
             for (let i = 0; i < this.CollectType.length; i++) {

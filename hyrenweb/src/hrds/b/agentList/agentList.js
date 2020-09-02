@@ -9,76 +9,76 @@ export function getAgentInfoList() {
 export function getAgentInfo(data) {
     return request({
         url: '/B/agent/getAgentInfo',
-        params:data
+        params: data
     })
 }
 //数据采集任务管理
 export function getTaskInfo(data) {
     return request({
         url: '/B/agent/getTaskInfo',
-        params:data
+        params: data
     })
 }
 //数据采集任务管理-删除db
 export function deleteDBTask(data) {
     return request({
         url: '/B/agent/deleteDBTask',
-        params:data
+        params: data
     })
 }
 //数据采集任务管理-删除ftp
 export function deleteFTPTask(data) {
     return request({
         url: '/B/agent/deleteFTPTask',
-        params:data
+        params: data
     })
 }
 //数据采集任务管理-删除数据库文件
 export function deleteDFTask(data) {
     return request({
         url: '/B/agent/deleteDFTask',
-        params:data
+        params: data
     })
 }
 //数据采集任务管理-删除半结构化
 export function deleteHalfStructTask(data) {
     return request({
         url: '/B/agent/deleteHalfStructTask',
-        params:data
+        params: data
     })
 }
 //数据采集任务管理-删除非结构化
 export function deleteNonStructTask(data) {
     return request({
         url: '/B/agent/deleteNonStructTask',
-        params:data
+        params: data
     })
 }
 //查看任务日志
 export function viewTaskLog(data) {
     return request({
         url: '/B/agent/viewTaskLog',
-        params:data
+        params: data
     })
 }
 // 任务日志下载downloadTaskLog
 export function downloadTaskLog(data) {
     return request({
         url: '/B/agent/downloadTaskLog',
-        params:data
+        params: data
     })
 }
 //获取工程信息
- export function getProjectInfo() {
+export function getProjectInfo() {
     return request({
         url: '/B/agent/getProjectInfo',
     })
-} 
+}
 //根据工程id获取任务信息
 export function getTaskInfoByTaskId(data) {
     return request({
         url: '/B/agent/getTaskInfoByTaskId',
-        params:data
+        params: data
     })
 }
 
@@ -86,28 +86,28 @@ export function getTaskInfoByTaskId(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
-        params:data
+        params: data
     })
 }
 //发送此次任务--数据库采集
 export function sendJDBCCollectTaskById(data) {
     return request({
         url: '/B/agent/sendJDBCCollectTaskById',
-        params:data
+        params: data
     })
 }
 //发送此次任务--db文件发送
 export function sendDBCollectTaskById(data) {
     return request({
         url: '/B/agent/sendDBCollectTaskById',
-        params:data
+        params: data
     })
 }
 //读取日志
 export function agentDeployData(data) {
     return request({
         url: '/B/agent/agentDeployData',
-        params:data
+        params: data
     })
 }
 
@@ -121,13 +121,23 @@ export function getSqlParamPlaceholder() {
 export function startJobType(data) {
     return request({
         url: '/B/agent/startJobType',
-        params:data
+        params: data
     })
 }
 //文件采集第三步--发送此次任务
 export function sendCollectDatabase(data) {
     return request({
         url: '/B/agent/sendCollectDatabase',
-        params:data
+        params: data
+    })
+}
+
+/**
+ * 生成作业发送
+ */
+export function saveEtlJobs(data) {
+    return request({
+        url: '/B/etljobs/saveEtlJobs',
+        params: data
     })
 }
