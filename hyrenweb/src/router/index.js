@@ -1103,6 +1103,12 @@ export default new Router({
                     component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue')
                 },
                 {
+                    path: '/tableSearchGetJson',
+                    name: 'tableSearchGetJson',
+                    title: '表结构查询-获取json信息接口',
+                    component: () => import('@/hrds/g/serviceuser/api/tableSearchGetJson.vue')
+                },
+                {
                     path: '/tableUsePermissions',
                     name: 'tableUsePermissions',
                     title: '表使用权限查询接口',
@@ -1117,7 +1123,7 @@ export default new Router({
                 {
                     path: '/logReview',
                     name: 'logReview',
-                    title: 'UUID下载接口',
+                    title: '日志审查',
                     component: () => import('@/hrds/a/logreview/logReview.vue'),
                     meta: [
                         { name: '首页' },
