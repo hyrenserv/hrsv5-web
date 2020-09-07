@@ -1,0 +1,72 @@
+@CHARSET "UTF-8";
+body{font-family: 'Open Sans';font-size: 13px;padding-top:50px;background:#fff;position:relative;}
+.hysf-title{color:#2196f3;line-height: 30px;margin-top: 20px;border-bottom: 1px solid #eee;padding-bottom: 10px}
+.green{color:green;}
+.blue{color:#478fca;}
+.red{color:red;}
+/*导航条样式*/
+.navbar{margin:0;padding-left:0;padding-right:0;border-width:0;border-radius:0;-webkit-box-shadow:none;box-shadow:none;min-height:45px;background:rgb(124,177,222);top:0}
+.navbar .navbar-nav>li>a{color:#fff}
+.navbar .navbar-nav>li>a:hover,.navbar .navbar-nav>li>a:focus{background-color:rgba(0,0,0,.1)!important}
+/*.navbar .navbar-nav>li{border:1px solid rgba(0,0,0,.2);border-width:0 1px 0 0}*/
+.navbar .navbar-nav>li:first-child{border-width:0 1px 0 1px}
+.navbar-brand img{margin-top: -5px;}
+.navbar-right{margin-right: 0px}
+/*导向图样式*/
+.step{counter-reset:flag}
+.step li{position:relative}
+.step li a:before{content:counter(flag);counter-increment:flag}
+.step li a:after{content:""}
+.step-progress{margin-top:40px}
+.step-progress>li>a{color:#aaa;padding-top:2rem}
+.step-progress>li>a span.caret{position:absolute;left:0;right:0;margin:0 auto;transform:rotate(180deg);top:-4px}
+.step-progress>li.active>a,.step-progress>li.active>a:focus,.step-progress>li.active>a:hover{color:#5293c4;background-color:rgba(0,0,0,0)}
+.step-progress li a:before{position:absolute;z-index:2;top:-40px;left:0;right:0;margin:0 auto;width:2.4rem;height:2.4rem;border-radius:50%;line-height:2.4rem;font-size:1.4rem;box-shadow:0 0 0 5px #ccc}
+.step-progress li a:after{content:"";background-size:40px 40px;background-color:#CCC;float:left;width:100%;-webkit-transition:width .6s ease;-o-transition:width .6s ease;transition:width .6s ease;position:absolute;top:0;bottom:0;left:0;right:0;height:10px}
+.step-progress li a:hover{background-color:rgba(0,0,0,0);color:#5293c4}
+.step-progress li.active a:before,.step-progress li:hover a:before{background-color:#5293c4;color:#FFF}
+.step-progress li.active a:after,.step-progress li:hover a:after{background-color:#5293c4}
+.step-progress li.active a:after{-webkit-animation:progress-bar-stripes 2s linear infinite;-o-animation:progress-bar-stripes 2s linear infinite;animation:progress-bar-stripes 2s linear infinite}
+.step-progress li:first-child a:after{border-radius:5px 0 0 5px}
+.step-progress li:last-child a:after{border-radius:0 5px 5px 0}
+/*图表文字间距*/
+button span,button i,h4 i,p i{margin-right: 5px;}
+/*修改验证提示样式*/
+.formError .formErrorContent {background-color: #fff6e6;color:red;border: 1px solid #ffefcc;}
+.formError .formErrorArrow div {border-color: #caa75d!important;background-color: #fff6e6;}
+textarea{word-wrap: break-word; word-break: break-all;}
+/*加载图样式*/
+.progress1{ z-index: 2000; width:120px; height:120px;}
+.mask{ position: fixed;top: 0;right: 0; bottom: 0; left: 0; z-index: 1000; background-color: #2F2F2F; opacity:1;}
+/*左右布局样式*/
+.layout-left{padding-left: 0px;}
+.layout-right{padding-right: 0px;}
+.layout-top{margin-top:20px;}
+/*错误页样式*/
+.hysf-section{margin-top: 20px}
+.hysf-footer{margin-top: 20px;margin-bottom: 20px}
+/*自定义样式*/
+.hysf-element{margin-top:20px;width:85px;}
+.btn-pink{color:#fff;background-color:#009688;border-color:#009688}
+.btn-pink:hover{color:#fff;background-color:#0a6b62;border-color:#009688}
+.btn-purple{color:#fff;background-color:#00bcd4;border-color:#00bcd4}
+.btn-purple:hover{color:#fff;background-color:#07a1b5;border-color:#00bcd4}
+.close span{margin-right: 0;}
+.modal-backdrop{z-index: 1030!important}
+.table th{white-space:nowrap;}
+textarea{max-width:100%;}
+#pagination > li:last-child> a {margin-right: 0px}
+/*序号、操作统一宽度*/
+th[data-locale="xuhao"]{width:65px;}
+.hysf-editDel{width:100px;}
+/*版本特殊修改*/
+/*.btn,.btn:hover,.btn:focus,.btn:visited,.btn:active{background-color: #388E8E!important;border-color:#388E8E!important;}
+#pagination li.active a{background-color:#388E8E}
+.navbar{background-color: #388E8E}
+.step-progress li.active a:before, .step-progress li:hover a:before {background-color: #388E8E;color: #FFF;}
+.step-progress>li.active>a, .step-progress>li.active>a:focus, .step-progress>li.active>a:hover {color: #388E8E;background-color: rgba(0,0,0,0);}
+.step-progress li.active a:after, .step-progress li:hover a:after {
+    background-color: #388E8E;}
+.hysf-title{color:#388E8E;}*/
+.dark-bg{background-size: 100% 100%!important;}
+.dark-bg b{width:900px!important;font-size: 48px;}

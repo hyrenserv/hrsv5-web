@@ -43,6 +43,7 @@ import 'vue-happy-scroll/docs/happy-scroll.css'
 /**公用的提示消息框 */
 import * as message from '@/utils/js/message.js'
 Vue.prototype.$Msg = message;
+import $ from 'jquery';
 
 /** 获取代码项类型 */
 import * as codeitems from '@/utils/js/codeitems.js'
