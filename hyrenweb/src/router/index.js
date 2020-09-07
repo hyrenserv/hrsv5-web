@@ -1150,6 +1150,47 @@ export default new Router({
                         { name: '日志审查' },
                     ],
                 },
+                {
+                    path: '/autonomousAnalysisOperate',
+                    name: 'autonomousAnalysisOperate',
+                    title: '自主取数',
+                    component: () => import('@/hrds/l/selfAcess/selfAccess.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/access',
+                    name: 'access',
+                    title: '查看自主取数',
+                    component: () => import('@/hrds/l/selfAcess/access.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/autonomousAnalysisManage',
+                    name: 'autonomousAnalysisManage',
+                    title: '自主取数模板',
+                    component: () => import('@/hrds/l/selfAcess/template.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/configTemplate',
+                    name: 'configTemplate',
+                    title: '配置自主取数模板',
+                    component: () => import('@/hrds/l/selfAcess/configTemplate.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                
             ]
         },
 
