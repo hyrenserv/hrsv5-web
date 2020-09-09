@@ -70,7 +70,7 @@
                 <el-button type="info" :loading="loadingSearch" @click="addTemplates" size="small">
                     查看SQL
                 </el-button>
-                <el-button type="primary" :loading="loadingSearch" @click="addTemplates" size="small">
+                <el-button type="primary"  @click="vieWCansee" size="small">
                     可视化
                 </el-button>
                 <el-button type="primary" :loading="loadingSearch" @click="addTemplates" size="small">
@@ -215,6 +215,15 @@ export default {
         },
         checkboxSelect() {
             return false
+        },
+        // 可视化
+        vieWCansee(){
+            this.$router.push({
+                name:'visualization',
+                query:{
+
+                }
+            })
         }
     }
 }

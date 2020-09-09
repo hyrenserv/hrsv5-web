@@ -1190,6 +1190,27 @@ export default new Router({
                         { name: '自主取数' },
                     ],
                 },
+                {
+                    path: '/myAccess',
+                    name: 'myAccess',
+                    title: '我的取数',
+                    component: () => import('@/hrds/l/selfAcess/myAccess.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/visualization',
+                    name: 'visualization',
+                    title: '可视化',
+                    component: () => import('@/hrds/l/selfAcess/visualization.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                        { name: '数据可视化' },
+                    ],
+                },
                 
             ]
         },
