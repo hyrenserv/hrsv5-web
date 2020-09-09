@@ -250,8 +250,8 @@ export function getColumnsigleInfo(data) {
 export function saveCollTbInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
-        data: Qs.stringify(data),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 // 得到是否过滤和并行抽取之前原有数据

@@ -1555,12 +1555,17 @@ export default {
                     });
                 }
                 let collstring = collTbConfParamString;
-                params2["colSetId"] = this.dbid;
-                params2["tableInfoString"] = JSON.stringify(this.tablein);
-                params2["collTbConfParamString"] = JSON.stringify(collstring);
-                params2["delTbString"] =
-                    delJson.length > 0 ? JSON.stringify(delJson) : "";
-                addTaskAllFun.saveCollTbInfo(params2).then(res => {
+                let dataFrom =  new FormData();
+                dataFrom.append('colSetId', this.dbid);
+                dataFrom.append('tableInfoString', JSON.stringify(this.tablein));
+                dataFrom.append('collTbConfParamString', JSON.stringify(collstring));
+                dataFrom.append('delTbString', delJson.length > 0 ? JSON.stringify(delJson) : "");
+                // dataFrom["colSetId"] = this.dbid;
+                // dataFrom["tableInfoString"] = JSON.stringify(this.tablein);
+                // dataFrom["collTbConfParamString"] = JSON.stringify(collstring);
+                // dataFrom["delTbString"] =
+                //     delJson.length > 0 ? JSON.stringify(delJson) : "";
+                addTaskAllFun.saveCollTbInfo(dataFrom).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;
                         this.dbid = res.data;
