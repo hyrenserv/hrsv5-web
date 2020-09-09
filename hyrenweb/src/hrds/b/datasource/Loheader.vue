@@ -178,6 +178,10 @@ export default {
         },
         // 点击上传数据
         upload(formName) {
+            if (this.fileList == 0) {
+                this.$Msg.customizTitle("请上传文件", 'warning')
+                return;
+            }
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     let param = new FormData() // 创建form对象
@@ -192,7 +196,10 @@ export default {
         },
         // Excel点击上传数据
         excelUpload(upload) {
-
+            if (this.excelFileList == 0) {
+                this.$Msg.customizTitle("请上传文件", 'warning')
+                return;
+            }
             this.dialogFormAudit = false
             this.$refs['formExcelImport'].validate(valid => {
                 if (valid) {
