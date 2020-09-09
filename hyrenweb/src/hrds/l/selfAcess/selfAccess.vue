@@ -106,7 +106,12 @@ export default {
         },
         //我的取数
         handleEditMy(index,row){
+            this.$router.push({
+                name:'myAccess',
+                query:{
 
+                }
+            })
         }
     }
 }
