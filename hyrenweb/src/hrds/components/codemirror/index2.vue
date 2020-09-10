@@ -92,38 +92,37 @@ export default {
             })
         },
         getTablenameWords(execute_sql) { //根据sql查询的表名获取对应的字段
-            if (this.arry.length > 0) {
-                this.arry.forEach(item => {
-                    if (execute_sql.indexOf(item.value) != -1) {
-                        commons.getTableInfoByTableName_cache({
-                            'table_name': item.value
-                        }).then(res => {
-                            let arr = [];
-                            res.data.forEach(item => {
-                                let obj = {
-                                    meta: "字段名",
-                                    caption: "",
-                                    value: "",
-                                    score: 10000
-                                }
-                                obj.caption = item;
-                                obj.value = item;
-                                arr.push(obj);
-                            })
-                            var editordata = 'editor' + String(this.data);
-                            var editors = ace.edit(editordata)
-                            editors.completers.push({
-                                getCompletions: function (editor, session, pos, prefix, callback) {
-                                    callback(null, arr);
-                                }
-                            })
-                        })
-                        return
+            commons.getTableColumnInfoBySql({
+                sql: execute_sql
+            }).then(res => {
+                let arr = [];
+                let arry = [];
+                res.data.forEach(item => {
+                    item.column_info.forEach(val => {
+                        arr.push(val.column_name)
+                    })
+                })
+                arr.forEach(item => {
+                    let obj = {
+                        meta: "字段名",
+                        caption: "",
+                        value: "",
+                        score: 10000
+                    }
+                    obj.caption = item;
+                    obj.value = item;
+                    arry.push(obj);
+                })
+                var editordata = 'editor' + String(this.data);
+                var editors = ace.edit(editordata)
+                editors.completers.push({
+                    getCompletions: function (editor, session, pos, prefix, callback) {
+                        callback(null, arry);
                     }
                 })
-            }
+            })
         },
-        debounce(fn, interval = 500) { //事件防抖,减少服务器压力
+        debounce(fn, interval = 1500) { //事件防抖,减少服务器压力
             let timeout = null;
             return function () {
                 clearTimeout(timeout);
