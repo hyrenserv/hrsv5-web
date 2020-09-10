@@ -128,7 +128,26 @@ export default {
         },
         // 查询按钮
         searchInfo() {
-            console.log('i am define')
+            if (this.inputText == "") {
+                this.getTemplateConfInfo();
+            } else {
+                functionAll.getTemplateConfInfoByName({
+                    template_name: this.inputText,
+                }).then(res => {
+                    res.data.forEach(item => {
+                        if (item.create_date && item.create_time) {
+                            item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                        }
+                        this.options.forEach(val => {
+                            if (item.template_status == val.code) {
+                                item.template_status = val.value;
+                            }
+                        })
+                    })
+                    this.tableData = res.data
+                })
+            }
+
         },
         // 删除
         deleteRow(index, row) {

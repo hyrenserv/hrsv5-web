@@ -92,3 +92,11 @@ export function releaseAutoAnalysisTemplate(data) {
         params: data
     })
 }
+
+//根据模板获得配置名称
+export function getTemplateConfInfoByName(data) {
+    return request({
+        url: '/L/autoanalysis/manage/getTemplateConfInfoByName',
+        params: data
+    })
+}
