@@ -85,3 +85,10 @@ export function updateTemplateConfInfo(data) {
         params: data
     })
 }
+//发布自主取数模板
+export function releaseAutoAnalysisTemplate(data) {
+    return request({
+        url: '/L/autoanalysis/manage/releaseAutoAnalysisTemplate',
+        params: data
+    })
+}

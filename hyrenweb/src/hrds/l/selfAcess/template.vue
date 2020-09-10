@@ -27,9 +27,9 @@
         </el-table-column>
         <el-table-column label="操作" align='center' width="140">
             <template slot-scope="scope">
-                <el-button size="mini" type="text" v-if=" scope.row.template_status =='发布'" @click="handleEdit(scope.$index, scope.row)">查看
+                <el-button size="mini" type="text" v-if=" scope.row.template_status =='发布'" @click="viewOnlineData(scope.$index, scope.row)">查看
                 </el-button>
-                <el-button size="mini" type="text" v-if=" scope.row.template_status !=='发布'" @click="handleEdit(scope.$index, scope.row)">发布
+                <el-button size="mini" type="text" v-if=" scope.row.template_status !=='发布'" @click="reportOnline(scope.$index, scope.row)">发布
                 </el-button>
                 <el-button size="mini" type="text" v-if=" scope.row.template_status !=='发布'" @click="handleEdit(scope.$index, scope.row)">编辑
                 </el-button>
@@ -86,6 +86,36 @@ export default {
                     template_id: row.template_id
                 }
             })
+        },
+        // 发布查看
+        viewOnlineData(index, row) {
+            this.$router.push({
+                name: 'configTemplate',
+                query: {
+                    template_id: row.template_id,
+                    template_status: row.template_status
+                }
+            })
+        },
+        // 发布取数
+        reportOnline(index, row) {
+            this.$confirm('确认发布(' + row.template_name + ')模板吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                functionAll.releaseAutoAnalysisTemplate({
+                    template_id: row.template_id,
+                }).then(res => {
+                    if (res && res.success) {
+                        this.$Msg.customizTitle('发布成功', 'success')
+                        // 从新渲染表格
+                        this.getTemplateConfInfo();
+                    }
+                })
+            }).catch(() => {
+                this.$Msg.customizTitle('已取消发布', 'info')
+            });
         },
         // 获取代码项
         getCategoryItems() {

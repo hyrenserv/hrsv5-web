@@ -6,7 +6,7 @@
             <el-button type="danger" class="templateButton" @click="goBack" size="small">
                 返回
             </el-button>
-            <el-button type="primary" class="templateButton" v-if="showOrhidden" @click="addTemplates('formAdd')" size="small">
+            <el-button type="primary" class="templateButton" v-if="showOrhiddenSave" @click="addTemplates('formAdd')" size="small">
                 保存
             </el-button>
         </p>
@@ -46,10 +46,10 @@
                 </el-tooltip></span>
             <!-- <SqlEditor ref="sqleditor" :data="1" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' /> -->
             <div id="editor" style="width:100%;height:200px"></div>
-            <el-button type="info" class="createPraButton" :loading="createPraLoading" @click="createPra" size="small">
+            <el-button type="info" class="createPraButton" v-if="showOrhiddenSave" :loading="createPraLoading" @click="createPra" size="small">
                 生成参数
             </el-button>
-            <el-button type="success" class="createPraButton createPraButtonSql " :loading="checkPraLoading" @click="checkSQL" size="small">
+            <el-button type="success" class="createPraButton  createPraButtonSql " v-if="showOrhiddenSave" :loading="checkPraLoading" @click="checkSQL" size="small">
                 SQL校验
             </el-button>
         </el-col>
@@ -195,7 +195,6 @@ export default {
     },
     data() {
         return {
-            showOrhidden: true,
             formLabelWidth: "130px",
             showORhidden: false,
             dialogData: false,
@@ -221,6 +220,8 @@ export default {
             dynamicColumnTable: [],
             showOrhiddenResult: false,
             markResultArr: [],
+            showOrhiddenSave: true,
+            markIndexData: false,
         }
     },
     mounted() {
@@ -269,12 +270,17 @@ export default {
         // }))
         //区分编辑和新增
         if (this.$route.query.template_id) { //编辑
+            if (this.$route.query.template_status) { //查看配置模板
+                this.showOrhiddenSave = false;
+            }
             this.getAutoTpInfoById();
             this.getAutoTpCondInfoById();
             this.getAutoTpResSetById();
             this.showOrhiddenResult = true;
+            this.markIndexData = true;
         } else {
             this.formAdd.data_source = "1";
+            this.markIndexData = false;
         }
         this.getCategoryItems(); //获取代码项
         this.getWebSQLTreeData(); //获取树结构
@@ -288,6 +294,7 @@ export default {
     methods: {
         // 生成参数
         createPra() {
+            this.markIndexData = true;
             var editor = ace.edit("editor")
             let sql = editor.session.getValue()
             if (editor.session.getValue() == "") {
@@ -298,7 +305,6 @@ export default {
                 functionAll.generateTemplateParam({
                     template_sql: sql
                 }).then(res => {
-                    console.log(res)
                     if (res && res.success) {
                         this.tableDataPra = res.data.autoTpCondInfo;
                         this.tableDataResult = res.data.autoTpResSetInfo;
@@ -339,8 +345,8 @@ export default {
                             template_name: this.formAdd.template_name,
                             template_sql: sql,
                             template_id: this.$route.query.template_id,
-                            create_user:this.formAdd.create_user,
-                            template_status:this.formAdd.template_status
+                            create_user: this.formAdd.create_user,
+                            template_status: this.formAdd.template_status
                         }).then(res => {
                             if (res && res.success) {
                                 this.$router.push({
@@ -353,34 +359,39 @@ export default {
                     }
                 });
             } else { //新增
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        let arr = [];
-                        this.tableDataPra.forEach((item) => { //将选中的模板参数传给后台
-                            if (item.checked == true) {
-                                arr.push(item)
-                            }
-                        })
-                        var editor = ace.edit("editor")
-                        let sql = editor.session.getValue()
-                        functionAll.saveTemplateConfInfo({
-                            autoTpCondInfos: JSON.stringify(arr),
-                            autoTpResSets: JSON.stringify(this.tableDataResult),
-                            template_desc: this.formAdd.template_desc,
-                            data_source: this.formAdd.data_source,
-                            template_name: this.formAdd.template_name,
-                            template_sql: sql
-                        }).then(res => {
-                            if (res && res.success) {
-                                this.$router.push({
-                                    name: 'autonomousAnalysisManage'
-                                })
-                            }
-                        })
-                    } else {
-                        return false;
-                    }
-                });
+                if (this.markIndexData === false) {
+                    this.$Msg.customizTitle("请点击生成参数", "warning");
+                } else {
+                    this.$refs[formName].validate(valid => {
+                        if (valid) {
+                            let arr = [];
+                            this.tableDataPra.forEach((item) => { //将选中的模板参数传给后台
+                                if (item.checked == true) {
+                                    arr.push(item)
+                                }
+                            })
+                            var editor = ace.edit("editor")
+                            let sql = editor.session.getValue()
+                            functionAll.saveTemplateConfInfo({
+                                autoTpCondInfos: JSON.stringify(arr),
+                                autoTpResSets: JSON.stringify(this.tableDataResult),
+                                template_desc: this.formAdd.template_desc,
+                                data_source: this.formAdd.data_source,
+                                template_name: this.formAdd.template_name,
+                                template_sql: sql
+                            }).then(res => {
+                                if (res && res.success) {
+                                    this.$router.push({
+                                        name: 'autonomousAnalysisManage'
+                                    })
+                                }
+                            })
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+
             }
         },
         // 校验sql
