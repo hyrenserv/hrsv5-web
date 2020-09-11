@@ -537,8 +537,8 @@ export function getEtlJobData(data) {
 export function saveJobDataToDatabase(data) {
     return request({
         url: '/B/agent/dbagentconf/startwayconf/saveJobDataToDatabase',
-        data: Qs.stringify(data),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
  }
 /**

@@ -384,13 +384,13 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.isLoading = true;
-                    let params = {};
-                    params["colSetId"] = this.dbid;
-                    params["etl_sys_cd"] = this.ruleForm.Project_num;
-                    params["pro_dic"] = this.ruleForm.work_path;
-                    params["log_dic"] = this.ruleForm.log_path;
-                    params["sub_sys_cd"] = this.ruleForm.work_num;
-                    params["source_id"] = this.sourId;
+                    // let params = {};
+                    // params["colSetId"] = this.dbid;
+                    // params["etl_sys_cd"] = this.ruleForm.Project_num;
+                    // params["pro_dic"] = this.ruleForm.work_path;
+                    // params["log_dic"] = this.ruleForm.log_path;
+                    // params["sub_sys_cd"] = this.ruleForm.work_num;
+                    // params["source_id"] = this.sourId;
                     let arrdata = this.ruleForm.startuptableData;
                     let etlJobs = [],
                         type = this.ruleForm.Dispatching_mode,
@@ -438,13 +438,23 @@ export default {
                             });
                         }
                     }
-                    params["etlJobs"] = JSON.stringify(etlJobs);
-                    params["ded_arr"] = ded_arr.join("^");
-                    params["jobRelations"] =
-                        JSON.stringify(jobRelation) == "{}" ?
-                        "" :
-                        JSON.stringify(jobRelation);
-                    sendTask.saveJobDataToDatabase(params).then(res => {
+                    // params["etlJobs"] = JSON.stringify(etlJobs);
+                    // params["ded_arr"] = ded_arr.join("^");
+                    // params["jobRelations"] =
+                    //     JSON.stringify(jobRelation) == "{}" ?
+                    //     "" :
+                    //     JSON.stringify(jobRelation);
+                    let dataFrom = new FormData();
+                    dataFrom.append('colSetId', this.dbid);
+                    dataFrom.append('etl_sys_cd', this.ruleForm.Project_num);
+                    dataFrom.append('pro_dic', this.ruleForm.work_path);
+                    dataFrom.append('log_dic', this.ruleForm.log_path);
+                    dataFrom.append('sub_sys_cd', this.ruleForm.work_num);
+                    dataFrom.append('source_id', this.sourId);
+                    dataFrom.append('etlJobs', JSON.stringify(etlJobs));
+                    dataFrom.append('ded_arr', ded_arr.join('^'));
+                    dataFrom.append('jobRelations', JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation));
+                    sendTask.saveJobDataToDatabase(dataFrom).then(res => {
                         if (res.code && res.code == 200) {
                             this.isLoading = false;
                             this.active = 6;
