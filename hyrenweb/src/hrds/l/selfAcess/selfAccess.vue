@@ -13,20 +13,15 @@
                 <el-table size="medium" :data="tableDataSelf" border stripe style="width: 100%">
                     <el-table-column type="index" label="序号" width="70px" align='center'>
                     </el-table-column>
-                    <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="名称" align='center'>
-                        <template slot-scope="scope">
-                            <el-button size="mini" type="text" @click="details(scope.$index, scope.row)">
-                                {{scope.row.etl_sys_cd}}
-                            </el-button>
-                        </template>
+                    <el-table-column prop="template_name" show-overflow-tooltip label="名称" align='center'>
                     </el-table-column>
-                    <el-table-column prop="etl_sys_name" show-overflow-tooltip label="模板描述" align='center'>
+                    <el-table-column prop="template_desc" show-overflow-tooltip label="模板描述" align='center'>
                     </el-table-column>
-                    <el-table-column prop="comments" show-overflow-tooltip label="日期" align='center'>
+                    <el-table-column prop="create_dateFormat" show-overflow-tooltip label="日期" align='center'>
                     </el-table-column>
-                    <el-table-column prop="curr_bath_date" show-overflow-tooltip label="创建人" align='center'>
+                    <el-table-column prop="create_user" show-overflow-tooltip label="创建人" align='center'>
                     </el-table-column>
-                    <el-table-column label="取数次数" align='center'>
+                    <el-table-column label="取数次数" prop="count_number" align='center'>
                     </el-table-column>
                     <el-table-column label="操作" align='center' width="100">
                         <template slot-scope="scope">
@@ -49,7 +44,7 @@
                     </el-table-column>
                     <el-table-column prop="etl_sys_name" show-overflow-tooltip label="取数用途" align='center'>
                     </el-table-column>
-                    <el-table-column prop="comments" show-overflow-tooltip label="日期" align='center'>
+                    <el-table-column prop="create_dateFormat" show-overflow-tooltip label="日期" align='center'>
                     </el-table-column>
                     <el-table-column prop="curr_bath_date" show-overflow-tooltip label="创建人" align='center'>
                     </el-table-column>
@@ -68,6 +63,8 @@
 </template>
 
 <script>
+import * as functionAll from "./selfAcess";
+import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return{
@@ -78,6 +75,9 @@ export default {
             searchMark:"auto"
         }
     },
+    mounted(){
+        this.getAccessTemplateInfo();
+    },
     methods: {
         // 点击搜索按钮搜索
         searchInfo(){
@@ -86,6 +86,17 @@ export default {
             }else if(this.searchMark =="my"){
 
             }
+        },
+        // 获取自主取数表格初始值
+        getAccessTemplateInfo(){
+            functionAll.getAccessTemplateInfo().then(res=>{
+                res.data.forEach(item => {
+                    if (item.create_date && item.create_time) {
+                        item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                    }
+                })
+                this.tableDataSelf = res.data;
+            })
         },
         // 选项卡切换
         handleClick(tab, event) {
@@ -100,7 +111,8 @@ export default {
             this.$router.push({
                 name:'access',
                 query:{
-
+                    template_id:row.template_id,
+                    template_name:row.template_name
                 }
             })
         },

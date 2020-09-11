@@ -34,7 +34,7 @@
         <div class="elRowTemplateDiv">
             <p style="float:left">选择过滤条件</p>
             <div style="float:right">
-                <el-button type="info" :loading="loadingSearch" @click="addTemplates" size="small" style="margin-right:10px;">
+                <el-button type="info" :loading="loadingSearch" @click="saveAutoAccessInfoToQuery" size="small" style="margin-right:10px;">
                     清单查询
                 </el-button>
             </div>
@@ -42,20 +42,31 @@
     </el-row>
     <!-- <div class="lines"></div> -->
     <el-table size="medium" :data="tableDataReusltWords" border stripe style="width: 100%" class="eltables">
-        <el-table-column type="selection" width="70px" align='center' :selectable='checkboxSelect'>
+        <el-table-column label="条件名称" align='center' prop="cond_en_column" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="条件名称" align='center' show-overflow-tooltip>
+        <el-table-column label="条件关系" align='center' prop="con_relation" show-overflow-tooltip width="130">
         </el-table-column>
-        <el-table-column label="条件关系" align='center' show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column label="条件值" align='center' show-overflow-tooltip>
+        <el-table-column label="条件值" align='center' prop="pre_value" show-overflow-tooltip width="254">
             <template slot-scope="scope">
-                <el-input v-model="scope.row.typeDec" size="mini" placeholder="条件值"></el-input>
+                <div v-if="scope.row.value_type =='枚举'">
+                    <el-input v-model="scope.row.pre_value" size="mini" placeholder="条件值" style="width:160px;margin-right:6px;"></el-input><span @click="moreChooseClick(scope.$index,scope.row)" class="moreChoose">更多选择</span>
+                </div>
+                <div v-else>
+                    <el-input v-model="scope.row.pre_value" size="mini" placeholder="条件值"></el-input>
+                </div>
             </template>
         </el-table-column>
-        <el-table-column label="值类型" align='center' show-overflow-tooltip>
+        <el-table-column label="值类型" align='center' prop="value_type" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="类型描述" align='center' show-overflow-tooltip>
+        <el-table-column label="类型描述" prop="value_size" align='center' show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="是否必填" align='center' width="120">
+            <template slot-scope="scope">
+                <el-radio-group v-model="scope.row.is_required" disabled>
+                    <el-radio :label="'1'">是</el-radio>
+                    <el-radio :label="'0'">否</el-radio>
+                </el-radio-group>
+            </template>
         </el-table-column>
     </el-table>
     <el-row class="elRows">
@@ -84,7 +95,7 @@
         </el-table-column>
         <el-table-column label="条件名称" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="条件关系" align='center' show-overflow-tooltip>
+        <el-table-column label="条件关系" align='center' width="130" show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="条件值" align='center' show-overflow-tooltip>
             <template slot-scope="scope">
@@ -100,7 +111,7 @@
     <el-dialog title="选择结果字段" :visible.sync="dialogGetKeys" width="660px">
         <el-table :data="tableDataColum" border stripe size="medium" @select-all="selectAll" @select="selectOnly">
             <el-table-column type="selection" width="60" align="center"></el-table-column>
-            <el-table-column prop="column_name" label="显示名" align="center"></el-table-column>
+            <el-table-column prop="res_show_column" label="显示名" align="center"></el-table-column>
             <el-table-column label="操作" width="180" align="center">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="moveUp(scope.$index,scope.row,tableDataColum)">上移</el-button>
@@ -143,30 +154,32 @@
             <el-button type="primary" @click="updateDepartmentInfo('FormSave')" size="mini">保存</el-button>
         </div>
     </el-dialog>
+    <!-- 点击更多选择按钮 -->
+    <el-dialog title="选择条件值" :visible.sync="chooseMoreDataDiolag" width="600px">
+        <el-table :data="chooseMoreData" border stripe size="medium" @select-all="selectAllChooseMore" @select="selectOnlyChooseMore">
+            <el-table-column type="selection" width="60" align="center"></el-table-column>
+            <el-table-column prop="value" label="名称" align="center"></el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelchooseMoreData" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="savechooseMoreData" size="mini">保 存</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
 <script>
+import * as functionAll from "./selfAcess";
 export default {
     data() {
         return {
             showOrhidden: true,
-            tableDataReusltWords: [{
-                typeDec: '1,2,3'
-            }, {}, {}, {}, {}, {}],
-            name: 'xxx',
-            dec: 'xxx',
-            select: '差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考差多少参考',
+            tableDataReusltWords: [],
+            name: '',
+            dec: '',
+            select: '空',
             dialogGetKeys: false,
-            tableDataColum: [{
-                    column_name: 'test'
-                }, {
-                    column_name: 'teses'
-                },
-                {
-                    column_name: 'play'
-                },
-            ],
+            tableDataColum: [],
             selectkeysArr: [],
             valueDateData: [{
                 time: '2020-02-13 12:32:46'
@@ -187,10 +200,76 @@ export default {
             },
             FormSave: {
 
-            }
+            },
+            options: [],
+            markObject: {
+
+            },
+            chooseMoreData: [],
+            chooseMoreDataDiolag: false,
+            markGetAllCodeItems: [],
+            chooseMoreDataSelect: [],
+            moreChooseClickIndex: '',
+
         }
     },
+    mounted() {
+        // 获取页面初始值
+        this.getCategoryItems();
+        this.getAccessTemplateInfoById();
+        this.getAccessResultFields();
+        this.getAccessSelectHistory();
+        this.getAutoAccessFilterCond();
+        this.getAllCodeItems();
+    },
     methods: {
+        // 返回上一级
+        goBack() {
+            this.$router.push({
+                name: 'autonomousAnalysisOperate'
+            })
+        },
+        // 获取取数的初始值
+        getAccessTemplateInfoById() {
+            functionAll.getAccessTemplateInfoById({
+                template_id: this.$route.query.template_id
+            }).then(res => {
+                this.name = res.data.template_name;
+                this.dec = res.data.template_desc;
+                this.markObject = res.data;
+            })
+        },
+        // 获取自主取数结果字段
+        getAccessResultFields() {
+            functionAll.getAccessResultFields({
+                template_id: this.$route.query.template_id
+            }).then(res => {
+                this.tableDataColum = res.data;
+            })
+        },
+        // 获取自主取数选择历史信息
+        getAccessSelectHistory() {
+            functionAll.getAccessSelectHistory({
+                template_id: this.$route.query.template_id
+            }).then(res => {
+                this.valueDateData = res.data;
+            })
+        },
+        // 获取自主取数过滤条件
+        getAutoAccessFilterCond() {
+            functionAll.getAutoAccessFilterCond({
+                template_id: this.$route.query.template_id
+            }).then(res => {
+                res.data.forEach(item => {
+                    this.options.forEach(val => {
+                        if (item.value_type == val.code) {
+                            item.value_type = val.value;
+                        }
+                    })
+                })
+                this.tableDataReusltWords = res.data;
+            })
+        },
         // 获取结果字段名称
         getKeyWords() {
             this.dialogGetKeys = true;
@@ -225,8 +304,8 @@ export default {
             let forArry = [];
             if (this.selectkeysArr.length > 0) {
                 for (let i = 0; i < this.selectkeysArr.length; i++) { //根据上移下移数据处理
-                    let indexMark = this.tableDataColum.findIndex(item => item.column_name == this.selectkeysArr[i].column_name);
-                    forArry[indexMark] = this.selectkeysArr[i].column_name;
+                    let indexMark = this.tableDataColum.findIndex(item => item.res_show_column == this.selectkeysArr[i].res_show_column);
+                    forArry[indexMark] = this.selectkeysArr[i].res_show_column;
                 }
                 for (let i = 0; i < forArry.length; i++) { //数据拼接
                     if (forArry[i] != undefined) {
@@ -239,7 +318,7 @@ export default {
             this.select = str;
             this.dialogGetKeys = false;
         },
-        //字段结果全选
+        //字段结果全选 
         selectAll(val) {
             this.selectkeysArr = val;
         },
@@ -266,7 +345,67 @@ export default {
         save() {
             this.dialogFormSave = true;
         },
+        // 获取代码项
+        getCategoryItems() {
+            functionAll.getCategoryItems({
+                category: 'AutoValueType'
+            }).then(res => {
+                this.options = res.data;
+            })
+        },
+        //保存自主取数清单查询入库信息(清单查询前看)
+        saveAutoAccessInfoToQuery() {
+            console.log(this.markObject)
+            // functionAll.saveAutoAccessInfoToQuery({
 
+            // }).then(res=>{
+
+            // })
+        },
+        // 根据value_type类型显示更多选择
+        moreChooseClick(index, row) {
+            this.moreChooseClickIndex = index;
+            let i = this.markGetAllCodeItems.findIndex(item => item.value == row.value_size);
+            functionAll.getCategoryItems({
+                category: this.markGetAllCodeItems[i].keycode
+            }).then(res => {
+                this.chooseMoreData = res.data;
+            })
+            this.chooseMoreDataDiolag = true;
+        },
+        // 获取全部代码项
+        getAllCodeItems() {
+            functionAll.getAllCodeItems({}).then(res => {
+                let arr = [];
+                for (let key in res.data) {
+                    let object = {}
+                    object.keycode = key;
+                    object.value = res.data[key][0].catValue;
+                    arr.push(object)
+                }
+                this.markGetAllCodeItems = arr;
+            })
+        },
+        // 全选
+        selectAllChooseMore(val) {
+            this.chooseMoreDataSelect = val;
+        },
+        // 单独选择
+        selectOnlyChooseMore(val) {
+            this.chooseMoreDataSelect = val;
+        },
+        // 保存
+        savechooseMoreData() {
+            this.tableDataReusltWords[this.moreChooseClickIndex].pre_value = ''
+            this.chooseMoreDataSelect.forEach(item => {
+                this.tableDataReusltWords[this.moreChooseClickIndex].pre_value += item.value + ','
+            })
+            this.chooseMoreDataDiolag = false;
+        },
+        // 取消保存
+        cancelchooseMoreData() {
+
+        }
     }
 }
 </script>
@@ -371,5 +510,19 @@ export default {
 .templateButton {
     float: right;
     margin-top: 4px;
+}
+
+/* 模板参数单选按钮 */
+.access>>>.el-radio__label {
+    padding-left: 4px;
+}
+
+.access>>>.el-radio {
+    margin-right: 14px;
+}
+
+.access .moreChoose {
+    color: #2196f3;
+    cursor: pointer;
 }
 </style>

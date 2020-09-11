@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 
+// 1001
 //获取自主分析模板配置信息
 export function getTemplateConfInfo(data) {
     return request({
@@ -40,6 +41,13 @@ export function getPreviewData(data) {
 export function getCategoryItems(data) {
     return request({
         url: '/A/codes/getCategoryItems',
+        params: data
+    })
+}
+// 获取代码项
+export function getAllCodeItems(data) {
+    return request({
+        url: '/A/codes/getAllCodeItems',
         params: data
     })
 }
@@ -97,6 +105,51 @@ export function releaseAutoAnalysisTemplate(data) {
 export function getTemplateConfInfoByName(data) {
     return request({
         url: '/L/autoanalysis/manage/getTemplateConfInfoByName',
+        params: data
+    })
+}
+// 2001
+//自主取数
+//查询自主取数模板信息
+export function getAccessTemplateInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessTemplateInfo',
+        params: data
+    })
+}
+//根据模板ID查询自主取数模板信息
+export function getAccessTemplateInfoById(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessTemplateInfoById',
+        params: data
+    })
+}
+//获取自主取数结果字段
+export function getAccessResultFields(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessResultFields',
+        params: data
+    })
+}
+//获取自主取数过滤条件
+export function getAutoAccessFilterCond(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAutoAccessFilterCond',
+        params: data
+    })
+}
+//获取自主取数选择历史信息
+export function getAccessSelectHistory(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessSelectHistory',
+        params: data
+    })
+}
+
+//保存自主取数清单查询入库信息
+export function saveAutoAccessInfoToQuery(data) {
+    return request({
+        url: '/L/autoanalysis/operate/saveAutoAccessInfoToQuery',
         params: data
     })
 }
