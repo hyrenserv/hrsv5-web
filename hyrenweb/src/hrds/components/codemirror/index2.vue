@@ -122,7 +122,7 @@ export default {
                 })
             })
         },
-        debounce(fn, interval = 1500) { //事件防抖,减少服务器压力
+        debounce(fn, interval = 800) { //事件防抖,减少服务器压力
             let timeout = null;
             return function () {
                 clearTimeout(timeout);
