@@ -240,6 +240,7 @@ export default {
             else if ('undefined' !== typeof data.file_id && data.file_id !== "") {
                 this.tableData.push(data);
             }
+            this.totalSize = this.tableData.length;
         },
         beforeShowFieldClose() {
             this.dialogShowFieldFormVisible = false;
