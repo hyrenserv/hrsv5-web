@@ -87,8 +87,8 @@
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="field_en_name" label="字段英文名" align="center" />
-            <el-table-column prop="field_cn_name" label="字段中文名" align="center" />
+            <el-table-column prop="column_name" label="字段英文名" align="center" />
+            <el-table-column prop="column_cn_name" label="字段中文名" align="center" />
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancel" size="mini">取 消</el-button>
@@ -176,8 +176,8 @@ export default {
                 let param = {};
                 if (row.selectColumn !== undefined) {
                     row.selectColumn.forEach(o => {
-                        tableChColumns.push(o.field_cn_name);
-                        tableEnColumns.push(o.field_en_name);
+                        tableChColumns.push(o.column_cn_name);
+                        tableEnColumns.push(o.column_name);
                     })
                 }
                 param["file_id"] = row.file_id;
