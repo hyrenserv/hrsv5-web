@@ -1,7 +1,7 @@
 <template>
 <div class="access">
     <el-row class="elRowtitle">
-        <p class="tempalteInfo">取数</p>
+        <p class="tempalteInfo">我的取数</p>
         <el-button type="danger" class="templateButton" @click="goBack" size="small">
             返回上级
         </el-button>
@@ -9,20 +9,20 @@
     <div class="lines"></div>
     <el-row class="elRowTemplate">
         <div class="elRowTemplateDiv">
-            <div style="float:left">({{name}})模板信息</div>
+            <div style="float:left">({{name}})的取数用途</div>
         </div>
         <el-row>
-            <div class="templateDec">模板描述:<span>{{dec}}</span></div>
+            <div class="templateDec">用途描述:<span>{{dec}}</span></div>
         </el-row>
     </el-row>
     <el-row class="elRowTemplate">
         <div class="elRowTemplateDiv">
             <div style="float:left">结果字段</div>
             <div style="float:right;margin-right:2px">
-                <el-select v-model="valueDate" placeholder="选择历史字段" size="small" @change="getChangeValue" clearable>
+                <!-- <el-select v-model="valueDate" placeholder="选择历史字段" size="small" @change="getChangeValue" clearable>
                     <el-option v-for="item in valueDateData" :key="item.time" :label="item.time" :value="item.time">
                     </el-option>
-                </el-select>
+                </el-select> -->
                 <el-button type="info" @click="getKeyWords" size="small" style="margin-left:10px">
                     选择结果字段
                 </el-button>
@@ -33,11 +33,11 @@
     <el-row class="elRows">
         <div class="elRowTemplateDiv">
             <p style="float:left">选择过滤条件</p>
-            <div style="float:right">
+            <!-- <div style="float:right">
                 <el-button type="info" :loading="loadingSearch" @click="addTemplates" size="small" style="margin-right:10px;">
                     清单查询
                 </el-button>
-            </div>
+            </div> -->
         </div>
     </el-row>
     <!-- <div class="lines"></div> -->
@@ -67,10 +67,10 @@
                         <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
                     </el-input>
                 </span>
-                <el-button type="info" :loading="loadingSearch" @click="addTemplates" size="small">
+                <el-button type="info" :loading="loadingSearch" @click="viewSql" size="small">
                     查看SQL
                 </el-button>
-                <el-button type="primary"  @click="vieWCansee" size="small">
+                <el-button type="primary" @click="vieWCansee" size="small">
                     可视化
                 </el-button>
                 <el-button type="primary" :loading="loadingSearch" @click="addTemplates" size="small">
@@ -113,6 +113,14 @@
             <el-button type="primary" @click="saveTableColum" size="mini">保 存</el-button>
         </div>
     </el-dialog>
+    <!-- 查看sql -->
+    <el-dialog title="查看sql" :visible.sync="viewSqlDataDiolag" width="900px">
+        <el-input type="textarea" :rows="14" placeholder="请输入内容" v-model="viewSqlText">
+        </el-input>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelviewSqlData" size="mini" type="danger">关 闭</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -149,7 +157,9 @@ export default {
             }],
             valueDate: '',
             loadingSearch: false,
-            inputText: ''
+            inputText: '',
+            viewSqlDataDiolag: false,
+            viewSqlText: 'sssssssssxcs'
         }
     },
     methods: {
@@ -217,14 +227,27 @@ export default {
             return false
         },
         // 可视化
-        vieWCansee(){
+        vieWCansee() {
             this.$router.push({
-                name:'visualization',
-                query:{
+                name: 'visualization',
+                query: {
 
                 }
             })
-        }
+        },
+        // 查看sql
+        viewSql() {
+            this.viewSqlDataDiolag = true;
+            // functionAll.getAccessSql({
+            //     fetch_sum_id:'SSS'
+            // }).then(res=>{
+
+            // })
+        },
+        //关闭sql弹出框
+        cancelviewSqlData() {
+            this.viewSqlDataDiolag = false;
+        },
     }
 }
 </script>
@@ -285,10 +308,12 @@ export default {
     background: #dddddd;
     margin-bottom: 10px;
 }
+
 /* 表格 */
-.eltables{
+.eltables {
     margin-bottom: 30px;
 }
+
 /*表格输入框 */
 .access .eltables>>>.el-input--mini .el-input__inner {
     height: 24px;

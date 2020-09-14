@@ -146,10 +146,54 @@ export function getAccessSelectHistory(data) {
     })
 }
 
-//保存自主取数清单查询入库信息
+//保存自主取数清单查询入库信息(清单查询前调用)
 export function saveAutoAccessInfoToQuery(data) {
     return request({
         url: '/L/autoanalysis/operate/saveAutoAccessInfoToQuery',
+        params: data
+    })
+}
+
+//通过选择历史情况 获取之前的条件以前配置项
+export function getAccessCondFromHistory(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessCondFromHistory',
+        params: data
+    })
+}
+//通过选择历史情况 获取之前的条件以前配置项
+export function getAccessResultFromHistory(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessResultFromHistory',
+        params: data
+    })
+}
+//模糊查询自主取数
+export function getAccessTemplateInfoByName(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessTemplateInfoByName',
+        params: data
+    })
+}
+//2001 我的取数
+//查询我的取数信息
+export function getMyAccessInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getMyAccessInfo',
+        params: data
+    })
+}
+//模糊查询我的取数
+export function getMyAccessInfoByName(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getMyAccessInfoByName',
+        params: data
+    })
+}
+//查看取数sql
+export function getAccessSql(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessSql',
         params: data
     })
 }

@@ -20,7 +20,7 @@
             <div style="float:left">结果字段</div>
             <div style="float:right;margin-right:2px">
                 <el-select v-model="valueDate" placeholder="选择历史字段" size="small" @change="getChangeValue" clearable>
-                    <el-option v-for="item in valueDateData" :key="item.time" :label="item.time" :value="item.time">
+                    <el-option v-for="item in valueDateData" :key="item.fetch_sum_id" :label="item.createDateFormat" :value="item.fetch_sum_id">
                     </el-option>
                 </el-select>
                 <el-button type="info" @click="getKeyWords" size="small" style="margin-left:10px">
@@ -165,11 +165,20 @@
             <el-button type="primary" @click="savechooseMoreData" size="mini">保 存</el-button>
         </div>
     </el-dialog>
+    <!-- 查看sql -->
+    <el-dialog title="查看sql" :visible.sync="viewSqlDataDiolag" width="900px">
+        <el-input type="textarea" :rows="14" placeholder="请输入内容" v-model="viewSqlText">
+        </el-input>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelviewSqlData" size="mini" type="danger">关 闭</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
 <script>
 import * as functionAll from "./selfAcess";
+import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
@@ -177,7 +186,7 @@ export default {
             tableDataReusltWords: [],
             name: '',
             dec: '',
-            select: '空',
+            select: '',
             dialogGetKeys: false,
             tableDataColum: [],
             selectkeysArr: [],
@@ -195,6 +204,7 @@ export default {
             inputText: '',
             dialogFormViewSave: false,
             dialogFormSave: false,
+            viewSqlDataDiolag: false,
             FormViewSave: {
 
             },
@@ -210,6 +220,8 @@ export default {
             markGetAllCodeItems: [],
             chooseMoreDataSelect: [],
             moreChooseClickIndex: '',
+            showNumArry: [],
+            viewSqlText: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'
 
         }
     },
@@ -245,6 +257,7 @@ export default {
                 template_id: this.$route.query.template_id
             }).then(res => {
                 this.tableDataColum = res.data;
+                this.showNumArry = res.data;
             })
         },
         // 获取自主取数选择历史信息
@@ -252,6 +265,9 @@ export default {
             functionAll.getAccessSelectHistory({
                 template_id: this.$route.query.template_id
             }).then(res => {
+                res.data.forEach((item, i) => {
+                    item.createDateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                })
                 this.valueDateData = res.data;
             })
         },
@@ -264,6 +280,7 @@ export default {
                     this.options.forEach(val => {
                         if (item.value_type == val.code) {
                             item.value_type = val.value;
+                            item.valueType = val.code;
                         }
                     })
                 })
@@ -280,6 +297,7 @@ export default {
                 let upDate = tableData[val - 1];
                 tableData.splice(val - 1, 1);
                 tableData.splice(val, 0, upDate);
+                this.showNumArry = tableData;
             } else {
                 this.$Msg.customizTitle("已经是第一条，不可上移", "warning");
             }
@@ -292,6 +310,7 @@ export default {
                 let downDate = tableData[val + 1];
                 tableData.splice(val + 1, 1);
                 tableData.splice(val, 0, downDate);
+                this.showNumArry = tableData;
             }
         },
         // 取消选择
@@ -313,29 +332,61 @@ export default {
                     }
                 }
             } else if (this.selectkeysArr.length == 0) {
-                str = "空"
+                str = ""
             }
             this.select = str;
             this.dialogGetKeys = false;
         },
         //字段结果全选 
         selectAll(val) {
+            this.showNumArry = val;
             this.selectkeysArr = val;
         },
         // 字段结果单独选择
         selectOnly(val) {
+            this.showNumArry = val;
             this.selectkeysArr = val;
         },
         //获取历史选择字段
         getChangeValue(val) {
-            console.log(val)
+            functionAll.getAccessCondFromHistory({ //选择过滤条件
+                fetch_sum_id: val
+            }).then(res => {
+                res.data.forEach(item => {
+                    this.options.forEach(val => {
+                        if (item.value_type == val.code) {
+                            item.value_type = val.value;
+                            item.valueType = val.code;
+                        }
+                    })
+                })
+                this.tableDataReusltWords = res.data;
+            })
+
+            functionAll.getAccessResultFromHistory({ //选中字段展示
+                fetch_sum_id: val
+            }).then(res => {
+                this.select = ""
+                res.data.forEach((item) => {
+                    this.select += item.res_show_column + ","
+                })
+            })
         },
         checkboxSelect() {
             return false
         },
         // 查看sql
         viewSql() {
+            this.viewSqlDataDiolag = true;
+            // functionAll.getAccessSql({
+            //     fetch_sum_id:'SSS'
+            // }).then(res=>{
 
+            // })
+        },
+        //关闭sql弹出框
+        cancelviewSqlData() {
+            this.viewSqlDataDiolag = false;
         },
         // 保存及可视化
         saveView() {
@@ -355,12 +406,30 @@ export default {
         },
         //保存自主取数清单查询入库信息(清单查询前看)
         saveAutoAccessInfoToQuery() {
-            console.log(this.markObject)
-            // functionAll.saveAutoAccessInfoToQuery({
+            if (this.select === "") {
+                this.$Msg.customizTitle("请选择结果字段", "warning");
+            } else {
+                this.showNumArry.forEach((item, index) => {
+                    item.show_num = index + 1;
+                })
+                let parama = {};
+                parama.template_id = this.$route.query.template_id;
+                parama.autoFetchRes = JSON.stringify(this.showNumArry);
+                let arrFetchConds = [];
+                console.log(this.tableDataReusltWords, 'i am')
+                this.tableDataReusltWords.forEach(item => {
+                    let obj = {
+                        cond_value: item.pre_valueCode,
+                        template_cond_id: item.template_cond_id
+                    }
+                    arrFetchConds.push(obj)
+                })
+                parama.autoFetchConds = JSON.stringify(arrFetchConds);
+                functionAll.saveAutoAccessInfoToQuery(parama).then(res => {
+                    console.log(res.data)
+                })
+            }
 
-            // }).then(res=>{
-
-            // })
         },
         // 根据value_type类型显示更多选择
         moreChooseClick(index, row) {
@@ -396,14 +465,26 @@ export default {
         },
         // 保存
         savechooseMoreData() {
-            this.tableDataReusltWords[this.moreChooseClickIndex].pre_value = ''
+            this.tableDataReusltWords[this.moreChooseClickIndex].pre_value = '';
+            this.tableDataReusltWords[this.moreChooseClickIndex].pre_valueCode = '';
             this.chooseMoreDataSelect.forEach(item => {
-                this.tableDataReusltWords[this.moreChooseClickIndex].pre_value += item.value + ','
+                this.tableDataReusltWords[this.moreChooseClickIndex].pre_value += item.value + ',';
+                this.tableDataReusltWords[this.moreChooseClickIndex].pre_valueCode += item.code + ',';
             })
             this.chooseMoreDataDiolag = false;
+            console.log(this.tableDataReusltWords, 'i ma')
         },
         // 取消保存
         cancelchooseMoreData() {
+            this.chooseMoreDataDiolag = false;
+        },
+        cancleUpdate() {
+
+        },
+        beforeClose() {
+
+        },
+        searchInfo() {
 
         }
     }

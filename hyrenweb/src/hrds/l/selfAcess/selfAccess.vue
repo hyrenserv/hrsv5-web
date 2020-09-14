@@ -77,14 +77,33 @@ export default {
     },
     mounted(){
         this.getAccessTemplateInfo();
+        this.getMyAccessInfo();
     },
     methods: {
         // 点击搜索按钮搜索
         searchInfo(){
             if(this.searchMark =="auto"){
-
+                functionAll.getAccessTemplateInfoByName({
+                    template_name:inputText
+                }).then(res=>{
+                    res.data.forEach(item => {
+                        if (item.create_date && item.create_time) {
+                            item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                        }
+                })
+                this.tableDataSelf = res.data;
+                })
             }else if(this.searchMark =="my"){
-
+                functionAll.getMyAccessInfoByName({
+                    template_name:inputText
+                }).then(res=>{
+                    res.data.forEach(item => {
+                        if (item.create_date && item.create_time) {
+                            item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                        }
+                })
+                this.tableDataMy = res.data;
+                })
             }
         },
         // 获取自主取数表格初始值
@@ -102,8 +121,10 @@ export default {
         handleClick(tab, event) {
             if (tab.label == '自主取数模板') {
                 this.searchMark = "auto";
+                // this.getAccessTemplateInfo();
             } else {
                 this.searchMark = "my";
+                // this.getMyAccessInfo();
             }
         },
         //自主取数
@@ -123,6 +144,17 @@ export default {
                 query:{
 
                 }
+            })
+        },
+        // 查询我的取数信息
+        getMyAccessInfo(){
+            functionAll.getMyAccessInfo().then(res=>{
+               res.data.forEach(item => {
+                    if (item.create_date && item.create_time) {
+                        item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                    }
+                })
+                this.tableDataMy = res.data;
             })
         }
     }
