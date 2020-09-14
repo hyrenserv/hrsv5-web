@@ -23,7 +23,9 @@
         <el-col :span="8" class="elcol8">
             <p>设置显示字段</p>
             <div class="showArryDiv">
-
+                <ul>
+                    <li v-for="item in optionsWords" :key="item.name" style="padding-left:10px;height:30px;line-height:30px;"> {{item.name}} <span style="cursor:pointer;"><i class="el-icon-close"></i></span><span v-if="optionsWords.length >1"><i class="el-icon-top"></i></span><span v-if="optionsWords.length >1"><i class="el-icon-bottom"></i></span></li>
+                </ul>
             </div>
         </el-col>
         <el-col :span="8" class="elcol8">
@@ -39,6 +41,9 @@
             </div>
         </el-col>
     </el-row>
+    <el-row>
+
+    </el-row>
 </div>
 </template>
 
@@ -49,7 +54,10 @@ export default {
             value: '',
             input: 'dd',
             options: [],
-            auto_comp_data_sum_array: []
+            auto_comp_data_sum_array: [],
+            optionsWords: [{
+                name: 'sss'
+            }]
         }
     }
 }
