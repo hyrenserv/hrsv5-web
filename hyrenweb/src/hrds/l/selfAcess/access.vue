@@ -329,7 +329,7 @@ export default {
                 }
                 for (let i = 0; i < forArry.length; i++) { //数据拼接
                     if (forArry[i] != undefined) {
-                        str += forArry[i] + ',';
+                        str += forArry[i] + " ";
                     }
                 }
             } else if (this.selectkeysArr.length == 0) {
@@ -420,28 +420,40 @@ export default {
                 this.tableDataReusltWords.forEach(item => {
                     if (item.value_type !== "枚举") {
                         let obj = {
-                            cond_value: item.pre_value,
-                            template_cond_id: item.template_cond_id
+                            pre_value: item.pre_value,
+                            template_cond_id: item.template_cond_id,
+                            is_required: item.is_required,
+                            value_type: item.valueType,
+                            con_relation: item.con_relation,
+                            cond_en_column: item.cond_en_column
                         }
                         arrFetchConds.push(obj)
                     } else if (item.value_type === "枚举") {
                         if (item.pre_valueCode) {
                             let obj = {
-                                cond_value: item.pre_valueCode,
-                                template_cond_id: item.template_cond_id
+                                pre_value: item.pre_valueCode,
+                                template_cond_id: item.template_cond_id,
+                                is_required: item.is_required,
+                                value_type: item.valueType,
+                                con_relation: item.con_relation,
+                                cond_en_column: item.cond_en_column
                             }
                             arrFetchConds.push(obj)
                         } else {
                             let obj = {
-                                cond_value: item.pre_value,
-                                template_cond_id: item.template_cond_id
+                                pre_value: item.pre_value,
+                                template_cond_id: item.template_cond_id,
+                                is_required: item.is_required,
+                                value_type: item.valueType,
+                                con_relation: item.con_relation,
+                                cond_en_column: item.cond_en_column
                             }
                             arrFetchConds.push(obj)
                         }
 
                     }
                 })
-                parama.autoFetchConds = JSON.stringify(arrFetchConds);
+                parama.autoTpCondInfos = JSON.stringify(arrFetchConds);
                 functionAll.saveAutoAccessInfoToQuery(parama).then(res => {
                     if (res && res.success) {
                         this.markFetchId = res.data;
@@ -455,8 +467,8 @@ export default {
         // 获取自主取数清单查询结果
         getAutoAccessQueryResult(val) {
             functionAll.getAutoAccessQueryResult({
-                fetch_sum_id:val
-            }).then(res=>{
+                fetch_sum_id: val
+            }).then(res => {
                 console.log(res.data)
             })
         },
