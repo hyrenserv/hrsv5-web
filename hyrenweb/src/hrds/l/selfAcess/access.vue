@@ -416,13 +416,29 @@ export default {
                 parama.template_id = this.$route.query.template_id;
                 parama.autoFetchRes = JSON.stringify(this.showNumArry);
                 let arrFetchConds = [];
-                console.log(this.tableDataReusltWords, 'i am')
                 this.tableDataReusltWords.forEach(item => {
-                    let obj = {
-                        cond_value: item.pre_valueCode,
-                        template_cond_id: item.template_cond_id
+                    if (item.value_type !== "枚举") {
+                        let obj = {
+                            cond_value: item.pre_value,
+                            template_cond_id: item.template_cond_id
+                        }
+                        arrFetchConds.push(obj)
+                    } else if (item.value_type === "枚举") {
+                        if (item.pre_valueCode) {
+                            let obj = {
+                                cond_value: item.pre_valueCode,
+                                template_cond_id: item.template_cond_id
+                            }
+                            arrFetchConds.push(obj)
+                        } else {
+                            let obj = {
+                                cond_value: item.pre_value,
+                                template_cond_id: item.template_cond_id
+                            }
+                            arrFetchConds.push(obj)
+                        }
+
                     }
-                    arrFetchConds.push(obj)
                 })
                 parama.autoFetchConds = JSON.stringify(arrFetchConds);
                 functionAll.saveAutoAccessInfoToQuery(parama).then(res => {
