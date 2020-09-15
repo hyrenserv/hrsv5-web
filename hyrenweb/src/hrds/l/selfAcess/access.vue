@@ -221,7 +221,8 @@ export default {
             chooseMoreDataSelect: [],
             moreChooseClickIndex: '',
             showNumArry: [],
-            viewSqlText: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'
+            viewSqlText: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
+            markFetchId: ''
 
         }
     },
@@ -442,10 +443,22 @@ export default {
                 })
                 parama.autoFetchConds = JSON.stringify(arrFetchConds);
                 functionAll.saveAutoAccessInfoToQuery(parama).then(res => {
+                    if (res && res.success) {
+                        this.markFetchId = res.data;
+                        this.getAutoAccessQueryResult(res.data)
+                    }
                     console.log(res.data)
                 })
             }
 
+        },
+        // 获取自主取数清单查询结果
+        getAutoAccessQueryResult(val) {
+            functionAll.getAutoAccessQueryResult({
+                fetch_sum_id:val
+            }).then(res=>{
+                console.log(res.data)
+            })
         },
         // 根据value_type类型显示更多选择
         moreChooseClick(index, row) {

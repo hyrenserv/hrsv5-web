@@ -175,6 +175,13 @@ export function getAccessTemplateInfoByName(data) {
         params: data
     })
 }
+//获取自主取数清单查询结果
+export function getAutoAccessQueryResult(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAutoAccessQueryResult',
+        params: data
+    })
+}
 //2001 我的取数
 //查询我的取数信息
 export function getMyAccessInfo(data) {
