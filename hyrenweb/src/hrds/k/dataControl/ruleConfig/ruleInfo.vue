@@ -655,8 +655,8 @@ export default {
             let case_type = this.form_dq_data.case_type;
             if ("COL ENUM" === case_type || "COL REGULAR" === case_type) {
                 return false;
+                this.form_dq_data.list_vals = "";
             }
-            this.form_dq_data.list_vals = "";
             return true;
         },
         //范围区间最小/大值功能处理
@@ -664,9 +664,9 @@ export default {
             let case_type = this.form_dq_data.case_type;
             if ("COL RANG" === case_type) {
                 return false;
+                this.form_dq_data.range_min_val = "";
+                this.form_dq_data.range_max_val = "";
             }
-            this.form_dq_data.range_min_val = "";
-            this.form_dq_data.range_max_val = "";
             return true;
         },
         //检测sql功能处理
