@@ -1,7 +1,7 @@
 <template>
 <div class="access">
     <el-row class="elRowtitle">
-        <p class="tempalteInfo">取数</p>
+        <p class="tempalteInfo">自主取数</p>
         <el-button type="danger" class="templateButton" @click="goBack" size="small">
             返回上级
         </el-button>
@@ -69,44 +69,36 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-row class="elRows">
-        <div class="elRowTemplateDiv">
-            <p style="float:left">结果集列表</p>
-            <div style="float:right">
-                <span><span class="spanInfo">(温馨提示：最多只显示1000行)</span>
-                    显示条数：<el-input placeholder="请输入非零的正整数" class="input-with-select" size="small" style="width:210px;margin-right:6px;" v-model="inputText">
-                        <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
-                    </el-input>
-                </span>
-                <el-button type="info" @click="viewSql" size="small">
-                    查看SQL
-                </el-button>
-                <el-button type="primary" @click="saveView" size="small">
-                    保存及可视化
-                </el-button>
-                <el-button type="primary" @click="save" size="small">
-                    保存
-                </el-button>
+    <el-row v-if="dynamicColumnTable.length >0" style="margin-bottom:20px;">
+        <el-row class="elRows">
+            <div class="elRowTemplateDiv">
+                <p style="float:left">结果集列表</p>
+                <div style="float:right">
+                    <span><span class="spanInfo">(温馨提示：最多只显示1000行，默认10行)</span>
+                        显示条数：<el-input placeholder="请输入非零的正整数" class="input-with-select" size="small" style="width:210px;margin-right:6px;" v-model="inputText">
+                            <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
+                        </el-input>
+                    </span>
+                    <el-button type="info" @click="viewSql" size="small">
+                        查看SQL
+                    </el-button>
+                    <el-button type="primary" @click="saveView" size="small">
+                        保存及可视化
+                    </el-button>
+                    <el-button type="primary" @click="save" size="small">
+                        保存
+                    </el-button>
+                </div>
             </div>
-        </div>
+        </el-row>
+        <el-table size="medium" :data="dynamicColumnTable" border stripe style="width: 100%">
+            <el-table-column type="index" label="序号" width="70px" align='center'>
+            </el-table-column>
+            <el-table-column v-for="col in dynamicColumn" show-overflow-tooltip min-width="200px" :prop="col" :label="col" :key="col">
+            </el-table-column>
+        </el-table>
     </el-row>
-    <el-table size="medium" :data="tableDataReusltWords" border stripe style="width: 100%" class="eltables">
-        <el-table-column type="selection" width="70px" align='center'>
-        </el-table-column>
-        <el-table-column label="条件名称" align='center' show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column label="条件关系" align='center' width="130" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column label="条件值" align='center' show-overflow-tooltip>
-            <template slot-scope="scope">
-                <el-input v-model="scope.row.typeDec" size="mini" placeholder="条件值"></el-input>
-            </template>
-        </el-table-column>
-        <el-table-column label="值类型" align='center' show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column label="类型描述" align='center' show-overflow-tooltip>
-        </el-table-column>
-    </el-table>
+
     <!-- 选择结果字段弹出框 -->
     <el-dialog title="选择结果字段" :visible.sync="dialogGetKeys" width="660px">
         <el-table :data="tableDataColum" border stripe size="medium" @select-all="selectAll" @select="selectOnly">
@@ -125,33 +117,33 @@
         </div>
     </el-dialog>
     <!-- 保存可视化的弹出表单 -->
-    <el-dialog title="可视化" :visible.sync="dialogFormViewSave" :before-close="beforeClose" width="580px">
+    <el-dialog title="可视化" :visible.sync="dialogFormViewSave" :before-close="beforeCloseAccessView" width="580px">
         <el-form :model="FormViewSave" ref="FormViewSave" label-width="140px">
-            <el-form-item label=" 取数主题" prop="dep_name">
-                <el-input v-model="FormViewSave.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label=" 取数主题" prop="fetch_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="FormViewSave.fetch_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 取数用途" prop="dep_remark">
-                <el-input type="textarea" v-model="FormViewSave.dep_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label=" 取数用途" prop="fetch_desc">
+                <el-input type="textarea" v-model="FormViewSave.fetch_desc" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleUpdate" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="updateDepartmentInfo('FormViewSave')" size="mini">保存</el-button>
+            <el-button @click="canclesaveAccessView" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="saveAccessView('FormViewSave')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 保存的弹出表单 -->
-    <el-dialog title="保存取数" :visible.sync="dialogFormSave" :before-close="beforeClose" width="580px">
+    <el-dialog title="保存取数" :visible.sync="dialogFormSave" :before-close="beforeCloseAccess" width="580px">
         <el-form :model="FormSave" ref="FormSave" label-width="140px">
-            <el-form-item label=" 取数主题" prop="dep_name">
-                <el-input v-model="FormSave.dep_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label=" 取数主题" prop="fetch_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="FormSave.fetch_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 取数用途" prop="dep_remark">
-                <el-input type="textarea" v-model="FormSave.dep_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label=" 取数用途" prop="fetch_desc">
+                <el-input type="textarea" v-model="FormSave.fetch_desc" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancleUpdate" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="updateDepartmentInfo('FormSave')" size="mini">保存</el-button>
+            <el-button @click="canclesaveAccess" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="saveAccess('FormSave')" size="mini">保存</el-button>
         </div>
     </el-dialog>
     <!-- 点击更多选择按钮 -->
@@ -179,6 +171,8 @@
 <script>
 import * as functionAll from "./selfAcess";
 import * as fixedAll from "@/utils/js/fileOperations";
+import * as validator from "@/utils/js/validator";
+import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
@@ -190,26 +184,22 @@ export default {
             dialogGetKeys: false,
             tableDataColum: [],
             selectkeysArr: [],
-            valueDateData: [{
-                time: '2020-02-13 12:32:46'
-            }, {
-                time: '2020-02-12 12:32:46'
-            }, {
-                time: '2020-02-11 12:32:46'
-            }, {
-                time: '2020-12-12 12:32:46'
-            }],
+            dynamicColumnTable: [],
+            dynamicColumn: [],
+            valueDateData: [],
             valueDate: '',
             loadingSearch: false,
-            inputText: '',
+            inputText: '10',
             dialogFormViewSave: false,
             dialogFormSave: false,
             viewSqlDataDiolag: false,
             FormViewSave: {
-
+                fetch_desc: '',
+                fetch_name: ''
             },
             FormSave: {
-
+                fetch_desc: '',
+                fetch_name: ''
             },
             options: [],
             markObject: {
@@ -221,7 +211,7 @@ export default {
             chooseMoreDataSelect: [],
             moreChooseClickIndex: '',
             showNumArry: [],
-            viewSqlText: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
+            viewSqlText: '',
             markFetchId: ''
 
         }
@@ -329,7 +319,7 @@ export default {
                 }
                 for (let i = 0; i < forArry.length; i++) { //数据拼接
                     if (forArry[i] != undefined) {
-                        str += forArry[i] + " ";
+                        str += forArry[i] + "，";
                     }
                 }
             } else if (this.selectkeysArr.length == 0) {
@@ -350,40 +340,45 @@ export default {
         },
         //获取历史选择字段
         getChangeValue(val) {
-            functionAll.getAccessCondFromHistory({ //选择过滤条件
-                fetch_sum_id: val
-            }).then(res => {
-                res.data.forEach(item => {
-                    this.options.forEach(val => {
-                        if (item.value_type == val.code) {
-                            item.value_type = val.value;
-                            item.valueType = val.code;
-                        }
+            if (val === "") {
+                this.getAccessTemplateInfoById();
+                this.getAccessResultFields();
+                this.getAccessSelectHistory();
+                this.getAutoAccessFilterCond();
+                this.select = ""
+            } else {
+                functionAll.getAccessCondFromHistory({ //选择过滤条件
+                    fetch_sum_id: val
+                }).then(res => {
+                    res.data.forEach(item => {
+                        this.options.forEach(val => {
+                            if (item.value_type == val.code) {
+                                item.value_type = val.value;
+                                item.valueType = val.code;
+                            }
+                        })
+                    })
+                    this.tableDataReusltWords = res.data;
+                })
+                functionAll.getAccessResultFromHistory({ //选中字段展示
+                    fetch_sum_id: val
+                }).then(res => {
+                    this.select = ""
+                    res.data.forEach((item) => {
+                        this.select += item.res_show_column + "，"
                     })
                 })
-                this.tableDataReusltWords = res.data;
-            })
+            }
 
-            functionAll.getAccessResultFromHistory({ //选中字段展示
-                fetch_sum_id: val
-            }).then(res => {
-                this.select = ""
-                res.data.forEach((item) => {
-                    this.select += item.res_show_column + ","
-                })
-            })
-        },
-        checkboxSelect() {
-            return false
         },
         // 查看sql
         viewSql() {
             this.viewSqlDataDiolag = true;
-            // functionAll.getAccessSql({
-            //     fetch_sum_id:'SSS'
-            // }).then(res=>{
-
-            // })
+            functionAll.getAccessSql({
+                fetch_sum_id: this.markFetchId
+            }).then(res => {
+                this.viewSqlText = res.data
+            })
         },
         //关闭sql弹出框
         cancelviewSqlData() {
@@ -393,9 +388,72 @@ export default {
         saveView() {
             this.dialogFormViewSave = true;
         },
+        // 保存到可视化
+        saveAccessView(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let parama = {};
+                    parama.fetch_sum_id = this.markFetchId;
+                    parama.template_id = this.$route.query.template_id;
+                    parama.fetch_name = this.FormViewSave.fetch_name;
+                    parama.fetch_desc = this.FormViewSave.fetch_desc;
+                    functionAll.saveAutoAccessInfo(parama).then((res) => {
+                        if (res && res.success) {
+                            this.$router.push({
+                                name: 'visualization'
+                            })
+                        }
+                    })
+                } else {
+                    return false;
+                }
+            });
+        },
+        //取消到保存可视化
+        canclesaveAccessView() {
+            this.dialogFormViewSave = false;
+            this.$refs.FormViewSave.resetFields();
+        },
+
         // 保存取数
         save() {
             this.dialogFormSave = true;
+        },
+        //保存自主取数
+        saveAccess(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let parama = {};
+                    parama.fetch_sum_id = this.markFetchId;
+                    parama.template_id = this.$route.query.template_id;
+                    parama.fetch_name = this.FormSave.fetch_name;
+                    parama.fetch_desc = this.FormSave.fetch_desc;
+                    functionAll.saveAutoAccessInfo(parama).then((res) => {
+                        if (res && res.success) {
+                            this.$router.push({
+                                name: 'autonomousAnalysisOperate'
+                            })
+                        }
+                    })
+                } else {
+                    return false;
+                }
+            });
+        },
+        // 取消保存自主取数
+        canclesaveAccess() {
+            this.dialogFormSave = false;
+            this.$refs.FormViewSave.resetFields();
+        },
+        //关闭diolag框
+        beforeCloseAccessView() {
+            this.dialogFormViewSave = false;
+            this.$refs.FormViewSave.resetFields();
+        },
+        //关闭diolag框
+        beforeCloseAccess() {
+            this.dialogFormSave = false;
+            this.$refs.FormSave.resetFields();
         },
         // 获取代码项
         getCategoryItems() {
@@ -410,6 +468,7 @@ export default {
             if (this.select === "") {
                 this.$Msg.customizTitle("请选择结果字段", "warning");
             } else {
+                this.loadingSearch = true;
                 this.showNumArry.forEach((item, index) => {
                     item.show_num = index + 1;
                 })
@@ -455,11 +514,11 @@ export default {
                 })
                 parama.autoTpCondInfos = JSON.stringify(arrFetchConds);
                 functionAll.saveAutoAccessInfoToQuery(parama).then(res => {
+                    this.loadingSearch = false;
                     if (res && res.success) {
                         this.markFetchId = res.data;
                         this.getAutoAccessQueryResult(res.data)
                     }
-                    console.log(res.data)
                 })
             }
 
@@ -469,7 +528,10 @@ export default {
             functionAll.getAutoAccessQueryResult({
                 fetch_sum_id: val
             }).then(res => {
-                console.log(res.data)
+                if (res.data.length > 0) {
+                    this.dynamicColumn = Object.keys(res.data[0])
+                    this.dynamicColumnTable = res.data;
+                }
             })
         },
         // 根据value_type类型显示更多选择
@@ -513,20 +575,21 @@ export default {
                 this.tableDataReusltWords[this.moreChooseClickIndex].pre_valueCode += item.code + ',';
             })
             this.chooseMoreDataDiolag = false;
-            console.log(this.tableDataReusltWords, 'i ma')
         },
         // 取消保存
         cancelchooseMoreData() {
             this.chooseMoreDataDiolag = false;
         },
-        cancleUpdate() {
-
-        },
-        beforeClose() {
-
-        },
         searchInfo() {
-
+            functionAll.getAccessResultByNumber({
+                fetch_sum_id: this.markFetchId,
+                showNum: this.inputText
+            }).then(res => {
+                if (res.data.length > 0) {
+                    this.dynamicColumn = Object.keys(res.data[0])
+                    this.dynamicColumnTable = res.data;
+                }
+            })
         }
     }
 }
