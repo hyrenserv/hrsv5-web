@@ -122,8 +122,8 @@ const childrenMemus = {
             component: () => import('@/hrds/l/selfAcess/visualization.vue')
         },
         {
-            path: '/dataDashboard',
-            name: 'dataDashboard',
+            path: '/dataDashboardList',
+            name: 'dataDashboardList',
             title: '数据仪表盘',
             icon: 'el-icon-pie-chart',
             component: () => import('@/hrds/l/dataDashboard/dataDashboardList.vue')

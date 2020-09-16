@@ -88,7 +88,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="column_name" label="字段英文名" align="center" />
-            <el-table-column prop="column_cn_name" label="字段中文名" align="center" />
+            <el-table-column prop="column_ch_name" label="字段中文名" align="center" />
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancel" size="mini">取 消</el-button>
@@ -158,7 +158,7 @@ export default {
             params["data_layer"] = row.data_layer;
             params["file_id"] = row.file_id;
             interfaceFunctionAll.searchFieldById(params).then(res => {
-                this.columnData = res.data;
+                this.columnData = res.data.column_info_list;
                 this.totalSize = res.data.length;
             })
         },
