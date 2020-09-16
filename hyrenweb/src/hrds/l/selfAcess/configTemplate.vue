@@ -143,7 +143,7 @@
             <el-row class="elRows">
                 <p class="tempalteInfo">数据预览</p>
                 <p class="tempalteButton">
-                    <span><span class="spanInfo">(温馨提示：最多只显示1000行)</span>
+                    <span><span class="spanInfo">(温馨提示：最多只显示1000行，默认10行)</span>
                         显示条数：<el-input placeholder="请输入非零的正整数" class="input-with-select" size="mini" style="width:200px" v-model="inputText">
                             <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
                         </el-input>
@@ -240,7 +240,7 @@ export default {
             formLabelWidth: "130px",
             showORhidden: true,
             dialogData: false,
-            inputText: '',
+            inputText: '10',
             formAdd: {
                 template_desc: '',
                 data_source: '',

@@ -182,6 +182,21 @@ export function getAutoAccessQueryResult(data) {
         params: data
     })
 }
+//保存自主取数信息
+export function saveAutoAccessInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/saveAutoAccessInfo',
+        params: data
+    })
+}
+
+//取数时清单查询 显示条数方法
+export function getAccessResultByNumber(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getAccessResultByNumber',
+        params: data
+    })
+}
 //2001 我的取数
 //查询我的取数信息
 export function getMyAccessInfo(data) {
@@ -201,6 +216,20 @@ export function getMyAccessInfoByName(data) {
 export function getAccessSql(data) {
     return request({
         url: '/L/autoanalysis/operate/getAccessSql',
+        params: data
+    })
+}
+//查看我的取数信息
+export function getMyAccessInfoById(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getMyAccessInfoById',
+        params: data
+    })
+}
+//我的取数下载模板
+export function downloadMyAccessTemplate(data) {
+    return request({
+        url: '/L/autoanalysis/operate/downloadMyAccessTemplate',
         params: data
     })
 }

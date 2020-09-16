@@ -35,18 +35,13 @@
                 <el-table size="medium" :data="tableDataMy" border stripe style="width: 100%">
                     <el-table-column type="index" label="序号" width="70px" align='center'>
                     </el-table-column>
-                    <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="名称" align='center'>
-                        <template slot-scope="scope">
-                            <el-button size="mini" type="text" @click="details(scope.$index, scope.row)">
-                                {{scope.row.etl_sys_cd}}
-                            </el-button>
-                        </template>
+                    <el-table-column prop="fetch_name" show-overflow-tooltip label="名称" align='center'>
                     </el-table-column>
-                    <el-table-column prop="etl_sys_name" show-overflow-tooltip label="取数用途" align='center'>
+                    <el-table-column prop="fetch_desc" show-overflow-tooltip label="取数用途" align='center'>
                     </el-table-column>
                     <el-table-column prop="create_dateFormat" show-overflow-tooltip label="日期" align='center'>
                     </el-table-column>
-                    <el-table-column prop="curr_bath_date" show-overflow-tooltip label="创建人" align='center'>
+                    <el-table-column prop="create_user" show-overflow-tooltip label="创建人" align='center'>
                     </el-table-column>
                     <el-table-column label="操作" align='center' width="100">
                         <template slot-scope="scope">
@@ -142,7 +137,7 @@ export default {
             this.$router.push({
                 name:'myAccess',
                 query:{
-
+                    fetch_sum_id:row.fetch_sum_id
                 }
             })
         },
