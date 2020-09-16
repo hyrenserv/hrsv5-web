@@ -233,3 +233,11 @@ export function downloadMyAccessTemplate(data) {
         params: data
     })
 }
+// 2001可视化组件
+//根据表名获取字段信息
+export function getColumnByName(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getColumnByName',
+        params: data
+    })
+}

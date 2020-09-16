@@ -28,18 +28,9 @@
                 </ul>
             </div>
             <div class="elcol8Button">
-                <el-button size="mini" type="primary">添加字段</el-button>
+                <el-button size="mini" @click="addWords" type="primary">添加字段</el-button>
             </div>
 
-            <div class="showArryDiv showArryDivSelect ">
-                <div class="showArryDivContent">计算字段汇总值（sum）</div>
-                <div class="showArryDivContent">计算字段平均值（avg）</div>
-                <div class="showArryDivContent">计算字段最大值（max）</div>
-                <div class="showArryDivContent">计算字段最小值（min）</div>
-                <div class="showArryDivContent">统计总记录数（count）</div>
-                <div class="showArryDivContent">选择所有结果字段（*）</div>
-                <div class="showArryDivContent">逐个选择表字段</div>
-            </div>
         </el-col>
         <el-col :span="8" class="elcol8">
             <p class="optionsWords">设置过滤条件<el-button disabled size="mini" type="primary">修改条件逻辑</el-button>
@@ -99,10 +90,37 @@
         <el-table :data="tableDataColumAuto" border stripe size="medium" @cell-click="cellClick">
             <el-table-column type="index" label="序号" width="70px" align='center'>
             </el-table-column>
-            <el-table-column prop="name" label="表名" align="center"></el-table-column>
+            <el-table-column prop="fetch_name" label="表名" align="center"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
+        </div>
+    </el-dialog>
+    <!-- 添加字段 -->
+    <el-dialog title="添加字段(单击选择字段)" :visible.sync="selectWords" width="660px">
+        <!-- <div class="showArryDiv showArryDivSelect ">
+            <div class="showArryDivContent">计算字段汇总值（sum）</div>
+            <div class="showArryDivContent">计算字段平均值（avg）</div>
+            <div class="showArryDivContent">计算字段最大值（max）</div>
+            <div class="showArryDivContent">计算字段最小值（min）</div>
+            <div class="showArryDivContent">统计总记录数（count）</div>
+            <div class="showArryDivContent">选择所有结果字段（*）</div>
+            <div class="showArryDivContent">逐个选择表字段</div>
+        </div> -->
+        <div class='mytree '>
+            <el-tree class="filter-tree elDialogInfo" :data="data2" :indent='0' :props="defaultProps" ref="trees" @node-click="nodeClickChartTreeWords">
+                <span class="span-ellipsis" slot-scope="{ node, data }">
+                    <span v-if="data.children.length =='0'">
+                        <i class="el-icon-document"></i>{{node.label}}
+                    </span>
+                    <span v-else>
+                        <i class="el-icon-folder-opened"></i>{{node.label}}
+                    </span>
+                </span>
+            </el-tree>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelSelect" size="mini" type="danger">关 闭</el-button>
         </div>
     </el-dialog>
 </div>
@@ -117,14 +135,15 @@ export default {
             input: '',
             options: [{
                     value: '自主数据数据集',
-                    code: '0',
+                    code: '01',
                 },
                 {
                     value: '系统级数据集',
-                    code: '1'
+                    code: '02'
                 }
             ],
-            auto_comp_data_sum_array: [],
+            columnsWordsALL: [],
+            hasComputeArry: [],
             optionsWords: [{
                 name: 'sss'
             }],
@@ -136,16 +155,39 @@ export default {
                 children: "children",
                 label: "label"
             },
-            tableDataColumAuto: [{
-                name: 'jiezi'
+            tableDataColumAuto: [],
+            codeArry: [],
+            markCodeIndex: '',
+            selectWords: false,
+            data2: [{
+                label: "计算字段汇总值（sum）",
+                children: [{}]
             }, {
-                name: 'junjun'
+                label: '计算字段平均值（avg）',
+                children: [{}]
+            }, {
+                label: '计算字段最大值（ max）',
+                children: [{}]
+            }, {
+                label: '计算字段最小值（ min）',
+                children: [{}]
+            }, {
+                label: ' 统计总记录数（ count）',
+                children: [{}]
+            }, {
+                label: '选择所有结果字段（ * ）',
+                children: []
+            }, {
+                label: '逐个选择表字段',
+                children: []
             }],
 
         }
     },
     mounted() {
         this.getWebSQLTreeData(); //获取树结构
+        this.getMyAccessInfo();
+        this.getCategoryItems();
     },
     watch: {
         //设置检索内容
@@ -156,10 +198,14 @@ export default {
     methods: {
         //选择数据来源
         changeSelectDataCollect(val) {
-            if (val === "0") {
+            if (val === "01") {
+                this.markCodeIndex = val;
                 this.dialogSelfData = true;
-            } else if (val === "1") {
+            } else if (val === "02") {
+                this.markCodeIndex = val;
                 this.dialogData = true;
+            } else {
+                this.input = '';
             }
         },
         // 节点搜索
@@ -182,6 +228,14 @@ export default {
             if (data.file_id) {
                 this.input = data.hyren_name;
                 this.dialogData = false;
+                this.getColumnByName(data.hyren_name, this.markCodeIndex);
+            }
+        },
+        nodeClickChartTreeWords(data, node) {
+            if (data.children.length === 0) {
+                this.tableDataPra[this.markIndexs].value_size = data.catValue;
+                this.tableDataPra[this.markIndexs].pre_value = data.label;
+                this.dialogDataConstant = false;
             }
         },
         //取消树点击选择表名
@@ -204,8 +258,68 @@ export default {
         },
         //点击自主取数数据集表格信息
         cellClick(row) {
-            this.input = row.name
+            this.input = row.fetch_name;
             this.dialogSelfData = false;
+            this.getColumnByName(row.fetch_name, this.markCodeIndex)
+        },
+        // 查询我的取数信息
+        getMyAccessInfo() {
+            functionAll.getMyAccessInfo().then(res => {
+                this.tableDataColumAuto = res.data;
+            })
+        },
+        // 获取代码项
+        getCategoryItems() {
+            functionAll.getCategoryItems({
+                category: 'AutoSourceObject'
+            }).then(res => {
+                this.codeArry = res.data;
+            })
+        },
+        // 根据表名获取字段信息
+        getColumnByName(val1, val2) {
+            functionAll.getColumnByName({
+                table_name: val1,
+                data_source: val2
+            }).then(res => {
+                // 数据处理
+                this.columnsWordsALL = res.data.columns;
+                this.hasComputeArry = res.data.numColumns;
+                let that = this;
+                // 变成树结构选择字段
+                this.data2.forEach(item => {
+                    item.children = [];
+                    if (res.data.numColumns.length > 0) {
+                        res.data.numColumns.forEach(val => {
+                            if (that.markCodeIndex === "01") {
+                                let obj = {
+                                    label: val.fetch_res_name,
+                                    children: []
+                                }
+                                if (item.label !== "选择所有结果字段（ * ）" || item.label !== "逐个选择表字段") {
+                                    item.children.push(obj);
+                                }
+
+                            } else if (that.markCodeIndex === "02") {
+                                let obj = {
+                                    label: val.column_name,
+                                    children: []
+                                }
+                                if (item.label !== "选择所有结果字段（ * ）" || item.label !== "逐个选择表字段") {
+                                    item.children.push(obj);
+                                }
+                            }
+                        })
+                    } else {
+
+                    }
+                })
+                console.log(this.data2)
+            })
+        },
+        // 添加字段信息
+        addWords() {
+            this.selectWords = true;
         }
 
     }
@@ -257,7 +371,8 @@ export default {
 }
 
 .showArryDivSelect {
-    height: 140px;
+    width: 100%;
+    height: 200px;
 }
 
 .visualizationDiv .elDialogInfo {
@@ -272,7 +387,7 @@ export default {
     width: 91%;
     background: #f5f5f5;
     margin-top: 10px;
-    border-radius:2px; 
+    border-radius: 2px;
 }
 
 .visualizationDiv .showArryDivContent {

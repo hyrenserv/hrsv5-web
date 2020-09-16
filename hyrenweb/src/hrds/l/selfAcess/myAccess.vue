@@ -252,14 +252,14 @@ export default {
         },
         // 根据value_type类型显示更多选择
         moreChooseClick(index, row) {
-            this.moreChooseClickIndex = index;
-            let i = this.markGetAllCodeItems.findIndex(item => item.value == row.value_size);
-            functionAll.getCategoryItems({
-                category: this.markGetAllCodeItems[i].keycode
-            }).then(res => {
-                this.chooseMoreData = res.data;
-            })
-            this.chooseMoreDataDiolag = true;
+            // this.moreChooseClickIndex = index;
+            // let i = this.markGetAllCodeItems.findIndex(item => item.value == row.value_size);
+            // functionAll.getCategoryItems({
+            //     category: this.markGetAllCodeItems[i].keycode
+            // }).then(res => {
+            //     this.chooseMoreData = res.data;
+            // })
+            // this.chooseMoreDataDiolag = true;
         },
         // 获取全部代码项
         getAllCodeItems() {

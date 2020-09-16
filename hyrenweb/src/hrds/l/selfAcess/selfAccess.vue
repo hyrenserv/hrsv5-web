@@ -63,8 +63,8 @@ import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return{
-            tableDataSelf:[{}],
-            tableDataMy:[{}],
+            tableDataSelf:[],
+            tableDataMy:[],
             activeName: 'first',
             inputText:'',
             searchMark:"auto"
