@@ -177,7 +177,7 @@
                         field: 'outType',
                         fieldType: 'String',
                         isRequired: '必填 ( stream / file)只能选择一种',
-                        remark: '输出的数据形式',
+                        remark: '输出的数据形式，stream数据默认展示100条',
                     },
                     {
                         field: 'asynType',
@@ -267,7 +267,7 @@
                         this.requestAddress = this.ipAndPort +
                             "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
                             "&tableName=emp&selectColumn=column1,column2" +
-                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=file&asynType=0";
+                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=stream&asynType=0";
                     })
             },
         }

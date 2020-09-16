@@ -82,9 +82,15 @@
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column label="类型描述" align='center'>
+                <el-table-column label="类型描述" align='center' width="180px">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.value_size" size="mini" placeholder="类型描述"></el-input>
+                        <el-input v-if="scope.row.value_type =='01' ||scope.row.value_type =='02'" v-model="scope.row.value_size" size="mini" placeholder="类型描述"></el-input>
+                        <div v-if="scope.row.value_type =='03'">
+                            <el-input v-model="scope.row.value_size" readonly size="mini" placeholder="选择日期格式" style="width:110px;margin-right:10px"></el-input><span @click="getDateFormat(scope.$index,scope.row)" class="spanWordsstyle">格式</span>
+                        </div>
+                        <div v-if="scope.row.value_type =='04'">
+                            <el-input v-model="scope.row.value_size" readonly size="mini" placeholder="选择常量" style="width:110px;margin-right:10px"></el-input><span @click="getConstant(scope.$index,scope.row)" class="spanWordsstyle">常量</span>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column label="预设值" align='center'>
@@ -137,7 +143,7 @@
             <el-row class="elRows">
                 <p class="tempalteInfo">数据预览</p>
                 <p class="tempalteButton">
-                    <span><span class="spanInfo">(温馨提示：最多只显示1000行)</span>
+                    <span><span class="spanInfo">(温馨提示：最多只显示1000行，默认10行)</span>
                         显示条数：<el-input placeholder="请输入非零的正整数" class="input-with-select" size="mini" style="width:200px" v-model="inputText">
                             <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
                         </el-input>
@@ -176,12 +182,48 @@
                 </span>
             </el-tree>
         </div>
-        <!-- <div slot="footer" class="dialog-footer">
-            <el-button size="mini" type="danger" @click="cancleAdd">取 消</el-button>
-            <el-button type="primary" @click="saveChangeAgent('formAdd')" size="mini">保存</el-button>
-        </div> -->
     </el-dialog>
 
+    <!-- //日期格式选择 -->
+    <el-dialog title="选择日期格式" :visible.sync="dialogDataDateFormate" width="500px">
+        <div style="margin-left:76px" v-if="DateFormateType !=='其他'">
+            <span style="margin-right:8px;">日期格式</span>
+            <el-select v-model="DateFormateType" placeholder="请选择" size="mini">
+                <el-option v-for="item in dateDataFormate" :key="item.formate" :label="item.formate" :value="item.formate">
+                </el-option>
+            </el-select>
+        </div>
+        <div style="margin-left:46px" v-if="DateFormateType =='其他'">
+            <span style="margin-right:8px;">日期格式</span>
+            <el-select v-model="DateFormateType" placeholder="请选择" size="mini" style="width:100px">
+                <el-option v-for="item in dateDataFormate" :key="item.formate" :label="item.formate" :value="item.formate">
+                </el-option>
+            </el-select>
+            <el-input v-model="DateFormateTypeValue" size="mini" style="width:200px;margin-left:6px" placeholder="显示名"></el-input>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button size="mini" type="danger" @click="canclesavedialogDataDateFormate">取 消</el-button>
+            <el-button type="primary" @click="savedialogDataDateFormate" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- //选择维表 -->
+    <el-dialog title="选择维表(单击选择)" :visible.sync="dialogDataConstant" width="600px">
+        <div class='mytree '>
+            <el-input placeholder="输入关键字进行过滤" v-model="filterTextChart" size="mini" />
+            <el-tree class="filter-tree elDialogInfo" :data="data2" :indent='0' :filter-node-method="filterNodeChart" :props="defaultProps" ref="trees" @node-click="nodeClickChartTree">
+                <span class="span-ellipsis" slot-scope="{ node, data }">
+                    <span v-if="data.children.length =='0'">
+                        <i class="el-icon-document"></i>{{node.label}}
+                    </span>
+                    <span v-else>
+                        <i class="el-icon-folder-opened"></i>{{node.label}}
+                    </span>
+                </span>
+            </el-tree>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -196,9 +238,9 @@ export default {
     data() {
         return {
             formLabelWidth: "130px",
-            showORhidden: false,
+            showORhidden: true,
             dialogData: false,
-            inputText: '',
+            inputText: '10',
             formAdd: {
                 template_desc: '',
                 data_source: '',
@@ -210,6 +252,7 @@ export default {
             tableDataPra: [],
             tableDataResult: [],
             filterText: '',
+            filterTextChart: '',
             webSqlTreeData: [],
             menuVisible: false,
             copydata: '',
@@ -222,6 +265,17 @@ export default {
             markResultArr: [],
             showOrhiddenSave: true,
             markIndexData: false,
+            dateDataFormate: [],
+            dialogDataDateFormate: false,
+            DateFormateType: 'yyyy-MM-dd',
+            markIndexs: '',
+            DateFormateTypeValue: '',
+            dialogDataConstant: false,
+            data2: [],
+            defaultProps: {
+                children: "children",
+                label: "label"
+            },
         }
     },
     mounted() {
@@ -279,7 +333,7 @@ export default {
             this.showOrhiddenResult = true;
             this.markIndexData = true;
         } else {
-            this.formAdd.data_source = "1";
+            this.formAdd.data_source = "0";
             this.markIndexData = false;
         }
         this.getCategoryItems(); //获取代码项
@@ -290,6 +344,9 @@ export default {
         filterText(val) {
             this.$refs.tree.filter(val);
         },
+        filterTextChart(val) {
+            this.$refs.trees.filter(val);
+        }
     },
     methods: {
         // 生成参数
@@ -544,8 +601,82 @@ export default {
             }).then(res => {
                 this.tableDataResult = res.data;
             })
-        }
+        },
+        // 获取日期格式
+        getDateFormat(index, row) {
+            if (row.value_type === "03") {
+                this.DateFormateType = row.value_size;
+                this.DateFormateTypeValue = row.value_size;
+            } else if (row.value_type === "04") {
 
+            }
+            this.markIndexs = index;
+            this.dateDataFormate = [{
+                formate: 'yyyy-MM-dd'
+            }, {
+                formate: 'yyyy/MM/dd'
+            }, {
+                formate: 'yyyy,MM,dd'
+            }, {
+                formate: 'MM/dd/yyyy'
+            }, {
+                formate: '其他'
+            }]
+            this.dialogDataDateFormate = true;
+        },
+        // 保存日期格式
+        savedialogDataDateFormate() {
+            if (this.DateFormateType !== '其他') {
+                this.tableDataPra[this.markIndexs].value_size = this.DateFormateType;
+            } else {
+                this.tableDataPra[this.markIndexs].value_size = this.DateFormateTypeValue;
+            }
+            this.dialogDataDateFormate = false;
+        },
+        // 取消保存日期格式
+        canclesavedialogDataDateFormate() {
+            this.dialogDataDateFormate = false;
+        },
+        // 获取常量
+        getConstant(index, row) {
+            this.getAllCodeItems();
+            this.markIndexs = index;
+            this.dialogDataConstant = true;
+        },
+        // 获取全部代码项
+        getAllCodeItems() {
+            functionAll.getAllCodeItems({}).then(res => {
+                let arr = [];
+                for (let key in res.data) {
+                    res.data[key].forEach(item => {
+                        item.label = item.value;
+                        item.children = [];
+                    })
+                    let object = {
+                        label: res.data[key][0].catValue,
+                        children: res.data[key]
+                    }
+                    arr.push(object)
+                    this.data2 = arr;
+                }
+            })
+        },
+        // 点击树获得对应表信息
+        nodeClickChartTree(data, node) {
+            if (data.children.length === 0) {
+                this.tableDataPra[this.markIndexs].value_size = data.catValue;
+                this.tableDataPra[this.markIndexs].pre_value = data.label;
+                this.dialogDataConstant = false;
+            }
+        },
+        // 快速筛选树
+        filterNodeChart(value, data) {
+            // 如果检索内容为空,直接返回
+            if (!value) return true;
+            if ('undefined' !== typeof data.label) {
+                return data.label.indexOf(value) !== -1
+            }
+        },
     }
 }
 </script>
@@ -682,5 +813,11 @@ export default {
 .configTemplate .eltables>>>.el-input--mini .el-input__inner {
     height: 24px;
     line-height: 24px;
+}
+
+/* 表格span标签 */
+.configTemplate .spanWordsstyle {
+    cursor: pointer;
+    color: #2196f3;
 }
 </style>

@@ -906,13 +906,13 @@ export default {
         // 搜索
         schfilter(val) {
             if (val != "") {
-                 this.isLoading = true;
+                this.isLoading = true;
                 let params = {};
                 params["colSetId"] = this.dbid;
                 params["inputString"] = val;
                 this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
-                     this.isLoading = false;
+                    this.isLoading = false;
                     if (res.data.length > 0) {
                         this.Searchzt = true
                         let data = res.data;
@@ -1023,31 +1023,38 @@ export default {
                     if (sqlExtractData.length > 0) {
                         let reparr2 = []
                         for (let j = 0; j < sqlExtractData.length; j++) {
-                            reparr2.push(sqlExtractData[j].table_name);
-                        }
-                        if (reparr2.length > 0) {
-                            let s = reparr2.join(",") + ",",
-                                rep_table2 = [];
-                            for (var i = 0; i < reparr2.length; i++) {
-                                if (s.replace(reparr2[i] + ",", "").indexOf(reparr2[i] + ",") > -1) {
-                                    rep_table2.push(reparr2[i]);
-                                }
-                            }
-                            if (rep_table2.length > 0) {
+                            if (!reparr2.includes(sqlExtractData[j].table_name)) {
+                                reparr2.push(sqlExtractData[j].table_name);
+                            } else {
                                 this.secondTrue = false
                                 this.isLoading = false;
-                                this.$Msg.customizTitle("sql抽取数据中存在表" + rep_table2 + "重复,请修改", 'error')
+                                this.$Msg.customizTitle("sql抽取数据中存在表" + sqlExtractData[j].table_name + "重复,请修改", 'error')
                                 this.activeName = "second";
-                            } else {
-                                for (let j = 0; j < sqlExtractData.length; j++) {
-                                    if (sqlExtractData[j].unload_type == "增量") {
-                                        isparmi2.push(sqlExtractData[j].table_name);
-                                    }
-                                    istrue.push(sqlExtractData[j].table_name);
-                                }
                             }
-
                         }
+                        // if (reparr2.length > 0) {
+                        //     let s = reparr2.join(",") + ",",
+                        //         rep_table2 = [];
+                        //     for (var i = 0; i < reparr2.length; i++) {
+                        //         if (s.replace(reparr2[i] + ",", "").indexOf(reparr2[i] + ",") > -1) {
+                        //             rep_table2.push(reparr2[i]);
+                        //         }
+                        //     }
+                        //     if (rep_table2.length > 0) {
+                        //         this.secondTrue = false
+                        //         this.isLoading = false;
+                        //         this.$Msg.customizTitle("sql抽取数据中存在表" + rep_table2 + "重复,请修改", 'error')
+                        //         this.activeName = "second";
+                        //     } else {
+                        for (let j = 0; j < sqlExtractData.length; j++) {
+                            if (sqlExtractData[j].unload_type == "增量") {
+                                isparmi2.push(sqlExtractData[j].table_name);
+                            }
+                            istrue.push(sqlExtractData[j].table_name);
+                        }
+                        // }
+
+                        // }
                     }
                     // 
                     if (this.secondTrue == true) {
@@ -1294,7 +1301,7 @@ export default {
                     JSON.stringify(tableColumn) === "{}" ?
                     "" :
                     JSON.stringify(tableColumn);
-                    console.log(params1)
+                console.log(params1)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == "200") {
                         this.activeSec = true;
@@ -1555,7 +1562,7 @@ export default {
                     });
                 }
                 let collstring = collTbConfParamString;
-                let dataFrom =  new FormData();
+                let dataFrom = new FormData();
                 dataFrom.append('colSetId', this.dbid);
                 dataFrom.append('tableInfoString', JSON.stringify(this.tablein));
                 dataFrom.append('collTbConfParamString', JSON.stringify(collstring));

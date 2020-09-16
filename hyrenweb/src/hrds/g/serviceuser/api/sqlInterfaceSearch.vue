@@ -165,7 +165,7 @@
                         field: 'outType',
                         fieldType: 'String',
                         isRequired: '必填 ( stream / file)只能选择一种',
-                        remark: '输出的数据形式',
+                        remark: '输出的数据形式,stream数据默认展示100条',
                     },
                     {
                         field: 'asynType',

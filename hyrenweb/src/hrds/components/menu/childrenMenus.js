@@ -83,7 +83,52 @@ const childrenMemus = {
             title: '版本管理',
             icon: 'el-icon-monitor',
         }
-    ]
+    ],
+    95: [
+        {
+            path: '/dataStoreLayer',
+            name: 'dataStoreActionIndex',
+            title: '存储层定义',
+            icon: 'el-icon-s-unfold',
+            component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')
+        }, {
+            path: '/typeLengthContrastInfo',
+            name: 'typeLengthContrastInfo',
+            title: '数据长度对比',
+            icon: 'el-icon-search',
+            component: () => import('@/hrds/a/datastore/typeLengthContrastInfo.vue')
+        },
+        {
+            path: '/dataTypeContrastInfo',
+            name: 'dataTypeContrastInfo',
+            title: '数据类型对比',
+            icon: 'el-icon-search',
+            component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')
+        }
+    ],
+    40: [
+        {
+            path: '/autonomousAnalysisOperate',
+            name: 'autonomousAnalysisOperate',
+            title: '自主取数',
+            icon: 'el-icon-folder-opened',
+            component: () => import('@/hrds/l/selfAcess/selfAccess.vue')
+        },
+        {
+            path: '/visualization',
+            name: 'visualization',
+            title: '数据可视化',
+            icon: 'el-icon-view',
+            component: () => import('@/hrds/l/selfAcess/visualization.vue')
+        },
+        {
+            path: '/dataDashboardList',
+            name: 'dataDashboardList',
+            title: '数据仪表盘',
+            icon: 'el-icon-pie-chart',
+            component: () => import('@/hrds/l/dataDashboard/dataDashboardList.vue')
+        }
+    ],
 };
 
 

@@ -21,3 +21,16 @@ export function getInterfaceData(data) {
         params: data
     })
 }
+/**
+ * 获取接口响应数据
+ */
+export function uuidDownload(data) {
+    return request({
+        url: '/G/serviceuser/impl/' + data.url,
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
