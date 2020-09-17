@@ -241,3 +241,19 @@ export function getColumnByName(data) {
         params: data
     })
 }
+//可视化创建组件根据条件获取sql
+export function getSqlByCondition(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getSqlByCondition',
+        params: data
+    })
+}
+
+//获取可视化组件结果（获取答案）
+export function getVisualComponentResult(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getVisualComponentResult',
+        params: data
+    })
+}
+
