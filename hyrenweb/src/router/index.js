@@ -1133,21 +1133,21 @@ export default new Router({
                 {
                     path: '/dataDashboard',
                     name: 'dataDashboard',
-                    title: '日志审查',
+                    title: '数据仪表盘',
                     component: () => import('@/hrds/l/dataDashboard/dataDashboard.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '日志审查' },
+                        { name: '数据仪表盘' },
                     ],
                 },
                 {
                     path: '/dataDashboardList',
                     name: 'dataDashboardList',
-                    title: '日志审查',
+                    title: '数据仪表盘',
                     component: () => import('@/hrds/l/dataDashboard/dataDashboardList.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '日志审查' },
+                        { name: '数据仪表盘' },
                     ],
                 },
                 {
