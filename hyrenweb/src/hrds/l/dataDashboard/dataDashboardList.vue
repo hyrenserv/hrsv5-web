@@ -1,10 +1,10 @@
 <template>
 <div id='dataDashboardList'>
     <el-row>
-        <el-button type="primary" size='mini' class='creat_panelBtn' @click="creat_panel()">新建仪表盘</el-button>
+        <el-button type="primary" size='mini' class='creatPanelBtn' @click="creatPanel()">新建仪表盘</el-button>
     </el-row>
     <el-table :data="dataDashboardList" size='medium' border stripe>
-        <el-table-column label="序号" type="index" width="60"></el-table-column>
+        <el-table-column label="序号" type="index" width="50"></el-table-column>
         <el-table-column label="仪表板名称" prop='dashboard_name'></el-table-column>
         <el-table-column label="仪表板描述" prop='dashboard_desc'></el-table-column>
         <el-table-column label="仪表盘发布状态" prop='dashboard_status'></el-table-column>
@@ -27,13 +27,7 @@ import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
-            dataDashboardList: [{
-                panel_name: '多组件',
-                panel_desc: '多组件',
-                panel_status: '0',
-                panel_updata: '2020-08-28 15:18:32',
-                panel_updataTime: '2020-09-01 09:48:56'
-            }],
+            dataDashboardList:[],
             options: [],
         }
     },
@@ -42,12 +36,10 @@ export default {
         this.getCategoryItems();
     },
     methods: {
-        creat_panel() {
+        creatPanel() {
             this.$router.push({
                 path: '/dataDashboard',
-                query: {
-                    is_add: '1',
-                }
+                query: {}
             })
         },
         // 获取代码项
@@ -114,7 +106,7 @@ export default {
 </script>
 
 <style scoped>
-.creat_panelBtn {
+.creatPanelBtn {
     float: right;
     margin: 0 10px 10px 0;
 }

@@ -1137,7 +1137,8 @@ export default new Router({
                     component: () => import('@/hrds/l/dataDashboard/dataDashboard.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据仪表盘' },
+                        { name: '数据仪表盘', url: '/dataDashboardList' },
+                        { name: '选择样式' },
                     ],
                 },
                 {
@@ -1147,7 +1148,7 @@ export default new Router({
                     component: () => import('@/hrds/l/dataDashboard/dataDashboardList.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据仪表盘' },
+                        { name: '数据仪表盘'}
                     ],
                 },
                 {

@@ -1,71 +1,34 @@
 <template>
 <div id='dataDashboard'>
-    <div class="container">
-        <div class="row" id="toubu" v-cloak>
-            <div class="col-md-12">
-                <h4 class="hysf-title">
-                    <div class="btn-group pull-right">
-                        <!-- <a class="btn btn-primary btn-sm" style="margin-right:10px" href="#" data-toggle="modal" data-target="#adddashboardsetModal2" v-show="choosezhuti_show && layout.length>0" v-cloak>
-     <span>选择主题</span>
-</a> -->
-                        <a href="#" id="fullScreen" class="btn btn-primary btn-sm" style="margin-right: 10px;" @click="fullScreen()">全屏预览</a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;"  data-toggle="modal" data-target="#addbackground"><span>背景色</span></a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;" data-toggle="modal" data-target="#adddashboardsetModal2"  v-show="layout.length>0"><span>选择主题</span></a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;" v-show="layout.length>0" @click="grid_line()"><span>网格线</span></a>
-                        <!-- <a href="#" style="display: none;margin-right: 10px;" id="fullScreenExit" class="btn btn-primary btn-sm" onclick="exitScreen()">退出全屏</a> -->
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;" data-toggle="modal" data-target="#addtextlableModal"  ><span>添加文本标签</span></a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;" data-toggle="modal" data-target="#addtextline"  v-show="layout.length>0"><span>添加分割线</span></a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;" data-toggle="modal" data-target="#addBorderLine"  v-show="layout.length>0"><span>添加边框</span></a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;" data-toggle="modal" data-target="#component_modal" @click="addcomponent()"><span>添加组件</span></a>
-                        <a href="#" class="btn btn-primary btn-sm" style="margin-right: 10px;"   @click="adddashboardbutton()"><span>保存仪表板</span></a>
-                        <a class="btn btn-primary btn-sm" style="margin-right: 10px;"><span>上一步</span></a>
-                    </div>
-                </h4>
-            </div>
+    <div class="row" id="toubu" v-cloak>
+        <div class="container">
+            <el-row class="btn-group pull-right">
+                <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
+                <el-button size="mini" type="primary"  @click="dialogBackgroundVisible=true">背景色</el-button>
+                <el-button size="mini" type="primary"  @click="dialogTitleVisible=true">选择主题</el-button>
+                <el-button size="mini" type="primary"  @click="gridLine">网格线</el-button>
+                <el-button size="mini" type="primary"  @click="dialogTextLabelVisible=true">添加文本标签</el-button>
+                <el-button size="mini" type="primary"  @click="dialogTextLineVisible=true">添加分割线</el-button>
+                <el-button size="mini" type="primary"  @click="dialogBorderVisible=true">添加边框</el-button>
+                <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
+                <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
+                <el-button size="mini" type="primary" @click="goIndex">返回上一级</el-button>
+            </el-row>
         </div>
         <div class="col-md-12">
             <div class="btn-group pull-left">
-                <!-- <div class="btn-group" v-show="bordercolor_show && layout.length>0" v-cloak>
-  <button style="margin-left: 10px;" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  	<span>边框类型</span>
-  </button>
-  <ul class="dropdown-menu">
-    <li v-for="(data,index) in borderstyle">
-    	<a href="#" @click="choosebordertype(data)">{{data.tmp_type}}</a>
-    </li>
-  </ul>
-</div>
-<div class="btn-group" v-show="bordercolor_show && layout.length>0" v-cloak>
-  <button style="margin-left: 10px;" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  	<span>边框颜色</span>
-  </button>
-  <ul class="dropdown-menu">
-    <li v-for="(data,index) in bordercolor">
-    	<a href="#" @click="choosebordercolor(data)">{{data.type}}</a>
-    </li>
-  </ul>
-</div>
-<div class="btn-group" v-show="bordercolor_show && layout.length>0" v-cloak>
-  <button style="margin-left: 10px;" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  	<span>边框粗细</span>
-  </button>
-  <ul class="dropdown-menu">
-    <li v-for="(data,index) in borderwidth">
-    	<a href="#" @click="chooseborderwidth(data)"><hr :style="data.style"></a>
-    </li>
-  </ul>
-</div> -->
-
                 <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.dashboard_theme">
             </div>
         </div>
-
         <div class="row clearfix" v-show="picshow" id="mydiv">
             <div class="col-md-12 column">
                 <div class="panel-body">
-                    <!--  :col-num="24" :row-height="50" -->
-                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
-                        <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
+                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'"
+                         class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" 
+                         :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false"
+                          :margin="[0, 0]" :use-css-transforms="true">
+                        <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" 
+                            :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
                             <div :id="item.type" style="width: 300px;height:200px;"></div>
                         </grid-item>
                     </grid-layout>
@@ -73,350 +36,207 @@
             </div>
         </div>
     </div>
-
-    <!-- 添加组件modal -->
-        <div id='component_modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">添加组件</h4>
-                    </div>
-                    <div class="modal-body pre-scrollable" style="overflow-y:auto;overflow-x:auto;max-height:450px;max-width:100%;padding-left:0;padding-right:0">
-                        <table id="component_tableid" class="table table-bordered table-striped table-condensed table-hover">
-                            <thead>
-                                <tr>
-                                    <th style="width:100px">序号</th>
-                                    <th style="width:100px">
-                                        <input id="field" v-model="chooseallcomponentmodel" type="checkbox" @click="chooseallcomponent($event)" style="width:16px;height:16px"><strong>选择</strong>
-                                    </th>
-                                    <th>组件名称</th>
-                                    <th>组件描述</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(data,index) in auto_comp_sum_array">
-                                    <td class="text-center">{{index+1}}</td>
-                                    <td class="text-center">
-                                        <input v-model="data.ischecked" name="choosecheckbox" type="checkbox" style="width:16px;height:16px">
-                                    </td>
-                                    <td class="text-center" v-show="false">{{data.component_id}}</td>
-                                    <td class="text-center">{{data.component_name}}</td>
-                                    <td class="text-center">{{data.component_desc}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div id="componentPage"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="confirmcomponent()">确定</button>
-                    </div>
-                </div>
-            </div>
+    <!-- 添加组件模态框 -->
+    <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%" :before-close="beforeAddComponentClose">
+        <el-table :data="auto_comp_sum_array" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
+            <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
+            </el-table-column>
+            <el-table-column label="序号" align="center">
+                <template slot-scope="scope">
+                    <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="component_name" label="组件名称" align="center" />
+            <el-table-column prop="component_desc" label="组件描述" align="center" />
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancel" size="mini">取 消</el-button>
+            <el-button type="primary" @click="showComponentOnDashboard" size="mini">确 认
+            </el-button>
         </div>
-    <!-- end -->
-
+    </el-dialog>
     <!-- 添加仪表盘模态框 -->
-        <div id="adddashboardModal" class="modal fade" style="margin-top:3%">
-            <form class="form-horizontal" role="form" id="adddashboardModalform" name="adddashboardModalform" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 v-if="is_add=='0'" class="modal-title">添加仪表盘</h4>
-                            <h4 v-else class="modal-title">编辑仪表盘</h4>
-                        </div>
-                        <div class="modal-body">
-                            <input v-model="auto_comp_sum.component_id" v-show="false">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">仪表盘名称</label>
-                                <div class="col-md-8">
-                                    <input v-model="auto_dashboard_info.dashboard_name" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="仪表盘名称" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">仪表盘描述</label>
-                                <div class="col-md-8">
-                                    <textarea v-model="auto_dashboard_info.dashboard_desc" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="仪表盘描述"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn-sm" @click="savedashboard()">保存</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <el-dialog title="添加仪表盘" :visible.sync="dialogDashboardVisible" width="50%" :before-close="beforeDashboardClose">
+        <el-form ref="addDashboardForm" :model="addDashboardForm" label-width="160px">
+            <el-form-item label="仪表盘名称">
+                <el-input v-model="auto_dashboard_info.dashboard_name"></el-input>
+            </el-form-item>
+            <el-form-item label="仪表盘描述">
+                <el-input v-model="auto_dashboard_info.dashboard_desc"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancel" size="mini">取 消</el-button>
+            <el-button type="primary" @click="saveDashboard" size="mini">确 认
+            </el-button>
         </div>
+    </el-dialog>
     <!-- 仪表盘主题设置模态框 -->
-        <div id="adddashboardsetModal2" class="modal fade" style="margin-top:3%">
-            <form class="form-horizontal" role="form" id="adddashboardsetModalform2" name="adddashboardsetModalform2" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">仪表盘主题设置</h4>
-                        </div>
-                        <div class="modal-body">
-                            <ul class="list-group">
-                                <li class="list-group-item" v-for="(data,index) in zhuti" data-dismiss="modal" @click="choosezhuti(data)">
-                                    <span>{{data.CN_type}}</span>
-                                    <img class="pull-right" :src="data.picurl" style="width: 30px;height: 100%;">
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <el-dialog title="仪表盘主题设置" :visible.sync="dialogTitleVisible" width="50%" :before-close="beforeTitleClose">
+        <el-form ref="addTitelForm" :model="addTitelForm" label-width="130px">
+           <div class="modal-body">
+            <ul class="list-group">
+                <li class="list-group-item" :key="index" v-for="(data,index) in titleData" data-dismiss="modal" 
+                    @click="chooseTitle(data)">
+                    <span>{{data.CN_type}}</span>
+                    <img class="pull-right" :src="data.picurl" style="width: 30px;height: 100%;">
+                </li>
+            </ul>
         </div>
-    <!-- 添加文本线框 -->
-        <div id="addtextline" class="modal fade" style="margin-top:3%">
-            <form class="form-horizontal" role="form" id="addtextlineform" name="addtextlineform" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">添加分割线</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">分割线类型</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_line_info.line_type" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="分割线类型">
-                                        <option value="heng">横向分割线</option>
-                                        <option value="zong">纵向分割线</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">分割线颜色</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_line_info.line_color" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="分割线颜色">
-                                        <option v-for="data in labelfontcolor" :value="data.code">{{data.cn_name}}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="confirmtextline()">确定</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+        </el-form>
+    </el-dialog>
+    <!-- 添加分割线模态框 -->
+    <el-dialog title="添加分割线" :visible.sync="dialogTextLineVisible" width="50%" :before-close="beforeTextLineClose">
+        <el-form ref="textLineForm" :model="textLineForm" label-width="130px">
+            <el-form-item label="分割线类型">
+                <el-select v-model="auto_line_info.line_type" placeholder="请选择分割线类型">
+                <el-option label="横向分割线" value="heng"></el-option>
+                <el-option label="纵向分割线" value="zong"></el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item label="分割线颜色">
+                <el-select v-model="auto_line_info.line_color" placeholder="请选择分割线颜色">
+                <el-option :key="index" v-for="(data,index) in labelfontcolor" :label="data.cn_name" :value="data.code"></el-option>
+            </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogTextLineVisible=false" size="mini">取 消</el-button>
+            <el-button type="primary" @click="confirmtextline" size="mini">确 认
+            </el-button>
         </div>
-    <!-- 设置背景色 -->
-    <!-- <el-dialog title=" 查看详情" :visible.sync="addbackground" width="60%"> -->
-        <div id="addbackground" class="modal fade" style="margin-top:3%">
-            <form class="form-horizontal" role="form" id="addbackgroundform" name="addbackgroundform" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">仪表板背景色</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">仪表板背景色</label>
-                                <div class="col-md-8">
-                                    <input id="echart_bgcolor" type="text" class="form-control" v-model="auto_dashboard_info.background" />
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="confirmbgcolor()">确定</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    </el-dialog>
+    <!-- 设置背景色模态框 -->
+    <el-dialog title="仪表板背景色" :visible.sync="dialogBackgroundVisible" width="50%" :before-close="beforeBackgroundClose">
+        <el-form ref="addBackgroundForm" :model="addBackgroundForm" label-width="130px">
+            <el-form-item label="仪表板背景色">
+                <el-input v-model="auto_dashboard_info.background"></el-input>
+            </el-form-item>
+        </el-form>
+            <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogBackgroundVisible=false" size="mini">取 消</el-button>
+            <el-button type="primary" size="mini" @click="confirmBackgroudColor">确定</el-button>
         </div>
-    <!-- </el-dialog> -->
-
-    <!-- 添加边框组件 -->
-        <div id="addBorderLine" class="modal fade" style="margin-top:3%">
-            <form class="form-horizontal" role="form" id="addBorderLineForm" name="addBorderLineForm" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">添加边框</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">启用阴影效果</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_frame_info.is_shadow" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="阴影效果">
-                                        <option value="0">是</option>
-                                        <option value="1">否</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">边框风格</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_frame_info.border_style" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="边框风格">
-                                        <option value="solid">实线边框</option>
-                                        <option value="dotted">点状边框</option>
-                                        <option value="dashed">虚线边框</option>
-                                        <option value="double">双线边框</option>
-                                        <option value="groove">3D凹槽边框</option>
-                                        <option value="ridge">3D垄状边框</option>
-                                        <option value="inset">3Dinset边框</option>
-                                        <option value="outset">3Doutset边框</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">边框颜色</label>
-                                <div class="col-md-8">
-                                    <input id="border_color" type="text" class="form-control" v-model="auto_frame_info.border_color" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">边框宽度</label>
-                                <div class="col-md-8">
-                                    <input id="border_width" type="text" class="form-control" v-model="auto_frame_info.border_width" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">边框圆角大小</label>
-                                <div class="col-md-8">
-                                    <input id="border_radius" type="text" class="form-control" v-model="auto_frame_info.border_radius" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="confirmFrameLine()">确定</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    </el-dialog>
+    <!-- 添加边框组件模态框 -->
+    <el-dialog title="添加边框" :visible.sync="dialogBorderVisible" width="50%" :before-close="beforeBorderClose">
+        <el-form ref="addBorderLineForm" :model="addBorderLineForm" label-width="130px">
+            <el-form-item label="启用阴影效果">
+                <el-select v-model="auto_frame_info.is_shadow" placeholder="请选择启用阴影效果">
+                <el-option label="是" value="1"></el-option>
+                <el-option label="否" value="0"></el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item label="边框风格">
+                <el-select v-model="auto_frame_info.border_style" placeholder="请选择边框风格">
+                    <el-option label="实线边框" value="solid"></el-option>
+                    <el-option label="点状边框" value="dotted"></el-option>
+                    <el-option label="虚线边框" value="dashed"></el-option>
+                    <el-option label="双线边框" value="double"></el-option>
+                    <el-option label="3D凹槽边框" value="groove"></el-option>
+                    <el-option label="3D垄状边框" value="ridge"></el-option>
+                    <el-option label="3Dinset边框" value="inset"></el-option>
+                    <el-option label="3Doutset边框" value="outset"></el-option>
+             </el-select>
+            </el-form-item>
+            <el-form-item label="边框颜色">
+                <el-input v-model="auto_frame_info.border_color"></el-input>
+            </el-form-item>
+            <el-form-item label="边框宽度">
+                <el-input v-model="auto_frame_info.border_width"></el-input>
+            </el-form-item>
+            <el-form-item label="边框圆角大小">
+                <el-input v-model="auto_frame_info.border_radius"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogBorderVisible=false" size="mini">取 消</el-button>
+            <el-button type="primary" @click="confirmtextline" size="mini">确 认
+            </el-button>
         </div>
+    </el-dialog>
     <!-- 添加文本标签模态框 -->
-        <div id="addtextlableModal" class="modal fade">
-            <form class="form-horizontal" role="form" id="addtextlableModalform" name="addtextlableModalform" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">添加文本标签</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">文本标签</label>
-                                <div class="col-md-8">
-                                    <input v-model="auto_label_info.label_content" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="文本标签" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">标签背景颜色</label>
-                                <div class="col-md-8">
-                                    <input id="label_color" type="text" class="form-control" style="resize:none;width:95%" v-model="auto_label_info.label_color" placeholder="标签背景颜色" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体颜色</label>
-                                <div class="col-md-8">
-                                    <input id="font_color" type="text" class="form-control" style="resize:none;width:95%" v-model="auto_label_info.textStyle.color" placeholder="字体颜色" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体粗细</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_label_info.textStyle.fontWeight" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="字体粗细">
-                                        <option value="lighter">细的</option>
-                                        <option value="normal">标准的</option>
-                                        <option value="bold">粗的</option>
-                                        <option value="bolder">加粗的</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体大小</label>
-                                <div class="col-md-8">
-                                    <input id="fontSize" type="text" class="form-control" style="resize:none;width:95%" v-model="auto_label_info.textStyle.fontSize" placeholder="字体大小" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体系列</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_label_info.textStyle.fontFamily" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="字体系列">
-                                        <option value="STHeiti">华文黑体</option>
-                                        <option value="STKaiti">华文楷体</option>
-                                        <option value="STSong">华文宋体</option>
-                                        <option value="STFangsong">华文仿宋</option>
-                                        <option value="SimHei">黑体</option>
-                                        <option value="SimSun">宋体</option>
-                                        <option value="NSimSun">新宋体</option>
-                                        <option value="FangSong">仿宋</option>
-                                        <option value="KaiTi">楷体</option>
-                                        <option value="FangSong_GB2312">仿宋_GB2312</option>
-                                        <option value="KaiTi_GB2312">楷体_GB2312</option>
-                                        <option value="Microsoft JhengHei">微软正黑体</option>
-                                        <option value="Microsoft YaHei">微软雅黑体</option>
-                                        <option value="LiSu">隶书</option>
-                                        <option value="YouYuan">幼圆</option>
-                                        <option value="STXihei">华文细黑</option>
-                                        <option value="STKaiti">华文楷体</option>
-                                        <option value="STSong">华文宋体</option>
-                                        <option value="STZhongsong">华文中宋</option>
-                                        <option value="STFangsong">华文仿宋</option>
-                                        <option value="FZShuTi">方正舒体</option>
-                                        <option value="FZYaoti">方正姚体</option>
-                                        <option value="STCaiyun">华文彩云</option>
-                                        <option value="STHupo">华文琥珀</option>
-                                        <option value="STLiti">华文隶书</option>
-                                        <option value="STXingkai">华文行楷</option>
-                                        <option value="STXinwei">华文新魏</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体风格</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_label_info.textStyle.fontStyle" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="字体风格">
-                                        <option value="normal">标准风格</option>
-                                        <option value="italic">斜体风格</option>
-                                        <option value="oblique">倾斜风格</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体对齐方式</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_label_info.textStyle.align" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="字体对齐方式">
-                                        <option value="flex-start">左对齐</option>
-                                        <option value="center">居中对齐</option>
-                                        <option value="flex-end">右对齐</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">字体垂直对齐方式</label>
-                                <div class="col-md-8">
-                                    <select v-model="auto_label_info.textStyle.verticalAlign" style="resize:none;width:95%" class="col-md-9 mart_desc form-control tip" placeholder="字体垂直对齐方式">
-                                        <option value="flex-start">上对齐</option>
-                                        <option value="center">中对齐</option>
-                                        <option value="flex-end">下对齐</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" @click="confirmtextlable()">确定</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <el-dialog title="添加文本标签" :visible.sync="dialogTextLabelVisible" width="50%" :before-close="beforeTextLabelClose">
+        <el-form ref="addTitelForm" :model="textLabelForm" label-width="130px">
+           <el-form-item label="文本标签">
+                <el-input v-model="auto_label_info.label_content"></el-input>
+            </el-form-item>
+            <el-form-item label="标签背景颜色">
+                <el-input v-model="auto_label_info.label_color"></el-input>
+            </el-form-item>
+            <el-form-item label="字体颜色">
+                <el-input v-model="auto_label_info.textStyle.color"></el-input>
+            </el-form-item>
+            <el-form-item label="字体粗细">
+                <el-select v-model="auto_label_info.textStyle.fontWeight" placeholder="请选择字体粗细">
+                    <el-option label="细的" value="lighter"></el-option>
+                    <el-option label="标准的" value="normal"></el-option>
+                    <el-option label="粗的" value="bold"></el-option>
+                    <el-option label="加粗的" value="bolder"></el-option>
+                </el-select>
+            </el-form-item>
+             <el-form-item label="字体大小">
+                <el-input v-model="auto_label_info.textStyle.fontSize"></el-input>
+            </el-form-item>
+            <el-form-item label="字体系列">
+                <el-select v-model="auto_label_info.textStyle.fontFamily" placeholder="请选择字体系列">
+                    <el-option label="华文黑体" value="STHeiti"></el-option>
+                    <el-option label="华文楷体" value="STKaiti"></el-option>
+                    <el-option label="华文宋体" value="STSong"></el-option>
+                    <el-option label="华文仿宋" value="STFangsong"></el-option>
+                    <el-option label="黑体" value="SimHei"></el-option>
+                    <el-option label="宋体" value="SimSun"></el-option>
+                    <el-option label="新宋体" value="NSimSun"></el-option>
+                    <el-option label="仿宋" value="FangSong"></el-option>
+                    <el-option label="楷体" value="KaiTi"></el-option>
+                    <el-option label="仿宋_GB2312" value="FangSong_GB2312"></el-option>
+                    <el-option label="楷体_GB2312" value="KaiTi_GB2312"></el-option>
+                    <el-option label="微软正黑体" value="Microsoft JhengHei"></el-option>
+                    <el-option label="微软雅黑体" value="Microsoft YaHei"></el-option>
+                    <el-option label="隶书" value="LiSu"></el-option>
+                    <el-option label="幼圆" value="YouYuan"></el-option>
+                    <el-option label="华文细黑" value="STXihei"></el-option>
+                    <el-option label="华文楷体" value="STKaiti"></el-option>
+                    <el-option label="华文宋体" value="STSong"></el-option>
+                    <el-option label="华文中宋" value="STZhongsong"></el-option>
+                    <el-option label="华文仿宋" value="STFangsong"></el-option>
+                    <el-option label="方正舒体" value="FZShuTi"></el-option>
+                    <el-option label="方正姚体" value="FZYaoti"></el-option>
+                    <el-option label="华文彩云" value="STCaiyun"></el-option>
+                    <el-option label="华文琥珀" value="STHupo"></el-option>
+                    <el-option label="华文隶书" value="STLiti"></el-option>
+                    <el-option label="华文行楷" value="STXingkai"></el-option>
+                    <el-option label="华文新魏" value="STXinwei"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="字体风格">
+                <el-select v-model="auto_label_info.textStyle.fontStyle" placeholder="请选择字体风格">
+                    <el-option label="标准风格" value="normal"></el-option>
+                    <el-option label="斜体风格" value="italic"></el-option>
+                    <el-option label="倾斜风格" value="oblique"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="字体对齐方式">
+                <el-select v-model="auto_label_info.textStyle.align" placeholder="请选择活动区域">
+                    <el-option label="左对齐" value="flex-start"></el-option>
+                    <el-option label="居中对齐" value="center"></el-option>
+                    <el-option label="右对齐" value="flex-end"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="字体垂直对齐方式">
+                <el-select v-model="auto_label_info.textStyle.verticalAlign" placeholder="请选择活动区域">
+                    <el-option label="上对齐" value="flex-start"></el-option>
+                    <el-option label="中对齐" value="center"></el-option>
+                    <el-option label="下对齐" value="flex-end"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+         <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogTextLabelVisible=false" size="mini">取 消</el-button>
+            <el-button type="primary" @click="confirmTextLable()" size="mini">确 认
+            </el-button>
         </div>
-    <!--  -->
+    </el-dialog>
 </div>
 </template>
 
@@ -439,19 +259,25 @@
 <script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
-//  var dashboard_id =  this.$route.query.dashboard_id;
-// var is_add = this.$route.query.is_add;
-// var dashboard_status =  this.$route.query.dashboard_status;
+import * as functionAll from "./dataDashboard";
 export default {
     data() {
         return {
-            component_modal: false,
-            adddashboardModal: false,
-            adddashboardsetModal2: false,
-            addtextline: false,
-            addbackground: false,
-            addBorderLine: false,
-            addtextlableModal: false,
+            addDashboardForm:{},
+            textLabelForm:{},
+            addTitelForm:{},
+            addBackgroundForm:{},
+            textLineForm:{},
+            addBorderLineForm:{},
+            selectRow:[],
+            dialogBackgroundVisible:false,
+            dialogAddComponentVisible: false,
+            dialogDashboardVisible: false,
+            dialogTitleVisible: false,
+            dialogTextLineVisible: false,
+            dialogBorderVisible: false,
+            dialogBorderVisible: false,
+            dialogTextLabelVisible: false,
             is_add: "",
             layout: [],
             echartdata: [],
@@ -467,6 +293,7 @@ export default {
             bcolor: "",
             option: {},
             foo: 1,
+            // 组件汇总表信息
             auto_comp_sum_array: [],
             //组件汇总表
             auto_comp_sum: {
@@ -524,12 +351,12 @@ export default {
             xArray: "",
             picshow: false,
             layoutFlag: false,
-            zhutiFlag: false,
+            titleFlag: false,
             tmp_auto_comp_sum_array: [],
-            //{"code":"01","CN_type":"黑色","type":"dark","bcolor":"#121212","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(0, 0, 0);","depth":"sheng","picurl":"../../../images/L0402theme/dark.jpg"},
-            //{"code":"02","CN_type":"亮白","type":"light","bcolor":"#FCFCFC","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(255, 255, 255);","depth":"qian","picurl":"../../../images/L0402theme/light.jpg"},
+            //{"code":"01","CN_type":"黑色","type":"dark","bcolor":"#121212","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(0, 0, 0);","depth":"sheng","picurl":"@/assets/images/images/theme/dark.jpg"},
+            //{"code":"02","CN_type":"亮白","type":"light","bcolor":"#FCFCFC","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(255, 255, 255);","depth":"qian","picurl":"@/assets/images/images/theme/light.jpg"},
             //主题设置参数
-            zhuti: [{
+            titleData: [{
                     "code": "00",
                     "CN_type": "原始",
                     "type": "source",
@@ -538,7 +365,7 @@ export default {
                     "ncolor": "rgb(67,142,185)",
                     "style": "background-color:transparent;",
                     "depth": "qian",
-                    "picurl": "../../../images/L0402theme/source.jpg"
+                    "picurl": require("@/assets/images/theme/source.jpg")
                 },
                 {
                     "code": "01",
@@ -549,7 +376,7 @@ export default {
                     "ncolor": "rgb(255,113,94)",
                     "style": "background-color:#6E6E6E;background-size: 100% 100%;",
                     "depth": "sheng",
-                    "picurl": "../../../images/L0402theme/halloween.jpg"
+                    "picurl": require("@/assets/images/theme/halloween.jpg")
                 },
                 {
                     "code": "02",
@@ -560,7 +387,7 @@ export default {
                     "ncolor": "rgb(155,139,186)",
                     "style": "background-color: rgb(91, 92, 110);",
                     "depth": "sheng",
-                    "picurl": "../../../images/L0402theme/purple.jpg"
+                    "picurl": require("@/assets/images/theme/purple.jpg")
                 },
                 {
                     "code": "03",
@@ -571,7 +398,7 @@ export default {
                     "ncolor": "rgb(137,52,72)",
                     "style": "background-color: rgba(242, 234, 191, 0.15);",
                     "depth": "qian",
-                    "picurl": "../../../images/L0402theme/essos.jpg"
+                    "picurl": require("@/assets/images/theme/essos.jpg")
                 },
                 {
                     "code": "04",
@@ -582,7 +409,7 @@ export default {
                     "ncolor": "rgb(252,151,175)",
                     "style": "background-color: rgb(41, 52, 65);",
                     "depth": "sheng",
-                    "picurl": "../../../images/L0402theme/chalk.jpg"
+                    "picurl": require("@/assets/images/theme/chalk.jpg")
                 },
             ],
             bordercolor: [{
@@ -705,7 +532,7 @@ export default {
             grid_layout_backgroundcolor: "background-color:transparent;",
             chart_obj_array: [],
             echart_theme: "",
-            choosezhuti_show: false,
+            chooseTitle_show: false,
             Global_component_array: [],
             tmp_card_layout: "",
             bordercolor_show: false,
@@ -914,7 +741,7 @@ export default {
                 show_line: true, //是否显示文本标签引导线
                 smooth: false, //是否平滑视觉引导线
             },
-            is_grid_line: false,
+            is_gridLine: false,
             is_showdel: true,
         }
     },
@@ -925,9 +752,9 @@ export default {
             //    		if(dashboard_status=='01'){
             //		$("#toubu").hide();
             //		}
-            if (this.is_grid_line == false) {
+            if (this.is_gridLine == false) {
                 $("#grid_style").removeClass("grid");
-                this.is_grid_line = true;
+                this.is_gridLine = true;
             }
 
             if (this.is_add == "1") {
@@ -942,7 +769,7 @@ export default {
                         "dashboard_id": this.dashboard_id,
                     },
                     dataType: "json",
-                    success: function (data) {
+                    success(data) {
                         resultdata = data;
                         //把组件,文本标签,分割线的layout区分开
                         var tmp_layout = data.data.layout;
@@ -968,7 +795,7 @@ export default {
                         this.tmp_auto_comp_sum_array = data.data.auto_comp_sum;
 
                         this.Global_component_array = data;
-                        this.Global_component_name_array = component_id_array;
+                        this.global_component_name_array = component_id_array;
 
                         if ('undefined' != typeof data.data.auto_label_info_array && null != typeof data.data.auto_label_info_array) {
                             this.auto_label_info_array = data.data.auto_label_info_array;
@@ -981,15 +808,15 @@ export default {
                         }
 
                         //        		if(dashboard_status != '01'){
-                        //        		this.choosezhuti_show = true;
+                        //        		this.chooseTitle_show = true;
                         //                		this.bordercolor_show = true;
                         //        		}
 
                     },
-                    beforeSend: function () {
+                    beforeSend() {
                         imgShow();
                     },
-                    complete: function () {
+                    complete() {
                         imgHide();
                     },
                 });
@@ -1001,11 +828,11 @@ export default {
                 var style = "";
                 var type = "";
                 echart_theme_obj = {};
-                for (var i = 0; i < this.zhuti.length; i++) {
-                    if (this.zhuti[i].code == code) {
-                        style = this.zhuti[i].style;
-                        type = this.zhuti[i].type;
-                        echart_theme_obj = this.zhuti[i];
+                for (var i = 0; i < this.titleData.length; i++) {
+                    if (this.titleData[i].code == code) {
+                        style = this.titleData[i].style;
+                        type = this.titleData[i].type;
+                        echart_theme_obj = this.titleData[i];
                     }
                 }
 
@@ -1018,31 +845,31 @@ export default {
                     });
                 }
                 var index = 0;
-                for (var i = 0; i < this.zhuti.length; i++) {
+                for (var i = 0; i < this.titleData.length; i++) {
                     if (code == "0" + i) {
                         index = i;
                     }
                 }
-                this.bcolor = this.zhuti[index].bcolor;
+                this.bcolor = this.titleData[index].bcolor;
                 setTimeout(() => {
                     for (var i = 0; i < resultdata.data.layout.length; i++) {
                         if (resultdata.data.layout[i].label == "0") {
                             $("#" + resultdata.data.layout[i].type).find("p").css({
-                                "background-color": this.zhuti[index].ncolor,
-                                "color": this.zhuti[index].fcolor
+                                "background-color": this.titleData[index].ncolor,
+                                "color": this.titleData[index].fcolor
                             });
                             $("#" + resultdata.data.layout[i].type).find("p").css({
-                                'background-color': this.zhuti[index].ncolor,
-                                "color": this.zhuti[index].fcolor
+                                'background-color': this.titleData[index].ncolor,
+                                "color": this.titleData[index].fcolor
                             });
                             var id = $("#" + resultdata.data.layout[i].type).attr("id");
                         } else if (resultdata.data.layout[i].label == "1") {
                             $("#" + resultdata.data.layout[i].type).find("div[class='lineclass']").css({
-                                'background-color': this.zhuti[index].ncolor
+                                'background-color': this.titleData[index].ncolor
                             });
                         } else if (resultdata.data.layout[i].label == "2") {
                             $("#" + resultdata.data.layout[i].type).css({
-                                'border': this.zhuti[index].ncolor + ' 2px solid'
+                                'border': this.titleData[index].ncolor + ' 2px solid'
                             });
                         } else {
 
@@ -1054,22 +881,22 @@ export default {
                     for (var i = 0; i < this.chart_obj_array.length; i++) {
                         if (this.chart_obj_array[i].layouttype == "card") {
                             $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                                "background-color": this.zhuti[index].ncolor,
-                                "color": this.zhuti[index].fcolor
+                                "background-color": this.titleData[index].ncolor,
+                                "color": this.titleData[index].fcolor
                             });
                             $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
-                                'background-color': this.zhuti[index].ncolor,
-                                "color": this.zhuti[index].fcolor
+                                'background-color': this.titleData[index].ncolor,
+                                "color": this.titleData[index].fcolor
                             });
-                            this.cardname = "background:" + this.zhuti[index].ncolor + ";color:" + this.zhuti[index].fcolor + ";font-family:" + this.title.fontFamily;
+                            this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
                             this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
                             this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
 
-                            this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.zhuti[index].ncolor + ";color:" + this.zhuti[index].fcolor;
+                            this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
                             this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
                         } else if (this.chart_obj_array[i].layouttype == "table") {
-                            this.tabStyle.th_background = this.zhuti[index].ncolor;
-                            this.tabStyle.zl_background = this.zhuti[index].ncolor;
+                            this.tabStyle.th_background = this.titleData[index].ncolor;
+                            this.tabStyle.zl_background = this.titleData[index].ncolor;
                         } else {
 
                         }
@@ -1077,7 +904,7 @@ export default {
                 }, 2000);
 
                 this.layoutFlag = false;
-                this.zhutiFlag = false;
+                this.titleFlag = false;
 
                 setTimeout(() => {
                     this.echartpic(resultdata, component_id_array);
@@ -1134,7 +961,7 @@ export default {
 
     },
     watch: {
-        layout: function (layout) {
+        layout(layout) {
             if (layout.length > 0) {
                 $("div[name='pic']").each(function () {
                     $(this).mouseup(function () {
@@ -1214,21 +1041,124 @@ export default {
         }
     },
     created() {
-        console.log(this.$route.query.is_add)
-
+        if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
+            this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+        }
     },
     methods: {
+         goIndex() {
+            this.$router.push({
+                path: 'dataDashboardList'
+            })
+        },
+        //根据仪表盘ID与仪表盘名称获取仪表盘信息
+        getDataDashboardInfoById(dashboard_id) {
+            functionAll.getDataDashboardInfoById({
+                "dashboard_id": dashboard_id
+            }).then(res => {
+                // this.dataDashboardList=res.data;
+            })
+        },
+        //获取可视化组件信息
+        getVisualComponentInfo() {
+           this.dialogAddComponentVisible=true;
+            functionAll.getVisualComponentInfo({}).then(res => {
+                if (res&&res.success) {
+                    this.auto_comp_sum_array = res.data;
+                }
+            })
+        },
+        //确定组件
+        showComponentOnDashboard() {
+            this.dialogAddComponentVisible=false;
+            this.picshow = true;
+            this.tmp_auto_comp_sum_array = [];
+            var component_name_array = [];
+            var reusltdata = [];
+            for (var i = 0; i < this.auto_comp_sum_array.length; i++) {
+                if (this.auto_comp_sum_array[i].ischecked == true) {
+                    this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
+                    component_name_array.push(this.auto_comp_sum_array[i].component_id);
+                }
+            }
+
+            if (component_name_array.length <= 0) {
+                this.$Msg.customizTitle('请选择一个组件', 'error')
+                return false;
+            }
+
+            this.global_component_name_array = component_name_array;
+            functionAll.showComponentOnDashboard({}).then(res => {
+                
+            })
+            this.label_layout = [];
+            this.line_layout = [];
+            this.frame_layout = [];
+            this.layoutFlag = false;
+            this.titleFlag = true;
+
+            setTimeout(() => {
+                this.echartpic(reusltdata, component_name_array);
+            }, 500);
+
+            setTimeout(() => {
+                this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
+                $("div[name='pic']").each(function () {
+                    $(this).trigger("mouseup");
+                });
+            }, 500);
+
+        },
+         // 关闭组件弹窗
+        beforeAddComponentClose() {
+            this.dialogAddComponentVisible = false;
+        },
+        // 关闭主题弹框
+        beforeTitleClose() {
+            this.dialogTitleVisible = false;
+        },
+         // 关闭仪表盘弹框
+        beforeDashboardClose() {
+            this.dialogDashboardVisible = false;
+        },
+         // 关闭分割线弹框
+        beforeTextLineClose() {
+            this.dialogTextLineVisible = false;
+        },
+        // 关闭背景色弹框
+        beforeBackgroundClose() {
+            this.dialogBackgroundVisible = false;
+        },
+        // 关闭边框弹框
+        beforeBorderClose() {
+            this.dialogBorderVisible = false;
+        },
+        // 关闭文本标签弹框
+        beforeTextLabelClose() {
+            this.dialogTextLabelVisible = false;
+        },
+        // 取消
+        cancel() {
+            this.$refs.multipleComponent.clearSelection();
+            this.dialogAddComponentVisible = false
+        },
+        // 表全选
+        allComponentSelect(all) {
+            this.selectRow = all
+        },
+        // 表复选框选中
+        componentSelectionChange(selectTrue) {
+            this.selectRow = selectTrue;
+        },
         fullScreen() {
-            console.log('2')
             var el = document.documentElement;
             var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
             if (typeof rfs != "undefined" && rfs) {
                 rfs.call(el);
             };
-            $('#fullScreen').hide();
             $(".navbar").hide();
             $('#toubu').hide();
-            $("#mybody").css("background-color", this.grid_layout_backgroundcolor);
+            $("#dataDashboard").css("background-color", this.grid_layout_backgroundcolor);
             this.is_showdel = false;
             $("#mydiv img").each(function () {
                 $(this).css("display", "none");
@@ -1242,14 +1172,14 @@ export default {
                     } else {
                         img_style += this.tmp_auto_comp_sum_array[i].background;
                     }
-                    var imgHTML = "<img src='../../../images/hidedel.png' style=" + img_style + " class='pull-right'>";
+                    var imgHTML = "<img src='@/assets/images/images/hidedel.png' style=" + img_style + " class='pull-right'>";
                     $(frame_img).append(imgHTML);
                 }
             }
             return;
         },
         //分割线编辑回显
-        textline_back: function () {
+        textline_back() {
             this.$nextTick(function () {
                 for (var i = 0; i < this.line_layout.length; i++) {
                     var layout_obj = this.line_layout[i];
@@ -1295,7 +1225,7 @@ export default {
             })
         },
         //边框回显
-        frame_back: function () {
+        frame_back() {
             this.$nextTick(function () {
                 for (var i = 0; i < this.frame_layout.length; i++) {
                     var layout_obj = this.frame_layout[i];
@@ -1332,7 +1262,7 @@ export default {
             })
         },
         //文本标签编辑回显
-        textlabel_back: function () {
+        textlabel_back() {
             this.$nextTick(function () {
                 for (var i = 0; i < this.label_layout.length; i++) {
                     var layout_obj = this.label_layout[i];
@@ -1379,7 +1309,7 @@ export default {
             })
         },
         //选择主题
-        choosezhuti: function (data) {
+        chooseTitle(data) {
             var code = data.code;
             var style = data.style;
             var type = data.type;
@@ -1458,10 +1388,10 @@ export default {
             this.line_layout = [];
             this.frame_layout = [];
             this.layoutFlag = false;
-            this.zhutiFlag = false;
+            this.titleFlag = false;
 
             setTimeout(() => {
-                this.echartpic(this.Global_component_array, this.Global_component_name_array);
+                this.echartpic(this.Global_component_array, this.global_component_name_array);
             }, 500);
 
             setTimeout(() => {
@@ -1491,7 +1421,7 @@ export default {
 
         },
         //文本标签主题设置
-        textlabeltheme: function () {
+        textlabeltheme() {
             if (this.echart_theme != "") {
                 if (this.echart_theme.depth == "sheng") {
                     for (var i = 0; i < this.textlabelarray.length; i++) {
@@ -1509,7 +1439,7 @@ export default {
             }
         },
         //分割线主题设置
-        textlinetheme: function () {
+        textlinetheme() {
             if (this.echart_theme != "") {
                 for (var i = 0; i < this.textlinearray.length; i++) {
                     this.chart_obj_array.push(this.textlinearray[i]);
@@ -1517,7 +1447,7 @@ export default {
             }
         },
         //边框主题设置
-        textframetheme: function () {
+        textframetheme() {
             if (this.echart_theme != "") {
                 for (var i = 0; i < this.textframearray.length; i++) {
                     this.chart_obj_array.push(this.textframearray[i]);
@@ -1525,7 +1455,7 @@ export default {
             }
         },
         //选择边框颜色
-        choosebordercolor: function (data) {
+        choosebordercolor(data) {
             var code = data.code;
             var style = data.style;
             var type = data.type;
@@ -1538,7 +1468,7 @@ export default {
 
         },
         //选择边框类型
-        choosebordertype: function (data) {
+        choosebordertype(data) {
             var style = data.style;
             this.auto_dashboard_info.bordertype = data.code;
             for (var i = 0; i < this.layout.length; i++) {
@@ -1550,7 +1480,7 @@ export default {
 
         },
         //选择边框粗细
-        chooseborderwidth: function (data) {
+        chooseborderwidth(data) {
             var style = data.type;
             this.auto_dashboard_info.borderwidth = data.code;
             for (var i = 0; i < this.layout.length; i++) {
@@ -1559,92 +1489,8 @@ export default {
                 $("#" + id).css("border-width", style.split(":")[1]);
             }
         },
-        //添加组件
-        addcomponent: function () {
-            $.ajax({
-                type: "POST",
-                url: "L0402_AddComponentPageSDO.do",
-                dataType: "json",
-                success: function (data) {
-                    this.auto_comp_sum_array = [];
-                    this.auto_comp_sum_array = data.data.auto_comp_sum_info;
-                    //        		loadProperties(this.path, this.language);
-
-                    //勾选已经选中的组件
-                    var layout_id_array = [];
-                    for (var i = 0; i < this.layout.length; i++) {
-                        layout_id_array.push(this.layout[i].type);
-                    }
-
-                    for (var j = 0; j < this.auto_comp_sum_array.length; j++) {
-                        this.auto_comp_sum_array[j].ischecked = false;
-                        if (layout_id_array.indexOf(this.auto_comp_sum_array[j].component_id) > -1) {
-                            this.auto_comp_sum_array[j].ischecked = true;
-                        }
-                    }
-
-                }
-            });
-        },
-        //确定组件
-        confirmcomponent: function () {
-            this.picshow = true;
-            this.tmp_auto_comp_sum_array = [];
-            var component_name_array = [];
-            var reusltdata = [];
-            for (var i = 0; i < this.auto_comp_sum_array.length; i++) {
-                if (this.auto_comp_sum_array[i].ischecked == true) {
-                    this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
-                    component_name_array.push(this.auto_comp_sum_array[i].component_id);
-                }
-            }
-
-            if (component_name_array.length <= 0) {
-                this.$Msg.customizTitle('请选择一个组件', 'error')
-                return false;
-            }
-
-            this.Global_component_name_array = component_name_array;
-            $.ajax({
-                type: "POST",
-                url: "L0402_ShowComponentOnDashBoardSDO.do",
-                async: false,
-                data: {
-                    "auto_comp_sum_array": JSON.stringify(this.tmp_auto_comp_sum_array),
-                },
-                dataType: "json",
-                success: function (data) {
-                    reusltdata = data;
-                    this.Global_component_array = data;
-                },
-                beforeSend: function () {
-                    imgShow();
-                },
-                complete: function () {
-                    imgHide();
-                },
-            });
-
-            this.label_layout = [];
-            this.line_layout = [];
-            this.frame_layout = [];
-            this.layoutFlag = false;
-            this.zhutiFlag = true;
-
-            setTimeout(() => {
-                this.echartpic(reusltdata, component_name_array);
-            }, 500);
-
-            setTimeout(() => {
-                this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
-                $("div[name='pic']").each(function () {
-                    $(this).trigger("mouseup");
-                });
-            }, 500);
-
-        },
         //保存仪表板
-        savedashboard: function () {
+        saveDashboard() {
             var picnum = 0;
             $("div[name='pic']").each(function () {
                 picnum++;
@@ -1659,7 +1505,7 @@ export default {
             }
             $.ajax({
                 type: "POST",
-                url: "SaveDashBoardSDO.do",
+                url: "saveDashboardSDO.do",
                 data: {
                     "is_add": this.is_add,
                     "layout": JSON.stringify(this.layout),
@@ -1669,7 +1515,7 @@ export default {
                     "auto_frame_info_list": JSON.stringify(this.auto_frame_info_list),
                 },
                 dataType: "json",
-                success: function (data) {
+                success(data) {
                     if (data.data.state == "0") {
                         this.$Msg.customizTitle('保存成功', 'success')
                         setTimeout(() => {
@@ -1682,20 +1528,20 @@ export default {
                         this.$Msg.customizTitle('系统异常,请联系管理员', 'error')
                     }
                 },
-                beforeSend: function () {
+                beforeSend() {
                     imgShow();
                 },
-                complete: function () {
+                complete() {
                     imgHide();
                 },
-                error: function () {
+                error() {
                     this.$Msg.customizTitle('系统异常,请联系管理员', 'error')
 
                 }
             });
         },
         //确定分割线
-        confirmtextline: function () {
+        confirmtextline() {
             if (this.layout.length <= 0) {
                 return false;
             }
@@ -1793,7 +1639,7 @@ export default {
             })
         },
         //添加边框
-        confirmFrameLine: function () {
+        confirmFrameLine() {
             if (this.layout.length <= 0) {
                 return false;
             }
@@ -1866,7 +1712,7 @@ export default {
             })
         },
         //确定文本标签
-        confirmtextlable: function () {
+        confirmTextLable() {
             if (this.layout.length <= 0) {
                 return false;
             }
@@ -2008,13 +1854,13 @@ $("#"+id).css("border-width",style.split(":")[1]);
 
         },
         //确认仪表板背景色
-        confirmbgcolor: function () {
+        confirmBackgroudColor() {
             var bgcolor = $('#echart_bgcolor').val();
             this.auto_dashboard_info.background = bgcolor;
             this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
         },
         //找出新增前后不同的组件
-        array_diff: function (compelx, part) {
+        array_diff(compelx, part) {
             var result = [];
             for (var index in compelx) {
                 var component_id = compelx[index].type;
@@ -2025,7 +1871,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             return result;
         },
         //找出新增前后相同的组件
-        array_alike: function (compelx, part) {
+        array_alike(compelx, part) {
             var result = [];
             for (var index in compelx) {
                 var component_id = compelx[index].type;
@@ -2036,7 +1882,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             return result;
         },
         //仪表板展示
-        echartpic: function (data, component_id_array) {
+        echartpic(data, component_id_array) {
             var echartlayout = [];
             for (var index in this.layout) {
                 if (this.layout[index].label == "0") {
@@ -2084,7 +1930,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
 
                 } else {
                     for (var i = 0; i < result_layout.length; i++) {
-                        if (this.zhutiFlag == true) {
+                        if (this.titleFlag == true) {
                             result_layout[i].x = "0";
                             result_layout[i].y = "0";
                         }
@@ -2401,41 +2247,40 @@ $("#"+id).css("border-width",style.split(":")[1]);
             this.chart_obj_array = chart_obj_array;
 
             setTimeout(() => {
-                this.confirmbgcolor();
+                this.confirmBackgroudColor();
             }, 100);
         },
-
         //卡片组件     添加删除按钮
-        carddelimage: function (id, imagevueobj) {
+        carddelimage(id, imagevueobj) {
             $("#" + id).find("div[name='cardcomponentname']").append(imagevueobj.$el);
         },
         //图表组件     添加删除按钮
-        tabledelimage: function (id, imagevueobj) {
+        tabledelimage(id, imagevueobj) {
             $("#" + id).find("div[name='tablecomponentname']").append(imagevueobj.$el);
         },
         //图表组件
-        tableimage: function (id, tablevueobj) {
+        tableimage(id, tablevueobj) {
             $("#" + id).append(tablevueobj.$el);
         },
         //标签组件
-        labeldelimage: function (id, imagevueobj) {
+        labeldelimage(id, imagevueobj) {
             $("#" + id).find("div[name='labelcomponentname']").append(imagevueobj.$el);
             //$("#"+id).append(imagevueobj.$el);
         },
         //分割线组件
-        linedelimage: function (id, imagevueobj) {
+        linedelimage(id, imagevueobj) {
             $("#" + id).find("div[name='linecomponentname']").append(imagevueobj.$el);
         },
         //MD组件
-        MDdelimage: function (id, imagevueobj) {
+        MDdelimage(id, imagevueobj) {
             $("#" + id).prepend(imagevueobj.$el);
         },
         //边框
-        framedelimage: function (id, imagevueobj) {
+        framedelimage(id, imagevueobj) {
             $("#" + id).prepend(imagevueobj.$el);
         },
         //地图
-        changeToMapChart: function (mapData, chart, id, layout, tmp_component_name, tmp_component_background) {
+        changeToMapChart(mapData, chart, id, layout, tmp_component_name, tmp_component_background) {
             var mydata = mapData.seriesData;
             var titles = transferOptionTitles(tmp_component_name, this.title);
 
@@ -2477,16 +2322,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
@@ -2541,7 +2386,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             chart.resize();
         },
         //柱状折线混合图-简单
-        changeToBLSimpleChart: function (blsimpleData, chart, id, layout, tmp_component_name, tmp_component_background) {
+        changeToBLSimpleChart(blsimpleData, chart, id, layout, tmp_component_name, tmp_component_background) {
             var xAxisdata = blsimpleData.xAxisdata;
             var series1Name = blsimpleData.series1Name;
             var series1Data = blsimpleData.series1Data;
@@ -2589,16 +2434,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
@@ -2654,7 +2499,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             chart.resize();
         },
         //多维柱状图
-        changeToBarmdChart: function (elobj, data, bcolor) {
+        changeToBarmdChart(elobj, data, bcolor) {
 
             var dimension = [];
             var xColLen = data.xColLen;
@@ -2707,14 +2552,14 @@ $("#"+id).css("border-width",style.split(":")[1]);
             return chart;
         },
         //气泡图
-        echartBubble: function (echartdata, bubbleChart, id, layout, tmp_component_name, bcolor) {
+        echartBubble(echartdata, bubbleChart, id, layout, tmp_component_name, bcolor) {
             var data = echartdata.seriesData;
             var echartBackground = bcolor;
             var textName = transferOptionTitles(tmp_component_name, this.title);
             renderBubbleChart(data, document.getElementById(id), textName, echartBackground);
         },
         //矩形树图
-        echartTreemap: function (echartdata, treemapChart, id, layout, tmp_component_name, tmp_component_background) {
+        echartTreemap(echartdata, treemapChart, id, layout, tmp_component_name, tmp_component_background) {
             var seriesArray = echartdata.seriesData;
             var titles = transferOptionTitles(tmp_component_name, this.title);
 
@@ -2730,16 +2575,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(treemapChart), 1);
@@ -2785,7 +2630,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             treemapChart.resize();
         },
         //柱状折线混合图
-        echartbl: function (echartdata, blChart, id, layout, tmp_component_name, tmp_component_background) {
+        echartbl(echartdata, blChart, id, layout, tmp_component_name, tmp_component_background) {
             var legend_data = echartdata.legend_data;
             var seriesArray = echartdata.seriesArray;
             var xArray = echartdata.xArray;
@@ -2823,16 +2668,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(blChart), 1);
@@ -2858,7 +2703,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             blChart.resize();
         },
         //盒须图
-        echartboxplot: function (echartdata, boxplotChart, id, layout, tmp_component_name) {
+        echartboxplot(echartdata, boxplotChart, id, layout, tmp_component_name) {
             var array = [];
             for (var i = 0; i < echartdata.legend_data.length; i++) {
                 var legend_data = echartdata.legend_data[i];
@@ -2903,16 +2748,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(boxplotChart), 1);
@@ -2936,7 +2781,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         show: false
                     },
                     axisLabel: {
-                        formatter: function (index) {
+                        formatter(index) {
                             return array[index]
                         }
                     },
@@ -2955,7 +2800,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         type: 'boxplot',
                         data: data.boxData,
                         tooltip: {
-                            formatter: function (param) {
+                            formatter(param) {
                                 return [
                                     '字段名称:' + array[param.dataIndex],
                                     'upper: ' + param.data[5],
@@ -2979,7 +2824,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             boxplotChart.resize();
         },
         //折线图
-        echartline: function (echartdata, lineChart, id, layout, tmp_component_name, tmp_component_background) {
+        echartline(echartdata, lineChart, id, layout, tmp_component_name, tmp_component_background) {
             var legend_data = echartdata.legend_data;
             var seriesArray = echartdata.seriesArray;
             var xArray = echartdata.xArray;
@@ -3022,16 +2867,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(lineChart), 1);
@@ -3055,7 +2900,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             lineChart.resize();
         },
         //极坐标柱状图
-        changeToPolarBarChart: function (radiusData, seriesData, chart, layout, tmp_component_name, tmp_component_background) {
+        changeToPolarBarChart(radiusData, seriesData, chart, layout, tmp_component_name, tmp_component_background) {
 
             var titles = transferOptionTitles(tmp_component_name, this.title);
 
@@ -3077,16 +2922,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
@@ -3117,7 +2962,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             chart.resize();
         },
         //柱状图
-        echartbar: function (echartdata, barChart, id, layout, tmp_component_name, tmp_component_background) {
+        echartbar(echartdata, barChart, id, layout, tmp_component_name, tmp_component_background) {
             var legend_data = echartdata.legend_data;
             var seriesArray = echartdata.seriesArray;
             var xArray = echartdata.xArray;
@@ -3166,16 +3011,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(barChart), 1);
@@ -3200,7 +3045,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             barChart.resize();
         },
         //饼图
-        echartpie: function (echartdata, pieChart, id, layout, tmp_component_name, tmp_component_background) {
+        echartpie(echartdata, pieChart, id, layout, tmp_component_name, tmp_component_background) {
             var legend_data = echartdata.legendData;
             var seriesArray = echartdata.seriesArray;
             var pietype = echartdata.pietype;
@@ -3240,16 +3085,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             mydeltool: {
                                 show: true,
                                 title: "删除",
-                                icon: "image://../../../images/del.png",
-                                onclick: function () {
+                                icon: "image://@/assets/images/images/del.png",
+                                onclick() {
                                     if (this.is_showdel == true) {
                                         this.layout.splice(this.layout.indexOf(layout), 1);
                                         this.Global_component_array["data"].layout = this.layout;
                                         delete this.Global_component_array["data"][layout.type];
-                                        this.Global_component_name_array = [];
+                                        this.global_component_name_array = [];
                                         for (var i = 0; i < this.layout.length; i++) {
                                             if (this.layout[i].label == undefined) {
-                                                this.Global_component_name_array.push(this.layout[i].type);
+                                                this.global_component_name_array.push(this.layout[i].type);
                                             }
                                         }
                                         this.chart_obj_array.splice(this.chart_obj_array.indexOf(pieChart), 1);
@@ -3272,7 +3117,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             pieChart.resize();
         },
         //散点图
-        echartscatter: function (echartdata, scatterChart, id, layout, tmp_component_name, tmp_component_background) {
+        echartscatter(echartdata, scatterChart, id, layout, tmp_component_name, tmp_component_background) {
             var scatterData = echartdata.scatterData;
             var data = scatterData;
             this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
@@ -3301,16 +3146,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://../../../images/del.png",
-                            onclick: function () {
+                            icon: "image://@/assets/images/images/del.png",
+                            onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.Global_component_name_array = [];
+                                    this.global_component_name_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.Global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_name_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(scatterChart), 1);
@@ -3403,7 +3248,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             scatterChart.resize();
         },
         //全选 组件
-        chooseallcomponent: function (event) {
+        chooseallcomponent(event) {
             if (this.chooseallcomponentmodel == true) {
                 for (var i in this.auto_comp_sum_array) {
                     this.auto_comp_sum_array[i].ischecked = false;
@@ -3415,21 +3260,21 @@ $("#"+id).css("border-width",style.split(":")[1]);
             }
         },
         //仪表板保存按钮
-        adddashboardbutton: function () {
+        addDashboardButton() {
             if (this.layout.length <= 0) {
                 this.$Msg.customizTitle('请选择一个组件', 'waring')
             } else {
-                $("#adddashboardModal").modal("show");
+                this.dialogDashboardVisible=true;
             }
         },
         //网格线
-        grid_line: function () {
-            if (this.is_grid_line == false) {
+        gridLine() {
+            if (this.is_gridLine == false) {
                 $("#grid_style").removeClass("grid");
-                this.is_grid_line = true;
+                this.is_gridLine = true;
             } else {
                 $("#grid_style").addClass("grid");
-                this.is_grid_line = false;
+                this.is_gridLine = false;
             }
         }
     },
@@ -3457,11 +3302,11 @@ var tableProfile = Vue.extend({
 
 //卡片仪表盘    删除按钮
 var Profile = Vue.extend({
-    template: "<img src='../../../images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
+    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
     data() {},
     props: ['echart_div_layout', 'layout_id'],
     methods: {
-        delcard: function (layout, echart_div_layout, layout_id) {
+        delcard(layout, echart_div_layout, layout_id) {
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
             this.Global_component_array["data"].layout = this.layout;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
@@ -3480,11 +3325,11 @@ var Profile = Vue.extend({
 
 //分割线   删除按钮
 var linedelProfile = Vue.extend({
-    template: "<img src='../../../images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
+    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
     data() {},
     props: ['echart_div_layout', 'auto_line_info'],
     methods: {
-        delcard: function (layout, echart_div_layout, auto_line_info) {
+        delcard(layout, echart_div_layout, auto_line_info) {
             this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
@@ -3503,11 +3348,11 @@ var linedelProfile = Vue.extend({
 
 //边框   删除按钮
 var framedelProfile = Vue.extend({
-    template: "<img src='../../../images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
+    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
     data() {},
     props: ['echart_div_layout', 'auto_frame_info'],
     methods: {
-        delcard: function (layout, echart_div_layout, auto_frame_info) {
+        delcard(layout, echart_div_layout, auto_frame_info) {
             this.auto_frame_info_list.splice(this.auto_frame_info_list.indexOf(auto_frame_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
@@ -3526,11 +3371,11 @@ var framedelProfile = Vue.extend({
 
 //文本标签    删除按钮
 var labeldelProfile = Vue.extend({
-    template: "<img src='../../../images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
+    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
     data() {},
     props: ['echart_div_layout', 'auto_label_info'],
     methods: {
-        delcard: function (layout, echart_div_layout, auto_label_info) {
+        delcard(layout, echart_div_layout, auto_label_info) {
             this.auto_label_info_array.splice(this.auto_label_info_array.indexOf(auto_label_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
@@ -3608,7 +3453,7 @@ window.onresize = function () {
             $(".navbar").show();
             $('#toubu').show();
             $('#fullScreen').show();
-            this.choosezhuti_show = true;
+            this.chooseTitle_show = true;
             this.bordercolor_show = true;
             $("#mybody").css("background-color", "background-color:rgb(255, 255, 255);");
             //$('#fullScreenExit').hide();
@@ -3678,6 +3523,12 @@ function  showProvince(pName, Chinese_){
 @import '/static/src/panal/css/app.css';
 @import '/static/src/panal/css/bootstrap-colorpicker.min.css';
 
+.el-input{
+    width: 360px;
+}
+.el-select{
+    width: 360px;
+}
 .table>tbody>tr>td {
     vertical-align: inherit !important;
 }
