@@ -208,7 +208,8 @@ export default {
             this.$router.push({
                 name: 'visualization',
                 query: {
-                    fetch_sum_id: this.$route.query.fetch_sum_id
+                    fetch_sum_id: this.$route.query.fetch_sum_id,
+                    fetch_name: this.name
                 }
             })
         },

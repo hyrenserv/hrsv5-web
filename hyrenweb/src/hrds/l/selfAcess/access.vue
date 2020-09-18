@@ -400,7 +400,11 @@ export default {
                     functionAll.saveAutoAccessInfo(parama).then((res) => {
                         if (res && res.success) {
                             this.$router.push({
-                                name: 'visualization'
+                                name: 'visualization',
+                                query: {
+                                    fetch_sum_id: this.markFetchId,
+                                    fetch_name: this.FormViewSave.fetch_name
+                                }
                             })
                         }
                     })
