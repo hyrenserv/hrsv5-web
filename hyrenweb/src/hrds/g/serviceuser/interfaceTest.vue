@@ -177,7 +177,14 @@ export default {
                     })
                 } else {
                     interfaceFunctionAll.getInterfaceData(this.testForm).then(res => {
-                        this.interfaceData = this.getFormatData(JSON.stringify(res.data));
+                        if (this.testForm.dataType == 'csv' && this.testForm.outType == 'stream') {
+                            this.interfaceData = res.data.message.replace(/\r\n/g, "");
+                            this.interfaceData = res.data.message.replace(/\n/g, "");
+                            console.log(this.interfaceData);
+                        } else {
+                            this.interfaceData = this.getFormatData(JSON.stringify(res.data));
+                        }
+
                     })
                 }
             }
