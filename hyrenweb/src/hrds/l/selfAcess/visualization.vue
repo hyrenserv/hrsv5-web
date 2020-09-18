@@ -119,7 +119,7 @@
     </el-row>
     <div class="lines"></div>
     <el-row>
-        <el-col :span="6">
+        <el-col :span="5">
             <div>
                 <el-input placeholder="请输入内容" v-model="input1" size="small" style="width:90%;">
                     <template slot="prepend">维度</template>
@@ -143,7 +143,7 @@
                 </div>
             </div>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="12">
             <el-input v-model="input1" size="small" style="width:90%">
                 <template slot="prepend">横轴</template>
             </el-input>
@@ -186,8 +186,9 @@
             </div>
             <div>
                 <el-tabs type="border-card" size="mini">
+                    <!-- <p  style="position: absolute;top:0;right:0;width:20px;height:20px;"><i class="el-icon-refresh"></i></p> -->
                     <el-tab-pane label="常规设置">
-                        <div style="height:200px;overflow:auto;">
+                        <div style="height:170px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图表背景颜色</span>
                                 <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
@@ -375,7 +376,90 @@
                             </el-tab-pane>
                             <el-tab-pane label="纵轴">
                                 <div style="height:240px;overflow:auto;">
-
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴名称</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴位置</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">是否显示</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴偏移量</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴名称位置</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴名称旋转角度</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴名称与轴线距离</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴线是否显示</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴线是否在0刻度</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴标签是否显示</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴标签是否朝内</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴标签旋转角度</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴标签与轴线间距</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">轴标签内容格式器</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
                                 </div>
                             </el-tab-pane>
                             <el-tab-pane label="字体样式">
@@ -1289,18 +1373,20 @@ export default {
     border-radius: 4px;
     padding: 6px 0;
     text-align: center;
-    width: 39%;
+    width:40%;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 12px;
     float: left;
     margin-top: 2px;
 }
-
+.visualizationDiv >>>.el-tabs--border-card>.el-tabs__content{
+    padding: 10px;
+}
 .selectPosition {
     position: absolute;
     top: 0%;
     right: 1%;
-    width: 60%;
+    width: 59%;
     height: 33px;
     line-height: 33px;
 }
