@@ -138,20 +138,15 @@
                 </el-input>
                 <div class="mytree" hight='200'>
                     <el-tree class="filter-tree" :data="treedata" :indent='0' :filter-node-method="filterNode" ref="tree" @node-click="handleNodeClick">
-                        <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                            <span :title="data.description" v-if="data.file_id.length > 0">
-                                <i class=" el-icon-document" />{{node.label}}
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                                <i class=" el-icon-document"></i>
+                                <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-else-if="data.original_name === '' && data.table_name !== ''">{{data.table_name}}</template>
+                                <template v-else>{{data.hyren_name}}</template>
                             </span>
                             <span :title="data.description" v-else>
-                                <i class="el-icon-folder-opened" />{{node.label}}
-                            </span>
-                        </span>
-                        <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
-                            <span :title="data.label" v-if="data.file_id.length > 0">
-                                <i class=" el-icon-document" />{{node.label}}
-                            </span>
-                            <span :title="data.label" v-else>
-                                <i class="el-icon-folder-opened" />{{node.label}}
+                                <i class="el-icon-folder-opened"></i>{{node.label}}
                             </span>
                         </span>
                     </el-tree>
@@ -175,6 +170,7 @@
                     </el-table-column>
                     <el-table-column prop="table_name" label="采集原始表名" align="center" />
                     <el-table-column prop="original_name" label="原始表中文名" align="center" />
+                    <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名" align="center" />
                     <el-table-column prop="selectColumn" label="选择字段" align="center">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="showtablecolumn(scope.row,scope.$index)">
@@ -1113,15 +1109,27 @@ export default {
         // 树节点触发
         handleNodeClick(data) {
             this.tableData = [];
-            if (data.file_id === "" && data.classify_id !== "") {
-                if (typeof data.children !== "undefined")
-                    this.tableData = data.children;
-            } else if (data.data_layer === "DML" && data.file_id === "") {
-                if (typeof data.children !== "undefined")
-                    this.tableData = data.children;
-            } else if (data.file_id !== "") {
+            //如果节点的file_id为未定义并且节点的分类id不为空并且节点分类不是未定义,代表该节点是分类信息,则添加分类下节点数据到展示区
+            if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id) {
+                //如果该节点的子节点信息不是未定义,则添加该节点下所有表信息
+                if (typeof data.children !== "undefined") {
+                    data.children.forEach(element => {
+                        //判断如果该节点下每个子节点的file_id不是未定义,并且不为空,代表该子节点是表信息,则添加该子节点到数据展示区
+                        if ('undefined' !== typeof element.file_id && element.file_id !== "") {
+                            this.tableData.push(element);
+                        }
+                    });
+                }
+            }
+            //如果数据层是DQC或者UDL,并且父id是DQC或者UDL则添加存储层下的表信息到展示区 
+            else if ((data.data_layer === 'DQC' || data.data_layer === 'UDL') && (data.parent_id === 'DQC' || data.parent_id === 'UDL')) {
+                this.tableData = data.children;
+            }
+            //如果file_id不为空,代表该节点是表信息,添加表信息到展示区 
+            else if ('undefined' !== typeof data.file_id && data.file_id !== "") {
                 this.tableData.push(data);
             }
+            this.totalSize = this.tableData.length;
         },
         // 搜索过滤节点
         filterNode(value, data) {
@@ -1161,11 +1169,11 @@ export default {
                 this.formInline.table_name + " T1 ";
             if (this.relationNums.length !== 0) {
                 for (let i = 0; i < this.relationNums.length; i++) {
-                    if (this.formInline["onCondition" + i] === undefined) {
+                    if (this.formInline["onCondition" + i] === undefined && this.formInline["onCondition" + i] === '') {
                         this.$Msg.customizTitle("请输入ON条件", 'warning');
                         return;
                     }
-                    if (this.formInline["joinCondition" + i] === undefined) {
+                    if (this.formInline["joinCondition" + i] === undefined && this.formInline["joinCondition" + i] === '') {
                         this.$Msg.customizTitle("请选择JOIN条件", 'warning');
                         return;
                     }
@@ -1173,8 +1181,10 @@ export default {
                         this.formInline["tableName" + i] + " T" + (i + 2) +
                         " ON " + this.formInline["onCondition" + i]
                 }
-                sql = sql + " where " + this.formInline.whereColumns;
-            } else if (this.formInline.groupColumns.length !== 0) {
+                if (this.formInline.whereColumns !== undefined && this.formInline.whereColumns !== '') {
+                    sql = sql + " where " + this.formInline.whereColumns;
+                }
+            } else if (this.formInline.groupColumns !== undefined && this.formInline.groupColumns !== '') {
                 sql = sql + " group by " + this.formInline.groupColumns;
             }
             this.$refs.sqleditor.setmVal(sql)
