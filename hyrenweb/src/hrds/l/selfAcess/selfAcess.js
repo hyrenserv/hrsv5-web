@@ -257,3 +257,12 @@ export function getVisualComponentResult(data) {
     })
 }
 
+//获取图表显示
+export function getChartShow(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getChartShow',
+        params: data
+    })
+}
+
+
