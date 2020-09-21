@@ -126,9 +126,11 @@
                     <el-button slot="append" icon="el-icon-search" size="small"></el-button>
                 </el-input>
                 <div class="showArryDiv showArryDivSelect ">
-                    <!-- <ul>
-                    <li v-for="(item,index) in columnsWordsALL" class="showArryDivContent" :key="item.nameAll" @click="addfiflterConditionWords(item,index)" style="padding-left:10px;height:30px;line-height:30px;"> {{item.nameAll}}</li>
-                </ul> -->
+                    <ul>
+                        <draggable class="list-group" :list="weiduArry" group="people">
+                            <li v-for="item in weiduArry" class="showArryDivContent" :key="item.nameAll" style="padding-left:10px;height:30px;line-height:30px;"> {{item.nameAll}}</li>
+                        </draggable>
+                    </ul>
                 </div>
             </div>
             <div>
@@ -137,19 +139,35 @@
                     <el-button slot="append" icon="el-icon-search" size="small"></el-button>
                 </el-input>
                 <div class="showArryDiv showArryDivSelect ">
-                    <!-- <ul>
-                    <li v-for="(item,index) in columnsWordsALL" class="showArryDivContent" :key="item.nameAll" @click="addfiflterConditionWords(item,index)" style="padding-left:10px;height:30px;line-height:30px;"> {{item.nameAll}}</li>
-                </ul> -->
+                    <ul>
+                        <draggable class="list-group" :list="duliangArry" group="people">
+                            <li v-for="item in duliangArry" class="showArryDivContent" :key="item.nameAll" style="padding-left:10px;height:30px;line-height:30px;"> {{item.nameAll}}</li>
+                        </draggable>
+                    </ul>
                 </div>
             </div>
         </el-col>
         <el-col :span="12">
-            <el-input v-model="input1" size="small" style="width:90%">
-                <template slot="prepend">横轴</template>
-            </el-input>
-            <el-input v-model="input1" size="small" style="width:90%;margin-top:10px;">
+            <div style="width:90%;height:30px;margin-bottom:12px;position: relative;border:1px solid #DCDFE6;border-radius: 4px;">
+                <span class="el-input-group__prepends" style="width:70px;margin-top:0px;border-top:none;border-left:none;border-bottom:none;height:30px;line-height:30px;padding:0;">横轴</span>
+                <div style="width:85%;height:30px;line-height:30px;background:#fff;overflow:auto;font-size:14px;">
+                    <draggable :list="xValueArry" group="people">
+                        <span v-for="(item,index) in xValueArry" :key="item.nameAll">{{item.nameAll}}<i class="el-icon-close" @click="deleteXvalue(item,index)" style="cursor:pointer;"></i>&nbsp</span>
+                    </draggable>
+                </div>
+            </div>
+
+            <div style="width:90%;height:30px;margin-bottom:12px;position: relative;border:1px solid #DCDFE6;border-radius: 4px;">
+                <span class="el-input-group__prepends" style="width:70px;margin-top:0px;border-top:none;border-left:none;border-bottom:none;height:30px;line-height:30px;padding:0;">纵轴</span>
+                <div style="width:85%;height:30px;line-height:30px;background:#fff;overflow:auto;font-size:14px;">
+                    <draggable :list="yValueArry" group="people">
+                        <span v-for="(item,index) in yValueArry" :key="item.nameAll">{{item.nameAll}}<i class="el-icon-close" @click="deleteYvalue(item,index)" style="cursor:pointer;"></i>&nbsp</span>
+                    </draggable>
+                </div>
+            </div>
+            <!-- <el-input v-model="input1" size="small" style="width:90%;margin-top:10px;">
                 <template slot="prepend">纵轴</template>
-            </el-input>
+            </el-input> -->
             <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
         </el-col>
         <el-col :span="7">
@@ -184,9 +202,10 @@
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='map'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/map.png" alt="地图" title="地图">
             </div>
-            <div>
+            <div style="position: relative;">
+                <!-- <i style="position: absolute;top:0;right:0;width:20px;height:20px;"><i class="el-icon-refresh"></i></p> -->
+                <el-button size="mini" icon="el-icon-refresh" style="position: absolute;top:0;right:0;z-index:10;top:6px;right:4px;"></el-button>
                 <el-tabs type="border-card" size="mini">
-                    <!-- <p  style="position: absolute;top:0;right:0;width:20px;height:20px;"><i class="el-icon-refresh"></i></p> -->
                     <el-tab-pane label="常规设置">
                         <div style="height:170px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
@@ -464,12 +483,71 @@
                             </el-tab-pane>
                             <el-tab-pane label="字体样式">
                                 <div style="height:240px;overflow:auto;">
-
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">背景色</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">水平位置</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">垂直位置</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">字体颜色</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">字体大小</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">字体风格</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">字体系列</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">字体粗细</span>
+                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">边框颜色</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
+                                    <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                        <span class="el-input-group__prepends">边框粗细</span>
+                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        </el-input>
+                                    </div>
                                 </div>
                             </el-tab-pane>
                         </el-tabs>
                     </el-tab-pane>
-                    <el-tab-pane label="图例设置">
+                    <el-tab-pane label="图例设置" v-if="changeGetchartsValue !=='map'">
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例类型</span>
@@ -567,6 +645,91 @@
                         </div>
 
                     </el-tab-pane>
+                    <el-tab-pane label="图例设置" v-if="changeGetchartsValue =='map'">
+                        <div style="height:300px;overflow:auto;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">是否显示</span>
+                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">左边距</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">右边距</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">上边距</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">下边距</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图例个数</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图例容量</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">布局朝向</span>
+                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">文本对齐</span>
+                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">内边距</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图例间隔</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图形宽度</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图形高度</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图例边框颜色</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图例边框粗细</span>
+                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
             </div>
         </el-col>
@@ -628,7 +791,11 @@
 
 <script>
 import * as functionAll from "./selfAcess";
+import draggable from 'vuedraggable'
 export default {
+    components: {
+        draggable
+    },
     data() {
         return {
             formvalue: '',
@@ -734,7 +901,12 @@ export default {
             }],
             changeGetchartsValue: '',
             input1: '',
-            tips: 'ceds'
+            tips: 'ceds',
+            xValueArry: [],
+            yValueArry: [],
+            value: '',
+            weiduArry: [],
+            duliangArry: [],
 
         }
     },
@@ -790,7 +962,10 @@ export default {
             } else {
                 this.dynamicColumnTableHiddens = false;
             }
-        }
+        },
+        duliangArry(val) {
+
+        },
     },
     methods: {
         //选择数据来源
@@ -946,6 +1121,38 @@ export default {
                         itemAll.nameAll = itemAll.column_name;
                     }
                 })
+                if (res.data.numColumns) {
+                    if (res.data.numColumns.length > 0) {
+                        res.data.numColumns.forEach(itemAll => {
+                            if (this.markCodeIndex === "01") {
+                                itemAll.nameAll = itemAll.fetch_res_name;
+                            } else if (this.markCodeIndex === "02") {
+                                itemAll.nameAll = itemAll.column_name;
+                            }
+                        })
+                        this.weiduArry = JSON.parse(JSON.stringify(res.data.numColumns)); //深拷贝
+                    } else {
+                        this.weiduArry = [];
+                    }
+                } else {
+                    this.weiduArry = [];
+                }
+                if (res.data.measureColumns) {
+                    if (res.data.measureColumns.length > 0) {
+                        res.data.measureColumns.forEach(itemAll => {
+                            if (this.markCodeIndex === "01") {
+                                itemAll.nameAll = itemAll.fetch_res_name;
+                            } else if (this.markCodeIndex === "02") {
+                                itemAll.nameAll = itemAll.column_name;
+                            }
+                        })
+                        this.duliangArry = JSON.parse(JSON.stringify(res.data.measureColumns));
+                    } else {
+                        this.duliangArry = [];
+                    }
+                } else {
+                    this.duliangArry = [];
+                }
                 this.columnsWordsALL = res.data.columns;
                 this.hasComputeArry = res.data.numColumns;
                 let that = this;
@@ -1269,10 +1476,37 @@ export default {
         },
         // 获取不同表的显示图片
         changeGetcharts(val) {
+            if (val == 'line') {
+
+            } else if (val == 'bar') {
+
+            } else if (val == 'scatter') {
+
+            } else if (val == 'pie') {
+
+            } else if (val == 'treemap') {
+
+            } else if (val == 'blend') {
+
+            } else if (val == 'map') {
+
+            }
             console.log(val)
-
         },
-
+        // 删除横轴x的选择字段信息
+        deleteXvalue(item, index) {
+            this.xValueArry.splice(index, 1);
+            if (this.weiduArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
+                this.weiduArry.push(item)
+            }
+        },
+        // 删除横轴y的选择字段信息
+        deleteYvalue(item, index) {
+            this.yValueArry.splice(index, 1);
+            if (this.duliangArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
+                this.duliangArry.push(item)
+            }
+        }
     }
 }
 </script>
@@ -1373,15 +1607,17 @@ export default {
     border-radius: 4px;
     padding: 6px 0;
     text-align: center;
-    width:40%;
+    width: 40%;
     white-space: nowrap;
     font-size: 12px;
     float: left;
     margin-top: 2px;
 }
-.visualizationDiv >>>.el-tabs--border-card>.el-tabs__content{
+
+.visualizationDiv>>>.el-tabs--border-card>.el-tabs__content {
     padding: 10px;
 }
+
 .selectPosition {
     position: absolute;
     top: 0%;
