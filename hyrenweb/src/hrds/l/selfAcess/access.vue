@@ -62,7 +62,11 @@
         </el-table-column>
         <el-table-column label="是否必填" align='center' width="120">
             <template slot-scope="scope">
-                <el-radio-group v-model="scope.row.is_required" disabled>
+                <el-radio-group v-model="scope.row.is_required" v-if="scope.row.is_required ==0">
+                    <el-radio :label="'1'">是</el-radio>
+                    <el-radio :label="'0'">否</el-radio>
+                </el-radio-group>
+                <el-radio-group v-model="scope.row.is_required" v-else disabled>
                     <el-radio :label="'1'">是</el-radio>
                     <el-radio :label="'0'">否</el-radio>
                 </el-radio-group>
