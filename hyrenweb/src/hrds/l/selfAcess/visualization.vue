@@ -169,6 +169,7 @@
                 <template slot="prepend">纵轴</template>
             </el-input> -->
             <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
+            <div id="myChart" :style="{width: '100%', height: '440px'}"></div>
         </el-col>
         <el-col :span="7">
             <el-select v-model="changeGetchartsValue" size="small" placeholder="请选择" style="width:98%;" @change="changeGetcharts">
@@ -176,31 +177,31 @@
                 </el-option>
             </el-select>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='line'">
-                <img style="width:87px;height:70px;cursor:pointer;" src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
+                <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')" src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
             </div>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='bar'">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/bar-muldimension.png" alt="多维柱状图(3)" title="多维柱状图(3)">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bar')" src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('barmd')" src="@/assets/images/chart/bar-muldimension.png" alt="多维柱状图(3)" title="多维柱状图(3)">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('polarbar')" src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
             </div>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='scatter'">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')" src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')" src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
             </div>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='pie'">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/pie-customized.png" alt="发散饼图" title="发散饼图">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('pie')" src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('fasanpie')" src="@/assets/images/chart/pie-customized.png" alt="发散饼图" title="发散饼图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('huanpie')" src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
             </div>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='treemap'">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('treemap')" src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
             </div>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='blend'">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bl')" src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')" src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
             </div>
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='map'">
-                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" src="@/assets/images/chart/map.png" alt="地图" title="地图">
+                <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('map')" src="@/assets/images/chart/map.png" alt="地图" title="地图">
             </div>
             <div style="position: relative;">
                 <!-- <i style="position: absolute;top:0;right:0;width:20px;height:20px;"><i class="el-icon-refresh"></i></p> -->
@@ -210,20 +211,21 @@
                         <div style="height:170px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图表背景颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="normalOptions.backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="normalOptions.backgroundcolor" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">是否显示文本</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="normalOptions.show_label" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">文本显示位置</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="normalOptions.position" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in normalOptions.optionposition" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
@@ -232,7 +234,7 @@
                                         <div slot="content"><span>{a}表示系列名 <br />{b}表示数据名<br />{c}表示数据值<br />{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
                                     </el-tooltip></span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="normalOptions.formatter" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                         </div>
@@ -246,7 +248,8 @@
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">背景颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="backgroundcolor" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
@@ -265,7 +268,8 @@
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="color" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="color" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
@@ -285,17 +289,18 @@
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体粗细</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="borderwidth" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">边框颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="bordercolor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="bordercolor" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">边框粗细</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="borderwidth" placeholder="请选择" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                         </div>
@@ -791,7 +796,8 @@
 
 <script>
 import * as functionAll from "./selfAcess";
-import draggable from 'vuedraggable'
+import draggable from 'vuedraggable';
+require('echarts/dist/extension/dataTool.js');
 export default {
     components: {
         draggable
@@ -799,6 +805,8 @@ export default {
     data() {
         return {
             formvalue: '',
+            myChart: '',
+            myChartType: '',
             input: '',
             options: [{
                     value: '自主数据数据集',
@@ -871,6 +879,184 @@ export default {
             ex_destinationcurrentPage: 1,
             ex_destinationpagesize: 5,
             loadingsearch: false,
+            backgroundcolor: 'transparent',
+            color: '#000000',
+            borderwidth: '0',
+            bordercolor: '#000000',
+            // auto_label
+            // titleFont
+            titleFont: {
+
+            },
+            // 常规设置
+            normalOptions: {
+                backgroundcolor: '#FFF',
+                show_label: '',
+                optionShowlabel: [{
+                    code: '0',
+                    value: '否'
+                }, {
+                    code: '1',
+                    value: '是'
+                }],
+                position: '',
+                optionposition: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }, {
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }, {
+                    code: 'inside',
+                    value: 'inside'
+                }, {
+                    code: 'insideTop',
+                    value: 'insideTop'
+                }, {
+                    code: 'insideLeft',
+                    value: 'insideLeft'
+                }, {
+                    code: 'insideRight',
+                    value: 'insideRight'
+                }, {
+                    code: 'insideBottom',
+                    value: 'insideBottom'
+                }, {
+                    code: 'insideTopLeft',
+                    value: 'insideTopLeft'
+                }, {
+                    code: 'insideTopRight',
+                    value: 'insideTopRight'
+                }, {
+                    code: 'insideBottomLeft',
+                    value: 'insideBottomLeft'
+                }, {
+                    code: 'insideBottomRight',
+                    value: 'insideBottomRight'
+                }],
+                formatter: '',
+            },
+            //标题设置字段总和
+            titleWord: {
+                align: "left", //标题水平位置
+                verticalAlign: "top", //标题垂直位置
+                backgroundColor: "transparent", //标题背景色
+                borderColor: "transparent", //标题边框颜色
+                borderWidth: 0, //标题边框粗细
+                borderRadius: 0, //坐标轴边框圆角
+                color: "#000000", //字体颜色
+                fontFamily: "Arial", //字体系列
+                fontSize: 24, //字体大小
+                fontStyle: "normal", //字体风格
+                fontWeight: "normal", //字体粗细
+                lineHeight: "40", //字体行高
+            },
+            //轴线设置--x轴字段
+            xAxis: {
+                type: "", //轴类型
+                data: [], //x轴数据
+                show: true, //是否显示
+                position: "bottom", //轴位置
+                offset: 0, //轴偏移量
+                name: "", //轴名称
+                nameLocation: "end", //轴名称位置
+                nameTextStyle: {}, //--轴名称样式
+                nameGap: 15, //名称与轴线距离
+                nameRotate: 0, //名称旋转角度
+                axisLine: {}, //--轴线
+                axisLabel: {} //--刻度标签
+            },
+            xAxisLine: {
+                show: '1', //轴线是否显示
+                onZero: '1', //是否在0刻度上
+                symbol: "none", //箭头显示方式
+                symbolOffset: 0, //箭头偏移量
+            },
+            xAxisLabel: {
+                show: '1', //刻度标签是否显示
+                inside: '0', //刻度标签是否朝内
+                rotate: 0, //刻度标签旋转角度
+                margin: 10, //刻度标签与轴线间距
+                formatter: null, //刻度标签内容格式器
+            },
+            //轴线设置--y轴
+            yAxis: {
+                type: "", //轴类型
+                show: true, //是否显示
+                position: "left", //轴位置
+                offset: 0, //轴偏移量
+                name: "", //轴名称
+                nameLocation: "end", //轴名称位置
+                nameTextStyle: {}, //--轴名称样式
+                nameGap: 15, //名称与轴线距离
+                nameRotate: 0, //名称旋转角度
+                axisLine: {}, //--轴线
+                axisLabel: {} //--刻度标签
+            },
+            yAxisLine: {
+                show: '1', //轴线是否显示
+                onZero: '1', //是否在0刻度上
+                symbol: "none", //箭头显示方式
+                symbolOffset: 0, //箭头偏移量
+            },
+            yAxisLabel: {
+                show: '1', //刻度标签是否显示 
+                inside: 0, //刻度标签是否朝内
+                rotate: 0, //刻度标签旋转角度
+                margin: 20, //刻度标签与轴线间距
+                formatter: null, //刻度标签内容格式器
+            },
+            //轴线字体
+            axisStyle: {
+                align: "center", //坐标轴水平位置
+                verticalAlign: "middle", //坐标轴垂直位置
+                backgroundColor: "transparent", //坐标轴背景色
+                borderColor: "transparent", //坐标轴边框颜色
+                borderWidth: 0, //坐标轴边框粗细
+                borderRadius: 0, //坐标轴边框圆角
+                color: "#000000", //字体颜色
+                fontFamily: "Arial", //字体系列
+                fontSize: 12, //字体大小
+                fontStyle: "normal", //字体风格
+                fontWeight: "normal", //字体粗细
+                lineHeight: "", //字体行高
+            },
+            //图例设置字段信息总和
+            auto_legend_info: {
+                type: '',
+                typeArr: [],
+                left_distance: '',
+                right_distance: '',
+                top_distance: '',
+                bottom_distance: '',
+                show: '',
+                show_legend_arr: [{
+                    code: '0',
+                    value: '否'
+                }, {
+                    code: '1',
+                    value: '是'
+                }],
+                itemwidth: '',
+                itemheight: '',
+                orient: '',
+                orient_legend_arr: [],
+                align: '',
+                align_legend_arr: [],
+                padding: '',
+                itemgap: '',
+                inactivecolor: '',
+                backgroundcolor: '',
+                bordercolor: '',
+                borderwidth: '',
+
+            },
             optionsCharts: [{
                 value: 'line',
                 label: '折线图'
@@ -901,13 +1087,13 @@ export default {
             }],
             changeGetchartsValue: '',
             input1: '',
-            tips: 'ceds',
+            tips: '',
             xValueArry: [],
             yValueArry: [],
             value: '',
             weiduArry: [],
             duliangArry: [],
-
+            markexe_sql: '',
         }
     },
     mounted() {
@@ -1453,6 +1639,7 @@ export default {
                 this.loadingsearch = false;
                 if (res && res.success) {
                     this.loadingsearch = true;
+                    this.markexe_sql = res.data;
                     this.getVisualComponentResult(res.data)
                 }
             })
@@ -1476,21 +1663,21 @@ export default {
         },
         // 获取不同表的显示图片
         changeGetcharts(val) {
-            if (val == 'line') {
-
-            } else if (val == 'bar') {
-
-            } else if (val == 'scatter') {
-
-            } else if (val == 'pie') {
-
-            } else if (val == 'treemap') {
-
-            } else if (val == 'blend') {
-
-            } else if (val == 'map') {
-
-            }
+            // if (val == 'line') {
+            //    
+            // } else if (val == 'bar') {
+            //    
+            // } else if (val == 'scatter') {
+            //    
+            // } else if (val == 'pie') {
+            //    
+            // } else if (val == 'treemap') {
+            //    
+            // } else if (val == 'blend') {
+            //    
+            // } else if (val == 'map') {
+            //    
+            // }
             console.log(val)
         },
         // 删除横轴x的选择字段信息
@@ -1506,7 +1693,162 @@ export default {
             if (this.duliangArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
                 this.duliangArry.push(item)
             }
-        }
+        },
+        // 获取表的数据信息
+        getChartShow() {
+            // functionAll.getChartShow({
+
+            // }).then(res=>{
+            //     exe_sql:  this.markexe_sql ,
+            //     x_columns:,
+            //     y_columns:,
+            //     chart_type:,
+            // })
+        },
+        // 选择图标类型
+        echartshow(type) {
+            this.myChartType = type;
+            let xColumns = '';
+            let yColumns = '';
+            //数据处理获取图信息
+            if (this.xValueArry.length > 0) {
+                this.xValueArry.forEach((item, index) => {
+                    if (index != this.xValueArry.length - 1) {
+                        xColumns += item.nameAll + ','
+                    } else {
+                        xColumns += item.nameAll
+                    }
+                })
+            }
+            if (this.yValueArry.length > 0) {
+                this.yValueArry.forEach((item, index) => {
+                    if (index != this.yValueArry.length - 1) {
+                        yColumns += item.nameAll + ','
+                    } else {
+                        yColumns += item.nameAll
+                    }
+                })
+            }
+            functionAll.getChartShow({
+                exe_sql: this.markexe_sql,
+                x_columns: xColumns,
+                y_columns: yColumns,
+                chart_type: type,
+            }).then(res => {
+                console.log(res.data)
+                if (type == 'line') {
+                    this.changeToAreaChart(xColumns, yColumns, type, res.data)
+                    this.tips = "横轴为1个维度,纵轴接受多个度量";
+                } else if (type == 'bar') {
+                    this.tips = "横轴为1个维度,纵轴接受多个度量";
+                } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
+                    this.tips = "横轴为1个维度,纵轴为1个度量";
+                } else if (type == "scatter") {
+                    this.tips = "横轴,纵轴都必须为度量";
+                } else if (type == "boxplot") {
+                    this.tips = "";
+                } else if (type == "bl") {
+                    this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
+                } else if (type == "treemap") {
+                    this.tips = "横轴接受1至2个维度,按第一个维度分类";
+                } else if (type == "barmd") {
+                    this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
+                } else if (type == "bubble") {
+                    this.tips = "横轴为1个维度,纵轴为1个度量";
+                } else if (type == "polarbar") {
+                    this.tips = "横轴为1个维度,纵轴为1个度量";
+                } else if (type == "blsimple") {
+                    this.tips = "横轴为1个维度,纵轴必须为2个度量";
+                } else if (type == "map") {
+                    this.tips = "横轴为1个维度,纵轴为1个度量";
+                }
+            })
+
+        },
+        //初始化echart
+        drawLine(option) {
+            this.myChart = echarts.init(document.getElementById('myChart'));
+            var myChart = this.myChart;
+            myChart.clear();
+            myChart.setOption(option);
+        },
+        // 折线图
+        changeToAreaChart(x_columns, y_columns, type, data) {
+            // let vm = this;
+            // var legend_data = data.legend_data;
+            // var seriesArray = data.seriesArray;
+            // var xArray = data.xArray;
+            // vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
+            // vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
+            // vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
+            // vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
+            // vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
+
+            // vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
+            // vm.xAxis.type = "category";
+            // vm.xAxis.data = xArray;
+            // vm.xAxis.nameTextStyle = vm.axisStyle;
+            // vm.xAxis.axisLine = vm.xAxisLine;
+            // vm.xAxis.axisLabel = vm.xAxisLabel;
+
+            // vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
+            // vm.yAxis.type = "value";
+            // vm.yAxis.nameTextStyle = vm.axisStyle;
+            // vm.yAxis.axisLine = vm.yAxisLine;
+            // vm.yAxis.axisLabel = vm.yAxisLabel;
+
+            // // var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.title);
+            // var titles = '写死';
+
+            // vm.legendStyle.data = legend_data;
+            // vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
+            // vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
+            // vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
+
+            // var itemStyles = transferSeriesItemStyle(vm.echartsLabel);
+            // for (var i = 0; i < seriesArray.length; i++) {
+            //     seriesArray[i].itemStyle = itemStyles;
+            // }
+
+            // option = {
+            //     backgroundColor: vm.auto_comp_sum.background,
+            //     title: titles,
+            //     tooltip: {
+            //         trigger: 'axis'
+            //     },
+            //     legend: vm.legendStyle,
+            //     grid: {
+            //         left: '3%',
+            //         right: '4%',
+            //         bottom: '3%',
+            //         containLabel: true
+            //     },
+            //     toolbox: {
+            //         feature: {
+            //             saveAsImage: {}
+            //         }
+            //     },
+            //     xAxis: vm.xAxis,
+            //     yAxis: vm.yAxis,
+            //     series: seriesArray
+            // };
+            // this.drawLine(option);
+            // let option = {
+            //     xAxis: {
+            //         type: 'category',
+            //         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            //     },
+            //     yAxis: {
+            //         type: 'value'
+            //     },
+            //     series: [{
+            //         data: [820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320],
+            //         type: 'line'
+            //     }]
+            // };
+            // this.drawLine(option);
+
+        },
     }
 }
 </script>
@@ -1616,6 +1958,22 @@ export default {
 
 .visualizationDiv>>>.el-tabs--border-card>.el-tabs__content {
     padding: 10px;
+}
+
+.visualizationDiv>>>.el-color-picker__trigger {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 30px;
+    width: 30px;
+    padding: 4px;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    font-size: 0;
+    position: absolute;
+    cursor: pointer;
+    top: 2px;
+    right: 20px;
 }
 
 .selectPosition {
