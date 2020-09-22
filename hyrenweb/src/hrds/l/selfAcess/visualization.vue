@@ -212,19 +212,19 @@
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图表背景颜色</span>
                                 <el-color-picker v-model="normalOptions.backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-model="normalOptions.backgroundcolor" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="normalOptions.backgroundcolor" placeholder="图表背景颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">是否显示文本</span>
-                                <el-select v-model="normalOptions.show_label" placeholder="请选择" size="small" class="selectPosition">
+                                <el-select v-model="normalOptions.show_label" placeholder="是否显示文本" size="small" class="selectPosition">
                                     <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">文本显示位置</span>
-                                <el-select v-model="normalOptions.position" placeholder="请选择" size="small" class="selectPosition">
+                                <el-select v-model="normalOptions.position" placeholder="文本显示位置" size="small" class="selectPosition">
                                     <el-option v-for="item in normalOptions.optionposition" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
@@ -234,7 +234,7 @@
                                         <div slot="content"><span>{a}表示系列名 <br />{b}表示数据名<br />{c}表示数据值<br />{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
                                     </el-tooltip></span>
-                                <el-input v-model="normalOptions.formatter" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="normalOptions.formatter" placeholder="文本格式化" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                         </div>
@@ -243,157 +243,160 @@
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">名称</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="value" placeholder="名称" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">背景颜色</span>
-                                <el-color-picker v-model="backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-model="backgroundcolor" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="titleFont.backgroundColor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="titleFont.backgroundColor" placeholder="背景颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">水平位置</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="titleFont.align" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in titleFont.titleFontalignArr" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">垂直位置</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="titleFont.verticalAlign" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in titleFont.titleFontverticalAlignArr" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体颜色</span>
-                                <el-color-picker v-model="color" style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-model="color" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="titleFont.color" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="titleFont.color" placeholder="字体颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体大小</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="titleFont.fontSize" placeholder="字体大小" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体风格</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                </el-input>
+                                <el-select v-model="titleFont.fontStyle" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in titleFont.titleFontfontStyleArr" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体系列</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                </el-input>
+                                <el-select v-model="titleFont.fontFamily" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in titleFont.titleFontfontFamilyArr" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">字体粗细</span>
-                                <el-input v-model="borderwidth" placeholder="请选择" size="small" class="selectPosition">
-                                </el-input>
+                                <el-select v-model="titleFont.fontWeight" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in titleFont.titleFontfontWeightArr" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">边框颜色</span>
-                                <el-color-picker v-model="bordercolor" style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-model="bordercolor" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="titleFont.borderColor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="titleFont.borderColor" placeholder="边框颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">边框粗细</span>
-                                <el-input v-model="borderwidth" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="titleFont.borderWidth" placeholder="边框粗细" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="轴线设置">
-                        <!-- <div style="height:300px;overflow:auto;">
-
-                        </div> -->
                         <el-tabs type="border-card" size="mini" style="margin-top:0px;">
                             <el-tab-pane label="横轴">
                                 <div style="height:240px;overflow:auto;">
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxis.name" placeholder="轴名称" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴位置</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxis.position" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in xAxis.xAxispositionArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">是否显示</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxis.show" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴偏移量</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxis.offset" placeholder="轴偏移量" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称位置</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxis.nameLocation" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in xAxis.xAxisnameLocationArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称旋转角度</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxis.nameRotate" placeholder="轴名称旋转角度" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称与轴线距离</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxis.nameGap" placeholder="轴名称与轴线距离" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴线是否显示</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxisLine.show" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴线是否在0刻度</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxisLine.onZero" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签是否显示</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxisLabel.show" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签是否朝内</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="xAxisLabel.inside" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签旋转角度</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxisLabel.rotate" placeholder="轴标签旋转角度" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签与轴线间距</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxisLabel.margin" placeholder="轴标签与轴线间距" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签内容格式器</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="xAxisLabel.formatter" placeholder="轴标签内容格式器" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                 </div>
@@ -402,86 +405,86 @@
                                 <div style="height:240px;overflow:auto;">
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxis.name" placeholder="轴名称" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴位置</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxis.position" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in yAxis.yAxispositionArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">是否显示</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxis.show" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴偏移量</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxis.offset" placeholder="轴偏移量" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称位置</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxis.nameLocation" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in yAxis.yAxisnameLocationArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称旋转角度</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxis.nameRotate" placeholder="轴名称旋转角度" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴名称与轴线距离</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxis.nameGap" placeholder="轴名称与轴线距离" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴线是否显示</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxisLine.show" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴线是否在0刻度</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxisLine.onZero" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签是否显示</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxisLabel.show" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签是否朝内</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="yAxisLabel.inside" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签旋转角度</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxisLabel.rotate" placeholder="轴标签旋转角度" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签与轴线间距</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxisLabel.margin" placeholder="轴标签与轴线间距" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">轴标签内容格式器</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="yAxisLabel.formatter" placeholder="轴标签内容格式器" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                 </div>
@@ -490,62 +493,65 @@
                                 <div style="height:240px;overflow:auto;">
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">背景色</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-color-picker v-model="axisStyle.backgroundColor" style="width:20px;height:20px;"></el-color-picker>
+                                        <el-input v-model="axisStyle.backgroundColor" placeholder="背景色" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">水平位置</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="axisStyle.align" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisStyle.axisStylealignArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">垂直位置</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="axisStyle.verticalAlign" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in axisStyle.axisStyleverticalAlignArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">字体颜色</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-color-picker v-model="axisStyle.color" style="width:20px;height:20px;"></el-color-picker>
+                                        <el-input v-model="axisStyle.color" placeholder="字体颜色" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">字体大小</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="axisStyle.fontSize" placeholder="字体大小" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">字体风格</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="axisStyle.fontStyle" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in titleFont.titleFontfontStyleArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">字体系列</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="axisStyle.fontFamily" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in titleFont.titleFontfontFamilyArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">字体粗细</span>
-                                        <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                        <el-select v-model="axisStyle.fontWeight" placeholder="请选择" size="small" class="selectPosition">
+                                            <el-option v-for="item in  titleFont.titleFontfontWeightArr" :key="item.value" :label="item.value" :value="item.code">
                                             </el-option>
                                         </el-select>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">边框颜色</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-color-picker v-model="axisStyle.borderColor" style="width:20px;height:20px;"></el-color-picker>
+                                        <el-input v-model="axisStyle.borderColor" placeholder="边框颜色" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">边框粗细</span>
-                                        <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-input v-model="axisStyle.borderWidth" placeholder="边框粗细" size="small" class="selectPosition">
                                         </el-input>
                                     </div>
                                 </div>
@@ -556,95 +562,98 @@
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例类型</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.type" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in legendStyle.legendStyletypeArr" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">是否显示</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.show" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">左边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.left" placeholder="左边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">右边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.right" placeholder="右边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">上边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.top" placeholder="上边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">下边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.bottom" placeholder="下边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例宽度</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.width" placeholder="图例宽度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例高度</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.height" placeholder="图例高度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">布局朝向</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.orient" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in legendStyle.legendStyleorientArr" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">文本对齐</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.align" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in legendStyle.legendStylealignArr" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">内边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.padding" placeholder="内边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图形宽度</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.itemWidth" placeholder="图形宽度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图形高度</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.itemHeight" placeholder="图形高度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例关闭颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="legendStyle.inactiveColor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="legendStyle.inactiveColor" placeholder="图例关闭颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例背景颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="legendStyle.backgroundColor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="legendStyle.backgroundColor" placeholder="图例背景颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例边框颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="legendStyle.borderColor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="legendStyle.borderColor" placeholder="图例边框颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例边框粗细</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.borderWidth" placeholder="图例边框粗细" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                         </div>
@@ -654,83 +663,84 @@
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">是否显示</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.show" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">左边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.left" placeholder="左边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">右边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.right" placeholder="右边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">上边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.top" placeholder="上边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">下边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.bottom" placeholder="下边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例个数</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.intervalnumber" placeholder="图例个数" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例容量</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.interval" placeholder="图例容量" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">布局朝向</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.orient" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in legendStyle.legendStyleorientArr" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">文本对齐</span>
-                                <el-select v-model="value" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                <el-select v-model="legendStyle.align" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in legendStyle.legendStylealignArr" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">内边距</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.padding" placeholder="内边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例间隔</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.itemGap" placeholder="图例间隔" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图形宽度</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.itemWidth" placeholder="图形宽度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图形高度</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.itemHeight" placeholder="图形高度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例边框颜色</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-color-picker v-model="legendStyle.borderColor" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="legendStyle.borderColor" placeholder="图例边框颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图例边框粗细</span>
-                                <el-input v-model="value" placeholder="请选择" size="small" class="selectPosition">
+                                <el-input v-model="legendStyle.borderWidth" placeholder="图例边框粗细" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                         </div>
@@ -885,13 +895,10 @@ export default {
             bordercolor: '#000000',
             // auto_label
             // titleFont
-            titleFont: {
-
-            },
             // 常规设置
             normalOptions: {
-                backgroundcolor: '#FFF',
-                show_label: '',
+                backgroundcolor: 'transparent', //背景色
+                show_label: '1', //是否显示
                 optionShowlabel: [{
                     code: '0',
                     value: '否'
@@ -899,7 +906,7 @@ export default {
                     code: '1',
                     value: '是'
                 }],
-                position: '',
+                position: '', //文本位置
                 optionposition: [{
                     code: 'left',
                     value: 'left'
@@ -940,38 +947,118 @@ export default {
                     code: 'insideBottomRight',
                     value: 'insideBottomRight'
                 }],
-                formatter: '',
+                formatter: '{b}', //格式化
             },
             //标题设置字段总和
-            titleWord: {
+            titleFont: {
                 align: "left", //标题水平位置
+                titleFontalignArr: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'center',
+                    value: 'center'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }],
                 verticalAlign: "top", //标题垂直位置
+                titleFontverticalAlignArr: [{
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }],
                 backgroundColor: "transparent", //标题背景色
                 borderColor: "transparent", //标题边框颜色
                 borderWidth: 0, //标题边框粗细
                 borderRadius: 0, //坐标轴边框圆角
                 color: "#000000", //字体颜色
                 fontFamily: "Arial", //字体系列
+                titleFontfontFamilyArr: [{
+                    code: 'sans-serif',
+                    value: '无衬线字体'
+                }, {
+                    code: 'serif',
+                    value: '衬线字体'
+                }, {
+                    code: 'monospace',
+                    value: '等宽字体'
+                }, {
+                    code: 'Arial',
+                    value: '宋体'
+                }],
                 fontSize: 24, //字体大小
                 fontStyle: "normal", //字体风格
+                titleFontfontStyleArr: [{
+                    code: 'normal',
+                    value: '标准风格'
+                }, {
+                    code: 'italic',
+                    value: '斜体风格'
+                }, {
+                    code: 'oblique',
+                    value: '倾斜风格'
+                }],
                 fontWeight: "normal", //字体粗细
+                titleFontfontWeightArr: [{
+                    code: 'lighter',
+                    value: '细的'
+                }, {
+                    code: 'normal',
+                    value: '标准的'
+                }, {
+                    code: 'bold',
+                    value: '粗的'
+                }, {
+                    code: 'bolder',
+                    value: '加粗的'
+                }],
                 lineHeight: "40", //字体行高
             },
             //轴线设置--x轴字段
             xAxis: {
                 type: "", //轴类型
                 data: [], //x轴数据
-                show: true, //是否显示
+                show: '1', //是否显示
                 position: "bottom", //轴位置
+                xAxispositionArr: [{
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }],
                 offset: 0, //轴偏移量
                 name: "", //轴名称
                 nameLocation: "end", //轴名称位置
+                xAxisnameLocationArr: [{
+                    code: 'start',
+                    value: 'start'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'end',
+                    value: 'end'
+                }],
                 nameTextStyle: {}, //--轴名称样式
                 nameGap: 15, //名称与轴线距离
                 nameRotate: 0, //名称旋转角度
                 axisLine: {}, //--轴线
                 axisLabel: {} //--刻度标签
             },
+            axisCheck: [{
+                code: '0',
+                value: '否'
+            }, {
+                code: '1',
+                value: '是'
+            }],
             xAxisLine: {
                 show: '1', //轴线是否显示
                 onZero: '1', //是否在0刻度上
@@ -988,11 +1075,28 @@ export default {
             //轴线设置--y轴
             yAxis: {
                 type: "", //轴类型
-                show: true, //是否显示
+                show: '1', //是否显示
                 position: "left", //轴位置
+                yAxispositionArr: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }],
                 offset: 0, //轴偏移量
                 name: "", //轴名称
                 nameLocation: "end", //轴名称位置
+                yAxisnameLocationArr: [{
+                    code: 'start',
+                    value: 'start'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'end',
+                    value: 'end'
+                }],
                 nameTextStyle: {}, //--轴名称样式
                 nameGap: 15, //名称与轴线距离
                 nameRotate: 0, //名称旋转角度
@@ -1015,7 +1119,27 @@ export default {
             //轴线字体
             axisStyle: {
                 align: "center", //坐标轴水平位置
+                axisStylealignArr: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'center',
+                    value: 'center'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }],
                 verticalAlign: "middle", //坐标轴垂直位置
+                axisStyleverticalAlignArr: [{
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }],
                 backgroundColor: "transparent", //坐标轴背景色
                 borderColor: "transparent", //坐标轴边框颜色
                 borderWidth: 0, //坐标轴边框粗细
@@ -1028,33 +1152,51 @@ export default {
                 lineHeight: "", //字体行高
             },
             //图例设置字段信息总和
-            auto_legend_info: {
-                type: '',
-                typeArr: [],
-                left_distance: '',
-                right_distance: '',
-                top_distance: '',
-                bottom_distance: '',
-                show: '',
-                show_legend_arr: [{
-                    code: '0',
-                    value: '否'
+            legendStyle: {
+                legendStyletypeArr: [{
+                    code: 'plain',
+                    value: '普通图例'
                 }, {
-                    code: '1',
-                    value: '是'
+                    code: 'scroll',
+                    value: '可滚动翻页的图例'
                 }],
-                itemwidth: '',
-                itemheight: '',
-                orient: '',
-                orient_legend_arr: [],
-                align: '',
-                align_legend_arr: [],
-                padding: '',
-                itemgap: '',
-                inactivecolor: '',
-                backgroundcolor: '',
-                bordercolor: '',
-                borderwidth: '',
+                type: "plain", //图例类型
+                show: '1', //是否显示
+                left: "center", //左边距
+                top: "auto", //上边距
+                right: "auto", //右边距
+                bottom: "auto", //下边距
+                width: "auto", //宽度
+                height: "auto", //高度
+                orient: "horizontal", //布局朝向
+                legendStyleorientArr: [{
+                    code: 'horizontal',
+                    value: '横向布局'
+                }, {
+                    code: 'vertical',
+                    value: '纵向布局'
+                }],
+                align: "auto", //图例与文本对齐,
+                legendStylealignArr: [{
+                    code: 'auto',
+                    value: '居中对齐'
+                }, {
+                    code: 'left',
+                    value: '左对齐'
+                }, {
+                    code: 'right',
+                    value: '右对齐'
+                }],
+                padding: 5, //图例内边距
+                itemGap: 10, //图例间隔
+                itemWidth: 25, //图例宽度
+                itemHeight: 14, //图例高度
+                inactiveColor: "#cccccc", //图例关闭时颜色
+                backgroundColor: "transparent", //图例背景颜色
+                borderColor: "#cccccc", //边框颜色
+                borderWidth: 0, //边框大小
+                interval: 100, //图例容量(地图)
+                intervalnumber: 4, //图例个数(地图)
 
             },
             optionsCharts: [{
