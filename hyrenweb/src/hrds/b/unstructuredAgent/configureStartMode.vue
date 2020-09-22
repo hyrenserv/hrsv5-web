@@ -6,43 +6,46 @@
 
     <el-row class="partTwo">
         <el-form ref="form" :model="form" status-icon>
-            <el-col :span="12">
-                <el-form-item label="归属Agent" :label-width="formLabelWidth">
-                    <el-input v-model="form.agent_name" placeholder="归属Agent" :size="size" :disabled="disabled"></el-input>
-                </el-form-item>
-            </el-col>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="归属Agent" :label-width="formLabelWidth">
+                        <el-input v-model="form.agent_name" placeholder="归属Agent" :size="size" :disabled="disabled"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="非结构化任务名称" :label-width="formLabelWidth" prop="fcs_name" :rules="filter_rules([{required: true}])">
+                        <el-input v-model="form.fcs_name" placeholder="非结构化任务名称" :size="size"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="操作系统类型" :label-width=" formLabelWidth">
+                        <el-input v-model="form.system_type" placeholder="操作系统类型" :size="size" :disabled="disabled"></el-input>
+                    </el-form-item>
+                </el-col>
 
-            <el-col :span="12">
-                <el-form-item label="非结构化任务名称" :label-width="formLabelWidth" prop="fcs_name" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.fcs_name" placeholder="非结构化任务名称" :size="size"></el-input>
-                </el-form-item>
-            </el-col>
+                <el-col :span="12">
+                    <el-form-item label="主机名" :label-width="formLabelWidth">
+                        <el-input v-model="form.host_name" placeholder="主机名" :size="size" :disabled="disabled"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="本地系统时间" :label-width="formLabelWidth">
+                        <el-input v-model="form.systemtime" placeholder="本地系统时间" :size="size" :disabled="disabled"></el-input>
+                    </el-form-item>
+                </el-col>
 
-            <el-col :span="12">
-                <el-form-item label="操作系统类型" :label-width=" formLabelWidth">
-                    <el-input v-model="form.system_type" placeholder="操作系统类型" :size="size" :disabled="disabled"></el-input>
-                </el-form-item>
-            </el-col>
+                <el-col :span="12">
+                    <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth">
+                        <el-input v-model="form.agent_time" placeholder="数据采集服务器时间" :size="size" :disabled="disabled"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
 
-            <el-col :span="12">
-                <el-form-item label="主机名" :label-width="formLabelWidth">
-                    <el-input v-model="form.host_name" placeholder="主机名" :size="size" :disabled="disabled"></el-input>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item label="本地系统时间" :label-width="formLabelWidth">
-                    <el-input v-model="form.systemtime" placeholder="本地系统时间" :size="size" :disabled="disabled"></el-input>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item label="数据采集服务器时间" :label-width="formLabelWidth">
-                    <el-input v-model="form.agent_time" placeholder="数据采集服务器时间" :size="size" :disabled="disabled"></el-input>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="11">
+            <!-- <el-col :span="11">
                 <el-form-item label="开始日期" :label-width="formLabelWidth" prop="start_date" :rules="rule.selected">
                     <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" v-model="form.start_date" placeholder="选择开始日期" style="width:100%;"></el-date-picker>
                     <el-input v-model="DifferenceValue" v-if="hidden = false"></el-input>
@@ -53,9 +56,9 @@
                 <el-tooltip class="item" effect="dark" content="任务采集开始日期" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
-            </el-col>
+            </el-col> -->
 
-            <el-col :span="11">
+            <!-- <el-col :span="11">
                 <el-form-item label="结束日期" :label-width="formLabelWidth" prop="end_date" :rules="rule.selected">
                     <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyyMMdd" v-model="form.end_date" placeholder="选择结束日期" style="width:100%;"></el-date-picker>
                 </el-form-item>
@@ -65,24 +68,25 @@
                 <el-tooltip class="item" effect="dark" content="任务采集结束日期，不填写默认为9999-12-31" placement="right">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </el-tooltip>
-            </el-col>
+            </el-col> -->
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="是否建立全文检索" :label-width="formLabelWidth">
+                        <el-radio-group v-model="form.is_solr" @change="handerChange_realtime">
+                            <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
 
-            <el-col :span="12">
-                <el-form-item label="是否建立全文检索" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.is_solr" @change="handerChange_realtime">
-                        <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
+            <!-- <el-col :span="12">
                 <el-form-item label="启动方式" :label-width="formLabelWidth" prop="run_way" :rules="rule.selected">
                     <el-select v-model="form.run_way" placeholder="请选择启动方式" clearable style="width: 100%;">
                         <el-option v-for="item in runWay" :key="item.value" :label="item.value" :value="item.run_way">
                         </el-option>
                     </el-select>
                 </el-form-item>
-            </el-col>
+            </el-col> -->
 
             <!-- <el-col :span="12">
                 <el-form-item label="设置文件源" :label-width="formLabelWidth">
@@ -166,7 +170,8 @@ export default {
                 }).then((res) => {
                     if (res && res.success) {
                         // 数据回显
-                        this.form.fcs_name = res.data.file_collect_set_info.fcs_name
+                        this.form.fcs_id = res.data.file_collect_set_info.fcs_id;
+                        this.form.fcs_name = res.data.file_collect_set_info.fcs_name;
                         this.form.system_type = res.data.file_collect_set_info.system_type;
                         this.form.host_name = res.data.file_collect_set_info.host_name;
                         this.form.is_solr = res.data.file_collect_set_info.is_solr;
@@ -230,7 +235,7 @@ export default {
                 this.$Msg.customizTitle('结束日期不能小于开始日期!', 'warning')
             } else {
                 this.$refs[formName].validate(valid => {
-                    let fcs_id = this.$route.query.fcs_id;
+                    let fcs_id = this.$route.query.id;
                     this.form["agent_id"] = this.$route.query.agent_id;
                     this.form["fcs_id"] = fcs_id;
                     this.form['agent_time'] = this.oldserveTime;
@@ -249,7 +254,7 @@ export default {
                                         query: {
                                             fcs_id: fcs_id,
                                             agent_id: this.$route.query.agent_id,
-                                            agent_name: this.$route.query.agent_name
+                                            agent_name: this.$Base64.encode(this.form.agent_name),
                                         }
                                     });
                                 } else {
@@ -271,7 +276,7 @@ export default {
                                         query: {
                                             fcs_id: res.data,
                                             agent_id: this.$route.query.agent_id,
-                                            agent_name: this.$route.query.agent_name
+                                            agent_name: this.$Base64.encode(this.form.agent_name),
                                         }
                                     });
                                 } else {

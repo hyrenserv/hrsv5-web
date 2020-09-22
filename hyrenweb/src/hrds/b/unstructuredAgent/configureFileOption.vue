@@ -18,54 +18,49 @@
 
             <el-table-column prop="file_source_path" label="文件源路径" width="116" align="center">
                 <template slot-scope="scope">
-                    <el-form ref="form" :model="scope.row">
-                        <el-form-item class="ruleFormItem" prop="file_source_path" :rules="filter_rules([{required: true}])">
-                            <el-input v-model="scope.row.file_source_path" size="mini" placeholder="选择或填写"></el-input>
-                        </el-form-item>
-                    </el-form>
-
+                    <el-input v-model="scope.row.file_source_path" size="mini" placeholder="选择或填写"></el-input>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_pdf" label="PDF文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_pdf"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_pdf" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_office" width="90" label="office文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_office"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_office" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_text" label="文本文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_text"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_text" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_video" label="视频文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_video"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_video" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_audio" label="音频文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_audio"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_audio" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_image" label="图片文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_image"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_image" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
             <el-table-column prop="is_compress" label="压缩文件" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_compress"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_compress" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
 
@@ -80,7 +75,7 @@
 
             <el-table-column prop="is_other" label="其他" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.is_other"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_other" true-label="1" false-label="0"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="80" align="center">
@@ -111,7 +106,8 @@
         <el-col :span="12">
             <div class="partThreeDiv">
                 <el-button type="primary" style="float:left" size="medium" @click="backSteps">上一步</el-button>
-                <el-button type="success" style="float:right" size="medium" @click="checkDataOk('form')"> 完成</el-button>
+                <el-button type="success" style="float:left" size="medium" @click="executeDialogOk">立即执行</el-button>
+                <el-button type="primary" style="float:right" size="medium" @click="checkDataOk"> 完成</el-button>
             </div>
         </el-col>
     </el-row>
@@ -122,9 +118,9 @@
             <span class="dialogtitle el-icon-caret-right">选择目录</span>
         </div>
         <div class="mytree"  hight='200'>
-            <el-tree ref='tree' :data="data2" :check-strictly="true" show-checkbox node-key="name" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
+            <el-tree ref='tree' :data="data2" :check-strictly="true" show-checkbox node-key="path" lazy :load="loadNode" :props="defaultProps" accordion :indent='0' @check-change="handleCheckChange">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
-                    <span :title="node.label">{{ node.label }}</span>
+                    <span :title="data.path">{{ node.label }}</span>
                 </span>
             </el-tree>
         </div>
@@ -134,12 +130,21 @@
         </div>
     </el-dialog>
 
-    <!-- 添加非结构化采集成功后选择下一步的弹出框 -->
+    <!-- 添加非结构化采集任务完成后,选择完成的弹出框 -->
     <el-dialog title="提示信息" :visible.sync="dialogSelectOk" width="30%">
-        <p>设置完成！请等待Agent运行...不运行请点击取消按钮</p>
+        <p>保存设置完成！请等待Agent运行...不运行请点击取消按钮</p>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogSelectOk=false" size="mini" type="danger">取 消</el-button>
             <el-button type="primary" @click="saveOk" size="mini">确定</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 添加非结构化采集任务完成后,立即执行的弹出框 -->
+    <el-dialog title="提示信息" :visible.sync="executeDialog" width="30%">
+        <p>立即执行设置完成！请等待Agent运行...不运行请点击取消按钮</p>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="executeDialog=false" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="executeImmediately" size="mini">立即执行</el-button>
         </div>
     </el-dialog>
 </div>
@@ -171,6 +176,7 @@ export default {
             data2: [],
             dialogSelectfolder: false,
             dialogSelectOk: false,
+            executeDialog: false,
             formLabelWidth: "150px"
         }
     },
@@ -189,8 +195,9 @@ export default {
             this.$router.push({
                 name: "configureStartMode",
                 query: {
+                    id: this.$route.query.fcs_id,
                     agent_id: this.$route.query.agent_id,
-                    agent_name: this.$route.query.agent_name
+                    rowName: this.$route.query.agent_name,
                 }
             })
         },
@@ -205,7 +212,7 @@ export default {
                         delete item["fcs_id"];
                         delete item["file_source_id"]
                     })
-                    let ArrJson = JSON.stringify(res.data).replace(/1/g, "true").replace(/0/g, "false").replace(/"true"/g, true).replace(/"false"/g, false);
+                    let ArrJson = JSON.stringify(res.data);
                     let jsonArr = JSON.parse(ArrJson)
                     this.tableData = jsonArr
                 }
@@ -214,15 +221,15 @@ export default {
         // 添加行数据
         addTableData() {
             this.tableData.push({
-                file_source_path: "",
-                is_pdf: true,
-                is_office: true,
-                is_text: true,
-                is_video: true,
-                is_audio: true,
-                is_image: true,
-                is_other: true,
-                is_compress: true,
+                file_source_path: '',
+                is_pdf: '1',
+                is_office: '1',
+                is_text: '1',
+                is_video: '1',
+                is_audio: '1',
+                is_image: '1',
+                is_other: '1',
+                is_compress: '1',
                 custom_suffix: "",
                 fcs_id: this.$route.query.fcs_id,
                 agent_id: this.$route.query.agent_id
@@ -290,8 +297,58 @@ export default {
         },
         // 取消选择目录并且关闭弹出框
         cancelSelect() {
-            this.tableData[i].file_source_path = '';
+            // this.tableData[i].file_source_path = '';
             this.dialogSelectfolder = false;
+        },
+        // 点击立即执行,检查必填项
+        executeDialogOk() {
+            let is_true = true;
+            this.tableData.forEach(data => {
+                if (data.file_source_path === "" || 'undefined' === typeof data.file_source_path) {
+                    this.$Msg.customizTitle('文件源路径为必填项', 'warning')
+                    is_true = false;
+                }
+            })
+            this.executeDialog = is_true;
+        },
+        // 点击完成,检查必填项
+        checkDataOk(formName) {
+            let is_true = true;
+            this.tableData.forEach(data => {
+                if (data.file_source_path === "" || 'undefined' === typeof data.file_source_path) {
+                    this.$Msg.customizTitle('文件源路径为必填项', 'warning')
+                    is_true = false;
+                }
+            })
+            this.dialogSelectOk = is_true;
+        },
+        // 点击立即执行
+        executeImmediately() {
+            let agent_id = this.$route.query.agent_id;
+            let fcs_id = this.$route.query.fcs_id;
+            this.tableData.forEach((item) => {
+                item["agent_id"] = agent_id;
+                item["fcs_id"] = fcs_id;
+            })
+            let ArrJson = JSON.stringify(this.tableData);
+            //先保存成后再执行任务
+            functionAll.saveFileSource({
+                file_sources_array: ArrJson
+            }).then((res) => {
+                if (res && res.success) {
+                    // functionAll.executeJob({ 'fcs_id': fcs_id, 'execute_type': 'execute_immediately' }).then((res) => {
+                    //     if (res.success) {
+                    //         this.$Msg.customizTitle('添加并且立即运行成功!', 'success')
+                    //         this.executeDialog = false;
+                    //         this.$router.push({
+                    //             name: "agentList"
+                    //         })
+                    //     } else{
+                    //         this.executeDialog = false;
+                    //     }
+                    // })
+                }
+            })
         },
         // 点击完成保存数据
         saveOk() {
@@ -299,7 +356,7 @@ export default {
                 item["agent_id"] = this.$route.query.agent_id;
                 item["fcs_id"] = this.$route.query.fcs_id;
             })
-            let ArrJson = JSON.stringify(this.tableData).replace(/true/g, '1').replace(/false/g, '0');
+            let ArrJson = JSON.stringify(this.tableData);
             functionAll.saveFileSource({
                 file_sources_array: ArrJson
             }).then((res) => {
@@ -312,17 +369,6 @@ export default {
                 }
             })
         },
-        // 检查必填项是否填写
-        checkDataOk(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    this.dialogSelectOk = true;
-                } else {
-                    this.$Msg.customizTitle('文件源路径为必填项', 'warning')
-                }
-            });
-
-        }
     }
 
 }
