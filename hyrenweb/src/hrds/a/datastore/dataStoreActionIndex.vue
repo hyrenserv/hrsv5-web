@@ -621,6 +621,8 @@ export default {
                                 this.change_storelayer.push("05");
                             } else if (item == "分区列") {
                                 this.change_storelayer.push("06");
+                            } else if (item == "Solr列") {
+                                this.change_storelayer.push("07");
                             }
                         });
 
