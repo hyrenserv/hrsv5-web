@@ -1442,7 +1442,7 @@ export default {
                 var obj = {
                     name: '总行数',
                     code: '05',
-                    realName: '(count*)'
+                    realName: 'count(*)'
                 }
                 this.optionsWords.push(obj)
             } else if (data.label == "逐个选择表字段") {
