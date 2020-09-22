@@ -165,11 +165,19 @@
                     </draggable>
                 </div>
             </div>
-            <!-- <el-input v-model="input1" size="small" style="width:90%;margin-top:10px;">
-                <template slot="prepend">纵轴</template>
-            </el-input> -->
             <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
-            <div id="myChart" :style="{width: '100%', height: '440px'}"></div>
+            <div style="width:100%;height:440px;position:relative;">
+                <div v-if="echarttype=='table'" id="type_table" style="height:440px;overflow: auto;">
+                    //二位表
+                </div>
+                <div v-if="echarttype=='card'" style="margin-bottom:10px;height:440px">
+                    <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
+                        <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
+                        <h1 id="carddiv"></h1>
+                    </div>
+                </div>
+                <div v-if="echarttype!='table' && echarttype!='card'" id="myChart" style="width:100%; height: 440px; margin-bottom: 25px"></div>
+            </div>
         </el-col>
         <el-col :span="7">
             <el-select v-model="changeGetchartsValue" size="small" placeholder="请选择" style="width:98%;" @change="changeGetcharts">
@@ -179,53 +187,56 @@
             <div style="margin-top:10px;" v-if="changeGetchartsValue =='line'">
                 <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')" src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
             </div>
-            <div style="margin-top:10px;" v-if="changeGetchartsValue =='bar'">
+            <div style="margin-top:10px;" v-if="changeGetchartsValue =='bar' || echarttype=='barmd' || echarttype=='polarbar'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bar')" src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('barmd')" src="@/assets/images/chart/bar-muldimension.png" alt="多维柱状图(3)" title="多维柱状图(3)">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('polarbar')" src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
             </div>
-            <div style="margin-top:10px;" v-if="changeGetchartsValue =='scatter'">
+            <div style="margin-top:10px;" v-if="changeGetchartsValue =='scatter'|| echarttype=='bubble'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')" src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')" src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
             </div>
-            <div style="margin-top:10px;" v-if="changeGetchartsValue =='pie'">
+            <div style="margin-top:10px;" v-if="changeGetchartsValue =='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('pie')" src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('fasanpie')" src="@/assets/images/chart/pie-customized.png" alt="发散饼图" title="发散饼图">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('huanpie')" src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
             </div>
-            <div style="margin-top:10px;" v-if="changeGetchartsValue =='treemap'">
+            <div style="margin-top:10px;" v-if="changeGetchartsValue =='treemap'|| echarttype=='treemap'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('treemap')" src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
             </div>
-            <div style="margin-top:10px;" v-if="changeGetchartsValue =='blend'">
+            <div style="margin-top:10px;" v-if="changeGetchartsValue =='blend'|| echarttype=='bl' ||echarttype=='blsimple'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bl')" src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')" src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
             </div>
-            <div style="margin-top:10px;" v-if="changeGetchartsValue =='map'">
+            <div style="margin-top:10px;" v-if="changeGetchartsValue =='map'|| echarttype=='map'">
                 <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('map')" src="@/assets/images/chart/map.png" alt="地图" title="地图">
             </div>
             <div style="position: relative;">
-                <!-- <i style="position: absolute;top:0;right:0;width:20px;height:20px;"><i class="el-icon-refresh"></i></p> -->
                 <el-button size="mini" icon="el-icon-refresh" style="position: absolute;top:0;right:0;z-index:10;top:6px;right:4px;"></el-button>
                 <el-tabs type="border-card" size="mini">
                     <el-tab-pane label="常规设置">
                         <div style="height:170px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图表背景颜色</span>
-                                <el-color-picker v-model="normalOptions.backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-model="normalOptions.backgroundcolor" placeholder="图表背景颜色" size="small" class="selectPosition">
+                                <el-color-picker v-model="auto_comp_sum.background" style="width:20px;height:20px;"></el-color-picker>
+                                <el-input v-model="auto_comp_sum.background" placeholder="图表背景颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">是否显示文本</span>
-                                <el-select v-model="normalOptions.show_label" placeholder="是否显示文本" size="small" class="selectPosition">
+                                <el-select v-model="echartsLabel.show_label" placeholder="是否显示文本" size="small" class="selectPosition">
                                     <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="changeGetchartsValue!='map'">
                                 <span class="el-input-group__prepends">文本显示位置</span>
-                                <el-select v-model="normalOptions.position" placeholder="文本显示位置" size="small" class="selectPosition">
+                                <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small" class="selectPosition" v-show="changeGetchartsValue!='pie' && echarttype!='fasanpie' && echarttype!='huanpie'">
                                     <el-option v-for="item in normalOptions.optionposition" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                </el-select>
+                                <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small" class="selectPosition" v-show="changeGetchartsValue=='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                                    <el-option v-for="item in normalOptions.optionposition1" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
@@ -234,8 +245,24 @@
                                         <div slot="content"><span>{a}表示系列名 <br />{b}表示数据名<br />{c}表示数据值<br />{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
                                     </el-tooltip></span>
-                                <el-input v-model="normalOptions.formatter" placeholder="文本格式化" size="small" class="selectPosition">
+                                <el-input v-model="echartsLabel.formatter" placeholder="文本格式化" size="small" class="selectPosition">
                                 </el-input>
+                            </div>
+
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="changeGetchartsValue=='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                                <span class="el-input-group__prepends">是否显示引导线</span>
+                                <el-select v-model="echartsLabel.show_line" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                </el-select>
+                            </div>
+
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="changeGetchartsValue=='map'">
+                                <span class="el-input-group__prepends">中国地图或省份</span>
+                                <el-select v-model="seriesStyle.provincename" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in map_array" :key="item" :label="item" :value="item">
+                                    </el-option>
+                                </el-select>
                             </div>
                         </div>
                     </el-tab-pane>
@@ -243,7 +270,7 @@
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">名称</span>
-                                <el-input v-model="value" placeholder="名称" size="small" class="selectPosition">
+                                <el-input v-model="auto_comp_sum.chart_theme" placeholder="名称" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
@@ -815,6 +842,7 @@ export default {
     data() {
         return {
             formvalue: '',
+            echarttype: '',
             myChart: '',
             myChartType: '',
             input: '',
@@ -896,9 +924,14 @@ export default {
             // auto_label
             // titleFont
             // 常规设置
+            echartsLabel: {
+                show_label: '1', //是否显示文本标签
+                position: "", //标签位置
+                formatter: "{b}", //格式化文本标签
+                show_line: '1', //是否显示文本标签引导线
+                smooth: '0', //是否平滑视觉引导线
+            },
             normalOptions: {
-                backgroundcolor: 'transparent', //背景色
-                show_label: '1', //是否显示
                 optionShowlabel: [{
                     code: '0',
                     value: '否'
@@ -906,7 +939,13 @@ export default {
                     code: '1',
                     value: '是'
                 }],
-                position: '', //文本位置
+                optionposition1: [{
+                    code: 'outside',
+                    value: '扇形外侧'
+                }, {
+                    code: 'inside',
+                    value: '扇区内侧'
+                }],
                 optionposition: [{
                     code: 'left',
                     value: 'left'
@@ -946,8 +985,7 @@ export default {
                 }, {
                     code: 'insideBottomRight',
                     value: 'insideBottomRight'
-                }],
-                formatter: '{b}', //格式化
+                }]
             },
             //标题设置字段总和
             titleFont: {
@@ -1199,6 +1237,15 @@ export default {
                 intervalnumber: 4, //图例个数(地图)
 
             },
+            //组件汇总表
+            auto_comp_sum: {
+                condition_sql: '',
+                chart_theme: '',
+                background: 'transparent',
+                component_id: '',
+                component_nam: '',
+                component_desc: '',
+            },
             optionsCharts: [{
                 value: 'line',
                 label: '折线图'
@@ -1236,6 +1283,20 @@ export default {
             weiduArry: [],
             duliangArry: [],
             markexe_sql: '',
+            //图表配置
+            seriesStyle: {
+                type: "", //图表类型
+                center: ['50%', '50%'], //饼图的中心（圆心）坐标
+                provincename: "全国", //省份名称(地图)
+            },
+            //地图
+            map_array: ['全国', '上海', '河北', '山西', '内蒙古', '辽宁',
+                '吉林', '黑龙江', '江苏', '浙江', '安徽', '福建', '江西',
+                '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川',
+                '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆',
+                '北京', '天津', '重庆', '香港', '澳门', '台湾'
+            ],
+
         }
     },
     mounted() {
@@ -1458,7 +1519,7 @@ export default {
                                 itemAll.nameAll = itemAll.column_name;
                             }
                         })
-                        this.weiduArry = JSON.parse(JSON.stringify(res.data.numColumns)); //深拷贝
+                        this.weiduArry = JSON.parse(JSON.stringify(res.data.columns)); //深拷贝
                     } else {
                         this.weiduArry = [];
                     }
@@ -1871,6 +1932,31 @@ export default {
                     }
                 })
             }
+            if (type == 'line') {
+                this.tips = "横轴为1个维度,纵轴接受多个度量";
+            } else if (type == 'bar') {
+                this.tips = "横轴为1个维度,纵轴接受多个度量";
+            } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "scatter") {
+                this.tips = "横轴,纵轴都必须为度量";
+            } else if (type == "boxplot") {
+                this.tips = "";
+            } else if (type == "bl") {
+                this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
+            } else if (type == "treemap") {
+                this.tips = "横轴接受1至2个维度,按第一个维度分类";
+            } else if (type == "barmd") {
+                this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
+            } else if (type == "bubble") {
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "polarbar") {
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "blsimple") {
+                this.tips = "横轴为1个维度,纵轴必须为2个度量";
+            } else if (type == "map") {
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            }
             functionAll.getChartShow({
                 exe_sql: this.markexe_sql,
                 x_columns: xColumns,
@@ -1880,29 +1966,28 @@ export default {
                 console.log(res.data)
                 if (type == 'line') {
                     this.changeToAreaChart(xColumns, yColumns, type, res.data)
-                    this.tips = "横轴为1个维度,纵轴接受多个度量";
                 } else if (type == 'bar') {
-                    this.tips = "横轴为1个维度,纵轴接受多个度量";
+
                 } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
+
                 } else if (type == "scatter") {
-                    this.tips = "横轴,纵轴都必须为度量";
+
                 } else if (type == "boxplot") {
-                    this.tips = "";
+
                 } else if (type == "bl") {
-                    this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
+
                 } else if (type == "treemap") {
-                    this.tips = "横轴接受1至2个维度,按第一个维度分类";
+
                 } else if (type == "barmd") {
-                    this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
+
                 } else if (type == "bubble") {
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
+
                 } else if (type == "polarbar") {
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
+
                 } else if (type == "blsimple") {
-                    this.tips = "横轴为1个维度,纵轴必须为2个度量";
+
                 } else if (type == "map") {
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
+
                 }
             })
 
@@ -1916,65 +2001,65 @@ export default {
         },
         // 折线图
         changeToAreaChart(x_columns, y_columns, type, data) {
-            // let vm = this;
-            // var legend_data = data.legend_data;
-            // var seriesArray = data.seriesArray;
-            // var xArray = data.xArray;
-            // vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
-            // vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
-            // vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
-            // vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
-            // vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
+            let vm = this;
+            var legend_data = data.legend_data;
+            var seriesArray = data.seriesArray;
+            var xArray = data.xArray;
+            vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
+            vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
+            vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
+            vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
+            vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
 
-            // vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
-            // vm.xAxis.type = "category";
-            // vm.xAxis.data = xArray;
-            // vm.xAxis.nameTextStyle = vm.axisStyle;
-            // vm.xAxis.axisLine = vm.xAxisLine;
-            // vm.xAxis.axisLabel = vm.xAxisLabel;
+            vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
+            vm.xAxis.type = "category";
+            vm.xAxis.data = xArray;
+            vm.xAxis.nameTextStyle = vm.axisStyle;
+            vm.xAxis.axisLine = vm.xAxisLine;
+            vm.xAxis.axisLabel = vm.xAxisLabel;
 
-            // vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
-            // vm.yAxis.type = "value";
-            // vm.yAxis.nameTextStyle = vm.axisStyle;
-            // vm.yAxis.axisLine = vm.yAxisLine;
-            // vm.yAxis.axisLabel = vm.yAxisLabel;
+            vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
+            vm.yAxis.type = "value";
+            vm.yAxis.nameTextStyle = vm.axisStyle;
+            vm.yAxis.axisLine = vm.yAxisLine;
+            vm.yAxis.axisLabel = vm.yAxisLabel;
 
-            // // var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.title);
-            // var titles = '写死';
+            var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
 
-            // vm.legendStyle.data = legend_data;
-            // vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
-            // vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
-            // vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
+            vm.legendStyle.data = legend_data;
+            vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
+            vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
+            vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
 
-            // var itemStyles = transferSeriesItemStyle(vm.echartsLabel);
-            // for (var i = 0; i < seriesArray.length; i++) {
-            //     seriesArray[i].itemStyle = itemStyles;
-            // }
+            var itemStyles = transferSeriesItemStyle(vm.echartsLabel);
 
-            // option = {
-            //     backgroundColor: vm.auto_comp_sum.background,
-            //     title: titles,
-            //     tooltip: {
-            //         trigger: 'axis'
-            //     },
-            //     legend: vm.legendStyle,
-            //     grid: {
-            //         left: '3%',
-            //         right: '4%',
-            //         bottom: '3%',
-            //         containLabel: true
-            //     },
-            //     toolbox: {
-            //         feature: {
-            //             saveAsImage: {}
-            //         }
-            //     },
-            //     xAxis: vm.xAxis,
-            //     yAxis: vm.yAxis,
-            //     series: seriesArray
-            // };
-            // this.drawLine(option);
+            for (var i = 0; i < seriesArray.length; i++) {
+                seriesArray[i].itemStyle = itemStyles;
+            }
+
+            let option = {
+                backgroundColor: vm.auto_comp_sum.background,
+                title: titles,
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: vm.legendStyle,
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: vm.xAxis,
+                yAxis: vm.yAxis,
+                series: seriesArray
+            };
+            this.drawLine(option);
             // let option = {
             //     xAxis: {
             //         type: 'category',
