@@ -460,7 +460,7 @@
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                            <el-button slot="append" @click="getTableDataCountFun('sql')">获取数据量</el-button>
                         </el-input>
                     </el-col>
                 </el-row>
@@ -701,7 +701,8 @@ export default {
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
             secondTrue: true,
-            tableHeight: ''
+            tableHeight: '',
+            sqlIndex: ''
         };
     },
     created() {
@@ -878,7 +879,6 @@ export default {
                              data[i].unload_type = "";
                          } */
                     }
-                    console.log(data)
 
                     this.tableData = data;
                     this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
@@ -993,7 +993,6 @@ export default {
                 this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
                     this.isLoading = false;
-                    console.log(res.data)
                     if (res.data.length > 0) {
                         this.Searchzt = true
                         let data = res.data;
@@ -1395,7 +1394,6 @@ export default {
                     JSON.stringify(tableColumn) === "{}" ?
                     "" :
                     JSON.stringify(tableColumn);
-                console.log(twotabledata)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == "200") {
                         this.activeSec = true;
@@ -1433,7 +1431,6 @@ export default {
         },
         // 处理第一个页面数据
         saveTableConfFun(tableData) {
-            console.log(tableData)
             let arrData = [],
                 delJson = [],
                 tableInfoString = [],
@@ -1770,7 +1767,8 @@ export default {
             this.tablename = "";
         },
         //第二个页面 自定义是否抽取sql
-        checkedis_zdyparallelFun(row) {
+        checkedis_zdyparallelFun(row,index) {
+            this.sqlIndex = row.sql
             let a = row.is_parallel;
             this.EXtable_name = row.table_name;
             this.is_parallel = a;
@@ -1992,9 +1990,17 @@ export default {
             }
         },
         // 获取数据总量
-        getTableDataCountFun() {
+        getTableDataCountFun(type) {
             let params = {};
-            params["tableName"] = this.EXtable_name;
+            if (type === 'sql') {
+                if (this.sqlIndex == '') {
+                    this.$Msg.customizTitle('请在卸数方式的全量中设置SQL语句','error')
+                    return
+                }
+                params["sql"] = this.sqlIndex;
+            } else {
+                params["tableName"] = this.EXtable_name;
+            }
             params["colSetId"] = this.dbid;
             addTaskAllFun.getTableDataCount(params).then(res => {
                 var nowDate = new Date();
@@ -2350,7 +2356,6 @@ export default {
             params["sql"] = sql;
             params["tableId"] = row.table_id ? row.table_id : "";
             params['tableName'] = row.table_name
-            console.log(row)
             addTaskAllFun.getSqlColumnData(params).then(res => {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
@@ -2956,7 +2961,6 @@ export default {
         },
         // 实时采集设置点击
         RealTimeAcquisition(row, e) {
-            console.log(row, e)
             row.time_visible = true
             row.buttonNone = true
         }

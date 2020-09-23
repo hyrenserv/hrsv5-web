@@ -44,7 +44,7 @@
                                 </el-row>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="is_md5" label=" 计算MD5" align="center">
+                        <el-table-column prop="is_md5" label="计算MD5" align="center">
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.is_md5" v-if="scope.row.collectState==true" :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
                                 <el-checkbox v-model="scope.row.is_md5" v-else disabled :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
@@ -122,8 +122,8 @@
 
                     <el-table-column prop="is_parallel" label="是否并行抽取" align="center" width="120">
                         <template slot-scope="scope">
-                            <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
-                            <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
+                            <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row,scope.$index)"></el-checkbox>
+                            <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row,scope.$index)"></el-checkbox>
                         </template>
                     </el-table-column>
                     <el-table-column prop="selectCol" label="选择列" align="center">
@@ -374,7 +374,7 @@
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                            <el-button slot="append" @click="getTableDataCountFun('')">获取数据量</el-button>
                         </el-input>
                     </el-col>
                 </el-row>
@@ -409,7 +409,7 @@
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                            <el-button slot="append" @click="getTableDataCountFun('sql')">获取数据量</el-button>
                         </el-input>
                     </el-col>
                 </el-row>
@@ -650,7 +650,8 @@ export default {
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
             secondTrue: true,
-            tableHeight: ''
+            tableHeight: '',
+            sqlIndex: ''//自定义SQL的下标
         };
     },
     created() {
@@ -1301,7 +1302,6 @@ export default {
                     JSON.stringify(tableColumn) === "{}" ?
                     "" :
                     JSON.stringify(tableColumn);
-                console.log(params1)
                 addTaskAllFun.saveAllSQL(params1).then(res => {
                     if (res.code == "200") {
                         this.activeSec = true;
@@ -1673,7 +1673,8 @@ export default {
             this.tablename = "";
         },
         //第二个页面 自定义是否抽取sql
-        checkedis_zdyparallelFun(row) {
+        checkedis_zdyparallelFun(row,index) {
+            this.sqlIndex = index
             let a = row.is_parallel;
             this.EXtable_name = row.table_name;
             this.is_parallel = a;
@@ -1727,6 +1728,7 @@ export default {
                     this.is_parallelShowFun(row.table_id);
                 }
             }
+            
         },
         // 第二个页面自定义sql提交
         checkedis_zdyparallelSubmitFun(form) {
@@ -1895,9 +1897,18 @@ export default {
             }
         },
         // 获取数据总量
-        getTableDataCountFun() {
+        getTableDataCountFun(type) {
             let params = {};
-            params["tableName"] = this.EXtable_name;
+            if(type === 'sql') {
+                if(this.xsTypeArr2All[this.sqlIndex].sql == '') {
+                    this.$Msg.customizTitle('请在卸数方式的全量中设置SQL语句')
+                    return
+                }
+                params["sql"] = this.xsTypeArr2All[this.sqlIndex].sql;
+            }
+            else {
+                params["tableName"] = this.EXtable_name;
+            }
             params["colSetId"] = this.dbid;
             addTaskAllFun.getTableDataCount(params).then(res => {
                 var nowDate = new Date();
@@ -2830,6 +2841,8 @@ export default {
                     }
                     this.dialog_xsall = false;
                 }
+
+                console.log(this.xsTypeArr2All,'this.xsTypeArr2Allthis.xsTypeArr2Allthis.xsTypeArr2All');
             });
         }
     }
