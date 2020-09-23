@@ -218,6 +218,16 @@ export function getCategoryItems(data) {
 }
 
 
+/**(8)
+   *文件权限审核
+   */
+  export function dataAudit(data) {
+    return request({
+        url: '/B/datasource/dataAudit',
+        params:data
+    })
+}
+
 
 
 

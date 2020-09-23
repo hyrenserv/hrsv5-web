@@ -522,6 +522,17 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/viewFile',
+                    name: 'viewFile',
+                    title: 'viewFile',
+                    component: () => import('@/hrds/b/dataQuery/viewFile.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '文件资源管理', url: '/dataQuery'  },
+                        { name: '文件查看' },
+                    ],
+                },
+                {
                     path: '/etlMage',
                     name: 'etlMage',
                     title: 'etlMage',

@@ -162,7 +162,7 @@
                     </el-table-column>
                 </el-table>
                 <!-- 分页 -->
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[5, 10, 50, 100, 500]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="recentFiles.length">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 500]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="recentFiles.length">
                 </el-pagination>
             </el-row>
         </el-col>
@@ -216,7 +216,7 @@ export default {
             sdcChartSettings: {},
             sdcChartData: { columns: [], rows: [], },
             currentPage: 1,
-            pageSize: 5,
+            pageSize: 10,
             totalSize: 0,
             activeIndex: '1',
             myDownloadRequest: 0,
@@ -241,7 +241,6 @@ export default {
         this.getAuthType();
         //获取代码类型:文件类型
         this.getFileType();
-
     },
     computed: {},
     mounted() {
@@ -400,11 +399,12 @@ export default {
         },
         /* 查看文件 */
         viewFile(fileId, fileType) {
-            dataQuery.viewFile({
-                "fileId": fileId,
-                "fileType": fileType,
-            }).then((res) => {
-                console.log(res.data)
+            this.$router.push({
+                name: 'viewFile',
+                query: {
+                    'fileId': fileId,
+                    "fileType": fileType,
+                }
             })
         },
         /* 下载文件 */
