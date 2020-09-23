@@ -332,21 +332,19 @@ export default {
             })
             let ArrJson = JSON.stringify(this.tableData);
             //先保存成后再执行任务
-            functionAll.saveFileSource({
-                file_sources_array: ArrJson
-            }).then((res) => {
+            functionAll.saveFileSource({ file_sources_array: ArrJson }).then((res) => {
                 if (res && res.success) {
-                    // functionAll.executeJob({ 'fcs_id': fcs_id, 'execute_type': 'execute_immediately' }).then((res) => {
-                    //     if (res.success) {
-                    //         this.$Msg.customizTitle('添加并且立即运行成功!', 'success')
-                    //         this.executeDialog = false;
-                    //         this.$router.push({
-                    //             name: "agentList"
-                    //         })
-                    //     } else{
-                    //         this.executeDialog = false;
-                    //     }
-                    // })
+                    functionAll.executeJob({ 'fcs_id': fcs_id, 'execute_type': 'execute_immediately' }).then((res) => {
+                        if (res.success) {
+                            this.$Msg.customizTitle('立即运行成功!', 'success')
+                            this.executeDialog = false;
+                            this.$router.push({
+                                name: "agentList"
+                            })
+                        } else {
+                            this.executeDialog = false;
+                        }
+                    })
                 }
             })
         },
