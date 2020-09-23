@@ -97,13 +97,20 @@
             </el-table-column>
             <el-table-column label="操作" width="300px">
                 <template slot-scope="scope">
-                    <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
-                    <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
-                    <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
-                    <el-button type="text" v-if="scope.row.collect_type=='数据库抽数'||scope.row.agent_type=='数据文件Agent'"  class="workcolor" @click="ProdeceJobsFun(scope.row)">生成作业</el-button>
-                    <!-- <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" class="workcolor">生成作业</el-button> -->
-                    <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
-                    <el-button v-if="scope.row.collect_type=='数据库抽数'" type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
+                    <template v-if="scope.row.agent_type==='数据库Agent' || scope.row.agent_type==='数据文件Agent' || scope.row.agent_type==='对象Agent'">
+                        <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
+                        <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
+                        <el-button type="text" v-show="scope.row.collect_type!='贴元登记'" @click="taskSendBtn(agentType,scope.row)" class="sendcolor">发送</el-button>
+                        <el-button type="text" v-if="scope.row.collect_type=='数据库抽数'||scope.row.agent_type=='数据文件Agent'" class="workcolor" @click="ProdeceJobsFun(scope.row)">生成作业</el-button>
+                        <!-- <el-button type="text" v-show="scope.row.collect_type!='贴源登记'" class="workcolor">生成作业</el-button> -->
+                        <!-- <el-button v-if="agentType == type.ShuJuKu" type="text" @click="downTaskData(scope.row)" class="sendcolor">下载数据字典</el-button> -->
+                        <el-button v-if="scope.row.collect_type=='数据库抽数'" type="text" @click="finishDialogVisible = true;settingDownloadDirc(agentType,scope.row)" class="sendcolor">下载数据字典</el-button>
+                    </template>
+                    <template v-if="scope.row.agent_type==='文件系统Agent'">
+                        <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
+                        <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
+                        <el-button type="text" @click="executeImmediately(agentType,scope.row)" class="sendcolor">立即执行</el-button>
+                    </template>
                 </template>
             </el-table-column>
         </el-table>
@@ -191,6 +198,7 @@ import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as agentList from "./agentList";
 import * as message from "@/utils/js/message";
+import * as unstructuredAgentFunc from "../unstructuredAgent/unstructuredAgent";
 let rowName;
 export default {
     data() {
@@ -365,6 +373,7 @@ export default {
                 }
             }
         },
+        // 日志页面
         tasklogFun(row) {
             this.$router.push({
                 path: "/taskLog",
@@ -384,7 +393,7 @@ export default {
 
             } */
         },
-        //删除
+        // 删除任务
         taskDelBtn(type, row) {
             for (let i = 0; i < this.CollectType.length; i++) {
                 if (this.CollectType[i].value == type) {
@@ -461,10 +470,25 @@ export default {
                 }
             })
             // 
-
+        },
+        // 立即执行任务
+        executeImmediately(agentType, row) {
+            message.confirmMsg('确定立即执行吗?').then(res => {
+                let fcs_id = row.id;
+                unstructuredAgentFunc.executeJob({ 'fcs_id': fcs_id, 'execute_type': 'execute_immediately' }).then((res) => {
+                    if (res.success) {
+                        this.$Msg.customizTitle('立即运行成功!', 'success')
+                        this.executeDialog = false;
+                        this.$router.push({
+                            name: "agentList"
+                        })
+                    } else {
+                        this.executeDialog = false;
+                    }
+                })
+            }).catch(() => {});
         },
         ProdeceJobsFun(row) {
-            console.log(row)
             this.database_id = row.id
             this.dialogProdeceJobs = true
             agentList.getProjectInfo().then(res => {
