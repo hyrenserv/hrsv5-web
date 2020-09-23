@@ -58,7 +58,14 @@ const childrenMemus = {
             title: 'SQL控制台',
             icon: 'el-icon-monitor',
             component: () => import('@/hrds/b/dataQuery/webSqlConsole.vue')
-        }
+        },
+        {
+            path: '/fullTextSearch',
+            name: 'fullTextSearch',
+            title: '全文检索',
+            icon: 'el-icon-search',
+            component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue')
+        },
     ],
     37: [
         {

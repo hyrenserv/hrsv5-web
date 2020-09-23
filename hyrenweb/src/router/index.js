@@ -486,7 +486,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '文件资源管理', url: '/dataQuery' },
-                        { name: '文件资源管理器' },
+                        { name: '文件申请信息' },
                     ],
                 },
                 {
@@ -497,14 +497,19 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '文件资源管理', url: '/dataQuery' },
-                        { name: '文件资源管理器' },
+                        { name: '我的申请记录' },
                     ],
                 },
                 {
                     path: '/fullTextSearch',
                     name: 'fullTextSearch',
                     title: 'fullTextSearch',
-                    component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue')
+                    component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '文件资源管理', url: '/dataQuery'  },
+                        { name: '全文检索' },
+                    ],
                 },
                 {
                     path: '/webSqlConsole',
