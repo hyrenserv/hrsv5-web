@@ -818,7 +818,7 @@ export default {
                     }
                 }
                 if (!ifhasrowkeyflag) {
-                    message.confirmMsg('目的地为Hbase,但没有选择rowkey,默认rowkey为全字段的MD5').then(res => {
+                    this.$Msg.confirmMsg('目的地为Hbase,但没有选择rowkey,默认rowkey为全字段的MD5').then(res => {
                         this.next();
                     }).catch(() => {})
                 } else {
