@@ -277,6 +277,7 @@ export default {
                         this.form.file_suffix = res.data.file_suffix;
                         this.form.file_path = res.data.file_path;
                         this.form.is_sendok = res.data.is_sendok;
+                        this.form.odc_id = res.data.odc_id;
                     } else {
                         // 新增
                         this.getInitObjectCollectConf();
@@ -424,6 +425,7 @@ export default {
                     this.$refs[formName].validate(valid => {
                         if (valid) {
                             this.form.agent_id = this.$route.query.agent_id;
+                            console.log(this.form);
                             functionAll.saveObjectCollect(this.form).then((res) => {
                                 if (res && res.success) {
                                     if (this.$route.query.edit == 'yes') {
