@@ -68,7 +68,15 @@ export default {
         },
         //删除
         deleteWork(row) {
-            // 删除接口
+            this.$confirm('确认删除吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                // 删除接口
+            }).catch(() => {
+                this.$Msg.customizTitle('已取消删除', 'info')
+            });
         }
     }
 }

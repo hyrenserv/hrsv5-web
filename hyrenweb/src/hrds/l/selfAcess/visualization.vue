@@ -166,18 +166,18 @@
                 </draggable>
             </div>
             <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
-            <div style="width:100%;height:440px;position:relative;">
-                <div v-if="echarttype=='table'" id="type_table" style="height:440px;overflow: auto;">
-                    //二位表
-                </div>
-                <div v-if="echarttype=='card'" style="margin-bottom:10px;height:440px">
-                    <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
-                        <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
-                        <h1 id="carddiv"></h1>
-                    </div>
-                </div>
-                <div v-if="echarttype!='table' && echarttype!='card'" id="myChart" style="width:100%; height: 440px; margin-bottom: 25px"></div>
+
+            <div v-if="echarttype=='table'" id="type_table" style="height:440px;overflow: auto;">
+                //二位表
             </div>
+            <div v-if="echarttype=='card'" style="margin-bottom:10px;height:440px">
+                <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
+                    <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
+                    <h1 id="carddiv"></h1>
+                </div>
+            </div>
+            <div v-if="echarttype!='table' && echarttype!='card'" id="myChart" style="width:100%; height: 440px; margin-bottom: 25px"></div>
+
         </el-col>
         <el-col :span="7">
             <el-select v-model="changeGetchartsValue" size="small" placeholder="请选择" style="width:98%;" @change="changeGetcharts">
@@ -2042,19 +2042,19 @@ export default {
             vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
             let objDefine = Object.assign({}, vm.echartsLabel);
             if (objDefine.show_label == "1") {
-                objDefine.show_label = 'ture';
+                objDefine.show_label = true;
             } else {
-                objDefine.show_label = 'false';
+                objDefine.show_label = false;
             }
             if (objDefine.show_line == "1") {
-                objDefine.show_line = 'ture';
+                objDefine.show_line = true;
             } else {
-                objDefine.show_line = 'false';
+                objDefine.show_line = false;
             }
             if (objDefine.smooth == "1") {
-                objDefine.smooth = 'ture';
+                objDefine.smooth = true;
             } else {
-                objDefine.smooth = 'false';
+                objDefine.smooth = false;
             }
             var itemStyles = transferSeriesItemStyle(objDefine);
 
