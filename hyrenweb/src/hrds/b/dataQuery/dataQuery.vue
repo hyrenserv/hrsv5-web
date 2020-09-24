@@ -414,7 +414,7 @@ export default {
                 'fileName': original_name
             }).then((res) => {
                 // 转换数据流为文件
-                fileOperations.fileDownload(file_id, original_name)
+                fileOperations.fileDownload(res.data, original_name)
             })
         },
         /* 用户数据申请信息页面跳转 */

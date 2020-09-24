@@ -56,7 +56,11 @@ export function getConditionalQuery(data) {
 export function downloadFile(data) {
     return request({
         url: '/B/dataquery/downloadFile',
-        params: data
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json',
+        }
     })
 }
 
