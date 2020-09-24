@@ -26,7 +26,7 @@
             <el-table-column label="操作" width="160" align="center">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="dialogFormVisibleUpdate = true;updateData(scope.row.dsl_id,scope.row)">编辑</el-button>
-                    <el-button type="danger" size="mini" @click="deleteArry(scope.row.dsl_id);">删除</el-button>
+                    <el-button type="danger" size="mini" @click="deleteArry(scope.row);">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -395,14 +395,14 @@ export default {
             })
         },
         // 根据dsl_id删除对应的数据
-        deleteArry(e) {
-            this.$confirm('确定删除吗?', '提示', {
+        deleteArry(row) {
+            this.$confirm('确定删除存储层'+row.dsl_name+'吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
                 functionAll.deleteDataStore({
-                        dsl_id: e,
+                        dsl_id: row.dsl_id,
                     })
                     .then(res => {
                         if (res && res.success) {
