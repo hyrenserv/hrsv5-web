@@ -209,6 +209,7 @@ export default {
                 store_type: '',
                 dsla_storelayer: [],
                 tableData: [],
+                is_hadoopclient:'0'
             },
             formDialog: {},
             showValue: true,
