@@ -3,7 +3,7 @@
     <el-row class="elRowtitle">
         <p class="tempalteInfo">选择数据源</p>
         <div class="templateButton">
-            <el-button type="danger" size="small">
+            <el-button type="danger" @click="goBack" size="small">
                 返回上级
             </el-button>
             <el-button type="primary" size="small">
@@ -2253,6 +2253,12 @@ export default {
                 series: seriesArray
             }
             this.drawLine(option)
+        },
+        // 返回上一级
+        goBack() {
+            this.$router.push({
+                name: 'visualization'
+            })
         },
     }
 }

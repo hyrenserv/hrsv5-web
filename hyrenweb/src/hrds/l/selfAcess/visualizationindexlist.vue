@@ -1,25 +1,102 @@
 <template>
 <div class="visualizationindexList">
- <el-row class="elRowtitle">
-        <p class="tempalteInfo">选择数据源</p>
-        <div class="templateButton">
-            <el-button type="danger" size="small">
-                返回上级
-            </el-button>
-            <el-button type="primary" size="small">
-                保存组件
-            </el-button>
-        </div>
+    <el-row class="elRows">
+        <span>数据可视化</span>
+        <el-button type="primary" class="els" @click="addProject" size="small">
+            新建组件
+        </el-button>
+        <div class="lines"></div>
+    </el-row>
+    <el-row>
+        <el-table size="medium" :data="tableData" border stripe style="width: 100%;margin-top:10px;">
+            <el-table-column type="index" label="序号" width="70px" align='center'>
+            </el-table-column>
+            <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="组件名称" align='center'>
+            </el-table-column>
+            <el-table-column prop="etl_sys_name" show-overflow-tooltip label="组件描述" align='center'>
+            </el-table-column>
+            <el-table-column prop="comments" show-overflow-tooltip label="数据来源" align='center'>
+            </el-table-column>
+            <el-table-column prop="curr_bath_date" show-overflow-tooltip label="模板状态" align='center'>
+            </el-table-column>
+            <el-table-column label="创建日期" show-overflow-tooltip align='center'>
+            </el-table-column>
+            <el-table-column label="创建用户" show-overflow-tooltip align='center'>
+            </el-table-column>
+            <el-table-column label="操作" align='center' width="160">
+                <template slot-scope="scope">
+                    <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button size="mini" type="text" @click="vieSql(scope.$index, scope.row)">查看sql
+                    </el-button>
+                    <el-button size="mini" class="endAgent" type="text" @click="deleteWork(scope.row)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+
+        </el-table>
     </el-row>
 </div>
 </template>
 
 <script>
 export default {
-
+    data() {
+        return {
+            tableData: [{}]
+        }
+    },
+    methods: {
+        // 新建组件
+        addProject() {
+            this.$router.push({
+                name: 'visualizationadd'
+            })
+        },
+        //编辑
+        handleEdit(index, row) {
+            this.$router.push({
+                name: 'visualizationadd',
+                query: {
+                    //传参
+                }
+            })
+        },
+        //查看sql
+        vieSql(index, row) {
+            // 查看sql接口
+        },
+        //删除
+        deleteWork(row) {
+            // 删除接口
+        }
+    }
 }
 </script>
 
 <style scoped>
+.elRows {
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+}
 
+.el-row span {
+    color: #2196f3;
+    font-size: 18px;
+}
+
+/* button样式设置 */
+.els {
+    float: right;
+    margin-top: 3px;
+}
+
+.lines {
+    margin-top: 2px;
+    width: 100%;
+    min-height: 1px;
+    background: #dddddd;
+    margin-bottom: 10px;
+}
 </style>
