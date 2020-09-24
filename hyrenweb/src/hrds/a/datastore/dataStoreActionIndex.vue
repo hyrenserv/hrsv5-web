@@ -296,6 +296,7 @@ export default {
             checkboxType: [],
             YesNo: [],
             databaseType: [],
+            markArrindex: [],
             dataSaveConfigure: false,
             dialogFormVisibleUpdate: false,
             rule: validator.default
@@ -658,6 +659,7 @@ export default {
                                     delete item.radio
                                 }
                             })
+                            arrtable = [...arrtable, ...this.markArrindex]
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else if (valueIndex == 2) {
                             let arrtable = [];
@@ -667,6 +669,7 @@ export default {
                                     valueArr[i].is_file = "0";
                                 }
                             }
+                            arrtable = [...arrtable, ...this.markArrindex]
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else {
                             if (tableDatas.length > 0) {
@@ -917,8 +920,16 @@ export default {
             } else {
                 if (dataKey == file.name) {
                     fileArry.push(file.raw);
+                    let obj = {
+                        storage_property_key: dataKey,
+                        storage_property_val: file.name,
+                        is_file: '1'
+                    }
+                    this.markArrindex.push(obj);
                 } else {
-                    this.$Msg.customizTitle("请选择与key命名相同的文件", "warning");
+                    let index = fileList.findIndex(item => item.name == file.name);
+                    fileList.splice(index, 1);
+                    this.$Msg.customizTitle("文件选择失败,请选择与key命名相同的文件", "warning");
                 }
             }
         },
