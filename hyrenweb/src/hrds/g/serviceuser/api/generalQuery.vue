@@ -163,7 +163,7 @@
                     },
                     {
                         field: 'num',
-                        fieldType: 'String',
+                        fieldType: 'Integer',
                         isRequired: '选填，不填默认显示10条,填写方式如: num=10',
                         remark: '显示条数',
                     },
@@ -202,7 +202,7 @@
                         remark: '轮询返回文件名称',
                     },
                     {
-                        field: 'filename',
+                        field: 'filepath',
                         fieldType: 'String',
                         isRequired: '与参数asynType一起使用(如果asynType为2,则必填轮询返回文件名称)',
                         remark: '轮询返回文件路径',

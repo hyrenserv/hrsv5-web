@@ -1,7 +1,7 @@
 <template>
-    <div class="sqlInterfaceSearch">
-        <el-row class="topTitle">
-            <span class="el-icon-s-operation">sql查询接口说明</span>
+    <div class="hbaseSolrQuery">
+        <el-row class='topTitle'>
+            <span class="el-icon-s-operation">Solr查询Hbase数据接口接口说明</span>
             <router-link to="/serviceUser">
                 <el-button class="goIndex" type="primary" size="mini" icon="el-icon-s-home">
                     返回首页
@@ -30,11 +30,9 @@
         <el-divider/>
         <el-row>
             <span class="fontStyle">使用方式如下</span>
-            <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px"
-                      :disabled="true"/>
+            <el-input v-model="requestAddressForToken" :disabled="true"/>
             <el-divider>或</el-divider>
-            <el-input v-model="requestAddress" style="font-size: 16px;"
-                      :disabled="true"/>
+            <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true"/>
         </el-row>
         <el-divider/>
         <el-row :gutter="20">
@@ -74,7 +72,7 @@
             </el-col>
         </el-row>
         <el-divider/>
-        <el-row>
+        <el-row :gutter="20">
             <span class="fontStyle">输出的数据形式(file)正常显示如下</span>
             <pre style="font-size: 16px;">
                {
@@ -97,9 +95,9 @@
                     <el-table-column prop="description" label="状态说明" align="center"/>
                 </el-table>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" :gutter="20">
                 <span class="fontStyle">错误响应如下：</span>
-                <pre style="font-size: 16px;">
+                <pre style="font-size: 16px;margin-top: 10px">
                     {
                         "status":UNAUTHORIZED,
                         "message":"账号或密码错误..."
@@ -112,13 +110,9 @@
 
 <script>
     import * as interfaceFunctionAll from "./api";
-    import Scrollbar from "../../../components/scrollbar/Scrollbar";
 
     export default {
-        name: "sqlInterfaceSearch",
-        components: {
-            Scrollbar
-        },
+        name: "generalQuery",
         data() {
             return {
                 ipAndPort: '',
@@ -147,13 +141,37 @@
                         field: 'url',
                         fieldType: 'String',
                         isRequired: '必填',
-                        remark: '请求路径(sqlInterfaceSearch)',
+                        remark: '请求路径（generalQuery）',
                     },
                     {
-                        field: 'sql',
+                        field: 'tableName',
                         fieldType: 'String',
                         isRequired: '必填',
-                        remark: '要执行的sql语句',
+                        remark: '要查询表名',
+                    },
+                    {
+                        field: 'selectColumn',
+                        fieldType: 'String',
+                        isRequired: '选填，需要查询的列名(selectColumn=column1,column2....等,号隔开)，如果没有，查询所有字段',
+                        remark: '查询字段',
+                    },
+                    {
+                        field: 'whereColumn',
+                        fieldType: 'String',
+                        isRequired: '查询条件(whereColumn=column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
+                        remark: '查询过滤条件',
+                    },
+                     {
+                        field: 'start',
+                        fieldType: 'Integer',
+                        isRequired: '选填，不填默认从0行起始,填写方式如: start=0',
+                        remark: '显示条数',
+                    },
+                    {
+                        field: 'num',
+                        fieldType: 'Integer',
+                        isRequired: '选填，不填默认显示10条,填写方式如: num=10',
+                        remark: '显示条数',
                     },
                     {
                         field: 'dataType',
@@ -165,7 +183,7 @@
                         field: 'outType',
                         fieldType: 'String',
                         isRequired: '必填 ( stream / file)只能选择一种',
-                        remark: '输出的数据形式,stream数据默认展示100条',
+                        remark: '输出的数据形式，stream数据默认展示100条',
                     },
                     {
                         field: 'asynType',
@@ -210,13 +228,29 @@
                         description: '接口使用效期已过',
                     },
                     {
+                        state: 'TABLE_NOT_EXISTENT',
+                        description: '表名称不存在或为空',
+                    },
+                    {
+                        state: 'COLUMN_NOT_EXISTENT',
+                        description: '列名称错误或者为空',
+                    },
+                    {
                         state: 'NO_PERMISSIONS',
                         description: '没有接口使用权限',
                     },
                     {
                         state: 'START_DATE_ERROR',
                         description: '接口开始使用日期未到',
-                    }
+                    },
+                    {
+                        state: 'NO_USR_PERMISSIONS',
+                        description: '没有表使用权限',
+                    },
+                    {
+                        state: 'EXCEPTION',
+                        description: '异常错误',
+                    },
                 ],
             }
         },
@@ -236,11 +270,14 @@
                         this.ipAndPort = "http://" + res.data +
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
                         this.requestAddressForToken =
-                            this.ipAndPort + "?token=AJALalfja&url=" + this.$route.query.url +
-                            "&sql=select a from b&dataType=json&outType=stream";
+                            this.ipAndPort +
+                            "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
+                            "&selectColumn=column1,column2&whereColumn=user_name=zhangsan&start=0&num=10" +
+                            "&dataType=json&outType=file&asynType=0";
                         this.requestAddress = this.ipAndPort +
                             "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
-                            "&sql=select a from b&dataType=json&outType=stream";
+                            "&tableName=emp&selectColumn=column1,column2" +
+                            "&whereColumn=user_name=zhangsan&start=0&num=10&dataType=json&outType=stream&asynType=0";
                     })
             },
         }
@@ -248,16 +285,17 @@
 </script>
 
 <style scoped>
+    .fontStyle {
+        color: #2196f3;
+        font-size: 18px;
+
+    }
+
     .el-table {
         margin-top: 10px;
     }
 
     .el-input {
         margin-top: 10px;
-    }
-
-    .fontStyle {
-        color: #2196f3;
-        font-size: 18px;
     }
 </style>
