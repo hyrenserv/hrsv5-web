@@ -302,7 +302,7 @@ export default {
         },
         createFilter(queryString) {
             return (res) => {
-                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
             };
         },
         //获取作业名称/上游作业名称下拉框数据
@@ -473,7 +473,7 @@ export default {
         //批量干预按钮
         handleBatchIntervene() {
             if (this.multipleSelection.length == 0) {
-                 this.$Msg.customizTitle("请选择干预的作业", "warning");
+                this.$Msg.customizTitle("请选择干预的作业", "warning");
             } else {
                 this.dialogVisiblebatchInter = true;
             }
