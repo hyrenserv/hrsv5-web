@@ -170,7 +170,7 @@
                     </el-table-column>
                     <el-table-column prop="table_name" label="采集原始表名" align="center" />
                     <el-table-column prop="original_name" label="原始表中文名" align="center" />
-                    <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名" align="center" />
+                    <el-table-column prop="hyren_name" label="系统内对应表名" align="center" />
                     <el-table-column prop="selectColumn" label="选择字段" align="center">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="showtablecolumn(scope.row,scope.$index)">
