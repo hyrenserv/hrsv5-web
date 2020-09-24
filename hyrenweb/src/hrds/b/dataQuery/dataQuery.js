@@ -148,3 +148,27 @@ export function fullTextSearch(data) {
     })
 
 }
+
+//获取文件收藏信息
+export function getCollectFiles(data) {
+    return request({
+        url: '/B/fulltextsearch/getCollectFiles',
+        params: data
+    })
+}
+
+//保存文件收藏
+export function saveFavoriteFile(data) {
+    return request({
+        url: '/B/dataquery/saveFavoriteFile',
+        params: data
+    })
+}
+
+//取消文件收藏
+export function cancelFavoriteFile(data) {
+    return request({
+        url: '/B/dataquery/cancelFavoriteFile',
+        params: data
+    })
+}
