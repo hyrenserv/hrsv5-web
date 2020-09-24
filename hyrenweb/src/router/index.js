@@ -1201,10 +1201,21 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/visualizationadd',
+                    name: 'visualizationadd',
+                    title: '可视化',
+                    component: () => import('@/hrds/l/selfAcess/visualization.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                        { name: '数据可视化' },
+                    ],
+                },
+                {
                     path: '/visualization',
                     name: 'visualization',
                     title: '可视化',
-                    component: () => import('@/hrds/l/selfAcess/visualization.vue'),
+                    component: () => import('@/hrds/l/selfAcess/visualizationindexlist.vue'),
                     meta: [
                         { name: '首页' },
                         { name: '自主取数' },

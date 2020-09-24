@@ -150,20 +150,20 @@
         <el-col :span="12">
             <div style="width:90%;height:30px;margin-bottom:12px;position: relative;border:1px solid #DCDFE6;border-radius: 4px;">
                 <span class="el-input-group__prepends" style="width:70px;margin-top:0px;border-top:none;border-left:none;border-bottom:none;height:30px;line-height:30px;padding:0;">横轴</span>
-                <div style="width:85%;height:30px;line-height:30px;background:#fff;overflow:auto;font-size:14px;">
-                    <draggable :list="xValueArry" group="people">
+                <draggable :list="xValueArry" group="people">
+                    <div style="width:85%;height:30px;line-height:30px;background:#fff;overflow:auto;font-size:14px;">
                         <span v-for="(item,index) in xValueArry" :key="item.nameAll">{{item.nameAll}}<i class="el-icon-close" @click="deleteXvalue(item,index)" style="cursor:pointer;"></i>&nbsp</span>
-                    </draggable>
-                </div>
+                    </div>
+                </draggable>
             </div>
 
             <div style="width:90%;height:30px;margin-bottom:12px;position: relative;border:1px solid #DCDFE6;border-radius: 4px;">
                 <span class="el-input-group__prepends" style="width:70px;margin-top:0px;border-top:none;border-left:none;border-bottom:none;height:30px;line-height:30px;padding:0;">纵轴</span>
-                <div style="width:85%;height:30px;line-height:30px;background:#fff;overflow:auto;font-size:14px;">
-                    <draggable :list="yValueArry" group="people">
+                <draggable :list="yValueArry" group="people">
+                    <div style="width:85%;height:30px;line-height:30px;background:#fff;overflow:auto;font-size:14px;">
                         <span v-for="(item,index) in yValueArry" :key="item.nameAll">{{item.nameAll}}<i class="el-icon-close" @click="deleteYvalue(item,index)" style="cursor:pointer;"></i>&nbsp</span>
-                    </draggable>
-                </div>
+                    </div>
+                </draggable>
             </div>
             <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
             <div style="width:100%;height:440px;position:relative;">
@@ -1283,6 +1283,8 @@ export default {
             weiduArry: [],
             duliangArry: [],
             markexe_sql: '',
+            markarrx: [],
+            markarry: [],
             //图表配置
             seriesStyle: {
                 type: "", //图表类型
@@ -1520,6 +1522,7 @@ export default {
                             }
                         })
                         this.weiduArry = JSON.parse(JSON.stringify(res.data.columns)); //深拷贝
+                        this.markarrx = JSON.parse(JSON.stringify(res.data.columns)); //深拷贝
                     } else {
                         this.weiduArry = [];
                     }
@@ -1536,6 +1539,7 @@ export default {
                             }
                         })
                         this.duliangArry = JSON.parse(JSON.stringify(res.data.measureColumns));
+                        this.markarry = JSON.parse(JSON.stringify(res.data.measureColumns));
                     } else {
                         this.duliangArry = [];
                     }
@@ -1843,14 +1847,15 @@ export default {
                 if (res && res.success) {
                     this.loadingsearch = true;
                     this.markexe_sql = res.data;
-                    this.getVisualComponentResult(res.data)
+                    this.getVisualComponentResult(res.data, this.showNum)
                 }
             })
         },
         // 获取答案
-        getVisualComponentResult(val) {
+        getVisualComponentResult(val, num) {
             functionAll.getVisualComponentResult({
-                exe_sql: val
+                exe_sql: val,
+                showNum: num
             }).then(res => {
                 this.loadingsearch = false;
                 this.dynamicColumns = res.data.columnList;
@@ -1886,16 +1891,21 @@ export default {
         // 删除横轴x的选择字段信息
         deleteXvalue(item, index) {
             this.xValueArry.splice(index, 1);
-            if (this.weiduArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
-                this.weiduArry.push(item)
-            }
+            this.duliangArry = JSON.parse(JSON.stringify(this.markarry));
+            this.weiduArry = JSON.parse(JSON.stringify(this.markarrx));
+            // this.markarrx.forEach(item=>{})
+            // if (this.weiduArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
+            //     this.weiduArry.push(item)
+            // }
         },
         // 删除横轴y的选择字段信息
         deleteYvalue(item, index) {
             this.yValueArry.splice(index, 1);
-            if (this.duliangArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
-                this.duliangArry.push(item)
-            }
+            this.duliangArry = JSON.parse(JSON.stringify(this.markarry));
+            this.weiduArry = JSON.parse(JSON.stringify(this.markarrx));
+            // if (this.duliangArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
+            //     this.duliangArry.push(item)
+            // }
         },
         // 获取表的数据信息
         getChartShow() {
@@ -1964,12 +1974,12 @@ export default {
                 chart_type: type,
             }).then(res => {
                 console.log(res.data)
-                if (type == 'line') {
+                if (type == 'line') { //折线图
                     this.changeToAreaChart(xColumns, yColumns, type, res.data)
-                } else if (type == 'bar') {
-
+                } else if (type == 'bar') { //标准柱状图
+                    this.changeToBarChart(xColumns, yColumns, type, res.data);
                 } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
-
+                    this.changeToPieChart(xColumns, yColumns, type, res.data);
                 } else if (type == "scatter") {
 
                 } else if (type == "boxplot") {
@@ -2030,8 +2040,23 @@ export default {
             vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
             vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
             vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
-
-            var itemStyles = transferSeriesItemStyle(vm.echartsLabel);
+            let objDefine = Object.assign({}, vm.echartsLabel);
+            if (objDefine.show_label == "1") {
+                objDefine.show_label = 'ture';
+            } else {
+                objDefine.show_label = 'false';
+            }
+            if (objDefine.show_line == "1") {
+                objDefine.show_line = 'ture';
+            } else {
+                objDefine.show_line = 'false';
+            }
+            if (objDefine.smooth == "1") {
+                objDefine.smooth = 'ture';
+            } else {
+                objDefine.smooth = 'false';
+            }
+            var itemStyles = transferSeriesItemStyle(objDefine);
 
             for (var i = 0; i < seriesArray.length; i++) {
                 seriesArray[i].itemStyle = itemStyles;
@@ -2060,21 +2085,174 @@ export default {
                 series: seriesArray
             };
             this.drawLine(option);
-            // let option = {
-            //     xAxis: {
-            //         type: 'category',
-            //         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            //     },
-            //     yAxis: {
-            //         type: 'value'
-            //     },
-            //     series: [{
-            //         data: [820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290, 1330, 1320],
-            //         type: 'line'
-            //     }]
-            // };
-            // this.drawLine(option);
+        },
+        //柱状图
+        changeToBarChart(x_columns, y_columns, type, data) {
+            let vm = this;
+            var legend_data = data.legend_data;
+            var seriesArray = data.seriesArray;
+            var xArray = data.xArray;
 
+            vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
+            vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
+            vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
+            vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
+            vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
+
+            vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
+            vm.xAxis.type = "category";
+            vm.xAxis.data = xArray;
+            vm.xAxis.nameTextStyle = vm.axisStyle;
+            vm.xAxis.axisLine = vm.xAxisLine;
+            vm.xAxis.axisLabel = vm.xAxisLabel;
+
+            vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
+            vm.yAxis.type = "value";
+            vm.yAxis.nameTextStyle = vm.axisStyle;
+            vm.yAxis.axisLine = vm.yAxisLine;
+            vm.yAxis.axisLabel = vm.yAxisLabel;
+
+            var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
+            vm.legendStyle.data = legend_data;
+            vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
+            vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
+            vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
+            let objDefine = Object.assign({}, vm.echartsLabel);
+            if (objDefine.show_label == "1") {
+                objDefine.show_label = 'ture';
+            } else {
+                objDefine.show_label = 'false';
+            }
+            if (objDefine.show_line == "1") {
+                objDefine.show_line = 'ture';
+            } else {
+                objDefine.show_line = 'false';
+            }
+            if (objDefine.smooth == "1") {
+                objDefine.smooth = 'ture';
+            } else {
+                objDefine.smooth = 'false';
+            }
+            var itemStyles = transferSeriesItemStyle(objDefine);
+            for (var i = 0; i < seriesArray.length; i++) {
+                seriesArray[i].itemStyle = itemStyles;
+            }
+            let option = {
+                backgroundColor: vm.auto_comp_sum.background,
+                title: titles,
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: vm.legendStyle,
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {
+                            show: true,
+                            type: ['stack', 'tiled']
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: vm.xAxis,
+                yAxis: vm.yAxis,
+                series: seriesArray
+            };
+            this.drawLine(option)
+        },
+        //饼图
+        changeToPieChart(x_columns, y_columns, type, data) {
+            let vm = this;
+            let objDefine = Object.assign({}, vm.echartsLabel);
+            if (objDefine.show_label == "1") {
+                objDefine.show_label = 'ture';
+            } else {
+                objDefine.show_label = 'false';
+            }
+            if (objDefine.show_line == "1") {
+                objDefine.show_line = 'ture';
+            } else {
+                objDefine.show_line = 'false';
+            }
+            if (objDefine.smooth == "1") {
+                objDefine.smooth = 'ture';
+            } else {
+                objDefine.smooth = 'false';
+            }
+            var legend_data = data.legendData;
+            var seriesArray = data.seriesArray;
+            var pietype = data.pietype;
+            if (pietype == 'huanpie') { //&& vm.echartsLabel.show_count==true
+                var count = '总数：' + data.count;
+            } else {
+                var count = "";
+            }
+
+            var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
+            vm.legendStyle.data = legend_data;
+            vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
+            vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
+            vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
+            var itemStyles = {
+                normal: {
+                    label: {
+                        show: vm.echartsLabel.show_label,
+                        position: vm.echartsLabel.position,
+                        formatter: vm.echartsLabel.formatter
+                    },
+                    labelLine: {
+                        show: vm.echartsLabel.show_line
+                    }
+                }
+            };
+            for (var i = 0; i < seriesArray.length; i++) {
+                seriesArray[i].itemStyle = itemStyles;
+                seriesArray[i].center = vm.seriesStyle.center;
+            }
+
+            var option = {
+                backgroundColor: vm.auto_comp_sum.background,
+                title: titles,
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: vm.legendStyle,
+                graphic: {
+                    type: 'text',
+                    left: 'center',
+                    top: 'center',
+                    style: {
+                        text: count,
+                        textAlign: 'center',
+                        fill: '#000',
+                        width: 30,
+                        height: 30
+                    }
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                series: seriesArray
+            }
+            this.drawLine(option)
         },
     }
 }
