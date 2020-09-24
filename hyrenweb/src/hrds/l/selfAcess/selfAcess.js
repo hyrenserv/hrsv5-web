@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 // 1001
 //获取自主分析模板配置信息
 export function getTemplateConfInfo(data) {
@@ -55,7 +55,8 @@ export function getAllCodeItems(data) {
 export function saveTemplateConfInfo(data) {
     return request({
         url: '/L/autoanalysis/manage/saveTemplateConfInfo',
-        params: data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 //删除自主取数模板
@@ -90,7 +91,8 @@ export function getAutoTpResSetById(data) {
 export function updateTemplateConfInfo(data) {
     return request({
         url: '/L/autoanalysis/manage/updateTemplateConfInfo',
-        params: data
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
 //发布自主取数模板

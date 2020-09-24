@@ -176,6 +176,9 @@ export default {
                                 item.valueType = val.code;
                             }
                         })
+                        if(item.cond_value !=undefined){
+                            item.pre_value = item.cond_value;
+                        }
                     })
                     this.tableDataReusltWords = res.data;
                 })
