@@ -279,7 +279,7 @@ export default {
         },
         createFilter(queryString) {
             return (res) => {
-                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
             };
         },
         //获取任务名称/上游任务名称下拉框数据

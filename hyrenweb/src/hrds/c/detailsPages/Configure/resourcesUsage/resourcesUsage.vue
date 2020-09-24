@@ -180,7 +180,7 @@ export default {
         },
         createFilter(queryString) {
             return (res) => {
-                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
             };
         },
         //获取资源类型下拉框数据

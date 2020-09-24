@@ -427,7 +427,7 @@ export default {
         },
         createFilter(queryString) {
             return (res) => {
-                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
             };
         },
         //获取作业名称/上游作业名称下拉框数据
