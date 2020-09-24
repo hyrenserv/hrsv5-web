@@ -2089,6 +2089,7 @@ export default {
         },
         //第二个  选择列
         selectCol2(value, row) {
+            row.sql = this.xsTypeArr2All[value].sql
             this.dialogSelectColumn2 = true;
             this.tablename = row.table_name;
             this.unloadType = row.unload_type;
