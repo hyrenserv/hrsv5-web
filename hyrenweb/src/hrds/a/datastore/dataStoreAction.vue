@@ -297,9 +297,6 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     if (valueIndex == 3 || valueIndex == 2) {
-                        if (fileArry.length == 0) {
-                            message.customizTitle("上传的文件不能为空！", "warning")
-                        } else {
                             if (this.form.tableData.length > 0) {
                                 // 处理参数
                                 this.change_storelayer = [];
@@ -389,7 +386,7 @@ export default {
                                     }
                                 })
                             }
-                        }
+                        
                     } else {
                         if (this.form.tableData.length > 0) {
                             // 处理参数
