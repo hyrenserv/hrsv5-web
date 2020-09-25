@@ -16,9 +16,9 @@
                 <el-col :span="5" :offset="1">最后修改日期：{{viewData.original_update_date}}</el-col>
                 <el-col :span="5" :offset="1">最后修改时间：{{viewData.original_update_time}}</el-col>
             </el-row>
-            <el-row>
+            <el-row style="margin-top: 1%">
                 <el-col :span="23" :offset="1">
-                    <el-input type="textarea" autosize v-model="viewData.file_content"/>
+                    <span v-html="viewData.file_content"></span>
                 </el-col>
             </el-row>
         </el-col>
@@ -51,6 +51,7 @@ export default {
                 "fileType": fileType,
             }).then((res) => {
                 if (res.success) {
+                    // const url = window.URL.createObjectURL(res.data.file_content);
                     this.viewData = res.data
                 }
             })

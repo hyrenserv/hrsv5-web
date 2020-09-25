@@ -157,7 +157,7 @@
                                 </template>
                             </el-col>
                             <el-col :span="2">
-                                <a class="text_analysis" href="javascript:void(0)" @click="viewFile(data.file_id)">查看详情</a>
+                                <a class="text_analysis" href="javascript:void(0)" @click="viewFile(data.file_id,data.file_type)">查看详情</a>
                             </el-col>
                         </el-row>
                         <el-row style="margin-top: 1%;">
@@ -174,7 +174,7 @@
             </el-row>
             <el-row v-for="collectFile in collectFiles" :key="collectFile.file_id">
                 <hr>
-                <a class="text_analysis" href="javascript:void(0)" @click="viewFile(collectFile.file_id)">
+                <a class="text_analysis" href="javascript:void(0)" @click="viewFile(collectFile.file_id,collectFile.file_type)">
                     {{collectFile.original_name.substr(0,30)}}...{{collectFile.original_name.substr(collectFile.original_name.lastIndexOf("."))}}
                 </a>
             </el-row>
@@ -276,7 +276,7 @@ export default {
         //文本分析
         analysis(file_id, original_name) {
             console.log(file_id, original_name);
-            this.$Msg.customizTitle('该版本文本分析功能未实现!', 'success')
+            this.$Msg.customizTitle('试用版本不支持文本分析功能!', 'success')
         },
         //保存文件收藏
         saveFavoriteFile(file_id, original_name) {
