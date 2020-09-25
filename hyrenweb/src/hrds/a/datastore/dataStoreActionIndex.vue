@@ -865,7 +865,7 @@ export default {
                     this.showValue = false;
                     this.selectVlueOrUpload = true;
                     this.uploadindexless = numberCount - 1;
-                    this.uploadindexmore = this.form.tableDataConfigure.length - 1;
+                    this.uploadindexmore = this.form.tableDataConfigure.length;
                     this.inputindex = numberCount - 1;
                 } else if (val === "3") {
                     if (flag3 == 1) {
@@ -878,7 +878,7 @@ export default {
                     this.selectVlueOrUpload = true;
                     this.showDownloadButton = false;
                     this.uploadindexless = numberCount - 1;
-                    this.uploadindexmore = this.form.tableDataConfigure.length - 1;
+                    this.uploadindexmore = this.form.tableDataConfigure.length;
                     this.inputindex = numberCount - 1;
                 } else if (val === "4") {
                     this.showValue = true;
