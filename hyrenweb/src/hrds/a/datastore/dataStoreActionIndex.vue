@@ -154,7 +154,7 @@
 
                     <el-table-column label="value" align="center" :key="4" v-if="selectVlueOrUpload">
                         <template slot-scope="scope">
-                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
+                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index < uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
                                 <el-button size="small" type="info" @click="handleEditchange(scope.$index, scope.row)">选择文件</el-button>
                             </el-upload>
 
@@ -164,7 +164,7 @@
 
                             <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-else-if="scope.$index <= inputindex " style="width:98%"></el-input>
 
-                            <el-radio-group v-model="scope.row.radio" v-if="scope.$index > uploadindexmore">
+                            <el-radio-group v-model="scope.row.radio" v-if="scope.$index >= uploadindexmore">
                                 <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>
                                 <el-radio @change="selectedUploadValue=true;handleEditValue(scope.$index, scope.row)" label="1">选择文件</el-radio>
                             </el-radio-group>
