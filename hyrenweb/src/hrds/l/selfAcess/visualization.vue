@@ -1714,7 +1714,10 @@ export default {
                 this.oneInput = false;
             } else if (val === "为空") {
                 let obj = {
-                    nameAll: this.keyWords + " 为空"
+                    nameAll: this.keyWords + " 为空",
+                    key: this.keyWords,
+                    realtion: '为空',
+                    number: '11'
                 }
                 this.fiflterConditionArr.push(obj);
                 this.inputvalueOptions3 = '';
@@ -1726,7 +1729,10 @@ export default {
                 this.addfiflterConditionDetails = false;
             } else if (val === "非空") {
                 let obj = {
-                    nameAll: this.keyWords + " 非空"
+                    nameAll: this.keyWords + " 非空",
+                    key: this.keyWords,
+                    realtion: '非空',
+                    number: '12'
                 }
                 this.fiflterConditionArr.push(obj);
                 this.inputvalueOptions3 = '';
@@ -1750,12 +1756,18 @@ export default {
         fiflterSqlOptions() {
             if (this.markCodeOptionsValue === "介于") {
                 let obj = {
-                    nameAll: this.keyWords + " 介于" + this.inputvalueOptions1 + '，' + this.inputvalueOptions2
+                    nameAll: this.keyWords + " 介于" + this.inputvalueOptions1 + '，' + this.inputvalueOptions2,
+                    key: this.keyWords,
+                    realtion: '介于',
+                    number: '01'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "不介于") {
                 let obj = {
-                    nameAll: this.keyWords + " 不介于" + this.inputvalueOptions1 + '，' + this.inputvalueOptions2
+                    nameAll: this.keyWords + " 不介于" + this.inputvalueOptions1 + '，' + this.inputvalueOptions2,
+                    key: this.keyWords,
+                    realtion: '不介于',
+                    number: '02'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "为空") {
@@ -1764,42 +1776,66 @@ export default {
 
             } else if (this.markCodeOptionsValue === "等于") {
                 let obj = {
-                    nameAll: this.keyWords + " 等于" + this.inputvalueOptions3
+                    nameAll: this.keyWords + " 等于" + this.inputvalueOptions3,
+                    key: this.keyWords,
+                    realtion: '等于',
+                    number: '03'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "不等于") {
                 let obj = {
-                    nameAll: this.keyWords + " 不等于" + this.inputvalueOptions3
+                    nameAll: this.keyWords + " 不等于" + this.inputvalueOptions3,
+                    key: this.keyWords,
+                    realtion: '不等于',
+                    number: '04'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "大于") {
                 let obj = {
-                    nameAll: this.keyWords + " 大于" + this.inputvalueOptions3
+                    nameAll: this.keyWords + " 大于" + this.inputvalueOptions3,
+                    key: this.keyWords,
+                    realtion: '大于',
+                    number: '05'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "小于") {
                 let obj = {
-                    nameAll: this.keyWords + " 小于" + this.inputvalueOptions3
+                    nameAll: this.keyWords + " 小于" + this.inputvalueOptions3,
+                    key: this.keyWords,
+                    realtion: '小于',
+                    number: '06'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "大于等于") {
                 let obj = {
-                    nameAll: this.keyWords + " 大于等于" + this.inputvalueOptions3
+                    nameAll: this.keyWords + " 大于等于" + this.inputvalueOptions3,
+                    key: this.keyWords,
+                    realtion: '大于等于',
+                    number: '07'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "小于等于") {
                 let obj = {
-                    nameAll: this.keyWords + " 小于等于" + this.inputvalueOptions3
+                    nameAll: this.keyWords + " 小于等于" + this.inputvalueOptions3,
+                    key: this.keyWords,
+                    realtion: '小于等于',
+                    number: '08'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "最大的N个") {
                 let obj = {
-                    nameAll: this.keyWords + ' 最大的' + this.inputvalueOptions3 + '个'
+                    nameAll: this.keyWords + ' 最大的' + this.inputvalueOptions3 + '个',
+                    key: this.keyWords,
+                    realtion: '最大的N个',
+                    number: '09'
                 }
                 this.fiflterConditionArr.push(obj);
             } else if (this.markCodeOptionsValue === "最小的N个") {
                 let obj = {
-                    nameAll: this.keyWords + ' 最小的' + this.inputvalueOptions3 + '个'
+                    nameAll: this.keyWords + ' 最小的' + this.inputvalueOptions3 + '个',
+                    key: this.keyWords,
+                    realtion: '最小的N个',
+                    number: '10'
                 }
                 this.fiflterConditionArr.push(obj);
             }
