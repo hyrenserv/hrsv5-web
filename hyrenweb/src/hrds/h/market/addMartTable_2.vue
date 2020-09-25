@@ -466,17 +466,22 @@
     </el-dialog>
 
     <!--规则显示-->
-    <el-dialog title="规则列表" :visible.sync="ruleDialog" width="70%">
-        <el-table stripe :data="tableDatalist.filter(data => !search || (data.function_name.toLowerCase().includes(search.toLowerCase()))||data.function_example.toLowerCase().includes(search.toLowerCase()))" size="medium" height="400">
-            <el-table-column prop="function_name" label="函数名" show-overflow-tooltip align="left"></el-table-column>
-            <el-table-column prop="function_example" label="例子" align="left" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="function_desc" label="描述" align="left" show-overflow-tooltip></el-table-column>
-            <el-table-column align="left">
-                <template slot="header" slot-scope="scope">
-                    <el-input v-model="search" size="mini" :key="scope.row" placeholder="输入函数名或者列子进行搜索" />
-                </template>
-            </el-table-column>
-        </el-table>
+    <el-dialog title="函数速查表" :visible.sync="ruleDialog" width="70%" top="3%">
+        <el-tabs v-model="activeName">
+            <el-tab-pane  v-for="item in tableDatalist.classify" :key="item"  :label="item" :name="item">
+                <el-table stripe :data="tableDatalist[item].filter(data => !search || (data.function_name.toLowerCase().includes(search.toLowerCase()))||data.function_example.toLowerCase().includes(search.toLowerCase()))" size="medium" height="400">
+                    <el-table-column prop="function_name" label="函数名" show-overflow-tooltip align="left"></el-table-column>
+                    <el-table-column prop="function_example" label="例子" align="left" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="function_desc" label="描述" align="left" show-overflow-tooltip></el-table-column>
+                    <el-table-column align="left">
+                        <template slot="header" slot-scope="scope">
+                            <el-input v-model="search" size="mini" :key="scope.row" placeholder="输入函数名或者列子进行搜索" />
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-tab-pane>
+        </el-tabs>
+
         <code>规则设置(请填写处理函数,如果使用跑批日期则填写:#{txdate}(跑批日期),#{txdate_pre}(跑批日期 - 1),#{txdate_next}(跑批日期 +
             1))</code>
         <el-input v-model="ruleStr" type="textarea"></el-input>
@@ -511,7 +516,7 @@ export default {
         return {
             search: '',
             ruleDialog: false,
-            tableDatalist: [],
+            tableDatalist: {},
             setRow: {},
             ruleStr: '',
             presql: "",
@@ -575,7 +580,8 @@ export default {
             reSelectColumns: '',
             selectColumns1: '',
             tableNameList: [],
-            checkColumnData: ['varchar', 'varchar2', 'text', 'char', 'string']
+            checkColumnData: ['varchar', 'varchar2', 'text', 'char', 'string'],
+            activeName: ''
         };
     },
     watch: {
@@ -1279,6 +1285,7 @@ export default {
             this.setRow = this.columnbysql[index]
             functionAll.getSparkSqlGram().then(res => {
                 this.tableDatalist = res.data
+                this.activeName = this.tableDatalist.classify[0]
                 this.ruleDialog = true
             })
         },
