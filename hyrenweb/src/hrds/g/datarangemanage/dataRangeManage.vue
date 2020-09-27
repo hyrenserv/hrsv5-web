@@ -39,7 +39,7 @@
                     <el-col :span="12">
                         <el-form-item label="用户选择" prop="user_id" :rules="rule.selected">
                             <el-select v-model="form.user_id" multiple clearable filterable placeholder="请选择" size="small">
-                                <el-option v-for="item in userData" :label="item.user_name" :value="item.user_id">
+                                <el-option v-for="item in userData" :key="item.user_id" :label="item.user_name" :value="item.user_id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -54,17 +54,17 @@
                 <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage*pageSize)" border style="width: 100%" ref="multipleTable" size="medium" :row-key="(row)=>{ return row.id}" @selection-change="selectionChange" @select-all='allSelect'>
                     <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
-                    <el-table-column label="序号" width="50px" align="center">
+                    <el-table-column label="序号" width="50px" align="left">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="table_name" label="采集原始表名" align="center" />
-                    <el-table-column prop="original_name" label="原始表中文名" align="center" />
-                    <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名" align="center" />
-                    <el-table-column prop="selectColumn" label="选择字段" align="center">
+                    <el-table-column prop="table_name" label="采集原始表名" align="left" />
+                    <el-table-column prop="original_name" label="原始表中文名" align="left" />
+                    <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名" align="left" />
+                    <el-table-column prop="selectColumn" label="选择字段" align="left">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="searchFieldById(scope.row,scope.$index)">
+                            <el-button type="text" size="mini" @click="searchFieldById(scope.row,scope.$index)">
                                 选择字段
                             </el-button>
                         </template>
@@ -72,7 +72,7 @@
                 </el-table>
                 <!-- 分页内容 -->
                 <el-row class="pagination">
-                    <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalSize" class='locationcenter' />
+                    <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 20,50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalSize" class='locationcenter' />
                 </el-row>
             </el-form>
         </el-col>
@@ -80,15 +80,11 @@
     <!--选择列展示-->
     <el-dialog title="查看字段信息" :visible.sync="dialogShowFieldFormVisible" :before-close="beforeShowFieldClose">
         <el-table :data="columnData" border style="width: 100%" ref="multipleColumnTable" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="columnSelectionChange" @select-all='allColumnSelect'>
-            <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
+            <el-table-column width="40" align="left" type="selection" :reserve-selection="true">
             </el-table-column>
-            <el-table-column label="序号" align="center">
-                <template slot-scope="scope">
-                    <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="column_name" label="字段英文名" align="center" />
-            <el-table-column prop="column_ch_name" label="字段中文名" align="center" />
+            <el-table-column type="index" label="序号" width="50px" align='left'/>
+            <el-table-column prop="column_name" label="字段英文名" align="left" />
+            <el-table-column prop="column_ch_name" label="字段中文名" align="left" />
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancel" size="mini">取 消</el-button>
@@ -159,7 +155,6 @@ export default {
             params["file_id"] = row.file_id;
             interfaceFunctionAll.searchFieldById(params).then(res => {
                 this.columnData = res.data.column_info_list;
-                this.totalSize = res.data.length;
             })
         },
         // 保存表数据
@@ -176,7 +171,7 @@ export default {
                 let param = {};
                 if (row.selectColumn !== undefined) {
                     row.selectColumn.forEach(o => {
-                        tableChColumns.push(o.column_cn_name);
+                        tableChColumns.push(o.column_ch_name);
                         tableEnColumns.push(o.column_name);
                     })
                 }
@@ -210,12 +205,10 @@ export default {
         handleCurrentChangeList(currPage) {
             //把val赋给当前页面
             this.currPage = currPage;
-            this.searchInterfaceInfoByType("1");
         },
         // 改变每页显示条数
         handleSizeChange(pageSize) {
             this.pageSize = pageSize;
-            this.searchInterfaceInfoByType("1");
         },
         // 树节点触发
         handleNodeClick(data) {
