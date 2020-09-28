@@ -82,7 +82,7 @@
         <el-table :data="columnData" border style="width: 100%" ref="multipleColumnTable" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="columnSelectionChange" @select-all='allColumnSelect'>
             <el-table-column width="40" align="left" type="selection" :reserve-selection="true">
             </el-table-column>
-            <el-table-column type="index" label="序号" width="50px" align='left'/>
+            <el-table-column type="index" label="序号" width="50px" align='left' />
             <el-table-column prop="column_name" label="字段英文名" align="left" />
             <el-table-column prop="column_ch_name" label="字段中文名" align="left" />
         </el-table>
@@ -128,6 +128,12 @@ export default {
                 user_id: []
             }
         }
+    },
+    watch: {
+        //设置检索内容
+        filterText(val) {
+            this.$refs.tree.filter(val);
+        },
     },
     mounted() {
         this.searchDataUsageRangeInfoToTreeData();
@@ -266,8 +272,17 @@ export default {
         },
         // 搜索过滤节点
         filterNode(value, data) {
+            // 如果检索内容为空,直接返回
             if (!value) return true;
-            return data.label.indexOf(value) !== -1;
+            // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
+            // 检索内容为 original_name table_name hyren_name
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+                return (
+                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
+                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
+                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                )
+            }
         },
     }
 };

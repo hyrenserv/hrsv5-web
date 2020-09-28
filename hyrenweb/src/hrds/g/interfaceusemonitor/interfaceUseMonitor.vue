@@ -136,13 +136,9 @@
     <!--查看字段弹出框-->
     <el-dialog title="查看字段列表" :visible.sync="dialogViewFieldFormVisible" :before-close="beforeViewFieldClose">
         <el-table :data="fieldData" border style="width: 100%">
-            <el-table-column label="序号" align="center">
-                <template slot-scope="scope">
-                    <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="table_en_column" label="字段英文名" align="center" />
-            <el-table-column prop="table_ch_column" label="字段中文名" align="center" />
+            <el-table-column type="index" label="序号" align="left" width="50px"/>
+            <el-table-column prop="table_en_column" label="字段英文名" align="left" />
+            <el-table-column prop="table_ch_column" label="字段中文名" align="left" />
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" size="mini" @click="dialogViewFieldFormVisible = false">
