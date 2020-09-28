@@ -64,7 +64,7 @@
                     <el-table-column prop="hyren_name" v-show="tableShowStatus" label="系统内对应表名" align="left" />
                     <el-table-column prop="selectColumn" label="选择字段" align="left">
                         <template slot-scope="scope">
-                            <el-button type="text" size="mini" @click="searchFieldById(scope.row,scope.$index)">
+                            <el-button type="text" size="mini" @click="searchFieldById(scope.row,scope.$index+(currPage - 1) * pageSize)">
                                 选择字段
                             </el-button>
                         </template>
