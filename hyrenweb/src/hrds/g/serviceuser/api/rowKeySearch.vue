@@ -244,10 +244,10 @@
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
                         this.requestAddressForToken =
                             this.ipAndPort + "?token=AJALalfja&url=" + this.$route.query.url +
-                            "&en_table=dsd&rowkey=dajda|dad&dataType=json&outType=file";
+                            "&en_table=dsd&rowkey=dajda|dad&dataType=json&outType=stream&asynType=0";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
-                            "&en_table=dsd&rowkey=dajda|dad&dataType=json&outType=file";
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
+                            "&en_table=dsd&rowkey=dajda|dad&dataType=json&outType=stream&asynType=0";
                     })
             },
         }

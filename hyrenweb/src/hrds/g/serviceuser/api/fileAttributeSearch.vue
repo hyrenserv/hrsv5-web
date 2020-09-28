@@ -359,7 +359,7 @@
                             "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
                             "&filename=20160620&num=20";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
                             "&filename=20160620&num=20";
                     })
             },

@@ -239,7 +239,7 @@
                             this.ipAndPort + "?token=AJALalfja&url=" + this.$route.query.url +
                             "&sql=select a from b&dataType=json&outType=stream";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
                             "&sql=select a from b&dataType=json&outType=stream";
                     })
             },

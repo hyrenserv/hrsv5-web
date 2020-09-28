@@ -152,13 +152,13 @@
                     {
                         field: 'selectColumn',
                         fieldType: 'String',
-                        isRequired: '选填，需要查询的列名(selectColumn=column1,column2....等,号隔开)，如果没有，查询所有字段',
+                        isRequired: '选填，需要查询的列名(column1,column2....等,号隔开)，如果没有，查询所有字段',
                         remark: '查询字段',
                     },
                     {
                         field: 'whereColumn',
                         fieldType: 'String',
-                        isRequired: '查询条件(whereColumn=column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
+                        isRequired: '查询条件(column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
                         remark: '查询过滤条件',
                     },
                      {
@@ -272,12 +272,12 @@
                         this.requestAddressForToken =
                             this.ipAndPort +
                             "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
-                            "&selectColumn=column1,column2&whereColumn=user_name=zhangsan&start=0&num=10" +
-                            "&dataType=json&outType=file&asynType=0";
+                            "&selectColumn=column1,column2&user_name=zhangsan&start=0&num=10" +
+                            "&dataType=json&outType=stream&asynType=0";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
                             "&tableName=emp&selectColumn=column1,column2" +
-                            "&whereColumn=user_name=zhangsan&start=0&num=10&dataType=json&outType=stream&asynType=0";
+                            "&user_name=zhangsan&start=0&num=10&dataType=json&outType=stream&asynType=0";
                     })
             },
         }
