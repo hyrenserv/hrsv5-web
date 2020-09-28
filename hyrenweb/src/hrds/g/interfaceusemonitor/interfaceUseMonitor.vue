@@ -19,7 +19,7 @@
                 <el-col :span="8">
                     <span>用户选择：
                         <el-select v-model="user_id" size="small" filterable clearable placeholder="请选择">
-                            <el-option v-for="item in userData" :label="item.user_name" :value="item.user_id">
+                            <el-option v-for="item in userData" :key="item.user_name" :label="item.user_name" :value="item.user_id">
                             </el-option>
                         </el-select>
                     </span>
@@ -39,7 +39,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="interface_name" label="接口名称" align="left" width="260px" />
-                <el-table-column prop="interface_code" label="接口代码" align="left" width="80px" />
+                <el-table-column prop="interface_code" label="接口代码" align="left" width="70px" />
                 <el-table-column prop="user_name" label="使用用户" align="left" width="120px" />
                 <el-table-column prop="start_use_date" :formatter="dateFormat" label="开始日期" align="left" width="100px" />
                 <el-table-column prop="use_valid_date" :formatter="dateFormat" label="结束日期" align="left" width="100px" />
