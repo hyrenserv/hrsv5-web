@@ -1,12 +1,17 @@
 <template>
 <div id="app">
     <router-view />
+    <Loading />
 </div>
 </template>
 
 <script>
+import Loading from './hrds/components/loading/index.vue'
 export default {
-    name: 'App'
+    name: 'App',
+    components: {
+        Loading
+    }
 }
 </script>
 
@@ -33,7 +38,8 @@ th {
 }
 
 html,
-body,#app {
+body,
+#app {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -115,6 +121,6 @@ body,#app {
         display: block;
         font-size: 14px;
     }
-  
+
 }
 </style>
