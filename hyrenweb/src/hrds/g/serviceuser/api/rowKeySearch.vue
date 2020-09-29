@@ -143,10 +143,16 @@
                         remark: '要查询表名',
                     },
                     {
+                        field: 'en_column',
+                        fieldType: 'String',
+                        isRequired: '非必填',
+                        remark: '格式:(列族名:列英文名)，多列以|分割，不填为整行',
+                    },
+                    {
                         field: 'rowkey',
                         fieldType: 'String',
                         isRequired: '必填',
-                        remark: '要查询的rowkey(多个列的组合rowkey请按照指定分隔符和顺序传值)',
+                        remark: '要查询的rowkey(多个列的组合rowkey请按照指定顺序传值)',
                     },
                     {
                         field: 'get_version',
