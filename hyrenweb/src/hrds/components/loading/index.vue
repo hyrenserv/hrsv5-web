@@ -17,6 +17,6 @@ export default {
     rgba(156, 154, 154, 0.6);
   width: 100vw;
   height: 100vh;
-  z-index: 1;
+  z-index: 100;
 }
 </style>
