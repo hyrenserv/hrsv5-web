@@ -246,7 +246,12 @@
                 <el-table-column prop="field_process" label="处理方式" width="130" show-overflow-tooltip align="center">
                     <template slot="header">
                         处理方式
-                        <el-tooltip class="tooltipHelp" effect="dark" content="映射仅赋值：源表字段的值直接给模型表；映射且修改：源表的值通过写映射规则进行修改，改变后的值给模型表；分组映射：源表字段的值直接给模型表，同时映射规则填写模型表的字段=某个类别，如type=1的格式进行分组（横表转竖表时用）" placement="right">
+                        <el-tooltip class="tooltipHelp" effect="dark" placement="top">
+                            <div slot="content">
+                                映射仅赋值：源表字段的值直接给模型表；<br/>
+                                映射且修改：源表的值通过写映射规则进行修改，改变后的值给模型表；<br/>
+                                分组映射：源表字段的值直接给模型表，同时映射规则填写模型表的字段=某个类别，如type=1的格式进行分组（横表转竖表时用）
+                            </div>
                             <i class="fa fa-question-circle " aria-hidden="true"></i>
                         </el-tooltip>
                     </template>
@@ -468,7 +473,7 @@
     <!--规则显示-->
     <el-dialog title="函数速查表" :visible.sync="ruleDialog" width="70%" top="3%">
         <el-tabs v-model="activeName">
-            <el-tab-pane  v-for="item in tableDatalist.classify" :key="item"  :label="item" :name="item">
+            <el-tab-pane v-for="item in tableDatalist.classify" :key="item" :label="item" :name="item">
                 <el-table stripe :data="tableDatalist[item].filter(data => !search || (data.function_name.toLowerCase().includes(search.toLowerCase()))||data.function_example.toLowerCase().includes(search.toLowerCase()))" size="medium" height="400">
                     <el-table-column prop="function_name" label="函数名" show-overflow-tooltip align="left"></el-table-column>
                     <el-table-column prop="function_example" label="例子" align="left" show-overflow-tooltip></el-table-column>
@@ -598,11 +603,12 @@ export default {
         this.getcolumnfromdatabase(this.datatable_id);
         this.getifhbase();
         this.getfromcolumnlist(this.datatable_id);
-        this.getquerysql();
+        
 
     },
     mounted() {
         this.checkifrepeat();
+        this.getquerysql();
 
     },
     methods: {

@@ -51,7 +51,7 @@ export default {
                 }
             }
         });
-        editor.on("change", that.debounce(function (e) {
+        editor.on("focus", that.debounce(function (e) {
             editor.execCommand("startAutocomplete");
             that.$emit('changeTextarea', editor.session.getValue())
             var execute_sql = editor.session.getValue() + "";
