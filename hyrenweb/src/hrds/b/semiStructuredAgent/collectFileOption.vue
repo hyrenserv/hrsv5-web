@@ -30,7 +30,7 @@
 
                 <el-table-column prop="collect_data_type" label="数据类型" align="center">
                     <template slot-scope="scope">
-                        <el-select placeholder="数据类型" style="width: 100%;" v-model="scope.row.collect_data_type">
+                        <el-select  placeholder="数据类型" style="width: 100%;" v-model="scope.row.collect_data_type">
                             <el-option v-for="item in dataType" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                         </el-select>
                     </template>
@@ -38,7 +38,7 @@
 
                 <el-table-column prop="updatetype" label="数据更新方式" align="center">
                     <template slot-scope="scope">
-                        <el-select placeholder="数据更新方式" style="width: 100%;" v-model="scope.row.updatetype">
+                        <el-select disabled placeholder="数据更新方式" style="width: 100%;" v-model="scope.row.updatetype">
                             <el-option v-for="item in upDateWay" :key="item.value" :label="item.value" :value="item.code"> </el-option>
                         </el-select>
                     </template>
@@ -95,6 +95,12 @@
             <el-col :span=span class="colTableContent" :offset=offset>
                 <el-table :data="tableDataColum" border stripe size="medium">
                     <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+
+                    <el-table-column label="是否为更新列" width="120" align="center">
+                        <template slot-scope="scope">
+                            <el-checkbox v-model="scope.row.is_zipper_field" :label="scope.row.column_name">&thinsp;</el-checkbox>
+                        </template>
+                    </el-table-column>
 
                     <el-table-column label="是否为操作字段" width="120" align="center">
                         <template slot-scope="scope">
@@ -256,12 +262,17 @@ export default {
                 functionAll.getObjectCollectStructById({ //获取右边表格的信息，可能为空；
                     ocs_id: val.ocs_id
                 }).then(res => {
+                    debugger;
                     if (res && res.success) {
                         if (res.data.length > 0) {
                             res.data.forEach(item => {
+                                debugger;
                                 this.checkedDataArr.push(item.column_name);
                                 if (item.is_operate == "1") {
                                     this.radio = item.column_name;
+                                }
+                                if(item.is_zipper_field == "1"){
+                                    item.is_zipper_field = true;
                                 }
                             })
                         }
@@ -301,6 +312,12 @@ export default {
                     this.tableDataColum[i].is_operate = "1"
                 } else {
                     this.tableDataColum[i].is_operate = "0"
+                }
+                debugger;
+                if(this.tableDataColum[i].is_zipper_field == true){
+                    this.tableDataColum[i].is_zipper_field = "1"
+                }else {
+                    this.tableDataColum[i].is_zipper_field = "0"
                 }
             }
             // 直接调用接口保存列结构
