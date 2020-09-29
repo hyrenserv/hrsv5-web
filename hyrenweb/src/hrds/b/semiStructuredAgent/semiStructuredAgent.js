@@ -258,6 +258,18 @@ export function batchSaveDtabRelationStoreInfo(data) {
         params: data
     })
 }
+
+/**(12)
+ * 立即启动
+ */
+export function execute(data) {
+    return request({
+        url: '/B/agent/semistructured/collectstoragelayerconf/execute',
+        params: data
+    })
+}
+
+
 //startMode页面
 /**(1)
  * 获取当前半结构化采集任务下的作业信息

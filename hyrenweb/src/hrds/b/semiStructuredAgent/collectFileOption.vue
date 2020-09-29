@@ -262,11 +262,9 @@ export default {
                 functionAll.getObjectCollectStructById({ //获取右边表格的信息，可能为空；
                     ocs_id: val.ocs_id
                 }).then(res => {
-                    debugger;
                     if (res && res.success) {
                         if (res.data.length > 0) {
                             res.data.forEach(item => {
-                                debugger;
                                 this.checkedDataArr.push(item.column_name);
                                 if (item.is_operate == "1") {
                                     this.radio = item.column_name;
@@ -313,7 +311,6 @@ export default {
                 } else {
                     this.tableDataColum[i].is_operate = "0"
                 }
-                debugger;
                 if(this.tableDataColum[i].is_zipper_field == true){
                     this.tableDataColum[i].is_zipper_field = "1"
                 }else {
@@ -349,7 +346,8 @@ export default {
                         })
                         .then(res => {
                             for (let i = 0; i < res.data.length; i++) {
-                                if (res.data[i].isParent == 'true') {
+                                debugger;
+                                if (res.data[i].isParent == true) {
                                     res.data[i].disabled = true;
                                     res.data[i].leaf = false;
                                 } else {
@@ -414,6 +412,7 @@ export default {
                 functionAll.getObjectHandleType({
                     ocs_id: val.ocs_id
                 }).then(res => {
+                    debugger;
                     if (res.data.length > 0) { //接口数据为空时显示代码项数据
                         res.data.forEach(item => {
                             this.operationTypeData.forEach(val => {
