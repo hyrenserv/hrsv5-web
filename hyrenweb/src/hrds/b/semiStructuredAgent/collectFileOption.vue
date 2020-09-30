@@ -572,6 +572,12 @@ export default {
         },
         // 保存采集文件设置
         saveObjectCollectTask() {
+            //由于firstline内容太多，所以置空。
+            this.tableDataMain.forEach(item =>{
+                item.firstline = '';
+            })
+            // console.log(this.tableDataMain);
+            debugger;
             functionAll.saveObjectCollectTask({
                 objectCollectTasks: JSON.stringify(this.tableDataMain),
                 agent_id: this.$route.query.agent_id,
