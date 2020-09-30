@@ -763,8 +763,9 @@
                 this.finishDialogVisible = true
             },
             execute() {
-                let date = new Date()
-                this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 9 ? date.getDate() : '0' + (date.getDate()))
+                // let date = new Date()
+                // this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 9 ? date.getDate() : '0' + (date.getDate()))
+                // debugger;
                 this.isLoading = true;
                 functionAll.execute({
                     odc_id: this.$route.query.odc_id,
