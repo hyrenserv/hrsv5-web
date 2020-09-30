@@ -755,11 +755,11 @@
             },
             // 下一步保存
             next(formName) {
-                this.gotoNextSteps();
+                this.gotoNextSteps(true);
+
             },
             startButtonFun() {
-                let flag = true;
-                this.gotoNextSteps();
+                this.gotoNextSteps(false);
                 this.finishDialogVisible = true
             },
             execute() {
@@ -772,15 +772,15 @@
                 }).then(res => {
                     this.isLoading = false;
                     if (res && res.success) {
-                        this.$Msg.customizTitle("运行成功", "success");
-                        // resolve(res.code)
-                    } else {
-                        reject()
+                        this.$Msg.customizTitle('启动发送成功', 'success')
+                        this.$router.push({
+                            path: "/agentList"
+                        });
                     }
                 })
             },
             //保存接口
-            gotoNextSteps() {
+            gotoNextSteps(nextflag) {
                 let batchSaveDtabRelationStoreInfo = new Promise((resolve, reject) => { //查询是否为已选择项回显数据
                     let arr = [];
                     let flag = true;
@@ -828,31 +828,34 @@
                     })
 
                 })
-                this.routerpush(batchSaveDtabRelationStoreInfo,updateTableZhName);
-                // Promise.all([batchSaveDtabRelationStoreInfo, updateTableZhName]).then(res => {
-                //     let num0 = res[0];
-                //     let num1 = res[1];
-                //     if (num0 == 200 && num1 == 200) {
-                //         if (this.$route.query.edit == 'yes') { //编辑
-                //             this.$router.push({
-                //                 name: "startMode",
-                //                 query: {
-                //                     agent_id: this.$route.query.agent_id,
-                //                     odc_id: this.$route.query.odc_id,
-                //                     edit: this.$route.query.edit
-                //                 }
-                //             })
-                //         } else { //新增
-                //             this.$router.push({
-                //                 name: "startMode",
-                //                 query: {
-                //                     agent_id: this.$route.query.agent_id,
-                //                     odc_id: this.$route.query.odc_id
-                //                 }
-                //             })
-                //         }
-                //     }
-                // })
+                Promise.all([batchSaveDtabRelationStoreInfo, updateTableZhName]).then(res => {
+                    if (nextflag) {
+                        let num0 = res[0];
+                        let num1 = res[1];
+                        if (num0 == 200 && num1 == 200) {
+                            if (this.$route.query.edit == 'yes') { //编辑
+                                this.$router.push({
+                                    name: "startMode",
+                                    query: {
+                                        agent_id: this.$route.query.agent_id,
+                                        odc_id: this.$route.query.odc_id,
+                                        edit: this.$route.query.edit
+                                    }
+                                })
+                            } else { //新增
+                                this.$router.push({
+                                    name: "startMode",
+                                    query: {
+                                        agent_id: this.$route.query.agent_id,
+                                        odc_id: this.$route.query.odc_id
+                                    }
+                                })
+                            }
+                        }
+                    } else {
+                        //DO NOTHING
+                    }
+                })
             },
             //页面跳转
             routerpush(batchSaveDtabRelationStoreInfo, updateTableZhName) {

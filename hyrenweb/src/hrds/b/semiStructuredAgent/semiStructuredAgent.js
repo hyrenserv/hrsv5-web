@@ -264,7 +264,7 @@ export function batchSaveDtabRelationStoreInfo(data) {
  */
 export function execute(data) {
     return request({
-        url: '/B/agent/semistructured/collectstoragelayerconf/execute',
+        url: '/B/agent/sendObjectCollectTaskById',
         params: data
     })
 }
