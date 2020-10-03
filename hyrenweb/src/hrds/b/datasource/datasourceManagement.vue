@@ -29,19 +29,34 @@
                     <template slot-scope="scope">
                         <!-- 申请类型: 查看 -->
                         <template v-if="scope.row.apply_type ==='1'">
-                            <el-button type="text" class="sendcolor" @click="dataAudit(1,'查看'); handleEdit(scope.$index, scope.row)" size="mini">查看</el-button>
-                            <el-button type="text" class='editcolor' @click="dataAudit(3,'查看一次'); handleEdit(scope.$index, scope.row)" size="mini">查看一次</el-button>
-                            <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            <template v-if="scope.row.auth_type ==='0'">
+                                <el-button type="text" class="sendcolor" @click="dataAudit(1,'查看'); handleEdit(scope.$index, scope.row)" size="mini">查看</el-button>
+                                <el-button type="text" class='editcolor' @click="dataAudit(3,'查看一次'); handleEdit(scope.$index, scope.row)" size="mini">查看一次</el-button>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                            </template>
                         </template>
                         <!-- 申请类型: 下载 -->
                         <template v-else-if="scope.row.apply_type==='2'">
-                            <el-button type="text" class="sendcolor" @click="dataAudit(1,'允许下载'); handleEdit(scope.$index, scope.row)" size="mini">允许</el-button>
-                            <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            <template v-if="scope.row.auth_type ==='0'">
+                                <el-button type="text" class="sendcolor" @click="dataAudit(1,'允许下载'); handleEdit(scope.$index, scope.row)" size="mini">允许</el-button>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                            </template>
                         </template>
                         <!-- 申请类型: 发布 -->
                         <template v-else-if="scope.row.apply_type==='3'">
-                            <el-button type="text" class='sendcolor' @click="dataAudit(1,'允许发布'); handleEdit(scope.$index, scope.row)" size="mini">允许</el-button>
-                            <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            <template v-if="scope.row.auth_type ==='0'">
+                                <el-button type="text" class='sendcolor' @click="dataAudit(1,'允许发布'); handleEdit(scope.$index, scope.row)" size="mini">允许</el-button>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                            </template>
                         </template>
                     </template>
                 </el-table-column>
@@ -344,7 +359,7 @@ export default {
                     .then(res => {
                         if (res && res.success) {
                             this.$Msg.customizTitle('回收权限成功', 'success')
-                            this.tableDatalist = res.data;
+                            this.handleCurrentChangeList(1);
                         }
                     })
             })
