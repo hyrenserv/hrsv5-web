@@ -166,10 +166,6 @@ export default {
                 if (res.success) {
                     this.myApplyRecordData = res.data.myApplyRecordRs;
                     this.totalSize = res.data.totalSize;
-                    console.log(this.myApplyRecordData);
-                    this.myApplyRecordData.forEach(data => {
-                        console.log(data.original_name, data.apply_type);
-                    });
                 } else {
                     this.$Msg.customizTitle(res.message, 'error')
                 }
@@ -204,7 +200,6 @@ export default {
                     this.myApplyRecordData = res.data.myApplyRecordRs;
                     this.totalSize = res.data.totalSize;
                 } else this.$Msg.customizTitle(res.message, 'error')
-                console.log(this.myApplyRecordData);
             });
         },
         /* 权限申请 */
@@ -227,19 +222,22 @@ export default {
         },
         /* 查看文件 */
         viewFile(fileId, fileType) {
-            dataQuery.viewFile({ "fileId": fileId, "fileType": fileType, }).then((res) => {
-                if (res.success) {
-                    console.log(res.data)
-                } else this.$Msg.customizTitle(res.message, 'error')
+            this.$router.push({
+                name: 'viewFile',
+                query: {
+                    'fileId': fileId,
+                    "fileType": fileType,
+                }
             })
         },
         /* 下载文件 */
         downloadFile(file_id, original_name) {
-            dataQuery.downloadFile({ 'fileId': file_id, 'fileName': original_name }).then((res) => {
-                if (res.success) {
-                    // 转换数据流为文件
-                    fileOperations.fileDownload(file_id, original_name)
-                } else this.$Msg.customizTitle(res.message, 'error')
+            dataQuery.downloadFile({
+                'fileId': file_id,
+                'fileName': original_name
+            }).then((res) => {
+                // 转换数据流为文件
+                fileOperations.fileDownload(res.data, original_name)
             })
         },
     }
