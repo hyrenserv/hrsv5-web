@@ -179,7 +179,7 @@
                     <ve-histogram :data="sdcChartData" :settings="sdcChartSettings" />
                 </el-col>
             </el-row>
-            <el-row class="borderStyle bottomMargin">
+            <!-- <el-row class="borderStyle bottomMargin">
                 <el-col><span style="color: #909399">最近三次采集数</span></el-col>
                 <el-col class="generalChart">
                     <el-row v-for="item in last3FileCollections.topInfo" :key="item">
@@ -188,7 +188,7 @@
                         <el-col>采集{{item.collectSum}}个文件</el-col>
                     </el-row>
                 </el-col>
-            </el-row>
+            </el-row> -->
         </el-col>
     </el-row>
 </div>
