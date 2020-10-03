@@ -15,7 +15,6 @@ let loadingInstance;
 //内存中正在请求的数量
 let loadingNum = 0;
 function startLoading() {
-  console.log(loadingNum);
   if (loadingNum == 0) {
     store.state.loading.loadingShow = true
   }
