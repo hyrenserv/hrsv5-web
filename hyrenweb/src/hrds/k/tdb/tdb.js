@@ -6,12 +6,14 @@ export function getTDBTreeData() {
         url: '/K/tdb/getTDBTreeData',
     })
 }
+//点击确定对标
 // 选择表
-export function saveTDBTable(data) {
+export function generateDataBenchmarking(data) {
     return request({
-        url: '/K/tdb/saveTDBTable',
-        data: Qs.stringify(data),
+        url: '/K/tdb/generateDataBenchmarking',
+        params: data,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 }
+
 

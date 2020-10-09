@@ -1,6 +1,6 @@
 <template>
 <div class="goDemo">
-    <div id="mygoChart" style="width:600px; height:130px; background-color: #fff;margin: 0 auto;"></div>
+    <div id="mygoChart" style="width:800px; height:300px; background-color: #fff;margin: 0 auto;"></div>
 </div>
 </template>
 
@@ -23,36 +23,36 @@ export default {
                 // "toolManager.hoverDelay": 100, //tooltip提示显示延时
                 // "toolManager.toolTipDuration": 10000, //tooltip持续显示时间
                 initialContentAlignment: go.Spot.Center, //启动视口中间的所有内容
-                "toolManager.mouseWheelBehavior":go.ToolManager.WheelNone,//鼠标滚轮事件禁止
-                isReadOnly:true,//只读
+                "toolManager.mouseWheelBehavior": go.ToolManager.WheelNone, //鼠标滚轮事件禁止
+                isReadOnly: true, //只读
                 "grid.visible": false, //显示网格
                 allowMove: false, //允许拖动
-                allowDragOut:false,
+                allowDragOut: false,
                 allowDelete: false,
                 allowCopy: false,
                 allowClipboard: false,
                 // "toolManager.mouseWheelBehavior": go.ToolManager.WheelZoom, //有鼠标滚轮事件放大和缩小，而不是向上和向下滚动
                 layout: MAKE(go.TreeLayout, {
                     angle: 0,
-                    layerSpacing: 25
+                    layerSpacing: 60
                 })
             }); //构建gojs对象
             // console.log(mySelf.myDiagram);
-         /*    mySelf.myDiagram.addDiagramListener("ObjectSingleClicked", function (e) {
-                debugger
-                console.log(e.subject.part);
+            /*    mySelf.myDiagram.addDiagramListener("ObjectSingleClicked", function (e) {
+                   debugger
+                   console.log(e.subject.part);
 
-            });
+               });
 
-            mySelf.myDiagram.addDiagramListener("BackgroundSingleClicked", function (e) {
-                debugger
-                console.log("Double-clicked at" + e.diagram.lastInput.documentPoint);
-            });
+               mySelf.myDiagram.addDiagramListener("BackgroundSingleClicked", function (e) {
+                   debugger
+                   console.log("Double-clicked at" + e.diagram.lastInput.documentPoint);
+               });
 
-            mySelf.myDiagram.addDiagramListener("ClipboardPasted", function (e) {
-                debugger
-                console.log("Pasted" + e.diagram.selection.count + "parts");
-            }); */
+               mySelf.myDiagram.addDiagramListener("ClipboardPasted", function (e) {
+                   debugger
+                   console.log("Pasted" + e.diagram.selection.count + "parts");
+               }); */
 
             // define a simple Node template
             // 定义个简单的 Node 模板
@@ -104,44 +104,44 @@ export default {
                                 stroke: "white",
                                 font: " 14px sans-serif",
                             }, new go.Binding("text", "name1")),
-                           /*  MAKE(go.TextBlock, {
-                                stroke: "red"
-                            }, {
-                                margin: 5
-                            }, new go.Binding("text", "name2")),
-                            MAKE(go.TextBlock, {
-                                background: "lightblue"
-                            }, {
-                                margin: 5,
-                            }, new go.Binding("text", "name3")), */
+                            /*  MAKE(go.TextBlock, {
+                                 stroke: "red"
+                             }, {
+                                 margin: 5
+                             }, new go.Binding("text", "name2")),
+                             MAKE(go.TextBlock, {
+                                 background: "lightblue"
+                             }, {
+                                 margin: 5,
+                             }, new go.Binding("text", "name3")), */
                         ),
                     ), {
-                       /*  mouseEnter: function (e, node, prev) {
-                            console.log('mouseEnter');
-                        },
-                        mouseLeave: function (e, node, prev) {
-                            mySelf.detailShow = false;
-                        }, */
+                        /*  mouseEnter: function (e, node, prev) {
+                             console.log('mouseEnter');
+                         },
+                         mouseLeave: function (e, node, prev) {
+                             mySelf.detailShow = false;
+                         }, */
                     }, {
-                       /*  toolTip: MAKE(go.Adornment, "Spot",
-                            //{background:"transparent" },
-                            MAKE(go.Shape, "RoundedRectangle", {
-                                // fill: "blue" ,
-                                height: 30,
-                                fill: MAKE(go.Brush, "Linear", {
-                                    0.0: "blue",
-                                    1.0: "red",
-                                    start: go.Spot.Bottom,
-                                    end: go.Spot.Top
-                                })
-                            }),
-                            MAKE(go.TextBlock,
-                                //{alignment:go.Spot.Top,alignmentFocus:go.Spot.Bottom,stroke:"red" },
-                                {
-                                    margin: 4,
-                                    stroke: "white"
-                                }, new go.Binding("text", "name1"))
-                        ) */ // end of Adornment
+                        /*  toolTip: MAKE(go.Adornment, "Spot",
+                             //{background:"transparent" },
+                             MAKE(go.Shape, "RoundedRectangle", {
+                                 // fill: "blue" ,
+                                 height: 30,
+                                 fill: MAKE(go.Brush, "Linear", {
+                                     0.0: "blue",
+                                     1.0: "red",
+                                     start: go.Spot.Bottom,
+                                     end: go.Spot.Top
+                                 })
+                             }),
+                             MAKE(go.TextBlock,
+                                 //{alignment:go.Spot.Top,alignmentFocus:go.Spot.Bottom,stroke:"red" },
+                                 {
+                                     margin: 4,
+                                     stroke: "white"
+                                 }, new go.Binding("text", "name1"))
+                         ) */ // end of Adornment
                     }
                 );
             mySelf.myDiagram.linkTemplate = MAKE(go.Link,
@@ -167,34 +167,34 @@ export default {
                         //wrap: go.TextBlock.WrapDesiredSize
                     },
                     new go.Binding("text", "linktext")), {
-                  /*   toolTip: MAKE(go.Adornment, "Auto",
-                        MAKE(go.Shape, {
-                            fill: "#FFFFCC"
-                        }),
-                        MAKE(go.TextBlock, {
-                            margin: 4
-                        }, new go.Binding("text", "name1"))
-                    )  */// end of Adornment
+                    /*   toolTip: MAKE(go.Adornment, "Auto",
+                          MAKE(go.Shape, {
+                              fill: "#FFFFCC"
+                          }),
+                          MAKE(go.TextBlock, {
+                              margin: 4
+                          }, new go.Binding("text", "name1"))
+                      )  */ // end of Adornment
                 }
             ); // the link shape
             // let myModel = MAKE(go.Model);//如果不需要连线可以用这样的方法创建model
-             let myModel = MAKE(go.GraphLinksModel);//也可以创建link model;需要配置myModel.linkDataArray 如下
+            let myModel = MAKE(go.GraphLinksModel); //也可以创建link model;需要配置myModel.linkDataArray 如下
             // let myModel = MAKE(go.TreeModel);
             myModel.nodeDataArray = [ // note that each node data object holds whatever properties it needs;
                 // for this app we add the "name" and "source" properties
                 {
                     key: "1",
                     name1: "开始",
-                   /*  name2: "秘书1",
-                    name3: "秘书2", */
+                    /*  name2: "秘书1",
+                     name3: "秘书2", */
                     // img: require("../assets/img/01.png"),
                 },
                 {
                     key: "2",
                     // parent: "1",
                     name1: "字段特征分析",
-                   /*  name2: "秘书1",
-                    name3: "秘书2", */
+                    /*  name2: "秘书1",
+                     name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/03.png")
                 },
@@ -202,8 +202,8 @@ export default {
                     key: "3",
                     // parent: "1",
                     name1: "函数依赖分析",
-                   /*  name2: "秘书1",
-                    name3: "秘书2", */
+                    /*  name2: "秘书1",
+                     name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/01.png")
                 },
@@ -211,8 +211,8 @@ export default {
                     key: "4",
                     // parent: "2",
                     name1: "主键分析",
-                   /*  name2: "秘书1",
-                    name3: "秘书2", */
+                    /*  name2: "秘书1",
+                     name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/02.png")
                 },
@@ -220,8 +220,8 @@ export default {
                     key: "5",
                     // parent: "4",
                     name1: "单一/联合外键分析",
-                  /*   name2: "秘书1",
-                    name3: "秘书2", */
+                    /*   name2: "秘书1",
+                      name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/01.png")
                 },
@@ -229,8 +229,8 @@ export default {
                     key: "6",
                     // parent: "5",
                     name1: "维度划分",
-                  /*   name2: "秘书1",
-                    name3: "秘书2", */
+                    /*   name2: "秘书1",
+                      name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/01.png")
                 },
@@ -238,8 +238,8 @@ export default {
                     key: "7",
                     // parent: "5",
                     name1: "相等类别分析",
-                  /*   name2: "秘书1",
-                    name3: "秘书2", */
+                    /*   name2: "秘书1",
+                      name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/01.png")
                 },
@@ -247,32 +247,62 @@ export default {
                     key: "8",
                     // parent: "7",
                     name1: "结束",
-                  /*   name2: "秘书1",
-                    name3: "秘书2", */
+                    /*   name2: "秘书1",
+                      name3: "秘书2", */
                     // linktext: "link",
                     // img: require("../assets/img/01.png")
                 },
             ];
-            myModel.linkDataArray = [
-              {from:"1",to:"2"},
-              {from:"1",to:"3"},
-              {from:"2",to:"4"},
-              {from:"3",to:"4"},
-               {from:"4",to:"5"},
-              {from:"5",to:"6"},
-               {from:"5",to:"7"},
-              {from:"6",to:"8"},
-              {from:"7",to:"8"},
+            myModel.linkDataArray = [{
+                    from: "1",
+                    to: "2"
+                },
+                {
+                    from: "1",
+                    to: "3"
+                },
+                {
+                    from: "1",
+                    to: "4"
+                },
+                {
+                    from: "2",
+                    to: "5"
+                },
+                {
+                    from: "3",
+                    to: "5"
+                },
+                {
+                    from: "4",
+                    to: "5"
+                },
+                {
+                    from: "5",
+                    to: "6"
+                },
+                {
+                    from: "5",
+                    to: "7"
+                },
+                {
+                    from: "6",
+                    to: "8"
+                },
+                {
+                    from: "7",
+                    to: "8"
+                },
             ];
-           /*  function diagramInfo(myModel) {
-              return "myModel:\n" + myModel.nodeDataArray.length + " nodes, " +myModel.linkDataArray.length + " links";
-            }
-            mySelf.myDiagram.toolTip = MAKE(go.Adornment, "Auto",
-              MAKE(go.Shape, { fill: "#CCFFCC" }),
-              MAKE(go.TextBlock, { margin: 4 },
-                // use a converter to display information about the diagram model
-                new go.Binding("text", "", diagramInfo))
-            ); */
+            /*  function diagramInfo(myModel) {
+               return "myModel:\n" + myModel.nodeDataArray.length + " nodes, " +myModel.linkDataArray.length + " links";
+             }
+             mySelf.myDiagram.toolTip = MAKE(go.Adornment, "Auto",
+               MAKE(go.Shape, { fill: "#CCFFCC" }),
+               MAKE(go.TextBlock, { margin: 4 },
+                 // use a converter to display information about the diagram model
+                 new go.Binding("text", "", diagramInfo))
+             ); */
             mySelf.myDiagram.model = myModel;
 
         }

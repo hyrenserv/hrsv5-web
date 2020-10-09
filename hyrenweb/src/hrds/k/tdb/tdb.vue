@@ -13,7 +13,7 @@
             <div style='height:0.1px'>&nbsp;</div>
             <Scrollbar>
                 <div class="mytree" height='260'>
-                    <el-tree class="filter-tree" :data="data2" :indent="0" id="tree">
+                    <el-tree class="filter-tree" :data="data2" :indent="0">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
                             <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
                                 <el-checkbox @change="choiceTable($event,data.data_layer,data.file_id,data.hyren_name,data.original_name)"></el-checkbox>
@@ -32,7 +32,7 @@
         <el-col :span="18" class="colTableContent" style="border-left: 1px #e0dcdc dashed;min-height: 400px;">
             <el-table :data="tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border stripe size="medium" ref='table' style='min-height:200px'>
                 <el-table-column width="100" align="center" prop="selectionState">
-                    <template slot="header" slot-scope="scope">
+                    <template slot="header">
                         <el-checkbox v-model="is_archivedAll" @change="handleCheckAllChange(tableData,is_archivedAll)"></el-checkbox>&nbsp;选择
                     </template>
                     <template slot-scope="scope">
@@ -55,10 +55,44 @@
             </el-row>
         </el-col>
     </el-row>
-    <div slot="footer" class="dialog-footer">
-        <el-button @click="SelectTable" size="medium" type="primary">对标<i class="el-icon-right"></i></el-button>
+    <div slot="footer" class="dialog-footer222">
+        <el-button @click="dialogFormVisible = true" size="medium" type="primary">对标<i class="el-icon-right"></i></el-button>
     </div>
 
+    <el-dialog :title="deployAgentName" :visible.sync="dialogFormVisible">
+        <div class="demo-input-suffix">
+            <el-input placeholder="请输入分类编码" v-model="sys_class_code">
+                <template slot="prepend">对标分类编码</template>
+            </el-input>
+        </div>
+        <el-form status-icon>
+            <el-checkbox-group v-model="checkList" @change="removeItem">
+                <el-row id="check">
+                    <el-col>
+                        <el-checkbox label="1">字段特征分析</el-checkbox>
+                        <el-checkbox label="2">函数依赖分析</el-checkbox>
+                        <el-checkbox label="3">主键分析</el-checkbox>
+                    </el-col>
+                    <el-col>
+                        <template v-if="checkList.includes('1') && checkList.includes('2') && checkList.includes('3')">
+                            <el-checkbox label="4">单一/联合外键分析</el-checkbox>
+                        </template>
+                    </el-col>
+                    <el-col>
+                        <template v-if="checkList.includes('4')">
+                            <el-checkbox label="5">维度划分</el-checkbox>
+                            <el-checkbox label="6">相等类别分析</el-checkbox>
+                        </template>
+                    </el-col>
+                </el-row>
+            </el-checkbox-group>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" size="mini" @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="executeSelectTable">确 定</el-button>
+        </div>
+    </el-dialog>
+    <loading v-if="isLoading"></loading>
 </div>
 </template>
 
@@ -66,11 +100,13 @@
 import Gojs from './gojs'
 import * as tdbFun from "./tdb";
 // import { delete } from 'vue/types/umd';
+import Loading from '../../components/loading';
 import Scrollbar from '../../components/scrollbar';
 export default {
     components: {
         Gojs: Gojs,
-        Scrollbar
+        Scrollbar,
+        Loading
     },
     data() {
         return {
@@ -78,7 +114,12 @@ export default {
             pagesize: 10,
             data2: [],
             tableData: [],
-            is_archivedAll: false
+            isLoading: false,
+            is_archivedAll: false,
+            dialogFormVisible: false,
+            deployAgentName: '数据对标',
+            checkList: [],
+            sys_class_code: '',
         }
     },
     mounted() {
@@ -91,21 +132,20 @@ export default {
                 this.data2 = res.data;
             });
         },
-        SelectTable() {
-
-            tdbFun.saveTDBTable({
-                'tdb_table_bean_s': JSON.stringify(this.tableData)
-            }).then(res => {
-                if (res.code == '200') {
-                    this.$router.push({
-                        name: 'choiceTable',
-                        query: {
-                            id: res.data,
-                        }
-                    })
-                }
+        executeSelectTable() {
+            this.isLoading = true;
+            let param = {
+                'tdb_table_bean_s': JSON.stringify(this.tableData),
+                'checkList': this.checkList,
+                'sys_class_code': this.sys_class_code
+            }
+            tdbFun.generateDataBenchmarking(param).then(res => {
+                this.isLoading = false
+                if (res.success)
+                    this.$Msg.customizTitle('执行成功')
+            }).catch(res => {
+                this.isLoading = false;
             });
-            // console.log(this.tableData)
         },
         handleSizeChange(size) {
             this.pagesize = size;
@@ -172,7 +212,14 @@ export default {
                 }
             }
         },
-
+        removeItem() {
+            if (!this.checkList.includes('1') || !this.checkList.includes('2') || !this.checkList.includes('3'))
+                this.checkList = this.checkList.filter(
+                    item => item != '4')
+            if (!this.checkList.includes('4'))
+                this.checkList = this.checkList.filter(
+                    item => !(item == '5' || item == '6'))
+        }
     }
 }
 </script>
@@ -185,7 +232,7 @@ export default {
     margin-top: 10px;
 }
 
-.dialog-footer {
+.dialog-footer222 {
     float: right;
     margin-top: 10px;
 }
@@ -276,11 +323,6 @@ export default {
         font-size: 18px;
     }
 
-    .dialog-footer {
-        float: right;
-        margin-top: 10px;
-    }
-
     .span-ellipsis {
         width: 100%;
         overflow: hidden;
@@ -303,5 +345,13 @@ export default {
         text-align: center;
         margin-top: 5px;
     }
+}
+
+#check .el-col {
+    height: 30px;
+}
+
+.demo-input-suffix {
+    margin-bottom: 10px;
 }
 </style>
