@@ -109,12 +109,13 @@
             <el-form-item label="Agent服务器密码" prop="user_pwd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formDeploy.user_pwd" style="width:270px" show-password></el-input>
             </el-form-item>
-            <el-form-item label="自定义部署目录" prop="isCustomize" :rules="rule.selected">
-                <el-radio-group v-model="formDeploy.isCustomize">
+            <el-form-item label="Agent服务器部署目录" prop="isCustomize">
+                <!-- <el-radio-group v-model="formDeploy.isCustomize">
                     <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
-                </el-radio-group>
+                </el-radio-group> -->
+                 <el-switch :active-value="isflag.Shi" :inactive-value="isflag.Fou" v-model="isCustomize" active-color="#13ce66" inactive-color="#ff4949" active-text="自定义" inactive-text="系统默认"/>
             </el-form-item>
-            <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])" v-if="formDeploy.isCustomize =='1'">
+            <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])" v-if="isCustomize =='1'">
                 <el-input v-model="formDeploy.serv_file_path" style="width:270px">
                 </el-input>
             </el-form-item>
@@ -306,13 +307,13 @@ export default {
             valueTime: '',
             dialogInfo: '',
             dialogInfoTri: '',
+            isCustomize:'',
             formDeploy: {
                 etl_sys_cd: "",
                 etl_serv_ip: "",
                 user_name: "",
                 user_pwd: "",
-                serv_file_path: "",
-                isCustomize: '0'
+                serv_file_path: ""
             },
             formStartCON: {
                 etl_sys_cd: "",
@@ -350,11 +351,18 @@ export default {
             isViewTri: false,
             timer: '',
             rule: validator.default,
+            isflag: {}, // 是否的代码项
         };
     },
     mounted() {
         this.getTable();
         this.monitorAllProjectChartsData();
+         /** 获取是否类型的代码项 */
+        this.$Code.getCodeItems({
+            'category': 'IsFlag'
+        }).then(res => {
+            this.isflag = res.data;
+        })
     },
     beforeDestroy() {
         // 关闭定时器
@@ -576,10 +584,8 @@ export default {
                     params["etl_serv_ip"] = this.formDeploy.etl_serv_ip;
                     params["user_name"] = this.formDeploy.user_name;
                     params["user_pwd"] = this.formDeploy.user_pwd;
-                    params["isCustomize"] = this.formDeploy.isCustomize;
-                    if (this.formDeploy.isCustomize == "1") {
-                        params["serv_file_path"] = this.formDeploy.serv_file_path;
-                    }
+                    params["isCustomize"] = this.isCustomize;
+                    params["serv_file_path"] = this.formDeploy.serv_file_path;
                     etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
                         this.isLoadings = false;
                         if (res && res.success) {
@@ -815,12 +821,13 @@ export default {
             etlMageAllFun.searchEtlSysById({
                 "etl_sys_cd": row.etl_sys_cd
             }).then(res => {
-                if (res.data.serv_file_path == undefined || res.data.serv_file_path == "") { //没有部署
-                    res.data.isCustomize = '0'
-                } else {
-                    res.data.isCustomize = '1'
-                }
-                this.formDeploy = res.data;
+                // if (res.data.serv_file_path == undefined || res.data.serv_file_path == "") { //没有部署
+                //     res.data.isCustomize = '0'
+                // } else {
+                //     res.data.isCustomize = '1'
+                // }
+                this.formDeploy = res.data.etlSys;
+                this.isCustomize=res.data.isCustomize;
             });
             this.dialogFormVisibleDeploy = true;
         },
