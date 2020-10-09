@@ -137,7 +137,7 @@
                             <el-col :span="10">
                                 <template>
                                     <a class="text_url" href="javascript:void(0);" @click="downLoadFile(data.file_id,data.original_name);">
-                                        <i class="el-icon-download"> {{data.downloadPath.substr(0,7)}}...{{data.downloadPath.substr(data.downloadPath.length-32)}}</i>
+                                        <i class="el-icon-download"> {{data.downloadPath.substr(0,7)}}...{{data.downloadPath.substr(data.downloadPath.length-24)}}</i>
                                     </a>
                                 </template>
                             </el-col>
