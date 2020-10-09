@@ -475,7 +475,10 @@ export default {
         executeImmediately(agentType, row) {
             message.confirmMsg('确定立即执行吗?').then(res => {
                 let fcs_id = row.id;
-                unstructuredAgentFunc.executeJob({ 'fcs_id': fcs_id, 'execute_type': 'execute_immediately' }).then((res) => {
+                unstructuredAgentFunc.executeJob({
+                    'fcs_id': fcs_id,
+                    'execute_type': 'execute_immediately'
+                }).then((res) => {
                     if (res.success) {
                         this.$Msg.customizTitle('立即运行成功!', 'success')
                         this.executeDialog = false;
@@ -566,7 +569,7 @@ export default {
         startButtonFun() {
             // this.sendLJQDDialogVisible = true
             let date = new Date()
-            this.etl_date = date.getFullYear() + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + (date.getDate() > 9 ? date.getDate() : '0' + (date.getDate()))
+            this.etl_date = date.getFullYear() + '' + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '' + (date.getDate() > 9 ? date.getDate() : '0' + (date.getDate()))
         },
         //发送-立即启动
         sendLJQDSubmit() {
