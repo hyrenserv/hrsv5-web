@@ -1092,49 +1092,89 @@ export default new Router({
                     path: '/generalQuery',
                     name: 'generalQuery',
                     title: '单表普通查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/generalQuery.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/generalQuery.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '单表普通查询接口' },
+                    ],
                 },
                 {
                     path: '/sqlInterfaceSearch',
                     name: 'sqlInterfaceSearch',
                     title: 'sql查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/sqlInterfaceSearch.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/sqlInterfaceSearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'sql查询接口' },
+                    ],
                 },
                 {
                     path: '/rowKeySearch',
                     name: 'rowKeySearch',
                     title: 'rowkey查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/rowKeySearch.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/rowKeySearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'rowkey查询接口' },
+                    ],
                 },
                 {
                     path: '/fileAttributeSearch',
                     name: 'fileAttributeSearch',
                     title: '文件属性搜索接口',
-                    component: () => import('@/hrds/g/serviceuser/api/fileAttributeSearch.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/fileAttributeSearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '文件属性搜索接口' },
+                    ],
                 },
                 {
                     path: '/tableStructureQuery',
                     name: 'tableStructureQuery',
                     title: '表结构查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '表结构查询接口' },
+                    ],
                 },
                 {
                     path: '/tableSearchGetJson',
                     name: 'tableSearchGetJson',
                     title: '表结构查询-获取json信息接口',
-                    component: () => import('@/hrds/g/serviceuser/api/tableSearchGetJson.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/tableSearchGetJson.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '表结构查询-获取json信息接口' },
+                    ],
                 },
                 {
                     path: '/tableUsePermissions',
                     name: 'tableUsePermissions',
                     title: '表使用权限查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/tableUsePermissions.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/tableUsePermissions.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '表使用权限查询接口' },
+                    ],
                 },
                 {
                     path: '/uuidDownload',
                     name: 'uuidDownload',
                     title: 'UUID下载接口',
-                    component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'UUID下载接口' },
+                    ],
                 },
                 {
                     path: '/logReview',
