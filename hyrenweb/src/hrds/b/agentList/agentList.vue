@@ -536,7 +536,6 @@ export default {
                             'is_download': 'true',
                             'sqlParam': this.sqlParam
                         }).then(res => {
-                            console.log(res);
                             if(res.status === 200) {
                                 const blob = new Blob([JSON.stringify(res.data)]);
                                 let filename = res.headers["content-disposition"].split('=')[1];
