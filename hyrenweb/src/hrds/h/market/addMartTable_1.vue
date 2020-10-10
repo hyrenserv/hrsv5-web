@@ -1,11 +1,11 @@
 <template>
 <div id="marketIndex">
 
-    <el-row>
+    <!-- <el-row>
         <el-button type="primary" @click="back()" size="small" class="goIndex">
             <i class="fa fa-home fa-lg"></i>返回
         </el-button>
-    </el-row>
+    </el-row> -->
     <Step :active="active"></Step>
     <el-row class='topTitle'>
         <span>基础配置</span>
@@ -136,7 +136,14 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-button type="primary" size="medium" class="rightbtn" @click="next('dm_datatable')">下一步</el-button>
+    <el-row>
+        <el-col :span="2">
+            <el-button type="danger" class="rightbtn" @click="back()" size="medium">返  回</el-button>
+        </el-col>
+        <el-col :span="2" :offset="20">
+            <el-button type="primary" size="medium" class="rightbtn" @click="next('dm_datatable')">下一步</el-button>
+        </el-col>
+    </el-row>
     <!--<el-button type="primary" size="medium" class="leftbtn" @click="back()"><i class="fa fa-home fa-lg"></i>返回</el-button>-->
     <!--<el-pagination @size-change="item_handleSizeChange" @current-change="item_handleCurrentChange" :current-page="currentPage" :page-size="pagesize" layout="total,prev, pager, next" :total="tableData.length" class='pagerigth'></el-pagination>-->
 

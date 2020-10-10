@@ -8,7 +8,7 @@
                 <el-button size="mini" type="success">
                     <i class="fa fa-cloud-upload"></i> 导入数据</el-button>
             </el-upload>
-              <el-button type="success" class="els" @click="downloadExcel()" size="mini">
+            <el-button type="success" class="els" @click="downloadExcel()" size="mini">
                 <i class="fa fa-cloud-download"></i>Excel模板下载
             </el-button>
             <el-button type="primary" @click="adddmdatatable()" size="mini">
@@ -20,28 +20,28 @@
         </div>
     </el-row>
 
-    <el-table :data="tableData" border style="width: 100%">
-        <el-table-column type="index" width="60" label="序号" align='center'>
+    <el-table :data="tableData" border :header-cell-style="{'text-align':'left'}" :cell-style="{'text-align':'left'}" :height="tableHeight">
+        <el-table-column type="index" label="序号" width="60">
         </el-table-column>
-        <el-table-column prop="datatable_id" width="110" show-overflow-tooltip label="作业参数" align='center'>
+        <el-table-column prop="datatable_id" show-overflow-tooltip label="作业参数">
         </el-table-column>
-        <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
+        <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip align='center'>
+        <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="datatable_lifecycle" width="80" show-overflow-tooltip label="生命周期" align='center'>
+        <el-table-column prop="datatable_lifecycle" width="80" show-overflow-tooltip label="生命周期">
         </el-table-column>
-        <el-table-column prop="etl_date" width="90" show-overflow-tooltip label="跑批日期" align='center'>
+        <el-table-column prop="etl_date" width="90" show-overflow-tooltip label="跑批日期">
         </el-table-column>
-        <el-table-column prop="category_name" width="110" show-overflow-tooltip label="分类名称" align='center'>
+        <el-table-column prop="category_name" width="110" show-overflow-tooltip label="分类名称">
         </el-table-column>
-        <el-table-column prop="is_successful" width="90" show-overflow-tooltip label="执行状态" align='center'>
+        <el-table-column prop="is_successful" width="90" show-overflow-tooltip label="执行状态">
         </el-table-column>
-        <el-table-column prop="datatable_create_date" show-overflow-tooltip width="90" label="创建日期" align='center'>
+        <el-table-column prop="datatable_create_date" show-overflow-tooltip width="90" label="创建日期">
         </el-table-column>
-        <el-table-column prop="datatable_due_date" show-overflow-tooltip width="90" label="到期日期" align='center'>
+        <el-table-column prop="datatable_due_date" show-overflow-tooltip width="90" label="到期日期">
         </el-table-column>
-        <el-table-column label="操作" width="250" align='center'>
+        <el-table-column label="操作" width="260">
             <template slot-scope="scope">
                 <el-button size="mini" type="text" @click="editdmdatatable(scope.row)">编辑
                 </el-button>
@@ -51,6 +51,8 @@
                 </el-button>
                 <!-- <el-button size="mini" type="text" v-if="scope.row.isadd" @click="downloaddmdatatable(scope.row)">导出
                 </el-button> -->
+                <el-button v-if="scope.row.iscb" type="text" size="mini" @click="dialogVisible = true;prepolymerization(scope.row)">预聚合
+                </el-button>
                 <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
                 </el-button>
             </template>
@@ -90,7 +92,27 @@
     <transition name="fade">
         <loading v-if="isLoading" />
     </transition>
-
+    <!--预聚合SQL-->
+    <el-dialog title="创建预聚合" :visible.sync="dialogVisible">
+        <el-form ref="formInline" :model="formInline" status-icon>
+            <el-row>
+                <el-col :span="10">
+                    <el-form-item label="预聚合名称" label-width="100" prop="agg_name" :rules="rule.default">
+                        <el-input v-model="formInline.agg_name" placeholder="预聚合名称"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="20">
+                    <el-form-item label="预聚合SQL,多个SQL之间使用 (`@^) 分割" label-width="100" prop="agg_sql" :rules="rule.default">
+                        <el-input type="textarea" v-model="formInline.agg_sql" placeholder="预聚合SQL,多个SQL之间使用 (`@^) 分割"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6" :offset="18">
+                    <el-button type="danger" class="rightbtn" @click="dialogVisible=false" size="medium">取消</el-button>
+                    <el-button type="primary" size="medium" class="rightbtn" @click="savePrePolymer">保存</el-button>
+                </el-col>
+            </el-row>
+        </el-form>
+    </el-dialog>
 </div>
 </template>
 
@@ -119,8 +141,14 @@ export default {
             fileList: [],
             isLoading: false,
             dialogImportData: false,
-
+            tableHeight: '',
+            dialogVisible: false,
+            formInline: {},
+            rule: validator.default
         };
+    },
+    created() {
+        this.tableHeight = window.innerHeight - 140 + 'px'
     },
     mounted() {
         this.querydmdatatable(this.data_mart_id);
@@ -304,7 +332,7 @@ export default {
                 this.$Msg.customizTitle("请选择上传文件", "warning");
             }
         },
-         //下载Excel模板
+        //下载Excel模板
         downloadExcel() {
             functionAll.downloadExcel().then(res => {
                 const blob = new Blob([res.data]);
@@ -330,6 +358,25 @@ export default {
                 }
             })
         },
+        prepolymerization(row) {
+            functionAll.prePolymerization(row).then(res => {
+                this.formInline = res.data
+                this.formInline.datatable_id = row.datatable_id
+            })
+        },
+        //保存预聚合SQL
+        savePrePolymer() {
+            this.$refs['formInline'].validate(valid => {
+                if (valid) {
+                    functionAll.savePrePolymerization(this.formInline).then(res => {
+                        if (res.success) {
+                            this.dialogVisible = false
+                            this.$Msg.customizTitle("保存成功")
+                        }
+                    })
+                }
+            })
+        }
     }
 };
 </script>

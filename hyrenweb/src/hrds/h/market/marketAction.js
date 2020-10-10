@@ -507,3 +507,21 @@ export function getSparkSqlGram(data) {
         params: data
     })
 }
+
+
+//获取预聚合SQL信息
+export function prePolymerization(data) {
+    return request({
+        url: '/H/market/prePolymerization',
+        params: data
+    })
+}
+
+//保存预聚合SQL
+export function savePrePolymerization(data) {
+    return request({
+        url: '/H/market/savePrePolymerization',
+        params: data,
+    })
+}
+
