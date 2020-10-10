@@ -85,7 +85,7 @@
                                             style="width: 100%"/>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="use_state" label="接口状态" align="center">
+                    <el-table-column prop="use_state" label="接口状态" align="left" width="80px">
                         <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}
                         </template>
                     </el-table-column>
