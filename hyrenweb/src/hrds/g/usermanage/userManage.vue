@@ -28,17 +28,17 @@
         <!--用户信息列表展示-->
         <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)" border
                   style="width: 100%">
-            <el-table-column label="序号" align="center">
+            <el-table-column label="序号" align="left" width="50px">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="user_name" label="用户名称" align="center"/>
-            <el-table-column prop="user_id" label="操作员登录账号" align="center"/>
-            <el-table-column prop="user_password" label="密码" align="center"/>
-            <el-table-column prop="user_email" label="邮箱地址" align="center"/>
-            <el-table-column prop="user_remark" label="备注" align="center"/>
-            <el-table-column label="操作" align="center">
+            <el-table-column prop="user_name" label="用户名称" align="left"/>
+            <el-table-column prop="user_id" label="操作员登录账号" align="left"/>
+            <el-table-column prop="user_password" label="密码" align="left"/>
+            <el-table-column prop="user_email" label="邮箱地址" align="left"/>
+            <el-table-column prop="user_remark" label="备注" align="left"/>
+            <el-table-column label="操作" align="left">
                 <template slot-scope="scope">
                     <el-button size="medium" type="text" class='editcolor'
                                @click="selectUserById(scope.row)">

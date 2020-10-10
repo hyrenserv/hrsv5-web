@@ -1177,6 +1177,17 @@ export default new Router({
                     ],
                 },
                 {
+                    path: '/hbaseSolrQuery',
+                    name: 'hbaseSolrQuery',
+                    title: 'Solr查询Hbase数据接口',
+                    component: () => import('@/hrds/g/serviceuser/api/hbaseSolrQuery.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'Solr查询Hbase数据接口' },
+                    ],
+                },
+                {
                     path: '/logReview',
                     name: 'logReview',
                     title: '日志审查',

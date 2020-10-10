@@ -19,7 +19,7 @@
                 <el-col :span="11">
                     <el-form-item label="用户名称" prop="userIds" :rules="filter_rules([{required: true}])">
                         <el-select v-model="form.userIds" multiple filterable clearable placeholder="请选择">
-                            <el-option
+                            <el-option :key="item.user_id"
                                     v-for="item in userData"
                                     :label="item.user_name"
                                     :value="item.user_id">
@@ -54,7 +54,7 @@
                           style="width: 300px"/>
             </el-form-item>
             <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
-                <el-tab-pane v-for="item in interfaceType" value="item.code" v-model="item.code">
+                <el-tab-pane v-for="item in interfaceType" value="item.code" v-model="item.code" :key="item.code">
                     <span slot="label">{{item.value}}接口</span>
                 </el-tab-pane>
                 <!--接口信息列表展示-->
@@ -64,21 +64,21 @@
                           @selection-change="handleSelectionChange" @select-all='allSelect'>
                     <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
                     </el-table-column>
-                    <el-table-column label="序号" align="center">
+                    <el-table-column label="序号" align="left" width="50px">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interface_name" label="接口名称" align="center"/>
-                    <el-table-column prop="interface_code" label="接口代码" align="center"/>
-                    <el-table-column prop="start_use_date" label="开始日期" align="center">
+                    <el-table-column prop="interface_name" label="接口名称" align="left" show-overflow-tooltip="true"/>
+                    <el-table-column prop="interface_code" label="接口代码" align="left" width="80px" show-overflow-tooltip="true"/>
+                    <el-table-column prop="start_use_date" label="开始日期" align="left" show-overflow-tooltip="true">
                         <template slot-scope="scope">
                             <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
                                             v-model="scope.row.start_use_date" size="small"
                                             style="width:100%"/>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="use_valid_date" label="结束日期" align="center">
+                    <el-table-column prop="use_valid_date" label="结束日期" align="left">
                         <template slot-scope="scope">
                             <el-date-picker type="date" placeholder="结束日期" value-format="yyyyMMdd"
                                             v-model="scope.row.use_valid_date" size="small"
