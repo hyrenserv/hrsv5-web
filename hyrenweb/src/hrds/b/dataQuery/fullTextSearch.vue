@@ -136,7 +136,7 @@
                             </el-col>
                             <el-col :span="10">
                                 <template>
-                                    <a class="text_url" href="javascript:void(0);" @click="downLoadFile(data.file_id,data.original_name);">
+                                    <a class="text_url" href="javascript:void(0);" @click="downloadFile(data.file_id,data.original_name);">
                                         <i class="el-icon-download"> {{data.downloadPath.substr(0,7)}}...{{data.downloadPath.substr(data.downloadPath.length-24)}}</i>
                                     </a>
                                 </template>
@@ -247,6 +247,20 @@ export default {
                     'fileId': fileId,
                     "fileType": fileType,
                 }
+            })
+        },
+        /* 下载文件 */
+        downloadFile(file_id, original_name) {
+            dataQuery.downloadFile({
+                'fileId': file_id,
+                'fileName': original_name
+            }).then((res) => {
+                console.log();
+                if ('undefined' === typeof res) {
+                    this.$Msg.customizTitle('文件没有下载权限,请先申请并审批成功后再下载!', 'warry')
+                }
+                // 转换数据流为文件
+                fileOperations.fileDownload(res.data, original_name)
             })
         },
         //文本高亮函数(Word,pdf)
