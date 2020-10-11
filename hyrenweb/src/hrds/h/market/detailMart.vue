@@ -94,18 +94,25 @@
     </transition>
     <!--预聚合SQL-->
     <el-dialog title="创建预聚合" :visible.sync="dialogVisible">
+        <el-button type="success" class="addline" @click="addRow()" size="mini">新增行</el-button><span></span>
         <el-form ref="formInline" :model="formInline" status-icon>
+            <el-table stripe :data="formInline.sqldata" border size="medium" highlight-current-row>
+                <el-table-column label="预聚合名称" align="center">
+                    <template slot-scope="scope">
+                        <el-form-item :prop="'sqldata.'+scope.$index+'.agg_name'" :rules="filter_rules([{required: true,dataType:'table'}])">
+                            <el-input v-model="scope.row.agg_name" placeholder="预聚合名称"></el-input>
+                        </el-form-item>
+                    </template>
+                </el-table-column>
+                <el-table-column label="预聚合SQL,多个SQL之间使用 (`@^) 分割" align="center">
+                    <template slot-scope="scope">
+                        <el-form-item :prop="'sqldata.'+scope.$index+'.agg_sql'" :rules="rule.default">
+                            <el-input type="textarea" size="small" autosize v-model="scope.row.agg_sql" placeholder="预聚合SQL,多个SQL之间使用 (`@^) 分割"></el-input>
+                        </el-form-item>
+                    </template>
+                </el-table-column>
+            </el-table>
             <el-row>
-                <el-col :span="10">
-                    <el-form-item label="预聚合名称" label-width="100" prop="agg_name" :rules="rule.default">
-                        <el-input v-model="formInline.agg_name" placeholder="预聚合名称"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="20">
-                    <el-form-item label="预聚合SQL,多个SQL之间使用 (`@^) 分割" label-width="100" prop="agg_sql" :rules="rule.default">
-                        <el-input type="textarea" v-model="formInline.agg_sql" placeholder="预聚合SQL,多个SQL之间使用 (`@^) 分割"></el-input>
-                    </el-form-item>
-                </el-col>
                 <el-col :span="6" :offset="18">
                     <el-button type="danger" class="rightbtn" @click="dialogVisible=false" size="medium">取消</el-button>
                     <el-button type="primary" size="medium" class="rightbtn" @click="savePrePolymer">保存</el-button>
@@ -143,8 +150,12 @@ export default {
             dialogImportData: false,
             tableHeight: '',
             dialogVisible: false,
-            formInline: {},
-            rule: validator.default
+            formInline: {
+                'sqldata': []
+            },
+            rule: validator.default,
+            datatable_id: '',
+
         };
     },
     created() {
@@ -360,21 +371,31 @@ export default {
         },
         prepolymerization(row) {
             functionAll.prePolymerization(row).then(res => {
-                this.formInline = res.data
-                this.formInline.datatable_id = row.datatable_id
+                this.formInline.sqldata = res.data
+                this.datatable_id = row.datatable_id
             })
         },
         //保存预聚合SQL
         savePrePolymer() {
             this.$refs['formInline'].validate(valid => {
                 if (valid) {
-                    functionAll.savePrePolymerization(this.formInline).then(res => {
+                    functionAll.savePrePolymerization({
+                        'preaggregate': JSON.stringify(this.formInline.sqldata)
+                    }).then(res => {
                         if (res.success) {
                             this.dialogVisible = false
                             this.$Msg.customizTitle("保存成功")
                         }
                     })
                 }
+            })
+        },
+        //增加行
+        addRow() {
+            this.formInline.sqldata.push({
+                'agg_name': '',
+                'agg_sql': '',
+                datatable_id: this.datatable_id
             })
         }
     }
