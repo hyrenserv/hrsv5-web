@@ -104,10 +104,10 @@
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="预聚合SQL,多个SQL之间使用 (`@^) 分割" align="center">
+                <el-table-column label="预聚合SQL" align="center">
                     <template slot-scope="scope">
                         <el-form-item :prop="'sqldata.'+scope.$index+'.agg_sql'" :rules="rule.default">
-                            <el-input type="textarea" size="small" autosize v-model="scope.row.agg_sql" placeholder="预聚合SQL,多个SQL之间使用 (`@^) 分割"></el-input>
+                            <el-input type="textarea" size="small" autosize v-model="scope.row.agg_sql" placeholder="预聚合SQL"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
