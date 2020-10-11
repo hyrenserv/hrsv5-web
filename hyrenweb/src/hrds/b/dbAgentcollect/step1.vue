@@ -85,7 +85,7 @@
                 <span class="dialogtitle el-icon-caret-right">新增采集任务分类</span>
             </div>
             <el-form :model="addClassTask" ref="addClassTask">
-                <el-form-item label=" 分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
+                <el-form-item label=" 分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])" :label-width="formLabelWidth">
                     <el-input v-model="addClassTask.classify_num" style="width:284px"></el-input>
                 </el-form-item>
                 <el-form-item label=" 分类名称" prop="classify_name" :rules="rule.default" :label-width="formLabelWidth">
