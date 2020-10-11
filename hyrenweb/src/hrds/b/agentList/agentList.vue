@@ -557,25 +557,28 @@ export default {
                             'is_download': 'true',
                             'sqlParam': this.sqlParam
                         }).then(res => {
-                            const blob = new Blob([JSON.stringify(res.data)]);
-                            let filename = res.headers["content-disposition"].split('=')[1];
-                            if (window.navigator.msSaveOrOpenBlob) {
-                                // 兼容IE10
-                                navigator.msSaveBlob(blob, filename);
-                            } else {
-                                //  chrome/firefox
-                                let aTag = document.createElement("a");
-                                aTag.download = filename;
-                                aTag.href = URL.createObjectURL(blob);
-                                if (aTag.all) {
-                                    aTag.click();
+                            if(res.status === 200) {
+                                const blob = new Blob([JSON.stringify(res.data)]);
+                                let filename = res.headers["content-disposition"].split('=')[1];
+                                if (window.navigator.msSaveOrOpenBlob) {
+                                    // 兼容IE10
+                                    navigator.msSaveBlob(blob, filename);
                                 } else {
-                                    //  兼容firefox
-                                    let evt = document.createEvent("MouseEvents");
-                                    evt.initEvent("click", true, true);
-                                    aTag.dispatchEvent(evt);
+                                    //  chrome/firefox
+                                    let aTag = document.createElement("a");
+                                    aTag.download = filename;
+                                    aTag.href = URL.createObjectURL(blob);
+                                    if (aTag.all) {
+                                        aTag.click();
+                                    } else {
+                                        //  兼容firefox
+                                        let evt = document.createEvent("MouseEvents");
+                                        evt.initEvent("click", true, true);
+                                        aTag.dispatchEvent(evt);
+                                    }
+                                    URL.revokeObjectURL(aTag.href);
                                 }
-                                URL.revokeObjectURL(aTag.href);
+                                this.finishDialogVisible = false
                             }
                         });
                     }
