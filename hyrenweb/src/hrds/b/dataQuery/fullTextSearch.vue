@@ -258,9 +258,10 @@ export default {
                 console.log();
                 if ('undefined' === typeof res) {
                     this.$Msg.customizTitle('文件没有下载权限,请先申请并审批成功后再下载!', 'warry')
+                } else {
+                    // 转换数据流为文件
+                    fileOperations.fileDownload(res.data, original_name)
                 }
-                // 转换数据流为文件
-                fileOperations.fileDownload(res.data, original_name)
             })
         },
         //文本高亮函数(Word,pdf)
