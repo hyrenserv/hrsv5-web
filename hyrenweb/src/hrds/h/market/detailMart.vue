@@ -370,6 +370,7 @@ export default {
             })
         },
         prepolymerization(row) {
+            this.$refs['formInline'].resetFields()
             functionAll.prePolymerization(row).then(res => {
                 this.formInline.sqldata = res.data
                 this.datatable_id = row.datatable_id
