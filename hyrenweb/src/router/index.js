@@ -376,7 +376,7 @@ export default new Router({
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
                         { name: '数据源Agent列表', url: '/agentList' },
-                        { name: '数据文件Agent' },
+                        { name: '采集ftp agent' },
                     ],
                 },
                 // 非结构化 Agent采集
@@ -389,14 +389,19 @@ export default new Router({
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
                         { name: '数据源Agent列表', url: '/agentList' },
-                        { name: '非结构化Agent' },
+                        { name: '配置启动方式' },
                     ],
                 },
                 {
                     path: '/configureFileOption',
                     name: 'configureFileOption',
-                    title: '配置连接属性',
-                    component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue')
+                    title: '配置文件路径',
+                    component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue'), meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '配置文件路径' },
+                    ],
                 },
                 // dataStoreAction
                 {

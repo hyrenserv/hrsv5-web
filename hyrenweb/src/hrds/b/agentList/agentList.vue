@@ -109,6 +109,7 @@
                     <template v-if="scope.row.agent_type==='文件系统Agent'">
                         <el-button type="text" @click="taskEditBtn(scope.row,sourceName)" class='editcolor'>编辑</el-button>
                         <el-button type="text" @click="taskDelBtn(agentType,scope.row)" class="delcolor">删除</el-button>
+                        <el-button type="text" @click="fileCollectTaskSendBtn(agentType,scope.row)" class="workcolor">发送</el-button>
                         <el-button type="text" @click="executeImmediately(agentType,scope.row)" class="sendcolor">立即执行</el-button>
                     </template>
                 </template>
@@ -470,6 +471,26 @@ export default {
                 }
             })
             // 
+        },
+        //文件采集发送任务
+        fileCollectTaskSendBtn(agentType, row) {
+            message.confirmMsg('确定发送吗?').then(res => {
+                let fcs_id = row.id;
+                unstructuredAgentFunc.executeJob({
+                    'fcs_id': fcs_id,
+                    'execute_type': 'execute_etl'
+                }).then((res) => {
+                    if (res.success) {
+                        this.$Msg.customizTitle('发送成功!', 'success')
+                        this.executeDialog = false;
+                        this.$router.push({
+                            name: "agentList"
+                        })
+                    } else {
+                        this.executeDialog = false;
+                    }
+                })
+            }).catch(() => {});
         },
         // 立即执行任务
         executeImmediately(agentType, row) {

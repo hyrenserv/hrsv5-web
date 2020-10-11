@@ -1,7 +1,9 @@
 <template>
 <div class="configureStartMode">
     <el-row class="partOne">
-        卸数 > 配置启动方式
+        <el-col :span="24">
+            <Step :active="active"></Step>
+        </el-col>
     </el-row>
 
     <el-row class="partTwo">
@@ -115,9 +117,14 @@ import * as functionAll from "./unstructuredAgent";
 import * as validator from "@/utils/js/validator";
 import * as fixedAll from "@/utils/js/fileOperations";
 import regular from "@/utils/js/regular";
+import Step from "./step";
 export default {
+    components: {
+        Step,
+    },
     data() {
         return {
+            active: 1,
             form: {
                 is_solr: "",
                 agent_name: "",

@@ -1,7 +1,9 @@
 <template>
 <div class="configureFileOption">
     <el-row class="partOne">
-        选择文件 > 采集频率设置 > 配置连接属性
+        <el-col :span="24">
+            <Step :active="active"></Step>
+        </el-col>
     </el-row>
 
     <el-row class="partTwo">
@@ -154,12 +156,17 @@
 import * as functionAll from "./unstructuredAgent";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
+import Step from "./step";
 let arrData = [];
 let DataAll = {};
 let i = "";
 export default {
+    components: {
+        Step,
+    },
     data() {
         return {
+            active: 2,
             tableData: [],
             checked: true,
             runWay: [],
