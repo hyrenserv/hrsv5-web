@@ -239,7 +239,7 @@ export default {
                     field: 'url',
                     fieldType: 'String',
                     isRequired: '必填',
-                    remark: '请求路径（generalQuery）',
+                    remark: '请求路径（hbaseSolrQuery）',
                 },
                 {
                     field: 'tableName',
@@ -256,7 +256,7 @@ export default {
                 {
                     field: 'whereColumn',
                     fieldType: 'String',
-                    isRequired: '查询条件(column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
+                    isRequired: '必填,查询条件(column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
                     remark: '查询过滤条件',
                 },
                 {
@@ -369,12 +369,11 @@ export default {
                     this.requestAddressForToken =
                         this.ipAndPort +
                         "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
-                        "&selectColumn=column1,column2&user_name=zhangsan&start=0&num=10" +
+                        "&whereColumn=user_name=zhangsan&start=0&num=10" +
                         "&dataType=json&outType=stream&asynType=0";
                     this.requestAddress = this.ipAndPort +
                         "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
-                        "&tableName=emp&selectColumn=column1,column2" +
-                        "&user_name=zhangsan&start=0&num=10&dataType=json&outType=stream&asynType=0";
+                        "&tableName=emp&whereColumn=user_name=zhangsan&start=0&num=10&dataType=json&outType=stream&asynType=0";
                 })
         },
     }

@@ -262,12 +262,12 @@
                         this.requestAddressForToken =
                             this.ipAndPort +
                             "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
-                            "&column1,column2&user_name=zhangsan&num=10" +
+                            "&whereColumn=user_name=zhangsan&num=10" +
                             "&dataType=json&outType=stream&asynType=0";
                         this.requestAddress = this.ipAndPort +
                             "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
                             "&tableName=emp&column1,column2" +
-                            "&user_name=zhangsan&num=10&dataType=json&outType=stream&asynType=0";
+                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=stream&asynType=0";
                     })
             },
         }
