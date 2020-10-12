@@ -47,15 +47,15 @@
                         该分类下的模型表
                     </p>
                     <el-table :data="tableData" border stripe size="medium" style="width: 100%">
-                        <el-table-column type="index" width="60" label="序号" align='center'>
+                        <el-table-column type="index" width="50" label="序号" align='left'>
                         </el-table-column>
-                        <el-table-column prop="category_name" width="110" label="分类名称" align='center'>
+                        <el-table-column prop="category_name" label="分类名称" width="100px" show-overflow-tooltip align='left'>
                         </el-table-column>
-                        <el-table-column prop="datatable_en_name" label="英文表名" show-overflow-tooltip align='center'>
+                        <el-table-column prop="datatable_en_name" label="英文表名" width="160px" show-overflow-tooltip align='left'>
                         </el-table-column>
-                        <el-table-column prop="datatable_cn_name" label="中文表名" show-overflow-tooltip align='center'>
+                        <el-table-column prop="datatable_cn_name" label="中文表名" width="160px" show-overflow-tooltip align='left'>
                         </el-table-column>
-                        <el-table-column label="操作" width="250" align='center'>
+                        <el-table-column label="操作" align='left'>
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="editdmdatatable(scope.row)">编辑
                                 </el-button>
@@ -65,6 +65,8 @@
                                 </el-button>
                                 <!-- <el-button size="mini" type="text" @click="downloaddmdatatable(scope.row)">导出
                                 </el-button> -->
+                                <el-button v-if="scope.row.iscb" type="text" size="mini" @click="dialogVisible = true;prepolymerization(scope.row)">预聚合
+                                </el-button>
                                 <el-button size="mini" type="text" @click="deletedmdatatable(scope.row)">删除
                                 </el-button>
                             </template>
@@ -74,7 +76,39 @@
             </el-row>
         </el-col>
     </el-row>
-
+    <!--预聚合SQL-->
+    <el-dialog title="创建预聚合" :visible.sync="dialogVisible" width="65%">
+        <el-button type="success" class="addline" @click="addRow()" size="mini">新增行</el-button><span></span>
+        <el-form ref="formInline" :model="formInline" status-icon>
+            <el-table stripe :data="formInline.sqldata" border size="medium" highlight-current-row>
+                <el-table-column label="预聚合名称" align="center">
+                    <template slot-scope="scope">
+                        <el-form-item :prop="'sqldata.'+scope.$index+'.agg_name'" :rules="filter_rules([{required: true,dataType:'table'}])">
+                            <el-input v-model="scope.row.agg_name" placeholder="预聚合名称"></el-input>
+                        </el-form-item>
+                    </template>
+                </el-table-column>
+                <el-table-column label="预聚合SQL" align="center">
+                    <template slot-scope="scope">
+                        <el-form-item :prop="'sqldata.'+scope.$index+'.agg_sql'" :rules="rule.default">
+                            <el-input type="textarea" size="small" autosize v-model="scope.row.agg_sql" placeholder="预聚合SQL"></el-input>
+                        </el-form-item>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button @click="handleClick(scope.row,scope.$index)" type="text" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-row>
+                <el-col :span="6" :offset="18">
+                    <el-button type="danger" class="rightbtn" @click="dialogVisible=false" size="medium">取消</el-button>
+                    <el-button type="primary" size="medium" class="rightbtn" @click="savePrePolymer">保存</el-button>
+                </el-col>
+            </el-row>
+        </el-form>
+    </el-dialog>
     <!-- 更改当前分类名 -->
     <el-dialog title="修改分类" :visible.sync="dialogchangeName" width="540px" :before-close="cancleAdd">
         <el-form :model="formChangeName" ref="formChangeName" class="demo-ruleForm" label-width="130px">
@@ -192,6 +226,10 @@ export default {
             selecteddatatable_id: "",
             selectedetltask: "",
             selectedetlsys: "",
+            dialogVisible: false,
+            formInline: {
+                'sqldata': []
+            },
         }
 
     },
@@ -505,6 +543,45 @@ export default {
                 }
             })
         },
+         //增加行
+        addRow() {
+            this.formInline.sqldata.push({
+                'agg_name': '',
+                'agg_sql': '',
+                datatable_id: this.datatable_id
+            })
+        },
+         //删除行
+        handleClick(row, index) {
+            if (typeof row.agg_id === "undefined") {
+                this.formInline.sqldata.splice(index, 1)
+            } else {
+                this.$Msg.confirmMsg('确定删除?').then(res=>{
+                    functionAll.deletePrePolymerization({
+                        'agg_id': row.agg_id
+                    }).then(res => {
+                        this.$Msg.deleteSuccess(res)
+                        this.dialogVisible = false
+                    })
+                })
+            }
+        },
+         //保存预聚合SQL
+        savePrePolymer() {
+            this.$refs['formInline'].validate(valid => {
+                if (valid) {
+                    functionAll.savePrePolymerization({
+                        'preaggregate': JSON.stringify(this.formInline.sqldata)
+                    }).then(res => {
+                        if (res.success) {
+                            this.dialogVisible = false
+                            this.$Msg.customizTitle("保存成功")
+                        }
+                    })
+                }
+            })
+        },
+
     }
 }
 </script>
