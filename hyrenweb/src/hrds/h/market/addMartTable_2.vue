@@ -15,7 +15,7 @@
             <!--树菜单-->
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" />
             <div class='mytree'>
-                <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
+                <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn" :filter-node-method="filterNode" ref="tree">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
                         <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
                             <i class=" el-icon-document"></i>
@@ -539,13 +539,13 @@ export default {
             querysql: '',
             filterText: '',
             columnbysql: [],
+            filterNodeData: [],
             columnmore: [],
             columnmore: [],
             allfield_type: [],
             allfield_process: [],
             allfromcolumn: [],
             databysql: [],
-            filterText: '',
             ifhbase: false,
             ifhbasesort: false,
             sqlparameter: "",
@@ -591,8 +591,9 @@ export default {
     },
     watch: {
         //设置检索内容
-        filterText() {
-            this.$refs.tree.filter(this.filterText);
+        filterText(val) {
+            debugger;
+            this.$refs.tree.filter(val);
         }
     },
     created() {
@@ -1143,11 +1144,11 @@ export default {
             }
             this.totalSize = this.tableData.length;
         },
-        // 搜索过滤节点
-        filterNode(value, data) {
-            if (!value) return true;
-            return data.label.indexOf(value) !== -1;
-        },
+        // // 搜索过滤节点
+        // filterNode(value, data) {
+        //     if (!value) return true;
+        //     return data.label.indexOf(value) !== -1;
+        // },
         //表数据实现分页功能
         handleCurrentChangeList(currPage) {
             //把val赋给当前页面
@@ -1226,6 +1227,22 @@ export default {
                     }
                 }
                 this.formInline.selectColumns = columns.join(",")
+            }
+        },
+        // 节点搜索
+        filterNode(value, data) {
+            debugger;
+            // 如果检索内容为空,直接返回
+            if (!value) return true;
+            // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
+            // 检索内容为 original_name table_name hyren_name
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+                return (
+                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
+                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
+                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                )
+
             }
         },
         // 选择表
