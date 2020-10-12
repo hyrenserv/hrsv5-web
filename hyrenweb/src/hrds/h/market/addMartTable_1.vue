@@ -353,7 +353,6 @@ export default {
         //         "dsl_id": dsl_id,
         //         "datatable_en_name": datatable_en_name
         //     }).then((res) => {
-        //         debugger;
         //         if (res && res.success) {
         //             return res.data;
         //         } else {
@@ -374,9 +373,7 @@ export default {
                         "dsl_id": this.dsl_id,
                         "datatable_en_name": this.dm_datatable.datatable_en_name
                     }).then((res) => {
-                        // debugger;
                         if (res && res.success) {
-                            // debugger;
                             isorclaeok = res.data;
                             if (!res.data) {
                                 this.$Msg.customizTitle("选择存储目的地为oracle,且表名长度大于26，请修改表名!", "warning");
