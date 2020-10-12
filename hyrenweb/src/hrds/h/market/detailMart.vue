@@ -93,7 +93,7 @@
         <loading v-if="isLoading" />
     </transition>
     <!--预聚合SQL-->
-    <el-dialog title="创建预聚合" :visible.sync="dialogVisible">
+    <el-dialog title="创建预聚合" :visible.sync="dialogVisible" width="65%">
         <el-button type="success" class="addline" @click="addRow()" size="mini">新增行</el-button><span></span>
         <el-form ref="formInline" :model="formInline" status-icon>
             <el-table stripe :data="formInline.sqldata" border size="medium" highlight-current-row>
@@ -109,6 +109,11 @@
                         <el-form-item :prop="'sqldata.'+scope.$index+'.agg_sql'" :rules="rule.default">
                             <el-input type="textarea" size="small" autosize v-model="scope.row.agg_sql" placeholder="预聚合SQL"></el-input>
                         </el-form-item>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button @click="handleClick(scope.row,scope.$index)" type="text" size="small">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -370,10 +375,12 @@ export default {
             })
         },
         prepolymerization(row) {
-            this.$refs['formInline'].resetFields()
+            this.$nextTick(function () {
+                this.$refs['formInline'].resetFields()
+            })
+            this.datatable_id = row.datatable_id
             functionAll.prePolymerization(row).then(res => {
                 this.formInline.sqldata = res.data
-                this.datatable_id = row.datatable_id
             })
         },
         //保存预聚合SQL
@@ -398,6 +405,21 @@ export default {
                 'agg_sql': '',
                 datatable_id: this.datatable_id
             })
+        },
+        //删除行
+        handleClick(row, index) {
+            if (typeof row.agg_id === "undefined") {
+                this.formInline.sqldata.splice(index, 1)
+            } else {
+                this.$Msg.confirmMsg('确定删除?').then(res=>{
+                    functionAll.deletePrePolymerization({
+                        'agg_id': row.agg_id
+                    }).then(res => {
+                        this.$Msg.deleteSuccess(res)
+                        this.dialogVisible = false
+                    })
+                })
+            }
         }
     }
 };
