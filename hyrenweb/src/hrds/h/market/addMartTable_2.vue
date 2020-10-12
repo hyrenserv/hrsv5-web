@@ -592,7 +592,6 @@ export default {
     watch: {
         //设置检索内容
         filterText(val) {
-            debugger;
             this.$refs.tree.filter(val);
         }
     },
@@ -678,7 +677,6 @@ export default {
         //             });
         //         } else {
         //             // // 查询数据
-        //             // debugger;
         //             // functionAll.queryAllColumnOnTableName({
         //             //     'source': node.data.source,
         //             //     'id': node.data.id
@@ -1231,7 +1229,6 @@ export default {
         },
         // 节点搜索
         filterNode(value, data) {
-            debugger;
             // 如果检索内容为空,直接返回
             if (!value) return true;
             // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
