@@ -38,7 +38,7 @@
     </el-table>
     <el-row :gutter="20" class="tabBtns">
 
-        <el-pagination layout="total, sizes,prev, pager, next, jumper" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" style="float:right" @size-change="handleSizeChange">
+        <el-pagination layout="total, sizes,prev, pager, next, jumper" :page-sizes="[5,10,20,25,50,100,1000]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" style="float:right" @size-change="handleSizeChange">
         </el-pagination>
 
     </el-row>
