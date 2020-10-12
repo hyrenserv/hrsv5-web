@@ -525,3 +525,11 @@ export function savePrePolymerization(data) {
     })
 }
 
+//删除预聚合SQL
+export function deletePrePolymerization(data) {
+    return request({
+        url: '/H/market/deletePrePolymerization',
+        params: data,
+    })
+}
+
