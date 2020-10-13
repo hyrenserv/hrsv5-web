@@ -2,7 +2,7 @@
 <div>
     <Step :active="active"></Step>
     <el-form ref="ruleForm" :model="ruleForm">
-        <el-table stripe class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium" >
+        <el-table stripe class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium">
             <el-table-column property label="序号" width="60px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -16,12 +16,12 @@
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column property="is_archived"  label="是否转存" align="center">
-                  <template slot="header" slot-scope="scope">
-                        <el-checkbox  @change="handleCheckAllChange(ruleForm.tableData,is_archivedAll)" v-model="is_archivedAll" :checked="is_archivedAll">
-                            <span class="allclickColor">是否转存</span>
-                        </el-checkbox>
-                    </template>
+            <el-table-column property="is_archived" label="是否转存" align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="handleCheckAllChange(ruleForm.tableData,is_archivedAll)" v-model="is_archivedAll" :checked="is_archivedAll">
+                        <span class="allclickColor">是否转存</span>
+                    </el-checkbox>
+                </template>
                 <template slot-scope="scope">
                     <el-checkbox v-if="scope.row.unload_type=='1'" v-model="scope.row.is_archived" :checked="scope.row.is_archived" @change="col_everySelectfun(scope.row.is_archived,ruleForm.tableData)"></el-checkbox>
                 </template>
@@ -153,7 +153,7 @@ export default {
                 database_code: ''
             },
             tablename: '', //点击转存临时存表名
-            is_archivedAll:false,
+            is_archivedAll: false,
             newlineCharacter: [{
                     value: "\\n",
                     code: "1",
@@ -195,21 +195,21 @@ export default {
                     row.database_code = row.storage[i].database_code
                     row.plane_url = row.storage[i].plane_url
                     row.row_separator = row.storage[i].row_separator
-                    row.is_header = row.storage[i].is_header== '1'? true : false
+                    row.is_header = row.storage[i].is_header == '1' ? true : false
                 }
             }
         },
         //转存
-         handleCheckAllChange(items, e) {
+        handleCheckAllChange(items, e) {
             items.forEach((item, i) => {
-                if(item.unload_type=='1'){
+                if (item.unload_type == '1') {
                     if (e) {
-                    item.is_archived = true;
-                } else {
-                    item.is_archived = false;
+                        item.is_archived = true;
+                    } else {
+                        item.is_archived = false;
+                    }
                 }
-                }
-                
+
             });
         },
         //转存单个点击
@@ -275,7 +275,7 @@ export default {
                     let getData = res.data
                     for (let i = 0; i < getData.length; i++) {
                         getData[i].DataExtractType = []
-                         getData[i].table_ch_name=getData[i].table_ch_name==''?getData[i].table_name:getData[i].table_ch_name
+                        getData[i].table_ch_name = getData[i].table_ch_name == '' ? getData[i].table_name : getData[i].table_ch_name
                         getData[i].dbfile_format = getData[i].storage[0].dbfile_format
                         getData[i].is_header = getData[i].storage[0].is_header == '1' ? true : false
                         getData[i].row_separator = getData[i].storage[0].row_separator
@@ -284,13 +284,13 @@ export default {
                         getData[i].database_code = getData[i].storage[0].database_code
                         getData[i].is_archived = getData[i].is_archived == '1' ? true : false
                         for (let j = 0; j < getData[i].storage.length; j++) {
-                            if(getData[i].storage[j].dbfile_format){
+                            if (getData[i].storage[j].dbfile_format) {
                                 getData[i].DataExtractType.push({
-                                'code': getData[i].storage[j].dbfile_format,
-                                'value': this.getFileFormatValue(getData[i].storage[j].dbfile_format)
-                            })
+                                    'code': getData[i].storage[j].dbfile_format,
+                                    'value': this.getFileFormatValue(getData[i].storage[j].dbfile_format)
+                                })
                             }
-                            
+
                         }
                     }
                     this.ruleForm.tableData = getData
@@ -329,8 +329,8 @@ export default {
                                 dataExtractionDefs.push({
                                     'table_id': this.ruleForm.tableData[i].table_id,
                                     'ded_id': this.ruleForm.tableData[i].ded_id,
-                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
-                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header == true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived == true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -341,8 +341,8 @@ export default {
                             } else {
                                 dataExtractionDefs.push({
                                     'table_id': this.ruleForm.tableData[i].table_id,
-                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
-                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header == true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived == true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -359,9 +359,9 @@ export default {
                             })
                             if (this.ruleForm.tableData[i].ded_id) {
                                 dataExtractionDefs.push({
-                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header == true ? '1' : '0',
                                     'ded_id': this.ruleForm.tableData[i].ded_id,
-                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived == true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -371,8 +371,8 @@ export default {
                                 })
                             } else {
                                 dataExtractionDefs.push({
-                                    'is_header': this.ruleForm.tableData[i].is_header==true ? '1' : '0',
-                                    'is_archived': this.ruleForm.tableData[i].is_archived==true ? '1' : '0',
+                                    'is_header': this.ruleForm.tableData[i].is_header == true ? '1' : '0',
+                                    'is_archived': this.ruleForm.tableData[i].is_archived == true ? '1' : '0',
                                     'dbfile_format': this.ruleForm.tableData[i].dbfile_format,
                                     'row_separator': this.ruleForm.tableData[i].row_separator,
                                     'database_separatorr': this.ruleForm.tableData[i].database_separatorr,
@@ -386,7 +386,7 @@ export default {
 
                     }
                     let params = {};
-                    params["colSetId"] =this.$route.query.id;
+                    params["colSetId"] = this.$route.query.id;
                     params["dataExtractionDefs"] = JSON.stringify(dataExtractionDefs);
                     params["tableInfos"] = JSON.stringify(table_info);
                     functionAll.saveDataTransferData(params).then(res => {
@@ -513,6 +513,7 @@ export default {
 .step3>>>.el-form-item {
     margin-bottom: 0 !important;
 }
+
 .allclickColor {
     color: #fff;
     font-weight: bold;
