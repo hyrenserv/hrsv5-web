@@ -70,7 +70,7 @@
                 </el-table-column>
                 <el-table-column prop="cond_en_column" show-overflow-tooltip label="英文名称" align='center'>
                 </el-table-column>
-                <el-table-column prop="cond_cn_column" show-overflow-tooltip label="别名" align='center'>
+                <el-table-column prop="cond_cn_column" show-overflow-tooltip label="字段中文名称" align='center'>
                 </el-table-column>
                 <el-table-column prop="con_relation" show-overflow-tooltip label="关联关系" width="100px" align='center'>
                 </el-table-column>
@@ -119,9 +119,9 @@
                 </el-table-column>
                 <el-table-column prop="source_table_name" show-overflow-tooltip label="表名" align='center'>
                 </el-table-column>
-                <el-table-column prop="column_en_name" show-overflow-tooltip label="字段名" align='center'>
+                <el-table-column prop="column_en_name" show-overflow-tooltip label="字段英文名" align='center'>
                 </el-table-column>
-                <el-table-column prop="column_cn_name" show-overflow-tooltip label="别名" align='center'>
+                <el-table-column prop="column_cn_name" show-overflow-tooltip label="字段中文名" align='center'>
                 </el-table-column>
                 <el-table-column prop="res_show_column" show-overflow-tooltip label="显示名" align='center'>
                     <template slot-scope="scope">
