@@ -29,7 +29,7 @@
                     </el-button>
                     <el-button size="mini" type="text" @click="vieSql(scope.$index, scope.row)">查看sql
                     </el-button>
-                    <el-button size="mini" class="endAgent" type="text" @click="deleteWork(scope.row)">删除
+                    <el-button size="mini" class="endAgent" type="text" @click="deleteVisualComponent(scope.row)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -49,7 +49,7 @@ export default {
             tableData: []
         }
     },
-    mounted(){
+    mounted() {
         this.getVisualComponentInfo();
     },
     methods: {
@@ -62,13 +62,13 @@ export default {
         // 新建组件
         addProject() {
             this.$router.push({
-                name: 'visualizationadd'
+                name: 'visualization'
             })
         },
         //编辑
         handleEdit(index, row) {
             this.$router.push({
-                name: 'visualizationadd',
+                name: 'visualization',
                 query: {
                     //传参
                 }
@@ -79,13 +79,22 @@ export default {
             // 查看sql接口
         },
         //删除
-        deleteWork(row) {
+        deleteVisualComponent(row) {
             this.$confirm('确认删除吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
                 // 删除接口
+                functionAll.deleteVisualComponent({
+                    component_id: row.component_id
+                }).then(res => {
+                     if (res && res.success) {
+                        this.$Msg.customizTitle('删除成功', 'success')
+                        // 从新渲染表格
+                        this.getVisualComponentInfo();
+                    }
+                })
             }).catch(() => {
                 this.$Msg.customizTitle('已取消删除', 'info')
             });
