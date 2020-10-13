@@ -2293,7 +2293,7 @@ export default {
         // 返回上一级
         goBack() {
             this.$router.push({
-                name: 'visualization'
+                name: 'visualizationindex'
             })
         },
     }

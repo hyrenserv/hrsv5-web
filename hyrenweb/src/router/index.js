@@ -1274,21 +1274,22 @@ export default new Router({
                     ],
                 },
                 {
-                    path: '/visualizationadd',
-                    name: 'visualizationadd',
+                    path: '/visualization',
+                    name: 'visualization',
                     title: '可视化',
                     component: () => import('@/hrds/l/selfAcess/visualization.vue'),
                     meta: [
                         { name: '首页' },
                         { name: '自主取数' },
                         { name: '数据可视化' },
+                        { name: '数据可视化设置' },
                     ],
                 },
                 {
-                    path: '/visualization',
-                    name: 'visualization',
-                    title: '可视化',
-                    component: () => import('@/hrds/l/selfAcess/visualizationindexlist.vue'),
+                    path: '/visualizationindex',
+                    name: 'visualizationindex',
+                    title: '数据可视化',
+                    component: () => import('@/hrds/l/selfAcess/visualizationindex.vue'),
                     meta: [
                         { name: '首页' },
                         { name: '自主取数' },

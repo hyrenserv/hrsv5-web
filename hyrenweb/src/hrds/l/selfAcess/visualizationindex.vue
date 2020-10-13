@@ -11,17 +11,17 @@
         <el-table size="medium" :data="tableData" border stripe style="width: 100%;margin-top:10px;">
             <el-table-column type="index" label="序号" width="70px" align='center'>
             </el-table-column>
-            <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="组件名称" align='center'>
+            <el-table-column prop="component_name" show-overflow-tooltip label="组件名称" align='center'>
             </el-table-column>
-            <el-table-column prop="etl_sys_name" show-overflow-tooltip label="组件描述" align='center'>
+            <el-table-column prop="component_desc" show-overflow-tooltip label="组件描述" align='center'>
             </el-table-column>
-            <el-table-column prop="comments" show-overflow-tooltip label="数据来源" align='center'>
+            <el-table-column prop="data_source" show-overflow-tooltip label="数据来源" align='center'>
             </el-table-column>
-            <el-table-column prop="curr_bath_date" show-overflow-tooltip label="模板状态" align='center'>
+            <el-table-column prop="component_status" show-overflow-tooltip label="组件状态" align='center'>
             </el-table-column>
-            <el-table-column label="创建日期" show-overflow-tooltip align='center'>
+            <el-table-column label="创建日期" prop="create_date" show-overflow-tooltip align='center'>
             </el-table-column>
-            <el-table-column label="创建用户" show-overflow-tooltip align='center'>
+            <el-table-column label="创建用户" prop="create_user" show-overflow-tooltip align='center'>
             </el-table-column>
             <el-table-column label="操作" align='center' width="160">
                 <template slot-scope="scope">
@@ -29,7 +29,7 @@
                     </el-button>
                     <el-button size="mini" type="text" @click="vieSql(scope.$index, scope.row)">查看sql
                     </el-button>
-                    <el-button size="mini" class="endAgent" type="text" @click="deleteWork(scope.row)">删除
+                    <el-button size="mini" class="endAgent" type="text" @click="deleteVisualComponent(scope.row)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -40,23 +40,35 @@
 </template>
 
 <script>
+import * as functionAll from "./selfAcess";
+import * as fixedAll from "@/utils/js/fileOperations";
+
 export default {
     data() {
         return {
-            tableData: [{}]
+            tableData: []
         }
     },
+    mounted() {
+        this.getVisualComponentInfo();
+    },
     methods: {
+        // 数据可视化首页列表展示
+        getVisualComponentInfo() {
+            functionAll.getVisualComponentInfo().then(res => {
+                this.tableData = res.data;
+            })
+        },
         // 新建组件
         addProject() {
             this.$router.push({
-                name: 'visualizationadd'
+                name: 'visualization'
             })
         },
         //编辑
         handleEdit(index, row) {
             this.$router.push({
-                name: 'visualizationadd',
+                name: 'visualization',
                 query: {
                     //传参
                 }
@@ -67,13 +79,22 @@ export default {
             // 查看sql接口
         },
         //删除
-        deleteWork(row) {
+        deleteVisualComponent(row) {
             this.$confirm('确认删除吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
                 // 删除接口
+                functionAll.deleteVisualComponent({
+                    component_id: row.component_id
+                }).then(res => {
+                     if (res && res.success) {
+                        this.$Msg.customizTitle('删除成功', 'success')
+                        // 从新渲染表格
+                        this.getVisualComponentInfo();
+                    }
+                })
             }).catch(() => {
                 this.$Msg.customizTitle('已取消删除', 'info')
             });
