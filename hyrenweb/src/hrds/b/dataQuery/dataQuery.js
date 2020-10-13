@@ -72,6 +72,14 @@ export function applicationProcessing(data) {
     })
 }
 
+//检查查看文件的权限
+export function checkFileViewPermissions(data) {
+    return request({
+        url: '/B/dataquery/checkFileViewPermissions',
+        params: data
+    })
+}
+
 //查看文件
 export function viewFile(data) {
     return request({
