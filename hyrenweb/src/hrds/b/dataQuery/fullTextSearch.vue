@@ -25,7 +25,7 @@
                                 <el-input type="text" placeholder="搜索" v-model="searchForm.queryKeyword" />
                             </el-col>
                             <el-col :span="6">
-                                <el-button type="primary" class="el-icon-search" style="margin-left: 10px" @click="searchOnSubmit()">查询
+                                <el-button type="primary" class="el-icon-search" style="margin-left: 10px" @click="searchOnSubmit()" size="mini">查询
                                 </el-button>
                             </el-col>
                         </el-row>
@@ -210,7 +210,7 @@ export default {
                 search_way: 'fullText'
             },
             searchFileInfo: {
-                analysis: '',
+                analysis: [],
                 collectType: '',
                 result: [],
                 totalSize: 0,
@@ -241,11 +241,18 @@ export default {
         },
         /* 查看文件 */
         viewFile(fileId, fileType) {
-            this.$router.push({
-                name: 'viewFile',
-                query: {
-                    'fileId': fileId,
-                    "fileType": fileType,
+            //检查是否有查看文件的权限
+            dataQuery.checkFileViewPermissions({ 'fileId': fileId, 'fileType': fileType }).then((res) => {
+                if (res.data) {
+                    this.$router.push({
+                        name: 'viewFile',
+                        query: {
+                            'fileId': fileId,
+                            "fileType": fileType,
+                        }
+                    })
+                } else {
+                    this.$Msg.customizTitle('文件没有查看权限,请先申请并审批成功后再查看!', 'warning')
                 }
             })
         },
@@ -255,9 +262,8 @@ export default {
                 'fileId': file_id,
                 'fileName': original_name
             }).then((res) => {
-                console.log();
                 if ('undefined' === typeof res) {
-                    this.$Msg.customizTitle('文件没有下载权限,请先申请并审批成功后再下载!', 'warry')
+                    this.$Msg.customizTitle('文件没有下载权限,请先申请并审批成功后再下载!', 'warning')
                 } else {
                     // 转换数据流为文件
                     fileOperations.fileDownload(res.data, original_name)
@@ -266,13 +272,16 @@ export default {
         },
         //文本高亮函数(Word,pdf)
         highLight(str) {
+            //根据检索条件解析的词条进行高亮
             let analysis = this.searchFileInfo.analysis;
-            if (str && str.length > 0) {
-                if (!this.containSpecial(analysis)) {
-                    var re = new RegExp(analysis, "g");
-                    str = str.replace(re, "<font style='color:red'>" + analysis + "</font>");
+            analysis.forEach(analysi_data => {
+                if (str && str.length > 0) {
+                    if (!this.containSpecial(analysi_data)) {
+                        var re = new RegExp(analysi_data, "g");
+                        str = str.replace(re, "<font style='color:red'>" + analysi_data + "</font>");
+                    }
                 }
-            }
+            })
             let num = 100;
             //如果当前字符串小于num，返回原值
             if (str.length <= num) {
@@ -290,7 +299,6 @@ export default {
         },
         //文本分析
         analysis(file_id, original_name) {
-            console.log(file_id, original_name);
             this.$Msg.customizTitle('试用版本不支持文本分析功能!', 'success')
         },
         //保存文件收藏
