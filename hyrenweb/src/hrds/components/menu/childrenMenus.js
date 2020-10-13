@@ -122,11 +122,11 @@ const childrenMemus = {
             component: () => import('@/hrds/l/selfAcess/selfAccess.vue')
         },
         {
-            path: '/visualization',
-            name: 'visualization',
+            path: '/visualizationindex',
+            name: 'visualizationindex',
             title: '数据可视化',
             icon: 'el-icon-view',
-            component: () => import('@/hrds/l/selfAcess/visualization.vue')
+            component: () => import('@/hrds/l/selfAcess/visualizationindex.vue')
         },
         {
             path: '/dataDashboardList',

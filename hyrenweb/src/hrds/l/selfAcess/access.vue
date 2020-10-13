@@ -2,14 +2,14 @@
 <div class="access">
     <el-row class="elRowtitle">
         <p class="tempalteInfo">自主取数</p>
-        <el-button type="danger" class="templateButton" @click="goBack" size="small">
+        <el-button type="primary" class="templateButton" @click="goBack" size="small">
             返回上级
         </el-button>
     </el-row>
     <div class="lines"></div>
     <el-row class="elRowTemplate">
         <div class="elRowTemplateDiv">
-            <div style="float:left">({{name}})模板信息</div>
+            <div style="float:left">模板信息({{name}})</div>
         </div>
         <el-row>
             <div class="templateDec">模板描述:<span>{{dec}}</span></div>
@@ -123,11 +123,11 @@
     <!-- 保存可视化的弹出表单 -->
     <el-dialog title="可视化" :visible.sync="dialogFormViewSave" :before-close="beforeCloseAccessView" width="580px">
         <el-form :model="FormViewSave" ref="FormViewSave" label-width="140px">
-            <el-form-item label=" 取数主题" prop="fetch_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="FormViewSave.fetch_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label="取数主题" prop="fetch_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="FormViewSave.fetch_name" autocomplete="off" placeholder="请输入取数主题" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 取数用途" prop="fetch_desc">
-                <el-input type="textarea" v-model="FormViewSave.fetch_desc" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label="取数用途" prop="fetch_desc">
+                <el-input type="textarea" v-model="FormViewSave.fetch_desc" autocomplete="off" placeholder="请输入取数用途" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -138,11 +138,11 @@
     <!-- 保存的弹出表单 -->
     <el-dialog title="保存取数" :visible.sync="dialogFormSave" :before-close="beforeCloseAccess" width="580px">
         <el-form :model="FormSave" ref="FormSave" label-width="140px">
-            <el-form-item label=" 取数主题" prop="fetch_name" :rules="filter_rules([{required: true}])">
-                <el-input v-model="FormSave.fetch_name" autocomplete="off" placeholder="请输入部门名称" style="width:284px"></el-input>
+            <el-form-item label="取数主题" prop="fetch_name" :rules="filter_rules([{required: true}])">
+                <el-input v-model="FormSave.fetch_name" autocomplete="off" placeholder="请输入取数主题" style="width:284px"></el-input>
             </el-form-item>
-            <el-form-item label=" 取数用途" prop="fetch_desc">
-                <el-input type="textarea" v-model="FormSave.fetch_desc" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
+            <el-form-item label="取数用途" prop="fetch_desc">
+                <el-input type="textarea" v-model="FormSave.fetch_desc" autocomplete="off" placeholder="请输入取数用途" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

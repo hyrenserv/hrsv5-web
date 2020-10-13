@@ -11,17 +11,17 @@
         <el-table size="medium" :data="tableData" border stripe style="width: 100%;margin-top:10px;">
             <el-table-column type="index" label="序号" width="70px" align='center'>
             </el-table-column>
-            <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="组件名称" align='center'>
+            <el-table-column prop="component_name" show-overflow-tooltip label="组件名称" align='center'>
             </el-table-column>
-            <el-table-column prop="etl_sys_name" show-overflow-tooltip label="组件描述" align='center'>
+            <el-table-column prop="component_desc" show-overflow-tooltip label="组件描述" align='center'>
             </el-table-column>
-            <el-table-column prop="comments" show-overflow-tooltip label="数据来源" align='center'>
+            <el-table-column prop="data_source" show-overflow-tooltip label="数据来源" align='center'>
             </el-table-column>
-            <el-table-column prop="curr_bath_date" show-overflow-tooltip label="模板状态" align='center'>
+            <el-table-column prop="component_status" show-overflow-tooltip label="组件状态" align='center'>
             </el-table-column>
-            <el-table-column label="创建日期" show-overflow-tooltip align='center'>
+            <el-table-column label="创建日期" prop="create_date" show-overflow-tooltip align='center'>
             </el-table-column>
-            <el-table-column label="创建用户" show-overflow-tooltip align='center'>
+            <el-table-column label="创建用户" prop="create_user" show-overflow-tooltip align='center'>
             </el-table-column>
             <el-table-column label="操作" align='center' width="160">
                 <template slot-scope="scope">
@@ -40,13 +40,25 @@
 </template>
 
 <script>
+import * as functionAll from "./selfAcess";
+import * as fixedAll from "@/utils/js/fileOperations";
+
 export default {
     data() {
         return {
-            tableData: [{}]
+            tableData: []
         }
     },
+    mounted(){
+        this.getVisualComponentInfo();
+    },
     methods: {
+        // 数据可视化首页列表展示
+        getVisualComponentInfo() {
+            functionAll.getVisualComponentInfo().then(res => {
+                this.tableData = res.data;
+            })
+        },
         // 新建组件
         addProject() {
             this.$router.push({

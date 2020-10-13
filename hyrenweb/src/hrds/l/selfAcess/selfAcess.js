@@ -266,5 +266,11 @@ export function getChartShow(data) {
         params: data
     })
 }
+//可视化首页列表展示
+export function getVisualComponentInfo() {
+    return request({
+        url: '/L/autoanalysis/operate/getVisualComponentInfo',
+    })
+}
 
 
