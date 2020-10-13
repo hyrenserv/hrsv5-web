@@ -212,8 +212,8 @@
                         新增字段
                     </el-button>
                 </el-col>
-                <el-col v-show="false" :span='2' style="float:left">
-                    <el-button class="elButton" type="primary" @click="showprejob()" size="medium">前置作业
+                <el-col  v-show="ifRelationDatabase" :span='2' style="float:left">
+                    <el-button :disabled="!ifRelationDatabase" class="elButton" type="primary" @click="showprejob()" size="medium">前置作业
                     </el-button>
                 </el-col>
                 <el-col :span='2' style="float:left">
@@ -457,28 +457,31 @@
         </el-dialog>
 
         <el-dialog title="前置作业" :visible.sync="ifprejob" width="80%">
+            <span>
+                只能修改本集市表的数据(Update、Delete、Insert),多个SQL用;;隔开 表名为：{{tablename}}
+            </span>
             <el-row>
-                <el-col class="borderStyle" :span="7" style="margin-right: 10px;">
-                    <!--树菜单-->
-                    <el-input placeholder="输入关键字进行过滤" v-model="filterText"/>
-                    <div class='mytree'>
-                        <el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">
-                        <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="data.description">{{node.label}}</span>
-                        </span>
-                        </el-tree>
-                    </div>
-                </el-col>
-                <el-col :span="16">
-                    <el-tabs type="card">
-                        <el-row>
-                            <div style="border:1px solid #ccc;">
-                                <SqlEditor ref="sqleditor" :data="2" :value="preJobForm.preSql"
-                                           @changeTextarea="changeTextarea($event)" class='textasql'/>
-                            </div>
-                        </el-row>
-                    </el-tabs>
-                </el-col>
+                <!--<el-col class="borderStyle" :span="7" style="margin-right: 10px;">-->
+                <!--&lt;!&ndash;树菜单&ndash;&gt;-->
+                <!--<el-input placeholder="输入关键字进行过滤" v-model="filterText"/>-->
+                <!--<div class='mytree'>-->
+                <!--<el-tree class="filter-tree" :data="treedata" :indent='0' @node-click="showtablecolumn">-->
+                <!--<span class="span-ellipsis" slot-scope="{ node, data }">-->
+                <!--<span :title="data.description">{{node.label}}</span>-->
+                <!--</span>-->
+                <!--</el-tree>-->
+                <!--</div>-->
+                <!--</el-col>-->
+                <!--<el-col :span="16">-->
+                <el-tabs type="card">
+                    <el-row>
+                        <div style="border:1px solid #ccc;">
+                            <SqlEditor ref="sqleditor" :data="2" :value="preJobForm.preSql"
+                                       @changeTextarea="changeTextarea($event)" class='textasql'/>
+                        </div>
+                    </el-row>
+                </el-tabs>
+                <!--</el-col>-->
             </el-row>
             <el-row>
                 <el-button type="primary" size="mini" class="rightbtn" @click="savePreAndAfterJob()">确定
@@ -489,7 +492,7 @@
 
         <el-dialog title="后置作业" :visible.sync="ifafterjob" width="80%">
             <span>
-                只能修改本集市表的数据（Update、Delete、Insert） 表名为：{{tablename}}
+                只能修改本集市表的数据(Update、Delete、Insert),多个SQL用;;隔开 表名为：{{tablename}}
             </span>
             <el-row>
                 <!--<el-col class="borderStyle" :span="7" style="margin-right: 10px;">-->
@@ -644,7 +647,8 @@
                 tableNameList: [],
                 checkColumnData: ['varchar', 'varchar2', 'text', 'char', 'string'],
                 activeName: '',
-                tablename:'',
+                tablename: '',
+                ifRelationDatabase:'',
 
             };
         },
@@ -662,22 +666,28 @@
             this.getcolumnfromdatabase(this.datatable_id);
             this.getifhbase();
             this.getfromcolumnlist(this.datatable_id);
-
-
         },
         mounted() {
             this.checkifrepeat();
             this.getquerysql();
             this.gettablename();
+            this.getifrelationdatabase();
 
         },
         methods: {
+            getifrelationdatabase(){
+                functionAll.getIfRelationDatabase({
+                    "datatable_id": this.datatable_id
+                }).then(((res) => {
+                    debugger;
+                    this.ifRelationDatabase = res.data;
+                }))
+            },
             gettablename() {
                 functionAll.getTableName({
                     "datatable_id": this.datatable_id
                 }).then(((res) => {
                     this.tablename = res.data;
-                    // this.ifhbae = true;
                 }))
             },
             checkifrepeat() {
