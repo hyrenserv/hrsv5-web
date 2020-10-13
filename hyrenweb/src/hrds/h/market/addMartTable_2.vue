@@ -213,7 +213,7 @@
                     </el-button>
                 </el-col>
                 <el-col  v-show="ifRelationDatabase" :span='2' style="float:left">
-                    <el-button :disabled="!ifRelationDatabase" class="elButton" type="primary" @click="showprejob()" size="medium">前置作业
+                    <el-button class="elButton" type="primary" @click="showprejob()" size="medium">前置作业
                     </el-button>
                 </el-col>
                 <el-col :span='2' style="float:left">
@@ -648,7 +648,7 @@
                 checkColumnData: ['varchar', 'varchar2', 'text', 'char', 'string'],
                 activeName: '',
                 tablename: '',
-                ifRelationDatabase:'',
+                ifRelationDatabase:false,
 
             };
         },
@@ -671,15 +671,15 @@
             this.checkifrepeat();
             this.getquerysql();
             this.gettablename();
-            this.getifrelationdatabase();
+            // this.getifrelationdatabase();
 
         },
         methods: {
             getifrelationdatabase(){
                 functionAll.getIfRelationDatabase({
-                    "datatable_id": this.datatable_id
+                    "datatable_id": this.datatable_id,
+                    "sql":this.querysql,
                 }).then(((res) => {
-                    debugger;
                     this.ifRelationDatabase = res.data;
                 }))
             },
@@ -825,6 +825,7 @@
                             }
                         }
                     }))
+                    this.getifrelationdatabase();
                 }
             },
             // 根据SQL查询数据
