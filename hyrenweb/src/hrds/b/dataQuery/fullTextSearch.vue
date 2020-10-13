@@ -243,7 +243,6 @@ export default {
         viewFile(fileId, fileType) {
             //检查是否有查看文件的权限
             dataQuery.checkFileViewPermissions({ 'fileId': fileId, 'fileType': fileType }).then((res) => {
-                console.log(res);
                 if (res.data) {
                     this.$router.push({
                         name: 'viewFile',
