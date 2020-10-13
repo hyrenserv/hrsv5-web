@@ -181,7 +181,8 @@ export default {
 
         // 根据SQL查询数据
         getDataBySQL() {
-            let querySQL = this.basicInfoForm.sqlMain;
+            let querySQL = this.$refs.sqleditor.getmVal();
+            // let querySQL = this.basicInfoForm.sqlMain;
             if (querySQL === '') {
                 this.$Msg.customizTitle('查询sql不能为空', 'warning')
             } else {

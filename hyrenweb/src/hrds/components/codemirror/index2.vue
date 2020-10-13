@@ -74,6 +74,12 @@ export default {
             var editors = ace.edit(editordata)
             editors.session.setValue(sqlFormatter.format(value))
         },
+        getmVal(){
+            var editordata = 'editor' + String(this.data);
+            var editor = ace.edit(editordata)
+            var execute_sql = editor.session.getValue() + "";
+            return execute_sql;
+        },
         getTablename() { //获取sql查询的全部表名
             commons.getAllTableNameByPlatform().then(res => {
                 let arr = [];
@@ -122,7 +128,7 @@ export default {
                 })
             })
         },
-        debounce(fn, interval = 800) { //事件防抖,减少服务器压力
+        debounce(fn, interval = 0) { //事件防抖,减少服务器压力
             let timeout = null;
             return function () {
                 clearTimeout(timeout);

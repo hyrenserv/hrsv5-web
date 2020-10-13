@@ -673,6 +673,7 @@
         },
         methods: {
             getifrelationdatabase() {
+                this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
                 functionAll.getIfRelationDatabase({
                     "datatable_id": this.datatable_id,
                     "sql": this.basicInfoForm.sqlMain,
@@ -760,6 +761,7 @@
                 })
             },
             getcolumnbysql() {
+                this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
                 if (this.basicInfoForm.sqlMain === '') {
                     this.$Msg.customizTitle('查询sql不能为空!', 'warning');
                 } else {
@@ -795,6 +797,7 @@
             },
             // 根据SQL查询数据
             getdatabysql() {
+                this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
                 if (this.basicInfoForm.sqlMain === '') {
                     this.$Msg.customizTitle('查询sql不能为空!', 'warning');
                 } else {
@@ -891,6 +894,7 @@
                 }
             },
             next() {
+                this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
                 if (this.basicInfoForm.sqlMain == "") {
                     this.$Msg.customizTitle('请填写sql!', 'warning');
                     return false;
@@ -1074,11 +1078,9 @@
                 }
                 sql = sql.substr(0, sql.length - 1);
                 sql += " from " + this.sqltablename;
-                debugger;
                 this.basicInfoForm.sqlMain = sql;
                 this.$refs.sqleditormain.setmVal(sql)
                 this.formaterSql(sql)
-                // this.basicInfoForm.sqlMain = sql;
                 this.iftablecolumn = false;
                 this.Allis_selectionstate = false;
             },
@@ -1124,7 +1126,6 @@
                             this.$refs.sqleditorafter.setmVal(this.afterJobForm.sqlMain)
                         }
                         if (typeof res.data.pre_work != 'undefined') {
-                            debugger;
                             this.preJobForm.sqlMain = res.data.pre_work;
                             this.$refs.sqleditorpre.setmVal(this.preJobForm.sqlMain)
                         }
@@ -1147,7 +1148,10 @@
                 this.ifafterjob = false;
             },
             savePreAndAfterJob() {
-                debugger;
+                if(this.$refs.sqleditorpre!=undefined){
+                    this.preJobForm.sqlMain = this.$refs.sqleditorpre.getmVal();
+                }
+                this.afterJobForm.sqlMain = this.$refs.sqleditorafter.getmVal();
                 functionAll.savePreAndAfterJob({
                     "pre_work": this.preJobForm.sqlMain,
                     "post_work": this.afterJobForm.sqlMain,
@@ -1246,7 +1250,6 @@
                     sql = sql + " group by " + this.formInline.groupColumns;
                 }
                 this.$refs.sqleditormain.setmVal(sql)
-                // this.basicInfoForm.sqlMain = sql;
                 this.selectTableVisible = false;
                 this.selectTableCreateVisible = false;
                 this.formInline = {};
