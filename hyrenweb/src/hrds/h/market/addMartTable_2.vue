@@ -44,8 +44,8 @@
                     </el-row>
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :data="1" :value="basicInfoForm.sqlMain"
-                                       @changeTextarea="changeTextarea($event)" class='textasql'/>
+                            <SqlEditor ref="sqleditormain" :data="1" :value="basicInfoForm.sqlMain"
+                                       @changeTextarea="changeTextareaQuerySql($event)" class='textasql'/>
                         </div>
                     </el-row>
                     <el-row class="partFour">
@@ -54,7 +54,7 @@
                             <el-button :disabled="iflock" type="primary" @click="getcolumnbysql()" size="medium">确定
                             </el-button>
                             <el-button type="primary" size="medium" class="sql-btn"
-                                       @click="formaterSql (basicInfoForm.sqlMain)">格式化sql
+                                       @click="formaterSql (basicInfoForm.sqlMain )">格式化sql
                             </el-button>
                         </div>
                     </el-row>
@@ -212,7 +212,7 @@
                         新增字段
                     </el-button>
                 </el-col>
-                <el-col  v-show="ifRelationDatabase" :span='2' style="float:left">
+                <el-col v-show="ifRelationDatabase" :span='2' style="float:left">
                     <el-button class="elButton" type="primary" @click="showprejob()" size="medium">前置作业
                     </el-button>
                 </el-col>
@@ -476,8 +476,8 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :data="2" :value="preJobForm.preSql"
-                                       @changeTextarea="changeTextarea($event)" class='textasql'/>
+                            <SqlEditor ref="sqleditorpre" :data="2" :value="preJobForm.sqlMain"
+                                       @changeTextarea="changeTextareaPreSql($event)" class='textasql'/>
                         </div>
                     </el-row>
                 </el-tabs>
@@ -510,8 +510,8 @@
                 <el-tabs type="card">
                     <el-row>
                         <div style="border:1px solid #ccc;">
-                            <SqlEditor ref="sqleditor" :data="3" :value="afterJobForm.afterSql"
-                                       @changeTextarea="changeTextarea($event)" class='textasql'/>
+                            <SqlEditor ref="sqleditorafter" :data="3" :value="afterJobForm.sqlMain"
+                                       @changeTextarea="changeTextareaAfterSql($event)" class='textasql'/>
                         </div>
                     </el-row>
                 </el-tabs>
@@ -596,11 +596,9 @@
                 datatable_id: this.$route.query.datatable_id,
                 ifrepeat: this.$route.query.ifrepeat,
                 querydatadialogshow: false,
-                querysql: '',
                 filterText: '',
                 columnbysql: [],
                 filterNodeData: [],
-                columnmore: [],
                 columnmore: [],
                 allfield_type: [],
                 allfield_process: [],
@@ -636,10 +634,10 @@
                     sqlMain: ''
                 },
                 preJobForm: {
-                    preSql: ''
+                    sqlMain: ''
                 },
                 afterJobForm: {
-                    afterSql: ''
+                    sqlMain: ''
                 },
                 radioSelect: '',
                 reSelectColumns: '',
@@ -648,7 +646,7 @@
                 checkColumnData: ['varchar', 'varchar2', 'text', 'char', 'string'],
                 activeName: '',
                 tablename: '',
-                ifRelationDatabase:false,
+                ifRelationDatabase: false,
 
             };
         },
@@ -671,14 +669,20 @@
             this.checkifrepeat();
             this.getquerysql();
             this.gettablename();
-            // this.getifrelationdatabase();
-
+            this.getifrelationdatabase2()
         },
         methods: {
-            getifrelationdatabase(){
+            getifrelationdatabase() {
                 functionAll.getIfRelationDatabase({
                     "datatable_id": this.datatable_id,
-                    "sql":this.querysql,
+                    "sql": this.basicInfoForm.sqlMain,
+                }).then(((res) => {
+                    this.ifRelationDatabase = res.data;
+                }))
+            },
+            getifrelationdatabase2() {
+                functionAll.getIfRelationDatabase2({
+                    "datatable_id": this.datatable_id,
                 }).then(((res) => {
                     this.ifRelationDatabase = res.data;
                 }))
@@ -724,58 +728,19 @@
                     // this.ifhbae = true;
                 }))
             },
-            // filterNode(value, data, node) {
-            //     // 如果检索内容为空,直接返回
-            //     if (!value) return true;
-            //     // 如果传入的value和data中的name相同说明是匹配到了
-            //     return data.name.indexOf(value) !== -1;
-            //     // 否则要去判断它是不是选中节点的子节点
-            //     // return this.checkBelongToChooseNode(value, data, node);
-            // },
             gettreeData() {
                 functionAll.getTreeDataInfo().then(res => {
                     this.treedata = res.data;
                 });
             },
-            // loadNode(node, resolve) {
-            //
-            //     // this.searchResolve = resolve;
-            //     // 如果节点level为0,获取源树节点,否则根据节点信息获取子节点数据 那个是搜索
-            //     if (node.level === 0) {
-            //         functionAll.getTreeDataInfo(this.treeDataInfo).then((res) => {
-            //             return resolve(res.data.tree_sources);
-            //         }).catch(() => {
-            //             return resolve([]);
-            //         });
-            //     } else {
-            //         // 如果当前节点是父节点,则根据当前节点数据获取下一级的所有节点,否则根据节点信息查询数据
-            //         if (node.data.isParent) {
-            //             functionAll.getTreeDataInfo(node.data).then((res) => {
-            //                 return resolve(res.data.tree_sources);
-            //             });
-            //         } else {
-            //             // // 查询数据
-            //             // functionAll.queryAllColumnOnTableName({
-            //             //     'source': node.data.source,
-            //             //     'id': node.data.id
-            //             // }).then((res) => {
-            //             //     this.tablecolumn = res.data.columnresult;
-            //             //     this.sqltablename = res.data.tablename;
-            //             //     this.iftablecolumn = true;
-            //             //     this.Allis_selectionstate = false;
-            //             // });
-            //         }
-            //     }
-            //
-            // },
             getquerysql() {
                 let params = {
                     "datatable_id": this.datatable_id,
                 };
                 functionAll.getQuerySql(params).then((res) => {
-                    this.$refs.sqleditor.setmVal(res.data)
+                    this.$refs.sqleditormain.setmVal(res.data)
                     this.formaterSql(res.data)
-                    this.querysql = res.data
+                    this.basicInfoForm.sqlMain = res.data
                 })
             },
             getcolumnfromdatabase(datatable_id) {
@@ -795,12 +760,12 @@
                 })
             },
             getcolumnbysql() {
-                if (this.querysql === '') {
+                if (this.basicInfoForm.sqlMain === '') {
                     this.$Msg.customizTitle('查询sql不能为空!', 'warning');
                 } else {
                     this.isLoading = true;
                     let params = {
-                        "querysql": this.querysql,
+                        "querysql": this.basicInfoForm.sqlMain,
                         "datatable_id": this.datatable_id,
                         "sqlparameter": this.sqlparameter
                     };
@@ -830,13 +795,13 @@
             },
             // 根据SQL查询数据
             getdatabysql() {
-                if (this.querysql === '') {
+                if (this.basicInfoForm.sqlMain === '') {
                     this.$Msg.customizTitle('查询sql不能为空!', 'warning');
                 } else {
                     this.isLoading = true;
                     this.databysql = [];
                     functionAll.getDataBySQL({
-                        'querysql': this.querysql,
+                        'querysql': this.basicInfoForm.sqlMain,
                         'sqlparameter': this.sqlparameter,
                     }).then((res) => {
                         this.isLoading = false;
@@ -926,7 +891,7 @@
                 }
             },
             next() {
-                if (this.querysql == "") {
+                if (this.basicInfoForm.sqlMain == "") {
                     this.$Msg.customizTitle('请填写sql!', 'warning');
                     return false;
                 }
@@ -1026,7 +991,7 @@
                     "datatable_field_info": JSON.stringify(this.columnbysql),
                     "datatable_id": this.datatable_id,
                     "dm_column_storage": JSON.stringify(dm_column_storage),
-                    "querysql": this.querysql,
+                    "querysql": this.basicInfoForm.sqlMain,
                     "hbasesort": JSON.stringify(this.hbasesort),
                 };
                 functionAll.addDFInfo(param).then((res) => {
@@ -1109,16 +1074,11 @@
                 }
                 sql = sql.substr(0, sql.length - 1);
                 sql += " from " + this.sqltablename;
-                if (this.ifprejob == true) {
-                    this.presql = sql;
-                } else if (this.ifafterjob == true) {
-                    this.aftersql = sql;
-                } else {
-                    this.querysql = sql;
-                }
-                this.$refs.sqleditor.setmVal(sql)
-                this.formaterSql(sql)
+                debugger;
                 this.basicInfoForm.sqlMain = sql;
+                this.$refs.sqleditormain.setmVal(sql)
+                this.formaterSql(sql)
+                // this.basicInfoForm.sqlMain = sql;
                 this.iftablecolumn = false;
                 this.Allis_selectionstate = false;
             },
@@ -1160,12 +1120,13 @@
                 }).then((res) => {
                     if (res && res.success) {
                         if (typeof res.data.post_work != 'undefined') {
-                            this.afterJobForm.afterSql = res.data.post_work;
-                            this.$refs.sqleditor.setmVal(this.afterJobForm.afterSql)
+                            this.afterJobForm.sqlMain = res.data.post_work;
+                            this.$refs.sqleditorafter.setmVal(this.afterJobForm.sqlMain)
                         }
                         if (typeof res.data.pre_work != 'undefined') {
-                            this.preJobForm.preSql = res.data.pre_work;
-                            this.$refs.sqleditor.setmVal(this.preJobForm.preSql)
+                            debugger;
+                            this.preJobForm.sqlMain = res.data.pre_work;
+                            this.$refs.sqleditorpre.setmVal(this.preJobForm.sqlMain)
                         }
                     }
                 });
@@ -1186,9 +1147,10 @@
                 this.ifafterjob = false;
             },
             savePreAndAfterJob() {
+                debugger;
                 functionAll.savePreAndAfterJob({
-                    "pre_work": this.presql,
-                    "post_work": this.basicInfoForm.sqlMain,
+                    "pre_work": this.preJobForm.sqlMain,
+                    "post_work": this.afterJobForm.sqlMain,
                     "datatable_id": this.datatable_id
                 }).then((res) => {
                     if (res && res.success) {
@@ -1245,14 +1207,19 @@
             chooseone(row) {
                 this.radio = row.classify_id;
             },
-            changeTextarea(val) {
-                this.querysql = val;
+            changeTextareaQuerySql(val) {
                 this.$set(this.basicInfoForm, 'sqlMain', val)
+            },
+            changeTextareaAfterSql(val) {
+                this.$set(this.afterJobForm, 'sqlMain', val)
+            },
+            changeTextareaPreSql(val) {
+                this.$set(this.preJobForm, 'sqlMain', val)
             },
             formaterSql(val) {
                 // let dom = this.$refs.sqleditor
                 // dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
-                this.$refs.sqleditor.sqlFormatter()
+                this.$refs.sqleditormain.sqlFormatter()
             },
             addSql() {
                 // 提示信息
@@ -1278,8 +1245,8 @@
                 } else if (this.formInline.groupColumns !== undefined && this.formInline.groupColumns !== '') {
                     sql = sql + " group by " + this.formInline.groupColumns;
                 }
-                this.$refs.sqleditor.setmVal(sql)
-                this.basicInfoForm.sqlMain = sql;
+                this.$refs.sqleditormain.setmVal(sql)
+                // this.basicInfoForm.sqlMain = sql;
                 this.selectTableVisible = false;
                 this.selectTableCreateVisible = false;
                 this.formInline = {};

@@ -442,10 +442,18 @@ export function saveDmCategory(data) {
         params: data
     })
 }
-//根据数据集市id查询集市分类信息
+//根据数据集市id查询是否需要显示前置作业
 export function getIfRelationDatabase(data) {
     return request({
         url: '/H/market/getIfRelationDatabase',
+        params: data
+    })
+}
+
+//根据数据集市id查询是否需要显示前置作业
+export function getIfRelationDatabase2(data) {
+    return request({
+        url: '/H/market/getIfRelationDatabase2',
         params: data
     })
 }
