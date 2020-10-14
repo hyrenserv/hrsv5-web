@@ -408,8 +408,6 @@ export default {
                                     arr.push(item)
                                 }
                             })
-                            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
-                            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
                             functionAll.saveTemplateConfInfo({
                                 autoTpCondInfos: JSON.stringify(arr),
                                 autoTpResSets: JSON.stringify(this.tableDataResult),
@@ -561,6 +559,7 @@ export default {
                 template_id: this.$route.query.template_id
             }).then(res => {
                 this.formAdd = res.data;
+                this.basicInfoForm.sqlMain = this.$refs.sqleditormain.setmVal(res.data.template_sql);
                 this.formaterSql(res.data.template_sql);
                 this.searchInfo();
             })
