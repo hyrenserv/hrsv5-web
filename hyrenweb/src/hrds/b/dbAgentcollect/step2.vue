@@ -1,7 +1,7 @@
 <template>
 <div class="step2">
     <Step :active="active"></Step>
-    <el-table :data="tableData" border size="medium">
+    <el-table :data="tableData" border size="medium" :height="tableHeight">
         <el-table-column property label="序号" width="60px" align="center">
             <template slot-scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -40,7 +40,17 @@
             </el-table-column>
             <el-table-column property="is_primary_key" width="96" label="是否为主键" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_primary_key"></el-checkbox>
+                    <el-checkbox :true-label="isFalg.Shi" :false-label="isFalg.Fou" v-model="scope.row.is_primary_key"></el-checkbox>
+                </template>
+            </el-table-column>
+            <el-table-column label="拉链字段选择" align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="handleCheckAllChange(tableDataDialog,isZipperAll)" v-model="isZipperAll" :checked="isZipperAll">
+                        <span class="allclickColor">拉链字段选择</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :true-label="isFalg.Shi" :false-label="isFalg.Fou" v-model="scope.row.is_zipper_field"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" show-overflow-tooltip align="center"></el-table-column>
@@ -78,10 +88,21 @@ export default {
             table_name: '',
             tableColumn: {},
             buttonDisabled: false,
+            isZipperAll: false,
+            tableHeight: '',
+            isFalg: {}
         }
+    },
+    created() {
+        this.tableHeight = window.innerHeight - 270 + 'px'
     },
     mounted() {
         this.getTableData();
+        this.$Code.getCodeItems({
+            'category': 'IsFlag'
+        }).then(res => {
+            this.isFalg = res.data;
+        })
     },
     methods: {
         // 返回上一级
@@ -124,6 +145,7 @@ export default {
                         } else {
                             arry.push(item)
                         }
+                        item['is_zipper_field'] = this.isFalg.Fou;
                     })
                     this.tableDataDialog = arry;
                 })
@@ -240,6 +262,16 @@ export default {
         handleSizeChange(size) {
             this.pagesize = size;
         },
+        //是否为拉链字段
+        handleCheckAllChange(items, e) {
+            items.forEach(item => {
+                if (e) {
+                    item['is_zipper_field'] = this.isFalg.Shi;
+                } else {
+                    item['is_zipper_field'] = this.isFalg.Fou;
+                }
+            })
+        }
     },
 }
 </script>
@@ -261,5 +293,10 @@ export default {
 /* 数据分页 */
 .step2 .pageDiv {
     height: 10px;
+}
+
+.allclickColor {
+    color: #fff;
+    font-weight: bold;
 }
 </style>

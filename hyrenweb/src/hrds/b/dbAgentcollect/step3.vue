@@ -2,7 +2,7 @@
 <div>
     <Step :active="active"></Step>
     <el-form ref="ruleForm" :model="ruleForm">
-        <el-table stripe class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium">
+        <el-table stripe class="step3" :data="ruleForm.tableData.slice((currentPage - 1) * pagesize, currentPage *pagesize)" border size="medium" :height="tableHeight">
             <el-table-column property label="序号" width="60px" align="center">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -170,11 +170,13 @@ export default {
                     title: "\\r\\n  (windows换行符)"
                 }
             ],
+            tableHeight:''
         }
     },
     created() {
         this.getDataBaseCodeFun()
         this.getFileFormat()
+        this.tableHeight = window.innerHeight - 280
     },
     mounted() {
         this.getInitDataTransferFun()

@@ -189,6 +189,7 @@ export default {
                     res.data.forEach((item) => {
                         this.select += item.res_show_column + "，"
                     })
+                    this.select = this.select.substring(0, this.select.length-1)
                 })
             }
 

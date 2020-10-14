@@ -70,8 +70,8 @@
                     <el-table :data="item.result" border stripe size="medium " height="266">
                         <el-table-column label="工程数据表名" show-overflow-tooltip prop="datatable_en_name" align="center">
                         </el-table-column>
-                        <el-table-column label="占用空间大小" show-overflow-tooltip prop="soruce_size" align="center">
-                        </el-table-column>
+                        <!-- <el-table-column label="占用空间大小" show-overflow-tooltip prop="soruce_size" align="center">
+                        </el-table-column> -->
                     </el-table>
                 </el-row>
             </div>

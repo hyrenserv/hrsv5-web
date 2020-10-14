@@ -5,27 +5,27 @@
         <el-button size="mini" type="success" @click="AllSettingDestinationFun()">所有表目的地设置</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps5">
-        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)">
+        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" size="medium" border :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)" :height="tableHeight">
             <el-table-column label="序号" align="center" width="60">
                 <template scope="scope">
                     <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="表名" prop="table_name" width="180" align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表名" prop="table_name" width="240" align="center" show-overflow-tooltip>
                 <!--  <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default" >
                         <el-input size="medium" v-model="scope.row.table_name" style="width:160px" readonly></el-input>
                     </el-form-item>
                 </template> -->
             </el-table-column>
-            <el-table-column label="表中文名" width="180" align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表中文名" width="220" align="center" show-overflow-tooltip>
                 <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
-                        <el-input size="medium" v-model="scope.row.table_ch_name" style="width:160px"></el-input>
+                        <el-input size="medium" v-model="scope.row.table_ch_name"></el-input>
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column label=" 选择目的地" align="center">
+            <el-table-column label=" 选择目的地" width="140" align="center">
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">请至少选择一个目的地,当选择的目的地是oracle时,落地表名长度不能大于27</div>
@@ -47,16 +47,20 @@
                 </template>
                 <template slot-scope="scope">
                     <el-checkbox :checked="scope.row.is_zipper" v-model="scope.row.is_zipper" v-if="scope.row.data_extract_type!='1'" @change="is_zipperFun(scope.row)"></el-checkbox>
+                    &nbsp;&nbsp;&nbsp;<el-button v-if="scope.row.is_zipper" type="text" @click="innerVisible=true;watchText(scope.row)">选择拉链字段</el-button>
                 </template>
             </el-table-column>
             <el-table-column label=" 存储方式" align="center">
                 <template slot="header">
-                    <el-checkbox v-if="Allis_zippercheck==false" disabled>
+                    <!-- <el-checkbox v-if="Allis_zippercheck==false">
                         <span class="allclickColor">存储方式</span>
-                    </el-checkbox>
-                    <el-popover v-else placement="right" width="120" height="50" v-model="visible">
-                        <el-select placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
-                            <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
+                    </el-checkbox> -->
+                    <el-popover placement="right" width="120" height="50" v-model="visible">
+                        <el-select v-if="Allis_zippercheck" placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="medium">
+                            <el-option v-for="(item,index) in zipper" :key="index" :label="item.value" :value="item.code"></el-option>
+                        </el-select>
+                        <el-select v-else placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
+                            <el-option v-for="(item,index) in notzipper" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select>
                         <div style="text-align: right; margin:30px 0 5px 0">
                             <el-button size="mini" type="text" @click="allStorageModeCloseFun()">取消</el-button>
@@ -69,21 +73,21 @@
                 </template>
                 <template slot-scope="scope">
                     <div v-if="scope.row.data_extract_typ!=='1'">
-                        <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium" v-if="scope.row.is_zipper==false" disabled>
-                            <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
-                        </el-select>
-                        <el-form-item v-else :prop="'ex_destinationData.'+scope.$index+'.storage_type'" :rules="rule.selected">
-                            <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
+                        <el-form-item :prop="'ex_destinationData.'+scope.$index+'.storage_type'" :rules="rule.selected">
+                            <el-select v-if="scope.row.is_zipper" placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
+                                <el-option v-for="(item,index) in zipper" :key="index" :label="item.value" :value="item.code"></el-option>
+                            </el-select>
+                            <el-select v-else placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
+                                <el-option v-for="(item,index) in notzipper" :key="index" :label="item.value" :value="item.code"></el-option>
                                 <!-- StorageType -->
-                                <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
                             </el-select>
                         </el-form-item>
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label=" 数据保留天数" align="center">
+            <el-table-column label=" 数据保留天数" align="center" width="165">
                 <template slot="header">
-                    <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
+                    <el-popover placement="right" height="50" v-model="saveDayvisible">
                         <div class="alldays">
                             <el-input size="medium" v-model="allSaveDay" style="width:66px"></el-input>
                             <span style="margin-left: 10px;">天</span>
@@ -289,10 +293,38 @@
             <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
         </span>
     </el-dialog>
-     <!-- 加载过度 -->
-    <transition name="fade">
-        <loading v-if="isLoading" />
-    </transition>
+    <el-dialog width="50%" :visible.sync="innerVisible">
+        <div slot="title">
+            <span class="dialogtitle el-icon-caret-right">列信息</span>
+        </div>
+        <el-table :data="tableDataDialog.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium">
+            <el-table-column property label="序号" width="60px" align="center">
+                <template slot-scope="scope">
+                    <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column property="column_name" label="列名" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column property="column_ch_name" label="列中文名" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="拉链字段选择" align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="handleCheckAllChange(tableDataDialog,isZipperAll)" v-model="isZipperAll" :checked="isZipperAll">
+                        <span class="allclickColor">拉链字段选择</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :true-label="isFalg.Shi" :false-label="isFalg.Fou" v-model="scope.row.is_zipper_field"></el-checkbox>
+                </template>
+            </el-table-column>
+            <el-table-column label="类型" property="column_type" show-overflow-tooltip align="center"></el-table-column>
+        </el-table>
+        <div class="pageDiv">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pagesize" layout="total, prev, pager, next" style="float:right;" :total="tableDataDialog.length"></el-pagination>
+        </div>
+        <div slot="footer">
+            <el-button size="mini" type="danger" @click="innerVisible=false">取 消</el-button>
+            <el-button type="primary" size="mini" @click="selectWatch">保存</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -302,14 +334,15 @@ import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./dbAgentcollect";
 import * as message from "@/utils/js/message";
 import Step from "./step";
-import Loading from '../../components/loading'
 import {
     parse
 } from "path";
+import {
+    log
+} from 'util';
 export default {
     components: {
         Step,
-        Loading
     },
     data() {
         return {
@@ -381,8 +414,19 @@ export default {
             AlldestinationData: [],
             Alldestinationchoose: [],
             etl_date: '',
-            isLoading:false,
-            DatabaseType:[]
+            DatabaseType: [],
+            tableHeight: '',
+            zipper: [], //拉链代码项
+            notzipper: [], //非拉链代码项
+            zipperData: {},
+            innerVisible: false,
+            tableDataDialog: [],
+            pagesize: 10,
+            currentPage: 1,
+            table_id: '',
+            isZipperAll: false,
+            isFalg: {},
+            checkSorageData: {}
         };
     },
     computed: {
@@ -410,18 +454,40 @@ export default {
         }
     },
     created() {
+        let params2 = {};
+        params2["category"] = "StorageType";
+        this.$Code.getCategoryItems(params2).then(res => {
+            this.StorageType = res.data ? res.data : [];
+        });
+        this.$Code.getCodeItems(params2).then(res => {
+            this.zipperData = res.data
+            let zipper = [this.zipperData.QuanLiang, this.zipperData.ZengLiang]
+            this.StorageType.forEach(item => {
+                if (zipper.includes(item.code)) {
+                    this.zipper.push(item)
+                } else {
+                    this.notzipper.push(item)
+                }
+            })
+        });
         this.dbid = this.$route.query.id;
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
         // this.sName = this.$Base64.decode(this.$route.query.source_name);
-         let params = {};
+        let params = {};
         params["category"] = "DatabaseType";
         this.$Code.getCategoryItems(params).then(res => {
             this.DatabaseType = res.data ? res.data : [];
         });
-    },
-    mounted() {
-        let params = {};
+        this.tableHeight = window.innerHeight - 340
+        this.$Code.getCodeItems({
+            'category': 'IsFlag'
+        }).then(res => {
+            this.isFalg = res.data;
+        })
+        // },
+        // mounted() {
+        params = {};
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
@@ -447,6 +513,10 @@ export default {
                                         } else {
                                             arr[i].table_setting = false;
                                         }
+                                        if (typeof arr[i].storage_type === 'undefined') {
+                                            arr[i].storage_type = this.oldTbData[j].storage_type
+                                        }
+                                        this.checkSorageData[arr[i].table_name] = this.oldTbData[j].storage_type
                                     }
                                 }
                                 if (arr[i].is_zipper == "1") {
@@ -454,9 +524,11 @@ export default {
                                 } else {
                                     arr[i].is_zipper = false;
                                 }
-                                if (!arr[i].storage_type) {
-                                    arr[i].storage_type = "3";
-                                }
+                                this.checkSorageData[arr[i].table_name + '_zip'] = arr[i].is_zipper
+                                // console.log(typeof arr[i].storage_type);
+                                // if (typeof arr[i].storage_type === 'undefined') {
+                                //     arr[i].storage_type = this.zipperData.Tihuan;
+                                // }
                                 if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
                                 }
@@ -469,26 +541,21 @@ export default {
                                 } else {
                                     arr[i].is_zipper = false;
                                 }
-                                if (!arr[i].storage_type) {
-                                    arr[i].storage_type = "3";
-                                }
+                                // if (typeof arr[i].storage_type === 'undefined') {
+                                //     arr[i].storage_type = this.zipperData.Tihuan;
+                                // }
                                 if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
                                 }
+                                this.checkSorageData[arr[i].table_name] = this.zipperData.TiHuan
                             }
                             this.ruleForm.ex_destinationData = arr;
                         }
-
                     });
                 }
             } else {
                 this.tableloadingInfo = "暂无数据";
             }
-        });
-        let params2 = {};
-        params2["category"] = "StorageType";
-        this.$Code.getCategoryItems(params2).then(res => {
-            this.StorageType = res.data ? res.data : [];
         });
         this.storeTypeFun();
         this.specialfieldFun();
@@ -497,16 +564,14 @@ export default {
 
     methods: {
         sendSubmit() {
-             this.isLoading=true
             addTaskAllFun
                 .sendDBCollectTaskById({
                     colSetId: this.dbid,
                     etl_date: this.etl_date
                 })
                 .then(res => {
-                     this.isLoading=false
-                      this.submit_1=false
-                      this.submit_0=false
+                    this.submit_1 = false
+                    this.submit_0 = false
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$Msg.customizTitle('启动发送成功', 'success')
@@ -534,33 +599,33 @@ export default {
                     // oldTbData this.dslIdString
                     let tbStoInfoString = [],
                         tableString = [],
-                        arr = dataAll,
+                        // arr = dataAll,
                         desDataArr = [],
                         dslIdString = [];
-                    for (let i = 0; i < arr.length; i++) {
+                    for (let i = 0; i < dataAll.length; i++) {
                         /* if (arr[i].is_zipper == true) {
                           arr[i].is_zipper = "1";
                         }else{
                           arr[i].is_zipper = "0";
                         } */
-                        if (arr[i].data_extract_type != "1") {
+                        if (dataAll[i].data_extract_type != "1") {
                             tbStoInfoString.push({
-                                is_zipper: arr[i].is_zipper == true ? "1" : "0",
-                                storage_time: parseInt(arr[i].storage_time),
-                                storage_type: arr[i].storage_type,
-                                table_id: arr[i].table_id
+                                is_zipper: dataAll[i].is_zipper == true ? "1" : "0",
+                                storage_time: parseInt(dataAll[i].storage_time),
+                                storage_type: dataAll[i].storage_type,
+                                table_id: dataAll[i].table_id
                             });
                             desDataArr.push({
-                                tableId: arr[i].table_id,
+                                tableId: dataAll[i].table_id,
                                 dslIds: [],
-                                hyren_name: datasource_number1 + '_' + classify_num1 + '_' + arr[i].table_name
+                                hyren_name: datasource_number1 + '_' + classify_num1 + '_' + dataAll[i].table_name
                             });
                         }
 
                         tableString.push({
-                            table_id: arr[i].table_id,
-                            table_ch_name: arr[i].table_ch_name,
-                            table_name: arr[i].table_name
+                            table_id: dataAll[i].table_id,
+                            table_ch_name: dataAll[i].table_ch_name,
+                            table_name: dataAll[i].table_name
                         });
                     }
                     // 判断获得的表里面
@@ -593,7 +658,7 @@ export default {
                         params["colSetId"] = this.dbid;
                         params["dslIdString"] = JSON.stringify(dslIdString);
                         addTaskAllFun.saveTbStoInfo(params).then(res => {
-                            if (res.code == 200) {
+                            if (res.success) {
                                 this.submit_1 = true;
                             }
                         });
@@ -730,16 +795,33 @@ export default {
         }, */
         is_zipperFun(row) {
             if (row.is_zipper == false) {
-                row.storage_type = "";
+                row.storage_type = this.checkSorageData[row.table_name]
+            } else {
+                row.storage_type = this.zipperData.QuanLiang
             }
         },
         Allis_zipperFun(items, e) {
-            items.forEach((item, i) => {
+            //拉链代码项
+            let ll = [this.zipperData.QuanLiang, this.zipperData.ZengLiang]
+            //非拉链
+            let fll = [this.zipperData.ZhuiJia, this.zipperData.TiHuan]
+            items.forEach((item) => {
                 if (e) {
+                    //这里是全选拉链
                     item.is_zipper = true;
+                    //如果存在上次配置的值,则不存放默认的数据,否则给个默认数据信息
+                    if (!ll.includes(item.storage_type)) {
+                        item.storage_type = this.zipperData.QuanLiang
+                    } else {
+                        item.storage_type = this.checkSorageData[item.table_name]
+                    }
                 } else {
-                    item.is_zipper = false;
-                    item.storage_type = "";
+                    // if (this.checkSorageData[item.table_name+"_zip"]) {
+                        item.storage_type = this.checkSorageData[item.table_name]
+                    // } else {
+                    //     item.storage_type = this.zipperData.TiHuan
+                    // }
+                    item.is_zipper = this.checkSorageData[item.table_name+"_zip"]
                 }
             });
         },
@@ -833,7 +915,7 @@ export default {
             let params = {};
             params["dslId"] = row.dsl_id;
             addTaskAllFun.getStoDestDetail(params).then(res => {
-                 if (res.data) {
+                if (res.data) {
                     let arr = res.data
                     for (let i = 0; i < arr.length; i++) {
                         if (arr[i].storage_property_key == 'database_type') {
@@ -1093,7 +1175,9 @@ export default {
         allStorageModeFun() {
             this.visible = false;
             for (let i = 0; i < this.ruleForm.ex_destinationData.length; i++) {
-                this.ruleForm.ex_destinationData[i].storage_type = this.allstoragetype;
+                if (!this.ruleForm.ex_destinationData[i].is_zipper) {
+                    this.ruleForm.ex_destinationData[i].storage_type = this.allstoragetype;
+                }
             }
         },
         allStorageModeCloseFun() {
@@ -1293,6 +1377,57 @@ export default {
             this.startButton = true
             this.next('ruleForm')
         },
+        watchText(row) {
+            this.table_id = row.table_id
+            addTaskAllFun.getTableColumnByTableId({
+                colSetId: this.$route.query.id,
+                table_id: row.table_id
+            }).then(res => {
+                let arry = [];
+                res.data.forEach((item, index) => {
+                    if (item.column_name.toUpperCase() == 'HYREN_S_DATE') {
+                        return false;
+                    } else if (item.column_name.toUpperCase() == "HYREN_E_DATE") {
+                        return false;
+                    } else if (item.column_name.toUpperCase() == 'HYREN_MD5_VAL') {
+                        return false;
+                    } else {
+                        arry.push(item)
+                    }
+                })
+                this.tableDataDialog = arry;
+            })
+        },
+        // 保存查看列
+        selectWatch() {
+            let obj = {};
+            obj.table_id = this.table_id;
+            obj['tableColumns'] = JSON.stringify(this.tableDataDialog);
+            addTaskAllFun.updateColumnByTableId(obj).then(res => {
+                if (res && res.success) {
+                    this.innerVisible = false;
+                    this.$Msg.customizTitle("列保存成功", "success");
+                    this.tableDataDialog = [];
+                }
+            })
+        },
+        // 分页显示
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage;
+        },
+        handleSizeChange(size) {
+            this.pagesize = size;
+        },
+        //是否为拉链字段
+        handleCheckAllChange(items, e) {
+            items.forEach(item => {
+                if (e) {
+                    item['is_zipper_field'] = this.isFalg.Shi;
+                } else {
+                    item['is_zipper_field'] = this.isFalg.Fou;
+                }
+            })
+        }
     }
 };
 </script>
