@@ -2,7 +2,7 @@
 <div class="access">
     <el-row class="elRowtitle">
         <p class="tempalteInfo">我的取数</p>
-        <el-button type="danger" class="templateButton" @click="goBack" size="small">
+        <el-button type="primary" class="templateButton" @click="goBack" size="small">
             返回上级
         </el-button>
     </el-row>
@@ -60,7 +60,7 @@
             <div class="elRowTemplateDiv">
                 <p style="float:left">结果集列表</p>
                 <div style="float:right">
-                    <span><span class="spanInfo">(温馨提示：最多只显示1000行，默认10行)</span>
+                    <span><span class="spanInfo">(温馨提示：最多只显示1000行，默认100行)</span>
                         显示条数：<el-input placeholder="请输入非零的正整数" class="input-with-select" size="small" style="width:210px;margin-right:6px;" v-model="inputText">
                             <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
                         </el-input>
@@ -121,7 +121,7 @@ export default {
             select: '',
             dynamicColumnTable: [],
             dynamicColumn: [],
-            inputText: '10',
+            inputText: null,
             dialogFormSave: false,
             viewSqlDataDiolag: false,
             options: [],
