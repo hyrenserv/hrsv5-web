@@ -795,7 +795,7 @@ export default {
         }, */
         is_zipperFun(row) {
             if (row.is_zipper == false) {
-                row.storage_type = this.zipperData.TiHuan
+                row.storage_type = this.checkSorageData[row.table_name]
             } else {
                 row.storage_type = this.zipperData.QuanLiang
             }
