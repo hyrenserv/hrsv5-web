@@ -3,7 +3,7 @@
     <el-row class="elRowtitle">
         <p class="tempalteInfo">选择数据源</p>
         <div class="templateButton">
-            <el-button type="danger" @click="goBack" size="small">
+            <el-button type="primary" @click="goBack" size="small">
                 返回上级
             </el-button>
             <el-button type="primary" size="small" @click="addVisualComponentInfo()">
@@ -33,7 +33,7 @@
 
         </el-col>
         <el-col :span="8" class="elcol8">
-            <p class="optionsWords">设置过滤条件<el-button :disabled="canChangeFiflter" size="mini" type="primary">修改条件逻辑</el-button>
+            <p class="optionsWords">设置过滤条件<el-button style="margin-left:10px" :disabled="canChangeFiflter" size="mini" type="primary">修改条件逻辑</el-button>
             </p>
             <div class="showArryDiv">
                 <ul>
@@ -114,11 +114,11 @@
         </el-table-column>
     </el-table>
     <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" v-if="dynamicColumnTableHiddens" :page-sizes="[5, 10, 20, 50]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="dynamicColumnTables.length" class="locationcenter"></el-pagination>
-    <el-row class="elRowtitle">
+    <el-row class="elRowtitle" v-if="showVisualSetting">
         <p class="tempalteInfo">可视化设置</p>
     </el-row>
-    <div class="lines"></div>
-    <el-row>
+    <el-divider v-if="showVisualSetting" />
+    <el-row v-if="showVisualSetting">
         <el-col :span="5">
             <div>
                 <el-input placeholder="请输入内容" v-model="input1" size="small" style="width:90%;">
@@ -841,6 +841,7 @@ export default {
     },
     data() {
         return {
+            showVisualSetting: false,
             formvalue: '',
             echarttype: '',
             myChart: '',
@@ -1863,7 +1864,6 @@ export default {
             let arry2 = [];
             let arry3 = [];
             // 设置显示字段数组
-            console.log(this.optionsWords)
             this.optionsWords.forEach(val => {
                 let obj = {
                     summary_type: val.code,
@@ -1872,9 +1872,7 @@ export default {
                 arry1.push(obj);
             })
             // 设置过滤条件数组
-            console.log(this.fiflterConditionArr)
             // 设置分组数组
-            console.log(this.groupCondtionArr)
             parama.autoCompDataSums = JSON.stringify(arry1);
             parama.autoCompConds = JSON.stringify(arry2);
             parama.autoCompGroups = JSON.stringify(arry3);
@@ -1893,9 +1891,12 @@ export default {
                 exe_sql: val,
                 showNum: num
             }).then(res => {
+                if (res && res.success) {
+                    this.dynamicColumns = res.data.columnList;
+                    this.dynamicColumnTables = res.data.visualComponentList;
+                    this.showVisualSetting = true;
+                }
                 this.loadingsearch = false;
-                this.dynamicColumns = res.data.columnList;
-                this.dynamicColumnTables = res.data.visualComponentList;
             })
         },
         //分页
@@ -1922,7 +1923,6 @@ export default {
             // } else if (val == 'map') {
             //    
             // }
-            console.log(val)
         },
         // 删除横轴x的选择字段信息
         deleteXvalue(item, index) {
@@ -2009,7 +2009,6 @@ export default {
                 y_columns: yColumns,
                 chart_type: type,
             }).then(res => {
-                console.log(res.data)
                 if (type == 'line') { //折线图
                     this.changeToAreaChart(xColumns, yColumns, type, res.data)
                 } else if (type == 'bar') { //标准柱状图
