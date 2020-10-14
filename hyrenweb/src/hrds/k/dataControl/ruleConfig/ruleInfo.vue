@@ -157,7 +157,7 @@
                                 </el-checkbox>
                             </el-col>
                             <el-col :span="12" :offset=1>
-                                <el-checkbox v-if="form_dq_data.case_type !=='TAB NAN'" true-label="1" false-label="0" v-model="form_dq_data.is_saveindex2">
+                                <el-checkbox v-if="form_dq_data.case_type !=='TAB NAN' && form_dq_data.case_type !== 'COL REGULAR'" true-label="1" false-label="0" v-model="form_dq_data.is_saveindex2">
                                     保存检查总记录数
                                 </el-checkbox>
                             </el-col>
@@ -197,17 +197,17 @@
                         <el-row style="margin-top: 10px; margin-bottom: 5px">
                             <el-col :span="7" :offset=1>
                                 <span class="control-label" :title="dq_help_info_map.index1">检测指标1含义<i class="el-icon-warning" /></span>
-                                <el-input :disabled="check_index_desc" :value="form_dq_data.index_desc1" />
+                                <el-input :disabled="check_index_desc" v-model="form_dq_data.index_desc1" />
                             </el-col>
                             <el-col :span="7" :offset=1>
                                 <span class="control-label" :title="dq_help_info_map.index2">检测指标2含义
                                     <i class="el-icon-warning" /></span>
-                                <el-input :disabled="check_index_desc" :value="form_dq_data.index_desc2" />
+                                <el-input :disabled="check_index_desc" v-model="form_dq_data.index_desc2" />
                             </el-col>
                             <el-col :span="6" :offset=1>
                                 <span class="control-label" :title="dq_help_info_map.index3">检测指标3含义
                                     <i class="el-icon-warning" /></span>
-                                <el-input :disabled="check_index_desc" :value="form_dq_data.index_desc3" />
+                                <el-input :disabled="check_index_desc" v-model="form_dq_data.index_desc3" />
                             </el-col>
                         </el-row>
                     </div>
@@ -342,7 +342,7 @@ export default {
             ruleTitle: '',
             operation_type: '',
             collapse_names: ['基本信息', '配置信息', '结果信息'],
-            form_dq_data: {},
+            form_dq_data: { specify_sql: '', err_data_sql: '', index_desc1: '', index_desc2: '', index_desc3: '', target_tab: '', opposite_tab: '' },
             dq_rule_def_s: [{ case_type: '', case_type_desc: '' }],
             dq_rule_def_map: {},
             job_eff_flag_s: [],
@@ -468,6 +468,7 @@ export default {
         },
         //树点击触发
         handleNodeClick(data) {
+            console.log(JSON.stringify(data));
             this.table_data = [];
             //如果节点的file_id为未定义并且节点的分类id不为空并且节点分类不是未定义,代表该节点是分类信息,则添加分类下节点数据到展示区
             if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id) {
@@ -618,6 +619,9 @@ export default {
             if ("" === this.form_dq_data.case_type) {
                 this.form_dq_data.case_type = "";
                 return true;
+            } else if ("SQL" === this.form_dq_data.case_type) {
+                this.form_dq_data.case_type = "SQL";
+                return true;
             }
             return false;
         },
@@ -626,7 +630,6 @@ export default {
             let case_type = this.form_dq_data.case_type;
             //如果选择的规则类型为 "" | SQL | TAB NAN ,则不能选择字段信息
             if ('' === case_type || "SQL" === case_type || "TAB NAN" === case_type) {
-                this.form_dq_data.target_key_fields = "";
                 return true;
             }
             return false;
@@ -635,7 +638,6 @@ export default {
         check_limit_condition() {
             let case_type = this.form_dq_data.case_type;
             if ("" === case_type || "SQL" === case_type) {
-                this.form_dq_data.check_limit_condition = "";
                 return true;
             }
             return false;
@@ -646,8 +648,6 @@ export default {
             if ("COL FK" === case_type) {
                 return false;
             }
-            this.form_dq_data.opposite_tab = "";
-            this.form_dq_data.opposite_key_fields = "";
             return true;
         },
         //清单值域功能处理
@@ -655,7 +655,6 @@ export default {
             let case_type = this.form_dq_data.case_type;
             if ("COL ENUM" === case_type || "COL REGULAR" === case_type) {
                 return false;
-                this.form_dq_data.list_vals = "";
             }
             return true;
         },
@@ -664,8 +663,6 @@ export default {
             let case_type = this.form_dq_data.case_type;
             if ("COL RANG" === case_type) {
                 return false;
-                this.form_dq_data.range_min_val = "";
-                this.form_dq_data.range_max_val = "";
             }
             return true;
         },
@@ -789,6 +786,7 @@ export default {
                     });
                 }
                 sql = sql.substr(0, sql.length - 4);
+                sql += ";";
                 //设置检查的总记录数
             }
             //指定SQL
