@@ -279,5 +279,12 @@ export function deleteVisualComponent(data) {
         params: data
     })
 }
+//保存可视化组件
+export function addVisualComponentInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/addVisualComponentInfo',
+        params: data
+    })
+}
 
 

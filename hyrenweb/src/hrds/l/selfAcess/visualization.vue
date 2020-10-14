@@ -6,7 +6,7 @@
             <el-button type="danger" @click="goBack" size="small">
                 返回上级
             </el-button>
-            <el-button type="primary" size="small">
+            <el-button type="primary" size="small" @click="addVisualComponentInfo()">
                 保存组件
             </el-button>
         </div>
@@ -2289,6 +2289,12 @@ export default {
                 series: seriesArray
             }
             this.drawLine(option)
+        },
+        // 保存组件
+        addVisualComponentInfo() {
+            functionAll.addVisualComponentInfo().then(res => {
+
+            })
         },
         // 返回上一级
         goBack() {

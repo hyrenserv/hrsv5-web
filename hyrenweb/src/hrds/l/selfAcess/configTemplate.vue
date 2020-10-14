@@ -44,16 +44,33 @@
                     <div slot="content">1.设置别名必须使用'' ''<br />2.SQL末端不要使用;</div>
                     <i class="el-icon-info elIconInfo"></i>
                 </el-tooltip></span>
-            <!-- <SqlEditor ref="sqleditor" :data="1" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' /> -->
-            <div id="editor" style="width:100%;height:200px"></div>
+            <div style="border:1px solid #ccc;margin-bottom:10px">
+                <SqlEditor ref="sqleditormain" :data="1" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextareaQuerySql($event)" class='textasql' />
+            </div>
             <el-button type="info" class="createPraButton" v-if="showOrhiddenSave" :loading="createPraLoading" @click="createPra" size="small">
                 生成参数
             </el-button>
             <el-button type="success" class="createPraButton  createPraButtonSql " v-if="showOrhiddenSave" :loading="checkPraLoading" @click="checkSQL" size="small">
                 SQL校验
             </el-button>
+            <el-button type="primary" size="small" class="createPraButton" @click="formaterSql (basicInfoForm.sqlMain )">格式化sql
+            </el-button>
         </el-col>
     </el-row>
+    <el-dialog title="查询数据" :visible.sync="querydatadialogshow" width="60%">
+        <el-row>
+            <el-table :data="databysql" border size="mini">
+                <el-table-column v-for="(index, item) in databysql[0]" :key="item" :label="item" show-overflow-tooltip :prop="item">
+                    <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                    <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                </el-table-column>
+            </el-table>
+        </el-row>
+        <el-row>
+            <el-button type="primary" size="small" class="rightbtn" @click="querydatadialogshow = false">确定
+            </el-button>
+        </el-row>
+    </el-dialog>
     <div v-show="showOrhiddenResult">
         <el-row>
             <el-row class="elRows">
@@ -276,52 +293,11 @@ export default {
                 children: "children",
                 label: "label"
             },
+            querydatadialogshow: false,
+            databysql: []
         }
     },
     mounted() {
-        let that = this;
-        var editor = ace.edit("editor")
-        editor.session.setMode('ace/mode/sql') // 设置语言
-        editor.setTheme('ace/theme/chrome') // 设置主题
-        editor.setFontSize(18); //字体大小
-        editor.setReadOnly(false); //设置只读（true时只读，用于展示代码）
-        //自动换行,设置为off关闭
-        editor.setOption("wrap", "free");
-        //启用提示菜单
-        ace.require("ace/ext/language_tools");
-        editor.setOptions({
-            enableBasicAutocompletion: true,
-            enableSnippets: true,
-            enableLiveAutocompletion: true
-        });
-        editor.setHighlightActiveLine(true); //代码高亮
-        editor.setShowPrintMargin(false);
-        editor.getSession().setUseWorker(false);
-        editor.getSession().setUseWrapMode(true); //支持代码折叠
-        editor.selection.getCursor(); //获取光标所在行或列
-        editor.session.getLength(); //获取总行数
-        editor.getSession().setUseSoftTabs(true);
-        var langTools = ace.require("ace/ext/language_tools");
-        // langTools.addCompleter({
-        //     getCompletions: function (editor, session, pos, prefix, callback) {
-        //         if (prefix.length === 0) {
-        //             callback(null, []);
-        //             return;
-        //         }
-        //         var value = editor.getValue() + "";
-        //         if (value.toLowerCase().indexOf("from") >= 0 || value.toLowerCase().indexOf("into") >= 0 || value.toLowerCase().indexOf("set") >= 0) {
-        //             callback(null, that.arry);
-        //         }
-        //     }
-        // });
-        // editor.on("change", that.debounce(function (e) {
-        //     editor.execCommand("startAutocomplete");
-        //     that.$emit('changeTextarea', editor.session.getValue())
-        //     var execute_sql = editor.session.getValue() + "";
-        //     if (execute_sql.toLowerCase().indexOf("from") >= 0 || execute_sql.toLowerCase().indexOf("into") >= 0 || execute_sql.toLowerCase().indexOf("set") >= 0) {
-        //         that.getTablenameWords(execute_sql);
-        //     }
-        // }))
         //区分编辑和新增
         if (this.$route.query.template_id) { //编辑
             if (this.$route.query.template_status) { //查看配置模板
@@ -349,18 +325,20 @@ export default {
         }
     },
     methods: {
+        changeTextareaQuerySql(val) {
+            this.$set(this.basicInfoForm, 'sqlMain', val)
+        },
         // 生成参数
         createPra() {
             this.markIndexData = true;
-            var editor = ace.edit("editor")
-            let sql = editor.session.getValue()
-            if (editor.session.getValue() == "") {
-                this.$Msg.customizTitle("sql不能为空", "warning");
+            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
+            if (this.basicInfoForm.sqlMain === '') {
+                this.$Msg.customizTitle('查询sql不能为空!', 'warning');
             } else {
                 this.createPraLoading = true;
                 this.searchInfo();
                 functionAll.generateTemplateParam({
-                    template_sql: sql
+                    template_sql: this.basicInfoForm.sqlMain
                 }).then(res => {
                     if (res && res.success) {
                         this.tableDataPra = res.data.autoTpCondInfo;
@@ -383,6 +361,11 @@ export default {
         },
         // 保存模板
         addTemplates(formName) {
+            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
+            if (this.basicInfoForm.sqlMain === '') {
+                this.$Msg.customizTitle('查询sql不能为空!', 'warning');
+                return;
+            }
             if (this.$route.query.template_id) { //编辑
                 this.$refs[formName].validate(valid => {
                     if (valid) {
@@ -392,15 +375,13 @@ export default {
                                 arr.push(item)
                             }
                         })
-                        var editor = ace.edit("editor")
-                        let sql = editor.session.getValue()
                         functionAll.updateTemplateConfInfo({
                             autoTpCondInfos: JSON.stringify(arr),
                             autoTpResSets: JSON.stringify(this.tableDataResult),
                             template_desc: this.formAdd.template_desc,
                             data_source: this.formAdd.data_source,
                             template_name: this.formAdd.template_name,
-                            template_sql: sql,
+                            template_sql: this.basicInfoForm.sqlMain,
                             template_id: this.$route.query.template_id,
                             create_user: this.formAdd.create_user,
                             template_status: this.formAdd.template_status
@@ -427,15 +408,15 @@ export default {
                                     arr.push(item)
                                 }
                             })
-                            var editor = ace.edit("editor")
-                            let sql = editor.session.getValue()
+                            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
+                            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
                             functionAll.saveTemplateConfInfo({
                                 autoTpCondInfos: JSON.stringify(arr),
                                 autoTpResSets: JSON.stringify(this.tableDataResult),
                                 template_desc: this.formAdd.template_desc,
                                 data_source: this.formAdd.data_source,
                                 template_name: this.formAdd.template_name,
-                                template_sql: sql
+                                template_sql: this.basicInfoForm.sqlMain
                             }).then(res => {
                                 if (res && res.success) {
                                     this.$router.push({
@@ -454,29 +435,27 @@ export default {
         // 校验sql
         checkSQL() {
             this.checkPraLoading = true;
-            var editor = ace.edit("editor")
-            let sql = editor.session.getValue()
+            this.querydatadialogshow = true;
+            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
+            if (this.basicInfoForm.sqlMain === '') {
+                this.$Msg.customizTitle('查询sql不能为空!', 'warning');
+                return;
+            }
             functionAll.verifySqlIsLegal({
-                template_sql: sql
+                template_sql: this.basicInfoForm.sqlMain
             }).then(res => {
                 if (res && res.success) {
-                    this.sqlFormatter(); //格式化sql;
+                    this.databysql = res.data;
                     this.checkPraLoading = false;
                 } else {
                     this.checkPraLoading = false;
+                    this.querydatadialogshow = false;
                 }
             })
         },
         //格式化sql语句
-        sqlFormatter(data) {
-            var editors = ace.edit('editor')
-            var beautifys = ace.require("ace/ext/beautify");
-            if (data == undefined) { //新增
-                editors.session.setValue(sqlFormatter.format(editors.session.getValue()));
-            } else { //编辑或者查看
-                editors.session.setValue(sqlFormatter.format(data));
-            }
-            beautifys.beautify(editors.session);
+        formaterSql(val) {
+            this.$refs.sqleditormain.sqlFormatter()
         },
         // 改变单选按钮
         changeValue(val) {
@@ -488,10 +467,9 @@ export default {
         },
         // 查找数据预览信息
         searchInfo() {
-            var editor = ace.edit("editor");
-            let sql = editor.session.getValue()
+            this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
             functionAll.getPreviewData({
-                template_sql: sql,
+                template_sql: this.basicInfoForm.sqlMain,
                 showNum: Number(this.inputText)
             }).then(res => {
                 if (res.data.length > 0) {
@@ -582,8 +560,8 @@ export default {
             functionAll.getAutoTpInfoById({
                 template_id: this.$route.query.template_id
             }).then(res => {
-                this.sqlFormatter(res.data.template_sql);
                 this.formAdd = res.data;
+                this.formaterSql(res.data.template_sql);
                 this.searchInfo();
             })
         },
@@ -682,6 +660,18 @@ export default {
 </script>
 
 <style scoped>
+.textasql>>>.CodeMirror {
+    height: 200px !important;
+    /* width:200px !important; */
+}
+
+.rightbtn {
+    margin-top: 12px;
+    float: right;
+    margin: 10px;
+    margin-bottom: 10px;
+}
+
 /* title设置 */
 .tempalteInfo {
     float: left;
