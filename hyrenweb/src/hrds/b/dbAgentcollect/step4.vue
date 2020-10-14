@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="dialogalltableClean=true;alltableClean(databaseId)">所有表清洗设置</el-button>
         <el-button size="mini" type="success" @click="dialogtableClean=true;allTableCleanPriorityFun(databaseId)">全表清洗优先级</el-button>
     </div>
-    <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)">
+    <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="cleantableData.slice((cleancurrentPage - 1) * cleanpagesize, cleancurrentPage * cleanpagesize)" :height="tableHeight">
         <el-table-column label="序号" align="center" width="60">
             <template slot-scope="scope">
                 <span>{{scope.$index+(cleancurrentPage - 1) * cleanpagesize + 1}}</span>
@@ -769,7 +769,8 @@ export default {
             aId: null,
             sourId: null,
             sName: null,
-            Allis_colselectionState: false
+            Allis_colselectionState: false,
+            tableHeight:''
         };
     },
     created() {
@@ -777,6 +778,7 @@ export default {
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
         // this.sName = this.$Base64.decode(this.$route.query.source_name);
+        this.tableHeight = window.innerHeight - 330
     },
     mounted() {
         // 获取进入页面的总数据
