@@ -113,7 +113,7 @@
         <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px" :prop="col" :label="col" :key="col">
         </el-table-column>
     </el-table>
-    <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" v-if="dynamicColumnTableHiddens" :page-sizes="[5, 10, 20, 50]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="dynamicColumnTables.length" class="locationcenter"></el-pagination>
+    <el-pagination @size-change="ex_destination_handleSizeChange" @current-change="ex_destination_handleCurrentChange" :current-page="ex_destinationcurrentPage" v-if="dynamicColumnTableHiddens" :page-sizes="[5, 10, 20, 50, 100, 500, 1000]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="dynamicColumnTables.length" class="locationcenter"></el-pagination>
     <el-row class="elRowtitle" v-if="showVisualSetting">
         <p class="tempalteInfo">可视化设置</p>
     </el-row>
@@ -910,7 +910,7 @@ export default {
             inputvalueOptions1: '',
             markCodeOptionsValue: '',
             canChangeFiflter: true,
-            showNum: '10',
+            showNum: null,
             optionsWordsbuttons: true,
             dynamicColumnTables: [],
             dynamicColumnTableHiddens: false,

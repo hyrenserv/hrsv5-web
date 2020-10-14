@@ -47,7 +47,7 @@ import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
-            inputText: '',
+            inputText: null,
             tableData: [],
             options: []
         }
