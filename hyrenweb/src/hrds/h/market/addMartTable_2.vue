@@ -1151,7 +1151,9 @@
                 if(this.$refs.sqleditorpre!=undefined){
                     this.preJobForm.sqlMain = this.$refs.sqleditorpre.getmVal();
                 }
-                this.afterJobForm.sqlMain = this.$refs.sqleditorafter.getmVal();
+                if(this.$refs.sqleditorafter!=undefined) {
+                    this.afterJobForm.sqlMain = this.$refs.sqleditorafter.getmVal();
+                }
                 functionAll.savePreAndAfterJob({
                     "pre_work": this.preJobForm.sqlMain,
                     "post_work": this.afterJobForm.sqlMain,
