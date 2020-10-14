@@ -777,27 +777,29 @@
         </el-col>
     </el-row>
     <!-- 系统级数据信息 -->
-    <el-dialog title="选择表单(单击选择表名)" :visible.sync="dialogData" width="660px">
+    <el-dialog title="选择表单(单击选择表名)" :visible.sync="dialogData" width="60%">
         <!--树菜单-->
-        <div class='mytree '>
+        <el-row>
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
-            <el-tree class="filter-tree elDialogInfo" :data="webSqlTreeData" :indent='0' :filter-node-method="filterNode" ref="tree" @node-click="nodeClickChartTree">
-                <span class="span-ellipsis" slot-scope="{ node, data }">
-                    <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
-                        <i class=" el-icon-document"></i>
-                        <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
-                        <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
-                        <template v-else>{{data.hyren_name}}</template>
+            <div class='mytree'>
+                <el-tree class="filter-tree elDialogInfo" :data="webSqlTreeData" :indent='0' :filter-node-method="filterNode" ref="tree" @node-click="nodeClickChartTree">
+                    <span class="span-ellipsis" slot-scope="{ node, data }">
+                        <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                            <i class=" el-icon-document"></i>
+                            <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                            <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                            <template v-else>{{data.hyren_name}}</template>
+                        </span>
+                        <span :title="data.description" v-else>
+                            <i class="el-icon-folder-opened"></i>{{node.label}}
+                        </span>
                     </span>
-                    <span :title="data.description" v-else>
-                        <i class="el-icon-folder-opened"></i>{{node.label}}
-                    </span>
-                </span>
-            </el-tree>
-            <div slot="footer" class="dialog-footer" style="height:30px">
-                <el-button @click="cancelSelectTreeName" size="mini" type="danger" style="float:right">取 消</el-button>
+                </el-tree>
             </div>
-        </div>
+        </el-row>
+        <el-row slot="footer" class="dialog-footer">
+            <el-button @click="cancelSelectTreeName" size="mini" type="danger" style="float:right">取 消</el-button>
+        </el-row>
     </el-dialog>
     <!-- 自主数据数据集 -->
     <el-dialog title="选择表单(单击选择表名)" :visible.sync="dialogSelfData" width="660px">
@@ -812,7 +814,7 @@
     </el-dialog>
     <!-- 添加字段 -->
     <el-dialog title="添加字段(单击选择字段)" :visible.sync="selectWords" width="580px">
-        <div class='mytree '>
+        <div class='mytree'>
             <el-tree class="filter-tree elDialogInfo" :data="data2" :indent='0' :props="defaultProps" ref="trees" @node-click="nodeClickChartTreeWords">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span v-if="data.children.length =='0'">
@@ -2311,6 +2313,10 @@ export default {
     height: 40px;
     line-height: 40px;
     width: 100%;
+}
+
+.mytree {
+    height: 330px;
 }
 
 .visualizationDiv .tempalteInfo {
