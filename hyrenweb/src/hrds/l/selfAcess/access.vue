@@ -117,7 +117,7 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancelSelect" size="mini" type="danger">取 消</el-button>
-            <el-button type="primary" @click="saveTableColum" size="mini">保 存</el-button>
+            <el-button type="primary" @click="saveTableColum" size="mini">确 定</el-button>
         </div>
     </el-dialog>
     <!-- 保存可视化的弹出表单 -->
@@ -322,8 +322,10 @@ export default {
                     forArry[indexMark] = this.selectkeysArr[i].res_show_column;
                 }
                 for (let i = 0; i < forArry.length; i++) { //数据拼接
-                    if (forArry[i] != undefined) {
+                    if (forArry[i] != undefined && i != forArry.length - 1) {
                         str += forArry[i] + "，";
+                    } else {
+                        str += forArry[i];
                     }
                 }
             } else if (this.selectkeysArr.length == 0) {
@@ -331,6 +333,7 @@ export default {
             }
             this.select = str;
             this.dialogGetKeys = false;
+            this.saveAutoAccessInfoToQuery();
         },
         //字段结果全选 
         selectAll(val) {
@@ -371,6 +374,7 @@ export default {
                     res.data.forEach((item) => {
                         this.select += item.res_show_column + "，"
                     })
+                    this.select = this.select.substring(0, this.select.length-1)
                 })
             }
 
