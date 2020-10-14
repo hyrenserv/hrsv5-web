@@ -1,6 +1,6 @@
 <template>
 <div>
-     <Step :active="active"></Step>
+    <Step :active="active"></Step>
     <div class="cleanbtn">
         <el-button size="mini" type="success" @click="AllSettingDestinationFun()">所有表目的地设置</el-button>
     </div>
@@ -39,7 +39,7 @@
                     </span>
                 </template>
             </el-table-column>
-              <el-table-column label=" 是否拉链存储" align="center">
+            <el-table-column label=" 是否拉链存储" align="center">
                 <template slot="header">
                     <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
                         <span class="allclickColor">是否拉链存储</span>
@@ -54,7 +54,7 @@
                     <el-checkbox v-if="Allis_zippercheck==false" disabled>
                         <span class="allclickColor">存储方式</span>
                     </el-checkbox>
-                    <el-popover v-else  placement="right" width="120" height="50" v-model="visible">
+                    <el-popover v-else placement="right" width="120" height="50" v-model="visible">
                         <el-select placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
                             <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select>
@@ -69,15 +69,15 @@
                 </template>
                 <template slot-scope="scope">
                     <div v-if="scope.row.data_extract_typ!=='1'">
-                       <!--  <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium" v-if="scope.row.is_zipper==false" disabled>
+                        <!--  <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium" v-if="scope.row.is_zipper==false" disabled>
                             <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select> -->
-                          <el-radio-group v-model="scope.row.storage_type" v-if="scope.row.is_zipper==false" >
-    <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code" disabled>{{item.value}}</el-radio>
-  </el-radio-group>
-  <el-radio-group v-model="scope.row.storage_type" v-else >
-    <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code" >{{item.value}}</el-radio>
-  </el-radio-group>
+                        <el-radio-group v-model="scope.row.storage_type" v-if="scope.row.is_zipper==false">
+                            <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code" disabled>{{item.value}}</el-radio>
+                        </el-radio-group>
+                        <el-radio-group v-model="scope.row.storage_type" v-else>
+                            <el-radio v-for="(item,index) in StorageType" :key="index" :label="item.code">{{item.value}}</el-radio>
+                        </el-radio-group>
                         <!-- <el-form-item  :prop="'ex_destinationData.'+scope.$index+'.storage_type'" :rules="rule.selected">
                             <el-select placeholder="存储方式" v-model="scope.row.storage_type" size="medium">
                                 <el-option v-for="(item,index) in StorageType" :key="index" :label="item.value" :value="item.code"></el-option>
@@ -86,7 +86,7 @@
                     </div>
                 </template>
             </el-table-column>
-              <el-table-column label=" 数据保留天数" align="center">
+            <el-table-column label=" 数据保留天数" align="center">
                 <template slot="header">
                     <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
                         <div class="alldays">
@@ -287,7 +287,7 @@
                 <el-form-item>
                     <el-date-picker type="date" value-format="yyyyMMdd" placeholder="选择启动日期" v-model="etl_date" style="width:100%;"></el-date-picker>
                 </el-form-item>
-                 <el-form-item>
+                <el-form-item>
                     SQL中如果存在占位符,请填写占位符的值...多个参数之间请使用{{ParamPlaceholder}}进行分割,例如: column1=123{{ParamPlaceholder}}column2=456
                     <el-input type="textarea" placeholder="采集任务中的SQL占位参数值" v-model="sqlParam" style="width:100%;"></el-input>
                 </el-form-item>
@@ -298,7 +298,7 @@
             <el-button type="primary" @click="finishSubmit()" size="mini">确 定</el-button>
         </span>
     </el-dialog>
-     <!-- 加载过度 -->
+    <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
     </transition>
@@ -316,6 +316,7 @@ import Loading from "../../components/loading";
 import {
     parse
 } from "path";
+import { log } from 'util';
 export default {
     components: {
         Step,
@@ -323,7 +324,7 @@ export default {
     },
     data() {
         return {
-            sqlParam:'',
+            sqlParam: '',
             ParamPlaceholder: '',
             finishDialogVisible: false,
             rule: validator.default,
@@ -379,7 +380,7 @@ export default {
             type: "",
             dslid: "",
             allstoragetype: "",
-              allSaveDay: "",
+            allSaveDay: "",
             StoreData: [],
             dslIdString: [],
             multipleSelection: [],
@@ -393,8 +394,8 @@ export default {
             AlldestinationData: [],
             Alldestinationchoose: [],
             etl_date: '',
-            isLoading:false,
-            DatabaseType:[]
+            isLoading: false,
+            DatabaseType: []
         };
     },
     computed: {
@@ -426,12 +427,12 @@ export default {
         this.aId = this.$route.query.agent_id;
         this.sourId = this.$route.query.source_id;
         // this.sName = this.$Base64.decode(this.$route.query.source_name);
-         let params = {};
+        let params = {};
         params["category"] = "DatabaseType";
         this.$Code.getCategoryItems(params).then(res => {
             this.DatabaseType = res.data ? res.data : [];
         });
-         addTaskAllFun.getSqlParamPlaceholder().then(res => {
+        addTaskAllFun.getSqlParamPlaceholder().then(res => {
             this.ParamPlaceholder = res.data
         })
     },
@@ -451,7 +452,7 @@ export default {
                     paramst["colSetId"] = this.$route.query.id;
                     addTaskAllFun.getTbStoDestByColSetId(paramst).then(res => {
                         if (res) {
-                            this.oldTbData = res.data!='' ? res.data : [];
+                            this.oldTbData = res.data != '' ? res.data : [];
                         }
                         if (this.oldTbData.length > 0) {
                             for (var i = 0; i < arr.length; i++) {
@@ -502,16 +503,22 @@ export default {
         });
         let params2 = {};
         params2["category"] = "StorageType";
+        let zpperData = []
+        this.$Code.getCodeItems(params2).then(res => {
+            zpperData.push(res.data.ZhuiJia)
+            zpperData.push(res.data.TiHuan)
+        });
         this.$Code.getCategoryItems(params2).then(res => {
-            let arrdata=res.data ? res.data : []
-            if(arrdata.length>0){
-               arrdata.forEach((item,index)=>{
-                if(item.value=='增量'){
-                    arrdata.splice(index,1)
-                }
-               })
+            let arrdata = res.data ? res.data : []
+            let cc = []
+            if (arrdata.length > 0) {
+                arrdata.forEach((item, index) => {
+                    if (zpperData.includes(item.code)) {
+                        cc.push(item)
+                    }
+                })
             }
-            this.StorageType = arrdata;
+            this.StorageType = cc;
         });
         this.storeTypeFun();
         this.specialfieldFun();
@@ -520,17 +527,17 @@ export default {
 
     methods: {
         sendSubmit() {
-             this.isLoading=true
+            this.isLoading = true
             addTaskAllFun
                 .sendCollectDatabase({
                     colSetId: this.dbid,
-                     etl_date: this.etl_date,
-                      sqlParam: this.sqlParam
+                    etl_date: this.etl_date,
+                    sqlParam: this.sqlParam
                 })
                 .then(res => {
-                     this.isLoading=false
-                      this.submit_1=false
-                      this.submit_0=false
+                    this.isLoading = false
+                    this.submit_1 = false
+                    this.submit_0 = false
                     if (res.success) {
                         this.finishDialogVisible = false;
                         this.$Msg.customizTitle('启动发送成功', 'success')
@@ -565,7 +572,7 @@ export default {
                         } */
                         if (arr[i].data_extract_type != "1") {
                             tbStoInfoString.push({
-                               is_zipper: arr[i].is_zipper == true ? "1" : "0",
+                                is_zipper: arr[i].is_zipper == true ? "1" : "0",
                                 storage_time: parseInt(arr[i].storage_time),
                                 storage_type: arr[i].storage_type,
                                 table_id: arr[i].table_id
@@ -681,10 +688,10 @@ export default {
                     source_name: this.$route.query.source_name,
                 };
             }
-                this.$router.push({
-                    path: "/dbcollect_02",
-                    query: data
-                });
+            this.$router.push({
+                path: "/dbcollect_02",
+                query: data
+            });
         },
         /*   // 获取编辑状态下原有存储数据
         getSaveDataFun() {
@@ -741,7 +748,7 @@ export default {
                 row.storage_type = "";
             }
         },
-         Allis_zipperFun(items, e) {
+        Allis_zipperFun(items, e) {
             items.forEach((item, i) => {
                 if (e) {
                     item.is_zipper = true;
@@ -841,7 +848,7 @@ export default {
             let params = {};
             params["dslId"] = row.dsl_id;
             addTaskAllFun.getStoDestDetail(params).then(res => {
-                 if (res.data) {
+                if (res.data) {
                     let arr = res.data
                     for (let i = 0; i < arr.length; i++) {
                         if (arr[i].storage_property_key == 'database_type') {

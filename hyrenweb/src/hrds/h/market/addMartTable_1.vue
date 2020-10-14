@@ -138,7 +138,7 @@
     </el-table>
     <el-row>
         <el-col :span="2">
-            <el-button type="danger" class="rightbtn" @click="back()" size="medium">返  回</el-button>
+            <el-button type="danger" class="rightbtn" @click="back()" size="medium">返 回</el-button>
         </el-col>
         <el-col :span="2" :offset="20">
             <el-button type="primary" size="medium" class="rightbtn" @click="next('dm_datatable')">下一步</el-button>
@@ -247,10 +247,15 @@ export default {
             iflock: false,
             ennameiflock: false,
             repeatiflock: false,
+            zipperData: []
         };
     },
     created() {
-
+        this.$Code.getCodeItems({
+            'category': 'StorageType'
+        }).then(res => {
+            this.zipperData = [res.data.TiHuan, res.data.ZhuiJia, res.data.QuanLiang]
+        })
     },
     mounted() {
         this.getisflag();
@@ -331,7 +336,13 @@ export default {
             this.$Code.getCategoryItems({
                 'category': 'StorageType'
             }).then(res => {
-                this.allstoragetype = res.data
+                let ccc = res.data
+                ccc.forEach((item, index) => {
+                    console.log(this.zipperData);
+                    if (this.zipperData.includes(item.code)) {
+                        this.allstoragetype.push(item)
+                    }
+                })
             })
         },
         getAllTableStorage() {
