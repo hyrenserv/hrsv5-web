@@ -202,7 +202,7 @@
         </div>
     </el-dialog>
     <!-- 第一个页面 选择列弹层 -->
-    <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()">
+    <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()" top="2%">
         <div slot="title" class="header-title">
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
@@ -232,6 +232,17 @@
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+            <el-table-column label="拉链字段" align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="zipperChange(SelectColumnData,oneFieldMd5All)" v-model="oneFieldMd5All" :checked="oneFieldMd5All">
+                        <span class="allclickColor">拉链字段</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox v-model="scope.row.is_zipper_field" disabled v-if="scope.row.collectState==false" :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_zipper_field" v-else :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
@@ -450,7 +461,7 @@
         </div>
     </el-dialog>
     <!-- 第二个页面 选择列弹层 -->
-    <el-dialog title="选择列" :visible.sync="dialogSelectColumn2" width="70%">
+    <el-dialog title="选择列" :visible.sync="dialogSelectColumn2" width="70%" top="2%">
         <div slot="title" class="header-title">
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
@@ -458,7 +469,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table stripe :data="SelectColumnData2" border size="medium" highlight-current-row>
+        <el-table stripe :data="SelectColumnData2" border size="medium" highlight-current-row :height="tableHeight">
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
@@ -480,6 +491,17 @@
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData2)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+            <el-table-column label="拉链字段" align="center" width="120">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="zipperChange(SelectColumnData2,fieldMd5All)" v-model="fieldMd5All" :checked="fieldMd5All">
+                        <span class="allclickColor">拉链字段</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox v-model="scope.row.is_zipper_field" disabled v-if="scope.row.collectState==false" :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_zipper_field" v-else  :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
@@ -669,7 +691,9 @@ export default {
             sqlIndex: '', //自定义SQL的下标
             isMd5All: false,
             isSqlMd5All: false,
-            checkLength: 0
+            fieldMd5All: false,
+            oneFieldMd5All:false,
+            Isflag: {}
         };
     },
     created() {
@@ -679,7 +703,9 @@ export default {
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
         // this.getAllTableInfo()
-
+        this.$Code.getCodeItems({'category':'IsFlag'}).then(res=>{
+            this.Isflag = res.data
+        })
     },
     beforeMount() {},
     mounted() {
@@ -2106,7 +2132,9 @@ export default {
         },
         //第二个  选择列
         selectCol2(value, row) {
-            row.sql = this.xsTypeArr2All[value].sql
+            if(typeof row.sql === 'undefined') {
+                row.sql = this.xsTypeArr2All[value].sql
+            }
             this.dialogSelectColumn2 = true;
             this.tablename = row.table_name;
             this.unloadType = row.unload_type;
@@ -2872,6 +2900,15 @@ export default {
                     item.is_md5 = false;
                 }
             })
+        },
+        zipperChange(items, e) {
+            items.forEach((item) => {
+                if (e) {
+                    item.is_zipper_field = this.Isflag.Shi
+                } else {
+                    item.is_zipper_field = this.Isflag.Fou
+                }
+            })
         }
     }
 };
@@ -3027,4 +3064,5 @@ export default {
     color: #fff;
     font-weight: bold;
 }
+
 </style>
