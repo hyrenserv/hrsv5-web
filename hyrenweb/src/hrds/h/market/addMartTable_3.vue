@@ -130,7 +130,7 @@ export default {
                 "datatable_id": this.datatable_id
             }).then((res) => {
                 if (res && res.success) {
-                    this.tablename = res.data;
+                    this.tablename = res.data.datatable_en_name;
                 }
             })
         },
