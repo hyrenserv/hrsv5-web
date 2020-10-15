@@ -1122,7 +1122,7 @@
                 inputvalueOptions1: '',
                 markCodeOptionsValue: '',
                 canChangeFiflter: true,
-                showNum: '10',
+                showNum: null,
                 optionsWordsbuttons: true,
                 dynamicColumnTables: [],
                 dynamicColumnTableHiddens: false,

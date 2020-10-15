@@ -34,10 +34,17 @@ export function deleteDashboardInfo(data) {
         params:data
     })
 }
-//获取可视化组件信息
+//获取可视化组件信息showComponentOnDashboard
 export function getVisualComponentInfo(data) {
     return request({
         url: '/L/autoanalysis/operate/getVisualComponentInfo',
+        params:data
+    })
+}
+//将可视化组件信息展示在仪表盘上
+export function showComponentOnDashboard(data) {
+    return request({
+        url: '/L/autoanalysis/operate/showComponentOnDashboard',
         params:data
     })
 }
