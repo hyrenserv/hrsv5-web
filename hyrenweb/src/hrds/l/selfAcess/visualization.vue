@@ -6,7 +6,7 @@
                 <el-button type="danger" @click="goBack" size="small">
                     返回上级
                 </el-button>
-                <el-button type="primary" size="small">
+                <el-button type="primary" @click="addVisualComponentInfo()" size="small">
                     保存组件
                 </el-button>
             </div>
@@ -2221,8 +2221,8 @@
             // 删除横轴x的选择字段信息
             deleteXvalue(item, index) {
                 this.xValueArry.splice(index, 1);
-                this.duliangArry = JSON.parse(JSON.stringify(this.markarry));
-                this.weiduArry = JSON.parse(JSON.stringify(this.markarrx));
+                // this.duliangArry = JSON.parse(JSON.stringify(this.markarry));
+                // this.weiduArry = JSON.parse(JSON.stringify(this.markarrx));
                 // this.markarrx.forEach(item=>{})
                 // if (this.weiduArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
                 //     this.weiduArry.push(item)
@@ -2231,8 +2231,8 @@
             // 删除横轴y的选择字段信息
             deleteYvalue(item, index) {
                 this.yValueArry.splice(index, 1);
-                this.duliangArry = JSON.parse(JSON.stringify(this.markarry));
-                this.weiduArry = JSON.parse(JSON.stringify(this.markarrx));
+                // this.duliangArry = JSON.parse(JSON.stringify(this.markarry));
+                // this.weiduArry = JSON.parse(JSON.stringify(this.markarrx));
                 // if (this.duliangArry.findIndex(val => val.nameAll == item.nameAll) == -1) {
                 //     this.duliangArry.push(item)
                 // }
@@ -2590,6 +2590,48 @@
                     name: 'visualizationindex'
                 })
             },
+            addVisualComponentInfo() {
+                let x_columns = [];
+                let y_columns = [];
+                this.xValueArry.forEach(val => {
+                    x_columns.push(val.nameAll)
+                })
+                this.yValueArry.forEach(val => {
+                    y_columns.push(val.nameAll)
+                })
+                let parama = {
+                    componentBean: {
+                        fetch_name: this.input,
+                        data_source:this.markCodeIndex,
+                        showNum:this.showNum,
+                        x_columns:x_columns,
+                        y_columns:y_columns,
+                    },
+                    // auto_comp_sum: a,
+                    // autoCompConds: a,
+                    // autoCompGroups: a,
+                    // autoCompDataSums: a,
+                    // titleFont: a,
+                    // axisStyleFont: a,
+                    // autoAxisInfos: a,
+                    // xAxisLabel: a,
+                    // yAxisLabel: a,
+                    // xAxisLine: a,
+                    // yAxisLine: a,
+                    // auto_table_info: a,
+                    // auto_chartsconfig: a,
+                    // auto_label: a,
+                    // auto_legend_info: a,
+                };
+                debugger;
+                functionAll.addVisualComponentInfo(parama).then(res => {
+                    this.$Msg.customizTitle('保存成功', 'success');
+                    this.$router.push({
+                        name: 'visualizationindex'
+                    })
+                })
+            }
+
         }
     }
 </script>
