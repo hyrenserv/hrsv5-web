@@ -69,9 +69,8 @@
                         <el-col :span="7">
                             <template v-if="!check_target_tab">
                                 <el-form-item label="目标表名 :" prop="target_tab" :title="dq_help_info_map.targTab">
-                                    <el-input v-model="form_dq_data.target_tab" clearable placeholder="目标表名" :disabled="check_target_tab">
-                                        <el-button @click="showDataSource('target_tab', check_target_tab)" slot="append">数据源
-                                        </el-button>
+                                    <el-input v-model="form_dq_data.target_tab" clearable placeholder="目标表名" :disabled="!check_target_tab">
+                                        <el-button @click="showDataSource('target_tab', check_target_tab)" slot="append">数据源</el-button>
                                     </el-input>
                                 </el-form-item>
                             </template>
@@ -79,9 +78,8 @@
                         <el-col :span="7" :offset=1>
                             <template v-if="!check_target_key_fields">
                                 <el-form-item label="目标字段 :" prop="target_key_fields" :title="dq_help_info_map.fields">
-                                    <el-input v-model="form_dq_data.target_key_fields" clearable placeholder="目标表字段" :disabled="check_target_key_fields">
-                                        <el-button @click="selectFieldClick('target_tab',check_target_key_fields)" slot="append">选择字段
-                                        </el-button>
+                                    <el-input v-model="form_dq_data.target_key_fields" clearable placeholder="目标表字段" :disabled="!check_target_key_fields">
+                                        <el-button @click="selectFieldClick('target_tab',check_target_key_fields)" slot="append">选择字段</el-button>
                                     </el-input>
                                 </el-form-item>
                             </template>
@@ -98,7 +96,7 @@
                         <el-col :span="7">
                             <template v-if="!check_opposite_tab">
                                 <el-form-item label="比对表名 :" prop="opposite_tab" :title="dq_help_info_map.opTab">
-                                    <el-input v-model="form_dq_data.opposite_tab" :disabled="check_opposite_tab" clearable placeholder="比对表名">
+                                    <el-input v-model="form_dq_data.opposite_tab" :disabled="!check_opposite_tab" clearable placeholder="比对表名">
                                         <el-button slot="append" @click="showDataSource('opposite_tab', check_opposite_tab)">
                                             数据源
                                         </el-button>
@@ -109,7 +107,7 @@
                         <el-col :span="7" :offset=1>
                             <template v-if="!check_opposite_tab">
                                 <el-form-item label="比对字段 :" prop="opposite_key_fields" :title="dq_help_info_map.opField">
-                                    <el-input v-model="form_dq_data.opposite_key_fields" clearable :disabled="check_opposite_tab" placeholder="比对字段">
+                                    <el-input v-model="form_dq_data.opposite_key_fields" clearable :disabled="!check_opposite_tab" placeholder="比对字段">
                                         <el-button slot="append" @click="selectFieldClick('opposite_tab', check_opposite_tab)">
                                             选择字段
                                         </el-button>
@@ -345,6 +343,10 @@ export default {
             form_dq_data: { specify_sql: '', err_data_sql: '', index_desc1: '', index_desc2: '', index_desc3: '', target_tab: '', opposite_tab: '' },
             dq_rule_def_s: [{ case_type: '', case_type_desc: '' }],
             dq_rule_def_map: {},
+            store_type_s: [],
+            store_type_map: {},
+            database_type_s: [],
+            database_type_map: {},
             job_eff_flag_s: [],
             job_eff_flag_map: {},
             ed_rule_level_s: [],
@@ -352,6 +354,8 @@ export default {
             not_range_num: '',
             total_box: '',
             form_dq_data_reg_num: '',
+            //存储层bean
+            layer_bean: {},
             //系统帮助提示信息
             dq_help_info_s: [{ help_info_id: '', help_info_desc: '', help_info_dtl: '' }],
             dq_help_info_map: {},
@@ -389,6 +393,10 @@ export default {
         this.getDqRuleDef();
         //获取规则级别标志
         this.getEdRuleLevel();
+        //获取存储层类型
+        this.getStoreType();
+        //获取数据库类型
+        this.getDatabaseType();
     },
     mounted() {
         //获取页面初始化数据
@@ -409,27 +417,6 @@ export default {
                 });
             })
         },
-        //规则类型改变事件
-        caseTypeChange(case_type) {
-            this.dq_rule_def_s.forEach(dq_rule_def => {
-                if (case_type === dq_rule_def.case_type) {
-                    this.form_dq_data.index_desc1 = dq_rule_def.index_desc1;
-                    this.form_dq_data.index_desc2 = dq_rule_def.index_desc2;
-                    this.form_dq_data.index_desc3 = dq_rule_def.index_desc3;
-                }
-            })
-        },
-        //获取代码项信息-规则级别标志
-        getEdRuleLevel() {
-            //获取规则级别标志
-            this.$Code.getCategoryItems({ 'category': 'EdRuleLevel' }).then(res => {
-                this.ed_rule_level_s = res.data;
-                //处理规则级别标志信息为map类型,显示
-                this.ed_rule_level_s.forEach(row => {
-                    this.ed_rule_level_map[row.code] = row.value;
-                });
-            });
-        },
         //获取规则类型信息
         getDqRuleDef() {
             rcFun.getDqRuleDef().then(res => {
@@ -440,10 +427,55 @@ export default {
                 });
             })
         },
+        //获取规则级别标志
+        getEdRuleLevel() {
+            //获取规则级别标志
+            this.$Code.getCategoryItems({ 'category': 'EdRuleLevel' }).then(res => {
+                this.ed_rule_level_s = res.data;
+                //处理规则级别标志信息为map类型,显示
+                this.ed_rule_level_s.forEach(row => {
+                    this.ed_rule_level_map[row.code] = row.value;
+                });
+            });
+        },
+        //获取存储层类型
+        getStoreType() {
+            //获取存储层类型
+            this.$Code.getCategoryItems({ 'category': 'Store_type' }).then(res => {
+                this.store_type_s = res.data;
+                //处理存储层类型信息为map类型,显示
+                this.store_type_s.forEach(row => {
+                    this.store_type_map[row.code] = row.value;
+                });
+            });
+        },
+        //获取数据库类型
+        getDatabaseType() {
+            //获取数据库类型
+            this.$Code.getCategoryItems({ 'category': 'DatabaseType' }).then(res => {
+                this.database_type_s = res.data;
+                //处理数据库类型信息为map类型,显示
+                this.database_type_s.forEach(row => {
+                    this.database_type_map[row.code] = row.value;
+                });
+            });
+        },
+        //规则类型改变事件
+        caseTypeChange(case_type) {
+            this.dq_rule_def_s.forEach(dq_rule_def => {
+                if (case_type === dq_rule_def.case_type) {
+                    this.form_dq_data.index_desc1 = dq_rule_def.index_desc1;
+                    this.form_dq_data.index_desc2 = dq_rule_def.index_desc2;
+                    this.form_dq_data.index_desc3 = dq_rule_def.index_desc3;
+                }
+            })
+        },
         //获取页面初始化数据
         getDqDefinition(reg_num) {
             rcFun.getDqDefinition({ "reg_num": reg_num }).then(res => {
                 this.form_dq_data = res.data;
+                //获取目标表所在存储层信息
+                this.getTableOneDSLInfo(this.form_dq_data.target_tab);
             });
         },
         //点击数据源列表
@@ -468,7 +500,6 @@ export default {
         },
         //树点击触发
         handleNodeClick(data) {
-            console.log(JSON.stringify(data));
             this.table_data = [];
             //如果节点的file_id为未定义并且节点的分类id不为空并且节点分类不是未定义,代表该节点是分类信息,则添加分类下节点数据到展示区
             if ('undefined' === typeof data.file_id && data.classify_id !== "" && 'undefined' !== typeof data.classify_id) {
@@ -498,12 +529,76 @@ export default {
                 if ('target_tab' === this.source_modal_box_type) {
                     this.target_tab_info = this.table_data_radio;
                     this.form_dq_data.target_tab = this.target_tab_info.hyren_name;
+                    this.form_dq_data.target_key_fields = '';
+                    //获取表对应的一个存储层信息
+                    this.getTableOneDSLInfo(this.form_dq_data.target_tab);
                 } else if ('opposite_tab' === this.source_modal_box_type) {
                     this.opposite_tab_info = this.table_data_radio;
                     this.form_dq_data.opposite_tab = this.opposite_tab_info.hyren_name;
                 }
                 this.data_source_dialog = false;
             }
+        },
+        //获取表对应的一个存储层信息
+        getTableOneDSLInfo(table_name) {
+            rcFun.getTableOneDSLInfo({ 'table_name': table_name }).then(res => {
+                if (res && res.data) {
+                    this.layer_bean = res.data;
+                }
+            });
+        },
+        //判断存储层类型设置不同sql语句关键字
+        setRegexpSql(sql, fields, list_vals) {
+            let store_type_map = this.store_type_map;
+            let database_type_map = this.database_type_map;
+            let layer_bean = this.layer_bean;
+            // {"1":"关系型数据库","2":"hive","3":"Hbase","4":"solr","5":"ElasticSearch","6":"mongodb","7":"CarBonData"}
+            //关系型数据库
+            if (store_type_map[layer_bean.store_type] === '关系型数据库') {
+                //{"10":"ApacheDerby","11":"Postgresql","12":"GBase","13":"TeraData","14":"Hive","01":"MYSQL","02":"Oracle9i及一下","03":"Oracle10g及以上",
+                // "04":"SQLSERVER2000","05":"SQLSERVER2005","06":"DB2","07":"SybaseASE12.5及以上","08":"Informatic","09":"H2"}
+                //Postgresql
+                if (database_type_map[layer_bean.layerAttr.database_type] === 'Postgresql') {
+                    if (fields.length > 0) {
+                        fields.forEach(field => {
+                            sql += " NOT( regexp_match( CAST(" + field + " AS VARCHAR)," + list_vals + " ) IS NOT NULL) AND";
+                        });
+                    }
+                }
+                // Oracle10g及以上 Oracle9i及一下
+                else if (database_type_map[layer_bean.layerAttr.database_type] === 'Oracle10g及以上' || database_type_map[layer_bean.layerAttr.database_type] === 'Oracle9i及一下') {
+                    if (fields.length > 0) {
+                        fields.forEach(field => {
+                            sql += " NOT( regexp_like ( " + field + ", " + list_vals + " )) AND";
+                        });
+                    }
+                }
+                // 其他数据库类型,默认值(标准sql)
+                else {
+                    if (fields.length > 0) {
+                        fields.forEach(field => {
+                            sql += " NOT(( " + field + " ) ~ ( " + list_vals + " )) AND";
+                        });
+                    }
+                }
+            }
+            //hive Hbase 
+            else if (store_type_map[layer_bean.store_type] === 'hive' || store_type_map[layer_bean.store_type] === 'Hbase') {
+                if (fields.length > 0) {
+                    fields.forEach(field => {
+                        sql += " NOT(( " + field + " ) regexp ( " + list_vals + " )) AND";
+                    });
+                }
+            }
+            //其他存储层类型,默认值(标准sql),同 Postgresql 库类型一样
+            else {
+                if (fields.length > 0) {
+                    fields.forEach(field => {
+                        sql += " NOT(( " + field + " ) ~ ( " + list_vals + " )) AND";
+                    });
+                }
+            }
+            return sql;
         },
         //选择字段触发
         selectFieldClick(type, isShow) {
@@ -780,11 +875,8 @@ export default {
                 if ('' !== check_limit_condition) {
                     sql = sql + "(" + check_limit_condition + ") \n AND \n\t";
                 }
-                if (fields.length > 0) {
-                    fields.forEach(field => {
-                        sql += " NOT(( " + field + " ) ~ ( " + list_vals + " )) AND";
-                    });
-                }
+                //根据存储层及数据库类型,类型设置正则sql的关键字
+                sql = this.setRegexpSql(sql, fields, list_vals);
                 sql = sql.substr(0, sql.length - 4);
                 sql += ";";
                 //设置检查的总记录数
@@ -922,11 +1014,8 @@ export default {
                 if ('' !== check_limit_condition) {
                     sql = sql + "(" + check_limit_condition + ") \n AND \n\t";
                 }
-                if (fields.length > 0) {
-                    fields.forEach(field => {
-                        sql += " NOT(( " + field + " ) ~ ( " + list_vals + " )) AND";
-                    });
-                }
+                //根据存储层及数据库类型,类型设置正则sql的关键字
+                sql = this.setRegexpSql(sql, fields, list_vals);
                 sql = sql.substr(0, sql.length - 4);
             }
             //指定SQL

@@ -140,3 +140,11 @@ export function errDataSqlCheck(data) {
         params: data,
     })
 }
+
+//获取表对应的一个存储层信息
+export function getTableOneDSLInfo(data) {
+    return request({
+        url: '/K/dm/ruleconfig/getTableOneDSLInfo',
+        params: data,
+    })
+}
