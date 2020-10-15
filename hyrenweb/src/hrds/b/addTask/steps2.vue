@@ -1130,7 +1130,7 @@ export default {
                         if (istrue.length == 0) {
                             //判断第二步整体有没有表存在
                             this.isLoading = false;
-                            this.$Msg.customizTitle("至少选择一张表" + rep_table2 + "重复,请修改", 'error')
+                            this.$Msg.customizTitle("至少选择一张表", 'error')
                         } else {
                             //checkTablePrimary
                             if (rep_table.length > 0) {
