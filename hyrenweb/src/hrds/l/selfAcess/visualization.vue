@@ -159,9 +159,10 @@
         <el-row>
             <el-col :span="5">
                 <div>
-                    <el-input placeholder="请输入内容" v-model="input1" size="small" style="width:90%;">
+                    <el-input placeholder="请输入内容" @change="fuzzyquery1()" v-model="input1" size="small"
+                              style="width:90%;">
                         <template slot="prepend">维度</template>
-                        <el-button slot="append" icon="el-icon-search" size="small"></el-button>
+                        <!--<el-button slot="append" icon="el-icon-search" size="small"></el-button>-->
                     </el-input>
                     <div class="showArryDiv showArryDivSelect ">
                         <ul>
@@ -174,9 +175,10 @@
                     </div>
                 </div>
                 <div>
-                    <el-input placeholder="请输入内容" v-model="input1" size="small" style="width:90%;margin-top:30px;">
+                    <el-input placeholder="请输入内容" @change="fuzzyquery2()" v-model="input2" size="small"
+                              style="width:90%;margin-top:30px;">
                         <template slot="prepend">度量</template>
-                        <el-button slot="append" icon="el-icon-search" size="small"></el-button>
+                        <!--<el-button slot="append" icon="el-icon-search" size="small"></el-button>-->
                     </el-input>
                     <div class="showArryDiv showArryDivSelect ">
                         <ul>
@@ -1069,7 +1071,7 @@
                 keyWords: '',
                 columnsWordsALL: [],
                 groupCondtionArr: [],
-                hasComputeArry: [],
+                // hasComputeArry: [],
                 optionsWords: [],
                 fiflterConditionArr: [],
                 dialogData: false,
@@ -1487,12 +1489,15 @@
                 }],
                 changeGetchartsValue: '',
                 input1: '',
+                input2: '',
                 tips: '',
                 xValueArry: [],
                 yValueArry: [],
                 value: '',
                 weiduArry: [],
+                originalweiduArry: [],
                 duliangArry: [],
+                originalduliangArry: [],
                 markexe_sql: '',
                 markarrx: [],
                 markarry: [],
@@ -1733,6 +1738,9 @@
                             itemAll.nameAll = itemAll.column_name;
                         }
                     })
+                    this.weiduArry = res.data.columns;
+                    //保存全部的weiduArry，用以模糊查询时恢复
+                    this.originalweiduArry = this.weiduArry;
                     if (res.data.numColumns) {
                         if (res.data.numColumns.length > 0) {
                             res.data.numColumns.forEach(itemAll => {
@@ -1742,33 +1750,32 @@
                                     itemAll.nameAll = itemAll.column_name;
                                 }
                             })
-                            this.weiduArry = JSON.parse(JSON.stringify(res.data.columns)); //深拷贝
-                            this.markarrx = JSON.parse(JSON.stringify(res.data.columns)); //深拷贝
-                        } else {
-                            this.weiduArry = [];
+                            this.duliangArry = res.data.numColumns;
+                            //保存全部的duliangArry，用以模糊查询时恢复
+                            this.originalduliangArry = this.duliangArry;
+                            // this.duliangArry = JSON.parse(JSON.stringify(res.data.numColumns)); //深拷贝
+                            // this.markarrx = JSON.parse(JSON.stringify(res.data.columns)); //深拷贝
                         }
-                    } else {
-                        this.weiduArry = [];
                     }
-                    if (res.data.measureColumns) {
-                        if (res.data.measureColumns.length > 0) {
-                            res.data.measureColumns.forEach(itemAll => {
-                                if (this.markCodeIndex === "01") {
-                                    itemAll.nameAll = itemAll.fetch_res_name;
-                                } else if (this.markCodeIndex === "02") {
-                                    itemAll.nameAll = itemAll.column_name;
-                                }
-                            })
-                            this.duliangArry = JSON.parse(JSON.stringify(res.data.measureColumns));
-                            this.markarry = JSON.parse(JSON.stringify(res.data.measureColumns));
-                        } else {
-                            this.duliangArry = [];
-                        }
-                    } else {
-                        this.duliangArry = [];
-                    }
+                    // if (res.data.measureColumns) {
+                    //     if (res.data.measureColumns.length > 0) {
+                    //         res.data.measureColumns.forEach(itemAll => {
+                    //             if (this.markCodeIndex === "01") {
+                    //                 itemAll.nameAll = itemAll.fetch_res_name;
+                    //             } else if (this.markCodeIndex === "02") {
+                    //                 itemAll.nameAll = itemAll.column_name;
+                    //             }
+                    //         })
+                    //         this.duliangArry = JSON.parse(JSON.stringify(res.data.measureColumns));
+                    //         this.markarry = JSON.parse(JSON.stringify(res.data.measureColumns));
+                    //     } else {
+                    //         this.duliangArry = [];
+                    //     }
+                    // } else {
+                    //     this.duliangArry = [];
+                    // }
                     this.columnsWordsALL = res.data.columns;
-                    this.hasComputeArry = res.data.numColumns;
+                    // this.hasComputeArry = res.data.numColumns;
                     let that = this;
                     // 变成树结构选择字段
                     this.data2.forEach(item => {
@@ -1863,6 +1870,30 @@
                         }
                     })
                 })
+            },
+            fuzzyquery1() {
+                this.weiduArry = this.originalweiduArry;
+                if (this.input1 != "") {
+                    let array = [];
+                    this.weiduArry.forEach(value => {
+                        if (value.nameAll.indexOf(this.input1) != -1) {
+                            array.push(value);
+                        }
+                    })
+                    this.weiduArry = array;
+                }
+            },
+            fuzzyquery2() {
+                this.duliangArry = this.originalduliangArry;
+                if (this.input2 != "") {
+                    let array = [];
+                    this.duliangArry.forEach(value => {
+                        if (value.nameAll.indexOf(this.input2) != -1) {
+                            array.push(value);
+                        }
+                    })
+                    this.duliangArry = array;
+                }
             },
             // 添加字段信息
             addWords() {
@@ -2082,6 +2113,9 @@
             clickCloseConditionWords(item, index) {
                 this.fiflterConditionArr.splice(index, 1);
             },
+            checkIfObjInArray(arry, obj) {
+                return JSON.stringify(arry).indexOf(JSON.stringify(obj)) != -1;
+            },
             // 获取答案
             getAnswer() {
                 // 处理数据
@@ -2093,44 +2127,44 @@
                 let arry1 = [];
                 let arry2 = [];
                 let arry3 = [];
+                let obj = {};
                 // 设置显示字段数组
                 var repeatflag = false;
                 this.optionsWords.forEach(val => {
-                    let obj = {
+                    obj = {
                         summary_type: val.code,
                         column_name: val.realName
                     }
-                    if (arry1.indexOf(obj) != -1) {
+                    if (this.checkIfObjInArray(arry1, obj)) {
                         this.$Msg.customizTitle("查询字段重复:" + val.realName, "warning");
-                        repeatflag = false;
+                        repeatflag = true;
                     }
                     arry1.push(obj);
 
                 })
                 // 设置过滤条件数组
                 this.fiflterConditionArr.forEach(val => {
-                    let obj = {
+                    obj = {
                         cond_en_column: val.key,
                         operator: val.number,
                         cond_value: val.value,
                     }
-                    if (arry2.indexOf(obj) != -1) {
+                    if (this.checkIfObjInArray(arry2, obj)) {
                         this.$Msg.customizTitle("条件字段重复:" + val.realName, "warning");
-                        repeatflag = false;
+                        repeatflag = true;
                     }
                     arry2.push(obj);
                 })
                 // 设置分组数组
                 this.groupCondtionArr.forEach(val => {
-                    let obj = {
+                    obj = {
                         column_name: val.column_name,
                     }
-                    if (arry3.indexOf(obj) != -1) {
-                        this.$Msg.customizTitle("查询字段重复:" + val.realName, "warning");
-                        repeatflag = false;
+                    if (this.checkIfObjInArray(arry3, obj)) {
+                        this.$Msg.customizTitle("分组字段重复:" + val.realName, "warning");
+                        repeatflag = true;
                     }
                     arry3.push(obj);
-
                 })
                 if (repeatflag) {
                     return;
