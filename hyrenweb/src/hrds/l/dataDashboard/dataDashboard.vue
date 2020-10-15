@@ -1100,8 +1100,8 @@ export default {
             this.dialogAddComponentVisible=false;
             this.picshow = true;
             if (this.selectRow.length <= 0) {
-                this.$Msg.customizTitle('请选择一个组件', 'error')
-                return false;
+                this.$Msg.customizTitle('请至少选择一个组件', 'warning')
+                return;
             }
             this.tmp_auto_comp_sum_array=[];
     		var component_id_array=[];
@@ -1519,11 +1519,11 @@ export default {
                 picnum++;
             });
             if (this.auto_dashboard_info.dashboard_name == '' || typeof (this.auto_dashboard_info.dashboard_name) == 'undefined') {
-                this.$Msg.customizTitle('仪表盘名称不能为空', 'error')
+                this.$Msg.customizTitle('仪表盘名称不能为空', 'warning')
                 return;
             }
             if (picnum == 0) {
-                this.$Msg.customizTitle('请添加一个组件', 'error')
+                this.$Msg.customizTitle('请至少添加一个组件', 'warning')
                 return false;
             }
             $.ajax({
@@ -3285,7 +3285,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
         //仪表板保存按钮
         addDashboardButton() {
             if (this.layout.length <= 0) {
-                this.$Msg.customizTitle('请选择一个组件', 'waring')
+                this.$Msg.customizTitle('请至少选择一个组件', 'waring')
             } else {
                 this.dialogDashboardVisible=true;
             }
