@@ -713,6 +713,15 @@ export function getTableData(data) {
 export function sendCollectDatabase(data) {
     return request({
         url: '/B/agent/sendCollectDatabase',
-        params:data
+        params: data
+    })
+}
+
+/**
+ * 获取数据库已存在配置信息
+ */
+export function getDatabaseData() {
+    return request({
+        url: '/B/agent/getDatabaseData'
     })
 }
