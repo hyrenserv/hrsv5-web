@@ -574,7 +574,7 @@ export default {
                     this.submit_0 = false
                     if (res.success) {
                         this.finishDialogVisible = false;
-                        this.$Msg.customizTitle('启动发送成功', 'success')
+                        this.$Msg.customizTitle('启动发送成功，作业已在后台运行', 'success')
                         this.$router.push({
                             path: "/agentList"
                         });

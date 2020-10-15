@@ -508,7 +508,6 @@ export default {
                         params["colSetId"] = this.databaseId;
                         params["extractionDefString"] = JSON.stringify(extractionDefString);
                         params['dedId'] = JSON.parse(JSON.stringify(dedid)).join('^')
-                        console.log(extractionDefString)
                         addTaskAllFun.saveFileConf(params).then(res => {
                             this.isLoading = false
                             if (res.code == 200 && this.startButton == false) {
@@ -555,7 +554,7 @@ export default {
             this.next('ruleForm')
         },
         sendSubmit() {
-            this.isLoading = true
+            // this.isLoading = true
             addTaskAllFun
                 .sendJDBCCollectTaskById({
                     colSetId: this.dbid,
@@ -563,10 +562,10 @@ export default {
                     sqlParam: this.sqlParam
                 })
                 .then(res => {
-                    this.isLoading = false
+                    // this.isLoading = false
                     if (res.success) {
                         this.finishDialogVisible = false;
-                        this.$Msg.customizTitle("启动发送成功", 'success')
+                        this.$Msg.customizTitle("启动发送成功，作业已在后台运行", 'success')
                         this.$router.push({
                             path: "/agentList"
                         });

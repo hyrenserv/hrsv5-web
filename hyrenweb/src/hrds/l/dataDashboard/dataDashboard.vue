@@ -1,8 +1,8 @@
 <template>
 <div id='dataDashboard'>
-    <div class="row" id="toubu" v-cloak>
-        <div class="container">
-            <el-row class="btn-group pull-right">
+    <div class="container">
+        <div class="row" id="toubu" v-cloak>
+            <div class="btn-group pull-right">
                 <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
                 <el-button size="mini" type="primary"  @click="dialogBackgroundVisible=true">背景色</el-button>
                 <el-button size="mini" type="primary"  @click="dialogTitleVisible=true">选择主题</el-button>
@@ -13,8 +13,8 @@
                 <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                 <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
                 <el-button size="mini" type="primary" @click="goIndex">返回上一级</el-button>
-            </el-row>
-        </div>
+            </div>
+        </div>    
         <div class="col-md-12">
             <div class="btn-group pull-left">
                 <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.dashboard_theme">
@@ -38,14 +38,11 @@
     </div>
     <!-- 添加组件模态框 -->
     <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%" :before-close="beforeAddComponentClose">
-        <el-table :data="auto_comp_sum_array" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
-            <el-table-column width="40" align="center" type="selection" :reserve-selection="true">
-            </el-table-column>
-            <el-table-column label="序号" align="center">
-                <template slot-scope="scope">
-                    <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
-                </template>
-            </el-table-column>
+        <el-table :data="auto_comp_sum_array" border style="width: 100%" ref="multipleComponent" 
+        :row-key="(row)=>{ return row.column_id}" height="450" size="medium" 
+        @select="componentSelectionChange" @select-all='allComponentSelect'>
+            <el-table-column width="40" align="center" type="selection" :reserve-selection="true"/>
+            <el-table-column label="序号" type="index" align="center"/> 
             <el-table-column prop="component_name" label="组件名称" align="center" />
             <el-table-column prop="component_desc" label="组件描述" align="center" />
         </el-table>
@@ -110,7 +107,15 @@
     <el-dialog title="仪表板背景色" :visible.sync="dialogBackgroundVisible" width="50%" :before-close="beforeBackgroundClose">
         <el-form ref="addBackgroundForm" :model="addBackgroundForm" label-width="130px">
             <el-form-item label="仪表板背景色">
-                <el-input v-model="auto_dashboard_info.background"></el-input>
+                <el-row>
+                    <el-col :span="2">
+                        <el-color-picker v-model="auto_dashboard_info.background"></el-color-picker>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-input style="width:320px" v-model="auto_dashboard_info.background">
+                        </el-input>
+                    </el-col>
+                </el-row>
             </el-form-item>
         </el-form>
             <div slot="footer" class="dialog-footer">
@@ -140,7 +145,15 @@
              </el-select>
             </el-form-item>
             <el-form-item label="边框颜色">
-                <el-input v-model="auto_frame_info.border_color"></el-input>
+                <el-row>
+                    <el-col :span="2">
+                        <el-color-picker v-model="auto_frame_info.border_color"></el-color-picker>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-input style="width:320px" v-model="auto_frame_info.border_color">
+                        </el-input>
+                    </el-col>
+                </el-row>
             </el-form-item>
             <el-form-item label="边框宽度">
                 <el-input v-model="auto_frame_info.border_width"></el-input>
@@ -162,10 +175,24 @@
                 <el-input v-model="auto_label_info.label_content"></el-input>
             </el-form-item>
             <el-form-item label="标签背景颜色">
-                <el-input v-model="auto_label_info.label_color"></el-input>
+                <el-row>
+                    <el-col :span="2">
+                        <el-color-picker v-model="auto_label_info.label_color"></el-color-picker>
+                    </el-col>
+                    <el-col :span="10" >
+                        <el-input style="width:320px" v-model="auto_label_info.label_color"></el-input>
+                    </el-col>
+                </el-row>
             </el-form-item>
             <el-form-item label="字体颜色">
-                <el-input v-model="auto_label_info.textStyle.color"></el-input>
+                 <el-row>
+                    <el-col :span="2">
+                        <el-color-picker v-model="auto_label_info.textStyle.color"></el-color-picker>
+                    </el-col>
+                    <el-col :span="10" >
+                        <el-input style="width:320px" v-model="auto_label_info.textStyle.color"></el-input>
+                    </el-col>
+                </el-row>
             </el-form-item>
             <el-form-item label="字体粗细">
                 <el-select v-model="auto_label_info.textStyle.fontWeight" placeholder="请选择字体粗细">
@@ -239,7 +266,6 @@
     </el-dialog>
 </div>
 </template>
-
 <script src="/static/src/panal/js/util/echarts-option.js"></script>
 <script src="/static/src/panal/js/util/jquery-ui.js"></script>
 <script src="/static/src/panal/js/util/echarts.min.js"></script>
@@ -256,6 +282,7 @@
 <script src="/static/src/panal/js/relation/bootstrap.min.js"></script>
 <script  src="/static/src/bootstrap-colorpicker.min.js"></script>
 <script src="/static/src/panal/js/relation/china.js"></script>
+
 <script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
@@ -353,8 +380,8 @@ export default {
             layoutFlag: false,
             titleFlag: false,
             tmp_auto_comp_sum_array: [],
-            //{"code":"01","CN_type":"黑色","type":"dark","bcolor":"#121212","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(0, 0, 0);","depth":"sheng","picurl":"@/assets/images/images/theme/dark.jpg"},
-            //{"code":"02","CN_type":"亮白","type":"light","bcolor":"#FCFCFC","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(255, 255, 255);","depth":"qian","picurl":"@/assets/images/images/theme/light.jpg"},
+            //{"code":"01","CN_type":"黑色","type":"dark","bcolor":"#121212","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(0, 0, 0);","depth":"sheng","picurl":"@/assets/images/theme/dark.jpg"},
+            //{"code":"02","CN_type":"亮白","type":"light","bcolor":"#FCFCFC","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(255, 255, 255);","depth":"qian","picurl":"@/assets/images/theme/light.jpg"},
             //主题设置参数
             titleData: [{
                     "code": "00",
@@ -772,7 +799,7 @@ export default {
                     success(data) {
                         resultdata = data;
                         //把组件,文本标签,分割线的layout区分开
-                        var tmp_layout = data.data.layout;
+                        var tmp_layout = data.layout;
                         for (var i = 0; i < tmp_layout.length; i++) {
                             if ("0" == tmp_layout[i].label) {
                                 this.label_layout.push(tmp_layout[i]);
@@ -791,20 +818,20 @@ export default {
                             var id = this.layout[i].type;
                             component_id_array.push(id);
                         }
-                        this.auto_dashboard_info = data.data.auto_dashboard_info;
-                        this.tmp_auto_comp_sum_array = data.data.auto_comp_sum;
+                        this.auto_dashboard_info = data.auto_dashboard_info;
+                        this.tmp_auto_comp_sum_array = data.auto_comp_sum;
 
                         this.Global_component_array = data;
-                        this.global_component_name_array = component_id_array;
+                        this.global_component_id_array = component_id_array;
 
-                        if ('undefined' != typeof data.data.auto_label_info_array && null != typeof data.data.auto_label_info_array) {
-                            this.auto_label_info_array = data.data.auto_label_info_array;
+                        if ('undefined' != typeof data.auto_label_info_array && null != typeof data.auto_label_info_array) {
+                            this.auto_label_info_array = data.auto_label_info_array;
                         }
-                        if ('undefined' != typeof data.data.auto_line_info_array && null != typeof data.data.auto_line_info_array) {
-                            this.auto_line_info_array = data.data.auto_line_info_array;
+                        if ('undefined' != typeof data.auto_line_info_array && null != typeof data.auto_line_info_array) {
+                            this.auto_line_info_array = data.auto_line_info_array;
                         }
-                        if ('undefined' != typeof data.data.auto_frame_info_list && null != typeof data.data.auto_frame_info_list) {
-                            this.auto_frame_info_list = data.data.auto_frame_info_list;
+                        if ('undefined' != typeof data.auto_frame_info_list && null != typeof data.auto_frame_info_list) {
+                            this.auto_frame_info_list = data.auto_frame_info_list;
                         }
 
                         //        		if(dashboard_status != '01'){
@@ -1072,42 +1099,38 @@ export default {
         showComponentOnDashboard() {
             this.dialogAddComponentVisible=false;
             this.picshow = true;
-            this.tmp_auto_comp_sum_array = [];
-            var component_name_array = [];
-            var reusltdata = [];
-            for (var i = 0; i < this.auto_comp_sum_array.length; i++) {
-                if (this.auto_comp_sum_array[i].ischecked == true) {
-                    this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
-                    component_name_array.push(this.auto_comp_sum_array[i].component_id);
-                }
+            if (this.selectRow.length <= 0) {
+                this.$Msg.customizTitle('请至少选择一个组件', 'warning')
+                return;
             }
+            this.tmp_auto_comp_sum_array=[];
+    		var component_id_array=[];
+    		for(var i=0;i<this.selectRow.length;i++){
+    		    this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
+    			component_id_array.push(this.auto_comp_sum_array[i].component_id);
+    		}
+            this.global_component_id_array = component_id_array;
+            let param ={};
+            param['autoCompSums']=JSON.stringify(this.selectRow);
+            functionAll.showComponentOnDashboard(param).then(res => {
+                if (res&&res.success) {
+                    this.label_layout = [];
+                    this.line_layout = [];
+                    this.frame_layout = [];
+                    this.layoutFlag = false;
+                    this.titleFlag = true;
+                    setTimeout(() => {
+                        this.echartpic(res.data, component_id_array);
+                    }, 500);
 
-            if (component_name_array.length <= 0) {
-                this.$Msg.customizTitle('请选择一个组件', 'error')
-                return false;
-            }
-
-            this.global_component_name_array = component_name_array;
-            functionAll.showComponentOnDashboard({}).then(res => {
-                
-            })
-            this.label_layout = [];
-            this.line_layout = [];
-            this.frame_layout = [];
-            this.layoutFlag = false;
-            this.titleFlag = true;
-
-            setTimeout(() => {
-                this.echartpic(reusltdata, component_name_array);
-            }, 500);
-
-            setTimeout(() => {
-                this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
-                $("div[name='pic']").each(function () {
-                    $(this).trigger("mouseup");
-                });
-            }, 500);
-
+                    setTimeout(() => {
+                        this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
+                        $("div[name='pic']").each(function () {
+                            $(this).trigger("mouseup");
+                        });
+                    }, 500);
+                        }
+                    })
         },
          // 关闭组件弹窗
         beforeAddComponentClose() {
@@ -1172,7 +1195,7 @@ export default {
                     } else {
                         img_style += this.tmp_auto_comp_sum_array[i].background;
                     }
-                    var imgHTML = "<img src='@/assets/images/images/hidedel.png' style=" + img_style + " class='pull-right'>";
+                    var imgHTML = "<img src='@/assets/images/hidedel.png' style=" + img_style + " class='pull-right'>";
                     $(frame_img).append(imgHTML);
                 }
             }
@@ -1391,7 +1414,7 @@ export default {
             this.titleFlag = false;
 
             setTimeout(() => {
-                this.echartpic(this.Global_component_array, this.global_component_name_array);
+                this.echartpic(this.Global_component_array, this.global_component_id_array);
             }, 500);
 
             setTimeout(() => {
@@ -1496,11 +1519,11 @@ export default {
                 picnum++;
             });
             if (this.auto_dashboard_info.dashboard_name == '' || typeof (this.auto_dashboard_info.dashboard_name) == 'undefined') {
-                this.$Msg.customizTitle('仪表盘名称不能为空', 'error')
+                this.$Msg.customizTitle('仪表盘名称不能为空', 'warning')
                 return;
             }
             if (picnum == 0) {
-                this.$Msg.customizTitle('请添加一个组件', 'error')
+                this.$Msg.customizTitle('请至少添加一个组件', 'warning')
                 return false;
             }
             $.ajax({
@@ -1516,12 +1539,12 @@ export default {
                 },
                 dataType: "json",
                 success(data) {
-                    if (data.data.state == "0") {
+                    if (data.state == "0") {
                         this.$Msg.customizTitle('保存成功', 'success')
                         setTimeout(() => {
                             location.href = 'L0401_DashBoardPage.do?';
                         }, 1000);
-                    } else if (data.data.state == "1") {
+                    } else if (data.state == "1") {
                         this.$Msg.customizTitle('组件名称重复', 'error')
 
                     } else {
@@ -1899,24 +1922,24 @@ $("#"+id).css("border-width",style.split(":")[1]);
             var result_layout = [];
             var layoutId_array = [];
 
-            if (echartlayout.length > data.data.layout.length) { //减少
-                for (var index in data.data.layout) {
-                    layoutId_array.push(data.data.layout[index].type);
+            if (echartlayout.length > data.layout.length) { //减少
+                for (var index in data.layout) {
+                    layoutId_array.push(data.layout[index].type);
                 }
                 result_layout = this.array_alike(echartlayout, layoutId_array);
                 if (result_layout.length == "0") {
-                    echartlayout = data.data.layout;
+                    echartlayout = data.layout;
                 } else {
                     echartlayout = result_layout;
                 }
                 this.layoutFlag = true;
             } else { //替换,新增
-                for (var index in data.data.layout) {
-                    layoutId_array.push(data.data.layout[index].type);
+                for (var index in data.layout) {
+                    layoutId_array.push(data.layout[index].type);
                 }
                 result_layout = this.array_alike(echartlayout, layoutId_array);
                 if (result_layout.length == "0") {
-                    echartlayout = data.data.layout;
+                    echartlayout = data.layout;
                 } else {
                     echartlayout = result_layout;
                 }
@@ -1925,7 +1948,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 for (var index in echartlayout) {
                     layoutId_array.push(echartlayout[index].type);
                 }
-                result_layout = this.array_diff(data.data.layout, layoutId_array);
+                result_layout = this.array_diff(data.layout, layoutId_array);
                 if (result_layout.length == "0") {
 
                 } else {
@@ -1968,8 +1991,8 @@ $("#"+id).css("border-width",style.split(":")[1]);
             this.$nextTick(function () {
                 for (var i = 0; i < component_id_array.length; i++) {
                     var id = component_id_array[i];
-                    var echartdata = data.data[id];
-                    var type = data.data[id].chart_type;
+                    var echartdata = data[id];
+                    var type = data[id].chart_type;
                     $("#" + id).css({
                         "width": 370,
                         "height": 300
@@ -2322,16 +2345,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
@@ -2434,16 +2457,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
@@ -2575,16 +2598,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(treemapChart), 1);
@@ -2668,16 +2691,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(blChart), 1);
@@ -2748,16 +2771,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(boxplotChart), 1);
@@ -2867,16 +2890,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(lineChart), 1);
@@ -2922,16 +2945,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
@@ -3011,16 +3034,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(barChart), 1);
@@ -3085,16 +3108,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             mydeltool: {
                                 show: true,
                                 title: "删除",
-                                icon: "image://@/assets/images/images/del.png",
+                                icon: "image://@/assets/images/del.png",
                                 onclick() {
                                     if (this.is_showdel == true) {
                                         this.layout.splice(this.layout.indexOf(layout), 1);
                                         this.Global_component_array["data"].layout = this.layout;
                                         delete this.Global_component_array["data"][layout.type];
-                                        this.global_component_name_array = [];
+                                        this.global_component_id_array = [];
                                         for (var i = 0; i < this.layout.length; i++) {
                                             if (this.layout[i].label == undefined) {
-                                                this.global_component_name_array.push(this.layout[i].type);
+                                                this.global_component_id_array.push(this.layout[i].type);
                                             }
                                         }
                                         this.chart_obj_array.splice(this.chart_obj_array.indexOf(pieChart), 1);
@@ -3146,16 +3169,16 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/images/del.png",
+                            icon: "image://@/assets/images/del.png",
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     this.Global_component_array["data"].layout = this.layout;
                                     delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_name_array = [];
+                                    this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_name_array.push(this.layout[i].type);
+                                            this.global_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(scatterChart), 1);
@@ -3262,7 +3285,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
         //仪表板保存按钮
         addDashboardButton() {
             if (this.layout.length <= 0) {
-                this.$Msg.customizTitle('请选择一个组件', 'waring')
+                this.$Msg.customizTitle('请至少选择一个组件', 'waring')
             } else {
                 this.dialogDashboardVisible=true;
             }
@@ -3302,7 +3325,7 @@ var tableProfile = Vue.extend({
 
 //卡片仪表盘    删除按钮
 var Profile = Vue.extend({
-    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
+    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
     data() {},
     props: ['echart_div_layout', 'layout_id'],
     methods: {
@@ -3325,7 +3348,7 @@ var Profile = Vue.extend({
 
 //分割线   删除按钮
 var linedelProfile = Vue.extend({
-    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
+    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
     data() {},
     props: ['echart_div_layout', 'auto_line_info'],
     methods: {
@@ -3348,7 +3371,7 @@ var linedelProfile = Vue.extend({
 
 //边框   删除按钮
 var framedelProfile = Vue.extend({
-    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
+    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
     data() {},
     props: ['echart_div_layout', 'auto_frame_info'],
     methods: {
@@ -3371,7 +3394,7 @@ var framedelProfile = Vue.extend({
 
 //文本标签    删除按钮
 var labeldelProfile = Vue.extend({
-    template: "<img src='@/assets/images/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
+    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
     data() {},
     props: ['echart_div_layout', 'auto_label_info'],
     methods: {
