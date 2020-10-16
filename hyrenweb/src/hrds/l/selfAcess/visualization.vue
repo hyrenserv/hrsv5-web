@@ -94,7 +94,6 @@
                 </div>
             </div>
         </el-col>
-        <el-diveder></el-diveder>
         <el-col :span="8" class="elcol8">
             <p class="optionsWords">设置分组条件</p>
             <div class="showArryDiv">
@@ -2471,9 +2470,9 @@ export default {
                 autoCompConds: JSON.stringify(autoCompConds),
                 autoCompGroups: JSON.stringify(autoCompGroups),
                 autoCompDataSums: JSON.stringify(autoCompDataSums),
+                autoAxisInfos: JSON.stringify(autoAxisInfos),
                 titleFont: this.titleFont,
                 axisStyleFont: this.xAxis,
-                autoAxisInfos: JSON.stringify(autoAxisInfos),
                 xAxisLabel: this.xAxisLabel,
                 yAxisLabel: this.yAxisLabel,
                 xAxisLine: this.xAxisLine,
@@ -2484,12 +2483,18 @@ export default {
                 auto_legend_info: this.legendStyle,
             };
             debugger;
-            functionAll.addVisualComponentInfo(parama).then(res => {
-                this.$Msg.customizTitle('保存成功', 'success');
-                // this.$router.push({
-                //     name: 'visualizationindex'
-                // })
-            })
+            this.$refs['auto_comp_sum'].validate((valid) => {
+                if (valid) {
+                    functionAll.addVisualComponentInfo(parama).then(res => {
+                        if (res && res.success) {
+                            this.$Msg.customizTitle('保存成功', 'success');
+                        }
+                        // this.$router.push({
+                        //     name: 'visualizationindex'
+                        // })
+                    })
+                }
+            });
         }
 
     }
