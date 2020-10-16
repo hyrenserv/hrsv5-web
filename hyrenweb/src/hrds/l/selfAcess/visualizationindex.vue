@@ -5,37 +5,33 @@
         <el-button type="primary" class="els" @click="addProject" size="small">
             新建组件
         </el-button>
-        <div class="lines"></div>
     </el-row>
-    <el-row>
-        <el-table size="medium" :data="tableData" border stripe style="width: 100%;margin-top:10px;">
-            <el-table-column type="index" label="序号" width="70px" align='center'>
-            </el-table-column>
-            <el-table-column prop="component_name" show-overflow-tooltip label="组件名称" align='center'>
-            </el-table-column>
-            <el-table-column prop="component_desc" show-overflow-tooltip label="组件描述" align='center'>
-            </el-table-column>
-            <el-table-column prop="data_source" show-overflow-tooltip label="数据来源" align='center'>
-            </el-table-column>
-            <el-table-column prop="component_status" show-overflow-tooltip label="组件状态" align='center'>
-            </el-table-column>
-            <el-table-column label="创建日期" :formatter="dateFormat" prop="create_date" show-overflow-tooltip align='center'>
-            </el-table-column>
-            <el-table-column label="创建用户" prop="create_user" show-overflow-tooltip align='center'>
-            </el-table-column>
-            <el-table-column label="操作" align='center' width="160">
-                <template slot-scope="scope">
-                    <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button size="mini" type="text" @click="vieSql(scope.$index, scope.row)">查看sql
-                    </el-button>
-                    <el-button size="mini" class="endAgent" type="text" @click="deleteVisualComponent(scope.row)">删除
-                    </el-button>
-                </template>
-            </el-table-column>
-
-        </el-table>
-    </el-row>
+    <el-table size="medium" :data="tableData" border style="width: 100%">
+        <el-table-column type="index" label="序号" width="50px" align='left'>
+        </el-table-column>
+        <el-table-column prop="component_name" show-overflow-tooltip label="组件名称" align='left'>
+        </el-table-column>
+        <el-table-column prop="component_desc" show-overflow-tooltip label="组件描述" align='left'>
+        </el-table-column>
+        <el-table-column prop="data_source" show-overflow-tooltip label="数据来源" width="130px" align='left'>
+        </el-table-column>
+        <el-table-column prop="component_status" show-overflow-tooltip label="组件状态" width="100px" align='left'>
+        </el-table-column>
+        <el-table-column prop="create_date" label="创建日期" align='left'>
+        </el-table-column>
+        <el-table-column label="创建用户" prop="create_user" width="150px" show-overflow-tooltip align='left'>
+        </el-table-column>
+        <el-table-column label="操作" align='left' width="160">
+            <template slot-scope="scope">
+                <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑
+                </el-button>
+                <el-button size="mini" type="text" @click="vieSql(scope.$index, scope.row)">查看sql
+                </el-button>
+                <el-button size="mini" class="endAgent" type="text" @click="deleteVisualComponent(scope.row)">删除
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 </div>
 </template>
 
@@ -46,18 +42,55 @@ import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
-            tableData: []
+            tableData: [],
+            compState: [],
+            autoSourceObject: []
         }
     },
     mounted() {
         this.getVisualComponentInfo();
+        this.getCodeItems('AutoFetchStatus');
+        this.getCodeItems("AutoSourceObject");
     },
     methods: {
+        getCodeItems(val) {
+            if (val == "AutoFetchStatus") { //组件状态
+                functionAll.getCategoryItems({
+                    category: 'AutoFetchStatus'
+                }).then(res => {
+                    this.compState = res.data;
+                })
+            } else if (val == "AutoSourceObject") { //可视化源对象
+                functionAll.getCategoryItems({
+                    category: 'AutoSourceObject'
+                }).then(res => {
+                    this.autoSourceObject = res.data;
+                })
+            }
+        },
+
         // 数据可视化首页列表展示
         getVisualComponentInfo() {
             functionAll.getVisualComponentInfo().then(res => {
-                this.tableData = res.data;
-            })
+                if (res && res.success) {
+                    for (let index = 0; index < res.data.length; index++) {
+                        if (res.data[index].create_date) {
+                            res.data[index].create_date = fixedAll.dateToMilldate(res.data[index].create_date + " " + res.data[index].create_time);
+                        }
+                        this.compState.forEach(val => {
+                            if (res.data[index].component_status == val.code) {
+                                res.data[index].component_status = val.value;
+                            }
+                        })
+                        this.autoSourceObject.forEach(val => {
+                            if (res.data[index].data_source == val.code) {
+                                res.data[index].data_source = val.value;
+                            }
+                        })
+                    }
+                    this.tableData = res.data;
+                }
+            });
         },
         // 新建组件
         addProject() {
@@ -96,16 +129,6 @@ export default {
                     }
                 })
             }).catch(() => {});
-        }
-    },
-    // 表格日期格式化展示
-    dateFormat(row, column) {
-        const date = row[column.property];
-        if (date != null) {
-            const year = date.substring(0, 4);
-            const month = date.substring(4, 6);
-            const day = date.substring(6, 8);
-            return year + "-" + month + "-" + day;
         }
     },
 }
