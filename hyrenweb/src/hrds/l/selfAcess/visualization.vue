@@ -1087,7 +1087,7 @@ export default {
             },
             //轴线设置--x轴字段
             xAxis: {
-                type: "", //轴类型
+                axis_type: "1", //轴类型
                 data: [], //x轴数据
                 show: '1', //是否显示
                 position: "bottom", //轴位置
@@ -1101,6 +1101,9 @@ export default {
                 offset: 0, //轴偏移量
                 name: "", //轴名称
                 nameLocation: "end", //轴名称位置
+                min: "0",
+                max: "100",
+                silent: "1",
                 xAxisnameLocationArr: [{
                     code: 'start',
                     value: 'start'
@@ -1139,7 +1142,7 @@ export default {
             },
             //轴线设置--y轴
             yAxis: {
-                type: "", //轴类型
+                axis_type: "2", //轴类型
                 show: '1', //是否显示
                 position: "left", //轴位置
                 yAxispositionArr: [{
@@ -1152,6 +1155,9 @@ export default {
                 offset: 0, //轴偏移量
                 name: "", //轴名称
                 nameLocation: "end", //轴名称位置
+                min: "0",
+                max: "100",
+                silent: "1",
                 yAxisnameLocationArr: [{
                     code: 'start',
                     value: 'start'
@@ -1328,6 +1334,11 @@ export default {
                 '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆',
                 '北京', '天津', '重庆', '香港', '澳门', '台湾'
             ],
+            auto_table_info: {
+                is_gridline: "1",
+                is_zebraline: "1",
+                zl_background: "#cccccc"
+            },
 
         }
     },
@@ -2420,20 +2431,9 @@ export default {
             this.auto_comp_sum.data_source = this.markCodeIndex;
             this.auto_comp_sum.sources_obj = this.markCodeIndex;
             this.auto_comp_sum.chart_type = this.changeGetchartsValue;
-            // for (var i = 0; i < this.fiflterConditionArr.size; i++) {
-            //     var val = this.fiflterConditionArr[i];
-            //     obj = {
-            //         arithmetic_logic: val, realtion,
-            //         cond_en_column: val.key,
-            //         operator: val.number,
-            //         cond_value: val.value,
-            //     }
-            //     autoCompConds.push(obj);
-            // }
             this.fiflterConditionArr.forEach(val => {
                 obj = {
-                    arithmetic_logic: val,
-                    realtion,
+                    arithmetic_logic: val, realtion,
                     cond_en_column: val.key,
                     operator: val.number,
                     cond_value: val.value,
@@ -2458,43 +2458,62 @@ export default {
             autoAxisInfos.push(this.xAxis);
             autoAxisInfos.push(this.yAxis);
             debugger;
-            let parama = {
-                componentBean: {
-                    fetch_name: this.input,
-                    data_source: this.markCodeIndex,
-                    showNum: this.showNum,
-                    x_columns: x_columns,
-                    y_columns: y_columns,
-                },
-                auto_comp_sum: this.auto_comp_sum,
-                autoCompConds: JSON.stringify(autoCompConds),
-                autoCompGroups: JSON.stringify(autoCompGroups),
-                autoCompDataSums: JSON.stringify(autoCompDataSums),
-                autoAxisInfos: JSON.stringify(autoAxisInfos),
-                titleFont: this.titleFont,
-                axisStyleFont: this.xAxis,
-                xAxisLabel: this.xAxisLabel,
-                yAxisLabel: this.yAxisLabel,
-                xAxisLine: this.xAxisLine,
-                yAxisLine: this.yAxisLine,
-                auto_table_info: [],
-                auto_chartsconfig: [],
-                auto_label: [],
-                auto_legend_info: this.legendStyle,
-            };
+            let param = new FormData();
+            param.append("componentBeanString", JSON.stringify({
+                fetch_name: this.input,
+                data_source: this.markCodeIndex,
+                showNum: this.showNum,
+                x_columns: x_columns,
+                y_columns: y_columns,
+            }));
+            param.append('auto_comp_sumString', JSON.stringify(this.auto_comp_sum));
+            param.append('autoCompCondString', JSON.stringify(autoCompConds));
+            param.append('autoCompGroupString', JSON.stringify(autoCompGroups));
+            param.append('autoCompDataSumString', JSON.stringify(autoCompDataSums));
+            param.append('titleFontString', JSON.stringify(this.titleFont));
+            param.append('axisStyleFontString', JSON.stringify(this.xAxis));
+            param.append('autoAxisInfoString', JSON.stringify(autoAxisInfos));
+            param.append('xAxisLabelString', JSON.stringify(this.xAxisLabel));
+            param.append('yAxisLabelString', JSON.stringify(this.yAxisLabel));
+            param.append('xAxisLineString', JSON.stringify(this.xAxisLine));
+            param.append('yAxisLineString', JSON.stringify(this.yAxisLine));
+            param.append('auto_table_infoString', JSON.stringify(this.auto_table_info));
+            param.append('auto_chartsconfigString', '{}');
+            param.append('auto_labelString', '{}');
+            param.append('auto_legend_infoString', JSON.stringify(this.legendStyle));
+            // let parama = {
+            //     componentBean: {
+            //         fetch_name: this.input,
+            //         data_source: this.markCodeIndex,
+            //         showNum: this.showNum,
+            //         x_columns: x_columns,
+            //         y_columns: y_columns,
+            //     },
+            //     auto_comp_sum: this.auto_comp_sum,
+            //     autoCompConds: JSON.stringify(autoCompConds),
+            //     autoCompGroups: JSON.stringify(autoCompGroups),
+            //     autoCompDataSums: JSON.stringify(autoCompDataSums),
+            //     titleFont: this.titleFont,
+            //     axisStyleFont: this.xAxis,
+            //     autoAxisInfos: JSON.stringify(autoAxisInfos),
+            //     xAxisLabel: this.xAxisLabel,
+            //     yAxisLabel: this.yAxisLabel,
+            //     xAxisLine: this.xAxisLine,
+            //     yAxisLine: this.yAxisLine,
+            //     auto_table_info: [],
+            //     auto_chartsconfig: [],
+            //     auto_label: [],
+            //     auto_legend_info: this.legendStyle,
+            // };
+            // paramss.append(parama)
             debugger;
-            this.$refs['auto_comp_sum'].validate((valid) => {
-                if (valid) {
-                    functionAll.addVisualComponentInfo(parama).then(res => {
-                        if (res && res.success) {
-                            this.$Msg.customizTitle('保存成功', 'success');
-                        }
-                        // this.$router.push({
-                        //     name: 'visualizationindex'
-                        // })
-                    })
-                }
-            });
+            // fromData();
+            functionAll.addVisualComponentInfo(param).then(res => {
+                this.$Msg.customizTitle('保存成功', 'success');
+                // this.$router.push({
+                //     name: 'visualizationindex'
+                // })
+            })
         }
 
     }
