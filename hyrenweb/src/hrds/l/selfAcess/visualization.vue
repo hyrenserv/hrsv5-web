@@ -153,6 +153,25 @@
                        :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper"
                        :total="dynamicColumnTables.length" class="locationcenter"></el-pagination>
         <el-row class="elRowtitle">
+            <p class="tempalteInfo">基础信息填写</p>
+        </el-row>
+        <el-row>
+            <el-form :model="auto_comp_sum" ref="auto_comp_sum" class="demo-form-inline" :inline="true"
+                     label-width="200px">
+                <el-col :span="12">
+                    <el-form-item label="组件名称" prop="component_name">
+                        <el-input v-model="auto_comp_sum.component_name" placeholder="组件名称"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="组件描述" prop="component_name">
+                        <el-input v-model="auto_comp_sum.component_desc" placeholder="组件描述"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-form>
+        </el-row>
+        <div class="lines"></div>
+        <el-row class="elRowtitle">
             <p class="tempalteInfo">可视化设置</p>
         </el-row>
         <div class="lines"></div>
@@ -2593,42 +2612,86 @@
             addVisualComponentInfo() {
                 let x_columns = [];
                 let y_columns = [];
+                let obj = {};
+                let autoCompConds = [];
+                let autoCompGroups = [];
+                let autoCompDataSums = [];
                 this.xValueArry.forEach(val => {
                     x_columns.push(val.nameAll)
                 })
                 this.yValueArry.forEach(val => {
                     y_columns.push(val.nameAll)
                 })
+                this.auto_comp_sum.data_source = this.markCodeIndex;
+                this.auto_comp_sum.sources_obj = this.markCodeIndex;
+                this.auto_comp_sum.chart_type = this.changeGetchartsValue;
+                // for (var i = 0; i < this.fiflterConditionArr.size; i++) {
+                //     var val = this.fiflterConditionArr[i];
+                //     obj = {
+                //         arithmetic_logic: val, realtion,
+                //         cond_en_column: val.key,
+                //         operator: val.number,
+                //         cond_value: val.value,
+                //     }
+                //     autoCompConds.push(obj);
+                // }
+                this.fiflterConditionArr.forEach(val => {
+                    obj = {
+                        arithmetic_logic: val,realtion,
+                        cond_en_column: val.key,
+                        operator: val.number,
+                        cond_value: val.value,
+                    }
+                    autoCompConds.push(obj);
+                });
+                this.groupCondtionArr.forEach(val => {
+                    obj = {
+                        column_name: val.column_name,
+                    }
+                    autoCompGroups.push(obj);
+                });
+                this.optionsWords.forEach(val => {
+                    obj = {
+                        summary_type: val.code,
+                        column_name: val.realName
+                    }
+                    autoCompDataSums.push(obj);
+
+                });
+                let autoAxisInfos = [];
+                autoAxisInfos.push(this.xAxis);
+                autoAxisInfos.push(this.yAxis);
+                debugger;
                 let parama = {
                     componentBean: {
                         fetch_name: this.input,
-                        data_source:this.markCodeIndex,
-                        showNum:this.showNum,
-                        x_columns:x_columns,
-                        y_columns:y_columns,
+                        data_source: this.markCodeIndex,
+                        showNum: this.showNum,
+                        x_columns: x_columns,
+                        y_columns: y_columns,
                     },
-                    // auto_comp_sum: a,
-                    // autoCompConds: a,
-                    // autoCompGroups: a,
-                    // autoCompDataSums: a,
-                    // titleFont: a,
-                    // axisStyleFont: a,
-                    // autoAxisInfos: a,
-                    // xAxisLabel: a,
-                    // yAxisLabel: a,
-                    // xAxisLine: a,
-                    // yAxisLine: a,
-                    // auto_table_info: a,
-                    // auto_chartsconfig: a,
-                    // auto_label: a,
-                    // auto_legend_info: a,
+                    auto_comp_sum: this.auto_comp_sum,
+                    autoCompConds: JSON.stringify(autoCompConds),
+                    autoCompGroups: JSON.stringify(autoCompGroups),
+                    autoCompDataSums: JSON.stringify(autoCompDataSums),
+                    titleFont: this.titleFont,
+                    axisStyleFont: this.xAxis,
+                    autoAxisInfos: JSON.stringify(autoAxisInfos),
+                    xAxisLabel: this.xAxisLabel,
+                    yAxisLabel: this.yAxisLabel,
+                    xAxisLine: this.xAxisLine,
+                    yAxisLine: this.yAxisLine,
+                    auto_table_info: [],
+                    auto_chartsconfig: [],
+                    auto_label: [],
+                    auto_legend_info: this.legendStyle,
                 };
                 debugger;
                 functionAll.addVisualComponentInfo(parama).then(res => {
                     this.$Msg.customizTitle('保存成功', 'success');
-                    this.$router.push({
-                        name: 'visualizationindex'
-                    })
+                    // this.$router.push({
+                    //     name: 'visualizationindex'
+                    // })
                 })
             }
 
