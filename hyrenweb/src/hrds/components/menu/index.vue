@@ -9,8 +9,8 @@
                         <template v-if="items.children">
                             <!--二级菜单循环-->
                             <el-submenu :index="items.children[0].path" class='oneMenu'>
-                                <template slot="title"><i :class="items.icon" ></i><span slot="title" class='displayno' v-if="isCollapse==false">{{items.title}}</span></template>
-                                <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path" >
+                                <template slot="title"><i :class="items.icon"></i><span slot="title" class='displayno' v-if="isCollapse==false">{{items.title}}</span></template>
+                                <el-menu-item v-for="item in items.children" :key="item.name" :index="item.path">
                                     <i :class="item.icon" class='displayno'></i>
                                     <span class='displayno'>{{item.title}}</span>
                                 </el-menu-item>
@@ -33,7 +33,7 @@
                     <el-col :span="18" style='text-align:left;line-height: 50px;'>
                         <span @click="meanClickFun()" style="cursor: pointer;color:#409EFF"><i :class="isCollapse==true?'el-icon-s-unfold':'el-icon-s-fold'" style="font-size:22px;margin-right:12px;"></i></span>
                         <el-breadcrumb separator="/" style="display: inline-block;color:#409EFF;">
-                            <el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index" >
+                            <el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index">
                                 <router-link v-if="item.url" :to="item.url" style='color: rgb(64, 158, 255);'>{{item.name}}</router-link>
                                 <a v-else style='color: rgb(64, 158, 255);'>
                                     {{item.name}}
@@ -47,6 +47,20 @@
                 </el-row>
             </el-header>
             <el-main style="margin-top:44px">
+                <el-backtop  :bottom="100">
+                    <div style="{
+        height: 100%;
+        width: 100%;
+        background-color: #f2f5f6;
+        box-shadow: 0 0 6px rgba(0,0,0, .12);
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      }">
+                        UP
+                    </div>
+                </el-backtop>
+
                 <router-view></router-view>
             </el-main>
         </el-container>
@@ -126,19 +140,24 @@ export default {
 </script>
 
 <style scoped>
-.home>>>.happy-scroll-container{
+.home>>>.happy-scroll-container {
     overflow: visible !important;
 }
-.home>>>.focusing{
-    background-color:rgb(73, 81, 121);
-    border:0 !important;
+
+.home>>>.focusing {
+    background-color: rgb(73, 81, 121);
+    border: 0 !important;
 }
-.home>>>.el-menu--collapse{
-  width: 50px;
+
+.home>>>.el-menu--collapse {
+    width: 50px;
 }
-.home>>>.el-menu--collapse>div>.el-menu-item .el-submenu__icon-arrow,.home>>>.el-menu--collapse>div>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
+
+.home>>>.el-menu--collapse>div>.el-menu-item .el-submenu__icon-arrow,
+.home>>>.el-menu--collapse>div>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
     display: none;
 }
+
 .aside2 {
     background-color: #495179;
     min-height: 89.1vh;
@@ -146,6 +165,7 @@ export default {
     transition: 0.5s;
     height: 100%;
 }
+
 .aside1 {
     background-color: #495179;
     min-height: 89.1vh;
@@ -192,12 +212,17 @@ export default {
     width: 200px;
     min-height: 400px;
 }
-.home>>>.el-tooltip,.home>>>.el-submenu__title,.home>>>.el-menu>div>.el-menu-item{
- padding: 0 10px !important;
+
+.home>>>.el-tooltip,
+.home>>>.el-submenu__title,
+.home>>>.el-menu>div>.el-menu-item {
+    padding: 0 10px !important;
 }
-.el-header>>>.el-breadcrumb__separator{
-  color:rgb(64, 158, 255)
+
+.el-header>>>.el-breadcrumb__separator {
+    color: rgb(64, 158, 255)
 }
+
 .el-header {
     background-color: #fff;
     text-align: center;
@@ -233,5 +258,8 @@ export default {
     background-color: #495179;
     text-align: center;
     color: #fff;
+}
+.el-main>>>.el-backtop{
+    right: 5px !important;
 }
 </style>
