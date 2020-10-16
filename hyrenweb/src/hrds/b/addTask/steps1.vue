@@ -1272,7 +1272,6 @@ export default {
                 }
             });
         } else {
-            this.collectType = true
             this.isshow = 'first'
             let params = {};
             params["databaseId"] = this.sourceId;
@@ -1349,6 +1348,7 @@ export default {
                                     this.radio3 = res.data[0].classify_id
                                 } else {
                                     this.isshow = 'all'
+                                    this.collectType = true
                                 }
                             })
                         }
