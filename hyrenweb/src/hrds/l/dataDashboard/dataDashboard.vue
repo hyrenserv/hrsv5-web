@@ -1741,7 +1741,7 @@ export default {
             }
 
             if (this.auto_label_info.label_content == "") {
-                this.$Msg.customizTitle('请输入文本标签的内容', 'waring')
+                this.$Msg.customizTitle('请输入文本标签的内容', 'warning')
                 return false;
             }
             //JSON拷贝
@@ -3285,7 +3285,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
         //仪表板保存按钮
         addDashboardButton() {
             if (this.layout.length <= 0) {
-                this.$Msg.customizTitle('请至少选择一个组件', 'waring')
+                this.$Msg.customizTitle('请至少选择一个组件', 'warning')
             } else {
                 this.dialogDashboardVisible=true;
             }

@@ -19,7 +19,7 @@
             </el-table-column>
             <el-table-column prop="component_status" show-overflow-tooltip label="组件状态" align='center'>
             </el-table-column>
-            <el-table-column label="创建日期" prop="create_date" show-overflow-tooltip align='center'>
+            <el-table-column label="创建日期" :formatter="dateFormat" prop="create_date" show-overflow-tooltip align='center'>
             </el-table-column>
             <el-table-column label="创建用户" prop="create_user" show-overflow-tooltip align='center'>
             </el-table-column>
@@ -80,7 +80,7 @@ export default {
         },
         //删除
         deleteVisualComponent(row) {
-            this.$confirm('确认删除吗?', '提示', {
+            this.$confirm('确认删除组件（' + row.component_name + '）吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
@@ -89,17 +89,25 @@ export default {
                 functionAll.deleteVisualComponent({
                     component_id: row.component_id
                 }).then(res => {
-                     if (res && res.success) {
+                    if (res && res.success) {
                         this.$Msg.customizTitle('删除成功', 'success')
                         // 从新渲染表格
                         this.getVisualComponentInfo();
                     }
                 })
-            }).catch(() => {
-                this.$Msg.customizTitle('已取消删除', 'info')
-            });
+            }).catch(() => {});
         }
-    }
+    },
+    // 表格日期格式化展示
+    dateFormat(row, column) {
+        const date = row[column.property];
+        if (date != null) {
+            const year = date.substring(0, 4);
+            const month = date.substring(4, 6);
+            const day = date.substring(6, 8);
+            return year + "-" + month + "-" + day;
+        }
+    },
 }
 </script>
 
