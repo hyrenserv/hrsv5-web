@@ -58,9 +58,9 @@ export default {
         }
     },
     mounted() {
-        this.getVisualComponentInfo();
         this.getCodeItems('AutoFetchStatus');
         this.getCodeItems("AutoSourceObject");
+        this.getVisualComponentInfo();
     },
     methods: {
         getCodeItems(val) {
