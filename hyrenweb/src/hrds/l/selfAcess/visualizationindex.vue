@@ -103,7 +103,7 @@ export default {
             this.$router.push({
                 name: 'visualization',
                 query: {
-                    //传参
+                    component_id:row.component_id
                 }
             })
         },

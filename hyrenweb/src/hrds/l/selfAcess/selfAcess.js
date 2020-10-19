@@ -288,4 +288,12 @@ export function addVisualComponentInfo(data) {
     })
 }
 
+//可视化组件回显
+export function getVisualComponentInfoById(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getVisualComponentInfoById',
+        params: data
+    })
+}
+
 
