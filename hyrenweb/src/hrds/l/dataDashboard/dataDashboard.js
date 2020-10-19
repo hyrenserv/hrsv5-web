@@ -34,7 +34,7 @@ export function deleteDashboardInfo(data) {
         params:data
     })
 }
-//获取可视化组件信息showComponentOnDashboard
+//获取可视化组件信息
 export function getVisualComponentInfo(data) {
     return request({
         url: '/L/autoanalysis/operate/getVisualComponentInfo',
@@ -45,6 +45,7 @@ export function getVisualComponentInfo(data) {
 export function showComponentOnDashboard(data) {
     return request({
         url: '/L/autoanalysis/operate/showComponentOnDashboard',
-        params:data
+        params:data,
+        // headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
