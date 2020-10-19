@@ -157,7 +157,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogBorderVisible=false" size="mini">取 消</el-button>
-            <el-button type="primary" @click="confirmtextline" size="mini">确 认
+            <el-button type="primary" @click="confirmFrameLine" size="mini">确 认
             </el-button>
         </div>
     </el-dialog>
@@ -371,7 +371,8 @@ export default {
             picshow: false,
             layoutFlag: false,
             titleFlag: false,
-            tmp_auto_comp_sum_array: [],
+            echartThemeJson: require("@/assets/images/theme/source.jpg"),
+            selectRow: [],
             //{"code":"01","CN_type":"黑色","type":"dark","bcolor":"#121212","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(0, 0, 0);","depth":"sheng","picurl":"@/assets/images/theme/dark.jpg"},
             //{"code":"02","CN_type":"亮白","type":"light","bcolor":"#FCFCFC","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(255, 255, 255);","depth":"qian","picurl":"@/assets/images/theme/light.jpg"},
             //主题设置参数
@@ -811,7 +812,7 @@ export default {
                             component_id_array.push(id);
                         }
                         this.auto_dashboard_info = data.auto_dashboard_info;
-                        this.tmp_auto_comp_sum_array = data.auto_comp_sum;
+                        this.selectRow = data.auto_comp_sum;
 
                         this.Global_component_array = data;
                         this.global_component_id_array = component_id_array;
@@ -858,7 +859,7 @@ export default {
                 if (code == "00") {
                     this.echart_theme = echart_theme_obj;
                 } else {
-                    $.getJSON('../../../json/EchartTheme.json', function (themeJSON) {
+                    $.getJSON(this.echartThemeJson, function (themeJSON) {
                         echarts.registerTheme(type, themeJSON[type]);
                         this.echart_theme = echart_theme_obj;
                     });
@@ -1095,11 +1096,9 @@ export default {
                 this.$Msg.customizTitle('请至少选择一个组件', 'warning')
                 return;
             }
-            this.tmp_auto_comp_sum_array = [];
             var component_id_array = [];
             for (var i = 0; i < this.selectRow.length; i++) {
-                this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
-                component_id_array.push(this.auto_comp_sum_array[i].component_id);
+                component_id_array.push(this.selectRow[i].component_id);
             }
             this.global_component_id_array = component_id_array;
             let param = {};
@@ -1111,6 +1110,7 @@ export default {
                     this.frame_layout = [];
                     this.layoutFlag = false;
                     this.titleFlag = true;
+                    this.layout=res.data.layout;
                     setTimeout(() => {
                         this.echartpic(res.data, component_id_array);
                     }, 500);
@@ -1178,14 +1178,14 @@ export default {
             $("#mydiv img").each(function () {
                 $(this).css("display", "none");
             });
-            for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                if (this.tmp_auto_comp_sum_array[i].chart_type != "card" && this.tmp_auto_comp_sum_array[i].chart_type != "table") {
-                    var frame_img = document.getElementById(this.tmp_auto_comp_sum_array[i].component_id).children[0];
+            for (var i = 0; i < this.selectRow.length; i++) {
+                if (this.selectRow[i].chart_type != "card" && this.selectRow[i].chart_type != "table") {
+                    var frame_img = document.getElementById(this.selectRow[i].component_id).children[0];
                     var img_style = "width:25px;height:25px;position:absolute;right:0px;z-index:999;";
-                    if (this.tmp_auto_comp_sum_array[i].background == "transparent") {
+                    if (this.selectRow[i].background == "transparent") {
                         img_style += this.grid_layout_backgroundcolor;
                     } else {
-                        img_style += this.tmp_auto_comp_sum_array[i].background;
+                        img_style += this.selectRow[i].background;
                     }
                     var imgHTML = "<img src='@/assets/images/hidedel.png' style=" + img_style + " class='pull-right'>";
                     $(frame_img).append(imgHTML);
@@ -1329,10 +1329,11 @@ export default {
             var style = data.style;
             var type = data.type;
             var depth = data.depth;
-
             this.auto_dashboard_info.dashboard_theme = data.code;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (this.chart_obj_array[i].layouttype == "card") {} else if (this.chart_obj_array[i].layouttype == "table") {
+                if (this.chart_obj_array[i].layouttype == "card") {
+
+                } else if (this.chart_obj_array[i].layouttype == "table") {
 
                 } else if (this.chart_obj_array[i].layouttype == "label") {
 
@@ -1349,7 +1350,7 @@ export default {
             if (code == "00") {
                 this.echart_theme = data;
             } else {
-                $.getJSON('../../../json/EchartTheme.json', function (themeJSON) {
+                $.getJSON(this.echartThemeJson, function (themeJSON) {
                     echarts.registerTheme(type, themeJSON[type]);
                     this.echart_theme = data;
                 });
@@ -1433,7 +1434,7 @@ export default {
                     $(this).trigger("mouseup");
                 });
             }, 500);
-
+            this.dialogTitleVisible=false;
         },
         //文本标签主题设置
         textlabeltheme() {
@@ -1488,7 +1489,6 @@ export default {
             this.auto_dashboard_info.bordertype = data.code;
             for (var i = 0; i < this.layout.length; i++) {
                 var id = this.layout[i].type;
-                //console.log(style.split(":")[1]);
                 $("#" + id).css("border-style", style.split(":")[1]);
                 //$("#"+id).css("border-color","black");
             }
@@ -1500,7 +1500,6 @@ export default {
             this.auto_dashboard_info.borderwidth = data.code;
             for (var i = 0; i < this.layout.length; i++) {
                 var id = this.layout[i].type;
-                //console.log(style.split(":")[1]);
                 $("#" + id).css("border-width", style.split(":")[1]);
             }
         },
@@ -1650,8 +1649,8 @@ export default {
                     "line_type": "heng",
                     "line_color": "05"
                 };
-
             })
+            this.dialogTextLineVisible=false;
         },
         //添加边框
         confirmFrameLine() {
@@ -1694,8 +1693,6 @@ export default {
             layout_obj.type = id;
 
             this.layout.push(layout_obj);
-            this.auto_frame_info.border_color = $("#border_color").val();
-
             this.$nextTick(function () {
                 $("#" + id).css("overflow", "hidden");
                 $("#" + id).css("position", "relative");
@@ -1725,6 +1722,7 @@ export default {
 
                 $("#" + id).trigger("mouseup");
             })
+            this.dialogBorderVisible=false;
         },
         //确定文本标签
         confirmTextLable() {
@@ -1866,13 +1864,14 @@ $("#"+id).css("border-width",style.split(":")[1]);
 
                 //this.auto_label_info={"label_title":"","label_content":"","label_size":"0","label_color":"#ffffff"};
             })
-
+            this.dialogTextLabelVisible=false;
         },
         //确认仪表板背景色
         confirmBackgroudColor() {
-            var bgcolor = $('#echart_bgcolor').val();
+            var bgcolor = this.auto_dashboard_info.background;
             this.auto_dashboard_info.background = bgcolor;
             this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
+            this.dialogBackgroundVisible=false;
         },
         //找出新增前后不同的组件
         array_diff(compelx, part) {
@@ -1977,14 +1976,14 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     [].push.apply(this.layout, this.frame_layout);
                 }
             }
-            this.Global_component_array["data"].layout = this.layout;
+            this.Global_component_array.layout = this.layout;
 
             var chart_obj_array = [];
             this.$nextTick(function () {
                 for (var i = 0; i < component_id_array.length; i++) {
                     var id = component_id_array[i];
-                    var echartdata = data[id];
-                    var type = data[id].chart_type;
+                    var echartdata = JSON.parse(data[id]);
+                    var type = echartdata.chart_type;
                     $("#" + id).css({
                         "width": 370,
                         "height": 300
@@ -1995,13 +1994,13 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         if (id == this.layout[j].type) {
                             echart_div_layout = this.layout[j];
                             //标题设置
-                            var title = echart_div_layout.title;
+                            var title = echart_div_layout.titleFontInfo;
                             this.title = transferTitle(title);
                             //轴线字体
-                            var axisStyle = echart_div_layout.axisStyle;
+                            var axisStyle = echart_div_layout.axisFontInfo;
                             this.axisStyle = transferAxisStyle(axisStyle);
                             //轴线配置--x轴(xAxis)
-                            var xAxis = echart_div_layout.xAxis[0];
+                            var xAxis = echart_div_layout.xAxisInfo[0];
                             this.xAxis = transferxAxis(xAxis);
                             //x轴(xAxisLine)
                             var xAxisLine = echart_div_layout.xAxisLine;
@@ -2010,7 +2009,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             var xAxisLabel = echart_div_layout.xAxisLabel;
                             this.xAxisLabel = transferxAxisLabel(xAxisLabel);
                             //轴线配置--y轴
-                            var yAxis = echart_div_layout.yAxis[0];
+                            var yAxis = echart_div_layout.yAxisInfo[0];
                             this.yAxis = transferyAxis(yAxis);
                             //y轴(yAxisLine)
                             var yAxisLine = echart_div_layout.yAxisLine;
@@ -2019,22 +2018,22 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             var yAxisLabel = echart_div_layout.yAxisLabel;
                             this.yAxisLabel = transferyAxisLabel(yAxisLabel);
                             //二维表
-                            var tableStyle = echart_div_layout.tabStyle
+                            var tableStyle = echart_div_layout.twoDimensionalTable
                             this.tabStyle.th_background = tableStyle.th_background;
                             this.tabStyle.is_gridline = tableStyle.is_gridline;
                             this.tabStyle.is_zebraline = tableStyle.is_zebraline;
                             this.tabStyle.zl_background = tableStyle.zl_background;
                             //图表配置
-                            var seriesStyle = echart_div_layout.seriesStyle;
-                            seriesStyle.center = JSON.stringify(seriesStyle.center);
-                            seriesStyle.center = JSON.parse(seriesStyle.center);
-                            this.seriesStyle = transferSeriesStyle(seriesStyle);
+                            // var seriesStyle = echart_div_layout.chartsconfig;
+                            // seriesStyle.center = JSON.stringify(seriesStyle.center);
+                            // seriesStyle.center = JSON.parse(seriesStyle.center);
+                            // this.seriesStyle = transferSeriesStyle(seriesStyle);
                             //文本标签
-                            var echartsLabel = echart_div_layout.echartsLabel;
-                            this.echartsLabel = transferEchartsLabel(echartsLabel);
+                            // var echartsLabel = echart_div_layout.textLabel;
+                            // this.echartsLabel = transferEchartsLabel(echartsLabel);
                             //图例设置
-                            var legendStyle = echart_div_layout.legendStyle;
-                            this.legendStyle = transferLegendStyle(legendStyle);
+                            // var legendStyle = echart_div_layout.legendStyle;
+                            // this.legendStyle = transferLegendStyle(legendStyle);
                         }
                     }
                     //定义全国省份的数组
@@ -2059,10 +2058,10 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     }
                     var tmp_component_name = "";
                     var tmp_component_background = "";
-                    for (var k = 0; k < this.tmp_auto_comp_sum_array.length; k++) {
-                        if (component_id_array[i] == this.tmp_auto_comp_sum_array[k].component_id) {
-                            tmp_component_name = this.tmp_auto_comp_sum_array[k].chart_theme;
-                            tmp_component_background = this.tmp_auto_comp_sum_array[k].background;
+                    for (var k = 0; k < this.selectRow.length; k++) {
+                        if (component_id_array[i] == this.selectRow[k].component_id) {
+                            tmp_component_name = this.selectRow[k].chart_theme;
+                            tmp_component_background = this.selectRow[k].background;
                         }
                     }
                     if (type == "line") {
@@ -2260,7 +2259,6 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 }
             })
             this.chart_obj_array = chart_obj_array;
-
             setTimeout(() => {
                 this.confirmBackgroudColor();
             }, 100);
@@ -2350,9 +2348,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -2462,9 +2460,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -2603,9 +2601,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(treemapChart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     treemapChart.clear;
@@ -2696,9 +2694,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(blChart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     blChart.clear;
@@ -2776,9 +2774,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(boxplotChart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     boxplotChart.clear;
@@ -2895,9 +2893,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(lineChart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     lineChart.clear;
@@ -2950,9 +2948,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -3039,9 +3037,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(barChart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     barChart.clear;
@@ -3113,9 +3111,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                             }
                                         }
                                         this.chart_obj_array.splice(this.chart_obj_array.indexOf(pieChart), 1);
-                                        for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                            if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                                this.tmp_auto_comp_sum_array.splice(i, 1);
+                                        for (var i = 0; i < this.selectRow.length; i++) {
+                                            if (this.selectRow[i].component_id == id) {
+                                                this.selectRow.splice(i, 1);
                                             }
                                         }
                                         pieChart.clear;
@@ -3174,9 +3172,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(scatterChart), 1);
-                                    for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                                        if (this.tmp_auto_comp_sum_array[i].component_id == id) {
-                                            this.tmp_auto_comp_sum_array.splice(i, 1);
+                                    for (var i = 0; i < this.selectRow.length; i++) {
+                                        if (this.selectRow[i].component_id == id) {
+                                            this.selectRow.splice(i, 1);
                                         }
                                     }
                                     scatterChart.clear;
@@ -3329,9 +3327,9 @@ var Profile = Vue.extend({
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                 }
             }
-            for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                if (this.tmp_auto_comp_sum_array[i].component_id == layout_id) {
-                    this.tmp_auto_comp_sum_array.splice(i, 1);
+            for (var i = 0; i < this.selectRow.length; i++) {
+                if (this.selectRow[i].component_id == layout_id) {
+                    this.selectRow.splice(i, 1);
                 }
             }
         },
@@ -3431,7 +3429,6 @@ $("#label_color").blur(function () {
     this.auto_label_info.label_color = $("#label_color").val();
 });
 $("#font_color").blur(function () {
-    console.log('11')
     this.auto_label_info.textStyle.color = $('#font_color').val();
 });
 
@@ -3476,10 +3473,10 @@ window.onresize = function () {
             $("#mydiv img").each(function () {
                 $(this).css("display", "inline");
             });
-            for (var i = 0; i < this.tmp_auto_comp_sum_array.length; i++) {
-                if (this.tmp_auto_comp_sum_array[i].chart_type != "card" && this.tmp_auto_comp_sum_array[i].chart_type != "table" &&
-                    this.tmp_auto_comp_sum_array[i].chart_type != "barmd" && this.tmp_auto_comp_sum_array[i].chart_type != "bubble") {
-                    $("#" + this.tmp_auto_comp_sum_array[i].component_id + " img").css("display", "none");
+            for (var i = 0; i < this.selectRow.length; i++) {
+                if (this.selectRow[i].chart_type != "card" && this.selectRow[i].chart_type != "table" &&
+                    this.selectRow[i].chart_type != "barmd" && this.selectRow[i].chart_type != "bubble") {
+                    $("#" + this.selectRow[i].component_id + " img").css("display", "none");
                 }
             }
         }
