@@ -4,17 +4,17 @@
         <div class="row" id="toubu" v-cloak>
             <div class="btn-group pull-right">
                 <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
-                <el-button size="mini" type="primary"  @click="dialogBackgroundVisible=true">背景色</el-button>
-                <el-button size="mini" type="primary"  @click="dialogTitleVisible=true">选择主题</el-button>
-                <el-button size="mini" type="primary"  @click="gridLine">网格线</el-button>
-                <el-button size="mini" type="primary"  @click="dialogTextLabelVisible=true">添加文本标签</el-button>
-                <el-button size="mini" type="primary"  @click="dialogTextLineVisible=true">添加分割线</el-button>
-                <el-button size="mini" type="primary"  @click="dialogBorderVisible=true">添加边框</el-button>
+                <el-button size="mini" type="primary" @click="dialogBackgroundVisible=true">背景色</el-button>
+                <el-button size="mini" type="primary" @click="dialogTitleVisible=true">选择主题</el-button>
+                <el-button size="mini" type="primary" @click="gridLine">网格线</el-button>
+                <el-button size="mini" type="primary" @click="dialogTextLabelVisible=true">添加文本标签</el-button>
+                <el-button size="mini" type="primary" @click="dialogTextLineVisible=true">添加分割线</el-button>
+                <el-button size="mini" type="primary" @click="dialogBorderVisible=true">添加边框</el-button>
                 <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                 <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
                 <el-button size="mini" type="primary" @click="goIndex">返回上一级</el-button>
             </div>
-        </div>    
+        </div>
         <div class="col-md-12">
             <div class="btn-group pull-left">
                 <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.dashboard_theme">
@@ -23,12 +23,8 @@
         <div class="row clearfix" v-show="picshow" id="mydiv">
             <div class="col-md-12 column">
                 <div class="panel-body">
-                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'"
-                         class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" 
-                         :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false"
-                          :margin="[0, 0]" :use-css-transforms="true">
-                        <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" 
-                            :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
+                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
+                        <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
                             <div :id="item.type" style="width: 300px;height:200px;"></div>
                         </grid-item>
                     </grid-layout>
@@ -38,11 +34,9 @@
     </div>
     <!-- 添加组件模态框 -->
     <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%" :before-close="beforeAddComponentClose">
-        <el-table :data="auto_comp_sum_array" border style="width: 100%" ref="multipleComponent" 
-        :row-key="(row)=>{ return row.column_id}" height="450" size="medium" 
-        @select="componentSelectionChange" @select-all='allComponentSelect'>
-            <el-table-column width="40" align="center" type="selection" :reserve-selection="true"/>
-            <el-table-column label="序号" type="index" align="center"/> 
+        <el-table :data="auto_comp_sum_array" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
+            <el-table-column width="40" align="center" type="selection" :reserve-selection="true" />
+            <el-table-column label="序号" type="index" align="center" />
             <el-table-column prop="component_name" label="组件名称" align="center" />
             <el-table-column prop="component_desc" label="组件描述" align="center" />
         </el-table>
@@ -71,15 +65,14 @@
     <!-- 仪表盘主题设置模态框 -->
     <el-dialog title="仪表盘主题设置" :visible.sync="dialogTitleVisible" width="50%" :before-close="beforeTitleClose">
         <el-form ref="addTitelForm" :model="addTitelForm" label-width="130px">
-           <div class="modal-body">
-            <ul class="list-group">
-                <li class="list-group-item" :key="index" v-for="(data,index) in titleData" data-dismiss="modal" 
-                    @click="chooseTitle(data)">
-                    <span>{{data.CN_type}}</span>
-                    <img class="pull-right" :src="data.picurl" style="width: 30px;height: 100%;">
-                </li>
-            </ul>
-        </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    <li class="list-group-item" :key="index" v-for="(data,index) in titleData" data-dismiss="modal" @click="chooseTitle(data)">
+                        <span>{{data.CN_type}}</span>
+                        <img class="pull-right" :src="data.picurl" style="width: 30px;height: 100%;">
+                    </li>
+                </ul>
+            </div>
         </el-form>
     </el-dialog>
     <!-- 添加分割线模态框 -->
@@ -87,14 +80,14 @@
         <el-form ref="textLineForm" :model="textLineForm" label-width="130px">
             <el-form-item label="分割线类型">
                 <el-select v-model="auto_line_info.line_type" placeholder="请选择分割线类型">
-                <el-option label="横向分割线" value="heng"></el-option>
-                <el-option label="纵向分割线" value="zong"></el-option>
-            </el-select>
+                    <el-option label="横向分割线" value="heng"></el-option>
+                    <el-option label="纵向分割线" value="zong"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="分割线颜色">
                 <el-select v-model="auto_line_info.line_color" placeholder="请选择分割线颜色">
-                <el-option :key="index" v-for="(data,index) in labelfontcolor" :label="data.cn_name" :value="data.code"></el-option>
-            </el-select>
+                    <el-option :key="index" v-for="(data,index) in labelfontcolor" :label="data.cn_name" :value="data.code"></el-option>
+                </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -118,7 +111,7 @@
                 </el-row>
             </el-form-item>
         </el-form>
-            <div slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer">
             <el-button @click="dialogBackgroundVisible=false" size="mini">取 消</el-button>
             <el-button type="primary" size="mini" @click="confirmBackgroudColor">确定</el-button>
         </div>
@@ -128,9 +121,9 @@
         <el-form ref="addBorderLineForm" :model="addBorderLineForm" label-width="130px">
             <el-form-item label="启用阴影效果">
                 <el-select v-model="auto_frame_info.is_shadow" placeholder="请选择启用阴影效果">
-                <el-option label="是" value="1"></el-option>
-                <el-option label="否" value="0"></el-option>
-            </el-select>
+                    <el-option label="是" value="1"></el-option>
+                    <el-option label="否" value="0"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="边框风格">
                 <el-select v-model="auto_frame_info.border_style" placeholder="请选择边框风格">
@@ -142,7 +135,7 @@
                     <el-option label="3D垄状边框" value="ridge"></el-option>
                     <el-option label="3Dinset边框" value="inset"></el-option>
                     <el-option label="3Doutset边框" value="outset"></el-option>
-             </el-select>
+                </el-select>
             </el-form-item>
             <el-form-item label="边框颜色">
                 <el-row>
@@ -171,7 +164,7 @@
     <!-- 添加文本标签模态框 -->
     <el-dialog title="添加文本标签" :visible.sync="dialogTextLabelVisible" width="50%" :before-close="beforeTextLabelClose">
         <el-form ref="addTitelForm" :model="textLabelForm" label-width="130px">
-           <el-form-item label="文本标签">
+            <el-form-item label="文本标签">
                 <el-input v-model="auto_label_info.label_content"></el-input>
             </el-form-item>
             <el-form-item label="标签背景颜色">
@@ -179,17 +172,17 @@
                     <el-col :span="2">
                         <el-color-picker v-model="auto_label_info.label_color"></el-color-picker>
                     </el-col>
-                    <el-col :span="10" >
+                    <el-col :span="10">
                         <el-input style="width:320px" v-model="auto_label_info.label_color"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
             <el-form-item label="字体颜色">
-                 <el-row>
+                <el-row>
                     <el-col :span="2">
                         <el-color-picker v-model="auto_label_info.textStyle.color"></el-color-picker>
                     </el-col>
-                    <el-col :span="10" >
+                    <el-col :span="10">
                         <el-input style="width:320px" v-model="auto_label_info.textStyle.color"></el-input>
                     </el-col>
                 </el-row>
@@ -202,7 +195,7 @@
                     <el-option label="加粗的" value="bolder"></el-option>
                 </el-select>
             </el-form-item>
-             <el-form-item label="字体大小">
+            <el-form-item label="字体大小">
                 <el-input v-model="auto_label_info.textStyle.fontSize"></el-input>
             </el-form-item>
             <el-form-item label="字体系列">
@@ -258,7 +251,7 @@
                 </el-select>
             </el-form-item>
         </el-form>
-         <div slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer">
             <el-button @click="dialogTextLabelVisible=false" size="mini">取 消</el-button>
             <el-button type="primary" @click="confirmTextLable()" size="mini">确 认
             </el-button>
@@ -266,6 +259,7 @@
     </el-dialog>
 </div>
 </template>
+
 <script src="/static/src/panal/js/util/echarts-option.js"></script>
 <script src="/static/src/panal/js/util/jquery-ui.js"></script>
 <script src="/static/src/panal/js/util/echarts.min.js"></script>
@@ -281,23 +275,21 @@
 <script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
 <script src="/static/src/panal/js/relation/bootstrap.min.js"></script>
 <script  src="/static/src/bootstrap-colorpicker.min.js"></script>
-<script src="/static/src/panal/js/relation/china.js"></script>
-
-<script>
+<script src="/static/src/panal/js/relation/china.js"></script><script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
 import * as functionAll from "./dataDashboard";
 export default {
     data() {
         return {
-            addDashboardForm:{},
-            textLabelForm:{},
-            addTitelForm:{},
-            addBackgroundForm:{},
-            textLineForm:{},
-            addBorderLineForm:{},
-            selectRow:[],
-            dialogBackgroundVisible:false,
+            addDashboardForm: {},
+            textLabelForm: {},
+            addTitelForm: {},
+            addBackgroundForm: {},
+            textLineForm: {},
+            addBorderLineForm: {},
+            selectRow: [],
+            dialogBackgroundVisible: false,
             dialogAddComponentVisible: false,
             dialogDashboardVisible: false,
             dialogTitleVisible: false,
@@ -1073,7 +1065,7 @@ export default {
         }
     },
     methods: {
-         goIndex() {
+        goIndex() {
             this.$router.push({
                 path: 'dataDashboardList'
             })
@@ -1083,37 +1075,37 @@ export default {
             functionAll.getDataDashboardInfoById({
                 "dashboard_id": dashboard_id
             }).then(res => {
-                // this.dataDashboardList=res.data;
+                this.dataDashboardList = res.data;
             })
         },
         //获取可视化组件信息
         getVisualComponentInfo() {
-           this.dialogAddComponentVisible=true;
+            this.dialogAddComponentVisible = true;
             functionAll.getVisualComponentInfo({}).then(res => {
-                if (res&&res.success) {
+                if (res && res.success) {
                     this.auto_comp_sum_array = res.data;
                 }
             })
         },
         //确定组件
         showComponentOnDashboard() {
-            this.dialogAddComponentVisible=false;
+            this.dialogAddComponentVisible = false;
             this.picshow = true;
             if (this.selectRow.length <= 0) {
                 this.$Msg.customizTitle('请至少选择一个组件', 'warning')
                 return;
             }
-            this.tmp_auto_comp_sum_array=[];
-    		var component_id_array=[];
-    		for(var i=0;i<this.selectRow.length;i++){
-    		    this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
-    			component_id_array.push(this.auto_comp_sum_array[i].component_id);
-    		}
+            this.tmp_auto_comp_sum_array = [];
+            var component_id_array = [];
+            for (var i = 0; i < this.selectRow.length; i++) {
+                this.tmp_auto_comp_sum_array.push(this.auto_comp_sum_array[i]);
+                component_id_array.push(this.auto_comp_sum_array[i].component_id);
+            }
             this.global_component_id_array = component_id_array;
-            let param ={};
-            param['autoCompSums']=JSON.stringify(this.selectRow);
+            let param = {};
+            param['autoCompSums'] = JSON.stringify(this.selectRow);
             functionAll.showComponentOnDashboard(param).then(res => {
-                if (res&&res.success) {
+                if (res && res.success) {
                     this.label_layout = [];
                     this.line_layout = [];
                     this.frame_layout = [];
@@ -1129,10 +1121,10 @@ export default {
                             $(this).trigger("mouseup");
                         });
                     }, 500);
-                        }
-                    })
+                }
+            })
         },
-         // 关闭组件弹窗
+        // 关闭组件弹窗
         beforeAddComponentClose() {
             this.dialogAddComponentVisible = false;
         },
@@ -1140,11 +1132,11 @@ export default {
         beforeTitleClose() {
             this.dialogTitleVisible = false;
         },
-         // 关闭仪表盘弹框
+        // 关闭仪表盘弹框
         beforeDashboardClose() {
             this.dialogDashboardVisible = false;
         },
-         // 关闭分割线弹框
+        // 关闭分割线弹框
         beforeTextLineClose() {
             this.dialogTextLineVisible = false;
         },
@@ -3287,7 +3279,7 @@ $("#"+id).css("border-width",style.split(":")[1]);
             if (this.layout.length <= 0) {
                 this.$Msg.customizTitle('请至少选择一个组件', 'warning')
             } else {
-                this.dialogDashboardVisible=true;
+                this.dialogDashboardVisible = true;
             }
         },
         //网格线
@@ -3535,11 +3527,10 @@ function loadBdScript(scriptId, url) {
     document.getElementsByTagName("head")[0].appendChild(script);
 };
 // 展示省
-function  showProvince(pName, Chinese_){
+function showProvince(pName, Chinese_) {
     loadBdScript('$'+pName+'JS','../../../js/province/'+pName+'.js');
 }
 </script>
-
 <style scoped>
 @import '/static/src/panal/css/bootstrap.min.css';
 @import '/static/src/panal/css/icheck-bootstrap.css';
