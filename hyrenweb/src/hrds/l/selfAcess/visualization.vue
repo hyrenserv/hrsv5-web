@@ -375,9 +375,9 @@
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">背景颜色</span>
-                                    <el-color-picker v-model="titleFont.backgroundColor"
+                                    <el-color-picker v-model="titleFont.backgroundcolor"
                                                      style="width:20px;height:20px;"></el-color-picker>
-                                    <el-input v-model="titleFont.backgroundColor" placeholder="背景颜色" size="small"
+                                    <el-input v-model="titleFont.backgroundcolor" placeholder="背景颜色" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -385,16 +385,16 @@
                                     <span class="el-input-group__prepends">水平位置</span>
                                     <el-select v-model="titleFont.align" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in titleFont.titleFontalignArr" :key="item.value"
+                                        <el-option v-for="item in titleFontalignArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">垂直位置</span>
-                                    <el-select v-model="titleFont.verticalAlign" placeholder="请选择" size="small"
+                                    <el-select v-model="titleFont.verticalalign" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in titleFont.titleFontverticalAlignArr" :key="item.value"
+                                        <el-option v-for="item in titleFontverticalAlignArr" :key="item.value"
                                                    :label="item.label" :value="item.value">
                                         </el-option>
                                     </el-select>
@@ -409,48 +409,48 @@
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">字体大小</span>
-                                    <el-input v-model="titleFont.fontSize" placeholder="字体大小" size="small"
+                                    <el-input v-model="titleFont.fontsize" placeholder="字体大小" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">字体风格</span>
-                                    <el-select v-model="titleFont.fontStyle" placeholder="请选择" size="small"
+                                    <el-select v-model="titleFont.fontstyle" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in titleFont.titleFontfontStyleArr" :key="item.value"
+                                        <el-option v-for="item in titleFontfontStyleArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">字体系列</span>
-                                    <el-select v-model="titleFont.fontFamily" placeholder="请选择" size="small"
+                                    <el-select v-model="titleFont.fontfamily" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in titleFont.titleFontfontFamilyArr" :key="item.value"
+                                        <el-option v-for="item in titleFontfontFamilyArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">字体粗细</span>
-                                    <el-select v-model="titleFont.fontWeight" placeholder="请选择" size="small"
+                                    <el-select v-model="titleFont.fontweight" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in titleFont.titleFontfontWeightArr" :key="item.value"
+                                        <el-option v-for="item in titleFontfontWeightArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">边框颜色</span>
-                                    <el-color-picker v-model="titleFont.borderColor"
+                                    <el-color-picker v-model="titleFont.bordercolor"
                                                      style="width:20px;height:20px;"></el-color-picker>
-                                    <el-input v-model="titleFont.borderColor" placeholder="边框颜色" size="small"
+                                    <el-input v-model="titleFont.bordercolor" placeholder="边框颜色" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">边框粗细</span>
-                                    <el-input v-model="titleFont.borderWidth" placeholder="边框粗细" size="small"
+                                    <el-input v-model="titleFont.borderwidth" placeholder="边框粗细" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -470,7 +470,7 @@
                                             <span class="el-input-group__prepends">轴位置</span>
                                             <el-select v-model="xAxis.position" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in xAxis.xAxispositionArr" :key="item.value"
+                                                <el-option v-for="item in xAxispositionArr" :key="item.value"
                                                            :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -494,7 +494,7 @@
                                             <span class="el-input-group__prepends">轴名称位置</span>
                                             <el-select v-model="xAxis.namelocation" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in xAxis.xAxisnameLocationArr" :key="item.value"
+                                                <el-option v-for="item in xAxisnameLocationArr" :key="item.value"
                                                            :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -579,7 +579,7 @@
                                             <span class="el-input-group__prepends">轴位置</span>
                                             <el-select v-model="yAxis.position" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in yAxis.yAxispositionArr" :key="item.value"
+                                                <el-option v-for="item in yAxispositionArr" :key="item.value"
                                                            :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -603,7 +603,7 @@
                                             <span class="el-input-group__prepends">轴名称位置</span>
                                             <el-select v-model="yAxis.namelocation" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in yAxis.yAxisnameLocationArr" :key="item.value"
+                                                <el-option v-for="item in yAxisnameLocationArr" :key="item.value"
                                                            :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -690,7 +690,7 @@
                                             <span class="el-input-group__prepends">水平位置</span>
                                             <el-select v-model="axisStyle.align" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in axisStyle.axisStylealignArr" :key="item.value"
+                                                <el-option v-for="item in axisStylealignArr" :key="item.value"
                                                            :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -699,7 +699,7 @@
                                             <span class="el-input-group__prepends">垂直位置</span>
                                             <el-select v-model="axisStyle.verticalAlign" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in axisStyle.axisStyleverticalAlignArr"
+                                                <el-option v-for="item in axisStyleverticalAlignArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -777,6 +777,15 @@
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">是否显示</span>
                                     <el-select v-model="legendStyle.show" placeholder="请选择" size="small"
+                                               class="selectPosition">
+                                        <el-option v-for="item in axisCheck" :key="item.value" :label="item.value"
+                                                   :value="item.code">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                    <span class="el-input-group__prepends">是否显示提示</span>
+                                    <el-select v-model="legendStyle.tooltip" placeholder="请选择" size="small"
                                                class="selectPosition">
                                         <el-option v-for="item in axisCheck" :key="item.value" :label="item.value"
                                                    :value="item.code">
@@ -1213,109 +1222,114 @@
                         value: 'insideBottomRight'
                     }]
                 },
+                titleFontalignArr: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'center',
+                    value: 'center'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }],
+                verticalalign: "top", //标题垂直位置
+                titleFontverticalAlignArr: [{
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }],
+                titleFontfontFamilyArr: [{
+                    code: 'sans-serif',
+                    value: '无衬线字体'
+                }, {
+                    code: 'serif',
+                    value: '衬线字体'
+                }, {
+                    code: 'monospace',
+                    value: '等宽字体'
+                }, {
+                    code: 'Arial',
+                    value: '宋体'
+                }],
+                titleFontfontStyleArr: [{
+                    code: 'normal',
+                    value: '标准风格'
+                }, {
+                    code: 'italic',
+                    value: '斜体风格'
+                }, {
+                    code: 'oblique',
+                    value: '倾斜风格'
+                }],
+                titleFontfontWeightArr: [{
+                    code: 'lighter',
+                    value: '细的'
+                }, {
+                    code: 'normal',
+                    value: '标准的'
+                }, {
+                    code: 'bold',
+                    value: '粗的'
+                }, {
+                    code: 'bolder',
+                    value: '加粗的'
+                }],
                 //标题设置字段总和
                 titleFont: {
                     align: "left", //标题水平位置
-                    titleFontalignArr: [{
-                        code: 'left',
-                        value: 'left'
-                    }, {
-                        code: 'center',
-                        value: 'center'
-                    }, {
-                        code: 'right',
-                        value: 'right'
-                    }],
-                    verticalAlign: "top", //标题垂直位置
-                    titleFontverticalAlignArr: [{
-                        code: 'top',
-                        value: 'top'
-                    }, {
-                        code: 'middle',
-                        value: 'middle'
-                    }, {
-                        code: 'bottom',
-                        value: 'bottom'
-                    }],
-                    backgroundColor: "transparent", //标题背景色
-                    borderColor: "transparent", //标题边框颜色
-                    borderWidth: 0, //标题边框粗细
-                    borderRadius: 0, //坐标轴边框圆角
+                    backgroundcolor: "transparent", //标题背景色
+                    bordercolor: "transparent", //标题边框颜色
+                    borderwidth: 0, //标题边框粗细
+                    borderradius: 0, //坐标轴边框圆角
                     color: "#000000", //字体颜色
-                    fontFamily: "Arial", //字体系列
-                    titleFontfontFamilyArr: [{
-                        code: 'sans-serif',
-                        value: '无衬线字体'
-                    }, {
-                        code: 'serif',
-                        value: '衬线字体'
-                    }, {
-                        code: 'monospace',
-                        value: '等宽字体'
-                    }, {
-                        code: 'Arial',
-                        value: '宋体'
-                    }],
-                    fontSize: 24, //字体大小
-                    fontStyle: "normal", //字体风格
-                    titleFontfontStyleArr: [{
-                        code: 'normal',
-                        value: '标准风格'
-                    }, {
-                        code: 'italic',
-                        value: '斜体风格'
-                    }, {
-                        code: 'oblique',
-                        value: '倾斜风格'
-                    }],
-                    fontWeight: "normal", //字体粗细
-                    titleFontfontWeightArr: [{
-                        code: 'lighter',
-                        value: '细的'
-                    }, {
-                        code: 'normal',
-                        value: '标准的'
-                    }, {
-                        code: 'bold',
-                        value: '粗的'
-                    }, {
-                        code: 'bolder',
-                        value: '加粗的'
-                    }],
-                    lineHeight: "40", //字体行高
+                    fontfamily: "Arial", //字体系列
+
+                    fontsize: 24, //字体大小
+                    fontstyle: "normal", //字体风格
+
+                    fontweight: "normal", //字体粗细
+
+                    lineheight: "40", //字体行高
                 },
                 //轴线设置--x轴字段
+                xAxispositionArr: [{
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }],
+                xAxisnameLocationArr: [{
+                    code: 'start',
+                    value: 'start'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'end',
+                    value: 'end'
+                }],
                 xAxis: {
                     axis_type: "1", //轴类型
                     data: [], //x轴数据
                     show: '1', //是否显示
                     position: "bottom", //轴位置
-                    xAxispositionArr: [{
-                        code: 'top',
-                        value: 'top'
-                    }, {
-                        code: 'bottom',
-                        value: 'bottom'
-                    }],
-                    offset: 0, //轴偏移量
+
+                    axisoffset: 0, //轴偏移量
                     name: "x轴", //轴名称
-                    nameLocation: "end", //轴名称位置
+                    namelocation: "end", //轴名称位置
                     min: "0",
                     max: "100",
                     silent: "1",
-                    xAxisnameLocationArr: [{
-                        code: 'start',
-                        value: 'start'
-                    }, {
-                        code: 'middle',
-                        value: 'middle'
-                    }, {
-                        code: 'end',
-                        value: 'end'
-                    }],
+
                     nameTextStyle: {}, //--轴名称样式
-                    nameGap: 15, //名称与轴线距离
-                    nameRotate: 0, //名称旋转角度
+                    namegap: 15, //名称与轴线距离
+                    namerotate: 0, //名称旋转角度
                     axisLine: {}, //--轴线
                     axisLabel: {} //--刻度标签
                 },
@@ -1328,7 +1342,7 @@
                 }],
                 xAxisLine: {
                     show: '1', //轴线是否显示
-                    onZero: '1', //是否在0刻度上
+                    onzero: '1', //是否在0刻度上
                     symbol: "none", //箭头显示方式
                     symbolOffset: 0, //箭头偏移量
                 },
@@ -1340,42 +1354,44 @@
                     formatter: null, //刻度标签内容格式器
                 },
                 //轴线设置--y轴
+                yAxispositionArr: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }],
+                yAxisnameLocationArr: [{
+                    code: 'start',
+                    value: 'start'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'end',
+                    value: 'end'
+                }],
                 yAxis: {
                     axis_type: "2", //轴类型
                     show: '1', //是否显示
                     position: "left", //轴位置
-                    yAxispositionArr: [{
-                        code: 'left',
-                        value: 'left'
-                    }, {
-                        code: 'right',
-                        value: 'right'
-                    }],
-                    offset: 0, //轴偏移量
+
+                    axisoffset: 0, //轴偏移量
                     name: "y轴", //轴名称
-                    nameLocation: "end", //轴名称位置
+                    namelocation: "end", //轴名称位置
                     min: "0",
                     max: "100",
                     silent: "1",
-                    yAxisnameLocationArr: [{
-                        code: 'start',
-                        value: 'start'
-                    }, {
-                        code: 'middle',
-                        value: 'middle'
-                    }, {
-                        code: 'end',
-                        value: 'end'
-                    }],
+
                     nameTextStyle: {}, //--轴名称样式
-                    nameGap: 15, //名称与轴线距离
-                    nameRotate: 0, //名称旋转角度
+                    namegap: 15, //名称与轴线距离
+                    namerotate: 0, //名称旋转角度
                     axisLine: {}, //--轴线
                     axisLabel: {} //--刻度标签
                 },
                 yAxisLine: {
                     show: '1', //轴线是否显示
-                    onZero: '1', //是否在0刻度上
+                    onzero: '1', //是否在0刻度上
                     symbol: "none", //箭头显示方式
                     symbolOffset: 0, //箭头偏移量
                 },
@@ -1386,30 +1402,32 @@
                     margin: 20, //刻度标签与轴线间距
                     formatter: null, //刻度标签内容格式器
                 },
+                axisStylealignArr: [{
+                    code: 'left',
+                    value: 'left'
+                }, {
+                    code: 'center',
+                    value: 'center'
+                }, {
+                    code: 'right',
+                    value: 'right'
+                }],
+                axisStyleverticalAlignArr: [{
+                    code: 'top',
+                    value: 'top'
+                }, {
+                    code: 'middle',
+                    value: 'middle'
+                }, {
+                    code: 'bottom',
+                    value: 'bottom'
+                }],
                 //轴线字体
                 axisStyle: {
                     align: "center", //坐标轴水平位置
-                    axisStylealignArr: [{
-                        code: 'left',
-                        value: 'left'
-                    }, {
-                        code: 'center',
-                        value: 'center'
-                    }, {
-                        code: 'right',
-                        value: 'right'
-                    }],
+
                     verticalAlign: "middle", //坐标轴垂直位置
-                    axisStyleverticalAlignArr: [{
-                        code: 'top',
-                        value: 'top'
-                    }, {
-                        code: 'middle',
-                        value: 'middle'
-                    }, {
-                        code: 'bottom',
-                        value: 'bottom'
-                    }],
+
                     backgroundColor: "transparent", //坐标轴背景色
                     borderColor: "transparent", //坐标轴边框颜色
                     borderWidth: 0, //坐标轴边框粗细
@@ -1432,6 +1450,7 @@
                     }],
                     type: "plain", //图例类型
                     show: '1', //是否显示
+                    tooltip: '1',
                     left: "center", //左边距
                     top: "auto", //上边距
                     right: "auto", //右边距
@@ -1656,6 +1675,8 @@
                     this.xAxisLabel = res.data.xAxislabel;
                     this.yAxisLabel = res.data.yAxislabel;
                     this.legendStyle = res.data.legendInfo;
+                    this.titleFont = res.data.titleFontInfo;
+                    this.axisStyle = res.data.axisFontInfo;
                     console.log(res.data)
 
                 });
@@ -2783,7 +2804,7 @@
                 param.append('autoCompGroupString', JSON.stringify(autoCompGroups));
                 param.append('autoCompDataSumString', JSON.stringify(autoCompDataSums));
                 param.append('titleFontString', JSON.stringify(this.titleFont));
-                param.append('axisStyleFontString', JSON.stringify(this.xAxis));
+                param.append('axisStyleFontString', JSON.stringify(this.axisStyle));
                 param.append('autoAxisInfoString', JSON.stringify(autoAxisInfos));
                 param.append('xAxisLabelString', JSON.stringify(this.xAxisLabel));
                 param.append('yAxisLabelString', JSON.stringify(this.yAxisLabel));
