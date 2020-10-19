@@ -32,6 +32,14 @@
             </template>
         </el-table-column>
     </el-table>
+    <!-- 查看sql -->
+    <el-dialog title="查看sql" :visible.sync="viewSqlDataDiolag" width="900px">
+        <el-input type="textarea" :rows="14" placeholder="请输入内容" v-model="exe_sql">
+        </el-input>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="viewSqlDataDiolag=false" size="mini" type="danger">关 闭</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -42,9 +50,11 @@ import * as fixedAll from "@/utils/js/fileOperations";
 export default {
     data() {
         return {
+            viewSqlDataDiolag:false,
             tableData: [],
             compState: [],
-            autoSourceObject: []
+            autoSourceObject: [],
+            exe_sql:''
         }
     },
     mounted() {
@@ -68,7 +78,6 @@ export default {
                 })
             }
         },
-
         // 数据可视化首页列表展示
         getVisualComponentInfo() {
             functionAll.getVisualComponentInfo().then(res => {
@@ -110,6 +119,8 @@ export default {
         //查看sql
         vieSql(index, row) {
             // 查看sql接口
+            this.viewSqlDataDiolag=true;
+            this.exe_sql=row.exe_sql;
         },
         //删除
         deleteVisualComponent(row) {

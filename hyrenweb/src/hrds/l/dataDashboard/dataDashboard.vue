@@ -34,12 +34,20 @@
     </div>
     <!-- 添加组件模态框 -->
     <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%" :before-close="beforeAddComponentClose">
-        <el-table :data="auto_comp_sum_array" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
+        <el-table :data="auto_comp_sum_array.slice((currPage - 1) * pageSize,currPage * pageSize)" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
             <el-table-column width="40" align="center" type="selection" :reserve-selection="true" />
-            <el-table-column label="序号" type="index" align="center" />
+            <el-table-column label="序号" width="50px" align="left">
+                    <template slot-scope="scope">
+                        <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
+                    </template>
+                </el-table-column>
             <el-table-column prop="component_name" label="组件名称" align="center" />
             <el-table-column prop="component_desc" label="组件描述" align="center" />
         </el-table>
+         <!-- 分页内容 -->
+        <el-row>
+            <el-pagination @current-change="handleCurrentChangeList" :current-page="currPage" @size-change="handleSizeChange" :page-sizes="[5, 10, 25, 50, 100,500]" :page-size="pageSize" layout=" total,sizes,prev, pager, next,jumper" :total="totalSize" class='locationcenter' />
+        </el-row>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancel" size="mini">取 消</el-button>
             <el-button type="primary" @click="showComponentOnDashboard" size="mini">确 认
@@ -282,6 +290,9 @@ import * as functionAll from "./dataDashboard";
 export default {
     data() {
         return {
+            totalSize:0,
+            currPage:1,
+            pageSize:10,
             addDashboardForm: {},
             textLabelForm: {},
             addTitelForm: {},
@@ -1085,8 +1096,18 @@ export default {
             functionAll.getVisualComponentInfo({}).then(res => {
                 if (res && res.success) {
                     this.auto_comp_sum_array = res.data;
+                    this.totalSize = res.data.length;
                 }
             })
+        },
+         //表数据实现分页功能
+        handleCurrentChangeList(currPage) {
+            //把val赋给当前页面
+            this.currPage = currPage;
+        },
+        // 改变每页显示条数
+        handleSizeChange(pageSize) {
+            this.pageSize = pageSize;
         },
         //确定组件
         showComponentOnDashboard() {
