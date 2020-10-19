@@ -237,11 +237,11 @@
         </el-form>
     </el-row>
     <!-- 弹出数据源选择模态框 start-->
-    <el-dialog title="选择数据表" :visible.sync="data_source_dialog">
-        <el-row>
-            <el-col :span="8">
+    <el-dialog title="选择数据表" :visible.sync="data_source_dialog" width="80%">
+        <el-row :gutter="10">
+            <el-col :span="9">
                 <div style='height:0.1px'>&nbsp;</div>
-                <Scrollbar>
+                <Scrollbar style='padding-left:10%'>
                     <div class="mytree">
                         <el-tree class="filter-tree" :data="dataSourceTreeData" :indent='0' @node-click="handleNodeClick">
                             <span class="span-ellipsis" slot-scope="{ node, data }">
@@ -259,7 +259,7 @@
                     </div>
                 </Scrollbar>
             </el-col>
-            <el-col :span="16" style="min-height: 400px;">
+            <el-col :span="15" style="min-height: 400px;">
                 <el-table :data="table_data" size="mini">
                     <el-table-column type="index" label="序号" width="50" align="center" />
                     <el-table-column prop="hyren_name" label="表英文名" align="center" />
@@ -324,7 +324,7 @@
 import Loading from '@/hrds/components/loading';
 import * as validator from "@/utils/js/validator";
 import * as rcFun from "./ruleConfig";
-import Scrollbar from '../../../components/scrollbar';
+import Scrollbar from '@/hrds/components/scrollbar';
 
 export default {
     name: 'ruleInfo',
