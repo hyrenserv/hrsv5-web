@@ -904,7 +904,7 @@ export default {
                 //设置检查的总记录数
                 sql += "\n\n SELECT \n\t COUNT(1) AS index2 \n FROM \n\t " + target_tab;
                 if ('' !== check_limit_condition) {
-                    sql = sql + "\n WHERE \n\t (" + check_limit_condition + ") \n AND \n\t";
+                    sql = sql + "\n WHERE \n\t (" + check_limit_condition + ")";
                 }
                 sql += ";";
             }
