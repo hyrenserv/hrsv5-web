@@ -47,7 +47,7 @@
                 </el-row>
             </el-header>
             <el-main style="margin-top:44px">
-                <el-backtop  :bottom="100">
+                <el-backtop :bottom="100">
                     <div style="{
         height: 100%;
         width: 100%;
@@ -259,7 +259,8 @@ export default {
     text-align: center;
     color: #fff;
 }
-.el-main>>>.el-backtop{
+
+.el-main>>>.el-backtop {
     right: 5px !important;
 }
 </style>
