@@ -49,3 +49,11 @@ export function showComponentOnDashboard(data) {
         // headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
+//保存仪表盘
+export function saveDataDashboardInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/saveDataDashboardInfo',
+        params:data,
+        // headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}

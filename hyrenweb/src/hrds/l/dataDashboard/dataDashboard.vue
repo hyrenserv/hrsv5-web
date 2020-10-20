@@ -12,7 +12,7 @@
                 <el-button size="mini" type="primary" @click="dialogBorderVisible=true">添加边框</el-button>
                 <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                 <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
-                <el-button size="mini" type="primary" @click="goIndex">返回上一级</el-button>
+                <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
             </div>
         </div>
         <div class="col-md-12">
@@ -66,7 +66,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="cancel" size="mini">取 消</el-button>
-            <el-button type="primary" @click="saveDashboard" size="mini">确 认
+            <el-button type="primary" @click="saveDashboard" size="mini">保 存
             </el-button>
         </div>
     </el-dialog>
@@ -134,15 +134,21 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="边框风格">
-                <el-select v-model="auto_frame_info.border_style" placeholder="请选择边框风格">
-                    <el-option label="实线边框" value="solid"></el-option>
+                <el-select v-model="auto_frame_info.bordertype" placeholder="请选择边框风格">
+                            <el-option
+                            v-for="item in borderstyle"
+                            :key="item.code"
+                            :label="item.tmp_type"
+                            :value="item.code">
+                            </el-option>
+                    <!-- <el-option label="实线边框" value="solid"></el-option>
                     <el-option label="点状边框" value="dotted"></el-option>
                     <el-option label="虚线边框" value="dashed"></el-option>
                     <el-option label="双线边框" value="double"></el-option>
                     <el-option label="3D凹槽边框" value="groove"></el-option>
                     <el-option label="3D垄状边框" value="ridge"></el-option>
                     <el-option label="3Dinset边框" value="inset"></el-option>
-                    <el-option label="3Doutset边框" value="outset"></el-option>
+                    <el-option label="3Doutset边框" value="outset"></el-option> -->
                 </el-select>
             </el-form-item>
             <el-form-item label="边框颜色">
@@ -347,35 +353,30 @@ export default {
             },
             //仪表板边框组件信息表
             auto_frame_info: {
-                frame_id: "", //边框id
-                serial_number: "", //序号
-                x_axis_coord: "", //X轴坐标
-                y_axis_coord: "", //y轴坐标
-                border_style: "solid", //边框风格
-                border_color: "#eb21eb", //边框颜色
-                border_width: "2", //边框宽度
-                border_radius: "45", //边框圆角大小
+                frame_id:null,
+                serial_number: null, //序号
+                x_axis_coord: null, //X轴坐标
+                y_axis_coord: null ,//y轴坐标
+                bordertype: "", //边框风格
+                border_color: "", //边框颜色
+                border_width: 2, //边框宽度
+                border_radius: 45, //边框圆角大小
                 is_shadow: "1", //是否启用阴影效果，默认否
-                dashboard_id: "", //仪表板id
-                length: "", //组件长度
-                width: "", //组件宽度
+                dashboard_id: null, //仪表板id
+                length: null, //组件长度
+                width: null, //组件宽度
             },
             auto_frame_info_list: [],
             auto_dashboard_info_list: [],
             auto_dashboard_info: {
-                dashboard_id: "",
-                user_id: "",
                 dashboard_name: "",
                 dashboard_desc: "",
-                create_date: "",
-                create_time: "",
-                last_update_date: "",
-                last_update_time: "",
-                update_user: "",
+                dashboard_theme: "",
+                bordertype: "",
+                bordercolor: "",
+                borderwidth: "",
                 background: "#eeeeee",
             },
-            language: "zh_CN",
-            path: "<c:out value='${ctx}'/>",
             legend_data: "",
             seriesArray: "",
             xArray: "",
@@ -787,71 +788,13 @@ export default {
                 $("#grid_style").removeClass("grid");
                 this.is_gridLine = true;
             }
-
-            if (this.is_add == "1") {
-                this.picshow = true;
-                //编辑
-                $.ajax({
-                    type: "POST",
-                    url: "L0402_DashBoardStyleSDO.do",
-                    async: false,
-                    data: {
-                        "is_add": this.is_add,
-                        "dashboard_id": this.dashboard_id,
-                    },
-                    dataType: "json",
-                    success(data) {
-                        resultdata = data;
-                        //把组件,文本标签,分割线的layout区分开
-                        var tmp_layout = data.layout;
-                        for (var i = 0; i < tmp_layout.length; i++) {
-                            if ("0" == tmp_layout[i].label) {
-                                this.label_layout.push(tmp_layout[i]);
-                            } else if ("1" == tmp_layout[i].label) {
-                                this.line_layout.push(tmp_layout[i]);
-                            } else if ("2" == tmp_layout[i].label) {
-                                this.frame_layout.push(tmp_layout[i]);
-                            } else {
-                                this.layout.push(tmp_layout[i]);
-                            }
-                        }
-                        //resultdata.data.layout=this.layout;
-
-                        //this.layout = data.data.layout;
-                        for (var i = 0; i < this.layout.length; i++) {
-                            var id = this.layout[i].type;
-                            component_id_array.push(id);
-                        }
-                        this.auto_dashboard_info = data.auto_dashboard_info;
-                        this.selectRow = data.auto_comp_sum;
-
-                        this.Global_component_array = data;
-                        this.global_component_id_array = component_id_array;
-
-                        if ('undefined' != typeof data.auto_label_info_array && null != typeof data.auto_label_info_array) {
-                            this.auto_label_info_array = data.auto_label_info_array;
-                        }
-                        if ('undefined' != typeof data.auto_line_info_array && null != typeof data.auto_line_info_array) {
-                            this.auto_line_info_array = data.auto_line_info_array;
-                        }
-                        if ('undefined' != typeof data.auto_frame_info_list && null != typeof data.auto_frame_info_list) {
-                            this.auto_frame_info_list = data.auto_frame_info_list;
-                        }
-
-                        //        		if(dashboard_status != '01'){
-                        //        		this.chooseTitle_show = true;
-                        //                		this.bordercolor_show = true;
-                        //        		}
-
-                    },
-                    beforeSend() {
-                        imgShow();
-                    },
-                    complete() {
-                        imgHide();
-                    },
-                });
-                var bordercolor = this.auto_dashboard_info.bordercolor;
+            this.auto_dashboard_info.dashboard_theme = "00";
+        })
+        // 编辑时调用
+        if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
+            this.picshow = true;
+            this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+            var bordercolor = this.auto_dashboard_info.bordercolor;
                 var bordertype = this.auto_dashboard_info.bordertype;
                 var borderwidth = this.auto_dashboard_info.borderwidth;
 
@@ -984,12 +927,7 @@ export default {
                 setTimeout(() => {
                     this.textline_back();
                 }, 1000);
-
-            } else {
-                this.auto_dashboard_info.dashboard_theme = "00";
-            }
-        })
-
+        }
     },
     watch: {
         layout(layout) {
@@ -1072,9 +1010,7 @@ export default {
         }
     },
     created() {
-        if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
-            this.getDataDashboardInfoById(this.$route.query.dashboard_id);
-        }
+        
     },
     methods: {
         goIndex() {
@@ -1087,8 +1023,47 @@ export default {
             functionAll.getDataDashboardInfoById({
                 "dashboard_id": dashboard_id
             }).then(res => {
-                this.dataDashboardList = res.data;
-            })
+                if (res&&res.success) {
+                    this.dataDashboardList = res.data;
+                    //把组件,文本标签,分割线的layout区分开
+                        var tmp_layout = data.layout;
+                        for (var i = 0; i < tmp_layout.length; i++) {
+                            if ("0" == tmp_layout[i].label) {
+                                this.label_layout.push(tmp_layout[i]);
+                            } else if ("1" == tmp_layout[i].label) {
+                                this.line_layout.push(tmp_layout[i]);
+                            } else if ("2" == tmp_layout[i].label) {
+                                this.frame_layout.push(tmp_layout[i]);
+                            } else {
+                                this.layout.push(tmp_layout[i]);
+                            }
+                        }
+                        for (var i = 0; i < this.layout.length; i++) {
+                            var id = this.layout[i].type;
+                            component_id_array.push(id);
+                        }
+                        this.auto_dashboard_info = data.auto_dashboard_info;
+                        this.selectRow = data.auto_comp_sum;
+
+                        this.Global_component_array = data;
+                        this.global_component_id_array = component_id_array;
+
+                        if ('undefined' != typeof data.auto_label_info_array && null != typeof data.auto_label_info_array) {
+                            this.auto_label_info_array = data.auto_label_info_array;
+                        }
+                        if ('undefined' != typeof data.auto_line_info_array && null != typeof data.auto_line_info_array) {
+                            this.auto_line_info_array = data.auto_line_info_array;
+                        }
+                        if ('undefined' != typeof data.auto_frame_info_list && null != typeof data.auto_frame_info_list) {
+                            this.auto_frame_info_list = data.auto_frame_info_list;
+                        }
+
+                        //        		if(dashboard_status != '01'){
+                        //        		this.chooseTitle_show = true;
+                        //                		this.bordercolor_show = true;
+                        //        		}
+                }
+           })
         },
         //获取可视化组件信息
         getVisualComponentInfo() {
@@ -1269,7 +1244,7 @@ export default {
                     var auto_frame_info = this.auto_frame_info_list[i];
                     $("#" + id).css("overflow", "hidden");
                     $("#" + id).css("position", "relative");
-                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.border_style +
+                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.bordertype +
                         " " + auto_frame_info.border_color);
                     $("#" + id).css("border-radius", auto_frame_info.border_radius + "px");
                     if (this.auto_frame_info_list[i].is_shadow == '0') {
@@ -1538,40 +1513,39 @@ export default {
                 this.$Msg.customizTitle('请至少添加一个组件', 'warning')
                 return false;
             }
-            $.ajax({
-                type: "POST",
-                url: "saveDashboardSDO.do",
-                data: {
-                    "is_add": this.is_add,
-                    "layout": JSON.stringify(this.layout),
-                    "auto_dashboard_info": JSON.stringify(this.auto_dashboard_info),
-                    "auto_label_info_array": JSON.stringify(this.auto_label_info_array),
-                    "auto_line_info_array": JSON.stringify(this.auto_line_info_array),
-                    "auto_frame_info_list": JSON.stringify(this.auto_frame_info_list),
-                },
-                dataType: "json",
-                success(data) {
-                    if (data.state == "0") {
-                        this.$Msg.customizTitle('保存成功', 'success')
-                        setTimeout(() => {
-                            location.href = 'L0401_DashBoardPage.do?';
-                        }, 1000);
-                    } else if (data.state == "1") {
-                        this.$Msg.customizTitle('组件名称重复', 'error')
-
-                    } else {
-                        this.$Msg.customizTitle('系统异常,请联系管理员', 'error')
-                    }
-                },
-                beforeSend() {
-                    imgShow();
-                },
-                complete() {
-                    imgHide();
-                },
-                error() {
-                    this.$Msg.customizTitle('系统异常,请联系管理员', 'error')
-
+            let bordertype = this.auto_frame_info.bordertype;
+            this.borderstyle.forEach(function(item, index) {
+                if (item.type==bordertype) {
+                    bordertype=item.code;
+                }
+            })
+            let border_width = this.auto_frame_info.border_width;
+            this.borderwidth.forEach(function(item, index) {
+                if (item.type==border_width) {
+                    border_width=item.code;
+                }
+            })
+            let border_color = this.auto_frame_info.border_color;
+            this.bordercolor.forEach(function(item, index) {
+                if (item.type==border_color) {
+                    border_color=item.code;
+                }
+            })
+            this.auto_dashboard_info.bordertype=bordertype;
+            this.auto_dashboard_info.borderwidth=border_width;
+            this.auto_dashboard_info.bordercolor=border_color;
+            let param=this.auto_dashboard_info;
+            param["layout"]= JSON.stringify(this.layout),
+            // parm["autoFontInfos"]= this.layout,
+            param["autoLabelInfos"]= JSON.stringify(this.auto_label_info_array),
+            param["autoLineInfos"]= JSON.stringify(this.auto_line_info_array),
+            param["autoFrameInfos"]= JSON.stringify(this.auto_frame_info_list),
+            functionAll.saveDataDashboardInfo(param).then(res => {
+                if (res&&res.success) {
+                    this.$Msg.customizTitle('保存成功', 'success')
+                    this.$router.push({
+                         name: 'dataDashboardList'
+                     })
                 }
             });
         },
@@ -1717,7 +1691,7 @@ export default {
             this.$nextTick(function () {
                 $("#" + id).css("overflow", "hidden");
                 $("#" + id).css("position", "relative");
-                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.border_style +
+                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.bordertype +
                     " " + this.auto_frame_info.border_color);
                 $("#" + id).css("border-radius", this.auto_frame_info.border_radius + "px");
                 if (this.auto_frame_info.is_shadow == '0') {
@@ -2279,10 +2253,10 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     }
                 }
             })
-            this.chart_obj_array = chart_obj_array;
             setTimeout(() => {
                 this.confirmBackgroudColor();
             }, 100);
+            this.chart_obj_array = chart_obj_array;
         },
         //卡片组件     添加删除按钮
         carddelimage(id, imagevueobj) {
@@ -3280,18 +3254,6 @@ $("#"+id).css("border-width",style.split(":")[1]);
             scatterChart.clear();
             scatterChart.setOption(option);
             scatterChart.resize();
-        },
-        //全选 组件
-        chooseallcomponent(event) {
-            if (this.chooseallcomponentmodel == true) {
-                for (var i in this.auto_comp_sum_array) {
-                    this.auto_comp_sum_array[i].ischecked = false;
-                }
-            } else {
-                for (var i in this.auto_comp_sum_array) {
-                    this.auto_comp_sum_array[i].ischecked = true;
-                }
-            }
         },
         //仪表板保存按钮
         addDashboardButton() {
