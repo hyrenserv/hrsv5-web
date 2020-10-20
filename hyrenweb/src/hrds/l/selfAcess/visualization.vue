@@ -228,31 +228,31 @@
                 </div>
                 <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
 
-                <div v-if="echarttype=='table'" id="type_table" style="height:440px;overflow: auto;">
+                <div v-if="auto_comp_sum.chart_type=='table'" id="type_table" style="height:440px;overflow: auto;">
                     //二位表
                 </div>
-                <div v-if="echarttype=='card'" style="margin-bottom:10px;height:440px">
+                <div v-if="auto_comp_sum.chart_type=='card'" style="margin-bottom:10px;height:440px">
                     <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
                         <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
                         <h1 id="carddiv"></h1>
                     </div>
                 </div>
-                <div v-if="echarttype!='table' && echarttype!='card'" id="myChart"
+                <div v-if="auto_comp_sum.chart_type!='table' && auto_comp_sum.chart_type!='card'" id="myChart"
                      style="width:100%; height: 440px; margin-bottom: 25px"></div>
 
             </el-col>
             <el-col :span="7">
-                <el-select v-model="changeGetchartsValue" size="small" placeholder="请选择" style="width:98%;"
-                           @change="changeGetcharts">
+                <el-select v-model="auto_comp_sum.chart_theme" size="small" placeholder="请选择" style="width:98%;"
+                >
                     <el-option v-for="item in optionsCharts" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='line' || echarttype=='line'">
+                <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme == 'line' ">
                     <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')"
                          src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="changeGetchartsValue =='bar' || echarttype=='barmd' || echarttype=='polarbar'">
+                     v-if="auto_comp_sum.chart_theme =='bar' || auto_comp_sum.chart_type=='barmd' || auto_comp_sum.chart_type=='polarbar'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bar')"
                          src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('barmd')"
@@ -260,14 +260,15 @@
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('polarbar')"
                          src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
                 </div>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='scatter'|| echarttype=='bubble'">
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='scatter'|| auto_comp_sum.chart_type=='bubble'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')"
                          src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"
                          src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="changeGetchartsValue =='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                     v-if="auto_comp_sum.chart_theme =='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('pie')"
                          src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('fasanpie')"
@@ -275,18 +276,20 @@
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('huanpie')"
                          src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
                 </div>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='treemap'|| echarttype=='treemap'">
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='treemap'|| auto_comp_sum.chart_type=='treemap'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('treemap')"
                          src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="changeGetchartsValue =='blend'|| echarttype=='bl' ||echarttype=='blsimple'">
+                     v-if="auto_comp_sum.chart_theme =='blend'|| auto_comp_sum.chart_type=='bl' ||auto_comp_sum.chart_type=='blsimple'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bl')"
                          src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')"
                          src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
                 </div>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='map'|| echarttype=='map'">
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='map'|| auto_comp_sum.chart_type=='map'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('map')"
                          src="@/assets/images/chart/map.png" alt="地图" title="地图">
                 </div>
@@ -314,18 +317,18 @@
                                     </el-select>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="changeGetchartsValue!='map'">
+                                     v-if="auto_comp_sum.chart_theme!='map'">
                                     <span class="el-input-group__prepends">文本显示位置</span>
                                     <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="changeGetchartsValue!='pie' && echarttype!='fasanpie' && echarttype!='huanpie'">
+                                               v-show="auto_comp_sum.chart_theme!='pie' && auto_comp_sum.chart_type!='fasanpie' && auto_comp_sum.chart_type!='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                     <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="changeGetchartsValue=='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                                               v-show="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition1" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
@@ -344,7 +347,7 @@
                                 </div>
 
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="changeGetchartsValue=='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                                     v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                                     <span class="el-input-group__prepends">是否显示引导线</span>
                                     <el-select v-model="echartsLabel.show_line" placeholder="请选择" size="small"
                                                class="selectPosition">
@@ -355,7 +358,7 @@
                                 </div>
 
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="changeGetchartsValue=='map'">
+                                     v-if="auto_comp_sum.chart_theme=='map'">
                                     <span class="el-input-group__prepends">中国地图或省份</span>
                                     <el-select v-model="seriesStyle.provincename" placeholder="请选择" size="small"
                                                class="selectPosition">
@@ -763,7 +766,7 @@
                                 </el-tab-pane>
                             </el-tabs>
                         </el-tab-pane>
-                        <el-tab-pane label="图例设置" v-if="changeGetchartsValue !=='map'">
+                        <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_theme !=='map'">
                             <div style="height:300px;overflow:auto;">
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例类型</span>
@@ -897,7 +900,7 @@
                             </div>
 
                         </el-tab-pane>
-                        <el-tab-pane label="图例设置" v-if="changeGetchartsValue =='map'">
+                        <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_theme =='map'">
                             <div style="height:300px;overflow:auto;">
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">是否显示</span>
@@ -1080,7 +1083,6 @@
                 component_id: this.$route.query.component_id,
                 rule: validator.default,
                 formvalue: '',
-                echarttype: '',
                 myChart: '',
                 myChartType: '',
                 input: '',
@@ -1155,7 +1157,7 @@
                 ex_destinationcurrentPage: 1,
                 ex_destinationpagesize: 5,
                 loadingsearch: false,
-                backgroundcolor: 'transparent',
+                backgroundcolor: '#000000',
                 color: '#000000',
                 borderwidth: '0',
                 bordercolor: '#000000',
@@ -1283,8 +1285,8 @@
                 //标题设置字段总和
                 titleFont: {
                     align: "center", //标题水平位置
-                    backgroundcolor: "transparent", //标题背景色
-                    bordercolor: "transparent", //标题边框颜色
+                    backgroundcolor: "#000000", //标题背景色
+                    bordercolor: "#000000", //标题边框颜色
                     borderwidth: 0, //标题边框粗细
                     borderradius: 0, //坐标轴边框圆角
                     color: "#000000", //字体颜色
@@ -1429,8 +1431,8 @@
 
                     verticalAlign: "middle", //坐标轴垂直位置
 
-                    backgroundColor: "transparent", //坐标轴背景色
-                    borderColor: "transparent", //坐标轴边框颜色
+                    backgroundColor: "#000000", //坐标轴背景色
+                    borderColor: "#000000", //坐标轴边框颜色
                     borderWidth: 0, //坐标轴边框粗细
                     borderRadius: 0, //坐标轴边框圆角
                     color: "#000000", //字体颜色
@@ -1482,7 +1484,7 @@
                     itemWidth: 25, //图例宽度
                     itemHeight: 14, //图例高度
                     inactiveColor: "#cccccc", //图例关闭时颜色
-                    backgroundColor: "transparent", //图例背景颜色
+                    backgroundColor: "#000000", //图例背景颜色
                     borderColor: "#cccccc", //边框颜色
                     borderWidth: 0, //边框大小
                     interval: 100, //图例容量(地图)
@@ -1491,9 +1493,10 @@
                 },
                 //组件汇总表
                 auto_comp_sum: {
+                    chart_theme: "",
                     condition_sql: '',
-                    chart_theme: '',
-                    background: 'transparent',
+                    chart_type: '',
+                    background: '#000000',
                     component_id: '',
                     component_nam: '',
                     component_desc: '',
@@ -1526,7 +1529,6 @@
                     value: 'map',
                     label: '地理坐标/地图'
                 }],
-                changeGetchartsValue: '',
                 input1: '',
                 input2: '',
                 tips: '',
@@ -1561,7 +1563,7 @@
 
             }
         },
-        mounted() {
+        created() {
             this.getWebSQLTreeData(); //获取树结构
             this.getMyAccessInfo();
             this.getCategoryItems();
@@ -1659,7 +1661,7 @@
                         itemAll.nameAll = itemAll.column_name;
                     })
                     this.groupCondtionArr = res.data.compGroup;
-                    this.getAnswer();
+                    this.getAnswer(true);
                     res.data.xAxisCol.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
                     })
@@ -1677,8 +1679,6 @@
                     this.legendStyle = res.data.legendInfo;
                     this.titleFont = res.data.titleFontInfo;
                     this.axisStyle = res.data.axisFontInfo;
-                    console.log(res.data)
-
                 });
             },
             huixiandealwithoptionsWords(column_name, code) {
@@ -1741,8 +1741,6 @@
                         break;
                 }
             },
-
-
             //选择数据来源
             changeSelectDataCollect(val) {
                 if (val === "01") {
@@ -2264,7 +2262,7 @@
                 return JSON.stringify(arry).indexOf(JSON.stringify(obj)) != -1;
             },
             // 获取答案
-            getAnswer() {
+            getAnswer(flag) {
                 // 处理数据
                 this.loadingsearch = true;
                 let parama = {};
@@ -2324,6 +2322,9 @@
                     if (res && res.success) {
                         this.loadingsearch = true;
                         this.markexe_sql = res.data;
+                        if (flag) {
+                            this.echartshow(this.auto_comp_sum.chart_type);
+                        }
                         this.getVisualComponentResult(res.data, this.showNum)
                     }
                 })
@@ -2345,25 +2346,6 @@
             },
             ex_destination_handleSizeChange(size) {
                 this.ex_destinationpagesize = size;
-            },
-            // 获取不同表的显示图片
-            changeGetcharts(val) {
-                // if (val == 'line') {
-                //
-                // } else if (val == 'bar') {
-                //
-                // } else if (val == 'scatter') {
-                //
-                // } else if (val == 'pie') {
-                //
-                // } else if (val == 'treemap') {
-                //
-                // } else if (val == 'blend') {
-                //
-                // } else if (val == 'map') {
-                //
-                // }
-                console.log(val)
             },
             // 删除横轴x的选择字段信息
             deleteXvalue(item, index) {
@@ -2403,38 +2385,27 @@
                         this.duliangArry.push(item);
                 }
             },
-            // 获取表的数据信息
-            getChartShow() {
-                // functionAll.getChartShow({
-
-                // }).then(res=>{
-                //     exe_sql:  this.markexe_sql ,
-                //     x_columns:,
-                //     y_columns:,
-                //     chart_type:,
-                // })
-            },
             // 选择图标类型
             echartshow(type) {
                 this.myChartType = type;
-                let xColumns = '';
-                let yColumns = '';
+                let xColumns = []
+                let yColumns = [];
                 //数据处理获取图信息
                 if (this.xValueArry.length > 0) {
                     this.xValueArry.forEach((item, index) => {
                         if (index != this.xValueArry.length - 1) {
-                            xColumns += item.nameAll + ','
+                            xColumns.push(item.nameAll)
                         } else {
-                            xColumns += item.nameAll
+                            xColumns.push(item.nameAll)
                         }
                     })
                 }
                 if (this.yValueArry.length > 0) {
                     this.yValueArry.forEach((item, index) => {
                         if (index != this.yValueArry.length - 1) {
-                            yColumns += item.nameAll + ','
+                            yColumns.push(item.nameAll)
                         } else {
-                            yColumns += item.nameAll
+                            yColumns.push(item.nameAll)
                         }
                     })
                 }
@@ -2461,40 +2432,40 @@
                 } else if (type == "map") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 }
-
                 functionAll.getChartShow({
                     exe_sql: this.markexe_sql,
                     x_columns: xColumns,
                     y_columns: yColumns,
                     chart_type: type,
                 }).then(res => {
-                    console.log(res.data)
-                    if (type == 'line') { //折线图
-                        this.changeToAreaChart(xColumns, yColumns, type, res.data)
-                    } else if (type == 'bar') { //标准柱状图
-                        this.changeToBarChart(xColumns, yColumns, type, res.data);
-                    } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
-                        this.changeToPieChart(xColumns, yColumns, type, res.data);
-                    } else if (type == "scatter") {
+                    debugger;
+                        if (type == 'line') { //折线图
+                            this.changeToAreaChart(xColumns, yColumns, type, res.data)
+                        } else if (type == 'bar') { //标准柱状图
+                            this.changeToBarChart(xColumns, yColumns, type, res.data);
+                        } else if (type == "barmd") {
 
-                    } else if (type == "boxplot") {
+                        } else if (type == "polarbar") {
 
-                    } else if (type == "bl") {
+                        } else if (type == "scatter") {
 
-                    } else if (type == "treemap") {
+                        } else if (type == "boxplot") {
 
-                    } else if (type == "barmd") {
+                        } else if (type == "bl") {
 
-                    } else if (type == "bubble") {
+                        } else if (type == "treemap") {
 
-                    } else if (type == "polarbar") {
+                        } else if (type == "bubble") {
 
-                    } else if (type == "blsimple") {
+                        } else if (type == "blsimple") {
 
-                    } else if (type == "map") {
+                        } else if (type == "map") {
 
+                        } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
+                            this.changeToPieChart(xColumns, yColumns, type, res.data);
+                        }
                     }
-                })
+                )
 
             },
             //初始化echart
@@ -2503,68 +2474,77 @@
                 var myChart = this.myChart;
                 myChart.clear();
                 myChart.setOption(option);
-            },
+            }
+            ,
             // 折线图
             changeToAreaChart(x_columns, y_columns, type, data) {
-                let vm = this;
-                var legend_data = data.legend_data;
-                var seriesArray = data.seriesArray;
-                var xArray = data.xArray;
-                vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
-                vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
-                vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
-                vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
-                vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
-
-                vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
-                vm.xAxis.type = "category";
-                vm.xAxis.data = xArray;
-                vm.xAxis.nameTextStyle = vm.axisStyle;
-                vm.xAxis.axisLine = vm.xAxisLine;
-                vm.xAxis.axisLabel = vm.xAxisLabel;
-
-                vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
-                vm.yAxis.type = "value";
-                vm.yAxis.nameTextStyle = vm.axisStyle;
-                vm.yAxis.axisLine = vm.yAxisLine;
-                vm.yAxis.axisLabel = vm.yAxisLabel;
-
-                var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
-
-                vm.legendStyle.data = legend_data;
-                vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
-                vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
-                vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
-                let objDefine = Object.assign({}, vm.echartsLabel);
-                if (objDefine.show_label == "1") {
-                    objDefine.show_label = true;
-                } else {
-                    objDefine.show_label = false;
-                }
-                if (objDefine.show_line == "1") {
-                    objDefine.show_line = true;
-                } else {
-                    objDefine.show_line = false;
-                }
-                if (objDefine.smooth == "1") {
-                    objDefine.smooth = true;
-                } else {
-                    objDefine.smooth = false;
-                }
-                var itemStyles = transferSeriesItemStyle(objDefine);
-
-                for (var i = 0; i < seriesArray.length; i++) {
-                    seriesArray[i].itemStyle = itemStyles;
-                }
-                vm.xAxis.max = vm.xAxis.data.length;
-                vm.yAxis.max = Math.max(seriesArray.data);
+                debugger;
+                //https://echarts.apache.org/examples/zh/editor.html?c=area-stack
+                // let vm = this;
+                // var legend_data = data.legend_data;
+                // var seriesArray = data.seriesArray;
+                // var xArray = data.xArray;
+                // vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
+                // vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
+                // vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
+                // vm.xAxisLabel.formatter = vm.xAxisLabel.formatter === "" ? null : vm.xAxisLabel.formatter;
+                // vm.yAxisLabel.formatter = vm.yAxisLabel.formatter === "" ? null : vm.yAxisLabel.formatter;
+                //
+                // vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
+                // vm.xAxis.type = "category";
+                // vm.xAxis.data = xArray;
+                // vm.xAxis.nameTextStyle = vm.axisStyle;
+                // vm.xAxis.axisLine = vm.xAxisLine;
+                // vm.xAxis.axisLabel = vm.xAxisLabel;
+                //
+                // vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
+                // vm.yAxis.type = "value";
+                // vm.yAxis.nameTextStyle = vm.axisStyle;
+                // vm.yAxis.axisLine = vm.yAxisLine;
+                // vm.yAxis.axisLabel = vm.yAxisLabel;
+                //
+                // var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
+                //
+                // vm.legendStyle.data = legend_data;
+                // vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
+                // vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
+                // vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
+                // let objDefine = Object.assign({}, vm.echartsLabel);
+                // if (objDefine.show_label == "1") {
+                //     objDefine.show_label = true;
+                // } else {
+                //     objDefine.show_label = false;
+                // }
+                // if (objDefine.show_line == "1") {
+                //     objDefine.show_line = true;
+                // } else {
+                //     objDefine.show_line = false;
+                // }
+                // if (objDefine.smooth == "1") {
+                //     objDefine.smooth = true;
+                // } else {
+                //     objDefine.smooth = false;
+                // }
+                // var itemStyles = transferSeriesItemStyle(objDefine);
+                //
+                // for (var i = 0; i < seriesArray.length; i++) {
+                //     seriesArray[i].itemStyle = itemStyles;
+                // }
+                // vm.xAxis.max = vm.xAxis.data.length;
+                // vm.yAxis.max = Math.max(seriesArray.data);
                 let option = {
-                    backgroundColor: vm.auto_comp_sum.background,
-                    title: titles,
+                    backgroundColor: '#ffffff',
+                    // title: titles,
                     tooltip: {
-                        trigger: 'axis'
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#000000'
+                            }
+                        }
                     },
-                    legend: vm.legendStyle,
+                    legend: {data:data.legend_data},
                     grid: {
                         left: '3%',
                         right: '4%',
@@ -2576,16 +2556,28 @@
                             saveAsImage: {}
                         }
                     },
-                    xAxis: vm.xAxis,
-                    yAxis: vm.yAxis,
-                    series: seriesArray
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: data.xArray
+                        }
+                    ],
+                    yAxis:  {
+                        type: 'value'
+                    },
+                    // yAxis: vm.yAxis,
+                    series: data.seriesArray
                 };
-                console.log(JSON.stringify(option));
+                console.log(JSON.stringify(option))
                 debugger;
+
                 this.drawLine(option);
-            },
+            }
+            ,
             //柱状图
             changeToBarChart(x_columns, y_columns, type, data) {
+                //https://echarts.apache.org/examples/zh/editor.html?c=bar-stack
                 let vm = this;
                 var legend_data = data.legend_data;
                 var seriesArray = data.seriesArray;
@@ -2667,8 +2659,10 @@
                     yAxis: vm.yAxis,
                     series: seriesArray
                 };
+                console.log(JSON.stringify(option));
                 this.drawLine(option)
-            },
+            }
+            ,
             //饼图
             changeToPieChart(x_columns, y_columns, type, data) {
                 let vm = this;
@@ -2751,16 +2745,19 @@
                     series: seriesArray
                 }
                 this.drawLine(option)
-            },
+            }
+            ,
             // 返回上一级
             goBack() {
                 this.$router.push({
                     name: 'visualizationindex'
                 })
-            },
+            }
+            ,
             checkifvalidate(val) {
                 return val == "" || val == undefined;
-            },
+            }
+            ,
             addVisualComponentInfo() {
                 if (this.checkifvalidate(this.auto_comp_sum.component_name)) {
                     this.$Msg.customizTitle('组件名称为空，请填写', 'warning');
@@ -2792,7 +2789,7 @@
                 })
                 this.auto_comp_sum.data_source = this.markCodeIndex;
                 this.auto_comp_sum.sources_obj = this.markCodeIndex;
-                this.auto_comp_sum.chart_type = this.changeGetchartsValue;
+                this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_theme;
                 this.fiflterConditionArr.forEach(val => {
                     obj = {
                         arithmetic_logic: val.realtion,
