@@ -1019,7 +1019,7 @@
             <span class="dialogtitle el-icon-caret-right">数据库连接列表</span>
         </div>
         <el-table stripe :data="databaseData" border size="medium" highlight-current-row ref="multipleTable" tooltip-effect="dark">
-            <el-table-column property="database_type" label="数据库类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="databaseName" label="数据库类型" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="database_name" label="数据库名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="database_ip" label="数据库服务器IP" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="database_port" label="数据库端口" align="center" :show-overflow-tooltip="true"></el-table-column>
