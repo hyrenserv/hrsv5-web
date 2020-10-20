@@ -247,7 +247,7 @@
                     <el-option v-for="item in optionsCharts" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='line'">
+                <div style="margin-top:10px;" v-if="changeGetchartsValue =='line' || echarttype=='line'">
                     <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')"
                          src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
                 </div>
@@ -722,7 +722,7 @@
                                             <span class="el-input-group__prepends">字体风格</span>
                                             <el-select v-model="axisStyle.fontStyle" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in titleFont.titleFontfontStyleArr"
+                                                <el-option v-for="item in titleFontfontStyleArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -731,7 +731,7 @@
                                             <span class="el-input-group__prepends">字体系列</span>
                                             <el-select v-model="axisStyle.fontFamily" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in titleFont.titleFontfontFamilyArr"
+                                                <el-option v-for="item in titleFontfontFamilyArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -740,7 +740,7 @@
                                             <span class="el-input-group__prepends">字体粗细</span>
                                             <el-select v-model="axisStyle.fontWeight" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in  titleFont.titleFontfontWeightArr"
+                                                <el-option v-for="item in  titleFontfontWeightArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
@@ -1093,6 +1093,7 @@
                         code: '02'
                     }
                 ],
+                numbersArray: ['int', 'int8', 'int16', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'decimal'],
                 keyWords: '',
                 columnsWordsALL: [],
                 groupCondtionArr: [],
@@ -1232,7 +1233,7 @@
                     code: 'right',
                     value: 'right'
                 }],
-                verticalalign: "top", //标题垂直位置
+
                 titleFontverticalAlignArr: [{
                     code: 'top',
                     value: 'top'
@@ -1281,14 +1282,14 @@
                 }],
                 //标题设置字段总和
                 titleFont: {
-                    align: "left", //标题水平位置
+                    align: "center", //标题水平位置
                     backgroundcolor: "transparent", //标题背景色
                     bordercolor: "transparent", //标题边框颜色
                     borderwidth: 0, //标题边框粗细
                     borderradius: 0, //坐标轴边框圆角
                     color: "#000000", //字体颜色
                     fontfamily: "Arial", //字体系列
-
+                    verticalalign: "top", //标题垂直位置
                     fontsize: 24, //字体大小
                     fontstyle: "normal", //字体风格
 
@@ -1323,8 +1324,8 @@
                     axisoffset: 0, //轴偏移量
                     name: "x轴", //轴名称
                     namelocation: "end", //轴名称位置
-                    min: "0",
-                    max: "100",
+                    min: "",
+                    max: "",
                     silent: "1",
 
                     nameTextStyle: {}, //--轴名称样式
@@ -1379,8 +1380,8 @@
                     axisoffset: 0, //轴偏移量
                     name: "y轴", //轴名称
                     namelocation: "end", //轴名称位置
-                    min: "0",
-                    max: "100",
+                    // min: "0",
+                    // max: "100",
                     silent: "1",
 
                     nameTextStyle: {}, //--轴名称样式
@@ -1397,7 +1398,7 @@
                 },
                 yAxisLabel: {
                     show: '1', //刻度标签是否显示
-                    inside: 0, //刻度标签是否朝内
+                    inside: '0', //刻度标签是否朝内
                     rotate: 0, //刻度标签旋转角度
                     margin: 20, //刻度标签与轴线间距
                     formatter: null, //刻度标签内容格式器
@@ -1669,7 +1670,6 @@
                     this.yValueArry = res.data.yAxisCol;
                     this.xAxis = res.data.xAxisInfo[0];
                     this.yAxis = res.data.yAxisInfo[0];
-                    debugger;
                     this.xAxisLine = res.data.xAxisline;
                     this.yAxisLine = res.data.yAxisline;
                     this.xAxisLabel = res.data.xAxislabel;
@@ -2368,14 +2368,40 @@
             // 删除横轴x的选择字段信息
             deleteXvalue(item, index) {
                 this.xValueArry.splice(index, 1);
-                this.weiduArry = this.originalweiduArry;
-                this.duliangArry = this.originalduliangArry;
+                let warry = [];
+                let darry = [];
+                this.weiduArry.forEach((item, index) => {
+                    warry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(warry, item.nameAll)) {
+                    this.weiduArry.push(item);
+                }
+                this.duliangArry.forEach((item, index) => {
+                    darry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(darry, item.nameAll)) {
+                    if (this.checkIfObjInArray(this.numbersArray, item.column_type))
+                        this.duliangArry.push(item);
+                }
             },
             // 删除横轴y的选择字段信息
             deleteYvalue(item, index) {
                 this.yValueArry.splice(index, 1);
-                this.weiduArry = this.originalweiduArry;
-                this.duliangArry = this.originalduliangArry;
+                let warry = [];
+                let darry = [];
+                this.weiduArry.forEach((item, index) => {
+                    warry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(warry, item.nameAll)) {
+                    this.weiduArry.push(item);
+                }
+                this.duliangArry.forEach((item, index) => {
+                    darry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(darry, item.nameAll)) {
+                    if (this.checkIfObjInArray(this.numbersArray, item.column_type))
+                        this.duliangArry.push(item);
+                }
             },
             // 获取表的数据信息
             getChartShow() {
@@ -2420,8 +2446,6 @@
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 } else if (type == "scatter") {
                     this.tips = "横轴,纵轴都必须为度量";
-                } else if (type == "boxplot") {
-                    this.tips = "";
                 } else if (type == "bl") {
                     this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
                 } else if (type == "treemap") {
@@ -2437,6 +2461,7 @@
                 } else if (type == "map") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 }
+
                 functionAll.getChartShow({
                     exe_sql: this.markexe_sql,
                     x_columns: xColumns,
@@ -2531,7 +2556,8 @@
                 for (var i = 0; i < seriesArray.length; i++) {
                     seriesArray[i].itemStyle = itemStyles;
                 }
-
+                vm.xAxis.max = vm.xAxis.data.length;
+                vm.yAxis.max = Math.max(seriesArray.data);
                 let option = {
                     backgroundColor: vm.auto_comp_sum.background,
                     title: titles,
@@ -2554,6 +2580,8 @@
                     yAxis: vm.yAxis,
                     series: seriesArray
                 };
+                console.log(JSON.stringify(option));
+                debugger;
                 this.drawLine(option);
             },
             //柱状图
