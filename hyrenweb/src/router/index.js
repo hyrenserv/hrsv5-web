@@ -626,17 +626,56 @@ export default new Router({
                         { name: '工程详情' },
                     ],
                 },
-                 //元数据管理-创建表
-                 {
-                    path: '/createTable',
-                    name: 'createTable',
-                    title: '元数据管理创建表',
-                    component: () => import('@/hrds/k/dataControl/mateDataManage/createTable.vue'),
+                //元数据管理-创建关系型数据库数据表
+                {
+                    path: '/createDatabaseTable',
+                    name: 'createDatabaseTable',
+                    title: '创建关系型数据库数据表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createDatabaseTable.vue'),
                     meta: [
                         { name: '首页' },
                         { name: '数据管控', url: '/dataControl' },
                         { name: '元数据管理', url: '/mateDataManagement' },
-                        { name: '元数据管理创建表' },
+                        { name: '创建关系型数据库数据表' },
+                    ],
+                },
+                //元数据管理-创建Hive数据库数据表
+                {
+                    path: '/createHiveTable',
+                    name: 'createHiveTable',
+                    title: '创建Hive数据库数据表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createHiveTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '创建Hive数据库数据表' },
+                    ],
+                },
+                //元数据管理-创建Hbase数据库数据表
+                {
+                    path: '/createHbaseTable',
+                    name: 'createHbaseTable',
+                    title: '创建Hbase数据库数据表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createHbaseTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '创建Hbase数据库数据表' },
+                    ],
+                },
+                //元数据管理-创建CarBonData数据库数据表
+                {
+                    path: '/createCarbondataTable',
+                    name: 'createCarbondataTable',
+                    title: '创建CarBonData数据库数据表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createCarbondataTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '创建CarBonData数据库数据表' },
                     ],
                 },
                 //血缘分析

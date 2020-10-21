@@ -113,7 +113,7 @@
     <!--源数据列表自定义层二级右键弹框-->
     <div v-show="mouseZdyVisible">
         <ul id="menu_zdy" class="menu_zdy">
-            <li class="menu_item" @click="tableSetToInvalidZdy()">创建表</li>
+            <li class="menu_item" @click="createTable()">创建表</li>
             <li class="menu_item" @click="allTableSetToInvalid()">删除所有表</li>
         </ul>
     </div>
@@ -144,6 +144,10 @@ export default {
     },
     data() {
         return {
+            //页面初始化数据
+            store_type_s: [],
+            store_type_map: {},
+            //页面配置数据
             tag_type: "mdm",
             table_ch_name_input: true,
             column_ch_name_input: true,
@@ -151,6 +155,7 @@ export default {
             pageSize: 10,
             totalSize: 0,
             mdmActiveName: "mdm",
+            //页面数据
             mdmTreeList: [],
             drbTreeList: [],
             filterText: "",
@@ -175,6 +180,8 @@ export default {
     created() {
         //页面初始化时获取源数据列表树
         this.getMDMTreeData();
+        //获取存储层类型
+        this.getStoreType();
     },
     watch: {
         //树节点搜索
@@ -184,6 +191,17 @@ export default {
         }
     },
     methods: {
+        //获取存储层类型
+        getStoreType() {
+            //获取存储层类型
+            this.$Code.getCategoryItems({ 'category': 'Store_type' }).then(res => {
+                this.store_type_s = res.data;
+                //处理存储层类型信息为map类型,显示
+                this.store_type_s.forEach(row => {
+                    this.store_type_map[row.code] = row.value;
+                });
+            });
+        },
         /* 设置每页显示条数 */
         handleSizeChange(pageSize) {
             this.pageSize = pageSize;
@@ -507,10 +525,55 @@ export default {
                 })
                 .catch(() => {});
         },
-        tableSetToInvalidZdy() {
-            if (this.node_data.dsl_store_type == '1') {
+        //创建表 {"1":"关系型数据库","2":"hive","3":"Hbase","4":"solr","5":"ElasticSearch","6":"mongodb","7":"CarBonData"}
+        createTable() {
+            let store_type_map = this.store_type_map;
+            //关系型数据库
+            if (store_type_map[this.node_data.dsl_store_type] === '关系型数据库') {
                 this.$router.push({
-                    path: 'createTable',
+                    path: 'createDatabaseTable',
+                    query: {
+                        dsl_id: this.node_data.dsl_id,
+                        label: this.$Base64.encode(this.node_data.label),
+                    }
+                })
+            }
+            //hive
+            else if (store_type_map[this.node_data.dsl_store_type] === 'hive') {
+                this.$router.push({
+                    path: 'createHiveTable',
+                    query: {
+                        dsl_id: this.node_data.dsl_id,
+                        label: this.$Base64.encode(this.node_data.label),
+                    }
+                })
+            }
+            //Hbase
+            else if (store_type_map[this.node_data.dsl_store_type] === 'Hbase') {
+                this.$router.push({
+                    path: 'createHbaseTable',
+                    query: {
+                        dsl_id: this.node_data.dsl_id,
+                        label: this.$Base64.encode(this.node_data.label),
+                    }
+                })
+            }
+            //solr
+            else if (store_type_map[this.node_data.dsl_store_type] === 'solr') {
+                message.customizTitle("暂不支持创建 " + store_type_map[this.node_data.dsl_store_type] + " 存储类型的表!", "warning");
+            }
+            //ElasticSearch
+            else if (store_type_map[this.node_data.dsl_store_type] === 'ElasticSearch') {
+                message.customizTitle("暂不支持创建 " + store_type_map[this.node_data.dsl_store_type] + " 存储类型的表!", "warning");
+            }
+            //mongodb
+            else if (store_type_map[this.node_data.dsl_store_type] === 'mongodb') {
+                message.customizTitle("暂不支持创建 " + store_type_map[this.node_data.dsl_store_type] + " 存储类型的表!", "warning");
+            }
+            //CarBonData
+            else if (store_type_map[this.node_data.dsl_store_type] === 'CarBonData') {
+                this.$router.push({
+                    path: 'createCarbondataTable',
                     query: {
                         dsl_id: this.node_data.dsl_id,
                         label: this.$Base64.encode(this.node_data.label),
