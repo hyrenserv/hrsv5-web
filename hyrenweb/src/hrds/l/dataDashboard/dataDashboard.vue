@@ -4,12 +4,12 @@
         <div class="row" id="toubu" v-cloak>
             <div class="btn-group pull-right">
                 <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
-                <el-button size="mini" type="primary" @click="dialogBackgroundVisible=true">背景色</el-button>
-                <el-button size="mini" type="primary" @click="dialogTitleVisible=true">选择主题</el-button>
-                <el-button size="mini" type="primary" @click="gridLine">网格线</el-button>
-                <el-button size="mini" type="primary" @click="dialogTextLabelVisible=true">添加文本标签</el-button>
-                <el-button size="mini" type="primary" @click="dialogTextLineVisible=true">添加分割线</el-button>
-                <el-button size="mini" type="primary" @click="dialogBorderVisible=true">添加边框</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogBackgroundVisible=true">背景色</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogTitleVisible=true">选择主题</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="gridLine">网格线</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogTextLabelVisible=true">添加文本标签</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogTextLineVisible=true">添加分割线</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogBorderVisible=true">添加边框</el-button>
                 <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                 <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
                 <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
@@ -559,6 +559,7 @@ export default {
             echart_theme: "",
             chooseTitle_show: false,
             global_component_array: [],
+            global_component_id_array:[],
             tmp_card_layout: "",
             bordercolor_show: false,
             tabledata: [],
@@ -782,147 +783,15 @@ export default {
         if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
             this.picshow = true;
             this.getDataDashboardInfoById(this.$route.query.dashboard_id);
-            var bordercolor = this.auto_dashboard_info.bordercolor;
-                var bordertype = this.auto_dashboard_info.bordertype;
-                var borderwidth = this.auto_dashboard_info.borderwidth;
-
-                var code = this.auto_dashboard_info.dashboard_theme;
-                var style = "";
-                var type = "";
-                echart_theme_obj = {};
-                for (var i = 0; i < this.titleData.length; i++) {
-                    if (this.titleData[i].code == code) {
-                        style = this.titleData[i].style;
-                        type = this.titleData[i].type;
-                        echart_theme_obj = this.titleData[i];
-                    }
-                }
-
-                if (code == "00") {
-                    this.echart_theme = echart_theme_obj;
-                } else {
-                    $.getJSON(this.echartThemeJson, function (themeJSON) {
-                        echarts.registerTheme(type, themeJSON[type]);
-                        this.echart_theme = echart_theme_obj;
-                    });
-                }
-                var index = 0;
-                for (var i = 0; i < this.titleData.length; i++) {
-                    if (code == "0" + i) {
-                        index = i;
-                    }
-                }
-                this.bcolor = this.titleData[index].bcolor;
-                setTimeout(() => {
-                    for (var i = 0; i < resultdata.data.layout.length; i++) {
-                        if (resultdata.data.layout[i].label == "0") {
-                            $("#" + resultdata.data.layout[i].type).find("p").css({
-                                "background-color": this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            $("#" + resultdata.data.layout[i].type).find("p").css({
-                                'background-color': this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            var id = $("#" + resultdata.data.layout[i].type).attr("id");
-                        } else if (resultdata.data.layout[i].label == "1") {
-                            $("#" + resultdata.data.layout[i].type).find("div[class='lineclass']").css({
-                                'background-color': this.titleData[index].ncolor
-                            });
-                        } else if (resultdata.data.layout[i].label == "2") {
-                            $("#" + resultdata.data.layout[i].type).css({
-                                'border': this.titleData[index].ncolor + ' 2px solid'
-                            });
-                        } else {
-
-                        }
-                    }
-                }, 2000);
-
-                setTimeout(() => {
-                    for (var i = 0; i < this.chart_obj_array.length; i++) {
-                        if (this.chart_obj_array[i].layouttype == "card") {
-                            $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                                "background-color": this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
-                                'background-color': this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
-                            this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                            this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-
-                            this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
-                            this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                        } else if (this.chart_obj_array[i].layouttype == "table") {
-                            this.tabStyle.th_background = this.titleData[index].ncolor;
-                            this.tabStyle.zl_background = this.titleData[index].ncolor;
-                        } else {
-
-                        }
-                    }
-                }, 2000);
-
-                this.layoutFlag = false;
-                this.titleFlag = false;
-
-                setTimeout(() => {
-                    this.echartpic(resultdata, component_id_array);
-                }, 500);
-
-                setTimeout(() => {
-
-                    this.grid_layout_backgroundcolor = style;
-                    var bgcolor = this.auto_dashboard_info.background;
-                    this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
-
-                    //边框类型
-                    for (var i = 0; i < this.borderstyle.length; i++) {
-                        if (this.borderstyle[i].code == bordertype) {
-                            this.choosebordertype(this.borderstyle[i]);
-                        }
-                    }
-
-                    //边框颜色
-                    for (var i = 0; i < this.bordercolor.length; i++) {
-                        if (this.bordercolor[i].code == bordercolor) {
-                            this.choosebordercolor(this.bordercolor[i]);
-                        }
-                    }
-
-                    //边框粗细
-                    for (var i = 0; i < this.borderwidth.length; i++) {
-                        if (this.borderwidth[i].code == borderwidth) {
-                            this.chooseborderwidth(this.borderwidth[i]);
-                        }
-                    }
-
-                    $("div[name='pic']").each(function () {
-                        $(this).trigger("mouseup");
-                    });
-                }, 500);
-
-                setTimeout(() => {
-                    this.frame_back();
-                }, 1000);
-
-                setTimeout(() => {
-                    this.textlabel_back();
-                }, 1000);
-
-                setTimeout(() => {
-                    this.textline_back();
-                }, 1000);
         }
     },
     watch: {
         layout(layout) {
-            var chart_obj_array=this.chart_obj_array;
+            var chart_obj_array = this.chart_obj_array;
             if (layout.length > 0) {
                 $("div[name='pic']").each(function () {
                     $(this).mouseup(function () {
+                        this.chart_obj_array=chart_obj_array;
                         var $this = $(this);
                         var thisid = $this.children('div').attr("id")
                         var w = $(this).width() + "px";
@@ -931,67 +800,69 @@ export default {
                             "width": w,
                             "height": h
                         })
-                        setTimeout(function () {
-                            for (var i = 0; i < chart_obj_array.length; i++) {
-                                if (chart_obj_array[i].layouttype == "card") {
-                                    if (chart_obj_array[i].id == thisid) {
-                                        //卡片大小变化
-                                        var id = chart_obj_array[i].id;
-                                        var idwidth = $("#" + id).width();
-                                        var idheight = $("#" + id).height();
-                                        $this.find("div[class='cardclass']").css('font-size', "12px");
-                                        var titleHeight = $("#" + id).find("div[name='cardcomponentname']").height();
-                                        //循环修改大小直至大于最大高度
-                                        for (var i = 12; i < idheight - titleHeight; i++) {
-                                            if ($this.find("div[class='cardclass']").height() > idheight - titleHeight) {
-                                                //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
-                                                $this.find("div[class='cardclass']").css('font-size', (i - 2) + "px");
-                                                //结束循环
-                                                break;
-                                            } else {
-                                                //如果小于最大高度，文字大小加1继续尝试
-                                                $this.find("div[class='cardclass']").css('font-size', i + "px");
-                                            }
+                        for (var i = 0; i < this.chart_obj_array.length; i++) {
+                            if (this.chart_obj_array[i].layouttype == "card") {
+                                if (this.chart_obj_array[i].id == thisid) {
+                                    //卡片大小变化
+                                    var id = this.chart_obj_array[i].id;
+                                    var idwidth = $("#" + id).width();
+                                    var idheight = $("#" + id).height();
+                                    $this.find("div[class='cardclass']").css('font-size', "12px");
+                                    var titleHeight = $("#" + id).find("div[name='cardcomponentname']").height();
+                                    //循环修改大小直至大于最大高度
+                                    for (var i = 12; i < idheight - titleHeight; i++) {
+                                        if ($this.find("div[class='cardclass']").height() > idheight - titleHeight) {
+                                            //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
+                                            $this.find("div[class='cardclass']").css('font-size', (i - 2) + "px");
+                                            //结束循环
+                                            break;
+                                        } else {
+                                            //如果小于最大高度，文字大小加1继续尝试
+                                            $this.find("div[class='cardclass']").css('font-size', i + "px");
                                         }
                                     }
-                                } else if (chart_obj_array[i].layouttype == "table") {
-                                    if (chart_obj_array[i].id == thisid) {
-                                        //表格大小变化
-                                        var id = chart_obj_array[i].id;
-                                        var idwidth = $("#" + id).width();
-                                        var idheight = $("#" + id).height();
-                                        var domH = Math.sqrt(idwidth * idwidth + idheight * idheight);
-                                        $this.find("div[name='tablediv']").css('height', idheight - 20 + "px");
-                                        $this.find("table").css('height', idheight - 20 + "px");
-                                    }
-                                } else if (chart_obj_array[i].layouttype == "label") {
-                                    if (chart_obj_array[i].id == thisid) {
-                                        //文本标签大小变化
-                                        var id = chart_obj_array[i].id;
-                                        var idwidth = $("#" + id).width();
-                                        var idheight = $("#" + id).height();
-                                        $this.find("div[class='labelclass']").css('font-size', "12px");
-                                        //循环修改大小直至大于最大高度
-                                        for (var i = 12; i < idheight; i++) {
-                                            if ($this.find("div[class='labelclass']").height() > idheight) {
-                                                //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
-                                                $this.find("div[class='labelclass']").css('font-size', (i - 2) + "px");
-                                                //结束循环
-                                                break;
-                                            } else {
-                                                //如果小于最大高度，文字大小加1继续尝试
-                                                $this.find("div[class='labelclass']").css('font-size', i + "px");
-                                            }
-                                        }
-                                        var lablewidth = $this.find("div[class='labelclass']").width();
-                                        var difference = (idwidth - lablewidth) / 2;
-                                        $this.find("div[class='labelclass']").css('margin-left', difference + "px");
-                                    }
-                                } else if (chart_obj_array[i].layouttype == "borderline") {} else if (chart_obj_array[i].layouttype == "frameline") {} else {
-                                    chart_obj_array[i].resize();
                                 }
+                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                                if (this.chart_obj_array[i].id == thisid) {
+                                    //表格大小变化
+                                    var id = this.chart_obj_array[i].id;
+                                    var idwidth = $("#" + id).width();
+                                    var idheight = $("#" + id).height();
+                                    var domH = Math.sqrt(idwidth * idwidth + idheight * idheight);
+                                    $this.find("div[name='tablediv']").css('height', idheight - 20 + "px");
+                                    $this.find("table").css('height', idheight - 20 + "px");
+                                }
+                            } else if (this.chart_obj_array[i].layouttype == "label") {
+                                if (this.chart_obj_array[i].id == thisid) {
+                                    //文本标签大小变化
+                                    var id = this.chart_obj_array[i].id;
+                                    var idwidth = $("#" + id).width();
+                                    var idheight = $("#" + id).height();
+                                    $this.find("div[class='labelclass']").css('font-size', "12px");
+                                    //循环修改大小直至大于最大高度
+                                    for (var i = 12; i < idheight; i++) {
+                                        if ($this.find("div[class='labelclass']").height() > idheight) {
+                                            //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
+                                            $this.find("div[class='labelclass']").css('font-size', (i - 2) + "px");
+                                            //结束循环
+                                            break;
+                                        } else {
+                                            //如果小于最大高度，文字大小加1继续尝试
+                                            $this.find("div[class='labelclass']").css('font-size', i + "px");
+                                        }
+                                    }
+                                    var lablewidth = $this.find("div[class='labelclass']").width();
+                                    var difference = (idwidth - lablewidth) / 2;
+                                    $this.find("div[class='labelclass']").css('margin-left', difference + "px");
+                                }
+                            } else if (this.chart_obj_array[i].layouttype == "borderline") {
+
+                            } else if (this.chart_obj_array[i].layouttype == "frameline") {
+
+                            } else {
+                                this.chart_obj_array[i].resize();
                             }
-                        }, 100)
+                        }
                     });
                 });
             }
@@ -1010,41 +881,155 @@ export default {
                 "dashboard_id": dashboard_id
             }).then(res => {
                 if (res&&res.success) {
-                    this.dataDashboardList = res.data;
+                    this.global_component_array = res.data;
+                    this.auto_dashboard_info.bordercolor = res.data.bordercolor;
+                    this.auto_dashboard_info.bordertype = res.data.bordertype;
+                    this.auto_dashboard_info.borderwidth = res.data.borderwidth;
+                    this.auto_dashboard_info.dashboard_theme = res.data.dashboard_theme;
+                    var code =this.auto_dashboard_info.dashboard_theme;
                     //把组件,文本标签,分割线的layout区分开
-                        var tmp_layout = data.layout;
-                        for (var i = 0; i < tmp_layout.length; i++) {
-                            if ("0" == tmp_layout[i].label) {
-                                this.label_layout.push(tmp_layout[i]);
-                            } else if ("1" == tmp_layout[i].label) {
-                                this.line_layout.push(tmp_layout[i]);
-                            } else if ("2" == tmp_layout[i].label) {
-                                this.frame_layout.push(tmp_layout[i]);
+                    for (var i = 0; i < res.data.layout.length; i++) {
+                        if ("0" == res.data.layout[i].label) {
+                            this.label_layout.push(res.data.layout[i]);
+                        } else if ("1" == res.data.layout[i].label) {
+                            this.line_layout.push(res.data.layout[i]);
+                        } else if ("2" == res.data.layout[i].label) {
+                            this.frame_layout.push(res.data.layout[i]);
+                        } else {
+                            this.layout.push(res.data.layout[i]);
+                        }
+                    }
+                    for (var i = 0; i < this.layout.length; i++) {
+                        var id = this.layout[i].type;
+                        this.global_component_id_array.push(id);
+                    }
+                    if ('undefined' != typeof res.data.auto_label_info_array && null != typeof res.data.auto_label_info_array) {
+                        this.auto_label_info_array = res.data.auto_label_info_array;
+                    }
+                    if ('undefined' != typeof res.data.auto_line_info_array && null != typeof res.data.auto_line_info_array) {
+                        this.auto_line_info_array = res.data.auto_line_info_array;
+                    }
+                    if ('undefined' != typeof res.data.auto_frame_info_list && null != typeof res.data.auto_frame_info_list) {
+                        this.auto_frame_info_list = res.data.auto_frame_info_list;
+                    }
+                    var style = "";
+                    var type = "";
+                    var echart_theme_obj = {};
+                    for (var i = 0; i < this.titleData.length; i++) {
+                        if (this.titleData[i].code == code) {
+                            style = this.titleData[i].style;
+                            type = this.titleData[i].type;
+                            echart_theme_obj = this.titleData[i];
+                        }
+                    }
+                    if (code == "00") {
+                        this.echart_theme = echart_theme_obj;
+                    } else {
+                        $.getJSON(this.echartThemeJson, function (themeJSON) {
+                            echarts.registerTheme(type, themeJSON[type]);
+                            this.echart_theme = echart_theme_obj;
+                        });
+                    }
+                    var index = 0;
+                    for (var i = 0; i < this.titleData.length; i++) {
+                        if (code == "0" + i) {
+                            index = i;
+                        }
+                    }
+                    this.bcolor = this.titleData[index].bcolor;
+                    setTimeout(() => {
+                        for (var i = 0; i < this.layout.length; i++) {
+                            if (this.layout[i].label == "0") {
+                                $("#" + this.layout[i].type).find("p").css({
+                                    "background-color": this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                $("#" + this.layout[i].type).find("p").css({
+                                    'background-color': this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                var id = $("#" + this.layout[i].type).attr("id");
+                            } else if (this.layout[i].label == "1") {
+                                $("#" + this.layout[i].type).find("div[class='lineclass']").css({
+                                    'background-color': this.titleData[index].ncolor
+                                });
+                            } else if (this.layout[i].label == "2") {
+                                $("#" + this.layout[i].type).css({
+                                    'border': this.titleData[index].ncolor + ' 2px solid'
+                                });
                             } else {
-                                this.layout.push(tmp_layout[i]);
+
                             }
                         }
-                        for (var i = 0; i < this.layout.length; i++) {
-                            var id = this.layout[i].type;
-                            component_id_array.push(id);
-                        }
-                        this.auto_dashboard_info = data.auto_dashboard_info;
-                        this.selectRow = data.auto_comp_sum;
+                    }, 2000);
+                    setTimeout(() => {
+                        for (var i = 0; i < this.chart_obj_array.length; i++) {
+                            if (this.chart_obj_array[i].layouttype == "card") {
+                                $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                                    "background-color": this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                                    'background-color': this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
+                                this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                                this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
 
-                        this.global_component_array = data;
-                        this.global_component_id_array = component_id_array;
+                                this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
+                                this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                                this.tabStyle.th_background = this.titleData[index].ncolor;
+                                this.tabStyle.zl_background = this.titleData[index].ncolor;
+                            } else {
 
-                        if ('undefined' != typeof data.auto_label_info_array && null != typeof data.auto_label_info_array) {
-                            this.auto_label_info_array = data.auto_label_info_array;
+                            }
                         }
-                        if ('undefined' != typeof data.auto_line_info_array && null != typeof data.auto_line_info_array) {
-                            this.auto_line_info_array = data.auto_line_info_array;
+                    }, 2000);
+
+                    this.layoutFlag = false;
+                    this.titleFlag = false;
+                    setTimeout(() => {
+                        this.echartpic(this.global_component_array, this.global_component_id_array);
+                    }, 500);
+                    setTimeout(() => {
+                        this.grid_layout_backgroundcolor = style;
+                        var bgcolor = this.auto_dashboard_info.background;
+                        this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
+                        //边框类型
+                        for (var i = 0; i < this.borderstyle.length; i++) {
+                            if (this.borderstyle[i].code == this.auto_dashboard_info.bordertype) {
+                                this.choosebordertype(this.borderstyle[i]);
+                            }
                         }
-                        if ('undefined' != typeof data.auto_frame_info_list && null != typeof data.auto_frame_info_list) {
-                            this.auto_frame_info_list = data.auto_frame_info_list;
+                        //边框颜色
+                        for (var i = 0; i < this.bordercolor.length; i++) {
+                            if (this.bordercolor[i].code == this.auto_dashboard_info.bordercolor) {
+                                this.choosebordercolor(this.bordercolor[i]);
+                            }
                         }
-                }
-           })
+                        //边框粗细
+                        for (var i = 0; i < this.borderwidth.length; i++) {
+                            if (this.borderwidth[i].code == this.auto_dashboard_info.borderwidth) {
+                                this.chooseborderwidth(this.borderwidth[i]);
+                            }
+                        }
+                        $("div[name='pic']").each(function () {
+                            $(this).trigger("mouseup");
+                        });
+                    }, 500);
+                    setTimeout(() => {
+                        this.frame_back();
+                    }, 1000);
+                    setTimeout(() => {
+                        this.textlabel_back();
+                    }, 1000);
+                    setTimeout(() => {
+                        this.textline_back();
+                    }, 1000);
+                        }
+                })
         },
         //获取可视化组件信息
         getVisualComponentInfo() {
@@ -1084,6 +1069,7 @@ export default {
                 if (res && res.success) {
                     this.layoutFlag = false;
                     this.titleFlag = true;
+                    this.global_component_array=res.data;
                     this.layout=res.data.layout;
                     setTimeout(() => {
                         this.echartpic(res.data, component_id_array);
@@ -1328,44 +1314,47 @@ export default {
                     echarts.registerTheme(type, themeJSON[type]);
                     this.echart_theme = data;
                 });
-
             }
+            var chart_obj_array=this.chart_obj_array;
+            var cardname=this.cardname;
+            var cardstyle=this.cardstyle;
+            var tabStyle=this.tabStyle;
             //更换卡片，标签，分割线，表的颜色为组件的主要颜色
             setTimeout(() => {
-                for (var i = 0; i < this.chart_obj_array.length; i++) {
+                for (var i = 0; i < chart_obj_array.length; i++) {
                     this.bcolor = data.bcolor;
-                    if (this.chart_obj_array[i].layouttype == "card") {
-                        $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                    if (chart_obj_array[i].layouttype == "card") {
+                        $("#" + chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
                             "background-color": data.ncolor,
                             "color": data.fcolor
                         });
-                        $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                        $("#" + chart_obj_array[i].id).find("div[class='cardclass']").css({
                             'background-color': data.ncolor,
                             "color": data.fcolor
                         });
-                        this.cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.title.fontFamily;
-                        this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                        this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-                        this.cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
-                        this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                    } else if (this.chart_obj_array[i].layouttype == "table") {
-                        this.tabStyle.th_background = this.bcolor
-                        this.tabStyle.zl_background = this.bcolor;
-                    } else if (this.chart_obj_array[i].layouttype == "label") {
-                        $("#" + this.chart_obj_array[i].id).find("p").css({
+                        cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.title.fontFamily;
+                        cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                        cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
+                        cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
+                        cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                    } else if (chart_obj_array[i].layouttype == "table") {
+                        tabStyle.th_background = this.bcolor
+                        tabStyle.zl_background = this.bcolor;
+                    } else if (chart_obj_array[i].layouttype == "label") {
+                        $("#" + chart_obj_array[i].id).find("p").css({
                             "background-color": data.ncolor,
                             "color": data.fcolor
                         });
-                        $("#" + this.chart_obj_array[i].id).find("p").css({
+                        $("#" + chart_obj_array[i].id).find("p").css({
                             'background-color': data.ncolor,
                             "color": data.fcolor
                         });
-                    } else if (this.chart_obj_array[i].layouttype == 'borderline') {
-                        $("#" + this.chart_obj_array[i].id).find("div[class='lineclass']").css({
+                    } else if (chart_obj_array[i].layouttype == 'borderline') {
+                        $("#" + chart_obj_array[i].id).find("div[class='lineclass']").css({
                             'background-color': data.ncolor
                         });
-                    } else if (this.chart_obj_array[i].layouttype == "frameline") {
-                        $("#" + this.chart_obj_array[i].id).css({
+                    } else if (chart_obj_array[i].layouttype == "frameline") {
+                        $("#" + chart_obj_array[i].id).css({
                             'border': data.ncolor + ' 2px solid'
                         });
                     } else {
@@ -1522,7 +1511,7 @@ export default {
                 if (res&&res.success) {
                     this.$Msg.customizTitle('保存成功', 'success')
                     this.$router.push({
-                         name: 'dataDashboardList'
+                         name: 'global_component_array'
                      })
                 }
             });
@@ -1888,6 +1877,7 @@ export default {
                 }
             }
             this.global_component_array.layout = this.layout;
+            var chart_obj_array=[];
             this.$nextTick(function () {
                 for (var i = 0; i < component_id_array.length; i++) {
                     var id = component_id_array[i];
@@ -1974,19 +1964,19 @@ export default {
                     if (type == "line") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartline(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "bar") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartbar(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
                         var Chart = echarts.init(document.getElementById(id), 'dark');
                         this.echartpie(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "scatter") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartscatter(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                       this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "boxplot") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartboxplot(echartdata, Chart, id, echart_div_layout, tmp_component_name);
@@ -1994,11 +1984,11 @@ export default {
                     } else if (type == "bl") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartbl(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "treemap") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartTreemap(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "card") {
                         this.tmp_card_layout = echart_div_layout;
                         var cardname = "background:" + this.title.backgroundColor + ";color:" + this.title.color + ";font-family:" + this.title.fontFamily;
@@ -2033,7 +2023,7 @@ export default {
                         obj.layouttype = type;
                         obj.id = id;
                         obj.cardtext = echartdata.CardData;
-                        this.chart_obj_array.push(obj);
+                        chart_obj_array.push(obj);
                     } else if (type == "table") {
                         this.tmp_card_layout = echart_div_layout;
                         this.tabledata = echartdata.TableData;
@@ -2093,14 +2083,14 @@ export default {
                         var obj = {};
                         obj.layouttype = type;
                         obj.id = id;
-                        this.chart_obj_array.push(obj);
+                        chart_obj_array.push(obj);
                     } else if (type == "barmd") { //多维柱状图
                         $("#" + id).css('width', "600px");
                         $("#" + id).css('height', "400px");
                         this.barmdIds.push(id);
                         this.barmd_echartdatas.push(echartdata);
                         var Chart = this.changeToBarmdChart(document.getElementById(id), echartdata, this.bcolor);
-                        this.chart_obj_array.push(Chart.chart);
+                        chart_obj_array.push(Chart.chart);
                         $('#' + id).next('span').addClass('barmd');
                         //添加打叉按钮
                         if (this.is_showdel == true) {
@@ -2120,7 +2110,7 @@ export default {
                     } else if (type == "polarbar") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.changeToPolarBarChart(echartdata.radiusData, echartdata.seriesData, Chart, echart_div_layout, tmp_component_name, tmp_component_background);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     } else if (type == "bubble") {
                         this.bubbleIds.push(id);
                         var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
@@ -2131,7 +2121,7 @@ export default {
                         this.myCharts.push(myChart);
 
                         this.echartBubble(echartdata, myChart, id, echart_div_layout, tmp_component_name, this.bcolor);
-                        this.chart_obj_array.push(myChart);
+                        chart_obj_array.push(myChart);
                         $("#" + id).css("overflow", "hidden");
                         $('#' + id).next('span').addClass('bubble'); //给所有的气泡图的拉伸按钮添加class
                         //添加打叉按钮
@@ -2157,10 +2147,11 @@ export default {
                         setTimeout(() => {
                             this.changeToMapChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         }, 500);
-                        this.chart_obj_array.push(Chart);
+                        chart_obj_array.push(Chart);
                     }
                 }
             })
+            this.chart_obj_array=chart_obj_array;
             setTimeout(() => {
                 this.confirmBackgroudColor();
             }, 100);
@@ -2238,8 +2229,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2346,8 +2337,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2468,6 +2459,14 @@ export default {
         echartTreemap(echartdata, treemapChart, id, layout, tmp_component_name, tmp_component_background) {
             var seriesArray = echartdata.seriesData;
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
@@ -2484,8 +2483,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2530,6 +2529,9 @@ export default {
                     data: seriesArray
                 }]
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             treemapChart.clear();
             treemapChart.setOption(option);
             treemapChart.resize();
@@ -2541,12 +2543,14 @@ export default {
             var xArray = echartdata.xArray;
             this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
             this.xAxis.offset = parseInt(this.xAxis.offset);
+
             this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
             this.xAxis.type = "category";
             this.xAxis.data = xArray;
             this.xAxis.nameTextStyle = this.axisStyle;
             this.xAxis.axisLine = this.xAxisLine;
             this.xAxis.axisLabel = this.xAxisLabel;
+
             this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
             this.yAxis.type = "value";
             this.yAxis.nameTextStyle = this.axisStyle;
@@ -2554,10 +2558,19 @@ export default {
             this.yAxis.axisLabel = this.yAxisLabel;
             this.yAxis.position = "";
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
             this.legendStyle.data = legend_data;
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
@@ -2573,8 +2586,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2599,6 +2612,9 @@ export default {
                 yAxis: [this.yAxis, this.yAxis],
                 series: seriesArray
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             blChart.clear();
             blChart.setOption(option);
             blChart.resize();
@@ -2616,6 +2632,14 @@ export default {
                 array1.push(seriesArray);
             }
             var data = echarts.dataTool.prepareBoxplotData(array1);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             option = {
                 title: [{
                         text: tmp_component_name,
@@ -2643,8 +2667,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2710,6 +2734,9 @@ export default {
                     }
                 ]
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             boxplotChart.clear();
             boxplotChart.setOption(option);
             boxplotChart.resize();
@@ -2739,11 +2766,14 @@ export default {
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
             var global_component_array=this.global_component_array;
             var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             var option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
@@ -2766,9 +2796,8 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array["data"].layout = layout;
-                                    delete global_component_array["data"][layout.type];
-                                    global_component_id_array = [];
+                                    global_component_array.layout = layout;
+                                    delete global_component_array[layout.type];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
                                             global_component_id_array.push(layout[i].type);
@@ -2790,14 +2819,24 @@ export default {
                 yAxis: this.yAxis,
                 series: seriesArray
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             lineChart.clear();
-            lineChart.setOption(option);
+            lineChart.setOption(option,true);
             lineChart.resize();
         },
         //极坐标柱状图
         changeToPolarBarChart(radiusData, seriesData, chart, layout, tmp_component_name, tmp_component_background) {
 
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -2821,8 +2860,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2851,7 +2890,9 @@ export default {
                     show: false
                 }
             };
-
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             chart.clear();
             chart.setOption(option);
             chart.resize();
@@ -2880,6 +2921,13 @@ export default {
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -2910,8 +2958,8 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2934,6 +2982,9 @@ export default {
                 yAxis: this.yAxis,
                 series: seriesArray
             };
+             this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             this.option = option;
             barChart.clear();
             barChart.setOption(option);
@@ -2954,6 +3005,14 @@ export default {
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             var option = {
                     backgroundColor: tmp_component_background,
                     title: titles,
@@ -2981,20 +3040,19 @@ export default {
                                 title: "删除",
                                 icon: "image://"+require("@/assets/images/del.png"),
                                 onclick() {
-                                    if (this.is_showdel == true) {
-                                        this.layout.splice(this.layout.indexOf(layout), 1);
-                                        this.global_component_array["data"].layout = this.layout;
-                                        delete this.global_component_array["data"][layout.type];
-                                        this.global_component_id_array = [];
-                                        for (var i = 0; i < this.layout.length; i++) {
-                                            if (this.layout[i].label == undefined) {
-                                                this.global_component_id_array.push(this.layout[i].type);
+                                    if (is_showdel == true) {
+                                        layout.splice(layout.indexOf(layout), 1);
+                                        global_component_array.layout = layout;
+                                        delete global_component_array[layout.type];
+                                        for (var i = 0; i < layout.length; i++) {
+                                            if (layout[i].label == undefined) {
+                                                global_component_id_array.push(layout[i].type);
                                             }
                                         }
-                                        this.chart_obj_array.splice(this.chart_obj_array.indexOf(pieChart), 1);
-                                        for (var i = 0; i < this.selectRow.length; i++) {
-                                            if (this.selectRow[i].component_id == id) {
-                                                this.selectRow.splice(i, 1);
+                                        chart_obj_array.splice(chart_obj_array.indexOf(pieChart), 1);
+                                        for (var i = 0; i < selectRow.length; i++) {
+                                            if (selectRow[i].component_id == id) {
+                                                selectRow.splice(i, 1);
                                             }
                                         }
                                         pieChart.clear;
@@ -3005,6 +3063,9 @@ export default {
                     },
                     series: seriesArray
                 };
+            this.chart_obj_array=chart_obj_array;
+            this.global_component_id_array=global_component_id_array;
+            this.selectRow=selectRow;
             this.option=option;
             pieChart.clear();
             pieChart.setOption(option);
@@ -3014,17 +3075,26 @@ export default {
         echartscatter(echartdata, scatterChart, id, layout, tmp_component_name, tmp_component_background) {
             var scatterData = echartdata.scatterData;
             var data = scatterData;
+
             this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
             this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
             this.xAxis.nameTextStyle = this.axisStyle;
             this.xAxis.type = "value";
             this.xAxis.axisLine = this.xAxisLine;
             this.xAxis.axisLabel = this.xAxisLabel;
+
             this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
             this.yAxis.nameTextStyle = this.axisStyle;
             this.yAxis.axisLine = this.yAxisLine;
             this.yAxis.axisLabel = this.yAxisLabel;
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array=[];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -3042,20 +3112,19 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.global_component_array["data"].layout = this.layout;
-                                    delete this.global_component_array["data"][layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
+                                    delete global_component_array["data"][layout.type];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(scatterChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(scatterChart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     scatterChart.clear;
@@ -3072,7 +3141,6 @@ export default {
                             emphasis: {
                                 show: this.echartsLabel.show_label,
                                 position: this.echartsLabel.position,
-                                //        		                formatter: this.echartsLabel.formatter,
                                 textStyle: {
                                     color: 'blue',
                                     fontSize: 16
@@ -3137,7 +3205,7 @@ var Profile = Vue.extend({
     methods: {
         delcard(layout, echart_div_layout, layout_id) {
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
@@ -3162,7 +3230,7 @@ var linedelProfile = Vue.extend({
             this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
@@ -3185,7 +3253,7 @@ var framedelProfile = Vue.extend({
             this.auto_frame_info_list.splice(this.auto_frame_info_list.indexOf(auto_frame_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             this.frame_layout.splice(this.frame_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
@@ -3208,7 +3276,7 @@ var labeldelProfile = Vue.extend({
             this.auto_label_info_array.splice(this.auto_label_info_array.indexOf(auto_label_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             this.label_layout.splice(this.label_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {

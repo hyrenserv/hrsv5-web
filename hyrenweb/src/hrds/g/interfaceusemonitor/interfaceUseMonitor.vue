@@ -38,12 +38,12 @@
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="interface_name" label="接口名称" align="left" width="160px" show-overflow-tooltip="true" />
-                <el-table-column prop="interface_code" label="接口代码" align="left" width="80px" show-overflow-tooltip="true" />
-                <el-table-column prop="user_name" label="使用用户" align="left" width="120px" show-overflow-tooltip="true" />
+                <el-table-column prop="interface_name" label="接口名称" align="left" width="160px" show-overflow-tooltip />
+                <el-table-column prop="interface_code" label="接口代码" align="left" width="80px" show-overflow-tooltip />
+                <el-table-column prop="user_name" label="使用用户" align="left" width="120px" show-overflow-tooltip />
                 <el-table-column prop="start_use_date" :formatter="dateFormat" label="开始日期" align="left" width="100px" />
                 <el-table-column prop="use_valid_date" :formatter="dateFormat" label="结束日期" align="left" width="100px" />
-                <el-table-column prop="response_time" label="响应时间" align="left" show-overflow-tooltip="true">
+                <el-table-column prop="response_time" label="响应时间" align="left" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <el-row>
                             <span>最大:</span><code style="color:#c7254e">{{scope.row.max}} ms</code>
@@ -99,10 +99,10 @@
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sysreg_name" label="系统登记表名" align="left" />
-                <el-table-column prop="original_name" label="原始表中文名" align="left" />
-                <el-table-column prop="user_name" label="使用用户" align="left" />
-                <el-table-column label="操作" align="left">
+                <el-table-column prop="sysreg_name" label="系统登记表名" show-overflow-tooltip align="left" />
+                <el-table-column prop="original_name" label="原始表中文名" show-overflow-tooltip align="left" />
+                <el-table-column prop="user_name" label="使用用户" show-overflow-tooltip align="left" />
+                <el-table-column label="操作" align="left" width="160px">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" class='editcolor' @click="searchFieldInfoById(scope.row)">
                             查看字段
