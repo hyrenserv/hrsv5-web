@@ -11,17 +11,17 @@
                     <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="表名" prop="table_name" width="180" align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表名" prop="table_name" width="240" align="center" :show-overflow-tooltip="true">
                 <!--  <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_name'" :rules="rule.default" >
                         <el-input size="medium" v-model="scope.row.table_name" style="width:160px" readonly></el-input>
                     </el-form-item>
                 </template> -->
             </el-table-column>
-            <el-table-column label="表中文名" width="180" align="center" :show-overflow-tooltip="true">
+            <el-table-column label="表中文名" width="240" align="center" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
                     <el-form-item :prop="'ex_destinationData.'+scope.$index+'.table_ch_name'" :rules="rule.default">
-                        <el-input size="medium" v-model="scope.row.table_ch_name" style="width:160px"></el-input>
+                        <el-input size="medium" v-model="scope.row.table_ch_name"></el-input>
                     </el-form-item>
                 </template>
             </el-table-column>
@@ -88,9 +88,9 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label=" 数据保留天数" align="center">
+            <el-table-column label=" 数据保留天数" align="center"  width="165">
                 <template slot="header">
-                    <el-popover placement="right" width="100" height="50" v-model="saveDayvisible">
+                    <el-popover placement="right" height="50" v-model="saveDayvisible">
                         <div class="alldays">
                             <el-input size="medium" v-model="allSaveDay" style="width:66px"></el-input>
                             <span style="margin-left: 10px;">天</span>
@@ -443,7 +443,28 @@ export default {
         addTaskAllFun.getSqlParamPlaceholder().then(res => {
             this.ParamPlaceholder = res.data
         })
-
+        let params2 = {};
+        params2["category"] = "StorageType";
+        let zpperData = []
+        this.$Code.getCodeItems(params2).then(res => {
+            this.storegaType = res.data
+            zpperData.push(res.data.ZhuiJia)
+            zpperData.push(res.data.TiHuan)
+        });
+        this.$Code.getCategoryItems(params2).then(res => {
+            let arrdata = res.data ? res.data : []
+            let cc = []
+            if (arrdata.length > 0) {
+                arrdata.forEach((item, index) => {
+                    if (zpperData.includes(item.code)) {
+                        cc.push(item)
+                    }
+                })
+            }
+            this.StorageType = cc;
+        });
+        this.storeTypeFun();
+        this.specialfieldFun();
         addTaskAllFun.getStoreDataBase({
             'colSetId': this.dbid
         }).then(res => {
@@ -518,28 +539,6 @@ export default {
                 this.tableloadingInfo = "暂无数据";
             }
         });
-        let params2 = {};
-        params2["category"] = "StorageType";
-        let zpperData = []
-        this.$Code.getCodeItems(params2).then(res => {
-            this.storegaType = res.data
-            zpperData.push(res.data.ZhuiJia)
-            zpperData.push(res.data.TiHuan)
-        });
-        this.$Code.getCategoryItems(params2).then(res => {
-            let arrdata = res.data ? res.data : []
-            let cc = []
-            if (arrdata.length > 0) {
-                arrdata.forEach((item, index) => {
-                    if (zpperData.includes(item.code)) {
-                        cc.push(item)
-                    }
-                })
-            }
-            this.StorageType = cc;
-        });
-        this.storeTypeFun();
-        this.specialfieldFun();
         // this.getSaveDataFun();
     },
 
