@@ -71,7 +71,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancel" size="mini">取 消</el-button>
+            <el-button @click="dialogDashboardVisible=false" size="mini">取 消</el-button>
             <el-button type="primary" @click="saveDashboard" size="mini">保 存
             </el-button>
         </div>
@@ -889,6 +889,9 @@ export default {
                     this.auto_dashboard_info.bordertype = res.data.bordertype;
                     this.auto_dashboard_info.borderwidth = res.data.borderwidth;
                     this.auto_dashboard_info.dashboard_theme = res.data.dashboard_theme;
+                    this.auto_dashboard_info.dashboard_id = res.data.dashboard_id;
+                    this.auto_dashboard_info.dashboard_name = res.data.dashboard_name;
+                    this.auto_dashboard_info.dashboard_desc = res.data.dashboard_desc;
                     var code =this.auto_dashboard_info.dashboard_theme;
                     //把组件,文本标签,分割线的layout区分开
                     for (var i = 0; i < res.data.layout.length; i++) {
@@ -1066,8 +1069,8 @@ export default {
                 component_id_array.push(this.selectRow[i].component_id);
             }
             this.global_component_id_array = component_id_array;
-            let param = {};
-            param['autoCompSums'] = JSON.stringify(this.selectRow);
+            let param = new FormData();
+            param.append('autoCompSums', JSON.stringify(this.selectRow));
             functionAll.showComponentOnDashboard(param).then(res => {
                 if (res && res.success) {
                     this.layoutFlag = false;
@@ -1504,20 +1507,33 @@ export default {
             this.auto_dashboard_info.bordertype=bordertype;
             this.auto_dashboard_info.borderwidth=border_width;
             this.auto_dashboard_info.bordercolor=border_color;
-            let param=this.auto_dashboard_info;
-            param["layout"]= JSON.stringify(this.layout),
-            // parm["autoFontInfos"]= this.layout,
-            param["autoLabelInfos"]= JSON.stringify(this.auto_label_info_array),
-            param["autoLineInfos"]= JSON.stringify(this.auto_line_info_array),
-            param["autoFrameInfos"]= JSON.stringify(this.auto_frame_info_list),
-            functionAll.saveDataDashboardInfo(param).then(res => {
+            let param=new FormData();
+            param.append("layout",JSON.stringify(this.layout));
+            param.append("autoLabelInfo", JSON.stringify(this.auto_label_info_array));
+            param.append("autoLineInfo", JSON.stringify(this.auto_line_info_array));
+            param.append("autoFrameInfo", JSON.stringify(this.auto_frame_info_list));
+            // param.append("autoFontInfo", {});
+            param.append("autoDashboardInfo", JSON.stringify(this.auto_dashboard_info));
+            if (this.auto_dashboard_info.dashboard_id==undefined||this.auto_dashboard_info.dashboard_id=='') {
+                functionAll.saveDataDashboardInfo(param).then(res => {
+                    if (res&&res.success) {
+                        this.$Msg.customizTitle('保存成功', 'success')
+                        this.$router.push({
+                            name: 'dataDashboardList'
+                        })
+                    }
+                });
+            }else{
+                functionAll.updateDataDashboardInfo(param).then(res => {
                 if (res&&res.success) {
-                    this.$Msg.customizTitle('保存成功', 'success')
+                    this.$Msg.customizTitle('更新成功', 'success')
                     this.$router.push({
-                         name: 'global_component_array'
+                         name: 'dataDashboardList'
                      })
                 }
             });
+            }
+            
         },
         //确定分割线
         confirmtextline() {
@@ -2829,7 +2845,7 @@ export default {
                 tooltip: {
                     trigger: 'axis'
                 },
-                legend: this.legendStyle,
+                legend: Object.assign({}, this.legendStyle, {data:legend_data}),
                 grid: {
                     left: '10%',
                     right: '10%',

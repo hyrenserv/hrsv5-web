@@ -45,15 +45,23 @@ export function getVisualComponentInfo(data) {
 export function showComponentOnDashboard(data) {
     return request({
         url: '/L/autoanalysis/operate/showComponentOnDashboard',
-        params:data,
-        // headers: { 'Content-Type': 'multipart/form-data' }
+        data:data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 //保存仪表盘
 export function saveDataDashboardInfo(data) {
     return request({
         url: '/L/autoanalysis/operate/saveDataDashboardInfo',
-        params:data,
-        // headers: { 'Content-Type': 'multipart/form-data' }
+        data:data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+//更新仪表盘
+export function updateDataDashboardInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/updateDataDashboardInfo',
+        data:data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
