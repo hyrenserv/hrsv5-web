@@ -33,6 +33,11 @@
             </div>
         </div>
     </div>
+    <el-row v-show="islineshow" v-for="(item,index) in linecomponent" :key="index">
+        <div name='linecomponentname'></div>
+        <img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delTextLine()'>"
+        <div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
+    </el-row>
     <!-- 添加组件模态框 -->
     <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%" :before-close="beforeAddComponentClose">
         <el-table :data="auto_comp_sum_array.slice((currPage - 1) * pageSize,currPage * pageSize)" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
@@ -268,29 +273,27 @@
     </el-dialog>
 </div>
 </template>
-
+<!--
 <script src="/static/src/panal/js/util/echarts-option.js"></script>
 <script src="/static/src/panal/js/util/jquery-ui.js"></script>
 <script src="/static/src/panal/js/util/echarts.min.js"></script>
 <script src="/static/src/panal/js/util/vue-grid-layout.umd.min.js"></script>
 <script src="/static/src/panal/js/util/metaUtil.js"></script>
-<script src="/static/src/panal/js/jquery.i18n.properties.min.js"></script>
-<script src="/static/src/panal/js/plugin/filterPlugin.js"></script>
-<script src="/static/src/panal/js/extendPagination.js"></script>
-<script src="/static/src/panal/js/util/urlUtil.js"></script>
 <script src="/static/src/panal/js/relation/echarts.js"></script>
-<script src="/static/src/panal/js/relation/dataTool.js"></script>
 <script src="/static/src/panal/js/relation/multiDimension.js"></script>
 <script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
-<script src="/static/src/panal/js/relation/bootstrap.min.js"></script>
-<script  src="/static/src/bootstrap-colorpicker.min.js"></script>
-<script src="/static/src/panal/js/relation/china.js"></script><script>
+<script src="/static/src/panal/js/relation/china.js"></script>
+-->
+<script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
 import * as functionAll from "./dataDashboard";
+require('echarts/dist/extension/dataTool.js');
 export default {
     data() {
         return {
+            islineshow:false,
+            linecomponent:[{}],
             totalSize:0,
             currPage:1,
             pageSize:10,
@@ -1569,18 +1572,20 @@ export default {
             this.layout.push(layout_obj);
 
             this.$nextTick(function () {
-                if (this.auto_line_info.line_type == 'heng') {
-                    var html = "<div name='linecomponentname'></div>" +
-                        "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
-                } else {
-                    var html = "<div name='linecomponentname'></div>" +
-                        "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
-                }
+                // if (this.auto_line_info.line_type == 'heng') {
+                //     var html = "<div name='linecomponentname'></div>" +
+                //     "<img src='../../../../../assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delTextLine(this.layout,echart_div_layout,auto_line_info)'>"
+                //       +  "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
+                // } else {
+                //     var html = "<div name='linecomponentname'></div>" +
+                //     "<img src='../../../../../assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delTextLine(this.layout,echart_div_layout,auto_line_info)'>"
+                //        + "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
+                // }
 
-                $("#" + id).css("overflow", "hidden");
-                $("#" + id).css("position", "relative");
-                $("#" + id).html(html);
-
+                // $("#" + id).css("overflow", "hidden");
+                // $("#" + id).css("position", "relative");
+                // $("#" + id).html(html);
+                this.islineshow=true;
                 for (var i = 0; i < this.labelfontcolor.length; i++) {
                     if (this.labelfontcolor[i].code == this.auto_line_info.line_color) {
                         $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[i].type);
@@ -1613,6 +1618,19 @@ export default {
                 };
             })
             this.dialogTextLineVisible=false;
+        },
+        delTextLine(layout, echart_div_layout, auto_line_info) {
+            this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
+            this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
+            global_component_array.layout = this.layout;
+            this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
+            for (var i = 0; i < this.chart_obj_array.length; i++) {
+                if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
+                    this.textlinearray.splice(this.textlinearray.indexOf(this.chart_obj_array[i]), 1);
+                }
+            }
+
         },
         //添加边框
         confirmFrameLine() {
@@ -1884,8 +1902,8 @@ export default {
                     var echartdata = JSON.parse(data[id]);
                     var type = echartdata.chart_type;
                     $("#" + id).css({
-                        "width": 370,
-                        "height": 300
+                        "width": 500,
+                        "height": 360
                     })
                     for (var j = 0; j < this.layout.length; j++) {
                         if (id == this.layout[j].type) {
@@ -1898,21 +1916,49 @@ export default {
                             this.axisStyle = transferAxisStyle(axisStyle);
                             //轴线配置--x轴(xAxis)
                             var xAxis = echart_div_layout.xAxisInfo[0];
+                            if (xAxis.show=='1') {
+                                xAxis.show="true";
+                            }
+                            if (xAxis.silent=='1') {
+                                xAxis.silent="true";
+                            }else{
+                                xAxis.silent="false";
+                            }
                             this.xAxis = transferxAxis(xAxis);
                             //x轴(xAxisLine)
                             var xAxisLine = echart_div_layout.xAxisLine;
+                            if (xAxisLine.show=='1') {
+                                xAxisLine.show="true";
+                            }
                             this.xAxisLine = transferxAxisLine(xAxisLine);
                             //x轴(xAxisLabel)
                             var xAxisLabel = echart_div_layout.xAxisLabel;
+                            if (xAxisLabel.show=='1') {
+                                xAxisLabel.show="true";
+                            }
                             this.xAxisLabel = transferxAxisLabel(xAxisLabel);
                             //轴线配置--y轴
                             var yAxis = echart_div_layout.yAxisInfo[0];
+                            if (yAxis.show=='1') {
+                                yAxis.show="true";
+                            }
+                             if (yAxis.silent=='1') {
+                                yAxis.silent="true";
+                            }else{
+                                yAxis.silent="false";
+                            }
                             this.yAxis = transferyAxis(yAxis);
                             //y轴(yAxisLine)
                             var yAxisLine = echart_div_layout.yAxisLine;
+                            if (yAxisLine.show=='1') {
+                                yAxisLine.show="true";
+                            }
                             this.yAxisLine = transferyAxisLine(yAxisLine);
                             //y轴(yAxisLabel)
                             var yAxisLabel = echart_div_layout.yAxisLabel;
+                            if (yAxisLabel.show=='1') {
+                                yAxisLabel.show="true";
+                            }
                             this.yAxisLabel = transferyAxisLabel(yAxisLabel);
                             //二维表
                             var tableStyle = echart_div_layout.twoDimensionalTable
@@ -1930,6 +1976,9 @@ export default {
                             // this.echartsLabel = transferEchartsLabel(echartsLabel);
                             //图例设置
                             var legendStyle = echart_div_layout.legendInfo;
+                            if (legendStyle.show=='1') {
+                                legendStyle.show="true";
+                            }
                             this.legendStyle = transferLegendStyle(legendStyle);
                         }
                     }
@@ -2782,9 +2831,9 @@ export default {
                 },
                 legend: this.legendStyle,
                 grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
+                    left: '10%',
+                    right: '10%',
+                    bottom: '10%',
                     containLabel: true
                 },
                 toolbox: {
@@ -3115,7 +3164,7 @@ export default {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
                                     global_component_array.layout = layout;
-                                    delete global_component_array["data"][layout.type];
+                                    delete global_component_array[layout.type];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
                                             global_component_id_array.push(layout[i].type);
@@ -3315,33 +3364,6 @@ $("#label_color").blur(function () {
 $("#font_color").blur(function () {
     this.auto_label_info.textStyle.color = $('#font_color').val();
 });
-
-//全屏
-
-//退出全屏
-/*function exitScreen(){
-
-$(".navbar").show();
-
- $('#toubu').show();
-    if (document.exitFullscreen) {  
-        document.exitFullscreen();  
-    }  
-    else if (document.mozCancelFullScreen) {  
-        document.mozCancelFullScreen();  
-    }  
-    else if (document.webkitCancelFullScreen) {  
-        document.webkitCancelFullScreen();  
-    }  
-    else if (document.msExitFullscreen) {  
-        document.msExitFullscreen();  
-    } 
-    if(typeof cfs != "undefined" && cfs) {
-        cfs.call(el);
-    }
-    $('#fullScreen').show();
-    //$('#fullScreenExit').hide();
-}*/
 
 window.onresize = function () {
     if (this.is_showdel == false) {
