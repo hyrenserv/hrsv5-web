@@ -266,8 +266,8 @@
                      v-if="auto_comp_sum.chart_theme =='scatter'|| auto_comp_sum.chart_type=='bubble'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')"
                          src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
-                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"
-                         src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
+                    <!--<img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"-->
+                    <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
                 </div>
                 <div style="margin-top:10px;"
                      v-if="auto_comp_sum.chart_theme =='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
@@ -374,7 +374,7 @@
                             <div style="height:300px;overflow:auto;">
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">名称</span>
-                                    <el-input v-model="auto_comp_sum.chart_theme" placeholder="名称" size="small"
+                                    <el-input v-model="auto_comp_sum.title_name" placeholder="名称" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -565,10 +565,10 @@
                                             </el-input>
                                         </div>
                                         <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
-                                            <!--<span class="el-input-group__prepends">轴标签内容格式器</span>-->
-                                            <!--<el-input v-model="xAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"-->
-                                                      <!--class="selectPosition">-->
-                                            <!--</el-input>-->
+                                        <!--<span class="el-input-group__prepends">轴标签内容格式器</span>-->
+                                        <!--<el-input v-model="xAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"-->
+                                        <!--class="selectPosition">-->
+                                        <!--</el-input>-->
                                         <!--</div>-->
                                     </div>
                                 </el-tab-pane>
@@ -674,10 +674,10 @@
                                             </el-input>
                                         </div>
                                         <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
-                                            <!--<span class="el-input-group__prepends">轴标签内容格式器</span>-->
-                                            <!--<el-input v-model="yAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"-->
-                                                      <!--class="selectPosition">-->
-                                            <!--</el-input>-->
+                                        <!--<span class="el-input-group__prepends">轴标签内容格式器</span>-->
+                                        <!--<el-input v-model="yAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"-->
+                                        <!--class="selectPosition">-->
+                                        <!--</el-input>-->
                                         <!--</div>-->
                                     </div>
                                 </el-tab-pane>
@@ -852,10 +852,10 @@
                                     </el-select>
                                 </div>
                                 <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
-                                    <!--<span class="el-input-group__prepends">内边距</span>-->
-                                    <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
-                                              <!--class="selectPosition">-->
-                                    <!--</el-input>-->
+                                <!--<span class="el-input-group__prepends">内边距</span>-->
+                                <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
+                                <!--class="selectPosition">-->
+                                <!--</el-input>-->
                                 <!--</div>-->
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图形宽度</span>
@@ -968,10 +968,10 @@
                                     </el-select>
                                 </div>
                                 <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
-                                    <!--<span class="el-input-group__prepends">内边距</span>-->
-                                    <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
-                                              <!--class="selectPosition">-->
-                                    <!--</el-input>-->
+                                <!--<span class="el-input-group__prepends">内边距</span>-->
+                                <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
+                                <!--class="selectPosition">-->
+                                <!--</el-input>-->
                                 <!--</div>-->
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例间隔</span>
@@ -1151,7 +1151,7 @@
                 inputvalueOptions1: '',
                 markCodeOptionsValue: '',
                 canChangeFiflter: true,
-                showNum: null,
+                showNum: 100,
                 optionsWordsbuttons: true,
                 dynamicColumnTables: [],
                 dynamicColumnTableHiddens: false,
@@ -1488,6 +1488,7 @@
                 },
                 //组件汇总表
                 auto_comp_sum: {
+                    title_name: "",
                     chart_theme: "",
                     condition_sql: '',
                     chart_type: '',
@@ -1534,6 +1535,8 @@
                 yValueArry: [],
                 value: '',
                 weiduArry: [],
+                allcolumns: [],
+                allnumcolumns: [],
                 originalweiduArry: [],
                 duliangArry: [],
                 originalduliangArry: [],
@@ -1666,7 +1669,6 @@
                         itemAll.nameAll = itemAll.column_name;
                     })
                     this.yValueArry = res.data.yAxisCol;
-                    console.log(JSON.stringify(res.data));
                     this.xAxis = res.data.xAxisInfo[0];
                     this.yAxis = res.data.yAxisInfo[0];
                     this.xAxisLine = res.data.xAxisLine;
@@ -1901,6 +1903,7 @@
                         }
                     })
                     this.weiduArry = res.data.columns;
+                    this.allcolumns = res.data.columns
                     //保存全部的weiduArry，用以模糊查询时恢复
                     this.originalweiduArry = this.weiduArry;
                     if (res.data.numColumns) {
@@ -1913,6 +1916,11 @@
                                 }
                             })
                             this.duliangArry = res.data.numColumns;
+                            this.allnumcolumns = [];
+                            res.data.numColumns.forEach(itemAll => {
+                                this.allnumcolumns.push(itemAll.nameAll);
+                            })
+                            // this.allnumcolumns = res.data.numColumns;
                             //保存全部的duliangArry，用以模糊查询时恢复
                             this.originalduliangArry = this.duliangArry;
                         }
@@ -1936,7 +1944,7 @@
                                         let arr = [];
                                         res.data.columns.forEach(value => {
                                             let object = {
-                                                label: value.column_name,
+                                                label: value.fetch_res_name,
                                                 children: [],
                                                 mark: '1',
                                                 code: '06'
@@ -2282,7 +2290,6 @@
                         repeatflag = true;
                     }
                     arry1.push(obj);
-
                 })
                 // 设置过滤条件数组
                 this.fiflterConditionArr.forEach(val => {
@@ -2309,22 +2316,75 @@
                     arry3.push(obj);
                 })
                 if (repeatflag) {
+                    this.loadingsearch = false;
                     return;
                 }
                 parama.autoCompDataSums = JSON.stringify(arry1);
                 parama.autoCompConds = JSON.stringify(arry2);
                 parama.autoCompGroups = JSON.stringify(arry3);
                 functionAll.getSqlByCondition(parama).then(res => {
+                    debugger;
                     this.loadingsearch = false;
                     if (res && res.success) {
-                        this.loadingsearch = true;
                         this.markexe_sql = res.data;
                         if (flag) {
                             this.echartshow(this.auto_comp_sum.chart_type);
                         }
-                        this.getVisualComponentResult(res.data, this.showNum)
+                        debugger;
+                        if (!flag) {
+                            this.weiduArry = [];
+                            this.originalweiduArry = [];
+                            this.duliangArry = [];
+                            this.originalduliangArry = [];
+                            this.optionsWords.forEach((item) => {
+                                if (item.code != '07') {
+                                    let obj = {
+                                        nameAll: this.putcodenametogether(item.code, item.realName)
+                                    }
+                                    this.weiduArry.push(obj);
+                                    this.originalweiduArry.push(obj);
+                                    if (item.code == '01' || item.code == '02' || item.code == '03' || item.code == '04' || item.code == '05') {
+                                        this.duliangArry.push(obj);
+                                        this.originalduliangArry.push(obj);
+                                    }else{
+                                        if(this.allnumcolumns.indexOf(item.realName)!=-1 ){
+                                            this.duliangArry.push(obj);
+                                            this.originalduliangArry.push(obj);
+                                        }
+                                    }
+
+                                } else {
+                                    this.allcolumns.forEach((item) => {
+                                        this.weiduArry.push({nameAll: item.nameAll});
+                                        this.originalweiduArry.push({nameAll: item.nameAll});
+                                        if(this.allnumcolumns.indexOf(item.nameAll)!=-1 ){
+                                            this.duliangArry.push({nameAll: item.nameAll});
+                                            this.originalduliangArry.push({nameAll: item.nameAll});
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
+                        // this.getVisualComponentResult(res.data, this.showNum)
                     }
                 })
+            },
+            putcodenametogether(code, name) {
+                switch (code) {
+                    case '01':
+                        return 'sum(' + name + ')';
+                    case '02':
+                        return 'avg(' + name + ')';
+                    case '03':
+                        return 'max(' + name + ')';
+                    case '04':
+                        return 'min(' + name + ')';
+                    case '06':
+                        return name;
+                    case '05':
+                        return 'count(*)';
+                }
             },
             // 获取答案
             getVisualComponentResult(val, num) {
@@ -2332,7 +2392,7 @@
                     exe_sql: val,
                     showNum: num
                 }).then(res => {
-                    this.loadingsearch = false;
+
                     this.dynamicColumns = res.data.columnList;
                     this.dynamicColumnTables = res.data.visualComponentList;
                 })
@@ -2430,7 +2490,7 @@
                 } else if (type == "map") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 }
-                if(this.checkifvalidate(this.markexe_sql)){
+                if (this.checkifvalidate(this.markexe_sql)) {
                     this.$Msg.customizTitle("请先点击得到答案", "warning");
                     return;
                 }
@@ -2505,7 +2565,7 @@
                 var result = {};
                 //设置标题属性
                 var titles = {
-                    text: this.auto_comp_sum.chart_theme,
+                    text: this.auto_comp_sum.title_name,
                     x: this.titleFont.align,
                     y: this.titleFont.verticalalign,
                     backgroundColor: this.titleFont.backgroundcolor,
@@ -2698,7 +2758,6 @@
                     }, result.yAxis),
                     series: data.seriesArray
                 };
-                console.log(JSON.stringify(option));
                 this.drawLine(option)
             },
             //堆叠柱状图
@@ -2807,7 +2866,7 @@
                     this.$Msg.customizTitle('组件名称为空，请填写', 'warning');
                     return;
                 }
-                if (this.checkifvalidate(this.auto_comp_sum.chart_theme)) {
+                if (this.checkifvalidate(this.auto_comp_sum.title_name)) {
                     this.$Msg.customizTitle('标题名称为空，请填写', 'warning');
                     return;
                 }
@@ -2891,7 +2950,7 @@
                         //     name: 'visualizationindex'
                         // })
                     })
-                }else {
+                } else {
                     functionAll.addVisualComponentInfo(param).then(res => {
                         this.$Msg.customizTitle('保存成功', 'success');
                         // this.$router.push({
