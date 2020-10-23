@@ -25,7 +25,7 @@
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column label=" 选择目的地" align="center">
+            <el-table-column label=" 选择目的地" align="center" show-overflow-tooltip>
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">请至少选择一个目的地,当选择的目的地是oracle时,落地表名长度不能大于27</div>
@@ -34,12 +34,14 @@
                 </template>
                 <template slot-scope="scope">
                     <span class="settingbtn" v-if="scope.row.data_extract_type!='1'">
-                        <el-button type="success" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
+                        <el-button type="text" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">
+                            {{scope.row.store_name.join(' / ')}}
+                        </el-button>
                         <el-button type="warning" size="mini" v-else @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column label=" 是否拉链存储" align="center">
+            <el-table-column label=" 是否拉链存储" align="center" width="150">
                 <template slot="header">
                     <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
                         <span class="allclickColor">是否拉链存储</span>
@@ -152,6 +154,7 @@
             </el-table-column>
             <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="store_name" label="目标库名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="详情" width="160px" align="center">
                 <template slot-scope="scope">
                     <el-row>
@@ -261,6 +264,7 @@
             </el-table-column>
             <el-table-column property="dsl_name" label="存储名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column property="store_type" label="存储类型" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column property="store_name" label="目标库名称" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="详情" width="160px" align="center">
                 <template slot-scope="scope">
                     <el-row>
@@ -316,7 +320,9 @@ import Loading from "../../components/loading";
 import {
     parse
 } from "path";
-import { log } from 'util';
+import {
+    log
+} from 'util';
 export default {
     components: {
         Step,
@@ -395,7 +401,9 @@ export default {
             Alldestinationchoose: [],
             etl_date: '',
             isLoading: false,
-            DatabaseType: []
+            DatabaseType: [],
+            storageLayer: {},
+            storegaType: {}
         };
     },
     computed: {
@@ -435,6 +443,14 @@ export default {
         addTaskAllFun.getSqlParamPlaceholder().then(res => {
             this.ParamPlaceholder = res.data
         })
+
+        addTaskAllFun.getStoreDataBase({
+            'colSetId': this.dbid
+        }).then(res => {
+            if (res.success) {
+                this.storageLayer = res.data
+            }
+        })
     },
     mounted() {
         let params = {};
@@ -463,6 +479,7 @@ export default {
                                         } else {
                                             arr[i].table_setting = false;
                                         }
+                                        arr[i].store_name = this.storageLayer[arr[i].table_id]
                                     }
                                 }
                                 if (arr[i].is_zipper == "1") {
@@ -491,10 +508,10 @@ export default {
                                 if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
                                 }
+                                arr[i].store_name = []
                             }
                             this.ruleForm.ex_destinationData = arr;
                         }
-
                     });
                 }
             } else {
@@ -505,6 +522,7 @@ export default {
         params2["category"] = "StorageType";
         let zpperData = []
         this.$Code.getCodeItems(params2).then(res => {
+            this.storegaType = res.data
             zpperData.push(res.data.ZhuiJia)
             zpperData.push(res.data.TiHuan)
         });
@@ -745,7 +763,7 @@ export default {
         }, */
         is_zipperFun(row) {
             if (row.is_zipper == false) {
-                row.storage_type = "";
+                row.storage_type = this.storegaType.TiHuan;
             }
         },
         Allis_zipperFun(items, e) {
@@ -754,7 +772,7 @@ export default {
                     item.is_zipper = true;
                 } else {
                     item.is_zipper = false;
-                    item.storage_type = "";
+                    item.storage_type = this.storegaType.TiHuan;
                 }
             });
         },
@@ -1124,12 +1142,14 @@ export default {
                         searcharr = [];
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].usedflag == true) {
+                            //这写的是啥玩意啊........这里出现问题需要调整
                             searcharr.push(data[i].dsl_name.toLowerCase())
                         }
                     }
+                    let database = {};
+                    let dslIds = [];
                     if (searcharr.indexOf('oracle') == -1) {
                         str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
-                        let dslIds = [];
                         if (this.dslIdString.length > 0) {
                             for (let j = 0; j < this.dslIdString.length; j++) {
                                 if (this.dslIdString[j].tableId == this.tableId) {
@@ -1141,6 +1161,7 @@ export default {
                         for (let i = 0; i < data.length; i++) {
                             if (data[i].usedflag == true) {
                                 dslIds.push(data[i].dsl_id);
+                                database[data[i].dsl_id] = data[i].dsl_name
                             }
                         }
                         if (dslIds.length != 0) {
@@ -1154,6 +1175,10 @@ export default {
                             this.ruleForm.ex_destinationData[
                                 this.dataExtractypeindex
                             ].table_setting = true;
+
+                            this.ruleForm.ex_destinationData[
+                                this.dataExtractypeindex
+                            ].store_name = Object.values(database);
                         } else {
                             this.open();
                         }
@@ -1174,6 +1199,7 @@ export default {
                             for (let i = 0; i < data.length; i++) {
                                 if (data[i].usedflag == true) {
                                     dslIds.push(data[i].dsl_id);
+                                    database[data[i].dsl_id] = data[i].dsl_name
                                 }
                             }
                             if (dslIds.length != 0) {
@@ -1187,6 +1213,9 @@ export default {
                                 this.ruleForm.ex_destinationData[
                                     this.dataExtractypeindex
                                 ].table_setting = true;
+                                this.ruleForm.ex_destinationData[
+                                    this.dataExtractypeindex
+                                ].store_name = Object.values(database);
                             } else {
                                 this.open();
                             }
@@ -1254,8 +1283,10 @@ export default {
             if (this.Alldestinationchoose.length > 0) {
                 this.dslIdString.length = 0
                 let dslIds = []
+                let databaseAll = {}
                 for (let i = 0; i < this.Alldestinationchoose.length; i++) {
                     dslIds.push(this.Alldestinationchoose[i].dsl_id)
+                    databaseAll[this.Alldestinationchoose[i].dsl_id] = this.Alldestinationchoose[i].dsl_name
                 }
                 for (let i = 0; i < this.ruleForm.ex_destinationData.length; i++) {
                     this.dslIdString.push({
@@ -1265,6 +1296,7 @@ export default {
                         new_name: this.ruleForm.ex_destinationData[i].table_name
                     });
                     this.ruleForm.ex_destinationData[i].table_setting = true
+                    this.ruleForm.ex_destinationData[i].store_name = Object.values(databaseAll)
                 }
                 this.dialogAllChooseDestination = false
             } else {
