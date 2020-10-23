@@ -33,11 +33,6 @@
             </div>
         </div>
     </div>
-    <el-row v-show="islineshow" v-for="(item,index) in linecomponent" :key="index">
-        <div name='linecomponentname'></div>
-        <img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delTextLine()'>"
-        <div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
-    </el-row>
     <!-- 添加组件模态框 -->
     <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%" :before-close="beforeAddComponentClose">
         <el-table :data="auto_comp_sum_array.slice((currPage - 1) * pageSize,currPage * pageSize)" border style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}" size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
@@ -62,7 +57,7 @@
     </el-dialog>
     <!-- 添加仪表盘模态框 -->
     <el-dialog title="添加仪表盘" :visible.sync="dialogDashboardVisible" width="50%" :before-close="beforeDashboardClose">
-        <el-form ref="addDashboardForm" :model="addDashboardForm" label-width="160px">
+        <el-form ref="auto_dashboard_info" :model="auto_dashboard_info" label-width="160px">
             <el-form-item label="仪表盘名称">
                 <el-input v-model="auto_dashboard_info.dashboard_name"></el-input>
             </el-form-item>
@@ -91,7 +86,7 @@
     </el-dialog>
     <!-- 添加分割线模态框 -->
     <el-dialog title="添加分割线" :visible.sync="dialogTextLineVisible" width="50%" :before-close="beforeTextLineClose">
-        <el-form ref="textLineForm" :model="textLineForm" label-width="130px">
+        <el-form ref="auto_line_info" :model="auto_line_info" label-width="130px">
             <el-form-item label="分割线类型">
                 <el-select v-model="auto_line_info.line_type" placeholder="请选择分割线类型">
                     <el-option label="横向分割线" value="heng"></el-option>
@@ -112,7 +107,7 @@
     </el-dialog>
     <!-- 设置背景色模态框 -->
     <el-dialog title="仪表板背景色" :visible.sync="dialogBackgroundVisible" width="50%" :before-close="beforeBackgroundClose">
-        <el-form ref="addBackgroundForm" :model="addBackgroundForm" label-width="130px">
+        <el-form ref="auto_dashboard_info" :model="auto_dashboard_info" label-width="130px">
             <el-form-item label="仪表板背景色">
                 <el-row>
                     <el-col :span="2">
@@ -132,7 +127,7 @@
     </el-dialog>
     <!-- 添加边框组件模态框 -->
     <el-dialog title="添加边框" :visible.sync="dialogBorderVisible" width="50%" :before-close="beforeBorderClose">
-        <el-form ref="addBorderLineForm" :model="addBorderLineForm" label-width="130px">
+        <el-form ref="auto_frame_info" :model="auto_frame_info" label-width="130px">
             <el-form-item label="启用阴影效果">
                 <el-select v-model="auto_frame_info.is_shadow" placeholder="请选择启用阴影效果">
                     <el-option label="是" value="1"></el-option>
@@ -177,7 +172,7 @@
     </el-dialog>
     <!-- 添加文本标签模态框 -->
     <el-dialog title="添加文本标签" :visible.sync="dialogTextLabelVisible" width="50%" :before-close="beforeTextLabelClose">
-        <el-form ref="addTitelForm" :model="textLabelForm" label-width="130px">
+        <el-form ref="auto_label_info" :model="auto_label_info" label-width="130px">
             <el-form-item label="文本标签">
                 <el-input v-model="auto_label_info.label_content"></el-input>
             </el-form-item>
@@ -292,17 +287,10 @@ require('echarts/dist/extension/dataTool.js');
 export default {
     data() {
         return {
-            islineshow:false,
-            linecomponent:[{}],
             totalSize:0,
             currPage:1,
             pageSize:10,
-            addDashboardForm: {},
-            textLabelForm: {},
             addTitelForm: {},
-            addBackgroundForm: {},
-            textLineForm: {},
-            addBorderLineForm: {},
             selectRow: [],
             dialogBackgroundVisible: false,
             dialogAddComponentVisible: false,
@@ -312,7 +300,6 @@ export default {
             dialogBorderVisible: false,
             dialogBorderVisible: false,
             dialogTextLabelVisible: false,
-            is_add: "",
             layout: [],
             echartdata: [],
             bubbleIds: [],
@@ -375,9 +362,6 @@ export default {
                 borderwidth: "",
                 background: "#eeeeee",
             },
-            legend_data: "",
-            seriesArray: "",
-            xArray: "",
             picshow: false,
             layoutFlag: false,
             titleFlag: false,
@@ -885,6 +869,19 @@ export default {
             }).then(res => {
                 if (res&&res.success) {
                     this.global_component_array = res.data;
+                    // 分割线
+                     if (undefined != res.data.autoLineInfo && '' !=  res.data.autoLineInfo) {
+                        this.auto_line_info_array = res.data.autoLineInfo;
+                    }
+                     // 仪表板标题表与字体表信息
+                    if (undefined !=  res.data.labelAndFont && '' != res.data.labelAndFont) {
+                        this.auto_label_info_array = res.data.labelAndFont;
+                    }
+                    // 边框
+                    if (undefined != res.data.frameInfo && '' !=  res.data.frameInfo) {
+                        this.auto_frame_info_list = res.data.frameInfo;
+                    }
+                    // 仪表盘信息
                     this.auto_dashboard_info.bordercolor = res.data.bordercolor;
                     this.auto_dashboard_info.bordertype = res.data.bordertype;
                     this.auto_dashboard_info.borderwidth = res.data.borderwidth;
@@ -908,15 +905,6 @@ export default {
                     for (var i = 0; i < this.layout.length; i++) {
                         var id = this.layout[i].type;
                         this.global_component_id_array.push(id);
-                    }
-                    if ('undefined' != typeof res.data.auto_label_info_array && null != typeof res.data.auto_label_info_array) {
-                        this.auto_label_info_array = res.data.auto_label_info_array;
-                    }
-                    if ('undefined' != typeof res.data.auto_line_info_array && null != typeof res.data.auto_line_info_array) {
-                        this.auto_line_info_array = res.data.auto_line_info_array;
-                    }
-                    if ('undefined' != typeof res.data.auto_frame_info_list && null != typeof res.data.auto_frame_info_list) {
-                        this.auto_frame_info_list = res.data.auto_frame_info_list;
                     }
                     var style = "";
                     var type = "";
@@ -968,6 +956,7 @@ export default {
                             }
                         }
                     }, 2000);
+                    // 卡片表格回显
                     setTimeout(() => {
                         for (var i = 0; i < this.chart_obj_array.length; i++) {
                             if (this.chart_obj_array[i].layouttype == "card") {
@@ -993,7 +982,6 @@ export default {
                             }
                         }
                     }, 2000);
-
                     this.layoutFlag = false;
                     this.titleFlag = false;
                     setTimeout(() => {
@@ -1025,17 +1013,20 @@ export default {
                             $(this).trigger("mouseup");
                         });
                     }, 500);
+                    // 边框回显
                     setTimeout(() => {
                         this.frame_back();
                     }, 1000);
+                    // 文本标签回显
                     setTimeout(() => {
                         this.textlabel_back();
                     }, 1000);
+                    // 分割线回显
                     setTimeout(() => {
                         this.textline_back();
                     }, 1000);
-                        }
-                })
+             }
+         })
         },
         //获取可视化组件信息
         getVisualComponentInfo() {
@@ -1087,12 +1078,14 @@ export default {
                             $(this).trigger("mouseup");
                         });
                     }, 500);
+                    this.$refs.multipleComponent.clearSelection();
                 }
             })
         },
         // 关闭组件弹窗
         beforeAddComponentClose() {
             this.dialogAddComponentVisible = false;
+            this.$refs.multipleComponent.clearSelection();
         },
         // 关闭主题弹框
         beforeTitleClose() {
@@ -1161,53 +1154,44 @@ export default {
         },
         //分割线编辑回显
         textline_back() {
-            this.$nextTick(function () {
-                for (var i = 0; i < this.line_layout.length; i++) {
-                    var layout_obj = this.line_layout[i];
-                    var id = this.line_layout[i].type;
-                    if (this.auto_line_info_array[i].line_type == 'heng') {
-                        var html = "<div name='linecomponentname'></div>" +
-                            "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px;'></div>"
-                    } else {
-                        var html = "<div name='linecomponentname'></div>" +
-                            "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px;'></div>"
-                    }
-
-                    $("#" + id).css("overflow", "hidden");
-                    $("#" + id).css("position", "relative");
-                    $("#" + id).html(html);
-
-                    for (var j = 0; j < this.labelfontcolor.length; j++) {
-                        if (this.labelfontcolor[j].code == this.auto_line_info_array[i].line_color) {
-                            $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[j].type);
-                        }
-                    }
-
-                    //添加打叉按钮
-                    if (this.is_showdel == true) {
-                        var imagevueobj = new linedelProfile({
-                            propsData: {
-                                echart_div_layout: layout_obj,
-                                auto_line_info: this.auto_line_info,
-                            }
-                        }).$mount();
-                        this.linedelimage(id, imagevueobj);
-                    }
-
-                    var obj = {};
-                    obj.layouttype = "borderline";
-                    obj.id = id;
-                    this.chart_obj_array.push(obj);
-
-                    this.textlinearray.push(obj);
-
-                    $("#" + id).trigger("mouseup");
+            for (var i = 0; i < this.line_layout.length; i++) {
+                var layout_obj = this.line_layout[i];
+                var id = this.line_layout[i].type;
+                if (this.auto_line_info_array[i].line_type == 'heng') {
+                    var html = "<div name='linecomponentname'></div>" +
+                        "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px;'></div>"
+                } else {
+                    var html = "<div name='linecomponentname'></div>" +
+                        "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px;'></div>"
                 }
-            })
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).html(html);
+                for (var j = 0; j < this.labelfontcolor.length; j++) {
+                    if (this.labelfontcolor[j].code == this.auto_line_info_array[i].line_color) {
+                        $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[j].type);
+                    }
+                }
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new linedelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_line_info: this.auto_line_info,
+                        }
+                    }).$mount();
+                    this.linedelimage(id, imagevueobj);
+                }
+                var obj = {};
+                obj.layouttype = "borderline";
+                obj.id = id;
+                this.chart_obj_array.push(obj);
+                this.textlinearray.push(obj);
+                $("#" + id).trigger("mouseup");
+            }
         },
         //边框回显
         frame_back() {
-            this.$nextTick(function () {
                 for (var i = 0; i < this.frame_layout.length; i++) {
                     var layout_obj = this.frame_layout[i];
                     var id = this.frame_layout[i].type;
@@ -1240,54 +1224,51 @@ export default {
 
                     $("#" + id).trigger("mouseup");
                 }
-            })
         },
         //文本标签编辑回显
         textlabel_back() {
-            this.$nextTick(function () {
-                for (var i = 0; i < this.label_layout.length; i++) {
-                    var layout_obj = this.label_layout[i];
-                    var id = this.label_layout[i].type;
-                    var auto_label_info = this.auto_label_info_array[i];
-                    var textStyle = auto_label_info.textStyle;
-                    $("#" + id).css("overflow", "hidden");
-                    $("#" + id).css("position", "relative");
-                    $("#" + id).css("margin-top", "2px");
-                    $("#" + id).css("background", auto_label_info.label_color);
-                    $("#" + id).css("display", "flex");
-                    $("#" + id).css("align-items", textStyle.verticalalign);
-                    $("#" + id).css("justify-content", textStyle.align);
-                    var html = "<div name='labelcomponentname'></div>";
-                    //字体处理
-                    var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontfamily;
-                    style += "; font-style:" + textStyle.fontstyle + "; font-weight:" + textStyle.fontweight;
-                    style += "; text-align:" + textStyle.align + "; vertical-align:" + textStyle.verticalalign;
-                    style += "; font-size:" + textStyle.fontsize + "px";
-                    html = html + "<p style='" + style + "'>" + auto_label_info.label_content + "</p>"
-                    $("#" + id).html(html);
+            for (var i = 0; i < this.label_layout.length; i++) {
+                var layout_obj = this.label_layout[i];
+                var id = this.label_layout[i].type;
+                var auto_label_info = this.auto_label_info_array[i];
+                var textStyle = auto_label_info.textStyle;
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).css("margin-top", "2px");
+                $("#" + id).css("background", auto_label_info.label_color);
+                $("#" + id).css("display", "flex");
+                $("#" + id).css("align-items", textStyle.verticalalign);
+                $("#" + id).css("justify-content", textStyle.align);
+                var html = "<div name='labelcomponentname'></div>";
+                //字体处理
+                var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontfamily;
+                style += "; font-style:" + textStyle.fontstyle + "; font-weight:" + textStyle.fontweight;
+                style += "; text-align:" + textStyle.align + "; vertical-align:" + textStyle.verticalalign;
+                style += "; font-size:" + textStyle.fontsize + "px";
+                html = html + "<p style='" + style + "'>" + auto_label_info.label_content + "</p>"
+                $("#" + id).html(html);
 
-                    //添加打叉按钮
-                    if (this.is_showdel == true) {
-                        var imagevueobj = new labeldelProfile({
-                            propsData: {
-                                echart_div_layout: layout_obj,
-                                auto_label_info: auto_label_info,
-                            }
-                        }).$mount();
-                        this.labeldelimage(id, imagevueobj);
-                    }
-
-                    var obj = {};
-                    obj.layouttype = "label";
-                    obj.id = id;
-                    obj.content = auto_label_info.label_content;
-                    this.chart_obj_array.push(obj);
-
-                    this.textlabelarray.push(obj);
-
-                    $("#" + id).trigger("mouseup");
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new labeldelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_label_info: auto_label_info,
+                        }
+                    }).$mount();
+                    this.labeldelimage(id, imagevueobj);
                 }
-            })
+
+                var obj = {};
+                obj.layouttype = "label";
+                obj.id = id;
+                obj.content = auto_label_info.label_content;
+                this.chart_obj_array.push(obj);
+
+                this.textlabelarray.push(obj);
+
+                $("#" + id).trigger("mouseup");
+            }
         },
         //选择主题
         chooseTitle(data) {
@@ -1588,26 +1569,22 @@ export default {
             this.layout.push(layout_obj);
 
             this.$nextTick(function () {
-                // if (this.auto_line_info.line_type == 'heng') {
-                //     var html = "<div name='linecomponentname'></div>" +
-                //     "<img src='../../../../../assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delTextLine(this.layout,echart_div_layout,auto_line_info)'>"
-                //       +  "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
-                // } else {
-                //     var html = "<div name='linecomponentname'></div>" +
-                //     "<img src='../../../../../assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delTextLine(this.layout,echart_div_layout,auto_line_info)'>"
-                //        + "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
-                // }
-
-                // $("#" + id).css("overflow", "hidden");
-                // $("#" + id).css("position", "relative");
-                // $("#" + id).html(html);
+                if (this.auto_line_info.line_type == 'heng') {
+                    var html = "<div name='linecomponentname'></div>" +
+                      "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
+                } else {
+                    var html = "<div name='linecomponentname'></div>" +
+                       "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
+                }
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).html(html);
                 this.islineshow=true;
                 for (var i = 0; i < this.labelfontcolor.length; i++) {
                     if (this.labelfontcolor[i].code == this.auto_line_info.line_color) {
                         $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[i].type);
                     }
                 }
-
                 //添加打叉按钮
                 if (this.is_showdel == true) {
                     var imagevueobj = new linedelProfile({
@@ -1627,26 +1604,8 @@ export default {
                 this.textlinearray.push(obj);
 
                 $("#" + id).trigger("mouseup");
-
-                this.auto_line_info = {
-                    "line_type": "heng",
-                    "line_color": "05"
-                };
             })
             this.dialogTextLineVisible=false;
-        },
-        delTextLine(layout, echart_div_layout, auto_line_info) {
-            this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
-            this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            global_component_array.layout = this.layout;
-            this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
-            for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (echart_div_layout.type == this.chart_obj_array[i].id) {
-                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
-                    this.textlinearray.splice(this.textlinearray.indexOf(this.chart_obj_array[i]), 1);
-                }
-            }
-
         },
         //添加边框
         confirmFrameLine() {
