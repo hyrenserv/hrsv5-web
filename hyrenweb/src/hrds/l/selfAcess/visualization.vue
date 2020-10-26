@@ -230,15 +230,20 @@
                 <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
 
                 <div v-if="auto_comp_sum.chart_type=='table'" id="type_table" style="height:440px;overflow: auto;">
-                    //二位表
+                    <el-table size="medium"
+                              :data="dynamicColumnTables.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)"
+                              border stripe style="width: 100%" v-if="dynamicColumnTableHiddens">
+                        <el-table-column label="序号" width="64" align="center">
+                            <template scope="scope">
+                                <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px" :prop="col"
+                                         :label="col" :key="col">
+                        </el-table-column>
+                    </el-table>
                 </div>
-                <div v-if="auto_comp_sum.chart_type=='card'" style="margin-bottom:10px;height:440px">
-                    <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
-                        <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
-                        <h1 id="carddiv"></h1>
-                    </div>
-                </div>
-                <div v-if="auto_comp_sum.chart_type!='table' && auto_comp_sum.chart_type!='card'" id="myChart"
+                <div id="myChart"
                      style="width:100%; height: 440px; margin-bottom: 25px"></div>
 
             </el-col>
@@ -2550,9 +2555,9 @@
                             }
                             this.changeToScatterChart(xColumns, yColumns, type, res.data);
                         } else if (type == "card") {
-                            this.$Msg.customizTitle("正在开发中", "warning");
+                            this.changeToCard();
                         }  else if (type == "table") {
-                            this.$Msg.customizTitle("正在开发中", "warning");
+                            this.changeToTable();
                         }  else if (type == "bl") {
                             this.$Msg.customizTitle("正在开发中", "warning");
                         } else if (type == "treemap") {
@@ -2887,7 +2892,17 @@
                 };
                 this.drawLine(option)
             },
-
+            changeToCard(){
+                var result = this.initproperty();
+                var option = {
+                    title: result.titles,
+                }
+                this.drawLine(option)
+            },
+            changeToTable(){
+                let option = {};
+                this.drawLine(option);
+            },
 
             // 返回上一级
             goBack() {
