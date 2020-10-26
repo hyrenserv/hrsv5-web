@@ -4,15 +4,15 @@
         <div class="row" id="toubu" v-cloak>
             <div class="btn-group pull-right">
                 <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
-                <el-button size="mini" type="primary" @click="dialogBackgroundVisible=true">背景色</el-button>
-                <el-button size="mini" type="primary" @click="dialogTitleVisible=true">选择主题</el-button>
-                <el-button size="mini" type="primary" @click="gridLine">网格线</el-button>
-                <el-button size="mini" type="primary" @click="dialogTextLabelVisible=true">添加文本标签</el-button>
-                <el-button size="mini" type="primary" @click="dialogTextLineVisible=true">添加分割线</el-button>
-                <el-button size="mini" type="primary" @click="dialogBorderVisible=true">添加边框</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogBackgroundVisible=true">背景色</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogTitleVisible=true">选择主题</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="gridLine">网格线</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogTextLabelVisible=true">添加文本标签</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogTextLineVisible=true">添加分割线</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogBorderVisible=true">添加边框</el-button>
                 <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                 <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
-                <el-button size="mini" type="primary" @click="goIndex">返回上一级</el-button>
+                <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
             </div>
         </div>
         <div class="col-md-12">
@@ -20,6 +20,7 @@
                 <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.dashboard_theme">
             </div>
         </div>
+        <!--仪表板展示-->
         <div class="row clearfix" v-show="picshow" id="mydiv">
             <div class="col-md-12 column">
                 <div class="panel-body">
@@ -56,7 +57,7 @@
     </el-dialog>
     <!-- 添加仪表盘模态框 -->
     <el-dialog title="添加仪表盘" :visible.sync="dialogDashboardVisible" width="50%" :before-close="beforeDashboardClose">
-        <el-form ref="addDashboardForm" :model="addDashboardForm" label-width="160px">
+        <el-form ref="auto_dashboard_info" :model="auto_dashboard_info" label-width="160px">
             <el-form-item label="仪表盘名称">
                 <el-input v-model="auto_dashboard_info.dashboard_name"></el-input>
             </el-form-item>
@@ -65,8 +66,8 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="cancel" size="mini">取 消</el-button>
-            <el-button type="primary" @click="saveDashboard" size="mini">确 认
+            <el-button @click="dialogDashboardVisible=false" size="mini">取 消</el-button>
+            <el-button type="primary" @click="saveDashboard" size="mini">保 存
             </el-button>
         </div>
     </el-dialog>
@@ -85,7 +86,7 @@
     </el-dialog>
     <!-- 添加分割线模态框 -->
     <el-dialog title="添加分割线" :visible.sync="dialogTextLineVisible" width="50%" :before-close="beforeTextLineClose">
-        <el-form ref="textLineForm" :model="textLineForm" label-width="130px">
+        <el-form ref="auto_line_info" :model="auto_line_info" label-width="130px">
             <el-form-item label="分割线类型">
                 <el-select v-model="auto_line_info.line_type" placeholder="请选择分割线类型">
                     <el-option label="横向分割线" value="heng"></el-option>
@@ -106,7 +107,7 @@
     </el-dialog>
     <!-- 设置背景色模态框 -->
     <el-dialog title="仪表板背景色" :visible.sync="dialogBackgroundVisible" width="50%" :before-close="beforeBackgroundClose">
-        <el-form ref="addBackgroundForm" :model="addBackgroundForm" label-width="130px">
+        <el-form ref="auto_dashboard_info" :model="auto_dashboard_info" label-width="130px">
             <el-form-item label="仪表板背景色">
                 <el-row>
                     <el-col :span="2">
@@ -126,7 +127,7 @@
     </el-dialog>
     <!-- 添加边框组件模态框 -->
     <el-dialog title="添加边框" :visible.sync="dialogBorderVisible" width="50%" :before-close="beforeBorderClose">
-        <el-form ref="addBorderLineForm" :model="addBorderLineForm" label-width="130px">
+        <el-form ref="auto_frame_info" :model="auto_frame_info" label-width="130px">
             <el-form-item label="启用阴影效果">
                 <el-select v-model="auto_frame_info.is_shadow" placeholder="请选择启用阴影效果">
                     <el-option label="是" value="1"></el-option>
@@ -134,7 +135,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="边框风格">
-                <el-select v-model="auto_frame_info.border_style" placeholder="请选择边框风格">
+                <el-select v-model="auto_frame_info.bordertype" placeholder="请选择边框风格">
                     <el-option label="实线边框" value="solid"></el-option>
                     <el-option label="点状边框" value="dotted"></el-option>
                     <el-option label="虚线边框" value="dashed"></el-option>
@@ -171,7 +172,7 @@
     </el-dialog>
     <!-- 添加文本标签模态框 -->
     <el-dialog title="添加文本标签" :visible.sync="dialogTextLabelVisible" width="50%" :before-close="beforeTextLabelClose">
-        <el-form ref="addTitelForm" :model="textLabelForm" label-width="130px">
+        <el-form ref="auto_label_info" :model="auto_label_info" label-width="130px">
             <el-form-item label="文本标签">
                 <el-input v-model="auto_label_info.label_content"></el-input>
             </el-form-item>
@@ -267,38 +268,29 @@
     </el-dialog>
 </div>
 </template>
-
+<!--
 <script src="/static/src/panal/js/util/echarts-option.js"></script>
 <script src="/static/src/panal/js/util/jquery-ui.js"></script>
 <script src="/static/src/panal/js/util/echarts.min.js"></script>
 <script src="/static/src/panal/js/util/vue-grid-layout.umd.min.js"></script>
 <script src="/static/src/panal/js/util/metaUtil.js"></script>
-<script src="/static/src/panal/js/jquery.i18n.properties.min.js"></script>
-<script src="/static/src/panal/js/plugin/filterPlugin.js"></script>
-<script src="/static/src/panal/js/extendPagination.js"></script>
-<script src="/static/src/panal/js/util/urlUtil.js"></script>
 <script src="/static/src/panal/js/relation/echarts.js"></script>
-<script src="/static/src/panal/js/relation/dataTool.js"></script>
 <script src="/static/src/panal/js/relation/multiDimension.js"></script>
 <script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
-<script src="/static/src/panal/js/relation/bootstrap.min.js"></script>
-<script  src="/static/src/bootstrap-colorpicker.min.js"></script>
-<script src="/static/src/panal/js/relation/china.js"></script><script>
+<script src="/static/src/panal/js/relation/china.js"></script>
+-->
+<script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
 import * as functionAll from "./dataDashboard";
+require('echarts/dist/extension/dataTool.js');
 export default {
     data() {
         return {
             totalSize:0,
             currPage:1,
             pageSize:10,
-            addDashboardForm: {},
-            textLabelForm: {},
             addTitelForm: {},
-            addBackgroundForm: {},
-            textLineForm: {},
-            addBorderLineForm: {},
             selectRow: [],
             dialogBackgroundVisible: false,
             dialogAddComponentVisible: false,
@@ -308,7 +300,6 @@ export default {
             dialogBorderVisible: false,
             dialogBorderVisible: false,
             dialogTextLabelVisible: false,
-            is_add: "",
             layout: [],
             echartdata: [],
             bubbleIds: [],
@@ -347,45 +338,35 @@ export default {
             },
             //仪表板边框组件信息表
             auto_frame_info: {
-                frame_id: "", //边框id
-                serial_number: "", //序号
-                x_axis_coord: "", //X轴坐标
-                y_axis_coord: "", //y轴坐标
-                border_style: "solid", //边框风格
-                border_color: "#eb21eb", //边框颜色
-                border_width: "2", //边框宽度
-                border_radius: "45", //边框圆角大小
+                frame_id:null,
+                serial_number: null, //序号
+                x_axis_coord: null, //X轴坐标
+                y_axis_coord: null ,//y轴坐标
+                bordertype: "", //边框风格
+                border_color: "", //边框颜色
+                border_width: 2, //边框宽度
+                border_radius: 45, //边框圆角大小
                 is_shadow: "1", //是否启用阴影效果，默认否
-                dashboard_id: "", //仪表板id
-                length: "", //组件长度
-                width: "", //组件宽度
+                dashboard_id: null, //仪表板id
+                length: null, //组件长度
+                width: null, //组件宽度
             },
             auto_frame_info_list: [],
             auto_dashboard_info_list: [],
             auto_dashboard_info: {
-                dashboard_id: "",
-                user_id: "",
                 dashboard_name: "",
                 dashboard_desc: "",
-                create_date: "",
-                create_time: "",
-                last_update_date: "",
-                last_update_time: "",
-                update_user: "",
+                dashboard_theme: "",
+                bordertype: "",
+                bordercolor: "",
+                borderwidth: "",
                 background: "#eeeeee",
             },
-            language: "zh_CN",
-            path: "<c:out value='${ctx}'/>",
-            legend_data: "",
-            seriesArray: "",
-            xArray: "",
             picshow: false,
             layoutFlag: false,
             titleFlag: false,
             echartThemeJson: require("@/assets/images/theme/source.jpg"),
             selectRow: [],
-            //{"code":"01","CN_type":"黑色","type":"dark","bcolor":"#121212","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(0, 0, 0);","depth":"sheng","picurl":"@/assets/images/theme/dark.jpg"},
-            //{"code":"02","CN_type":"亮白","type":"light","bcolor":"#FCFCFC","fcolor":"rgb(255,255,255)","ncolor":"rgb(155,139,186)","style":"background-color:rgb(255, 255, 255);","depth":"qian","picurl":"@/assets/images/theme/light.jpg"},
             //主题设置参数
             titleData: [{
                     "code": "00",
@@ -564,7 +545,8 @@ export default {
             chart_obj_array: [],
             echart_theme: "",
             chooseTitle_show: false,
-            Global_component_array: [],
+            global_component_array: [],
+            global_component_id_array:[],
             tmp_card_layout: "",
             bordercolor_show: false,
             tabledata: [],
@@ -778,224 +760,25 @@ export default {
     },
     mounted() {
         this.$nextTick(function () {
-            var resultdata = [];
-            var component_id_array = [];
-            //    		if(dashboard_status=='01'){
-            //		$("#toubu").hide();
-            //		}
             if (this.is_gridLine == false) {
                 $("#grid_style").removeClass("grid");
                 this.is_gridLine = true;
             }
-
-            if (this.is_add == "1") {
-                this.picshow = true;
-                //编辑
-                $.ajax({
-                    type: "POST",
-                    url: "L0402_DashBoardStyleSDO.do",
-                    async: false,
-                    data: {
-                        "is_add": this.is_add,
-                        "dashboard_id": this.dashboard_id,
-                    },
-                    dataType: "json",
-                    success(data) {
-                        resultdata = data;
-                        //把组件,文本标签,分割线的layout区分开
-                        var tmp_layout = data.layout;
-                        for (var i = 0; i < tmp_layout.length; i++) {
-                            if ("0" == tmp_layout[i].label) {
-                                this.label_layout.push(tmp_layout[i]);
-                            } else if ("1" == tmp_layout[i].label) {
-                                this.line_layout.push(tmp_layout[i]);
-                            } else if ("2" == tmp_layout[i].label) {
-                                this.frame_layout.push(tmp_layout[i]);
-                            } else {
-                                this.layout.push(tmp_layout[i]);
-                            }
-                        }
-                        //resultdata.data.layout=this.layout;
-
-                        //this.layout = data.data.layout;
-                        for (var i = 0; i < this.layout.length; i++) {
-                            var id = this.layout[i].type;
-                            component_id_array.push(id);
-                        }
-                        this.auto_dashboard_info = data.auto_dashboard_info;
-                        this.selectRow = data.auto_comp_sum;
-
-                        this.Global_component_array = data;
-                        this.global_component_id_array = component_id_array;
-
-                        if ('undefined' != typeof data.auto_label_info_array && null != typeof data.auto_label_info_array) {
-                            this.auto_label_info_array = data.auto_label_info_array;
-                        }
-                        if ('undefined' != typeof data.auto_line_info_array && null != typeof data.auto_line_info_array) {
-                            this.auto_line_info_array = data.auto_line_info_array;
-                        }
-                        if ('undefined' != typeof data.auto_frame_info_list && null != typeof data.auto_frame_info_list) {
-                            this.auto_frame_info_list = data.auto_frame_info_list;
-                        }
-
-                        //        		if(dashboard_status != '01'){
-                        //        		this.chooseTitle_show = true;
-                        //                		this.bordercolor_show = true;
-                        //        		}
-
-                    },
-                    beforeSend() {
-                        imgShow();
-                    },
-                    complete() {
-                        imgHide();
-                    },
-                });
-                var bordercolor = this.auto_dashboard_info.bordercolor;
-                var bordertype = this.auto_dashboard_info.bordertype;
-                var borderwidth = this.auto_dashboard_info.borderwidth;
-
-                var code = this.auto_dashboard_info.dashboard_theme;
-                var style = "";
-                var type = "";
-                echart_theme_obj = {};
-                for (var i = 0; i < this.titleData.length; i++) {
-                    if (this.titleData[i].code == code) {
-                        style = this.titleData[i].style;
-                        type = this.titleData[i].type;
-                        echart_theme_obj = this.titleData[i];
-                    }
-                }
-
-                if (code == "00") {
-                    this.echart_theme = echart_theme_obj;
-                } else {
-                    $.getJSON(this.echartThemeJson, function (themeJSON) {
-                        echarts.registerTheme(type, themeJSON[type]);
-                        this.echart_theme = echart_theme_obj;
-                    });
-                }
-                var index = 0;
-                for (var i = 0; i < this.titleData.length; i++) {
-                    if (code == "0" + i) {
-                        index = i;
-                    }
-                }
-                this.bcolor = this.titleData[index].bcolor;
-                setTimeout(() => {
-                    for (var i = 0; i < resultdata.data.layout.length; i++) {
-                        if (resultdata.data.layout[i].label == "0") {
-                            $("#" + resultdata.data.layout[i].type).find("p").css({
-                                "background-color": this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            $("#" + resultdata.data.layout[i].type).find("p").css({
-                                'background-color': this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            var id = $("#" + resultdata.data.layout[i].type).attr("id");
-                        } else if (resultdata.data.layout[i].label == "1") {
-                            $("#" + resultdata.data.layout[i].type).find("div[class='lineclass']").css({
-                                'background-color': this.titleData[index].ncolor
-                            });
-                        } else if (resultdata.data.layout[i].label == "2") {
-                            $("#" + resultdata.data.layout[i].type).css({
-                                'border': this.titleData[index].ncolor + ' 2px solid'
-                            });
-                        } else {
-
-                        }
-                    }
-                }, 2000);
-
-                setTimeout(() => {
-                    for (var i = 0; i < this.chart_obj_array.length; i++) {
-                        if (this.chart_obj_array[i].layouttype == "card") {
-                            $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                                "background-color": this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
-                                'background-color': this.titleData[index].ncolor,
-                                "color": this.titleData[index].fcolor
-                            });
-                            this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
-                            this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                            this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-
-                            this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
-                            this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                        } else if (this.chart_obj_array[i].layouttype == "table") {
-                            this.tabStyle.th_background = this.titleData[index].ncolor;
-                            this.tabStyle.zl_background = this.titleData[index].ncolor;
-                        } else {
-
-                        }
-                    }
-                }, 2000);
-
-                this.layoutFlag = false;
-                this.titleFlag = false;
-
-                setTimeout(() => {
-                    this.echartpic(resultdata, component_id_array);
-                }, 500);
-
-                setTimeout(() => {
-
-                    this.grid_layout_backgroundcolor = style;
-                    var bgcolor = this.auto_dashboard_info.background;
-                    this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
-
-                    //边框类型
-                    for (var i = 0; i < this.borderstyle.length; i++) {
-                        if (this.borderstyle[i].code == bordertype) {
-                            this.choosebordertype(this.borderstyle[i]);
-                        }
-                    }
-
-                    //边框颜色
-                    for (var i = 0; i < this.bordercolor.length; i++) {
-                        if (this.bordercolor[i].code == bordercolor) {
-                            this.choosebordercolor(this.bordercolor[i]);
-                        }
-                    }
-
-                    //边框粗细
-                    for (var i = 0; i < this.borderwidth.length; i++) {
-                        if (this.borderwidth[i].code == borderwidth) {
-                            this.chooseborderwidth(this.borderwidth[i]);
-                        }
-                    }
-
-                    $("div[name='pic']").each(function () {
-                        $(this).trigger("mouseup");
-                    });
-                }, 500);
-
-                setTimeout(() => {
-                    this.frame_back();
-                }, 1000);
-
-                setTimeout(() => {
-                    this.textlabel_back();
-                }, 1000);
-
-                setTimeout(() => {
-                    this.textline_back();
-                }, 1000);
-
-            } else {
-                this.auto_dashboard_info.dashboard_theme = "00";
-            }
+            this.auto_dashboard_info.dashboard_theme = "00";
         })
-
+        // 编辑时调用
+        if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
+            this.picshow = true;
+            this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+        }
     },
     watch: {
         layout(layout) {
+            var chart_obj_array = this.chart_obj_array;
             if (layout.length > 0) {
                 $("div[name='pic']").each(function () {
                     $(this).mouseup(function () {
+                        this.chart_obj_array=chart_obj_array;
                         var $this = $(this);
                         var thisid = $this.children('div').attr("id")
                         var w = $(this).width() + "px";
@@ -1004,76 +787,73 @@ export default {
                             "width": w,
                             "height": h
                         })
-                        setTimeout(function () {
-                            for (var i = 0; i < this.chart_obj_array.length; i++) {
-                                if (this.chart_obj_array[i].layouttype == "card") {
-                                    if (this.chart_obj_array[i].id == thisid) {
-                                        //卡片大小变化
-                                        var id = this.chart_obj_array[i].id;
-                                        var idwidth = $("#" + id).width();
-                                        var idheight = $("#" + id).height();
-                                        $this.find("div[class='cardclass']").css('font-size', "12px");
-                                        var titleHeight = $("#" + id).find("div[name='cardcomponentname']").height();
-                                        //循环修改大小直至大于最大高度
-                                        for (var i = 12; i < idheight - titleHeight; i++) {
-                                            if ($this.find("div[class='cardclass']").height() > idheight - titleHeight) {
-                                                //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
-                                                $this.find("div[class='cardclass']").css('font-size', (i - 2) + "px");
-                                                //结束循环
-                                                break;
-                                            } else {
-                                                //如果小于最大高度，文字大小加1继续尝试
-                                                $this.find("div[class='cardclass']").css('font-size', i + "px");
-                                            }
+                        for (var i = 0; i < this.chart_obj_array.length; i++) {
+                            if (this.chart_obj_array[i].layouttype == "card") {
+                                if (this.chart_obj_array[i].id == thisid) {
+                                    //卡片大小变化
+                                    var id = this.chart_obj_array[i].id;
+                                    var idwidth = $("#" + id).width();
+                                    var idheight = $("#" + id).height();
+                                    $this.find("div[class='cardclass']").css('font-size', "12px");
+                                    var titleHeight = $("#" + id).find("div[name='cardcomponentname']").height();
+                                    //循环修改大小直至大于最大高度
+                                    for (var i = 12; i < idheight - titleHeight; i++) {
+                                        if ($this.find("div[class='cardclass']").height() > idheight - titleHeight) {
+                                            //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
+                                            $this.find("div[class='cardclass']").css('font-size', (i - 2) + "px");
+                                            //结束循环
+                                            break;
+                                        } else {
+                                            //如果小于最大高度，文字大小加1继续尝试
+                                            $this.find("div[class='cardclass']").css('font-size', i + "px");
                                         }
                                     }
-                                } else if (this.chart_obj_array[i].layouttype == "table") {
-                                    if (this.chart_obj_array[i].id == thisid) {
-                                        //表格大小变化
-                                        var id = this.chart_obj_array[i].id;
-                                        var idwidth = $("#" + id).width();
-                                        var idheight = $("#" + id).height();
-                                        var domH = Math.sqrt(idwidth * idwidth + idheight * idheight);
-                                        $this.find("div[name='tablediv']").css('height', idheight - 20 + "px");
-                                        $this.find("table").css('height', idheight - 20 + "px");
-                                    }
-                                } else if (this.chart_obj_array[i].layouttype == "label") {
-                                    if (this.chart_obj_array[i].id == thisid) {
-                                        //文本标签大小变化
-                                        var id = this.chart_obj_array[i].id;
-                                        var idwidth = $("#" + id).width();
-                                        var idheight = $("#" + id).height();
-                                        $this.find("div[class='labelclass']").css('font-size', "12px");
-                                        //循环修改大小直至大于最大高度
-                                        for (var i = 12; i < idheight; i++) {
-                                            if ($this.find("div[class='labelclass']").height() > idheight) {
-                                                //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
-                                                $this.find("div[class='labelclass']").css('font-size', (i - 2) + "px");
-                                                //结束循环
-                                                break;
-                                            } else {
-                                                //如果小于最大高度，文字大小加1继续尝试
-                                                $this.find("div[class='labelclass']").css('font-size', i + "px");
-                                            }
-                                        }
-                                        var lablewidth = $this.find("div[class='labelclass']").width();
-                                        var difference = (idwidth - lablewidth) / 2;
-                                        $this.find("div[class='labelclass']").css('margin-left', difference + "px");
-                                    }
-                                } else if (this.chart_obj_array[i].layouttype == "borderline") {} else if (this.chart_obj_array[i].layouttype == "frameline") {} else {
-                                    this.chart_obj_array[i].resize();
                                 }
+                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                                if (this.chart_obj_array[i].id == thisid) {
+                                    //表格大小变化
+                                    var id = this.chart_obj_array[i].id;
+                                    var idwidth = $("#" + id).width();
+                                    var idheight = $("#" + id).height();
+                                    var domH = Math.sqrt(idwidth * idwidth + idheight * idheight);
+                                    $this.find("div[name='tablediv']").css('height', idheight - 20 + "px");
+                                    $this.find("table").css('height', idheight - 20 + "px");
+                                }
+                            } else if (this.chart_obj_array[i].layouttype == "label") {
+                                if (this.chart_obj_array[i].id == thisid) {
+                                    //文本标签大小变化
+                                    var id = this.chart_obj_array[i].id;
+                                    var idwidth = $("#" + id).width();
+                                    var idheight = $("#" + id).height();
+                                    $this.find("div[class='labelclass']").css('font-size', "12px");
+                                    //循环修改大小直至大于最大高度
+                                    for (var i = 12; i < idheight; i++) {
+                                        if ($this.find("div[class='labelclass']").height() > idheight) {
+                                            //当容器高度大于最大高度的时候，上一个尝试的值就是最佳大小
+                                            $this.find("div[class='labelclass']").css('font-size', (i - 2) + "px");
+                                            //结束循环
+                                            break;
+                                        } else {
+                                            //如果小于最大高度，文字大小加1继续尝试
+                                            $this.find("div[class='labelclass']").css('font-size', i + "px");
+                                        }
+                                    }
+                                    var lablewidth = $this.find("div[class='labelclass']").width();
+                                    var difference = (idwidth - lablewidth) / 2;
+                                    $this.find("div[class='labelclass']").css('margin-left', difference + "px");
+                                }
+                            } else if (this.chart_obj_array[i].layouttype == "borderline") {
+
+                            } else if (this.chart_obj_array[i].layouttype == "frameline") {
+
+                            } else {
+                                this.chart_obj_array[i].resize();
                             }
-                        }, 100)
+                        }
                     });
                 });
             }
 
-        }
-    },
-    created() {
-        if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
-            this.getDataDashboardInfoById(this.$route.query.dashboard_id);
         }
     },
     methods: {
@@ -1087,8 +867,166 @@ export default {
             functionAll.getDataDashboardInfoById({
                 "dashboard_id": dashboard_id
             }).then(res => {
-                this.dataDashboardList = res.data;
-            })
+                if (res&&res.success) {
+                    this.global_component_array = res.data;
+                    // 分割线
+                     if (undefined != res.data.autoLineInfo && '' !=  res.data.autoLineInfo) {
+                        this.auto_line_info_array = res.data.autoLineInfo;
+                    }
+                     // 仪表板标题表与字体表信息
+                    if (undefined !=  res.data.labelAndFont && '' != res.data.labelAndFont) {
+                        this.auto_label_info_array = res.data.labelAndFont;
+                    }
+                    // 边框
+                    if (undefined != res.data.frameInfo && '' !=  res.data.frameInfo) {
+                        this.auto_frame_info_list = res.data.frameInfo;
+                    }
+                    // 仪表盘信息
+                    this.auto_dashboard_info.bordercolor = res.data.bordercolor;
+                    this.auto_dashboard_info.bordertype = res.data.bordertype;
+                    this.auto_dashboard_info.borderwidth = res.data.borderwidth;
+                    this.auto_dashboard_info.dashboard_theme = res.data.dashboard_theme;
+                    this.auto_dashboard_info.dashboard_id = res.data.dashboard_id;
+                    this.auto_dashboard_info.dashboard_name = res.data.dashboard_name;
+                    this.auto_dashboard_info.dashboard_desc = res.data.dashboard_desc;
+                    var code =this.auto_dashboard_info.dashboard_theme;
+                    //把组件,文本标签,分割线的layout区分开
+                    for (var i = 0; i < res.data.layout.length; i++) {
+                        if ("0" == res.data.layout[i].label) {
+                            this.label_layout.push(res.data.layout[i]);
+                        } else if ("1" == res.data.layout[i].label) {
+                            this.line_layout.push(res.data.layout[i]);
+                        } else if ("2" == res.data.layout[i].label) {
+                            this.frame_layout.push(res.data.layout[i]);
+                        } else {
+                            this.layout.push(res.data.layout[i]);
+                        }
+                    }
+                    for (var i = 0; i < this.layout.length; i++) {
+                        var id = this.layout[i].type;
+                        this.global_component_id_array.push(id);
+                    }
+                    var style = "";
+                    var type = "";
+                    var echart_theme_obj = {};
+                    for (var i = 0; i < this.titleData.length; i++) {
+                        if (this.titleData[i].code == code) {
+                            style = this.titleData[i].style;
+                            type = this.titleData[i].type;
+                            echart_theme_obj = this.titleData[i];
+                        }
+                    }
+                    if (code == "00") {
+                        this.echart_theme = echart_theme_obj;
+                    } else {
+                        $.getJSON(this.echartThemeJson, function (themeJSON) {
+                            echarts.registerTheme(type, themeJSON[type]);
+                            this.echart_theme = echart_theme_obj;
+                        });
+                    }
+                    var index = 0;
+                    for (var i = 0; i < this.titleData.length; i++) {
+                        if (code == "0" + i) {
+                            index = i;
+                        }
+                    }
+                    this.bcolor = this.titleData[index].bcolor;
+                    setTimeout(() => {
+                        for (var i = 0; i < this.layout.length; i++) {
+                            if (this.layout[i].label == "0") {
+                                $("#" + this.layout[i].type).find("p").css({
+                                    "background-color": this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                $("#" + this.layout[i].type).find("p").css({
+                                    'background-color': this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                var id = $("#" + this.layout[i].type).attr("id");
+                            } else if (this.layout[i].label == "1") {
+                                $("#" + this.layout[i].type).find("div[class='lineclass']").css({
+                                    'background-color': this.titleData[index].ncolor
+                                });
+                            } else if (this.layout[i].label == "2") {
+                                $("#" + this.layout[i].type).css({
+                                    'border': this.titleData[index].ncolor + ' 2px solid'
+                                });
+                            } else {
+
+                            }
+                        }
+                    }, 2000);
+                    // 卡片表格回显
+                    setTimeout(() => {
+                        for (var i = 0; i < this.chart_obj_array.length; i++) {
+                            if (this.chart_obj_array[i].layouttype == "card") {
+                                $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                                    "background-color": this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                                    'background-color': this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
+                                this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                                this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
+
+                                this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
+                                this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                                this.tabStyle.th_background = this.titleData[index].ncolor;
+                                this.tabStyle.zl_background = this.titleData[index].ncolor;
+                            } else {
+
+                            }
+                        }
+                    }, 2000);
+                    this.layoutFlag = false;
+                    this.titleFlag = false;
+                    setTimeout(() => {
+                        this.echartpic(this.global_component_array, this.global_component_id_array);
+                    }, 500);
+                    setTimeout(() => {
+                        this.grid_layout_backgroundcolor = style;
+                        var bgcolor = this.auto_dashboard_info.background;
+                        this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
+                        //边框类型
+                        for (var i = 0; i < this.borderstyle.length; i++) {
+                            if (this.borderstyle[i].code == this.auto_dashboard_info.bordertype) {
+                                this.choosebordertype(this.borderstyle[i]);
+                            }
+                        }
+                        //边框颜色
+                        for (var i = 0; i < this.bordercolor.length; i++) {
+                            if (this.bordercolor[i].code == this.auto_dashboard_info.bordercolor) {
+                                this.choosebordercolor(this.bordercolor[i]);
+                            }
+                        }
+                        //边框粗细
+                        for (var i = 0; i < this.borderwidth.length; i++) {
+                            if (this.borderwidth[i].code == this.auto_dashboard_info.borderwidth) {
+                                this.chooseborderwidth(this.borderwidth[i]);
+                            }
+                        }
+                        $("div[name='pic']").each(function () {
+                            $(this).trigger("mouseup");
+                        });
+                    }, 500);
+                    // 边框回显
+                    setTimeout(() => {
+                        this.frame_back();
+                    }, 1000);
+                    // 文本标签回显
+                    setTimeout(() => {
+                        this.textlabel_back();
+                    }, 1000);
+                    // 分割线回显
+                    setTimeout(() => {
+                        this.textline_back();
+                    }, 1000);
+             }
+         })
         },
         //获取可视化组件信息
         getVisualComponentInfo() {
@@ -1122,15 +1060,13 @@ export default {
                 component_id_array.push(this.selectRow[i].component_id);
             }
             this.global_component_id_array = component_id_array;
-            let param = {};
-            param['autoCompSums'] = JSON.stringify(this.selectRow);
+            let param = new FormData();
+            param.append('autoCompSums', JSON.stringify(this.selectRow));
             functionAll.showComponentOnDashboard(param).then(res => {
                 if (res && res.success) {
-                    this.label_layout = [];
-                    this.line_layout = [];
-                    this.frame_layout = [];
                     this.layoutFlag = false;
                     this.titleFlag = true;
+                    this.global_component_array=res.data;
                     this.layout=res.data.layout;
                     setTimeout(() => {
                         this.echartpic(res.data, component_id_array);
@@ -1142,12 +1078,14 @@ export default {
                             $(this).trigger("mouseup");
                         });
                     }, 500);
+                    this.$refs.multipleComponent.clearSelection();
                 }
             })
         },
         // 关闭组件弹窗
         beforeAddComponentClose() {
             this.dialogAddComponentVisible = false;
+            this.$refs.multipleComponent.clearSelection();
         },
         // 关闭主题弹框
         beforeTitleClose() {
@@ -1216,60 +1154,51 @@ export default {
         },
         //分割线编辑回显
         textline_back() {
-            this.$nextTick(function () {
-                for (var i = 0; i < this.line_layout.length; i++) {
-                    var layout_obj = this.line_layout[i];
-                    var id = this.line_layout[i].type;
-                    if (this.auto_line_info_array[i].line_type == 'heng') {
-                        var html = "<div name='linecomponentname'></div>" +
-                            "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px;'></div>"
-                    } else {
-                        var html = "<div name='linecomponentname'></div>" +
-                            "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px;'></div>"
-                    }
-
-                    $("#" + id).css("overflow", "hidden");
-                    $("#" + id).css("position", "relative");
-                    $("#" + id).html(html);
-
-                    for (var j = 0; j < this.labelfontcolor.length; j++) {
-                        if (this.labelfontcolor[j].code == this.auto_line_info_array[i].line_color) {
-                            $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[j].type);
-                        }
-                    }
-
-                    //添加打叉按钮
-                    if (this.is_showdel == true) {
-                        var imagevueobj = new linedelProfile({
-                            propsData: {
-                                echart_div_layout: layout_obj,
-                                auto_line_info: this.auto_line_info,
-                            }
-                        }).$mount();
-                        this.linedelimage(id, imagevueobj);
-                    }
-
-                    var obj = {};
-                    obj.layouttype = "borderline";
-                    obj.id = id;
-                    this.chart_obj_array.push(obj);
-
-                    this.textlinearray.push(obj);
-
-                    $("#" + id).trigger("mouseup");
+            for (var i = 0; i < this.line_layout.length; i++) {
+                var layout_obj = this.line_layout[i];
+                var id = this.line_layout[i].type;
+                if (this.auto_line_info_array[i].line_type == 'heng') {
+                    var html = "<div name='linecomponentname'></div>" +
+                        "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px;'></div>"
+                } else {
+                    var html = "<div name='linecomponentname'></div>" +
+                        "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px;'></div>"
                 }
-            })
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).html(html);
+                for (var j = 0; j < this.labelfontcolor.length; j++) {
+                    if (this.labelfontcolor[j].code == this.auto_line_info_array[i].line_color) {
+                        $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[j].type);
+                    }
+                }
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new linedelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_line_info: this.auto_line_info,
+                        }
+                    }).$mount();
+                    this.linedelimage(id, imagevueobj);
+                }
+                var obj = {};
+                obj.layouttype = "borderline";
+                obj.id = id;
+                this.chart_obj_array.push(obj);
+                this.textlinearray.push(obj);
+                $("#" + id).trigger("mouseup");
+            }
         },
         //边框回显
         frame_back() {
-            this.$nextTick(function () {
                 for (var i = 0; i < this.frame_layout.length; i++) {
                     var layout_obj = this.frame_layout[i];
                     var id = this.frame_layout[i].type;
                     var auto_frame_info = this.auto_frame_info_list[i];
                     $("#" + id).css("overflow", "hidden");
                     $("#" + id).css("position", "relative");
-                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.border_style +
+                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.bordertype +
                         " " + auto_frame_info.border_color);
                     $("#" + id).css("border-radius", auto_frame_info.border_radius + "px");
                     if (this.auto_frame_info_list[i].is_shadow == '0') {
@@ -1295,54 +1224,51 @@ export default {
 
                     $("#" + id).trigger("mouseup");
                 }
-            })
         },
         //文本标签编辑回显
         textlabel_back() {
-            this.$nextTick(function () {
-                for (var i = 0; i < this.label_layout.length; i++) {
-                    var layout_obj = this.label_layout[i];
-                    var id = this.label_layout[i].type;
-                    var auto_label_info = this.auto_label_info_array[i];
-                    var textStyle = auto_label_info.textStyle;
-                    $("#" + id).css("overflow", "hidden");
-                    $("#" + id).css("position", "relative");
-                    $("#" + id).css("margin-top", "2px");
-                    $("#" + id).css("background", auto_label_info.label_color);
-                    $("#" + id).css("display", "flex");
-                    $("#" + id).css("align-items", textStyle.verticalalign);
-                    $("#" + id).css("justify-content", textStyle.align);
-                    var html = "<div name='labelcomponentname'></div>";
-                    //字体处理
-                    var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontfamily;
-                    style += "; font-style:" + textStyle.fontstyle + "; font-weight:" + textStyle.fontweight;
-                    style += "; text-align:" + textStyle.align + "; vertical-align:" + textStyle.verticalalign;
-                    style += "; font-size:" + textStyle.fontsize + "px";
-                    html = html + "<p style='" + style + "'>" + auto_label_info.label_content + "</p>"
-                    $("#" + id).html(html);
+            for (var i = 0; i < this.label_layout.length; i++) {
+                var layout_obj = this.label_layout[i];
+                var id = this.label_layout[i].type;
+                var auto_label_info = this.auto_label_info_array[i];
+                var textStyle = auto_label_info.textStyle;
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).css("margin-top", "2px");
+                $("#" + id).css("background", auto_label_info.label_color);
+                $("#" + id).css("display", "flex");
+                $("#" + id).css("align-items", textStyle.verticalalign);
+                $("#" + id).css("justify-content", textStyle.align);
+                var html = "<div name='labelcomponentname'></div>";
+                //字体处理
+                var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontfamily;
+                style += "; font-style:" + textStyle.fontstyle + "; font-weight:" + textStyle.fontweight;
+                style += "; text-align:" + textStyle.align + "; vertical-align:" + textStyle.verticalalign;
+                style += "; font-size:" + textStyle.fontsize + "px";
+                html = html + "<p style='" + style + "'>" + auto_label_info.label_content + "</p>"
+                $("#" + id).html(html);
 
-                    //添加打叉按钮
-                    if (this.is_showdel == true) {
-                        var imagevueobj = new labeldelProfile({
-                            propsData: {
-                                echart_div_layout: layout_obj,
-                                auto_label_info: auto_label_info,
-                            }
-                        }).$mount();
-                        this.labeldelimage(id, imagevueobj);
-                    }
-
-                    var obj = {};
-                    obj.layouttype = "label";
-                    obj.id = id;
-                    obj.content = auto_label_info.label_content;
-                    this.chart_obj_array.push(obj);
-
-                    this.textlabelarray.push(obj);
-
-                    $("#" + id).trigger("mouseup");
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new labeldelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_label_info: auto_label_info,
+                        }
+                    }).$mount();
+                    this.labeldelimage(id, imagevueobj);
                 }
-            })
+
+                var obj = {};
+                obj.layouttype = "label";
+                obj.id = id;
+                obj.content = auto_label_info.label_content;
+                this.chart_obj_array.push(obj);
+
+                this.textlabelarray.push(obj);
+
+                $("#" + id).trigger("mouseup");
+            }
         },
         //选择主题
         chooseTitle(data) {
@@ -1375,44 +1301,47 @@ export default {
                     echarts.registerTheme(type, themeJSON[type]);
                     this.echart_theme = data;
                 });
-
             }
+            var chart_obj_array=this.chart_obj_array;
+            var cardname=this.cardname;
+            var cardstyle=this.cardstyle;
+            var tabStyle=this.tabStyle;
             //更换卡片，标签，分割线，表的颜色为组件的主要颜色
             setTimeout(() => {
-                for (var i = 0; i < this.chart_obj_array.length; i++) {
+                for (var i = 0; i < chart_obj_array.length; i++) {
                     this.bcolor = data.bcolor;
-                    if (this.chart_obj_array[i].layouttype == "card") {
-                        $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                    if (chart_obj_array[i].layouttype == "card") {
+                        $("#" + chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
                             "background-color": data.ncolor,
                             "color": data.fcolor
                         });
-                        $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                        $("#" + chart_obj_array[i].id).find("div[class='cardclass']").css({
                             'background-color': data.ncolor,
                             "color": data.fcolor
                         });
-                        this.cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.title.fontFamily;
-                        this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                        this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-                        this.cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
-                        this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                    } else if (this.chart_obj_array[i].layouttype == "table") {
-                        this.tabStyle.th_background = this.bcolor
-                        this.tabStyle.zl_background = this.bcolor;
-                    } else if (this.chart_obj_array[i].layouttype == "label") {
-                        $("#" + this.chart_obj_array[i].id).find("p").css({
+                        cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.title.fontFamily;
+                        cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                        cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
+                        cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
+                        cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                    } else if (chart_obj_array[i].layouttype == "table") {
+                        tabStyle.th_background = this.bcolor
+                        tabStyle.zl_background = this.bcolor;
+                    } else if (chart_obj_array[i].layouttype == "label") {
+                        $("#" + chart_obj_array[i].id).find("p").css({
                             "background-color": data.ncolor,
                             "color": data.fcolor
                         });
-                        $("#" + this.chart_obj_array[i].id).find("p").css({
+                        $("#" + chart_obj_array[i].id).find("p").css({
                             'background-color': data.ncolor,
                             "color": data.fcolor
                         });
-                    } else if (this.chart_obj_array[i].layouttype == 'borderline') {
-                        $("#" + this.chart_obj_array[i].id).find("div[class='lineclass']").css({
+                    } else if (chart_obj_array[i].layouttype == 'borderline') {
+                        $("#" + chart_obj_array[i].id).find("div[class='lineclass']").css({
                             'background-color': data.ncolor
                         });
-                    } else if (this.chart_obj_array[i].layouttype == "frameline") {
-                        $("#" + this.chart_obj_array[i].id).css({
+                    } else if (chart_obj_array[i].layouttype == "frameline") {
+                        $("#" + chart_obj_array[i].id).css({
                             'border': data.ncolor + ' 2px solid'
                         });
                     } else {
@@ -1428,7 +1357,7 @@ export default {
             this.titleFlag = false;
 
             setTimeout(() => {
-                this.echartpic(this.Global_component_array, this.global_component_id_array);
+                this.echartpic(this.global_component_array, this.global_component_id_array);
             }, 500);
 
             setTimeout(() => {
@@ -1538,42 +1467,54 @@ export default {
                 this.$Msg.customizTitle('请至少添加一个组件', 'warning')
                 return false;
             }
-            $.ajax({
-                type: "POST",
-                url: "saveDashboardSDO.do",
-                data: {
-                    "is_add": this.is_add,
-                    "layout": JSON.stringify(this.layout),
-                    "auto_dashboard_info": JSON.stringify(this.auto_dashboard_info),
-                    "auto_label_info_array": JSON.stringify(this.auto_label_info_array),
-                    "auto_line_info_array": JSON.stringify(this.auto_line_info_array),
-                    "auto_frame_info_list": JSON.stringify(this.auto_frame_info_list),
-                },
-                dataType: "json",
-                success(data) {
-                    if (data.state == "0") {
+            let bordertype = this.auto_frame_info.bordertype;
+            this.borderstyle.forEach(function(item, index) {
+                if (item.type==bordertype) {
+                    bordertype=item.code;
+                }
+            })
+            let border_width = this.auto_frame_info.border_width;
+            this.borderwidth.forEach(function(item, index) {
+                if (item.type==border_width) {
+                    border_width=item.code;
+                }
+            })
+            let border_color = this.auto_frame_info.border_color;
+            this.bordercolor.forEach(function(item, index) {
+                if (item.type==border_color) {
+                    border_color=item.code;
+                }
+            })
+            this.auto_dashboard_info.bordertype=bordertype;
+            this.auto_dashboard_info.borderwidth=border_width;
+            this.auto_dashboard_info.bordercolor=border_color;
+            let param=new FormData();
+            param.append("layout",JSON.stringify(this.layout));
+            param.append("autoLabelInfo", JSON.stringify(this.auto_label_info_array));
+            param.append("autoLineInfo", JSON.stringify(this.auto_line_info_array));
+            param.append("autoFrameInfo", JSON.stringify(this.auto_frame_info_list));
+            // param.append("autoFontInfo", {});
+            param.append("autoDashboardInfo", JSON.stringify(this.auto_dashboard_info));
+            if (this.auto_dashboard_info.dashboard_id==undefined||this.auto_dashboard_info.dashboard_id=='') {
+                functionAll.saveDataDashboardInfo(param).then(res => {
+                    if (res&&res.success) {
                         this.$Msg.customizTitle('保存成功', 'success')
-                        setTimeout(() => {
-                            location.href = 'L0401_DashBoardPage.do?';
-                        }, 1000);
-                    } else if (data.state == "1") {
-                        this.$Msg.customizTitle('组件名称重复', 'error')
-
-                    } else {
-                        this.$Msg.customizTitle('系统异常,请联系管理员', 'error')
+                        this.$router.push({
+                            name: 'dataDashboardList'
+                        })
                     }
-                },
-                beforeSend() {
-                    imgShow();
-                },
-                complete() {
-                    imgHide();
-                },
-                error() {
-                    this.$Msg.customizTitle('系统异常,请联系管理员', 'error')
-
+                });
+            }else{
+                functionAll.updateDataDashboardInfo(param).then(res => {
+                if (res&&res.success) {
+                    this.$Msg.customizTitle('更新成功', 'success')
+                    this.$router.push({
+                         name: 'dataDashboardList'
+                     })
                 }
             });
+            }
+            
         },
         //确定分割线
         confirmtextline() {
@@ -1630,22 +1571,20 @@ export default {
             this.$nextTick(function () {
                 if (this.auto_line_info.line_type == 'heng') {
                     var html = "<div name='linecomponentname'></div>" +
-                        "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
+                      "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
                 } else {
                     var html = "<div name='linecomponentname'></div>" +
-                        "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
+                       "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
                 }
-
                 $("#" + id).css("overflow", "hidden");
                 $("#" + id).css("position", "relative");
                 $("#" + id).html(html);
-
+                this.islineshow=true;
                 for (var i = 0; i < this.labelfontcolor.length; i++) {
                     if (this.labelfontcolor[i].code == this.auto_line_info.line_color) {
                         $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[i].type);
                     }
                 }
-
                 //添加打叉按钮
                 if (this.is_showdel == true) {
                     var imagevueobj = new linedelProfile({
@@ -1665,11 +1604,6 @@ export default {
                 this.textlinearray.push(obj);
 
                 $("#" + id).trigger("mouseup");
-
-                this.auto_line_info = {
-                    "line_type": "heng",
-                    "line_color": "05"
-                };
             })
             this.dialogTextLineVisible=false;
         },
@@ -1717,7 +1651,7 @@ export default {
             this.$nextTick(function () {
                 $("#" + id).css("overflow", "hidden");
                 $("#" + id).css("position", "relative");
-                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.border_style +
+                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.bordertype +
                     " " + this.auto_frame_info.border_color);
                 $("#" + id).css("border-radius", this.auto_frame_info.border_radius + "px");
                 if (this.auto_frame_info.is_shadow == '0') {
@@ -1750,7 +1684,6 @@ export default {
             if (this.layout.length <= 0) {
                 return false;
             }
-
             if (this.auto_label_info.label_content == "") {
                 this.$Msg.customizTitle('请输入文本标签的内容', 'warning')
                 return false;
@@ -1765,7 +1698,6 @@ export default {
                 "static": true
             };
             var id = parseInt(Math.random() * 10000 + 10000);
-
             if (this.layout.length > 0) {
                 var obj = this.layout[this.layout.length - 1];
                 if (obj.x >= 20) {
@@ -1788,12 +1720,8 @@ export default {
                 layout_obj.y = 0;
                 layout_obj.i = 1;
             }
-
             layout_obj.type = id;
             this.layout.push(layout_obj);
-            this.auto_label_info.label_color = $("#label_color").val();
-            this.auto_label_info.textStyle.color = $('#font_color').val();
-
             this.$nextTick(function () {
                 //标签处理
                 var textStyle = this.auto_label_info.textStyle;
@@ -1812,56 +1740,6 @@ export default {
                 var html = "<div name='labelcomponentname'></div>";
                 html = html + "<p style='" + style + "'>" + this.auto_label_info.label_content + "</p>"
                 $("#" + id).html(html);
-                //$("#"+id).find("div[class='labelclass']").html(this.auto_label_info.label_content);
-
-                /*for(var i=0;i<this.labelfontcolor.length;i++){
-
-if(this.labelfontcolor[i].code==this.auto_label_info.label_color){
-
-$("#"+id).find("div[class='labelclass']").parent().css('color',this.labelfontcolor[i].type);
-
-}
-
-}
-
-//标签边框类型
-
-for(var i in this.borderstyle){
-
-if(this.auto_dashboard_info.bordertype == this.borderstyle[i].code){
-
-var style = this.borderstyle[i].style;
-
-$("#"+id).css("border-style",style.split(":")[1]);
-
-}
-
-}
-
-//标签边框颜色
-
-for(var i in this.bordercolor){
-
-if(this.auto_dashboard_info.bordercolor == this.bordercolor[i].code){
-
-var style = this.bordercolor[i].style;
-
-$("#"+id).css("border-color",style.split(":")[1]);
-
-}		}
-
-//标签边框粗细
-
-for(var i in this.borderwidth){
-
-if(this.auto_dashboard_info.borderwidth == this.borderwidth[i].code){
-
-var style = this.borderwidth[i].style;
-
-$("#"+id).css("border-width",style.split(":")[1]);
-
-}		}	*/
-
                 //添加打叉按钮
                 if (this.is_showdel == true) {
                     var imagevueobj = new labeldelProfile({
@@ -1878,12 +1756,8 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 obj.id = id;
                 obj.content = this.auto_label_info.label_content;
                 this.chart_obj_array.push(obj);
-
                 this.textlabelarray.push(obj);
-
                 $("#" + id).trigger("mouseup");
-
-                //this.auto_label_info={"label_title":"","label_content":"","label_size":"0","label_color":"#ffffff"};
             })
             this.dialogTextLabelVisible=false;
         },
@@ -1930,10 +1804,8 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     echartlayout.push(this.layout[index]);
                 }
             }
-
             var result_layout = [];
             var layoutId_array = [];
-
             if (echartlayout.length > data.layout.length) { //减少
                 for (var index in data.layout) {
                     layoutId_array.push(data.layout[index].type);
@@ -1997,23 +1869,20 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     [].push.apply(this.layout, this.frame_layout);
                 }
             }
-            this.Global_component_array.layout = this.layout;
-
-            var chart_obj_array = [];
+            this.global_component_array.layout = this.layout;
+            var chart_obj_array=[];
             this.$nextTick(function () {
                 for (var i = 0; i < component_id_array.length; i++) {
                     var id = component_id_array[i];
                     var echartdata = JSON.parse(data[id]);
                     var type = echartdata.chart_type;
                     $("#" + id).css({
-                        "width": 370,
-                        "height": 300
+                        "width": 500,
+                        "height": 360
                     })
-
-                    var echart_div_layout = "";
                     for (var j = 0; j < this.layout.length; j++) {
                         if (id == this.layout[j].type) {
-                            echart_div_layout = this.layout[j];
+                            var echart_div_layout = this.layout[j];
                             //标题设置
                             var title = echart_div_layout.titleFontInfo;
                             this.title = transferTitle(title);
@@ -2022,21 +1891,49 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             this.axisStyle = transferAxisStyle(axisStyle);
                             //轴线配置--x轴(xAxis)
                             var xAxis = echart_div_layout.xAxisInfo[0];
+                            if (xAxis.show=='1') {
+                                xAxis.show="true";
+                            }
+                            if (xAxis.silent=='1') {
+                                xAxis.silent="true";
+                            }else{
+                                xAxis.silent="false";
+                            }
                             this.xAxis = transferxAxis(xAxis);
                             //x轴(xAxisLine)
                             var xAxisLine = echart_div_layout.xAxisLine;
+                            if (xAxisLine.show=='1') {
+                                xAxisLine.show="true";
+                            }
                             this.xAxisLine = transferxAxisLine(xAxisLine);
                             //x轴(xAxisLabel)
                             var xAxisLabel = echart_div_layout.xAxisLabel;
+                            if (xAxisLabel.show=='1') {
+                                xAxisLabel.show="true";
+                            }
                             this.xAxisLabel = transferxAxisLabel(xAxisLabel);
                             //轴线配置--y轴
                             var yAxis = echart_div_layout.yAxisInfo[0];
+                            if (yAxis.show=='1') {
+                                yAxis.show="true";
+                            }
+                             if (yAxis.silent=='1') {
+                                yAxis.silent="true";
+                            }else{
+                                yAxis.silent="false";
+                            }
                             this.yAxis = transferyAxis(yAxis);
                             //y轴(yAxisLine)
                             var yAxisLine = echart_div_layout.yAxisLine;
+                            if (yAxisLine.show=='1') {
+                                yAxisLine.show="true";
+                            }
                             this.yAxisLine = transferyAxisLine(yAxisLine);
                             //y轴(yAxisLabel)
                             var yAxisLabel = echart_div_layout.yAxisLabel;
+                            if (yAxisLabel.show=='1') {
+                                yAxisLabel.show="true";
+                            }
                             this.yAxisLabel = transferyAxisLabel(yAxisLabel);
                             //二维表
                             var tableStyle = echart_div_layout.twoDimensionalTable
@@ -2053,8 +1950,11 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             // var echartsLabel = echart_div_layout.textLabel;
                             // this.echartsLabel = transferEchartsLabel(echartsLabel);
                             //图例设置
-                            // var legendStyle = echart_div_layout.legendStyle;
-                            // this.legendStyle = transferLegendStyle(legendStyle);
+                            var legendStyle = echart_div_layout.legendInfo;
+                            if (legendStyle.show=='1') {
+                                legendStyle.show="true";
+                            }
+                            this.legendStyle = transferLegendStyle(legendStyle);
                         }
                     }
                     //定义全国省份的数组
@@ -2258,28 +2158,24 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             }).$mount();
                             this.MDdelimage(id, imagevueobj);
                         }
-
                         //延迟模拟点击达到放大缩小的效果
                         setTimeout(() => {
                             $('.bubble').click();
                         }, 100);
-
                     } else if (type == "blsimple") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.changeToBLSimpleChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
                     } else if (type == "map") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-
                         setTimeout(() => {
                             this.changeToMapChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         }, 500);
-
                         chart_obj_array.push(Chart);
                     }
                 }
             })
-            this.chart_obj_array = chart_obj_array;
+            this.chart_obj_array=chart_obj_array;
             setTimeout(() => {
                 this.confirmBackgroudColor();
             }, 100);
@@ -2317,11 +2213,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
         changeToMapChart(mapData, chart, id, layout, tmp_component_name, tmp_component_background) {
             var mydata = mapData.seriesData;
             var titles = transferOptionTitles(tmp_component_name, this.title);
-
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
-
             var pName = "";
             if (this.seriesStyle.provincename == "全国") {
                 pName = "china";
@@ -2344,7 +2238,6 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     });
                 }
             }
-
             var option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
@@ -2356,12 +2249,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2426,7 +2319,6 @@ $("#"+id).css("border-width",style.split(":")[1]);
             var series1Data = blsimpleData.series1Data;
             var series2Name = blsimpleData.series2Name;
             var series2Data = blsimpleData.series2Data;
-
             this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
             this.xAxis.offset = parseInt(this.xAxis.offset);
             this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
@@ -2441,14 +2333,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 }
             }
             this.xAxis = Object.assign({}, this.xAxis, xAxisPointer);
-
             this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
             this.yAxis.type = "value";
             this.yAxis.nameTextStyle = this.axisStyle;
             this.yAxis.axisLine = this.yAxisLine;
             this.yAxis.axisLabel = this.yAxisLabel;
             this.yAxis.position = "";
-
             var titles = transferOptionTitles(tmp_component_name, this.title);
             this.legendStyle.data = [];
             this.legendStyle.data.push(series1Name);
@@ -2456,7 +2346,6 @@ $("#"+id).css("border-width",style.split(":")[1]);
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
-
             var option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
@@ -2468,12 +2357,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2527,14 +2416,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     }
                 ]
             };
-
             chart.clear();
             chart.setOption(option);
             chart.resize();
         },
         //多维柱状图
         changeToBarmdChart(elobj, data, bcolor) {
-
             var dimension = [];
             var xColLen = data.xColLen;
             if (xColLen === 2) {
@@ -2597,6 +2484,13 @@ $("#"+id).css("border-width",style.split(":")[1]);
             var seriesArray = echartdata.seriesData;
             var titles = transferOptionTitles(tmp_component_name, this.title);
 
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
@@ -2609,12 +2503,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2659,6 +2553,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     data: seriesArray
                 }]
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             treemapChart.clear();
             treemapChart.setOption(option);
             treemapChart.resize();
@@ -2668,9 +2565,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
             var legend_data = echartdata.legend_data;
             var seriesArray = echartdata.seriesArray;
             var xArray = echartdata.xArray;
-
             this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
             this.xAxis.offset = parseInt(this.xAxis.offset);
+
             this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
             this.xAxis.type = "category";
             this.xAxis.data = xArray;
@@ -2684,12 +2581,19 @@ $("#"+id).css("border-width",style.split(":")[1]);
             this.yAxis.axisLine = this.yAxisLine;
             this.yAxis.axisLabel = this.yAxisLabel;
             this.yAxis.position = "";
-
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
             this.legendStyle.data = legend_data;
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
 
             option = {
                 backgroundColor: tmp_component_background,
@@ -2702,12 +2606,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2732,6 +2636,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 yAxis: [this.yAxis, this.yAxis],
                 series: seriesArray
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             blChart.clear();
             blChart.setOption(option);
             blChart.resize();
@@ -2749,21 +2656,19 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 array1.push(seriesArray);
             }
             var data = echarts.dataTool.prepareBoxplotData(array1);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             option = {
                 title: [{
                         text: tmp_component_name,
                         left: 'center'
                     },
-                    //    		        {
-                    //    		            text: 'upper: Q3 + 1.5 * IQR \nlower: Q1 - 1.5 * IQR',
-                    //    		            borderColor: '#999',
-                    //    		            borderWidth: 1,
-                    //    		            textStyle: {
-                    //    		                fontSize: 14
-                    //    		            },
-                    //    		            left: '10%',
-                    //    		            top: '90%'
-                    //    		        }
                 ],
                 tooltip: {
                     trigger: 'item',
@@ -2782,12 +2687,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2853,6 +2758,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     }
                 ]
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             boxplotChart.clear();
             boxplotChart.setOption(option);
             boxplotChart.resize();
@@ -2883,17 +2791,24 @@ $("#"+id).css("border-width",style.split(":")[1]);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
 
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
             var option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
                 tooltip: {
                     trigger: 'axis'
                 },
-                legend: this.legendStyle,
+                legend: Object.assign({}, this.legendStyle, {data:legend_data}),
                 grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
+                    left: '10%',
+                    right: '10%',
+                    bottom: '10%',
                     containLabel: true
                 },
                 toolbox: {
@@ -2901,22 +2816,21 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
+                                    delete global_component_array[layout.type];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(lineChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(lineChart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     lineChart.clear;
@@ -2929,14 +2843,24 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 yAxis: this.yAxis,
                 series: seriesArray
             };
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             lineChart.clear();
-            lineChart.setOption(option);
+            lineChart.setOption(option,true);
             lineChart.resize();
         },
         //极坐标柱状图
         changeToPolarBarChart(radiusData, seriesData, chart, layout, tmp_component_name, tmp_component_background) {
 
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -2956,12 +2880,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -2990,7 +2914,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                     show: false
                 }
             };
-
+            this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             chart.clear();
             chart.setOption(option);
             chart.resize();
@@ -3020,7 +2946,14 @@ $("#"+id).css("border-width",style.split(":")[1]);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
 
-            option = {
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
+            var option = {
                 backgroundColor: tmp_component_background,
                 title: titles,
                 tooltip: {
@@ -3045,12 +2978,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
+                                    global_component_array.layout = this.layout;
+                                    delete global_component_array[layout.type];
                                     this.global_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
@@ -3073,6 +3006,9 @@ $("#"+id).css("border-width",style.split(":")[1]);
                 yAxis: this.yAxis,
                 series: seriesArray
             };
+             this.global_component_id_array=global_component_id_array;
+            this.chart_obj_array=chart_obj_array;
+            this.selectRow=selectRow;
             this.option = option;
             barChart.clear();
             barChart.setOption(option);
@@ -3088,13 +3024,20 @@ $("#"+id).css("border-width",style.split(":")[1]);
             } else {
                 var count = "";
             }
-
             var titles = transferOptionTitles(tmp_component_name, this.title);
             this.legendStyle.data = legend_data;
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
             this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
             this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
-            pie_option = {
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array = [];
+
+            var option = {
                     backgroundColor: tmp_component_background,
                     title: titles,
                     tooltip: {
@@ -3119,22 +3062,21 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             mydeltool: {
                                 show: true,
                                 title: "删除",
-                                icon: "image://@/assets/images/del.png",
+                                icon: "image://"+require("@/assets/images/del.png"),
                                 onclick() {
-                                    if (this.is_showdel == true) {
-                                        this.layout.splice(this.layout.indexOf(layout), 1);
-                                        this.Global_component_array["data"].layout = this.layout;
-                                        delete this.Global_component_array["data"][layout.type];
-                                        this.global_component_id_array = [];
-                                        for (var i = 0; i < this.layout.length; i++) {
-                                            if (this.layout[i].label == undefined) {
-                                                this.global_component_id_array.push(this.layout[i].type);
+                                    if (is_showdel == true) {
+                                        layout.splice(layout.indexOf(layout), 1);
+                                        global_component_array.layout = layout;
+                                        delete global_component_array[layout.type];
+                                        for (var i = 0; i < layout.length; i++) {
+                                            if (layout[i].label == undefined) {
+                                                global_component_id_array.push(layout[i].type);
                                             }
                                         }
-                                        this.chart_obj_array.splice(this.chart_obj_array.indexOf(pieChart), 1);
-                                        for (var i = 0; i < this.selectRow.length; i++) {
-                                            if (this.selectRow[i].component_id == id) {
-                                                this.selectRow.splice(i, 1);
+                                        chart_obj_array.splice(chart_obj_array.indexOf(pieChart), 1);
+                                        for (var i = 0; i < selectRow.length; i++) {
+                                            if (selectRow[i].component_id == id) {
+                                                selectRow.splice(i, 1);
                                             }
                                         }
                                         pieChart.clear;
@@ -3144,27 +3086,39 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         },
                     },
                     series: seriesArray
-                },
-
-                pieChart.clear();
-            pieChart.setOption(pie_option);
+                };
+            this.chart_obj_array=chart_obj_array;
+            this.global_component_id_array=global_component_id_array;
+            this.selectRow=selectRow;
+            this.option=option;
+            pieChart.clear();
+            pieChart.setOption(option);
             pieChart.resize();
         },
         //散点图
         echartscatter(echartdata, scatterChart, id, layout, tmp_component_name, tmp_component_background) {
             var scatterData = echartdata.scatterData;
             var data = scatterData;
+
             this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
             this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
             this.xAxis.nameTextStyle = this.axisStyle;
             this.xAxis.type = "value";
             this.xAxis.axisLine = this.xAxisLine;
             this.xAxis.axisLabel = this.xAxisLabel;
+
             this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
             this.yAxis.nameTextStyle = this.axisStyle;
             this.yAxis.axisLine = this.yAxisLine;
             this.yAxis.axisLabel = this.yAxisLabel;
             var titles = transferOptionTitles(tmp_component_name, this.title);
+
+            var is_showdel =this.is_showdel;
+            var layout =this.layout;
+            var chart_obj_array =this.chart_obj_array;
+            var global_component_array=this.global_component_array;
+            var selectRow=this.selectRow;
+            var global_component_id_array=[];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -3180,22 +3134,21 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         mydeltool: {
                             show: true,
                             title: "删除",
-                            icon: "image://@/assets/images/del.png",
+                            icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    this.Global_component_array["data"].layout = this.layout;
-                                    delete this.Global_component_array["data"][layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
+                                    delete global_component_array[layout.type];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(scatterChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(scatterChart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     scatterChart.clear;
@@ -3212,7 +3165,6 @@ $("#"+id).css("border-width",style.split(":")[1]);
                             emphasis: {
                                 show: this.echartsLabel.show_label,
                                 position: this.echartsLabel.position,
-                                //        		                formatter: this.echartsLabel.formatter,
                                 textStyle: {
                                     color: 'blue',
                                     fontSize: 16
@@ -3221,77 +3173,12 @@ $("#"+id).css("border-width",style.split(":")[1]);
                         },
                         data: data
                     },
-                    /*{
-
-        type: 'line',
-
-        showSymbol: false,
-
-        smooth: true,
-
-        data: myRegression.points,
-
-        markPoint: {
-
-            itemStyle: {
-
-                normal: {
-
-                    color: 'transparent'
-
-                }
-
-            },
-
-            label: {
-
-                normal: {
-
-                    show: true,
-
-                    position: 'left',
-
-                    formatter: myRegression.expression,
-
-                    textStyle: {
-
-                        color: '#333',
-
-                        fontSize: 14
-
-                    }
-
-                }
-
-            },
-
-            data: [{
-
-                coord: myRegression.points[myRegression.points.length - 1]
-
-            }]
-
-        }
-
-    }*/
                 ]
             };
-
+            this.option=option;
             scatterChart.clear();
             scatterChart.setOption(option);
             scatterChart.resize();
-        },
-        //全选 组件
-        chooseallcomponent(event) {
-            if (this.chooseallcomponentmodel == true) {
-                for (var i in this.auto_comp_sum_array) {
-                    this.auto_comp_sum_array[i].ischecked = false;
-                }
-            } else {
-                for (var i in this.auto_comp_sum_array) {
-                    this.auto_comp_sum_array[i].ischecked = true;
-                }
-            }
         },
         //仪表板保存按钮
         addDashboardButton() {
@@ -3342,7 +3229,7 @@ var Profile = Vue.extend({
     methods: {
         delcard(layout, echart_div_layout, layout_id) {
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.Global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
@@ -3367,7 +3254,7 @@ var linedelProfile = Vue.extend({
             this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.Global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
@@ -3390,7 +3277,7 @@ var framedelProfile = Vue.extend({
             this.auto_frame_info_list.splice(this.auto_frame_info_list.indexOf(auto_frame_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.Global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             this.frame_layout.splice(this.frame_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
@@ -3413,7 +3300,7 @@ var labeldelProfile = Vue.extend({
             this.auto_label_info_array.splice(this.auto_label_info_array.indexOf(auto_label_info), 1);
 
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.Global_component_array["data"].layout = this.layout;
+            global_component_array.layout = this.layout;
             this.label_layout.splice(this.label_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
@@ -3452,33 +3339,6 @@ $("#label_color").blur(function () {
 $("#font_color").blur(function () {
     this.auto_label_info.textStyle.color = $('#font_color').val();
 });
-
-//全屏
-
-//退出全屏
-/*function exitScreen(){
-
-$(".navbar").show();
-
- $('#toubu').show();
-    if (document.exitFullscreen) {  
-        document.exitFullscreen();  
-    }  
-    else if (document.mozCancelFullScreen) {  
-        document.mozCancelFullScreen();  
-    }  
-    else if (document.webkitCancelFullScreen) {  
-        document.webkitCancelFullScreen();  
-    }  
-    else if (document.msExitFullscreen) {  
-        document.msExitFullscreen();  
-    } 
-    if(typeof cfs != "undefined" && cfs) {
-        cfs.call(el);
-    }
-    $('#fullScreen').show();
-    //$('#fullScreenExit').hide();
-}*/
 
 window.onresize = function () {
     if (this.is_showdel == false) {

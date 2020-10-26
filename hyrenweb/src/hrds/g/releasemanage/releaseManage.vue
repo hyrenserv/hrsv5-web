@@ -69,9 +69,9 @@
                             <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="interface_name" label="接口名称" align="left" show-overflow-tooltip="true"/>
-                    <el-table-column prop="interface_code" label="接口代码" align="left" width="80px" show-overflow-tooltip="true"/>
-                    <el-table-column prop="start_use_date" label="开始日期" align="left" show-overflow-tooltip="true">
+                    <el-table-column prop="interface_name" label="接口名称" align="left" width="230px" show-overflow-tooltip/>
+                    <el-table-column prop="interface_code" label="接口代码" align="left" width="160px" show-overflow-tooltip/>
+                    <el-table-column prop="start_use_date" label="开始日期" align="left" show-overflow-tooltip>
                         <template slot-scope="scope">
                             <el-date-picker type="date" placeholder="开始日期" value-format="yyyyMMdd"
                                             v-model="scope.row.start_use_date" size="small"
@@ -85,7 +85,7 @@
                                             style="width: 100%"/>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="use_state" label="接口状态" align="left" width="80px">
+                    <el-table-column prop="use_state" label="接口状态" align="left" width="100px">
                         <template slot-scope="scope">{{interfaceStateObj[scope.row.interface_state]}}
                         </template>
                     </el-table-column>
