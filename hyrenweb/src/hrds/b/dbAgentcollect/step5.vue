@@ -2,7 +2,7 @@
 <div>
     <Step :active="active"></Step>
     <div class="cleanbtn">
-        <el-button size="mini" type="success" @click="AllSettingDestinationFun()">所有表目的地设置</el-button>
+        <el-button size="mini" type="success" @click="AllSettingDestinationFun()">所有表目的地设置2222</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps5">
         <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" size="medium" border :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)" :height="tableHeight">
@@ -25,7 +25,7 @@
                     </el-form-item>
                 </template>
             </el-table-column>
-            <el-table-column label=" 选择目的地" width="140" align="center">
+            <el-table-column label=" 选择目的地" align="center" show-overflow-tooltip>
                 <template slot="header">
                     <el-tooltip class="item" effect="light" content placement="right">
                         <div slot="content">请至少选择一个目的地,当选择的目的地是oracle时,落地表名长度不能大于27</div>
@@ -34,12 +34,14 @@
                 </template>
                 <template slot-scope="scope">
                     <span class="settingbtn" v-if="scope.row.data_extract_type!='1'">
-                        <el-button type="success" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">已选择</el-button>
+                        <el-button type="text" size="mini" v-if="scope.row.table_setting==true" @click="ChooseDestination(scope.row,scope.$index)">
+                            {{scope.row.store_name.join(' / ')}}
+                        </el-button>
                         <el-button type="warning" size="mini" v-else @click="ChooseDestination(scope.row,scope.$index)">未选择</el-button>
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column label=" 是否拉链存储" align="center">
+            <el-table-column label=" 是否拉链存储" align="center" width="180">
                 <template slot="header">
                     <el-checkbox @change="Allis_zipperFun(ruleForm.ex_destinationData,Allis_zippercheck)" v-model="Allis_zippercheck" :checked="Allis_zippercheck">
                         <span class="allclickColor">是否拉链存储</span>
@@ -50,7 +52,7 @@
                     &nbsp;&nbsp;&nbsp;<el-button v-if="scope.row.is_zipper" type="text" @click="innerVisible=true;watchText(scope.row)">选择拉链字段</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label=" 存储方式" align="center">
+            <el-table-column label=" 存储方式" align="center" width="200">
                 <template slot="header">
                     <!-- <el-checkbox v-if="Allis_zippercheck==false">
                         <span class="allclickColor">存储方式</span>
@@ -332,6 +334,7 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./dbAgentcollect";
+import {getStoreDataBase} from '../addTask/addTask'
 import * as message from "@/utils/js/message";
 import Step from "./step";
 import {
@@ -426,7 +429,8 @@ export default {
             table_id: '',
             isZipperAll: false,
             isFalg: {},
-            checkSorageData: {}
+            checkSorageData: {},
+            storageLayer: {}
         };
     },
     computed: {
@@ -485,9 +489,16 @@ export default {
         }).then(res => {
             this.isFalg = res.data;
         })
-        // },
-        // mounted() {
-        params = {};
+        getStoreDataBase({
+            'colSetId': this.dbid
+        }).then(res => {
+            if (res.success) {
+                this.storageLayer = res.data
+            }
+        })
+    },
+    mounted() {
+        let params = {};
         params["colSetId"] = this.dbid;
         this.tableloadingInfo = "数据加载中...";
         addTaskAllFun.stodegetInitInfo(params).then(res => {
@@ -517,6 +528,7 @@ export default {
                                             arr[i].storage_type = this.oldTbData[j].storage_type
                                         }
                                         this.checkSorageData[arr[i].table_name] = this.oldTbData[j].storage_type
+                                        arr[i].store_name = this.storageLayer[arr[i].table_id]
                                     }
                                 }
                                 if (arr[i].is_zipper == "1") {
@@ -561,7 +573,6 @@ export default {
         this.specialfieldFun();
         // this.getSaveDataFun();
     },
-
     methods: {
         sendSubmit() {
             addTaskAllFun
@@ -817,11 +828,11 @@ export default {
                     }
                 } else {
                     // if (this.checkSorageData[item.table_name+"_zip"]) {
-                        item.storage_type = this.checkSorageData[item.table_name]
+                    item.storage_type = this.checkSorageData[item.table_name]
                     // } else {
                     //     item.storage_type = this.zipperData.TiHuan
                     // }
-                    item.is_zipper = this.checkSorageData[item.table_name+"_zip"]
+                    item.is_zipper = this.checkSorageData[item.table_name + "_zip"]
                 }
             });
         },
@@ -1215,6 +1226,7 @@ export default {
                             searcharr.push(data[i].dsl_name.toLowerCase())
                         }
                     }
+                    let database = {};
                     if (searcharr.indexOf('oracle') == -1) {
                         str = this.datasource_number + '_' + this.classify_num + '_' + this.digForm.hyren_name
                         let dslIds = [];
@@ -1229,6 +1241,7 @@ export default {
                         for (let i = 0; i < data.length; i++) {
                             if (data[i].usedflag == true) {
                                 dslIds.push(data[i].dsl_id);
+                                database[data[i].dsl_id] = data[i].dsl_name
                             }
                         }
                         if (dslIds.length != 0) {
@@ -1242,6 +1255,9 @@ export default {
                             this.ruleForm.ex_destinationData[
                                 this.dataExtractypeindex
                             ].table_setting = true;
+                            this.ruleForm.ex_destinationData[
+                                this.dataExtractypeindex
+                            ].store_name = Object.values(database);
                         } else {
                             this.open();
                         }
@@ -1262,6 +1278,7 @@ export default {
                             for (let i = 0; i < data.length; i++) {
                                 if (data[i].usedflag == true) {
                                     dslIds.push(data[i].dsl_id);
+                                    database[data[i].dsl_id] = data[i].dsl_name
                                 }
                             }
                             if (dslIds.length != 0) {
@@ -1275,6 +1292,9 @@ export default {
                                 this.ruleForm.ex_destinationData[
                                     this.dataExtractypeindex
                                 ].table_setting = true;
+                                this.ruleForm.ex_destinationData[
+                                    this.dataExtractypeindex
+                                ].store_name = Object.values(database);
                             } else {
                                 this.open();
                             }
@@ -1342,8 +1362,10 @@ export default {
             if (this.Alldestinationchoose.length > 0) {
                 this.dslIdString.length = 0
                 let dslIds = []
+                let databaseAll = {}
                 for (let i = 0; i < this.Alldestinationchoose.length; i++) {
                     dslIds.push(this.Alldestinationchoose[i].dsl_id)
+                    databaseAll[this.Alldestinationchoose[i].dsl_id] = this.Alldestinationchoose[i].dsl_name
                 }
                 for (let i = 0; i < this.ruleForm.ex_destinationData.length; i++) {
                     this.dslIdString.push({
@@ -1353,6 +1375,7 @@ export default {
                         new_name: this.ruleForm.ex_destinationData[i].table_name
                     });
                     this.ruleForm.ex_destinationData[i].table_setting = true
+                    this.ruleForm.ex_destinationData[i].store_name = Object.values(databaseAll)
                 }
                 this.dialogAllChooseDestination = false
             } else {
