@@ -253,7 +253,7 @@
                          src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='bar' || auto_comp_sum.chart_type=='polarbar'">
+                     v-if="auto_comp_sum.chart_theme =='bar'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bar')"
                          src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;"
@@ -262,15 +262,9 @@
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('polarbar')"
                          src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
                 </div>
+
                 <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='scatter'|| auto_comp_sum.chart_type=='bubble'">
-                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')"
-                         src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
-                    <!--<img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"-->
-                    <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
-                </div>
-                <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
+                     v-if="auto_comp_sum.chart_theme =='pie' ">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('pie')"
                          src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('fasanpie')"
@@ -279,19 +273,26 @@
                          src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
                 </div>
                 <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='scatter'">
+                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')"
+                         src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
+                    <!--<img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"-->
+                    <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
+                </div>
+                <div style="margin-top:10px;"
                      v-if="auto_comp_sum.chart_theme =='treemap'|| auto_comp_sum.chart_type=='treemap'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('treemap')"
                          src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='blend'|| auto_comp_sum.chart_type=='bl' ||auto_comp_sum.chart_type=='blsimple'">
+                     v-if="auto_comp_sum.chart_theme =='blend'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bl')"
                          src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
-                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')"
-                         src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
+                    <!--<img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')"-->
+                         <!--src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">-->
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='map'|| auto_comp_sum.chart_type=='map'">
+                     v-if="auto_comp_sum.chart_theme =='map'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('map')"
                          src="@/assets/images/chart/map.png" alt="地图" title="地图">
                 </div>
@@ -348,16 +349,16 @@
                                     </el-input>
                                 </div>
 
-                                <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
-                                    <span class="el-input-group__prepends">是否显示引导线</span>
-                                    <el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"
-                                               class="selectPosition">
-                                        <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"
-                                                   :label="item.value" :value="item.code">
-                                        </el-option>
-                                    </el-select>
-                                </div>
+                                <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"-->
+                                     <!--v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">-->
+                                    <!--<span class="el-input-group__prepends">是否显示引导线</span>-->
+                                    <!--<el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"-->
+                                               <!--class="selectPosition">-->
+                                        <!--<el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"-->
+                                                   <!--:label="item.value" :value="item.code">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</div>-->
 
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
                                      v-if="auto_comp_sum.chart_theme=='map'">
@@ -1086,7 +1087,6 @@
                 rule: validator.default,
                 formvalue: '',
                 myChart: '',
-                myChartType: '',
                 input: '',
                 options: [{
                     value: '自主数据数据集',
@@ -1513,12 +1513,12 @@
                     value: 'scatter',
                     label: '散点图'
                 }, {
-                    value: 'card',
-                    label: '卡片'
-                }, {
-                    value: 'table',
-                    label: '二维表'
-                }, {
+                //     value: 'card',
+                //     label: '卡片'
+                // }, {
+                //     value: 'table',
+                //     label: '二维表'
+                // }, {
                     value: 'treemap',
                     label: '矩形树图'
                 }, {
@@ -2323,14 +2323,12 @@
                 parama.autoCompConds = JSON.stringify(arry2);
                 parama.autoCompGroups = JSON.stringify(arry3);
                 functionAll.getSqlByCondition(parama).then(res => {
-                    debugger;
                     this.loadingsearch = false;
                     if (res && res.success) {
                         this.markexe_sql = res.data;
                         if (flag) {
                             this.echartshow(this.auto_comp_sum.chart_type);
                         }
-                        debugger;
                         if (!flag) {
                             this.weiduArry = [];
                             this.originalweiduArry = [];
@@ -2346,8 +2344,8 @@
                                     if (item.code == '01' || item.code == '02' || item.code == '03' || item.code == '04' || item.code == '05') {
                                         this.duliangArry.push(obj);
                                         this.originalduliangArry.push(obj);
-                                    }else{
-                                        if(this.allnumcolumns.indexOf(item.realName)!=-1 ){
+                                    } else {
+                                        if (this.allnumcolumns.indexOf(item.realName) != -1) {
                                             this.duliangArry.push(obj);
                                             this.originalduliangArry.push(obj);
                                         }
@@ -2357,7 +2355,7 @@
                                     this.allcolumns.forEach((item) => {
                                         this.weiduArry.push({nameAll: item.nameAll});
                                         this.originalweiduArry.push({nameAll: item.nameAll});
-                                        if(this.allnumcolumns.indexOf(item.nameAll)!=-1 ){
+                                        if (this.allnumcolumns.indexOf(item.nameAll) != -1) {
                                             this.duliangArry.push({nameAll: item.nameAll});
                                             this.originalduliangArry.push({nameAll: item.nameAll});
                                         }
@@ -2444,7 +2442,7 @@
             },
             // 选择图标类型
             echartshow(type) {
-                this.myChartType = type;
+                this.auto_comp_sum.chart_type = type;
                 let xColumns = []
                 let yColumns = [];
                 //数据处理获取图信息
@@ -2482,11 +2480,11 @@
                     this.tips = "横轴接受1至2个维度,按第一个维度分类";
                     // } else if (type == "barmd") {
                     //     this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
-                } else if (type == "bubble") {
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
-
-                } else if (type == "blsimple") {
-                    this.tips = "横轴为1个维度,纵轴必须为2个度量";
+                // } else if (type == "bubble") {
+                //     this.tips = "横轴为1个维度,纵轴为1个度量";
+                //
+                // } else if (type == "blsimple") {
+                //     this.tips = "横轴为1个维度,纵轴必须为2个度量";
                 } else if (type == "map") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 }
@@ -2544,18 +2542,15 @@
                                 return;
                             }
                             this.changeToScatterChart(xColumns, yColumns, type, res.data);
-                        } else if (type == "boxplot") {
-
+                        // } else if (type == "boxplot") {
                         } else if (type == "bl") {
-
+                            this.$Msg.customizTitle("正在开发中", "warning");
                         } else if (type == "treemap") {
-
-                        } else if (type == "bubble") {
-
-                        } else if (type == "blsimple") {
-
+                            this.$Msg.customizTitle("正在开发中", "warning");
+                        // } else if (type == "bubble") {
+                        // } else if (type == "blsimple") {
                         } else if (type == "map") {
-
+                            this.$Msg.customizTitle("正在开发中", "warning");
                         }
                     }
                 )
@@ -2763,61 +2758,97 @@
             //堆叠柱状图
             changeToStackingBarChart(x_columns, y_columns, type, data) {
                 //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
+                var result = this.initproperty();
+                data.seriesArray.forEach(val => {
+                    val.label = result.labelOption;
+                })
                 let option = {
                     backgroundColor: this.auto_comp_sum.background,
-                    // color: this.color,
-                    // title: titles,
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                        }
-                    },
-                    legend: {data: data.legend_data},
+                    title: result.titles,
+                    legend: Object.assign({}, result.legendStyle, {data: data.legend_data}),
                     grid: {
-                        left: '3%',
-                        right: '4%',
+                        left: '5%',
+                        right: '10%',
                         bottom: '3%',
                         containLabel: true
                     },
                     xAxis: [
-                        {
+                        Object.assign({}, {
                             type: 'category',
-                            data: data.xArray
-                        }
+
+                            data: data.xArray,
+                            nameTextStyle: result.nameTextStyle,
+                            axisLine: result.xaxisLine,
+                            axisLabel: result.xaxisLabel,
+                        }, result.xAxis)
                     ],
-                    yAxis: {
-                        type: 'value'
-                    },
+                    yAxis: Object.assign({}, {
+                        type: 'value',
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.yaxisLine,
+                        axisLabel: result.yaxisLabel,
+                    }, result.yAxis),
                     series: data.seriesArray
                 };
                 this.drawLine(option)
             },
             //极坐标堆叠图
             changeToPolarBarChart(x_columns, y_columns, type, data) {
+                // let option = {
+                //     backgroundColor: this.auto_comp_sum.background,
+                //     // color: this.color,
+                //     angleAxis: {},
+                //     radiusAxis: {
+                //         type: 'category',
+                //         data: data.xArray,
+                //     },
+                //     polar: {},
+                //     series: data.seriesArray,
+                //     legend: {data: data.legend_data},
+                // };
+                var result = this.initproperty();
+                data.seriesArray.forEach(val => {
+                    val.label = result.labelOption;
+                })
                 let option = {
                     backgroundColor: this.auto_comp_sum.background,
-                    // color: this.color,
-                    angleAxis: {},
-                    radiusAxis: {
-                        type: 'category',
-                        data: data.xArray,
-                    },
+                    title: result.titles,
+                    legend: Object.assign({}, result.legendStyle, {data: data.legend_data}),
+                    radiusAxis: [
+                        Object.assign({}, {
+                            type: 'category',
+                            data: data.xArray,
+                            nameTextStyle: result.nameTextStyle,
+                            axisLine: result.xaxisLine,
+                            axisLabel: result.xaxisLabel,
+                        }, result.xAxis)
+                    ],
                     polar: {},
-                    series: data.seriesArray,
-                    legend: {data: data.legend_data},
-                };
+                    angleAxis: Object.assign({}, {
+                        // type: 'value',
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.yaxisLine,
+                        axisLabel: result.yaxisLabel,
+                    }, result.yAxis),
+                    series: data.seriesArray
+                }
                 this.drawLine(option)
             },
             //饼图
             changeToPieChart(x_columns, y_columns, type, data) {
+                //https://echarts.apache.org/examples/zh/editor.html?c=pie-rich-text
+                var result = this.initproperty();
+                data.seriesArray.forEach(val => {
+                    val.label = result.labelOption;
+                })
                 var option = {
-                    color: this.color,
+                    backgroundColor: this.auto_comp_sum.background,
+                    title: result.titles,
                     tooltip: {
                         trigger: 'item',
                         formatter: "{a} <br/>{b} : {c} ({d}%)"
                     },
-                    legend: {"data": data.legendData},
+                    legend: Object.assign({}, result.legendStyle, {data: data.legendData}),
                     graphic: {
                         type: 'text',
                         left: 'center',
@@ -2892,7 +2923,7 @@
                 })
                 this.auto_comp_sum.data_source = this.formvalue;
                 this.auto_comp_sum.sources_obj = this.input;
-                this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_theme;
+                // this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_theme;
                 this.fiflterConditionArr.forEach(val => {
                     obj = {
                         arithmetic_logic: val.realtion,
