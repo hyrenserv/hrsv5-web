@@ -725,3 +725,15 @@ export function getDatabaseData() {
         url: '/B/agent/getDatabaseData'
     })
 }
+
+
+/**
+ * 获取任务下每个表对应的存储层信息配置
+ * @param {String}  任务ID
+ */
+export function getStoreDataBase(data) {
+    return request({
+        url: '/B/agent/getStoreDataBase',
+        params: data
+    })
+}
