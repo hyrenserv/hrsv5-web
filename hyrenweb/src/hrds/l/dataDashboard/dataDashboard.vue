@@ -331,8 +331,8 @@ export default {
                 serial_number: null, //序号
                 x_axis_coord: null, //X轴坐标
                 y_axis_coord: null ,//y轴坐标
-                bordertype: "", //边框风格
-                border_color: "", //边框颜色
+                bordertype: "solid", //边框风格
+                border_color: "#eb21eb", //边框颜色
                 border_width: 2, //边框宽度
                 border_radius: 45, //边框圆角大小
                 is_shadow: "1", //是否启用阴影效果，默认否
@@ -568,6 +568,7 @@ export default {
             textlabelarray: [],
             textlinearray: [],
             textframearray: [],
+            // 分割线颜色
             labelfontcolor: [{
                     "code": "00",
                     "type": "red",
@@ -1197,6 +1198,13 @@ export default {
                         propsData: {
                             echart_div_layout: layout_obj,
                             auto_line_info: this.auto_line_info,
+                            layout:this.layout,
+                            auto_line_info_array:this.auto_line_info_array,
+                            chart_obj_array:this.chart_obj_array,
+                            delpng:this.delpng,
+                            textlinearray:this.textlinearray,
+                            global_component_array:this.global_component_array,
+                            line_layout:this.line_layout
                         }
                     }).$mount();
                     this.linedelimage(id, imagevueobj);
@@ -1229,6 +1237,13 @@ export default {
                             propsData: {
                                 echart_div_layout: layout_obj,
                                 auto_frame_info: auto_frame_info,
+                                delpng:this.delpng,
+                                auto_frame_info_list:this.auto_frame_info_list,
+                                layout:this.layout,
+                                global_component_array:this.global_component_array,
+                                frame_layout:this.frame_layout,
+                                textframearray:this.textframearray,
+                                chart_obj_array:this.chart_obj_array
                             }
                         }).$mount();
                         this.framedelimage(id, imagevueobj);
@@ -1273,6 +1288,13 @@ export default {
                         propsData: {
                             echart_div_layout: layout_obj,
                             auto_label_info: auto_label_info,
+                            delpng:this.delpng,
+                            auto_label_info_array:this.auto_label_info_array,
+                            layout:this.layout,
+                            global_component_array:this.global_component_array,
+                            label_layout:this.label_layout,
+                            textlabelarray:this.textlabelarray,
+                            chart_obj_array:this.chart_obj_array
                         }
                     }).$mount();
                     this.labeldelimage(id, imagevueobj);
@@ -1492,21 +1514,7 @@ export default {
                     bordertype=item.code;
                 }
             })
-            let border_width = this.auto_frame_info.border_width;
-            this.borderwidth.forEach(function(item, index) {
-                if (item.type==border_width) {
-                    border_width=item.code;
-                }
-            })
-            let border_color = this.auto_frame_info.border_color;
-            this.bordercolor.forEach(function(item, index) {
-                if (item.type==border_color) {
-                    border_color=item.code;
-                }
-            })
             this.auto_dashboard_info.bordertype=bordertype;
-            this.auto_dashboard_info.borderwidth=border_width;
-            this.auto_dashboard_info.bordercolor=border_color;
             let param=new FormData();
             param.append("layout",JSON.stringify(this.layout));
             param.append("autoLabelInfo", JSON.stringify(this.auto_label_info_array));
@@ -1611,12 +1619,16 @@ export default {
                             echart_div_layout: layout_obj,
                             auto_line_info: this.auto_line_info,
                             layout:this.layout,
-                            auto_line_info_array:this.auto_line_info_array
+                            auto_line_info_array:this.auto_line_info_array,
+                            chart_obj_array:this.chart_obj_array,
+                            delpng:this.delpng,
+                            textlinearray:this.textlinearray,
+                            global_component_array:this.global_component_array,
+                            line_layout:this.line_layout
                         }
                     }).$mount();
                     this.linedelimage(id, imagevueobj);
                 }
-
                 var obj = {};
                 obj.layouttype = "borderline";
                 obj.id = id;
@@ -1684,6 +1696,13 @@ export default {
                         propsData: {
                             echart_div_layout: layout_obj,
                             auto_frame_info: this.auto_frame_info,
+                            delpng:this.delpng,
+                            auto_frame_info_list:this.auto_frame_info_list,
+                            layout:this.layout,
+                            global_component_array:this.global_component_array,
+                            frame_layout:this.frame_layout,
+                            textframearray:this.textframearray,
+                            chart_obj_array:this.chart_obj_array
                         }
                     }).$mount();
                     this.framedelimage(id, imagevueobj);
@@ -1767,6 +1786,13 @@ export default {
                         propsData: {
                             echart_div_layout: layout_obj,
                             auto_label_info: this.auto_label_info,
+                            delpng:this.delpng,
+                            auto_label_info_array:this.auto_label_info_array,
+                            layout:this.layout,
+                            global_component_array:this.global_component_array,
+                            label_layout:this.label_layout,
+                            textlabelarray:this.textlabelarray,
+                            chart_obj_array:this.chart_obj_array
                         }
                     }).$mount();
                     this.labeldelimage(id, imagevueobj);
@@ -2056,10 +2082,15 @@ export default {
 
                         //添加打叉按钮
                         if (this.is_showdel == true) {
-                            var imagevueobj = new Profile({
+                            var imagevueobj = new cardPofile({
                                 propsData: {
                                     echart_div_layout: echart_div_layout,
                                     layout_id: id,
+                                    delpng:this.delpng,
+                                    layout:this.layout,
+                                    global_component_array:this.global_component_array,
+                                    chart_obj_array:this.chart_obj_array,
+                                    selectRow:this.selectRow
                                 }
                             }).$mount();
                             this.carddelimage(id, imagevueobj);
@@ -2171,10 +2202,15 @@ export default {
                         $('#' + id).next('span').addClass('bubble'); //给所有的气泡图的拉伸按钮添加class
                         //添加打叉按钮
                         if (this.is_showdel == true) {
-                            var imagevueobj = new Profile({
+                            var imagevueobj = new cardPofile({
                                 propsData: {
                                     echart_div_layout: echart_div_layout,
                                     layout_id: id,
+                                    delpng:this.delpng,
+                                    layout:this.layout,
+                                    global_component_array:this.global_component_array,
+                                    chart_obj_array:this.chart_obj_array,
+                                    selectRow:this.selectRow
                                 }
                             }).$mount();
                             this.MDdelimage(id, imagevueobj);
@@ -3254,16 +3290,16 @@ var tableProfile = Vue.extend({
     methods:{}
 })
 //卡片仪表盘    删除按钮
-var Profile = Vue.extend({
-    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
+var cardPofile = Vue.extend({
+    template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'layout_id'],
+    props: ['echart_div_layout', 'layout_id','delpng','layout','global_component_array','chart_obj_array','selectRow'],
     methods: {
         delcard(layout, echart_div_layout, layout_id) {
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            global_component_array.layout = this.layout;
+            this.global_component_array.layout = this.layout;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
@@ -3281,17 +3317,15 @@ var Profile = Vue.extend({
 var linedelProfile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
     data: function () {
-         return {
-             delpng:this.delpng
-         }
+         return {}
     },
-    props: ['echart_div_layout', 'auto_line_info','layout','auto_line_info_array'],
+    props: ['echart_div_layout', 'auto_line_info','layout','auto_line_info_array','chart_obj_array','delpng','textlinearray','global_component_array','line_layout'],
     methods: {
         delcard(layout, echart_div_layout, auto_line_info,auto_line_info_array) {
             this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            // this.global_component_array.layout = this.layout;
-            // this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
+            this.global_component_array.layout = this.layout;
+            this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
@@ -3303,17 +3337,16 @@ var linedelProfile = Vue.extend({
 })
 //边框   删除按钮
 var framedelProfile = Vue.extend({
-    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
+    template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'auto_frame_info'],
+    props: ['echart_div_layout', 'auto_frame_info','delpng','auto_frame_info_list','layout','global_component_array','frame_layout','textframearray','chart_obj_array'],
     methods: {
         delcard(layout, echart_div_layout, auto_frame_info) {
             this.auto_frame_info_list.splice(this.auto_frame_info_list.indexOf(auto_frame_info), 1);
-
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            global_component_array.layout = this.layout;
+            this.global_component_array.layout = this.layout;
             this.frame_layout.splice(this.frame_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
@@ -3327,17 +3360,16 @@ var framedelProfile = Vue.extend({
 })
 //文本标签    删除按钮
 var labeldelProfile = Vue.extend({
-    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
+    template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'auto_label_info'],
+    props: ['echart_div_layout', 'auto_label_info','delpng','auto_label_info_array','layout','global_component_array','label_layout','textlabelarray','chart_obj_array'],
     methods: {
         delcard(layout, echart_div_layout, auto_label_info) {
             this.auto_label_info_array.splice(this.auto_label_info_array.indexOf(auto_label_info), 1);
-
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            global_component_array.layout = this.layout;
+            this.global_component_array.layout = this.layout;
             this.label_layout.splice(this.label_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
