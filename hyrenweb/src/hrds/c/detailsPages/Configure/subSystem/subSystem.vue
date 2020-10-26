@@ -22,6 +22,9 @@
         <el-table-column prop="etl_sys_cd" show-overflow-tooltip label="工程编号" align='center'>
         </el-table-column>
         <el-table-column prop="sub_sys_cd" show-overflow-tooltip label="任务编号" align='center'>
+            <template slot-scope="scope">
+                <span @click="gotoWorkDetail(scope.row.sub_sys_cd)" style="color:#409EFF;cursor:pointer "> {{scope.row.sub_sys_cd}}</span>
+            </template>
         </el-table-column>
         <el-table-column prop="sub_sys_desc" show-overflow-tooltip label="任务名称" align='center'>
         </el-table-column>
@@ -37,7 +40,7 @@
         </el-table-column>
     </el-table>
     <el-row :gutter="20" class="tabBtns">
-        <el-pagination layout=" total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5, 10, 15, 20]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
+        <el-pagination layout=" total, sizes,prev, pager, next, jumper" style="float:right" :page-sizes="[5,10,20,25,50,100,1000]"  :page-size="pagesize" :total="pageLength" @current-change="handleCurrentChange" @size-change="handleSizeChange">
         </el-pagination>
     </el-row>
     <!-- 添加任务模态框 -->
@@ -47,7 +50,7 @@
                 <el-input v-model="formAdd.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="任务编号" prop="sub_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formAdd.sub_sys_cd" autocomplete="off" placeholder="工程名称"></el-input>
+                <el-input v-model="formAdd.sub_sys_cd" autocomplete="off" placeholder="任务编号"></el-input>
             </el-form-item>
             <el-form-item label="任务名称" prop="sub_sys_desc" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formAdd.sub_sys_desc" autocomplete="off" placeholder="任务名称"></el-input>
@@ -70,7 +73,7 @@
                 <el-input v-model="formModify.etl_sys_cd" autocomplete="off" placeholder="工程编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="任务编号" prop="sub_sys_cd" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formModify.sub_sys_cd" autocomplete="off" placeholder="工程名称" disabled></el-input>
+                <el-input v-model="formModify.sub_sys_cd" autocomplete="off" placeholder="任务编号" disabled></el-input>
             </el-form-item>
             <el-form-item label="任务名称" prop="sub_sys_desc" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formModify.sub_sys_desc" autocomplete="off" placeholder="任务名称"></el-input>
@@ -99,7 +102,6 @@
 
 <script>
 import * as subSystemAllFun from "./subSystem";
-import * as message from "@/utils/js/message";
 let arr = [];
 export default {
     data() {
@@ -174,10 +176,7 @@ export default {
         //批量删除按钮
         handleBatchDelete() {
             if (this.multipleSelection.length == 0) {
-                this.$message({
-                    message: '请选择需要删除的数据',
-                    type: 'warning'
-                });
+                this.$Msg.customizTitle("请选择需要删除的数据", "warning");
             } else {
                 this.$confirm('确认批量删除吗?', '提示', {
                     confirmButtonText: '确定',
@@ -194,17 +193,12 @@ export default {
                     subSystemAllFun.batchDeleteEtlSubSys(params).then(res => {
                         if (res && res.success) {
                             this.getTable();
-                            this.$message({
-                                message: '批量删除成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("批量删除成功", "success");
                         }
                     })
                 }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消批量删除'
-                    });
+                    this.$Msg.customizTitle("已取消批量删除", "info");
+
                 });
 
             }
@@ -229,17 +223,11 @@ export default {
                 subSystemAllFun.deleteEtlSubSys(params).then(res => {
                     if (res && res.success) {
                         this.getTable();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("删除成功", "success");
                     }
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$Msg.customizTitle("已取消删除", "info");
             });
         },
         //模态框新增取消按钮
@@ -264,10 +252,7 @@ export default {
                     subSystemAllFun.saveEtlSubSys(params).then(res => {
                         if (res && res.success) {
                             this.getTable();
-                            this.$message({
-                                message: '保存成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("保存成功", "success");
                             this.dialogFormVisibleAdd = false;
                             this.formAdd = {};
                         }
@@ -291,10 +276,7 @@ export default {
                     subSystemAllFun.updateEtlSubSys(params).then(res => {
                         if (res && res.success) {
                             this.getTable();
-                            this.$message({
-                                message: '保存成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("保存成功", "success");
                             this.dialogFormVisibleModify = false;
                             this.formModify = {};
                         }
@@ -313,7 +295,8 @@ export default {
         },
         //文件超出个数限制时的钩子
         handleExceed(files, fileList) {
-            this.$message.warning(`只能选择一个文件`);
+            this.$Msg.customizTitle("只能选择一个文件", "warning");
+
         },
         // 获取上传的文件详情
         handleChange(file, fileList) {
@@ -329,7 +312,7 @@ export default {
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
-            this.$message.info('已取消导入数据');
+            this.$Msg.customizTitle("已取消导入数据", "info");
         },
         //导入数据按钮
         importData() {
@@ -342,7 +325,7 @@ export default {
                 param.append('table_name', 'etl_sub_sys_list');
                 subSystemAllFun.uploadExcelFile(param).then(res => {
                     if (res && res.success) {
-                        message.customizTitle("导入数据成功", "success");
+                        this.$Msg.customizTitle("导入数据成功", "success");
                         this.getTable();
                         this.fileList = [];
                         this.dialogImportData = false;
@@ -352,7 +335,7 @@ export default {
                     }
                 });
             } else {
-                message.customizTitle("请选择上传文件", "warning");
+                this.$Msg.customizTitle("请选择上传文件", "warning");
             }
 
         },
@@ -395,6 +378,19 @@ export default {
                     URL.revokeObjectURL(aTag.href);
                 }
             })
+        },
+        gotoWorkDetail(val) { //根据作业编号跳转作业
+            this.$router.push({
+                name: 'etlJobDef',
+                query: {
+                    name: '/etlJobDef',
+                    dec: this.$Base64.encode('作业'),
+                    etl_sys_name: this.$route.query.etl_sys_name,
+                    etl_sys_cd: this.$route.query.etl_sys_cd,
+                    sub_sys_cd: val
+                }
+            });
+            this.$emit('viewIn', '/etlJobDef', '作业');
         }
     },
     mounted() {

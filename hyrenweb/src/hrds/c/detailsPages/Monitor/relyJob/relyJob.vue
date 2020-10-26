@@ -24,7 +24,6 @@
 
 <script>
 import * as functionAll from "./relyJob";
-import * as message from "@/utils/js/message";
 import * as chartMind from 'jsmind';
 require('@/assets/css/jsmind.css');
 let _jm = null;
@@ -70,7 +69,7 @@ export default {
 
                 })
             } else {
-                message.customizTitle('作业名称不能为空', 'warning');
+                this.$Msg.customizTitle('作业名称不能为空', 'warning');
             }
 
         },
@@ -83,7 +82,7 @@ export default {
         },
         createFilter(queryString) {
             return (res) => {
-                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
             };
         },
         //获取作业名称/上游作业名称下拉框数据

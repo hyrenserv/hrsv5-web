@@ -143,10 +143,16 @@
                         remark: '要查询表名',
                     },
                     {
+                        field: 'en_column',
+                        fieldType: 'String',
+                        isRequired: '非必填',
+                        remark: '格式:(列族名:列英文名)，多列以|分割，不填为整行',
+                    },
+                    {
                         field: 'rowkey',
                         fieldType: 'String',
                         isRequired: '必填',
-                        remark: '要查询的rowkey(多个列的组合rowkey请按照指定分隔符和顺序传值)',
+                        remark: '要查询的rowkey(多个列的组合rowkey请按照指定顺序传值)',
                     },
                     {
                         field: 'get_version',
@@ -244,10 +250,10 @@
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
                         this.requestAddressForToken =
                             this.ipAndPort + "?token=AJALalfja&url=" + this.$route.query.url +
-                            "&en_table=dsd&rowkey=dajda|dad&dataType=json&outType=file";
+                            "&en_table=dsd&rowkey=dajda&dataType=json&outType=stream&asynType=0";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
-                            "&en_table=dsd&rowkey=dajda|dad&dataType=json&outType=file";
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
+                            "&en_table=dsd&rowkey=dajda&dataType=json&outType=stream&asynType=0";
                     })
             },
         }

@@ -77,7 +77,7 @@
                 <el-input v-model="formAdd.user_mobile" autocomplete="off" placeholder="请输入联系电话" style="width:284px"></el-input>
             </el-form-item>
 
-            <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="user_remark">
+            <el-form-item label=" 用户信息描述" :label-width="formLabelWidth" prop="user_remark">
                 <el-input type="textarea" v-model="formAdd.user_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
@@ -133,7 +133,7 @@
                 <el-input v-model="formUpdate.user_mobile" autocomplete="off" placeholder="请输入联系电话" style="width:284px"></el-input>
             </el-form-item>
 
-            <el-form-item label=" 数据源详细描述" :label-width="formLabelWidth" prop="user_remark">
+            <el-form-item label=" 用户信息描述" :label-width="formLabelWidth" prop="user_remark">
                 <el-input type="textarea" v-model="formUpdate.user_remark" autocomplete="off" placeholder="备注" style="width:284px"></el-input>
             </el-form-item>
         </el-form>
@@ -308,23 +308,14 @@ export default {
                     this.formAdd['dep_id'] = this.formAdd.depIds;
                     functionAll.saveSysUser(this.formAdd).then((res) => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '添加成功!'
-                            })
+                            this.$Msg.customizTitle('添加成功!', 'success')
                             this.getSysUserInfoAll("1");
                             this.currentPage = 1;
                             this.dialogFormVisibleAdd = false;
                             // 表单清空
-                            this.formAdd = {};
-                        } else {
-                            this.formAdd.usertype_group = [];
-                            this.formAdd.user_type = '';
+                            this.$refs.formAdd.resetFields();
                         }
                     })
-                } else {
-                    this.formAdd.usertype_group = [];
-                    this.formAdd.user_type = '';
                 }
             });
         },
@@ -376,34 +367,23 @@ export default {
                     this.formUpdate['usertype_group'] = JSON.stringify(this.formUpdate.usertype_group).replace(/\[/g, "").replace(/\]/g, "").replace(/\"/g, "");
                     functionAll.updateSysUser(this.formUpdate).then((res) => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '更新成功!'
-                            })
+                            this.$Msg.customizTitle('更新成功!', 'success')
                             // 表单清空
-                            this.formUpdate = {};
+                            this.$refs.formUpdate.resetFields();
                             this.getSysUserInfoAll(pageNow);
                             this.dialogFormVisibleUpdate = false;
-
-                        } else {
-                            this.formUpdate.usertype_group = [];
-                            this.formUpdate.user_type = '';
                         }
                     })
-                } else {
-                    this.formUpdate.usertype_group = [];
-                    this.formUpdate.user_type = '';
                 }
             });
 
         },
         // 点击添加弹出框的取消按钮
         cancleUpdate() {
-            // 表单清空
-            this.formUpdate = {};
             // 隐藏对话框
             this.dialogFormVisibleUpdate = false;
             this.getSysUserInfoAll(pageNow);
+            // 表单清空
             this.$refs.formUpdate.resetFields();
         },
         // 关闭弹出框之前触发事件
@@ -424,10 +404,7 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                            this.$Msg.customizTitle('删除成功!', 'success')
                             // 从新渲染表格
                             this.getSysUserInfoAll(pageNow);
                         }
@@ -435,10 +412,7 @@ export default {
             }).catch(() => {
                 // 未删除时数据回显
                 this.getSysUserInfoAll(pageNow);
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$Msg.customizTitle('已取消删除', 'info')
             });
         },
         //用户列表数据实现分页功能
@@ -471,78 +445,6 @@ export default {
                         type[j] = item.value;
                     }
                 })
-                // if (type[j] == "01") {
-                //     type[j] = "采集管理"
-                // } else if (type[j] == "02") {
-                //     type[j] = "数据采集"
-                // } else if (type[j] == "03") {
-                //     type[j] = "数据查询"
-                // } else if (type[j] == "04") {
-                //     type[j] = "作业调度"
-                // } else if (type[j] == "05") {
-                //     type[j] = "作业操作员"
-                // } else if (type[j] == "06") {
-                //     type[j] = "数据可视化管理"
-                // } else if (type[j] == "07") {
-                //     type[j] = "可视化数据源"
-                // } else if (type[j] == "08") {
-                //     type[j] = "数据可视化分析"
-                // } else if (type[j] == "09") {
-                //     type[j] = "数据可视化查看"
-                // } else if (type[j] == "10") {
-                //     type[j] = "监控管理"
-                // } else if (type[j] == "11") {
-                //     type[j] = "服务接口管理"
-                // } else if (type[j] == "12") {
-                //     type[j] = "服务接口用户"
-                // } else if (type[j] == "13") {
-                //     type[j] = "分词器管理"
-                // } else if (type[j] == "14") {
-                //     type[j] = "数据集市"
-                // } else if (type[j] == "15") {
-                //     type[j] = "数据加工"
-                // } else if (type[j] == "16") {
-                //     type[j] = "机器学习工作台"
-                // } else if (type[j] == "17") {
-                //     type[j] = "机器学习业务"
-                // } else if (type[j] == "18") {
-                //     type[j] = "流数据管理"
-                // } else if (type[j] == "19") {
-                //     type[j] = "流数据生产"
-                // } else if (type[j] == "20") {
-                //     type[j] = "数据库配置(永洪)"
-                // } else if (type[j] == "21") {
-                //     type[j] = "报表创建(永洪)"
-                // } else if (type[j] == "22") {
-                //     type[j] = "报表查看(永洪)"
-                // } else if (type[j] == "23") {
-                //     type[j] = "流数据消费"
-                // } else if (type[j] == "24") {
-                //     type[j] = "数据管控"
-                // } else if (type[j] == "25") {
-                //     type[j] = "自主分析管理"
-                // } else if (type[j] == "26") {
-                //     type[j] = "自主分析操作"
-                // } else if (type[j] == "00") {
-                //     type[j] = "系统管理员"
-                // } else if (type[j] == "95") {
-                //     type[j] = "数据存储层定义"
-                // } else if (type[j] == "96") {
-                //     type[j] = "数据整理"
-                // } else if (type[j] == "97") {
-                //     type[j] = "系统参数管理"
-                // } else if (type[j] == "98") {
-                //     type[j] = "部门管理"
-                // } else if (type[j] == "99") {
-                //     type[j] = "用户管理"
-                // } else if (type[j] == "55") {
-                //     type[j] = "数据对标"
-                // } else if (type[j] == '37') {
-                //     type[j] = '数据对标'
-                // } else if (type[j] == '27') {
-                //     type[j] = '资源管理'
-                // }
-
             }
             return type;
         },

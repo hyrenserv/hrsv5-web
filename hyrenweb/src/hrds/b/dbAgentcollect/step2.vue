@@ -1,7 +1,7 @@
 <template>
 <div class="step2">
     <Step :active="active"></Step>
-    <el-table :data="tableData" border size="medium">
+    <el-table :data="tableData" border size="medium" :height="tableHeight">
         <el-table-column property label="序号" width="60px" align="center">
             <template slot-scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -23,7 +23,7 @@
         <el-col :span="12">
             <div class="partFourDiv">
                 <el-button type="primary" style="float:left" @click="backSteps" size="medium">上一步</el-button>
-                <el-button type="primary" style="float:right" @click="nextSteps" size="medium"> 下一步</el-button>
+                <el-button type="primary" style="float:right" @click="nextSteps" size="medium" :disabled="buttonDisabled"> 下一步</el-button>
             </div>
         </el-col>
     </div>
@@ -40,7 +40,17 @@
             </el-table-column>
             <el-table-column property="is_primary_key" width="96" label="是否为主键" align="center">
                 <template slot-scope="scope">
-                    <el-checkbox :true-label="'1'" :false-label="'0'" v-model="scope.row.is_primary_key"></el-checkbox>
+                    <el-checkbox :true-label="isFalg.Shi" :false-label="isFalg.Fou" v-model="scope.row.is_primary_key"></el-checkbox>
+                </template>
+            </el-table-column>
+            <el-table-column label="拉链字段选择" align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="handleCheckAllChange(tableDataDialog,isZipperAll)" v-model="isZipperAll" :checked="isZipperAll">
+                        <span class="allclickColor">拉链字段选择</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox :true-label="isFalg.Shi" :false-label="isFalg.Fou" v-model="scope.row.is_zipper_field"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" show-overflow-tooltip align="center"></el-table-column>
@@ -62,7 +72,6 @@
 <script>
 import Step from "./step";
 import * as functionAll from "./dbAgentcollect";
-import * as message from "@/utils/js/message";
 export default {
     components: {
         Step
@@ -77,11 +86,23 @@ export default {
             innerVisible: false,
             table_id: '',
             table_name: '',
-            tableColumn: {}
+            tableColumn: {},
+            buttonDisabled: false,
+            isZipperAll: false,
+            tableHeight: '',
+            isFalg: {}
         }
+    },
+    created() {
+        this.tableHeight = window.innerHeight - 270 + 'px'
     },
     mounted() {
         this.getTableData();
+        this.$Code.getCodeItems({
+            'category': 'IsFlag'
+        }).then(res => {
+            this.isFalg = res.data;
+        })
     },
     methods: {
         // 返回上一级
@@ -95,7 +116,13 @@ export default {
             functionAll.getTableData({
                 colSetId: this.$route.query.id
             }).then(res => {
-                this.tableData = res.data;
+                if (res.data.existsTable != undefined) {
+                    this.$Msg.customizTitle(res.data.existsTable, "error");
+                    this.buttonDisabled = true; //禁止下一步
+                } else {
+                    this.buttonDisabled = false;
+                }
+                this.tableData = res.data.dirTableList;
             })
         },
         // 查看列数据
@@ -118,6 +145,7 @@ export default {
                         } else {
                             arry.push(item)
                         }
+                        item['is_zipper_field'] = this.isFalg.Fou;
                     })
                     this.tableDataDialog = arry;
                 })
@@ -155,7 +183,7 @@ export default {
                 obj[this.table_name] = this.tableDataDialog;
                 this.tableColumn[this.table_name] = this.tableDataDialog;
                 this.innerVisible = false;
-                message.customizTitle("列保存成功", "success")
+                this.$Msg.customizTitle("列保存成功", "success")
             } else {
                 let obj = {};
                 obj.table_id = this.table_id;
@@ -163,7 +191,7 @@ export default {
                 functionAll.updateColumnByTableId(obj).then(res => {
                     if (res && res.success) {
                         this.innerVisible = false;
-                        message.customizTitle("列保存成功", "success");
+                        this.$Msg.customizTitle("列保存成功", "success");
                         this.tableDataDialog = [];
                     }
                 })
@@ -234,6 +262,16 @@ export default {
         handleSizeChange(size) {
             this.pagesize = size;
         },
+        //是否为拉链字段
+        handleCheckAllChange(items, e) {
+            items.forEach(item => {
+                if (e) {
+                    item['is_zipper_field'] = this.isFalg.Shi;
+                } else {
+                    item['is_zipper_field'] = this.isFalg.Fou;
+                }
+            })
+        }
     },
 }
 </script>
@@ -255,5 +293,10 @@ export default {
 /* 数据分页 */
 .step2 .pageDiv {
     height: 10px;
+}
+
+.allclickColor {
+    color: #fff;
+    font-weight: bold;
 }
 </style>

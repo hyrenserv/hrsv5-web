@@ -32,6 +32,31 @@ export function uploadFile(data) {
     })
 }
 
+/**
+ * Excel点击上传按钮上传数据
+ */
+export function excelUploadFile(data) {
+    return request({
+        url: '/B/importexcel/importDatabaseByExcel',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
+
+/**
+ * Excel模板下载
+ */
+export function downloadExcel() {
+    return request({
+        url: '/B/importexcel/downloadExcel',
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 /**(3)
  * 点击数据来源表添加按钮获取所属部门,或者传参获取source_id的所有信息
  */
@@ -192,6 +217,16 @@ export function getCategoryItems(data) {
     })
 }
 
+
+/**(8)
+   *文件权限审核
+   */
+  export function dataAudit(data) {
+    return request({
+        url: '/B/datasource/dataAudit',
+        params:data
+    })
+}
 
 
 

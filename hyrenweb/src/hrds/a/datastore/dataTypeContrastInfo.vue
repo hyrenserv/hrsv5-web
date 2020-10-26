@@ -91,7 +91,6 @@
 <script>
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
-import * as message from "@/utils/js/message";
 import regular from "@/utils/js/regular";
 let data;
 let arry;
@@ -132,15 +131,15 @@ export default {
         },
         // 删除表格数据
         deleteArry(val) {
-            message.confirmMsg("确认删除吗？").then(res => {
+            this.$Msg.confirmMsg("确认删除吗？").then(res => {
                 functionAll.deleteDataTypeContrastInfo({
                     dtcs_id: val
                 }).then((res) => {
                     this.updateData();
-                    message.deleteSuccess(res);
+                    this.$Msg.deleteSuccess(res);
                 })
             }).catch(() => {
-                message.customizTitle('已取消删除', 'info')
+                this.$Msg.customizTitle('已取消删除', 'info')
             })
         },
         // 获取编辑表格信息
@@ -184,7 +183,7 @@ export default {
             if (this.form.dialogTableData.length > 1) {
                 this.form.dialogTableData.splice(index, 1)
             } else {
-                message.customizTitle('请至少选择一项', 'warning')
+                this.$Msg.customizTitle('请至少选择一项', 'warning')
             }
 
         },
@@ -208,7 +207,7 @@ export default {
                         this.form
                     ).then((res) => {
                         if (res && res.success) {
-                            message.updateSuccess(res);
+                            this.$Msg.updateSuccess(res);
                             // 重新渲染页面
                             this.updateData();
                             // 关闭弹出层

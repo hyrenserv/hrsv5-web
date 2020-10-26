@@ -20,7 +20,7 @@
     <!-- 编辑的弹出表单 -->
     <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formUpdate" ref="formUpdate">
-            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" prop="datasource_number" :rules="filter_rules([{required: true,dataType: 'dataScourenum'}])">
+            <el-form-item label=" 数据源编号" :label-width="formLabelWidth" >
                 <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label=" 数据源名称" :label-width="formLabelWidth" prop="datasource_name" :rules="filter_rules([{required: true}])">
@@ -101,13 +101,14 @@ export default {
                     this.formUpdate["source_id"] = this.source_id;
                     functionAll.updateDataSource(this.formUpdate).then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功!"
-                            });
+                            this.$Msg.customizTitle('更新成功', 'success')
                             this.$emit("addEvent");
                             this.dialogFormVisibleAdd = false;
-                            this.formUpdate = {};
+                            this.formUpdate = {
+                                datasource_name: "",
+                                datasource_number: "",
+                                source_remark: "",
+                            }
                             this.depIds = [];
                         }
                     });
@@ -119,7 +120,11 @@ export default {
         // 点击添加弹出框的取消按钮
         cancleAdd() {
             // 表单清空
-            this.formUpdate = {};
+            this.formUpdate = {
+                datasource_name: "",
+                datasource_number: "",
+                source_remark: "",
+            }
             this.depIds = [];
             // 隐藏对话框
             this.dialogFormVisibleAdd = false;
@@ -157,19 +162,11 @@ export default {
                     })
                     .then((res) => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                            this.$Msg.customizTitle('删除成功', 'success')
                             this.$emit("addEvent");
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
+            })
         },
 
         // 点击下载图标数据
@@ -226,13 +223,13 @@ export default {
 }
 
 .dataSheetmainDiv {
-    margin-bottom: 50px;
+    margin-bottom: 46px;
     padding-top: 10px;
     width: 100px;
     height: 80px;
     background: #337ab7;
     border-radius: 10px;
-    margin-right: 50px;
+    margin-right: 30px;
     text-align: center;
     float: left;
     position: relative;

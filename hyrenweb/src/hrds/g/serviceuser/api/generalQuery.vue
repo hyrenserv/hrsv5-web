@@ -152,18 +152,18 @@
                     {
                         field: 'selectColumn',
                         fieldType: 'String',
-                        isRequired: '选填，需要查询的列名(selectColumn=column1,column2....等,号隔开)，如果没有，查询所有字段',
+                        isRequired: '选填，需要查询的列名(column1,column2....等,号隔开)，如果没有，查询所有字段',
                         remark: '查询字段',
                     },
                     {
                         field: 'whereColumn',
                         fieldType: 'String',
-                        isRequired: '查询条件(whereColumn=column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
+                        isRequired: '查询条件(column1=zhangsan,age>=23...等用,号隔开)，目前支持>=,<=,<,>,=,!=',
                         remark: '查询过滤条件',
                     },
                     {
                         field: 'num',
-                        fieldType: 'String',
+                        fieldType: 'Integer',
                         isRequired: '选填，不填默认显示10条,填写方式如: num=10',
                         remark: '显示条数',
                     },
@@ -177,7 +177,7 @@
                         field: 'outType',
                         fieldType: 'String',
                         isRequired: '必填 ( stream / file)只能选择一种',
-                        remark: '输出的数据形式',
+                        remark: '输出的数据形式，stream数据默认展示100条',
                     },
                     {
                         field: 'asynType',
@@ -202,7 +202,7 @@
                         remark: '轮询返回文件名称',
                     },
                     {
-                        field: 'filename',
+                        field: 'filepath',
                         fieldType: 'String',
                         isRequired: '与参数asynType一起使用(如果asynType为2,则必填轮询返回文件名称)',
                         remark: '轮询返回文件路径',
@@ -262,12 +262,12 @@
                         this.requestAddressForToken =
                             this.ipAndPort +
                             "?token=AJALalfja&url=" + this.$route.query.url + "&tableName=emp" +
-                            "&selectColumn=column1,column2&whereColumn=user_name=zhangsan&num=10" +
-                            "&dataType=json&outType=file&asynType=0";
+                            "&whereColumn=user_name=zhangsan&num=10" +
+                            "&dataType=json&outType=stream&asynType=0";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
-                            "&tableName=emp&selectColumn=column1,column2" +
-                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=file&asynType=0";
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
+                            "&tableName=emp&column1,column2" +
+                            "&whereColumn=user_name=zhangsan&num=10&dataType=json&outType=stream&asynType=0";
                     })
             },
         }

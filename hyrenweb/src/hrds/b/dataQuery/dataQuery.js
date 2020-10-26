@@ -56,7 +56,11 @@ export function getConditionalQuery(data) {
 export function downloadFile(data) {
     return request({
         url: '/B/dataquery/downloadFile',
-        params: data
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json',
+        }
     })
 }
 
@@ -64,6 +68,14 @@ export function downloadFile(data) {
 export function applicationProcessing(data) {
     return request({
         url: '/B/dataquery/applicationProcessing',
+        params: data
+    })
+}
+
+//检查查看文件的权限
+export function checkFileViewPermissions(data) {
+    return request({
+        url: '/B/dataquery/checkFileViewPermissions',
         params: data
     })
 }
@@ -147,4 +159,28 @@ export function fullTextSearch(data) {
         params: data
     })
 
+}
+
+//获取文件收藏信息
+export function getCollectFiles(data) {
+    return request({
+        url: '/B/fulltextsearch/getCollectFiles',
+        params: data
+    })
+}
+
+//保存文件收藏
+export function saveFavoriteFile(data) {
+    return request({
+        url: '/B/dataquery/saveFavoriteFile',
+        params: data
+    })
+}
+
+//取消文件收藏
+export function cancelFavoriteFile(data) {
+    return request({
+        url: '/B/dataquery/cancelFavoriteFile',
+        params: data
+    })
 }

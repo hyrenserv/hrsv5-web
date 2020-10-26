@@ -1,10 +1,10 @@
 /**
- * @param {Object} res 返回的数据流
+ * @param {Object} data 返回的数据
  * @param {String} fileName 设置的文件名称
  */
-export function fileDownload(res, fileName) {
+export function fileDownload(data, fileName) {
     this.fileName = fileName;
-    const blob = new Blob([res]);
+    const blob = new Blob([data]);
     if (window.navigator.msSaveOrOpenBlob) {
         // 兼容IE10
         navigator.msSaveBlob(blob, this.fileName);

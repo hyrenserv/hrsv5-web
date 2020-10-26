@@ -209,6 +209,7 @@ export default {
                 store_type: '',
                 dsla_storelayer: [],
                 tableData: [],
+                is_hadoopclient: '0'
             },
             formDialog: {},
             showValue: true,
@@ -230,7 +231,8 @@ export default {
             fileList: [],
             YesNo: [],
             databaseType: [],
-            rule: validator.default
+            rule: validator.default,
+            markArrindex: [],
         }
     },
     created() {
@@ -295,9 +297,6 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     if (valueIndex == 3 || valueIndex == 2) {
-                        if (fileArry.length == 0) {
-                            message.customizTitle("上传的文件不能为空！", "warning")
-                        } else {
                             if (this.form.tableData.length > 0) {
                                 // 处理参数
                                 this.change_storelayer = [];
@@ -314,6 +313,8 @@ export default {
                                         this.change_storelayer.push("05");
                                     } else if (item == "分区列") {
                                         this.change_storelayer.push("06");
+                                    } else if (item == "Solr列") {
+                                        this.change_storelayer.push("07");
                                     }
                                 })
 
@@ -349,6 +350,7 @@ export default {
                                             delete item.radio
                                         }
                                     })
+                                    arrtable = [...arrtable, ...this.markArrindex]
                                     param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                                 } else if (valueIndex == 2) {
                                     let arrtable = [];
@@ -358,6 +360,7 @@ export default {
                                             this.form.tableData[i].is_file = "0";
                                         }
                                     }
+                                    arrtable = [...arrtable, ...this.markArrindex]
                                     param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                                 }
 
@@ -383,7 +386,7 @@ export default {
                                     }
                                 })
                             }
-                        }
+                        
                     } else {
                         if (this.form.tableData.length > 0) {
                             // 处理参数
@@ -401,6 +404,8 @@ export default {
                                     this.change_storelayer.push("05");
                                 } else if (item == "分区列") {
                                     this.change_storelayer.push("06");
+                                } else if (item == "Solr列") {
+                                    this.change_storelayer.push("07");
                                 }
                             });
                             let param = new FormData() // 创建form对象
@@ -569,8 +574,16 @@ export default {
             } else {
                 if (dataKey == file.name) {
                     fileArry.push(file.raw);
+                    let obj = {
+                        storage_property_key: dataKey,
+                        storage_property_val: file.name,
+                        is_file: '1'
+                    }
+                    this.markArrindex.push(obj);
                 } else {
-                    message.customizTitle("请选择与key命名相同的文件", "warning");
+                    let index = fileList.findIndex(item => item.name == file.name);
+                    fileList.splice(index, 1);
+                    message.customizTitle("文件选择失败,请选择与key命名相同的文件", "warning");
                 }
             }
         },

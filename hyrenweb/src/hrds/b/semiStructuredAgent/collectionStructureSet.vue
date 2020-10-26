@@ -118,7 +118,6 @@
 
 <script>
 import * as functionAll from "./semiStructuredAgent";
-import * as message from "@/utils/js/message";
 import Step from "./step";
 let index;
 let ocsId;
@@ -303,7 +302,7 @@ export default {
                 ocs_id: ocsId
             }).then(res => {
                 if (res.code == 200) {
-                    message.customizTitle('Hbase保存成功', 'success')
+                    this.$Msg.customizTitle('Hbase保存成功', 'success')
                     this.showDiolag = false;
                 }
             })
@@ -403,7 +402,7 @@ export default {
                 ocs_id: ocsId
             }).then(res => {
                 if (res.code == 200) {
-                    message.customizTitle('Solr保存成功', 'success')
+                    this.$Msg.customizTitle('Solr保存成功', 'success')
                     this.solrDiolag = false;
                     this.checkAll();
 
@@ -445,7 +444,7 @@ export default {
                 odc_id: this.$route.query.odc_id
             }).then(res => {
                 if (res.code == 200) {
-                    message.customizTitle('文件添加成功', 'success');
+                    this.$Msg.customizTitle('文件添加成功', 'success');
                     this.$router.push({
                         name: "agentList"
                     });
@@ -459,19 +458,13 @@ export default {
                 tableData.splice(val - 1, 1);
                 tableData.splice(val, 0, upDate);
             } else {
-                this.$message({
-                    message: '已经是第一条，不可上移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle('已经是第一条，不可上移', 'warning')
             }
         },
         // 数据下移
         moveDown(val, data, tableData) {
             if (val + 1 === tableData.length) {
-                this.$message({
-                    message: '已经是最后一条，不可下移',
-                    type: 'warning',
-                });
+                this.$Msg.customizTitle('已经是最后一条，不可下移', 'warning')
             } else {
                 let downDate = tableData[val + 1];
                 tableData.splice(val + 1, 1);

@@ -77,7 +77,7 @@
             <input type="hidden" name="oldLogPath" value="{{agentDeploy.log_dir}}"> -->
             <el-row>
                 <el-col :span="8">
-                    <el-form-item label="Agent名称">
+                    <el-form-item label="部署名称">
                         <el-input v-model="agentDeploy.agent_name" placeholder="Agent名称" readonly></el-input>
                     </el-form-item>
                 </el-col>

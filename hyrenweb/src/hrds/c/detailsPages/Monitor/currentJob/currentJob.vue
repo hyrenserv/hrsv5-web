@@ -175,8 +175,8 @@ export default {
     methods: {
         //刷新表单
         getForm() {
-            if (this.$route.etl_sys_cd) {
-                this.sys_cd = this.$route.etl_sys_cd;
+            if (this.$route.query.etl_sys_cd) {
+                this.sys_cd = this.$route.query.etl_sys_cd;
             } else {
                 this.sys_cd = sessionStorage.getItem('sys_cd');
             }
@@ -186,6 +186,7 @@ export default {
                 let params = {};
                 params["etl_sys_cd"] = this.sys_cd;
                 params["etl_job"] = this.form.etl_job;
+                console.log(params)
                 this.monitorCurrJobInfo(params);
             }
         },
@@ -195,10 +196,7 @@ export default {
         //搜索按钮
         search() {
             if (this.form.etl_job == '') {
-                this.$message({
-                    message: '请选择需要搜索的作业名称',
-                    type: 'warning'
-                });
+                this.$Msg.customizTitle("请选择需要搜索的作业名称", "warning");
             } else {
                 let params = {};
                 params["etl_sys_cd"] = this.sys_cd;
@@ -229,7 +227,7 @@ export default {
         },
         createFilter(queryString) {
             return (res) => {
-                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                return (res.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
             };
         },
         //获取作业名称/上游作业名称下拉框数据

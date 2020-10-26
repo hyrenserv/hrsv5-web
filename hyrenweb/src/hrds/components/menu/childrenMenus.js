@@ -4,7 +4,7 @@ const childrenMemus = {
             path: '/dataStoreLayer',
             name: 'dataStoreActionIndex',
             title: '存储层定义',
-            icon : 'el-icon-s-unfold',
+            icon: 'el-icon-s-unfold',
             component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')
         }, {
             path: '/typeLengthContrastInfo',
@@ -21,7 +21,7 @@ const childrenMemus = {
             component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')
         }
     ],
-    37 : [
+    55: [
         {
             path: '/dbck',
             name: 'dbck',
@@ -44,7 +44,7 @@ const childrenMemus = {
             component: () => import('@/hrds/k/tdb/tdb.vue')
         }
     ],
-    27 :[
+    27: [
         {
             path: '/dataQuery',
             name: 'dataQuery',
@@ -58,9 +58,16 @@ const childrenMemus = {
             title: 'SQL控制台',
             icon: 'el-icon-monitor',
             component: () => import('@/hrds/b/dataQuery/webSqlConsole.vue')
-        }
+        },
+        {
+            path: '/fullTextSearch',
+            name: 'fullTextSearch',
+            title: '全文检索',
+            icon: 'el-icon-search',
+            component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue')
+        },
     ],
-    55 :[
+    37: [
         {
             path: '/dbm',
             name: 'dbm',
@@ -68,10 +75,68 @@ const childrenMemus = {
             icon: 'el-icon-s-finance',
             component: () => import('@/hrds/k/dbm/dbm.vue')
         }
-    ]
-
-
-}
+    ],
+    14: [
+        {
+            path: '/dataMart',
+            name: 'dataMart',
+            title: '数据加工',
+            icon: 'el-icon-s-finance',
+            component: () => import('@/hrds/h/market/marketIndex.vue'),
+        },
+        {
+            path: '/marketVersionManage',
+            name: 'marketVersionManage',
+            title: '版本管理',
+            icon: 'el-icon-monitor',
+        }
+    ],
+    95: [
+        {
+            path: '/dataStoreLayer',
+            name: 'dataStoreActionIndex',
+            title: '存储层定义',
+            icon: 'el-icon-s-unfold',
+            component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')
+        }, {
+            path: '/typeLengthContrastInfo',
+            name: 'typeLengthContrastInfo',
+            title: '数据长度对比',
+            icon: 'el-icon-search',
+            component: () => import('@/hrds/a/datastore/typeLengthContrastInfo.vue')
+        },
+        {
+            path: '/dataTypeContrastInfo',
+            name: 'dataTypeContrastInfo',
+            title: '数据类型对比',
+            icon: 'el-icon-search',
+            component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')
+        }
+    ],
+    40: [
+        {
+            path: '/autonomousAnalysisOperate',
+            name: 'autonomousAnalysisOperate',
+            title: '自主取数',
+            icon: 'el-icon-folder-opened',
+            component: () => import('@/hrds/l/selfAcess/selfAccess.vue')
+        },
+        {
+            path: '/visualizationindex',
+            name: 'visualizationindex',
+            title: '数据可视化',
+            icon: 'el-icon-view',
+            component: () => import('@/hrds/l/selfAcess/visualizationindex.vue')
+        },
+        {
+            path: '/dataDashboardList',
+            name: 'dataDashboardList',
+            title: '数据仪表盘',
+            icon: 'el-icon-pie-chart',
+            component: () => import('@/hrds/l/dataDashboard/dataDashboardList.vue')
+        }
+    ],
+};
 
 
 export default childrenMemus

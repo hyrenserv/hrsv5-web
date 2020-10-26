@@ -84,12 +84,12 @@
             dataQuery.getCategoryItems({'category': 'FileType'}).then((res) => {
                 if (res.success) {
                     this.FileType = res.data;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             });
             dataQuery.getCategoryItems({'category': 'ApplyType'}).then((res) => {
                 if (res.success) {
                     this.ApplyType = res.data;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             });
         },
         mounted() {
@@ -104,7 +104,7 @@
                 if (res.success) {
                     this.apply_rs = res.data.apply_rs;
                     this.apply_type = res.data.apply_type;
-                } else this.$message({type: 'error', message: res.message,})
+                } else this.$Msg.customizTitle(res.message, 'error')
             })
         },
         methods: {
@@ -127,13 +127,11 @@
                             dataQuery.getApplyData({'apply_type': apply_type,}).then((res) => {
                                 if (res.success) {
                                     this.apply_rs = res.data.apply_rs;
-                                } else this.$message({type: 'error', message: res.message,})
+                                } else this.$Msg.customizTitle(res.message, 'error')
                             })
-                        } else this.$message({type: 'error', message: res.message,})
+                        } else this.$Msg.customizTitle(res.message, 'error')
                     })
-                }).catch(() => {
-                    this.$message({type: 'info', message: '已取消操作!'});
-                });
+                })
             },
         },
     }

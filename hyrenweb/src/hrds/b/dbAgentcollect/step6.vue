@@ -116,7 +116,7 @@
             </el-row>
         </div>
         <div class="steps4">
-            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe  :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
+            <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.startuptableData.slice((currentPage - 1) * pagesize,currentPage *pagesize)">
                 <el-table-column label="序号" align="center" width="60">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currentPage - 1) * pagesize + 1}}</span>
@@ -206,7 +206,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">选择工程编号</span>
         </div>
-        <el-table stripe  :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
+        <el-table stripe :data="ProjectnumData.slice((ProjectnumcurrentPage - 1) * Projectnumpagesize, ProjectnumcurrentPage * Projectnumpagesize)" border size="medium" highlight-current-row>
             <el-table-column property label="选择" width="60px" type="index" align="center">
                 <template slot-scope="scope">
                     <el-radio v-model="projnum_radio" :label="scope.row">&thinsp;</el-radio>
@@ -281,6 +281,7 @@ import Loading from '../../components/loading'
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as message from "@/utils/js/message";
+//****** */
 export default {
     components: {
         Step,
@@ -362,13 +363,13 @@ export default {
             'category': 'Dispatch_Type'
         }).then(res => {
             if (res.data) {
-                 let data = res.data
-                    for (let i = 0; i < data.length; i++) {
-                        if (data[i].code == 'A' || data[i].code == 'B') {
-                            data.splice(i, 1);
-                            i--
-                        }
+                let data = res.data
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].code == 'A' || data[i].code == 'B') {
+                        data.splice(i, 1);
+                        i--
                     }
+                }
                 this.Dispatching_mode = res.data;
             }
         });
@@ -391,13 +392,13 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.isLoading = true
-                    let params = {};
-                    params["colSetId"] =this.dbid;
-                    params["etl_sys_cd"] = this.ruleForm.Project_num;
-                    params["pro_dic"] = this.ruleForm.work_path;
-                    params["log_dic"] = this.ruleForm.log_path;
-                    params["sub_sys_cd"] = this.ruleForm.work_num;
-                    params["source_id"] = this.sourId;
+                    // let params = {};
+                    // params["colSetId"] = this.dbid;
+                    // params["etl_sys_cd"] = this.ruleForm.Project_num;
+                    // params["pro_dic"] = this.ruleForm.work_path;
+                    // params["log_dic"] = this.ruleForm.log_path;
+                    // params["sub_sys_cd"] = this.ruleForm.work_num;
+                    // params["source_id"] = this.sourId;
                     let arrdata = this.ruleForm.startuptableData
                     let etlJobs = [],
                         type = this.ruleForm.Dispatching_mode,
@@ -436,15 +437,31 @@ export default {
                                 'job_priority': parseInt(arrdata[i].job_priority),
                                 'disp_offset': parseInt(arrdata[i].disp_offset),
                                 'disp_time': arrdata[i].disp_time,
-                                 'pro_para': arrdata[i].pro_para,
+                                'pro_para': arrdata[i].pro_para,
                                 'etl_sys_cd': this.ruleForm.Project_num,
                             })
                         }
                     }
-                    params["etlJobs"] = JSON.stringify(etlJobs)
-                    params["ded_arr"] = ded_arr.join('^')
-                    params["jobRelations"] = JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation)
-                    sendTask.saveJobDataToDatabase(params).then(res => {
+                    // params["colSetId"] = this.dbid;
+                    // params["etl_sys_cd"] = this.ruleForm.Project_num;
+                    // params["pro_dic"] = this.ruleForm.work_path;
+                    // params["log_dic"] = this.ruleForm.log_path;
+                    // params["sub_sys_cd"] = this.ruleForm.work_num;
+                    // params["source_id"] = this.sourId;
+                    // params["etlJobs"] = JSON.stringify(etlJobs)
+                    // params["ded_arr"] = ded_arr.join('^')
+                    // params["jobRelations"] = JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation)
+                    let dataFrom = new FormData();
+                    dataFrom.append('colSetId',  this.dbid);
+                    dataFrom.append('etl_sys_cd', this.ruleForm.Project_num);
+                    dataFrom.append('pro_dic', this.ruleForm.work_path);
+                    dataFrom.append('log_dic', this.ruleForm.log_path);
+                    dataFrom.append('sub_sys_cd', this.ruleForm.work_num);
+                    dataFrom.append('source_id', this.sourId);
+                    dataFrom.append('etlJobs', JSON.stringify(etlJobs));
+                    dataFrom.append('ded_arr', ded_arr.join('^'));
+                    dataFrom.append('jobRelations', JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation));
+                    sendTask.saveJobDataToDatabase(dataFrom).then(res => {
                         if (res.code && res.code == 200) {
                             this.isLoading = false
                             this.active = 6;
@@ -544,11 +561,7 @@ export default {
             }).then(res => {
                 if (res.success) {
                     this.finishDialogVisible = false
-                    this.$message({
-                                    showClose: true,
-                                    message: '发送成功',
-                                    type: "success"
-                                });
+                    this.$Msg.customizTitle('发送成功', 'success')
                     this.$router.push({
                         path: "/agentList"
                     });
@@ -621,15 +634,11 @@ export default {
                     }
                 });
             } else {
-                this.$message({
-                    showClose: true,
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle('工程编号未选择', 'error')
             }
         },
-        projNumCloseFun(){
-            this.projnum_radio={}
+        projNumCloseFun() {
+            this.projnum_radio = {}
         },
         // 选择工程弹框确定
         projNumSubmitFun() {
@@ -649,11 +658,7 @@ export default {
                     this.WorknumData = res.data
                 })
             } else {
-                this.$message({
-                    showClose: true,
-                    message: '工程编号未选择',
-                    type: "error"
-                });
+                this.$Msg.customizTitle('工程编号未选择', 'error')
             }
 
         },
@@ -798,15 +803,18 @@ export default {
 .fdcColor>>>.el-input__inner {
     color: #f19b00;
 }
-#steps6>>>.el-tag.el-tag--info{
+
+#steps6>>>.el-tag.el-tag--info {
     max-width: 88%;
 }
-#steps6>>>.el-select__tags-text{
+
+#steps6>>>.el-select__tags-text {
     display: inline-flex;
     overflow: hidden;
     max-width: 90%;
 }
-#steps6>>>.el-select .el-tag__close.el-icon-close{
+
+#steps6>>>.el-select .el-tag__close.el-icon-close {
     right: -1px !important;
 }
 </style>

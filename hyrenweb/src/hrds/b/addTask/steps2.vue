@@ -1,6 +1,6 @@
 <template>
 <div class="singlesearch" id="singleTable">
-     <Step :active="active" :typeinfo='typeinfo'></Step>
+    <Step :active="active"></Step>
     <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="单表查询" name="first">
             <div id="singleTable">
@@ -11,7 +11,7 @@
                     <el-button size="mini" type="success" @click="getAllTableInfoFun()">查看全表</el-button>
                 </div>
                 <div class="singleTableinner">
-                    <el-table ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
+                    <el-table ref="filterTable" v-if="tableHeight" :height="tableHeight" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" border :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)">
                         <el-table-column width="55" align="center" prop="selectionState">
                             <template slot="header" slot-scope="scope">
                                 <el-checkbox @change="Allis_selectionStateFun(tableData,Allis_selectionState)" v-model="Allis_selectionState" :checked="Allis_selectionState"></el-checkbox>
@@ -36,15 +36,20 @@
                                 <el-row>
                                     <!-- <el-col :span="19"> -->
                                     <el-radio-group v-model="scope.row.unload_type" v-if="scope.row.collectState==false">
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}</el-radio>
                                     </el-radio-group>
                                     <el-radio-group v-model="scope.row.unload_type" v-else>
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun(scope.row,item.value)">{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun(scope.row,item.value)">{{item.value}}</el-radio>
                                     </el-radio-group>
                                 </el-row>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="is_md5" label=" 计算MD5" align="center">
+                        <el-table-column label="计算MD5" align="center">
+                            <template slot="header" slot-scope="scope">
+                                <el-checkbox @change="handleCheckAllChange(tableData,isMd5All)" v-model="isMd5All" :checked="isMd5All">
+                                    <span class="allclickColor">计算MD5</span>
+                                </el-checkbox>
+                            </template>
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.is_md5" v-if="scope.row.collectState==true" :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
                                 <el-checkbox v-model="scope.row.is_md5" v-else disabled :checked="scope.row.is_md5" @change="md50Fun(scope.row)"></el-checkbox>
@@ -75,9 +80,9 @@
         </el-tab-pane>
         <el-tab-pane label="使用SQL抽取数据" name="second">
             <el-button type="success" style="margin:0 0 5px 0" class="addline" @click="addRow(ruleForm.sqlExtractData)" size="mini">新增行</el-button>
-            <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+            <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
             <el-form ref="ruleForm" :model="ruleForm" class="steps2">
-                <el-table stripe :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
+                <el-table stripe v-if="tableHeight" :height="tableHeight" :data="ruleForm.sqlExtractData.slice((sqlexcurrentPage - 1) * sqlexpagesize, sqlexcurrentPage * sqlexpagesize)" border size="medium" highlight-current-row>
                     <el-table-column property label="序号" width="60px" align="center">
                         <template slot-scope="scope">
                             <span>{{scope.$index+(sqlexcurrentPage - 1) * sqlexpagesize + 1}}</span>
@@ -104,26 +109,36 @@
                                 <!-- <el-col :span="19"> -->
                                 <el-form-item :prop="'sqlExtractData.'+scope.$index+'.unload_type'" :rules="rule.selected">
                                     <el-radio-group v-model="scope.row.unload_type" v-if="scope.row.collectState==false">
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" disabled>{{item.value}}</el-radio>
                                     </el-radio-group>
                                     <el-radio-group v-model="scope.row.unload_type" v-else>
-                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun2(scope.row,item.value)">{{item.value}}设置</el-radio>
+                                        <el-radio v-for="(item,index) in xsType" :key="index" :label="item.value" @click.native.prevent="XSTypeFun2(scope.row,item.value)">{{item.value}}</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
                             </el-row>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="is_md5" label=" 计算MD5" align="center" width="100">
+                    <!-- <el-table-column prop="is_md5" label="计算MD5" align="center" width="100">
+                        <template slot-scope="scope">
+                            <el-checkbox v-model="scope.row.is_md5" disabled v-if="scope.row.collectState==false" :checked="scope.row.is_md5"></el-checkbox>
+                            <el-checkbox v-model="scope.row.is_md5" v-else :checked="scope.row.is_md5"></el-checkbox>
+                        </template>
+                    </el-table-column> -->
+                    <el-table-column label="计算MD5" align="center" width="120">
+                        <template slot="header" slot-scope="scope">
+                            <el-checkbox @change="handleCheckAllChange(ruleForm.sqlExtractData,isSqlMd5All)" v-model="isSqlMd5All" :checked="isSqlMd5All">
+                                <span class="allclickColor">计算MD5</span>
+                            </el-checkbox>
+                        </template>
                         <template slot-scope="scope">
                             <el-checkbox v-model="scope.row.is_md5" disabled v-if="scope.row.collectState==false" :checked="scope.row.is_md5"></el-checkbox>
                             <el-checkbox v-model="scope.row.is_md5" v-else :checked="scope.row.is_md5"></el-checkbox>
                         </template>
                     </el-table-column>
-
                     <el-table-column prop="is_parallel" label="是否并行抽取" align="center" width="120">
                         <template slot-scope="scope">
-                            <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
-                            <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row)"></el-checkbox>
+                            <el-checkbox disabled v-if="scope.row.unload_type=='增量'||scope.row.collectState==false" v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row,scope.$index)"></el-checkbox>
+                            <el-checkbox v-else v-model="scope.row.is_parallel" :checked="scope.row.is_parallel" @change="checkedis_zdyparallelFun(scope.row,scope.$index)"></el-checkbox>
                         </template>
                     </el-table-column>
                     <el-table-column prop="selectCol" label="选择列" align="center">
@@ -171,7 +186,7 @@
                 <p class="dialogtopname">{{sqlFiltSetData_tablename}}</p>
             </span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form ref="addClassTask">
             <el-row type="flex" justify="center">
                 <el-col :span="24">
@@ -187,7 +202,7 @@
         </div>
     </el-dialog>
     <!-- 第一个页面 选择列弹层 -->
-    <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()">
+    <el-dialog title="选择列" :visible.sync="dialogSelectColumn" width="70%" @close="SelectColumnCloseFun()" top="2%">
         <div slot="title" class="header-title">
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
@@ -217,6 +232,17 @@
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+            <el-table-column label="拉链字段" align="center">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="zipperChange(SelectColumnData,oneFieldMd5All)" v-model="oneFieldMd5All" :checked="oneFieldMd5All">
+                        <span class="allclickColor">拉链字段</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox v-model="scope.row.is_zipper_field" disabled v-if="scope.row.collectState==false" :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_zipper_field" v-else :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
@@ -254,23 +280,24 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="xstypeadd" status-icon ref="xstypeadd" label-width="30%">
-            <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
+            <!-- :rules="rule.default" -->
+            <el-form-item label="删除SQL" prop="delete">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="insert" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="insert">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="update" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="update">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd.update" type="textarea" autosize size="medium" style="width:284px"></el-input>
@@ -288,23 +315,23 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-增量</span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="xstypeadd2" ref="xstypeadd2" status-icon label-width="30%">
-            <el-form-item label="删除SQL" prop="delete" :rules="rule.default">
+            <el-form-item label="删除SQL" prop="delete">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd2.delete" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="新增SQL" prop="insert" :rules="rule.default">
+            <el-form-item label="新增SQL" prop="insert">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd2.insert" type="textarea" autosize size="medium" style="width:284px"></el-input>
                     </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item label="更新SQL" prop="update" :rules="rule.default">
+            <el-form-item label="更新SQL" prop="update">
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="xstypeadd2.update" type="textarea" autosize size="medium" style="width:284px"></el-input>
@@ -322,7 +349,7 @@
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">卸数方式-全量</span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="xstypeadd2q" status-icon ref="xstypeadd2q" label-width="30%">
             <el-form-item label="SQL" prop="insert" :rules="rule.default">
                 <el-row type="flex" justify="center">
@@ -346,7 +373,7 @@
                 <p class="topcolumename">{{EXtable_name}}</p>
             </span>
         </div>
-        <span class="alltabletitle">sql说明：#{tx_date} 当前跑批日期; #{tx_date_next} 后一跑批日期; #{tx_date_pre} 前一跑批日期; #{自定义列名} 自定义列名</span>
+        <span class="alltabletitle">sql占位说明如：列名称=#{自定义列名}, 立即执行时参数填写方式如: 自定义列名=XXXXX</span>
         <el-form :model="ruleForm_ParallelEx" status-icon ref="ruleForm_ParallelEx" label-width="30%">
             <el-row type="flex" style="text-align:right;padding-right:10px;">
                 <el-col :span="24">
@@ -373,7 +400,7 @@
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                            <el-button slot="append" @click="getTableDataCountFun('')">获取数据量</el-button>
                         </el-input>
                     </el-col>
                 </el-row>
@@ -408,7 +435,7 @@
                 <el-row type="flex" justify="center">
                     <el-col>
                         <el-input v-model="ruleForm_ParallelEx.db_allnum" size="medium" style="width:284px">
-                            <el-button slot="append" @click="getTableDataCountFun()">获取数据量</el-button>
+                            <el-button slot="append" @click="getTableDataCountFun('sql')">获取数据量</el-button>
                         </el-input>
                     </el-col>
                 </el-row>
@@ -434,7 +461,7 @@
         </div>
     </el-dialog>
     <!-- 第二个页面 选择列弹层 -->
-    <el-dialog title="选择列" :visible.sync="dialogSelectColumn2" width="70%">
+    <el-dialog title="选择列" :visible.sync="dialogSelectColumn2" width="70%" top="2%">
         <div slot="title" class="header-title">
             <span class="dialogtitle el-icon-caret-right">选择列</span>
             <span class="dialogtoptxt">
@@ -442,7 +469,7 @@
                 <p class="dialogtopname">{{coltable_name}} (卸数方式为增量时至少选择一个主键)</p>
             </span>
         </div>
-        <el-table stripe :data="SelectColumnData2" border size="medium" highlight-current-row>
+        <el-table stripe :data="SelectColumnData2" border size="medium" highlight-current-row :height="tableHeight">
             <el-table-column label="选择列" align="center">
                 <template slot="header" slot-scope="scope">
                     <el-checkbox @change="Allis_SelectColumnFun(SelectColumnData2,Allis_SelectColumn2)" v-model="Allis_SelectColumn2" :checked="Allis_SelectColumn2" v-if="disShow==false" disabled></el-checkbox>
@@ -464,6 +491,17 @@
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-if="disShow==true" disabled></el-checkbox>
                     <el-checkbox :checked="scope.row.is_primary_key" v-model="scope.row.is_primary_key" v-else @change="every_Selectkeyfun(scope.row.is_primary_key,SelectColumnData2)"></el-checkbox>
                     <!-- <el-checkbox :checked="scope.row.is_get" v-model="scope.row.is_get"></el-checkbox> -->
+                </template>
+            </el-table-column>
+            <el-table-column label="拉链字段" align="center" width="120">
+                <template slot="header" slot-scope="scope">
+                    <el-checkbox @change="zipperChange(SelectColumnData2,fieldMd5All)" v-model="fieldMd5All" :checked="fieldMd5All">
+                        <span class="allclickColor">拉链字段</span>
+                    </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                    <el-checkbox v-model="scope.row.is_zipper_field" disabled v-if="scope.row.collectState==false" :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_zipper_field" v-else  :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
@@ -519,7 +557,6 @@ export default {
     data() {
         return {
             active: 1,
-            typeinfo:1,
             tableloadingInfo: "数据加载中...",
             rule: validator.default,
             Allis_selectionState: false,
@@ -650,22 +687,32 @@ export default {
             Searchzt: false, //是否点击搜索
             firstTableInfo: [], //存储第一页修改数据
             secondTrue: true,
+            tableHeight: '',
+            sqlIndex: '', //自定义SQL的下标
+            isMd5All: false,
+            isSqlMd5All: false,
+            fieldMd5All: false,
+            oneFieldMd5All:false,
+            Isflag: {}
         };
     },
     created() {
-        this.dbid =this.$route.query.id;
+        this.dbid = this.$route.query.id;
         this.agentId = this.$route.query.agent_id;
         this.sourceId = this.$route.query.source_id;
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
         // this.getAllTableInfo()
-
+        this.$Code.getCodeItems({'category':'IsFlag'}).then(res=>{
+            this.Isflag = res.data
+        })
     },
     beforeMount() {},
     mounted() {
         // 获取进入页面的总数据
         this.steps_getInitInfo();
         this.editzdySQLFun();
+        this.tableHeight = window.innerHeight - 200 + 'px'
     },
     computed: {
         address() {
@@ -837,7 +884,7 @@ export default {
         getAllTableInfoFun() {
             this.onclickAll = true;
             this.Allis_selectionState = false;
-            this.tableData.length = 0;
+            this.tableData = [];
             this.getAllTableInfo()
         },
         // 全表点击单个复选框
@@ -904,11 +951,13 @@ export default {
         // 搜索
         schfilter(val) {
             if (val != "") {
+                this.isLoading = true;
                 let params = {};
                 params["colSetId"] = this.dbid;
                 params["inputString"] = val;
                 this.tableloadingInfo = "数据加载中...";
                 addTaskAllFun.getTableInfo(params).then(res => {
+                    this.isLoading = false;
                     if (res.data.length > 0) {
                         this.Searchzt = true
                         let data = res.data;
@@ -950,7 +999,7 @@ export default {
                         }
                         this.tableData = res.data;
                     } else {
-                         this.tableData = [];
+                        this.tableData = [];
                         this.tableloadingInfo = "暂无数据";
                     }
                 });
@@ -993,7 +1042,7 @@ export default {
                                 }
                             }
                             tableDatalin = this.callTable3.concat(this.firstTableInfo)
-                            for (let i = 0; i <tableDatalin.length; i++) {
+                            for (let i = 0; i < tableDatalin.length; i++) {
                                 if (tableDatalin[i].selectionState == true) {
                                     tableData.push(tableDatalin[i])
                                 }
@@ -1019,35 +1068,38 @@ export default {
                     if (sqlExtractData.length > 0) {
                         let reparr2 = []
                         for (let j = 0; j < sqlExtractData.length; j++) {
-                            reparr2.push(sqlExtractData[j].table_name);
-                        }
-                        if (reparr2.length > 0) {
-                            let s = reparr2.join(",") + ",",
-                                rep_table2 = [];
-                            for (var i = 0; i < reparr2.length; i++) {
-                                if (s.replace(reparr2[i] + ",", "").indexOf(reparr2[i] + ",") > -1) {
-                                    rep_table2.push(reparr2[i]);
-                                }
-                            }
-                            if (rep_table2.length > 0) {
+                            if (!reparr2.includes(sqlExtractData[j].table_name)) {
+                                reparr2.push(sqlExtractData[j].table_name);
+                            } else {
                                 this.secondTrue = false
                                 this.isLoading = false;
-                                this.$message({
-                                    showClose: true,
-                                    message: "sql抽取数据中存在表" + rep_table2 + "重复,请修改",
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle("sql抽取数据中存在表" + sqlExtractData[j].table_name + "重复,请修改", 'error')
                                 this.activeName = "second";
-                            } else {
-                                for (let j = 0; j < sqlExtractData.length; j++) {
-                                    if (sqlExtractData[j].unload_type == "增量") {
-                                        isparmi2.push(sqlExtractData[j].table_name);
-                                    }
-                                    istrue.push(sqlExtractData[j].table_name);
-                                }
                             }
-
                         }
+                        // if (reparr2.length > 0) {
+                        //     let s = reparr2.join(",") + ",",
+                        //         rep_table2 = [];
+                        //     for (var i = 0; i < reparr2.length; i++) {
+                        //         if (s.replace(reparr2[i] + ",", "").indexOf(reparr2[i] + ",") > -1) {
+                        //             rep_table2.push(reparr2[i]);
+                        //         }
+                        //     }
+                        //     if (rep_table2.length > 0) {
+                        //         this.secondTrue = false
+                        //         this.isLoading = false;
+                        //         this.$Msg.customizTitle("sql抽取数据中存在表" + rep_table2 + "重复,请修改", 'error')
+                        //         this.activeName = "second";
+                        //     } else {
+                        for (let j = 0; j < sqlExtractData.length; j++) {
+                            if (sqlExtractData[j].unload_type == "增量") {
+                                isparmi2.push(sqlExtractData[j].table_name);
+                            }
+                            istrue.push(sqlExtractData[j].table_name);
+                        }
+                        // }
+
+                        // }
                     }
                     // 
                     if (this.secondTrue == true) {
@@ -1078,28 +1130,20 @@ export default {
                         if (istrue.length == 0) {
                             //判断第二步整体有没有表存在
                             this.isLoading = false;
-                            this.$message({
-                                showClose: true,
-                                message: "至少选择一张表",
-                                type: "error"
-                            });
+                            this.$Msg.customizTitle("至少选择一张表", 'error')
                         } else {
                             //checkTablePrimary
                             if (rep_table.length > 0) {
                                 //有重复表
                                 this.isLoading = false;
-                                this.$message({
-                                    showClose: true,
-                                    message: "单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改",
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle("单表查询和sql抽取数据中存在表" + rep_table + "重复,请修改", 'error')
                             } else {
                                 //没有重复表
                                 if (isparmi.length > 0) {
                                     //第一个页面卸数方式是增量存在的
                                     let params1 = {};
                                     params1["tableNames"] = isparmi; //勾选表并且卸数方式是增量
-                                    params1["colSetId"] =this.dbid;
+                                    params1["colSetId"] = this.dbid;
                                     params1["tableIds"] =
                                         JSON.stringify(tableidArr1) === "{}" ?
                                         "" :
@@ -1131,11 +1175,7 @@ export default {
                                                 if (arr.length > 0) {
                                                     //存在未设置主键
                                                     this.isLoading = false;
-                                                    this.$message({
-                                                        showClose: true,
-                                                        message: "单表查询中表" + arr + "未设置主键",
-                                                        type: "error"
-                                                    });
+                                                    this.$Msg.customizTitle("单表查询中表" + arr + "未设置主键", 'error')
                                                 } else {
                                                     //不存在继续下面方法
                                                     this.saveTableConfFun(tableData); //处理第一个页面数据
@@ -1154,11 +1194,7 @@ export default {
                                             if (arr.length > 0) {
                                                 //存在未设置主键的表
                                                 this.isLoading = false;
-                                                this.$message({
-                                                    showClose: true,
-                                                    message: "单表查询中表" + arr + "未设置主键",
-                                                    type: "error"
-                                                });
+                                                this.$Msg.customizTitle("单表查询中表" + arr + "未设置主键", 'error')
                                             } else {
                                                 //不存在未设置主键的表则继续下面整合数据方法
                                                 this.saveTableConfFun(tableData); //处理第一个页面数据
@@ -1305,7 +1341,7 @@ export default {
                 let params1 = {};
                 params1["tableInfoArray"] =
                     twotabledata.length > 0 ? JSON.stringify(twotabledata) : "";
-                params1["colSetId"] =this.dbid;
+                params1["colSetId"] = this.dbid;
                 params1["tableColumn"] =
                     JSON.stringify(tableColumn) === "{}" ?
                     "" :
@@ -1445,7 +1481,7 @@ export default {
                     if (arrData[k].unload_type == "增量") {
                         tableInfoString.push({
                             database_id: this.dbid,
-                            table_id: (arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                            table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                             is_parallel: "0",
                             is_md5: arrData[k].is_md5 == true ? "1" : "0",
                             table_ch_name: arrData[k].table_ch_name,
@@ -1458,7 +1494,7 @@ export default {
                             if (arrData[k].is_customize_sql == "1") {
                                 tableInfoString.push({
                                     database_id: this.dbid,
-                                    table_id:(arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                                    table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                                     is_parallel: "1",
                                     unload_type: "1",
                                     is_customize_sql: "1",
@@ -1472,7 +1508,7 @@ export default {
                                 tableInfoString.push({
                                     database_id: this.dbid,
                                     unload_type: "1",
-                                    table_id: (arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                                    table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                                     is_parallel: "1",
                                     is_customize_sql: "0",
                                     is_md5: arrData[k].is_md5 == true ? "1" : "0",
@@ -1493,7 +1529,7 @@ export default {
                             tableInfoString.push({
                                 database_id: this.dbid,
                                 unload_type: "1",
-                                table_id:(arrData[k].table_id&&arrData[k].table_id!=undefined)?arrData[k].table_id: "",
+                                table_id: (arrData[k].table_id && arrData[k].table_id != undefined) ? arrData[k].table_id : "",
                                 is_parallel: "0",
                                 is_md5: arrData[k].is_md5 == true ? "1" : "0",
                                 table_ch_name: arrData[k].table_ch_name,
@@ -1570,12 +1606,17 @@ export default {
                     });
                 }
                 let collstring = collTbConfParamString;
-                params2["colSetId"] =this.dbid;
-                params2["tableInfoString"] = JSON.stringify(this.tablein);
-                params2["collTbConfParamString"] = JSON.stringify(collstring);
-                params2["delTbString"] =
-                    delJson.length > 0 ? JSON.stringify(delJson) : "";
-                addTaskAllFun.saveCollTbInfo(params2).then(res => {
+                let dataFrom = new FormData();
+                dataFrom.append('colSetId', this.dbid);
+                dataFrom.append('tableInfoString', JSON.stringify(this.tablein));
+                dataFrom.append('collTbConfParamString', JSON.stringify(collstring));
+                dataFrom.append('delTbString', delJson.length > 0 ? JSON.stringify(delJson) : "");
+                // dataFrom["colSetId"] = this.dbid;
+                // dataFrom["tableInfoString"] = JSON.stringify(this.tablein);
+                // dataFrom["collTbConfParamString"] = JSON.stringify(collstring);
+                // dataFrom["delTbString"] =
+                //     delJson.length > 0 ? JSON.stringify(delJson) : "";
+                addTaskAllFun.saveCollTbInfo(dataFrom).then(res => {
                     if (res && res.code == 200) {
                         this.activeFirst = true;
                         this.dbid = res.data;
@@ -1676,7 +1717,8 @@ export default {
             this.tablename = "";
         },
         //第二个页面 自定义是否抽取sql
-        checkedis_zdyparallelFun(row) {
+        checkedis_zdyparallelFun(row, index) {
+            this.sqlIndex = index
             let a = row.is_parallel;
             this.EXtable_name = row.table_name;
             this.is_parallel = a;
@@ -1730,6 +1772,7 @@ export default {
                     this.is_parallelShowFun(row.table_id);
                 }
             }
+
         },
         // 第二个页面自定义sql提交
         checkedis_zdyparallelSubmitFun(form) {
@@ -1868,11 +1911,7 @@ export default {
             this.ParallelExtractionLink = false;
             if (this.ruleForm_ParallelEx.EXtable_sql == undefined) {
                 this.linkloading = false
-                this.$message({
-                    showClose: true,
-                    message: "sql为空",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("sql为空", 'error')
             } else {
                 if (this.ruleForm_ParallelEx.EXtable_sql != '') {
                     let params = {};
@@ -1896,20 +1935,24 @@ export default {
                     });
                 } else {
                     this.linkloading = false
-                    this.$message({
-                        showClose: true,
-                        message: "sql为空",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle("sql为空", 'error')
                 }
 
             }
         },
         // 获取数据总量
-        getTableDataCountFun() {
+        getTableDataCountFun(type) {
             let params = {};
-            params["tableName"] = this.EXtable_name;
-            params["colSetId"] =this.dbid;
+            if (type === 'sql') {
+                if (this.xsTypeArr2All[this.sqlIndex].sql == '') {
+                    this.$Msg.customizTitle('请在卸数方式的全量中设置SQL语句')
+                    return
+                }
+                params["sql"] = this.xsTypeArr2All[this.sqlIndex].sql;
+            } else {
+                params["tableName"] = this.EXtable_name;
+            }
+            params["colSetId"] = this.dbid;
             addTaskAllFun.getTableDataCount(params).then(res => {
                 var nowDate = new Date();
                 let date = {
@@ -2016,11 +2059,7 @@ export default {
                 }
                 this.dialogTableVisible = false;
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "sql有误",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("sql有误", 'error')
             }
         },
         // 第一个页面md5
@@ -2093,6 +2132,9 @@ export default {
         },
         //第二个  选择列
         selectCol2(value, row) {
+            if(typeof row.sql === 'undefined') {
+                row.sql = this.xsTypeArr2All[value].sql
+            }
             this.dialogSelectColumn2 = true;
             this.tablename = row.table_name;
             this.unloadType = row.unload_type;
@@ -2205,11 +2247,7 @@ export default {
                                 this.getSqlColumnDataFun(row, sql);
                                 //   break
                             } else {
-                                this.$message({
-                                    showClose: true,
-                                    message: "请先为此表设置卸数方式sql语句",
-                                    type: "error"
-                                });
+                                this.$Msg.customizTitle("请先为此表设置卸数方式sql语句", 'error')
                             }
                         }
                     }
@@ -2235,11 +2273,7 @@ export default {
                 }
             } else {
                 if (arrdata.indexOf(row.table_name) == -1) {
-                    this.$message({
-                        showClose: true,
-                        message: "请先为此表设置卸数方式sql语句",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle("请先为此表设置卸数方式sql语句", 'error')
                 } else {
                     let sql = "";
                     if (row.unload_type == "增量") {
@@ -2267,8 +2301,8 @@ export default {
             params["colSetId"] = this.dbid;
             params["unloadType"] = this.xsTypeCode(row.unload_type);
             params["sql"] = sql;
-            params["tableId"] = row.table_id?row.table_id : "";
-            params['tableName']=row.table_name
+            params["tableId"] = row.table_id ? row.table_id : "";
+            params['tableName'] = row.table_name
             addTaskAllFun.getSqlColumnData(params).then(res => {
                 if (res.data.length == 0) {
                     this.tableloadingInfo = "暂无数据";
@@ -2367,11 +2401,7 @@ export default {
                     this.dialogSelectColumn = false;
                     this.tablename = "";
                 } else {
-                    this.$message({
-                        showClose: true,
-                        message: "请选择至少一个主键",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle("请选择至少一个主键", 'error')
                 }
             } else if (this.unloadType == "全量") {
                 if (hasprimaryKey == true) {
@@ -2459,11 +2489,7 @@ export default {
                 this.dialogSelectColumn2 = false;
                 this.tablename = "";
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "请选择至少一个主键",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("请选择至少一个主键", 'error')
             }
         },
         //第一页 选择列弹框关闭
@@ -2580,7 +2606,9 @@ export default {
         handleClick(tab) {
             if (tab.name == "first") {
                 this.sqlExtractDataSubmitFun("ruleForm");
+                this.isMd5All = false
             } else if (tab.name == "second") {
+                this.isSqlMd5All = false
                 if (this.sqlSubmit == true) {
                     this.ruleForm.sqlExtractData = this.tableInfoArray;
                 }
@@ -2862,6 +2890,25 @@ export default {
                     this.dialog_xsall = false;
                 }
             });
+        },
+        //MD5
+        handleCheckAllChange(items, e) {
+            items.forEach((item) => {
+                if (e) {
+                    item.is_md5 = true;
+                } else {
+                    item.is_md5 = false;
+                }
+            })
+        },
+        zipperChange(items, e) {
+            items.forEach((item) => {
+                if (e) {
+                    item.is_zipper_field = this.Isflag.Shi
+                } else {
+                    item.is_zipper_field = this.Isflag.Fou
+                }
+            })
         }
     }
 };
@@ -2888,15 +2935,15 @@ export default {
     margin-top: 6px;
 }
 
-.singleTableinner>>>.el-radio {
+/* .singleTableinner>>>.el-radio {
     color: #3d8dd2;
-    margin: 6px 0 0 0;
+    margin: 6px 10px 0 0;
 }
 
 .twopageradior>>>.el-radio {
     color: #3d8dd2;
     margin: -6px 6px 0 0;
-}
+} */
 
 /* #singleTable >>> .el-table__header tr,
 #singleTable >>> .el-table__header th {
@@ -3012,4 +3059,10 @@ export default {
 .steps2>>>.el-textarea>textarea {
     line-height: 14px;
 }
+
+.allclickColor {
+    color: #fff;
+    font-weight: bold;
+}
+
 </style>

@@ -9,14 +9,19 @@
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number" :rules="filter_rules([{required: true}])">
-                    <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
+                <el-form-item label="作业编号" :label-width="formLabelWidth" prop="database_number">
+                    <el-col :span="21">
+                        <el-input v-model="form.database_number" placeholder="作业编号" :size="size"></el-input>
+                    </el-col>
+                    <el-tooltip class="item" effect="dark" content="执行采集脚本时,可作为第一个参数使用" placement="right">
+                        <i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 4px;"></i>
+                    </el-tooltip>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
                 <el-form-item label="分类编号" :label-width="formLabelWidth" prop="classify_num" :rules="filter_rules([{required: true}])">
                     <el-input v-model="form.classify_num" disabled placeholder="分类编号" :size="size">
-                        <el-button slot="append" @click="getNumber()" class="addButton"> <i class="el-icon-circle-plus-outline"></i></el-button>
+                        <el-button slot="append" @click="getNumber()" class="addButton"> <i class="el-icon-circle-plus-outline"></i>设置分类</el-button>
                     </el-input>
                 </el-form-item>
             </el-col>
@@ -33,6 +38,12 @@
                             <el-button :size="size" @click="dialogSelectfolder = true;seletFilePath()">选择文件</el-button>
                         </template>
                     </el-input>
+                </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+                <el-form-item label="上传数据字典" :label-width="formLabelWidth">
+                    <el-button type="primary" @click="dialogImport" size="medium">选择上传文件</el-button>
                 </el-form-item>
             </el-col>
         </el-form>
@@ -74,7 +85,7 @@
                 <span class="dialogtitle el-icon-caret-right">新增采集任务分类</span>
             </div>
             <el-form :model="addClassTask" ref="addClassTask">
-                <el-form-item label=" 分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'composition'}])" :label-width="formLabelWidth">
+                <el-form-item label=" 分类编号" prop="classify_num" :rules="filter_rules([{required: true,dataType:'compositions'}])" :label-width="formLabelWidth">
                     <el-input v-model="addClassTask.classify_num" style="width:284px"></el-input>
                 </el-form-item>
                 <el-form-item label=" 分类名称" prop="classify_name" :rules="rule.default" :label-width="formLabelWidth">
@@ -90,7 +101,7 @@
             </div>
         </el-dialog>
         <div slot="footer" class="dialog-footer">
-            <el-table :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium">
+            <el-table :data="CollTaskData.slice((currentPage - 1) * pagesize, currentPage * pagesize)" border size="medium" @row-click="chooseone">
                 <el-table-column property label="选择" width="60px" type="index" align="center">
                     <template slot-scope="scope">
                         <el-radio v-model="radio" :label="scope.row.classify_id">&thinsp;</el-radio>
@@ -146,6 +157,23 @@
             <el-button size="mini" type="primary" @click="editClassTaskSane('editClassTask')">保存</el-button>
         </div>
     </el-dialog>
+    <!-- 上传数据字典 -->
+    <el-dialog title="上传文件" :visible.sync="dialogFormExcelImport" width="42%" :before-close="cancleImport">
+        <el-form :model="formImport" ref="formImport">
+            <el-form-item label="数据字典存放路径" :label-width="formLabelWidth" prop="targePath" :rules="filter_rules([{required: true}])">
+                <el-input v-model="formImport.targePath" style="width:284px"></el-input>
+            </el-form-item>
+            <el-form-item label="选择文件" :label-width="formLabelWidth">
+                <el-upload class="upload-demo" ref="upload" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange">
+                    <el-button size="small" type="primary">选择文件</el-button>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancleImport" size="mini" type="danger">取 消</el-button>
+            <el-button type="primary" @click="upload('formImport')" size="mini">上传</el-button>
+        </div>
+    </el-dialog>
     <!-- 加载过度 -->
     <transition name="fade">
         <loading v-if="isLoading" />
@@ -171,21 +199,28 @@ export default {
             form: {
                 plane_url: ''
             },
+            formImport: {
+                targePath: ''
+            },
             formLabelWidth: "150px",
             size: "medium",
             showDiolag: false,
+            dialogFormExcelImport: false,
             pagesize: 10,
             currentPage: 1,
             data2: [],
-            radio: "1",
             isLoading: false,
             classify_id: '',
             hiddenshow: true,
             addClassTask: {
-
+                classify_num: '',
+                classify_name: '',
+                remark: ''
             },
             editClassTask: {
-
+                classify_num: '',
+                classify_name: '',
+                remark: ''
             },
             fileMark: '',
             updateMark: '',
@@ -200,6 +235,7 @@ export default {
             ediltVisible: false,
             dialogSelectfolder: false,
             rule: validator.default,
+            fileList: [],
         }
     },
     mounted() {
@@ -330,20 +366,11 @@ export default {
                         }
                     }
                 } else {
-                    this.$message({
-                        showClose: true,
-                        message: "请至少选择一项",
-                        type: "error"
-                    });
+                    this.$Msg.customizTitle('请至少选择一项', 'error')
                 }
 
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "请新增任务并选择",
-
-                    type: "error"
-                });
+                this.$Msg.customizTitle('请新增任务并选择', 'error')
             }
         },
         // 分页显示
@@ -502,6 +529,53 @@ export default {
                 }
             })
         },
+        chooseone(row) { //点击单元格选中一行
+            this.radio = row.classify_id;
+        },
+        dialogImport() { //导入数据字典
+            this.dialogFormExcelImport = true;
+        },
+        // 获取上传的文件详情excelHandleChange
+        handleChange(file, fileList) {
+            if (fileList.length > 0) {
+                this.fileList = [fileList[fileList.length - 1]]
+            }
+        },
+        // 点击上传数据
+        upload(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    if (this.fileList.length == 0) {
+                        this.$Msg.customizTitle('上传文件不能为空', 'warning')
+                    } else {
+                        let param = new FormData() // 创建form对象
+                        param.append('file', this.fileList[0].raw);
+                        param.append('targetPath', this.formImport.targePath);
+                        param.append('agent_id', this.$route.query.agent_id);
+                        functionAll.uploadDataDictionary(param).then(res => {
+                            if (res && res.success) {
+                                this.form.plane_url = res.data
+                                this.dialogFormExcelImport = false;
+                                this.fileList.length = 0;
+                                this.formImport = {
+                                    targePath: ''
+                                };
+                            }
+
+                        });
+                    }
+
+                }
+            })
+        },
+        // 点击导入弹出框的取消按钮
+        cancleImport() {
+            this.formImport = {
+                targePath: ''
+            };
+            this.dialogFormExcelImport = false;
+            this.$refs.formImport.resetFields();
+        },
     },
 
 }
@@ -510,7 +584,7 @@ export default {
 <style scoped>
 /* 采集任务表单 */
 .step1 .oneContent {
-    min-height: 180px;
+    min-height: 230px;
     border: 1px solid #e6e6e6;
     margin-bottom: 20px;
     padding: 2% 4% 2% 0;
@@ -518,7 +592,7 @@ export default {
 
 /* 按钮设置 */
 .step1 .addButton {
-    color: black
+    color: #909399;
 }
 
 .step1>>>.el-input-group__prepend button.el-button {

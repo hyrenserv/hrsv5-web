@@ -16,13 +16,48 @@
                 </el-table-column>
                 <el-table-column prop="original_name" label="文件名" align="center" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="file_suffix" label="文件后缀名" align="center" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="fileType_zh" label="文件类型" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="file_type" label="文件类型" align="center" show-overflow-tooltip>
+                    <template slot-scope="scope">{{file_type_map[scope.row.file_type]}}</template>
+                </el-table-column>
                 <el-table-column prop="user_name" label="提交人" align="center"></el-table-column>
-                <el-table-column prop="applyDataTime" label="提交时间" width="192" align="center" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="applyType_zh" label="申请类型" align="center"></el-table-column>
+                <el-table-column prop="apply_date" label="提交日期" width="192" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="apply_time" label="提交时间" width="192" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="apply_type" label="申请类型" align="center">
+                    <template slot-scope="scope">{{apply_type_map[scope.row.apply_type]}}</template>
+                </el-table-column>
                 <el-table-column prop="agent_id" label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                        <!-- 申请类型: 查看 -->
+                        <template v-if="scope.row.apply_type ==='1'">
+                            <template v-if="scope.row.auth_type ==='0'">
+                                <el-button type="text" class="sendcolor" @click="dataAudit(1,'查看'); handleEdit(scope.$index, scope.row)" size="mini">查看</el-button>
+                                <el-button type="text" class='editcolor' @click="dataAudit(3,'查看一次'); handleEdit(scope.$index, scope.row)" size="mini">查看一次</el-button>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                            </template>
+                        </template>
+                        <!-- 申请类型: 下载 -->
+                        <template v-else-if="scope.row.apply_type==='2'">
+                            <template v-if="scope.row.auth_type ==='0'">
+                                <el-button type="text" class="sendcolor" @click="dataAudit(1,'允许下载'); handleEdit(scope.$index, scope.row)" size="mini">允许</el-button>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                            </template>
+                        </template>
+                        <!-- 申请类型: 发布 -->
+                        <template v-else-if="scope.row.apply_type==='3'">
+                            <template v-if="scope.row.auth_type ==='0'">
+                                <el-button type="text" class='sendcolor' @click="dataAudit(1,'允许发布'); handleEdit(scope.$index, scope.row)" size="mini">允许</el-button>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">不允许</el-button>
+                            </template>
+                            <template v-else>
+                                <el-button type="text" class="delcolor" @click="reclaimAuthority(); handleEdit(scope.$index, scope.row)" size="mini">权限回收</el-button>
+                            </template>
+                        </template>
                     </template>
                 </el-table-column>
             </el-table>
@@ -98,6 +133,15 @@ export default {
     },
     data() {
         return {
+            //页面配置
+            apply_type_list: [],
+            apply_type_map: {},
+            auth_type_list: [],
+            auth_type_map: {},
+            file_type_list: [],
+            file_type_list_sub: [],
+            file_type_map: {},
+            //页面数据
             dataIndexAll: [],
             dialogVisible: false,
             dialogFormVisibleAdd: false,
@@ -120,12 +164,59 @@ export default {
     // 获取首页数据
     created() {
         this.getIndexData();
+        //获取代码类型:数据申请类型
+        this.getApplyType();
+        //获取代码类型:权限类型
+        this.getAuthType();
+        //获取代码类型:文件类型
+        this.getFileType();
     },
     mounted() {
         this.handleCurrentChangeList(1);
         this.handleCurrentChange(1);
     },
     methods: {
+        //获取数据申请类型信息
+        getApplyType() {
+            this.$Code.getCategoryItems({
+                'category': 'ApplyType'
+            }).then(res => {
+                res.data.forEach(row => {
+                    this.apply_type_map[row.code] = row.value;
+                    //处理为List
+                    this.apply_type_list.push(row);
+                });
+            });
+        },
+        //获取数据权限信息
+        getAuthType() {
+            this.$Code.getCategoryItems({
+                'category': 'AuthType'
+            }).then(res => {
+                res.data.forEach(row => {
+                    this.auth_type_map[row.code] = row.value;
+                    //处理为list
+                    this.auth_type_list.push(row);
+                });
+            });
+        },
+        //获取文件类型信息
+        getFileType() {
+            this.$Code.getCategoryItems({
+                'category': 'FileType'
+            }).then(res => {
+                //处理数据申请类型信息为map类型
+                res.data.forEach(row => {
+                    this.file_type_map[row.code] = row.value;
+                    if (row.code === '1013' || row.code === '1023' || row.code === '1033' || row.code === '1043' ||
+                        row.code === '1053' || row.code === '1063') {
+                        this.file_type_list_sub.push(row);
+                    } else {
+                        this.file_type_list.push(row);
+                    }
+                });
+            });
+        },
         // 子触发父的事件
         addSucess() {
             this.handleCurrentChangeList(1);
@@ -155,10 +246,7 @@ export default {
                 if (valid) {
                     functionAll.updateAuditSourceRelationDep(this.formAdd).then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: "success",
-                                message: "更改成功!"
-                            });
+                            this.$Msg.customizTitle('更改成功', 'success')
                             // 传入当前页数和当前需要的条数渲染
                             this.handleCurrentChange(this.currentPage);
                             // 隐藏对话框
@@ -243,6 +331,21 @@ export default {
                 }
             })
         },
+        // 权限审核
+        dataAudit(auth_type, auth_type_zh) {
+            this.$confirm('确定' + auth_type_zh + ' 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                functionAll.dataAudit({ da_id: this.da_id, auth_type: auth_type }).then(res => {
+                    if (res && res.success) {
+                        this.$Msg.customizTitle('权限审核成功', 'success')
+                        this.handleCurrentChangeList(1);
+                    }
+                })
+            })
+        },
         // 权限回收
         reclaimAuthority() {
             this.$confirm('确定要回收权限, 是否继续?', '提示', {
@@ -255,19 +358,11 @@ export default {
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '回收权限成功!'
-                            });
-                            this.tableDatalist = res.data;
+                            this.$Msg.customizTitle('回收权限成功', 'success')
+                            this.handleCurrentChangeList(1);
                         }
                     })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消回收权限'
-                });
-            });
+            })
         },
         // 改变数据管理列表每页显示条数
         handleSizeChangelist(val) {

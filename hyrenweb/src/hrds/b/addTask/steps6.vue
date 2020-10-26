@@ -1,6 +1,6 @@
 <template>
 <div id="steps6">
-    <Step :active="active" :typeinfo='typeinfo'></Step>
+    <Step :active="active"></Step>
     <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="30%">
         <div class="startupform">
             <el-row type="flex" justify="center">
@@ -118,14 +118,14 @@
                 <el-table-column label="作业名称" width="160" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job'" :rules="rule.default">
-                            <el-input v-model="scope.row.etl_job" placeholder="作业名称" size="mini"></el-input>
+                            <el-input type="textarea" :autosize="true" v-model="scope.row.etl_job" placeholder="作业名称" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
                 <el-table-column label="作业描述" align="center">
                     <template slot-scope="scope">
                         <el-form-item :prop="'startuptableData.'+scope.$index+'.etl_job_desc'" :rules="rule.default">
-                            <el-input v-model="scope.row.etl_job_desc" type="textarea" placeholder="作业描述" size="mini"></el-input>
+                            <el-input v-model="scope.row.etl_job_desc" :autosize="true" type="textarea" placeholder="作业描述" size="mini"></el-input>
                         </el-form-item>
                     </template>
                 </el-table-column>
@@ -277,7 +277,6 @@ export default {
     data() {
         return {
             active: 4,
-            typeinfo:1,
             isLoading: false,
             dbid: null,
             aId: null,
@@ -385,13 +384,13 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.isLoading = true;
-                    let params = {};
-                    params["colSetId"] =this.dbid;
-                    params["etl_sys_cd"] = this.ruleForm.Project_num;
-                    params["pro_dic"] = this.ruleForm.work_path;
-                    params["log_dic"] = this.ruleForm.log_path;
-                    params["sub_sys_cd"] = this.ruleForm.work_num;
-                    params["source_id"] = this.sourId;
+                    // let params = {};
+                    // params["colSetId"] = this.dbid;
+                    // params["etl_sys_cd"] = this.ruleForm.Project_num;
+                    // params["pro_dic"] = this.ruleForm.work_path;
+                    // params["log_dic"] = this.ruleForm.log_path;
+                    // params["sub_sys_cd"] = this.ruleForm.work_num;
+                    // params["source_id"] = this.sourId;
                     let arrdata = this.ruleForm.startuptableData;
                     let etlJobs = [],
                         type = this.ruleForm.Dispatching_mode,
@@ -439,13 +438,23 @@ export default {
                             });
                         }
                     }
-                    params["etlJobs"] = JSON.stringify(etlJobs);
-                    params["ded_arr"] = ded_arr.join("^");
-                    params["jobRelations"] =
-                        JSON.stringify(jobRelation) == "{}" ?
-                        "" :
-                        JSON.stringify(jobRelation);
-                    sendTask.saveJobDataToDatabase(params).then(res => {
+                    // params["etlJobs"] = JSON.stringify(etlJobs);
+                    // params["ded_arr"] = ded_arr.join("^");
+                    // params["jobRelations"] =
+                    //     JSON.stringify(jobRelation) == "{}" ?
+                    //     "" :
+                    //     JSON.stringify(jobRelation);
+                    let dataFrom = new FormData();
+                    dataFrom.append('colSetId', this.dbid);
+                    dataFrom.append('etl_sys_cd', this.ruleForm.Project_num);
+                    dataFrom.append('pro_dic', this.ruleForm.work_path);
+                    dataFrom.append('log_dic', this.ruleForm.log_path);
+                    dataFrom.append('sub_sys_cd', this.ruleForm.work_num);
+                    dataFrom.append('source_id', this.sourId);
+                    dataFrom.append('etlJobs', JSON.stringify(etlJobs));
+                    dataFrom.append('ded_arr', ded_arr.join('^'));
+                    dataFrom.append('jobRelations', JSON.stringify(jobRelation) == '{}' ? '' : JSON.stringify(jobRelation));
+                    sendTask.saveJobDataToDatabase(dataFrom).then(res => {
                         if (res.code && res.code == 200) {
                             this.isLoading = false;
                             this.active = 6;
@@ -551,11 +560,7 @@ export default {
                 .then(res => {
                     if (res.success) {
                         this.finishDialogVisible = false;
-                        this.$message({
-                            showClose: true,
-                            message: '发送成功',
-                            type: "success"
-                        });
+                        this.$Msg.customizTitle("发送成功", 'success')
                         this.$router.push({
                             path: "/agentList"
                         });
@@ -618,11 +623,7 @@ export default {
                         }
                     });
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "工程编号未选择",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("工程编号未选择", 'error')
             }
         },
         projNumCloseFun() {
@@ -656,11 +657,7 @@ export default {
                         }
                     });
             } else {
-                this.$message({
-                    showClose: true,
-                    message: "工程编号未选择",
-                    type: "error"
-                });
+                this.$Msg.customizTitle("工程编号未选择", 'error')
             }
         },
         // 任务编号提交

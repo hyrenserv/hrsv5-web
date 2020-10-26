@@ -22,17 +22,17 @@ Router.prototype.push = function push(location) {
  */
 export default new Router({
     routes: [
-        {path: '/', name: 'login', component: () => import('@/hrds/login/login.vue')},
+        { path: '/', name: 'login', component: () => import('@/hrds/login/login.vue') },
         //菜单路由地址配置
         {
             path: "/home", name: 'home', component: () => import('@/hrds/components/menu'), children: [
-                {path: '/syspara', name: 'syspara', component: () => import('@/hrds/a/syspara/index.vue')},
+                { path: '/syspara', name: 'syspara', component: () => import('@/hrds/a/syspara/index.vue') },
                 {
                     path: '/agentdeploy',
                     name: 'agentdeploy',
                     component: () => import('@/hrds/b/agentdeploy/agentdeploylist.vue'),
                     meta: [
-                        { name: '首页',url:'/' },
+                        { name: '首页', url: '/' },
                         { name: '采集监控', url: '/collectmonitor' },
                         { name: '部署Agent' },
                     ],
@@ -54,7 +54,7 @@ export default new Router({
                     component: () => import('@/hrds/b/datasource/datasourceManagement.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据源管理'},
+                        { name: '数据源管理' },
                     ],
                 },
                 {
@@ -64,8 +64,8 @@ export default new Router({
                     component: () => import('@/hrds/b/datasource/datasource.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据源管理',url:'/datasourceManagement'},
-                        {name:'agent管理'},
+                        { name: '数据源管理', url: '/datasourceManagement' },
+                        { name: 'agent管理' },
                     ],
                 },
                 {
@@ -76,7 +76,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据库Agent' },
                     ],
                 },
@@ -88,7 +88,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据库Agent' },
                     ],
                 },
@@ -100,7 +100,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据库Agent' },
                     ],
                 },
@@ -112,22 +112,22 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据库Agent' },
                     ],
                 },
-                 {
-                     path: '/collection1_t2',
-                     name: 'addTaskt02',
-                     title: '数据库采集02',
-                     component: () => import('@/hrds/b/addTask/stepsty2.vue'),
-                     meta: [
+                {
+                    path: '/collection1_t2',
+                    name: 'addTaskt02',
+                    title: '数据库采集02',
+                    component: () => import('@/hrds/b/addTask/stepsty2.vue'),
+                    meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据库Agent' },
                     ],
-                 },
+                },
                 {
                     path: '/collection1_5',
                     name: 'addTask05',
@@ -136,7 +136,43 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '数据库Agent' },
+                    ],
+                },
+                {
+                    path: '/dbcollect_02',
+                    name: '数据库采集2_02',
+                    title: '数据库采集2_02',
+                    component: () => import('@/hrds/b/addTask/dbcollect_2.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '数据库Agent' },
+                    ],
+                },
+                {
+                    path: '/dbcollect_03',
+                    name: '数据库采集2_03',
+                    title: '数据库采集2_03',
+                    component: () => import('@/hrds/b/addTask/dbcollect_3.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '数据库Agent' },
+                    ],
+                },
+                {
+                    path: '/dbcollect_04',
+                    name: '数据库采集2_04',
+                    title: '数据库采集2_04',
+                    component: () => import('@/hrds/b/addTask/dbcollect_4.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据库Agent' },
                     ],
                 },
@@ -159,7 +195,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '日志查看' },
                     ],
                 },
@@ -197,6 +233,17 @@ export default new Router({
                         { name: '系统列表' },
                     ],
                 },
+                 // 码值维护
+                 {
+                    path: '/codeMaintenance',
+                    name: 'codeMaintenance',
+                    title: '系统列表',
+                    component: () => import('@/hrds/a/codeMaintenance/codeMaintenance.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '码值维护' },
+                    ],
+                },
                 // 半结构化agent采集
                 {
                     path: '/collection5_1',
@@ -206,7 +253,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '半结构化 Agent' },
                     ],
                 },
@@ -214,19 +261,37 @@ export default new Router({
                     path: '/collectFileOption',
                     name: 'collectFileOption',
                     title: '采集文件设置',
-                    component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue')
-                },
-                 {
-                     path: '/dataStorage',
-                     name: 'dataStorage',
-                     title: '数据存储层',
-                     component: () => import('@/hrds/b/semiStructuredAgent/dataStorage.vue')
+                    component: () => import('@/hrds/b/semiStructuredAgent/collectFileOption.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '半结构化 Agent' },
+                    ],
                 },
                 {
-                      path: '/startMode',
-                      name: 'startMode',
-                      title: '启动方式',
-                      component: () => import('@/hrds/b/semiStructuredAgent/startMode.vue')
+                    path: '/dataStorage',
+                    name: 'dataStorage',
+                    title: '数据存储层',
+                    component: () => import('@/hrds/b/semiStructuredAgent/dataStorage.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '半结构化 Agent' },
+                    ],
+                },
+                {
+                    path: '/startMode',
+                    name: 'startMode',
+                    title: '启动方式',
+                    component: () => import('@/hrds/b/semiStructuredAgent/startMode.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '半结构化 Agent' },
+                    ],
                 },
                 //ftp agent采集
                 {
@@ -237,7 +302,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: 'FTP Agent' },
                     ],
                 },
@@ -250,7 +315,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据文件Agent' },
                     ],
                 },
@@ -262,7 +327,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据文件Agent' },
                     ],
                 },
@@ -274,7 +339,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据文件Agent' },
                     ],
                 },
@@ -286,7 +351,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据文件Agent' },
                     ],
                 },
@@ -298,7 +363,7 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
+                        { name: '数据源Agent列表', url: '/agentList' },
                         { name: '数据文件Agent' },
                     ],
                 },
@@ -310,8 +375,8 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
-                        { name: '数据文件Agent' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '采集ftp agent' },
                     ],
                 },
                 // 非结构化 Agent采集
@@ -323,15 +388,20 @@ export default new Router({
                     meta: [
                         { name: '首页' },
                         { name: '采集监控', url: '/collectmonitor' },
-                        { name: '数据源Agent列表', url: '/agentList'  },
-                        { name: '非结构化Agent' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '配置启动方式' },
                     ],
                 },
                 {
                     path: '/configureFileOption',
                     name: 'configureFileOption',
-                    title: '配置连接属性',
-                    component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue')
+                    title: '配置文件路径',
+                    component: () => import('@/hrds/b/unstructuredAgent/configureFileOption.vue'), meta: [
+                        { name: '首页' },
+                        { name: '采集监控', url: '/collectmonitor' },
+                        { name: '数据源Agent列表', url: '/agentList' },
+                        { name: '配置文件路径' },
+                    ],
                 },
                 // dataStoreAction
                 {
@@ -341,7 +411,7 @@ export default new Router({
                     component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据存储层定义'},
+                        { name: '数据存储层定义' },
                         { name: '存储层定义' },
                     ],
                 },
@@ -349,7 +419,12 @@ export default new Router({
                     path: '/dataStoreAction',
                     name: 'dataStoreAction',
                     title: 'dataStoreAction',
-                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue')
+                    component: () => import('@/hrds/a/datastore/dataStoreAction.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据存储层定义' },
+                        { name: '新增数据存储层' },
+                    ],
                 },
                 {
                     path: '/typeLengthContrastInfo',
@@ -358,7 +433,7 @@ export default new Router({
                     component: () => import('@/hrds/a/datastore/typeLengthContrastInfo.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据存储层定义'},
+                        { name: '数据存储层定义' },
                         { name: '数据长度对比' },
                     ],
                 },
@@ -369,9 +444,9 @@ export default new Router({
                     component: () => import('@/hrds/a/datastore/addTypeLengthContrastInfo.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据存储层定义'},
-                        { name: '数据长度对比',url:'/typeLengthContrastInfo'},
-                        { name: '数据类型对比' },
+                        { name: '数据存储层定义' },
+                        { name: '数据长度对比', url: '/typeLengthContrastInfo' },
+                        { name: '新增数据类型长度对照表' },
                     ],
                 },
                 {
@@ -381,8 +456,8 @@ export default new Router({
                     component: () => import('@/hrds/a/datastore/addDataTypeContrastInfo.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据存储层定义'},
-                        { name: '数据类型对比',url:"/dataTypeContrastInfo" },
+                        { name: '数据存储层定义' },
+                        { name: '数据类型对比', url: "/dataTypeContrastInfo" },
                         { name: '新增数据类型对照表' },
                     ],
                 },
@@ -393,7 +468,7 @@ export default new Router({
                     component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据存储层定义'},
+                        { name: '数据存储层定义' },
                         { name: '数据类型对比' },
                     ],
                 },
@@ -415,8 +490,8 @@ export default new Router({
                     component: () => import('@/hrds/b/dataQuery/myApply.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '文件资源管理',url:'/dataQuery'},
-                        {name:'文件资源管理器'},
+                        { name: '文件资源管理', url: '/dataQuery' },
+                        { name: '文件申请信息' },
                     ],
                 },
                 {
@@ -426,15 +501,20 @@ export default new Router({
                     component: () => import('@/hrds/b/dataQuery/myRequestRecord.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '文件资源管理',url:'/dataQuery'},
-                        {name:'文件资源管理器'},
+                        { name: '文件资源管理', url: '/dataQuery' },
+                        { name: '我的申请记录' },
                     ],
                 },
                 {
                     path: '/fullTextSearch',
                     name: 'fullTextSearch',
                     title: 'fullTextSearch',
-                    component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue')
+                    component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '文件资源管理', url: '/dataQuery'  },
+                        { name: '全文检索' },
+                    ],
                 },
                 {
                     path: '/webSqlConsole',
@@ -443,7 +523,18 @@ export default new Router({
                     component: () => import('@/hrds/b/dataQuery/webSqlConsole.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'SQL 操作台'},
+                        { name: 'SQL 操作台' },
+                    ],
+                },
+                {
+                    path: '/viewFile',
+                    name: 'viewFile',
+                    title: 'viewFile',
+                    component: () => import('@/hrds/b/dataQuery/viewFile.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '文件资源管理', url: '/dataQuery'  },
+                        { name: '文件查看' },
                     ],
                 },
                 {
@@ -453,7 +544,9 @@ export default new Router({
                     component: () => import('@/hrds/c/etlMage/etlMage.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'作业调度'},
+                        { name: '作业调度' ,url:'etlMage'},
+                        { name: '工程管理' },
+
                     ],
                 },
                 {
@@ -463,7 +556,7 @@ export default new Router({
                     component: () => import('@/hrds/k/dbm/dbm.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'标准元管理'},
+                        { name: '标准元管理' },
                     ],
                 },
                 {
@@ -473,8 +566,8 @@ export default new Router({
                     component: () => import('@/hrds/k/dbm_check/dbm_check.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据对标'},
-                        {name:'标准元查看'},
+                        { name: '数据对标' },
+                        { name: '标准元查看' },
                     ],
                 },
                 {
@@ -484,8 +577,8 @@ export default new Router({
                     component: () => import('@/hrds/k/tsb/tsb.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据对标'},
-                        {name:'表结构对标'},
+                        { name: '数据对标' },
+                        { name: '表结构对标' },
                     ],
                 },
                 {
@@ -495,9 +588,9 @@ export default new Router({
                     component: () => import('@/hrds/k/tsb/tsb_result.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据对标'},
-                        {name:'表结构对标',url:'/tsb'},
-                        {name:'对标结果'},
+                        { name: '数据对标' },
+                        { name: '表结构对标', url: '/tsb' },
+                        { name: '对标结果' },
                     ],
                 },
                 {
@@ -507,8 +600,8 @@ export default new Router({
                     component: () => import('@/hrds/k/tdb/tdb.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '数据对标'},
-                        {name:'数据对标'},
+                        { name: '数据对标' },
+                        { name: '数据对标' },
                     ],
                 },
                 {
@@ -518,7 +611,7 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/dataControl.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控'},
+                        { name: '数据管控' },
                     ],
                 },
                 //元数据管理
@@ -529,8 +622,21 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/mateDataManage/mateDataManage.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'工程详情'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '工程详情' },
+                    ],
+                },
+                 //元数据管理-创建表
+                 {
+                    path: '/createTable',
+                    name: 'createTable',
+                    title: '元数据管理创建表',
+                    component: () => import('@/hrds/k/dataControl/mateDataManage/createTable.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '元数据管理', url: '/mateDataManagement' },
+                        { name: '元数据管理创建表' },
                     ],
                 },
                 //血缘分析
@@ -541,8 +647,8 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/bloodAnalysis/bloodAnalysis.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'血缘分析'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '血缘分析' },
                     ],
                 },
                 //变量配置
@@ -553,8 +659,8 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/variableConfig/variableConfig.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'变量配置'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '变量配置' },
                     ],
                 },
                 //规则配置
@@ -565,8 +671,8 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/ruleConfig/ruleConfig.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'规则配置'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '规则配置' },
                     ],
                 },
                 //规则信息
@@ -577,9 +683,9 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/ruleConfig/ruleInfo.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'规则配置',url:'/ruleConfig'},
-                        {name:'编辑规则详情'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '规则配置', url: '/ruleConfig' },
+                        { name: '编辑规则详情' },
                     ],
                 },
                 //规则检测详情
@@ -590,9 +696,9 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/ruleConfig/ruleDetectionDetail.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'规则结果',url:'/ruleResults'},
-                        {name:'规则详情'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '规则结果', url: '/ruleResults' },
+                        { name: '规则详情' },
                     ],
                 },
                 //规则调度状态
@@ -603,9 +709,9 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/ruleConfig/ruleETLStatus.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'规则配置',url:'/ruleConfig'},
-                        {name:'规则详情'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '规则配置', url: '/ruleConfig' },
+                        { name: '规则详情' },
                     ],
                 },
                 //规则结果
@@ -616,8 +722,8 @@ export default new Router({
                     component: () => import('@/hrds/k/dataControl/ruleResults/ruleResults.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据管控',url:'/dataControl'},
-                        {name:'规则结果'},
+                        { name: '数据管控', url: '/dataControl' },
+                        { name: '规则结果' },
                     ],
                 },
                 //详情首页
@@ -629,188 +735,203 @@ export default new Router({
                     component: () => import('@/hrds/c/detailsPages/menus/menus.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'作业调度',url:'/etlMage'},
-                        {name:'工程详情'},
+                        { name: '作业调度', url: '/etlMage' },
+                        { name: '工程详情' },
                     ],
                     children: [
                         //监控当前批量详情页面
                         {
                             path: '/currentBatch',
                             name: 'currentBatch',
-                            title: '工程详情',
+                            title: '当前批量',
                             component: () => import('@/hrds/c/detailsPages/Monitor/currentBatch/currentBatch.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '监控',url:'/menus' },
+                                { name: '当前批量' }
                             ],
                         },
                         //监控历史批量详情页面
                         {
                             path: '/historyBatch',
                             name: 'historyBatch',
-                            title: '工程详情',
+                            title: '历史批量',
                             component: () => import('@/hrds/c/detailsPages/Monitor/historyBatch/historyBatch.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '监控',url:'/menus' },
+                                { name: '历史批量' }
                             ],
                         },
                         //监控当前作业详情页面
                         {
                             path: '/currentJob',
                             name: 'currentJob',
-                            title: '工程详情',
+                            title: '当前作业',
                             component: () => import('@/hrds/c/detailsPages/Monitor/currentJob/currentJob.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '监控',url:'/menus' },
+                                { name: '当前作业' }
                             ],
                         },
                         //监控历史作业详情页面
                         {
                             path: '/historyJob',
                             name: 'historyJob',
-                            title: '工程详情',
+                            title: '历史作业',
                             component: () => import('@/hrds/c/detailsPages/Monitor/historyJob/historyJob.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '监控',url:'/menus' },
+                                { name: '历史作业' }
                             ],
                         },
                         //监控依赖作业详情页面
                         {
                             path: '/relyJob',
                             name: 'relyJob',
-                            title: '工程详情',
+                            title: '依赖作业',
                             component: () => import('@/hrds/c/detailsPages/Monitor/relyJob/relyJob.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '监控',url:'/menus' },
+                                { name: '依赖作业' }
                             ],
                         },
                         //监控系统资源详情页面
                         {
                             path: '/systemResource',
                             name: 'systemResource',
-                            title: '工程详情',
+                            title: '系统资源',
                             component: () => import('@/hrds/c/detailsPages/Monitor/systemResource/systemResource.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '监控',url:'/menus' },
+                                { name: '系统资源' }
                             ],
                         },
                         //干预系统级干预详情页面
                         {
                             path: '/sysLevelIntervente',
                             name: 'sysLevelIntervente',
-                            title: '工程详情',
+                            title: '系统级干预',
                             component: () => import('@/hrds/c/detailsPages/Intervene/sysLevelIntervente/sysLevelIntervente.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '干预',url:'/menus' },
+                                { name: '系统级干预' }
                             ],
                         },
                         //干预作业级干预详情页面
                         {
                             path: '/jobLevelIntervente',
                             name: 'jobLevelIntervente',
-                            title: '工程详情',
+                            title: '作业级干预',
                             component: () => import('@/hrds/c/detailsPages/Intervene/jobLevelIntervente/jobLevelIntervente.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '干预',url:'/menus' },
+                                { name: '作业级干预' }
                             ],
                         },
                         //配置任务详情页面
                         {
                             path: '/subSystem',
                             name: 'subSystem',
-                            title: '工程详情',
+                            title: '任务',
                             component: () => import('@/hrds/c/detailsPages/Configure/subSystem/subSystem.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '任务' }
                             ],
                         },
                         //配置作业模板详情页面
                         {
                             path: '/etlJobDefTemplate',
                             name: 'etlJobDefTemplate',
-                            title: '工程详情',
+                            title: '作业模板',
                             component: () => import('@/hrds/c/detailsPages/Configure/etlJobDefTemplate/etlJobDefTemplate.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '作业模板' }
                             ],
                         },
                         //配置作业详情页面
                         {
                             path: '/etlJobDef',
                             name: 'etlJobDef',
-                            title: '工程详情',
+                            title: '作业',
                             component: () => import('@/hrds/c/detailsPages/Configure/etlJobDef/etlJobDef.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '作业' }
                             ],
                         },
                         //配置资源定义详情页面
                         {
                             path: '/resourcesAvailable',
                             name: 'resourcesAvailable',
-                            title: '工程详情',
+                            title: '资源定义',
                             component: () => import('@/hrds/c/detailsPages/Configure/resourcesAvailable/resourcesAvailable.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '资源定义' }
                             ],
                         },
                         //配置资源分配详情页面
                         {
                             path: '/resourcesUsage',
                             name: 'resourcesUsage',
-                            title: '工程详情',
+                            title: '资源分配',
                             component: () => import('@/hrds/c/detailsPages/Configure/resourcesUsage/resourcesUsage.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '资源分配' }
                             ],
                         },
                         //配置作业依赖详情页面
                         {
                             path: '/etlDependency',
                             name: 'etlDependency',
-                            title: '工程详情',
+                            title: '作业依赖',
                             component: () => import('@/hrds/c/detailsPages/Configure/etlDependency/etlDependency.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '作业依赖' }
                             ],
                         },
                         //配置系统参数详情页面
                         {
                             path: '/systemParameter',
                             name: 'systemParameter',
-                            title: '工程详情',
+                            title: '系统参数',
                             component: () => import('@/hrds/c/detailsPages/Configure/systemParameter/systemParameter.vue'),
                             meta: [
                                 { name: '首页' },
-                                {name:'作业调度',url:'/etlMage'},
-                                {name:'工程详情'},
+                                { name: '作业调度', url: '/etlMage' },
+                                { name: '配置', url: '/menus' },
+                                { name: '系统参数' }
                             ],
                         },
                     ]
@@ -822,32 +943,80 @@ export default new Router({
                     component: () => import('@/hrds/h/market/marketIndex.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'数据集市'},
+                        { name: '数据加工' },
+                    ],
+                },
+                {
+                    path: '/addMarketIndex',
+                    name: 'addMarketIndex',
+                    title: 'addMarketIndex',
+                    component: () => import('@/hrds/h/market/addMarketIndex.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工' },
+                    ],
+                },
+                {
+                    path: '/marketVersionManage',
+                    name: 'marketVersionManage',
+                    title: 'marketVersionManage',
+                    component: () => import('@/hrds/h/manage/version/marketVersionManage.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工' },
+                        { name: '版本管理' },
                     ],
                 },
                 {
                     path: '/detailMart',
                     name: 'detailMart',
                     title: 'detailMart',
-                    component: () => import('@/hrds/h/market/detailMart.vue')
+                    component: () => import('@/hrds/h/market/detailMart.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工' }
+                    ],
                 },
                 {
                     path: '/addMartTable_1',
                     name: 'addMartTable_1',
                     title: 'addMartTable_1',
-                    component: () => import('@/hrds/h/market/addMartTable_1.vue')
+                    component: () => import('@/hrds/h/market/addMartTable_1.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工' }
+                    ],
                 },
                 {
                     path: '/addMartTable_2',
                     name: 'addMartTable_2',
                     title: 'addMartTable_2',
-                    component: () => import('@/hrds/h/market/addMartTable_2.vue')
+                    component: () => import('@/hrds/h/market/addMartTable_2.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工 ' }
+                    ],
                 },
                 {
                     path: '/addMartTable_3',
                     name: 'addMartTable_3',
                     title: 'addMartTable_3',
-                    component: () => import('@/hrds/h/market/addMartTable_3.vue')
+                    component: () => import('@/hrds/h/market/addMartTable_3.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工' }
+                    ],
+                },
+                {
+                    path: '/importReview',
+                    name: 'importReview',
+                    title: '加工工程导入审核',
+                    component: () => import('@/hrds/h/market/importReview.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据加工',url:'dataMart' },
+                        { name: '加工工程导入审核' },
+                    ],
                 },
                 {
                     path: '/serviceMage',
@@ -856,7 +1025,7 @@ export default new Router({
                     component: () => import('@/hrds/g/serviceMage.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口管理'},
+                        { name: '服务接口管理' },
                     ],
                 },
                 {
@@ -866,8 +1035,8 @@ export default new Router({
                     component: () => import('@/hrds/g/usermanage/userManage.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口管理',url:'/serviceMage'},
-                        {name:'用户管理'},
+                        { name: '服务接口管理', url: '/serviceMage' },
+                        { name: '用户管理' },
                     ],
                 },
                 {
@@ -877,8 +1046,8 @@ export default new Router({
                     component: () => import('@/hrds/g/releasemanage/releaseManage.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口管理',url:'/serviceMage'},
-                        {name:'发布管理'},
+                        { name: '服务接口管理', url: '/serviceMage' },
+                        { name: '发布管理' },
                     ],
                 },
                 {
@@ -888,8 +1057,8 @@ export default new Router({
                     component: () => import('@/hrds/g/datarangemanage/dataRangeManage.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口管理',url:'/serviceMage'},
-                        {name:'数据范围管理'},
+                        { name: '服务接口管理', url: '/serviceMage' },
+                        { name: '数据范围管理' },
                     ],
                 },
                 {
@@ -899,8 +1068,8 @@ export default new Router({
                     component: () => import('@/hrds/g/interfaceusemonitor/interfaceUseMonitor.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口管理',url:'/serviceMage'},
-                        {name:'接口使用监控'},
+                        { name: '服务接口管理', url: '/serviceMage' },
+                        { name: '接口使用监控' },
                     ],
                 },
                 {
@@ -910,7 +1079,7 @@ export default new Router({
                     component: () => import('@/hrds/g/serviceuser/serviceUser.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口用户'},
+                        { name: '服务接口用户' },
                     ],
                 },
                 {
@@ -920,66 +1089,218 @@ export default new Router({
                     component: () => import('@/hrds/g/serviceuser/api/getToken.vue'),
                     meta: [
                         { name: '首页' },
-                        {name:'服务接口用户',url:'/serviceUser'},
-                        {name:'获取token'},
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '获取token' },
                     ],
                 },
                 {
                     path: '/generalQuery',
                     name: 'generalQuery',
                     title: '单表普通查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/generalQuery.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/generalQuery.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '单表普通查询接口' },
+                    ],
                 },
                 {
                     path: '/sqlInterfaceSearch',
                     name: 'sqlInterfaceSearch',
                     title: 'sql查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/sqlInterfaceSearch.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/sqlInterfaceSearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'sql查询接口' },
+                    ],
                 },
                 {
                     path: '/rowKeySearch',
                     name: 'rowKeySearch',
                     title: 'rowkey查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/rowKeySearch.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/rowKeySearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'rowkey查询接口' },
+                    ],
                 },
                 {
                     path: '/fileAttributeSearch',
                     name: 'fileAttributeSearch',
                     title: '文件属性搜索接口',
-                    component: () => import('@/hrds/g/serviceuser/api/fileAttributeSearch.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/fileAttributeSearch.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '文件属性搜索接口' },
+                    ],
                 },
                 {
                     path: '/tableStructureQuery',
                     name: 'tableStructureQuery',
                     title: '表结构查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '表结构查询接口' },
+                    ],
+                },
+                {
+                    path: '/tableSearchGetJson',
+                    name: 'tableSearchGetJson',
+                    title: '表结构查询-获取json信息接口',
+                    component: () => import('@/hrds/g/serviceuser/api/tableSearchGetJson.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '表结构查询-获取json信息接口' },
+                    ],
                 },
                 {
                     path: '/tableUsePermissions',
                     name: 'tableUsePermissions',
                     title: '表使用权限查询接口',
-                    component: () => import('@/hrds/g/serviceuser/api/tableUsePermissions.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/tableUsePermissions.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: '表使用权限查询接口' },
+                    ],
                 },
                 {
                     path: '/uuidDownload',
                     name: 'uuidDownload',
                     title: 'UUID下载接口',
-                    component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue')
+                    component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'UUID下载接口' },
+                    ],
+                },
+                {
+                    path: '/hbaseSolrQuery',
+                    name: 'hbaseSolrQuery',
+                    title: 'Solr查询Hbase数据接口',
+                    component: () => import('@/hrds/g/serviceuser/api/hbaseSolrQuery.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '服务接口用户', url: '/serviceUser' },
+                        { name: 'Solr查询Hbase数据接口' },
+                    ],
                 },
                 {
                     path: '/logReview',
                     name: 'logReview',
-                    title: 'UUID下载接口',
+                    title: '日志审查',
                     component: () => import('@/hrds/a/logreview/logReview.vue'),
                     meta: [
                         { name: '首页' },
-                        { name: '日志审查'},
+                        { name: '日志审查' },
                     ],
                 },
+                {
+                    path: '/dataDashboard',
+                    name: 'dataDashboard',
+                    title: '数据仪表盘',
+                    component: () => import('@/hrds/l/dataDashboard/dataDashboard.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据仪表盘', url: '/dataDashboardList' },
+                        { name: '选择样式' },
+                    ],
+                },
+                {
+                    path: '/dataDashboardList',
+                    name: 'dataDashboardList',
+                    title: '数据仪表盘',
+                    component: () => import('@/hrds/l/dataDashboard/dataDashboardList.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '数据仪表盘'}
+                    ],
+                },
+                {
+                    path: '/autonomousAnalysisOperate',
+                    name: 'autonomousAnalysisOperate',
+                    title: '自主取数',
+                    component: () => import('@/hrds/l/selfAcess/selfAccess.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/access',
+                    name: 'access',
+                    title: '查看自主取数',
+                    component: () => import('@/hrds/l/selfAcess/access.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/autonomousAnalysisManage',
+                    name: 'autonomousAnalysisManage',
+                    title: '自主取数模板',
+                    component: () => import('@/hrds/l/selfAcess/template.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/configTemplate',
+                    name: 'configTemplate',
+                    title: '配置自主取数模板',
+                    component: () => import('@/hrds/l/selfAcess/configTemplate.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/myAccess',
+                    name: 'myAccess',
+                    title: '我的取数',
+                    component: () => import('@/hrds/l/selfAcess/myAccess.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                    ],
+                },
+                {
+                    path: '/visualization',
+                    name: 'visualization',
+                    title: '可视化',
+                    component: () => import('@/hrds/l/selfAcess/visualization.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                        { name: '数据可视化' },
+                        { name: '数据可视化设置' },
+                    ],
+                },
+                {
+                    path: '/visualizationindex',
+                    name: 'visualizationindex',
+                    title: '数据可视化',
+                    component: () => import('@/hrds/l/selfAcess/visualizationindex.vue'),
+                    meta: [
+                        { name: '首页' },
+                        { name: '自主取数' },
+                        { name: '数据可视化' },
+                    ],
+                },
+                
             ]
         },
 
-        {path: '*', name: '*', component: () => import('@/hrds/components/notFound.vue')},
+        { path: '*', name: '*', component: () => import('@/hrds/components/notFound.vue') },
         {
             path: '/interfaceTest',
             name: 'interfaceTest',

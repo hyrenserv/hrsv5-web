@@ -109,8 +109,15 @@
             <el-form-item label="Agent服务器密码" prop="user_pwd" :rules="filter_rules([{required: true}])">
                 <el-input v-model="formDeploy.user_pwd" style="width:270px" show-password></el-input>
             </el-form-item>
-            <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])">
-                <el-input v-model="formDeploy.serv_file_path" style="width:270px"></el-input>
+            <el-form-item label="Agent服务器部署目录" prop="isCustomize">
+                <!-- <el-radio-group v-model="formDeploy.isCustomize">
+                    <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                </el-radio-group> -->
+                 <el-switch :active-value="isflag.Shi" :inactive-value="isflag.Fou" v-model="isCustomize" active-color="#13ce66" inactive-color="#ff4949" active-text="自定义" inactive-text="系统默认"/>
+            </el-form-item>
+            <el-form-item label="Agent服务器部署路径" prop="serv_file_path" :rules="filter_rules([{required: true}])" v-if="isCustomize =='1'">
+                <el-input v-model="formDeploy.serv_file_path" style="width:270px">
+                </el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -244,6 +251,7 @@
 <script>
 import * as etlMageAllFun from "./etlMage";
 import * as functionAll from "../detailsPages/Monitor/currentBatch/currentBatch.js";
+import * as validator from "@/utils/js/validator";
 import Highcahrts from 'highcharts';
 import highchartsMore from 'highcharts/highcharts-more';
 highchartsMore(Highcahrts);
@@ -299,12 +307,13 @@ export default {
             valueTime: '',
             dialogInfo: '',
             dialogInfoTri: '',
+            isCustomize:'',
             formDeploy: {
                 etl_sys_cd: "",
                 etl_serv_ip: "",
                 user_name: "",
                 user_pwd: "",
-                serv_file_path: "",
+                serv_file_path: ""
             },
             formStartCON: {
                 etl_sys_cd: "",
@@ -340,12 +349,20 @@ export default {
             isViewCon: false,
             isViewDowntri: false,
             isViewTri: false,
-            timer: ''
+            timer: '',
+            rule: validator.default,
+            isflag: {}, // 是否的代码项
         };
     },
     mounted() {
         this.getTable();
         this.monitorAllProjectChartsData();
+         /** 获取是否类型的代码项 */
+        this.$Code.getCodeItems({
+            'category': 'IsFlag'
+        }).then(res => {
+            this.isflag = res.data;
+        })
     },
     beforeDestroy() {
         // 关闭定时器
@@ -357,7 +374,9 @@ export default {
             let params = {};
             etlMageAllFun.searchEtlSys(params).then(res => {
                 for (let index = 0; index < res.data.length; index++) {
-                    res.data[index].curr_bath_date = fixedAll.dateFormat(res.data[index].curr_bath_date);
+                    if (res.data[index].curr_bath_date) {
+                        res.data[index].curr_bath_date = fixedAll.dateFormat(res.data[index].curr_bath_date);
+                    }
                 }
                 let arr = [];
                 let arr2 = [];
@@ -521,10 +540,7 @@ export default {
                         params["comments"] = this.formAdd.comments;
                         etlMageAllFun.addEtlSys(params).then(res => {
                             if (res.code == 200) {
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
+                            this.$Msg.customizTitle("添加成功", "success");
                                 this.dialogFormVisibleAdd = false;
                                 this.getTable();
                                 this.formAdd = {};
@@ -538,10 +554,7 @@ export default {
                         params["comments"] = this.formAdd.comments;
                         etlMageAllFun.updateEtlSys(params).then(res => {
                             if (res.code == 200) {
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
+                            this.$Msg.customizTitle("修改成功", "success");
                                 this.dialogFormVisibleAdd = false;
                                 this.getTable();
                                 this.formAdd = {};
@@ -569,16 +582,14 @@ export default {
                     let params = {};
                     params["etl_sys_cd"] = this.formDeploy.etl_sys_cd;
                     params["etl_serv_ip"] = this.formDeploy.etl_serv_ip;
-                    params["serv_file_path"] = this.formDeploy.serv_file_path;
                     params["user_name"] = this.formDeploy.user_name;
                     params["user_pwd"] = this.formDeploy.user_pwd;
+                    params["isCustomize"] = this.isCustomize;
+                    params["serv_file_path"] = this.formDeploy.serv_file_path;
                     etlMageAllFun.deployEtlJobScheduleProject(params).then(res => {
                         this.isLoadings = false;
                         if (res && res.success) {
-                            this.$message({
-                                message: '部署成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("部署成功", "success");
                             this.getTable();
                             this.dialogFormVisibleDeploy = false;
                             this.formDeploy = {};
@@ -609,10 +620,7 @@ export default {
                     etlMageAllFun.startControl(params).then(res => {
                         this.isLoading = false;
                         if (res && res.success) {
-                            this.$message({
-                                message: '启动CONTROL成功',
-                                type: 'success'
-                            });
+                            this.$Msg.customizTitle("启动CONTROL成功", "success");
                             this.getTable();
                             this.dialogFormVisibleStartCON = false;
                             this.formStartCON = {};
@@ -642,10 +650,7 @@ export default {
             etlMageAllFun.startTrigger(params).then(res => {
                 this.isloadingTri = false;
                 if (res && res.success) {
-                    this.$message({
-                        message: '启动TRIGGER成功',
-                        type: 'success'
-                    });
+                    this.$Msg.customizTitle("启动TRIGGER成功", "success");
                     this.getTable();
                     this.formStartTRI = {};
                     this.dialogFormVisibleStartTRI = false;
@@ -727,7 +732,12 @@ export default {
         closeCON() {
             this.$refs.formRecordCON.resetFields();
             this.dialogFormVisibleRecordCON = false;
-            this.formRecordCON = {};
+            this.formRecordCON = {
+                etl_sys_cd: "",
+                readNum: "",
+                curr_bath_date: "",
+                project_records: ""
+            }
         },
         //TRIGGER日志查看按钮
         onViewTRI() {
@@ -770,7 +780,12 @@ export default {
         closeTRI() {
             this.$refs.formRecordTRI.resetFields();
             this.dialogFormVisibleRecordTRI = false;
-            this.formRecordTRI = {};
+            this.formRecordTRI = {
+                etl_sys_cd: "",
+                readNum: "",
+                curr_bath_date: "",
+                project_records: "",
+            }
         },
 
         //表格编辑
@@ -792,26 +807,27 @@ export default {
                 }).then(res => {
                     if (res && res.success) {
                         this.getTable();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
+                        this.$Msg.customizTitle("删除成功", "success");
                     }
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$Msg.customizTitle("已取消删除", "info");
             });
         },
         //表格部署按钮
         handleDeploy(index, row) {
             this.formDeploy.etl_sys_cd = row.etl_sys_cd;
+            this.getCategoryItems("IsFlag");
             etlMageAllFun.searchEtlSysById({
                 "etl_sys_cd": row.etl_sys_cd
             }).then(res => {
-                this.formDeploy = res.data;
+                // if (res.data.serv_file_path == undefined || res.data.serv_file_path == "") { //没有部署
+                //     res.data.isCustomize = '0'
+                // } else {
+                //     res.data.isCustomize = '1'
+                // }
+                this.formDeploy = res.data.etlSys;
+                this.isCustomize=res.data.isCustomize;
             });
             this.dialogFormVisibleDeploy = true;
         },
@@ -838,12 +854,14 @@ export default {
         handleRecordco(index, row) {
             this.dialogFormVisibleRecordCON = true;
             this.formRecordCON.etl_sys_cd = row.etl_sys_cd;
+            this.formRecordCON.readNum = 100;
             this.dialogInfo = row.etl_sys_cd;
         },
         //表格TRIGGER日志信息按钮
         handleRecordtr(index, row) {
             this.dialogFormVisibleRecordTRI = true;
             this.formRecordTRI.etl_sys_cd = row.etl_sys_cd;
+            this.formRecordTRI.readNum = 100;
             this.dialogInfoTri = row.etl_sys_cd;
         },
         // 全屏幕显示
@@ -1341,18 +1359,12 @@ export default {
                     etl_sys_cd: row.etl_sys_cd
                 }).then(res => {
                     if (res && res.success) {
-                        this.$message({
-                            message: '停止工程成功',
-                            type: 'success'
-                        });
+                this.$Msg.customizTitle("停止工程成功", "success");
                         this.getTable();
                     }
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消停止'
-                });
+                this.$Msg.customizTitle("已取消停止", "info");
             });
         },
         // 是否续跑控制日期选择
@@ -1364,7 +1376,7 @@ export default {
                 this.formStartCON.curr_bath_date = ''
                 this.dateDisabled = false;
             }
-        }
+        },
     },
 };
 </script>

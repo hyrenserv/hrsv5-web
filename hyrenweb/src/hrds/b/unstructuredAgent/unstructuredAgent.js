@@ -72,3 +72,13 @@ export function updateFileCollect(data) {
         params: data
     })
 }
+
+/**(3)
+ * 立即执行任务
+ */
+export function executeJob(data) {
+    return request({
+        url: '/B/agent/unstructuredfilecollect/executeJob',
+        params: data
+    })
+}

@@ -28,17 +28,17 @@
         <!--用户信息列表展示-->
         <el-table :data="tableData.slice((currPage - 1) * pageSize,currPage * pageSize)" border
                   style="width: 100%">
-            <el-table-column label="序号" align="center">
+            <el-table-column label="序号" align="left" width="50px">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="user_name" label="用户名称" align="center"/>
-            <el-table-column prop="user_id" label="操作员登录账号" align="center"/>
-            <el-table-column prop="user_password" label="密码" align="center"/>
-            <el-table-column prop="user_email" label="邮箱地址" align="center"/>
-            <el-table-column prop="user_remark" label="备注" align="center"/>
-            <el-table-column label="操作" align="center">
+            <el-table-column prop="user_name" label="用户名称" align="left"/>
+            <el-table-column prop="user_id" label="操作员登录账号" align="left"/>
+            <el-table-column prop="user_password" label="密码" align="left"/>
+            <el-table-column prop="user_email" label="邮箱地址" align="left"/>
+            <el-table-column prop="user_remark" label="备注" align="left"/>
+            <el-table-column label="操作" align="left">
                 <template slot-scope="scope">
                     <el-button size="medium" type="text" class='editcolor'
                                @click="selectUserById(scope.row)">
@@ -90,7 +90,6 @@
 </template>
 <script>
     import * as interfaceFunctionAll from "./userManage";
-    import * as message from "@/utils/js/message";
     import * as validator from "@/utils/js/validator";
 
     export default {
@@ -159,7 +158,7 @@
                     if (valid) {
                         // 处理参数
                         interfaceFunctionAll.addUser(this.userForm).then((res) => {
-                            message.saveSuccess(res)
+                            this.$Msg.saveSuccess(res);
                             this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
@@ -174,7 +173,7 @@
                     if (valid) {
                         // 处理参数
                         interfaceFunctionAll.updateUser(this.userForm).then((res) => {
-                            message.updateSuccess(res);
+                           this.$Msg.updateSuccess(res);
                             this.selectUserInfo();
                             this.dialogUserFormVisible = false;
                             // 表单清空
@@ -187,9 +186,9 @@
             deleteUser(row) {
                 let params = {};
                 params["user_id"] = row.user_id;
-                message.confirmMsg('确定删除吗').then(res => {
+               this.$Msg.confirmMsg('确定删除吗').then(res => {
                     interfaceFunctionAll.deleteUser(params).then((res) => {
-                        message.deleteSuccess(res);
+                        this.$Msg.deleteSuccess(res);
                         this.selectUserInfo();
                     })
                 }).catch(() => {

@@ -26,7 +26,7 @@
             <el-table-column label="操作" width="160" align="center">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="dialogFormVisibleUpdate = true;updateData(scope.row.dsl_id,scope.row)">编辑</el-button>
-                    <el-button type="danger" size="mini" @click="deleteArry(scope.row.dsl_id);">删除</el-button>
+                    <el-button type="danger" size="mini" @click="deleteArry(scope.row);">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -154,7 +154,7 @@
 
                     <el-table-column label="value" align="center" :key="4" v-if="selectVlueOrUpload">
                         <template slot-scope="scope">
-                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index <= uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
+                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index < uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
                                 <el-button size="small" type="info" @click="handleEditchange(scope.$index, scope.row)">选择文件</el-button>
                             </el-upload>
 
@@ -164,7 +164,7 @@
 
                             <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-else-if="scope.$index <= inputindex " style="width:98%"></el-input>
 
-                            <el-radio-group v-model="scope.row.radio" v-if="scope.$index > uploadindexmore">
+                            <el-radio-group v-model="scope.row.radio" v-if="scope.$index >= uploadindexmore">
                                 <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>
                                 <el-radio @change="selectedUploadValue=true;handleEditValue(scope.$index, scope.row)" label="1">选择文件</el-radio>
                             </el-radio-group>
@@ -239,7 +239,6 @@
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-import * as message from "@/utils/js/message";
 let arr = [];
 let arr2 = [];
 let tableDataLength;
@@ -297,6 +296,7 @@ export default {
             checkboxType: [],
             YesNo: [],
             databaseType: [],
+            markArrindex: [],
             dataSaveConfigure: false,
             dialogFormVisibleUpdate: false,
             rule: validator.default
@@ -396,30 +396,24 @@ export default {
             })
         },
         // 根据dsl_id删除对应的数据
-        deleteArry(e) {
-            this.$confirm('确定删除吗?', '提示', {
+        deleteArry(row) {
+            this.$confirm('确定删除存储层'+row.dsl_name+'吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
                 functionAll.deleteDataStore({
-                        dsl_id: e,
+                        dsl_id: row.dsl_id,
                     })
                     .then(res => {
                         if (res && res.success) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                            this.$Msg.customizTitle('删除成功', 'success')
                             // 重新渲染页面
                             this.searchDataStore();
                         }
                     })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
+                this.$Msg.customizTitle('已取消删除', 'info')
             });
         },
         // 根据dsl_id更新对应的数据回显和更新
@@ -612,12 +606,7 @@ export default {
                 if (valid) {
                     // 处理参数
                     if (this.form.tableDataConfigure.length == 0) {
-                        this.$message({
-                            showClose: true,
-                            type: 'warning',
-                            message: '表格数据信息为必填项',
-                            duration: 0
-                        })
+                        this.$Msg.customizTitle('表格数据信息为必填项', 'warning')
                     } else if (this.form.tableDataConfigure.length > 0) {
                         this.change_storelayer = [];
                         this.form.dsla_storelayer.forEach((item) => {
@@ -633,6 +622,8 @@ export default {
                                 this.change_storelayer.push("05");
                             } else if (item == "分区列") {
                                 this.change_storelayer.push("06");
+                            } else if (item == "Solr列") {
+                                this.change_storelayer.push("07");
                             }
                         });
 
@@ -668,6 +659,7 @@ export default {
                                     delete item.radio
                                 }
                             })
+                            arrtable = [...arrtable, ...this.markArrindex]
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else if (valueIndex == 2) {
                             let arrtable = [];
@@ -677,6 +669,7 @@ export default {
                                     valueArr[i].is_file = "0";
                                 }
                             }
+                            arrtable = [...arrtable, ...this.markArrindex]
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else {
                             if (tableDatas.length > 0) {
@@ -708,10 +701,7 @@ export default {
                             param
                         ).then((res) => {
                             if (res && res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '更新成功!'
-                                });
+                                this.$Msg.customizTitle('更新成功', 'success')
                                 // 重新渲染页面
                                 this.searchDataStore();
                                 // 关闭弹出层
@@ -875,7 +865,7 @@ export default {
                     this.showValue = false;
                     this.selectVlueOrUpload = true;
                     this.uploadindexless = numberCount - 1;
-                    this.uploadindexmore = this.form.tableDataConfigure.length - 1;
+                    this.uploadindexmore = this.form.tableDataConfigure.length;
                     this.inputindex = numberCount - 1;
                 } else if (val === "3") {
                     if (flag3 == 1) {
@@ -888,7 +878,7 @@ export default {
                     this.selectVlueOrUpload = true;
                     this.showDownloadButton = false;
                     this.uploadindexless = numberCount - 1;
-                    this.uploadindexmore = this.form.tableDataConfigure.length - 1;
+                    this.uploadindexmore = this.form.tableDataConfigure.length;
                     this.inputindex = numberCount - 1;
                 } else if (val === "4") {
                     this.showValue = true;
@@ -926,12 +916,20 @@ export default {
         // 保存上传文件
         handleChange(file, fileList) {
             if (fileList.length > 1) {
-                message.customizTitle("最多上传一条,请删除多余项", "warning");
+                this.$Msg.customizTitle("最多上传一条,请删除多余项", "warning");
             } else {
                 if (dataKey == file.name) {
                     fileArry.push(file.raw);
+                    let obj = {
+                        storage_property_key: dataKey,
+                        storage_property_val: file.name,
+                        is_file: '1'
+                    }
+                    this.markArrindex.push(obj);
                 } else {
-                    message.customizTitle("请选择与key命名相同的文件", "warning");
+                    let index = fileList.findIndex(item => item.name == file.name);
+                    fileList.splice(index, 1);
+                    this.$Msg.customizTitle("文件选择失败,请选择与key命名相同的文件", "warning");
                 }
             }
         },
@@ -943,7 +941,7 @@ export default {
                 }
                 fileList.forEach((item) => {
                     if (item.name != dataKey) {
-                        message.customizTitle("请保留与key命名相同的文件", "warning");
+                        this.$Msg.customizTitle("请保留与key命名相同的文件", "warning");
                     }
                 })
             }
@@ -1006,7 +1004,7 @@ export default {
                 this.fileList = [];
                 this.selectedUploadValue = false;
             } else {
-                message.customizTitle("请选择上传文件保存", "warning");
+                this.$Msg.customizTitle("请选择上传文件保存", "warning");
             }
         },
         // 取消选择上传文件

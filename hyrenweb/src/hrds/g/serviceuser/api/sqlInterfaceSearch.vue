@@ -165,7 +165,7 @@
                         field: 'outType',
                         fieldType: 'String',
                         isRequired: '必填 ( stream / file)只能选择一种',
-                        remark: '输出的数据形式',
+                        remark: '输出的数据形式,stream数据默认展示100条',
                     },
                     {
                         field: 'asynType',
@@ -190,7 +190,7 @@
                         remark: '轮询返回文件名称',
                     },
                     {
-                        field: 'filename',
+                        field: 'filepath',
                         fieldType: 'String',
                         isRequired: '与参数asynType一起使用(如果asynType为2,则必填轮询返回文件名称)',
                         remark: '轮询返回文件路径',
@@ -237,10 +237,10 @@
                             "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
                         this.requestAddressForToken =
                             this.ipAndPort + "?token=AJALalfja&url=" + this.$route.query.url +
-                            "&sql=select a from b&dataType=json&outType=stream";
+                            "&sql=select a from b&dataType=json&outType=stream&asynType=0";
                         this.requestAddress = this.ipAndPort +
-                            "?user_id=1005&user_password=111111&&url=" + this.$route.query.url +
-                            "&sql=select a from b&dataType=json&outType=stream";
+                            "?user_id=1005&user_password=111111&url=" + this.$route.query.url +
+                            "&sql=select a from b&dataType=json&outType=stream&asynType=0";
                     })
             },
         }

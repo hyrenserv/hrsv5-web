@@ -9,56 +9,60 @@
         </router-link>
     </el-row>
     <el-row>
-        <el-col class="borderStyle" :span="5">
+        <el-col :span="6">
             <!--树菜单-->
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
-            <div class='mytree'>
-                <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
-                    <span class="span-ellipsis" slot-scope="{ node, data }" v-if="data.description.length >0">
-                        <span :title="data.description" v-if="data.file_id.length > 0">
-                            <i class=" el-icon-document"></i>{{node.label}}
+            <div style='height:0.1px'>&nbsp;</div>
+            <Scrollbar>
+                <div class='mytree' height='260'>
+                    <el-tree class="filter-tree" :data="webSqlTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
+                        <span class="span-ellipsis" slot-scope="{ node, data }">
+                            <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                                <i class=" el-icon-document"></i>
+                                <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
+                                <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                                <template v-else>{{data.hyren_name}}</template>
+                            </span>
+                            <span :title="data.description" v-else>
+                                <i class="el-icon-folder-opened"></i>{{node.label}}
+                            </span>
                         </span>
-                        <span :title="data.description" v-else>
-                            <i class="el-icon-folder-opened"></i>{{node.label}}
-                        </span>
-                    </span>
-                    <span class="span-ellipsis" slot-scope="{ node, data }" v-else>
-                        <span :title="data.label" v-if="data.file_id.length > 0">
-                            <i class=" el-icon-document"></i>{{node.label}}
-                        </span>
-                        <span :title="data.label" v-else>
-                            <i class="el-icon-folder-opened"></i>{{node.label}}
-                        </span>
-                    </span>
-                </el-tree>
-            </div>
+                    </el-tree>
+                </div>
+            </Scrollbar>
         </el-col>
-
-        <el-col :span="18" :offset="1">
-            <el-tabs v-model="activeName" type="border-card">
+        <el-col :span="18" style="border-left: 1px #e0dcdc dashed;min-height: 570px;">
+            <el-tabs v-model="activeName" type="border-card" @tab-click='tabClick()'>
                 <el-tab-pane label="表查询" name="tableQuery">
-                    <el-table :data="dataByTableName" stripe border size="medium">
-                        <el-table-column v-for="(index, item) in dataByTableName[0]" :key="dataByTableName.$index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
-                            <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
-                            <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
-                        </el-table-column>
+                    <el-table :data="dataByTableName" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun">
+                        <template v-for="(index, item) in dataByTableName[0]">
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                                <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                                <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                            </el-table-column>
+                        </template>
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="Sql查询" name="sqlQuery">
-                    <el-col :span="20">
-                        <div style="min-height:30px">
-                            <codemirror v-model="code" @input="onCmCodeChange" :options="cmOptions" />
-                        </div>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-button class="query-sql-btn" type="primary" @click="getDataBySQL()" size="small">查询
+                    <el-row>
+                        <el-button class="query-sql-btn" style="float: right;" type="primary" @click="getDataBySQL()" size="small">查询
                         </el-button>
-                    </el-col>
-                    <el-table :data="dataBySQL" stripe border size="medium" v-show="showOrhidden">
-                        <el-table-column v-for="(index, item) in dataBySQL[0]" :key="dataBySQL.$index" :label="item" :prop="item" show-overflow-tooltip min-width="210">
-                            <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
-                            <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
-                        </el-table-column>
+                        <el-button type="success" style="float: right;" size="small" class="sql-btn" @click="formaterSql (basicInfoForm.sqlMain)">格式化sql</el-button>
+                    </el-row>
+                    <el-row>
+                        <el-col>
+                            <div>
+                                <SqlEditor ref="sqleditor" :data="1" :value="basicInfoForm.sqlMain" @changeTextarea="changeTextarea($event)" class='textasql' />
+                            </div>
+                        </el-col>
+                    </el-row>
+                    <el-table :data="dataBySQL" stripe border size="medium" :header-cell-style="thStyleFun" :cell-style="cellStyleFun" v-show="showOrhidden">
+                        <template v-for="(index, item) in dataBySQL[0]">
+                            <el-table-column v-if="item !=='hyren_s_date' && item !=='hyren_e_date' && item !=='hyren_md5_val'" :render-header="labelHead" :key="item" :label="item" :prop="item" show-overflow-tooltip>
+                                <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+                                <template slot-scope="scope">{{scope.row[scope.column.property]}}</template>
+                            </el-table-column>
+                        </template>
                     </el-table>
                 </el-tab-pane>
             </el-tabs>
@@ -72,18 +76,15 @@
 <script>
 import * as dataQuery from "./dataQuery";
 import Loading from '../../components/loading';
-import {
-    codemirror
-} from 'vue-codemirror';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/duotone-dark.css'
-import 'codemirror/mode/sql/sql.js'
-
+import sqlFormatter from 'sql-formatter'
+import SqlEditor from '../../components/codemirror/index2'
+import Scrollbar from '../../components/scrollbar';
 export default {
     name: "codeMirror",
     components: {
         Loading,
-        codemirror
+        SqlEditor,
+        Scrollbar,
     },
     data() {
         return {
@@ -97,26 +98,10 @@ export default {
             dataByTableName: [],
             dataBySQL: [],
             copydata: '',
-            code: '',
-            cmOptions: {
-                mode: 'text/x-sql',
-                theme: 'duotone-dark',
-                indentWithTabs: true,
-                smartIndent: true,
-                lineWrapping: true,
-                matchBrackets: true,
-                autofocus: true,
-                extraKeys: {
-                    "Ctrl-Space": "autocomplete"
-                },
-                hintOptions: { //自定义提示选项
-                    tables: {
-                        users: ['name', 'score', 'birthDate'],
-                        countries: ['name', 'population', 'size']
-                    },
-
-                }
+            basicInfoForm: {
+                sqlMain: ''
             },
+            index1: 1,
             webSqlTreeData: [],
         };
     },
@@ -131,26 +116,54 @@ export default {
         this.getWebSQLTreeData();
     },
     methods: {
+        //表头居中
+        thStyleFun() {
+            return 'text-align:center'
+        },
+        //数据居中
+        cellStyleFun() {
+            return 'text-align:center'
+        },
+        //表头自适应
+        labelHead: function (h, { column, index }) {
+            let l = column.label.length
+            let f = 14 //每个字大小，其实是每个字的比例值，大概会比字体大小差不多大一点，
+            column.minWidth = f * l //字大小乘个数即长度 ,注意不要加px像素，这里minWidth只是一个比例值，不是真正的长度
+            //然后将列标题放在一个div块中，注意块的宽度一定要100%，否则表格显示不完全
+            return h('div', { class: 'table-head', style: { width: '100%' } }, [column.label])
+        },
+        //点击标签触发
+        tabClick() {
+            if (this.activeName == 'sqlQuery') {
+                // this.$nextTick(() => {
+                //     // this.$refs.sqleditor.refresh();
+                // });
+            }
+        },
         // 节点搜索
         filterNode(value, data) {
             // 如果检索内容为空,直接返回
             if (!value) return true;
             // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
-            return data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+            // 检索内容为 original_name table_name hyren_name
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+                return (
+                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
+                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
+                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                )
+
+            }
         },
         getWebSQLTreeData() {
             dataQuery.getWebSQLTreeData().then(res => {
                 this.webSqlTreeData = res.data;
             });
         },
-        //   获取编辑器新值
-        onCmCodeChange(newCode) {
-            this.code = newCode
-        },
         //树点击触发
         handleNodeClick(data) {
             this.isLoading = true;
-            if (data.file_id !== '') {
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
                 // 查询数据
                 this.dataByTableName = [];
                 dataQuery.queryDataBasedOnTableName({
@@ -168,12 +181,10 @@ export default {
 
         // 根据SQL查询数据
         getDataBySQL() {
-            let querySQL = this.code;
+            let querySQL = this.$refs.sqleditor.getmVal();
+            // let querySQL = this.basicInfoForm.sqlMain;
             if (querySQL === '') {
-                this.$message({
-                    type: 'warning',
-                    message: '查询sql不能为空!'
-                });
+                this.$Msg.customizTitle('查询sql不能为空', 'warning')
             } else {
                 this.dataBySQL = [];
                 dataQuery.queryDataBasedOnSql({
@@ -215,6 +226,15 @@ export default {
             document.execCommand("Copy"); // 执行浏览器复制命令
             oInput.remove();
         },
+
+        changeTextarea(val) {
+            this.$set(this.basicInfoForm, 'sqlMain', val)
+        },
+        formaterSql(val) {
+            // let dom = this.$refs.sqleditor
+            // dom.editor.setValue(sqlFormatter.format(dom.editor.getValue()))
+            this.$refs.sqleditor.sqlFormatter()
+        },
     }
 }
 </script>
@@ -227,7 +247,7 @@ export default {
 
 /* 查询sql按钮*/
 .query-sql-btn {
-    margin-left: 5%;
+    margin-left: 2%;
 }
 
 .websqlconsole .menu {
@@ -253,5 +273,23 @@ export default {
     height: 60px;
     background: #fff;
     margin-bottom: 10px;
+}
+
+.textasql>>>.CodeMirror {
+    height: 200px !important;
+    /* width:200px !important; */
+}
+
+.sql-btn {
+    margin-bottom: 5px;
+}
+
+.scrollbar-wrap {
+    width: 24% !important;
+    position: absolute;
+}
+
+.scrollbar__track {
+    width: 4px;
 }
 </style>

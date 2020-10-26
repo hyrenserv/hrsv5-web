@@ -291,28 +291,47 @@ export function downloadMart(data) {
 }
 
 //下载集市数据表
-export function downloadDmDatatable(data) {
-    return request({
-        url: '/H/market/downloadDmDatatable',
-        method: 'post',
-        params: data,
-        responseType: 'blob',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-}
+// export function downloadDmDatatable(data) {
+//     return request({
+//         url: '/H/market/downloadDmDatatable',
+//         method: 'post',
+//         params: data,
+//         responseType: 'blob',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     })
+// }
 
 
 //导入集市工程
 export function uploadFile(data) {
     return request({
         url: '/H/market/uploadFile',
+        params: data,
+    })
+}
+//获取集市工程审核文件路径
+export function getImportFilePath(data) {
+    return request({
+        url: '/H/market/getImportFilePath',
         data: data,
         headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
-
+//导入集市工程审核
+export function getImportReviewData(data) {
+    return request({
+        url: '/H/market/getImportReviewData',
+        params: data,
+    })
+}
+export function deleteImportFilePath(data) {
+    return request({
+        url: '/H/market/deleteImportFilePath',
+        params: data,
+    })
+}
 //删除集市工程
 export function deleteMart(data) {
     return request({
@@ -340,7 +359,6 @@ export function getTableTop5InDsl(data) {
 
 //保存前置和后置作业作业
 export function savePreAndAfterJob(data) {
-    debugger;
     return request({
         url: '/H/market/savePreAndAfterJob',
         params: data
@@ -355,7 +373,18 @@ export function getPreAndAfterJob(data) {
         params: data
     })
 }
-
+/**
+ * Excel模板下载
+ */
+export function downloadExcel() {
+    return request({
+        url: '/H/market/downloadExcel',
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 //上传execl表格
 export function uploadExcelFile(data) {
     return request({
@@ -406,3 +435,119 @@ export function checkOracle(data) {
         params: data
     })
 }
+//保存集市分类
+export function saveDmCategory(data) {
+    return request({
+        url: '/H/market/saveDmCategory',
+        params: data
+    })
+}
+//根据数据集市id查询是否需要显示前置作业
+export function getIfRelationDatabase(data) {
+    return request({
+        url: '/H/market/getIfRelationDatabase',
+        params: data
+    })
+}
+
+//根据数据集市id查询是否需要显示前置作业
+export function getIfRelationDatabase2(data) {
+    return request({
+        url: '/H/market/getIfRelationDatabase2',
+        params: data
+    })
+}
+
+//根据数据集市id查询集市分类信息
+export function getDmCategoryInfo(data) {
+    return request({
+        url: '/H/market/getDmCategoryInfo',
+        params: data
+    })
+}
+
+
+//获取数的数据信息
+export function getDmCategoryTreeData(data) {
+    return request({
+        url: '/H/market/getDmCategoryTreeData',
+        params: data
+    })
+}
+//根据集市id删除分类信息
+export function deleteDmCategory(data) {
+    return request({
+        url: '/H/market/deleteDmCategory',
+        params: data
+    })
+}
+//获取所有节点分类信息
+export function getDmCategoryNodeInfo(data) {
+    return request({
+        url: '/H/market/getDmCategoryNodeInfo',
+        params: data
+    })
+}
+//获取数据表所有信息分类集合
+export function getDmCategoryForDmDataTable(data) {
+    return request({
+        url: '/H/market/getDmCategoryForDmDataTable',
+        params: data
+    })
+}
+//修改分类名称
+export function updateDmCategoryName(data) {
+    return request({
+        url: '/H/market/updateDmCategoryName',
+        params: data
+    })
+}
+//获取分类信息
+export function getDmCategoryNodeInfoByIdAndName(data) {
+    return request({
+        url: '/H/market/getDmCategoryNodeInfoByIdAndName',
+        params: data
+    })
+}
+//获取详情表信息
+export function getDmDataTableByDmCategory(data) {
+    return request({
+        url: '/H/market/getDmDataTableByDmCategory',
+        params: data
+    })
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//获取规则信息
+export function getSparkSqlGram(data) {
+    return request({
+        url: '/H/market/getSparkSqlGram',
+        params: data
+    })
+}
+
+
+//获取预聚合SQL信息
+export function prePolymerization(data) {
+    return request({
+        url: '/H/market/prePolymerization',
+        params: data
+    })
+}
+
+//保存预聚合SQL
+export function savePrePolymerization(data) {
+    return request({
+        url: '/H/market/savePrePolymerization',
+        params: data,
+    })
+}
+
+//删除预聚合SQL
+export function deletePrePolymerization(data) {
+    return request({
+        url: '/H/market/deletePrePolymerization',
+        params: data,
+    })
+}
+

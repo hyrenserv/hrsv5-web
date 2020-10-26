@@ -8,7 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import store from './store'
 import App from './App.vue';
 import '@/assets/font-awesome-4.7.0/css/font-awesome.min.css'
-
+import '@/assets/icon/iconfont.css'
 Vue.use(ElementUI);
 ElementUI.Dialog.props.closeOnClickModal.default = false; //默认点击遮照为不关闭
 /**验证引入 */
@@ -43,6 +43,7 @@ import 'vue-happy-scroll/docs/happy-scroll.css'
 /**公用的提示消息框 */
 import * as message from '@/utils/js/message.js'
 Vue.prototype.$Msg = message;
+import $ from 'jquery';
 
 /** 获取代码项类型 */
 import * as codeitems from '@/utils/js/codeitems.js'

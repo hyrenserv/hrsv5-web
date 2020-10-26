@@ -104,6 +104,81 @@ export function getStoDestDetail(data) {
         params: data
     })
 }
+// 贴元登记点击下一步保存
+export function saveRegisterData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/saveRegisterData',
+        params: data
+    })
+}
+// 编辑保存贴元登记
+export function updateRegisterData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/updateRegisterData',
+        params: data
+    })
+}
+// 编辑进来第一步贴元登记信息
+export function editStorageData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/editStorageData',
+        params: data
+    })
+}
+// 新增进来第一步贴元登记信息
+export function getInitStorageData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/register/getInitStorageData',
+        params: data
+    })
+}
+// 贴元第二步获取列信息getColumnsigleInfo
+// 贴元第二步保存
+export function saveregisterTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/saveTableData',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+// 贴元登记编辑第二步保存
+export function updateTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/updateTableData',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+//第三个 数据采集 获取新增时,为配置完成的数据信息
+export function getInitDatabase(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/getInitDatabase',
+        params: data
+    })
+}
+//第三个 数据采集编辑时获取的数据信息
+export function editorDatabase(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/editorDatabase',
+        params: data
+    })
+}
+//第三个 数据采集新增保存的接口
+export function saveDatabaseInfo(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/saveDatabaseInfo',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
+//第三个 数据采集 更新的接口
+export function updateDatabaseInfo(data) {
+    return request({
+        url: '/B/agent/loadintostorage/database/updateDatabaseInfo',
+        data: Qs.stringify(data),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+}
 // steps2
 // 获取初始信息
 export function steps_getInitInfo(data) {
@@ -170,21 +245,13 @@ export function getColumnsigleInfo(data) {
         params: data
     })
 }
-// 保存全部走下一步
-/* export function saveCollTbInfo(data) {
-    return request({
-        url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
-        method: 'post',
-        params:data
-    })
-} */
-// 保存全部走下一步
 
+// 保存全部走下一步
 export function saveCollTbInfo(data) {
     return request({
         url: '/B/agent/dbagentconf/tableconf/saveCollTbInfo',
-        data: Qs.stringify(data),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 // 得到是否过滤和并行抽取之前原有数据
@@ -486,6 +553,13 @@ export function saveFileConf(data) {
     })
 }
 
+// 立即启动SQL占位符号
+export function getSqlParamPlaceholder() {
+    return request({
+        url: '/B/agent/dbagentconf/fileconf/getSqlParamPlaceholder',
+    })
+}
+
 // 第五步  存储目的地
 
 export function stodegetInitInfo(data) {
@@ -624,8 +698,30 @@ export function getEtlJobData(data) {
 export function saveJobDataToDatabase(data) {
     return request({
         url: '/B/agent/dbagentconf/startwayconf/saveJobDataToDatabase',
-        // params: data
-        data: Qs.stringify(data),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
+export function getTableData(data) {
+    return request({
+        url: '/B/agent/resourcerecod/tableregister/getTableData',
+        params: data
+    })
+}
+//文件采集第三步--发送此次任务
+export function sendCollectDatabase(data) {
+    return request({
+        url: '/B/agent/sendCollectDatabase',
+        params: data
+    })
+}
+
+/**
+ * 获取数据库已存在配置信息
+ */
+export function getDatabaseData() {
+    return request({
+        url: '/B/agent/getDatabaseData'
     })
 }

@@ -116,12 +116,12 @@
                 <el-form-item label="选择工程">
                     <el-select v-model="save_etl_form.etl_sys_cd" placeholder="选择工程" size="mini"
                                @change="selectProjectTrigger">
-                        <el-option v-for="i in etl_sys_s" :label="i.etl_sys_name" :value="i.etl_sys_cd"/>
+                        <el-option v-for="i in etl_sys_s" :key="i.etl_sys_cd" :label="i.etl_sys_name" :value="i.etl_sys_cd"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="选择任务">
                     <el-select v-model="save_etl_form.sub_sys_cd" placeholder="选择任务" size="mini">
-                        <el-option v-for="i in sub_sys_s" :label="i.sub_sys_desc" :value="i.sub_sys_cd"/>
+                        <el-option v-for="i in sub_sys_s" :key="i.sub_sys_cd" :label="i.sub_sys_desc" :value="i.sub_sys_cd"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -155,7 +155,7 @@
             return {
                 isLoading: false,
                 currentPage: 1,
-                pageSize: 5,
+                pageSize: 10,
                 totalSize: 0,
                 search_dq_data: {},
                 rule_dqd_data_s: [],

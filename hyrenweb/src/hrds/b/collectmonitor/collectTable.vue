@@ -24,13 +24,13 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
-            <p class="red" v-if="scope.row.B001==tableData.failure">错误信息: {{scope.row.B001error}}</p>
+            <p style="max-width:500px" class="red" v-if="scope.row.B001==tableData.failure">错误信息: {{scope.row.B001error}}</p>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column prop="B002" label="上传">
         <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
+          <el-popover trigger="hover" placement="top" >
             <p>开始时间: {{ scope.row.B002_S_TITLE }}</p>
             <p>结束时间: {{ scope.row.B002_E_TITLE }}</p>
             <div slot="reference" class="name-wrapper">
@@ -46,7 +46,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
-            <p class="red" v-if="scope.row.B002==tableData.failure">错误信息: {{scope.row.B002error}}</p>
+            <p style="max-width:500px" class="red" v-if="scope.row.B002==tableData.failure">错误信息: {{scope.row.B002error}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -68,7 +68,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
-            <p class="red" v-if="scope.row.UHDFS==tableData.failure">错误信息: {{scope.row.UHDFSerror}}</p>
+            <p style="max-width:500px" class="red" v-if="scope.row.UHDFS==tableData.failure">错误信息: {{scope.row.UHDFSerror}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -90,7 +90,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
-            <p class="red" v-if="scope.row.LHIVE==tableData.failure">错误信息: {{scope.row.LHIVEerror}}</p>
+            <p style="max-width:500px" class="red" v-if="scope.row.LHIVE==tableData.failure">错误信息: {{scope.row.LHIVEerror}}</p>
           </el-popover>
         </template>
       </el-table-column>
@@ -112,7 +112,7 @@
               ></i>
               <i v-else class="fa fa-spinner fa-spin blur" aria-hidden="true"></i>
             </div>
-            <p class="red" v-if="scope.row.SOURCE==tableData.failure">错误信息: {{scope.row.SOURCEerror}}</p>
+            <p style="max-width:500px" class="red" v-if="scope.row.SOURCE==tableData.failure">错误信息: {{scope.row.SOURCEerror}}</p>
           </el-popover>
         </template>
       </el-table-column>
