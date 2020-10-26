@@ -2366,7 +2366,7 @@
                                 }
                             });
                         }
-                        // this.getVisualComponentResult(res.data, this.showNum)
+                        this.getVisualComponentResult(res.data, this.showNum)
                     }
                 })
             },
