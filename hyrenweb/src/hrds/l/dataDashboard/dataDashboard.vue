@@ -1,7 +1,7 @@
 <template>
 <div id='dataDashboard'>
     <div class="container">
-        <div class="row" id="toubu" v-cloak>
+        <div class="row" id="toubu">
             <div class="btn-group pull-right">
                 <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
                 <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="dialogBackgroundVisible=true">背景色</el-button>
@@ -268,17 +268,6 @@
     </el-dialog>
 </div>
 </template>
-<!--
-<script src="/static/src/panal/js/util/echarts-option.js"></script>
-<script src="/static/src/panal/js/util/jquery-ui.js"></script>
-<script src="/static/src/panal/js/util/echarts.min.js"></script>
-<script src="/static/src/panal/js/util/vue-grid-layout.umd.min.js"></script>
-<script src="/static/src/panal/js/util/metaUtil.js"></script>
-<script src="/static/src/panal/js/relation/echarts.js"></script>
-<script src="/static/src/panal/js/relation/multiDimension.js"></script>
-<script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
-<script src="/static/src/panal/js/relation/china.js"></script>
--->
 <script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
@@ -366,6 +355,7 @@ export default {
             layoutFlag: false,
             titleFlag: false,
             echartThemeJson: require("@/assets/images/theme/source.jpg"),
+            delpng:require('@/assets/images/del.png'),
             selectRow: [],
             //主题设置参数
             titleData: [{
@@ -771,6 +761,34 @@ export default {
             this.picshow = true;
             this.getDataDashboardInfoById(this.$route.query.dashboard_id);
         }
+        // 监控窗口变化
+        window.addEventListener('resize', () => {
+            if (this.is_showdel == false) {
+                if (!this.checkFull()) {
+                    $(".navbar").show();
+                    $('#toubu').show();
+                    $('#fullScreen').show();
+                    this.chooseTitle_show = true;
+                    this.bordercolor_show = true;
+                    $("#dataDashboard").css("background-color", "background-color:rgb(255, 255, 255);");
+                    //$('#fullScreenExit').hide();
+                    this.is_showdel = true;
+                    $("#mydiv img").each(function () {
+                        $(this).css("display", "inline");
+                    });
+                    for (var i = 0; i < this.selectRow.length; i++) {
+                        if (this.selectRow[i].chart_type != "card" && this.selectRow[i].chart_type != "table" &&
+                            this.selectRow[i].chart_type != "barmd" && this.selectRow[i].chart_type != "bubble") {
+                            $("#" + this.selectRow[i].component_id + " img").css("display", "none");
+                        }
+                    }
+                }
+            } else {
+                if (!this.checkFull()) {
+                    $('#dataDashboard').show();
+                }
+            }
+        });
     },
     watch: {
         layout(layout) {
@@ -1124,7 +1142,8 @@ export default {
         componentSelectionChange(selectTrue) {
             this.selectRow = selectTrue;
         },
-        fullScreen() {
+       // 全屏预览
+       fullScreen() {
             var el = document.documentElement;
             var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
             if (typeof rfs != "undefined" && rfs) {
@@ -1591,6 +1610,8 @@ export default {
                         propsData: {
                             echart_div_layout: layout_obj,
                             auto_line_info: this.auto_line_info,
+                            layout:this.layout,
+                            auto_line_info_array:this.auto_line_info_array
                         }
                     }).$mount();
                     this.linedelimage(id, imagevueobj);
@@ -1973,7 +1994,7 @@ export default {
                     for (var l = 0; l < provincesText.length; l++) {
                         if (this.seriesStyle.provincename == provincesText[l]) {
                             //显示对应省份的方法
-                            showProvince(provinces[l], provincesText[l])
+                            this.showProvince(provinces[l], provincesText[l])
                             break;
                         }
                     }
@@ -3197,7 +3218,16 @@ export default {
                 $("#grid_style").addClass("grid");
                 this.is_gridLine = false;
             }
+        },
+        // 检查是否全屏
+        checkFull() {
+            return document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen;
+        },
+        // 展示省
+        showProvince(pName, Chinese_) {
+            loadBdScript('$'+pName+'JS','../../../js/province/'+pName+'.js');
         }
+
     },
 }
 
@@ -3218,13 +3248,17 @@ var tableProfile = Vue.extend({
         "</table>" +
         "</div>",
     props: ['tabledata', 'tabledatalength', 'backgroundstyle', 'fontstyle'],
-    methods: {}
+    data: function () {
+         return {}
+    },
+    methods:{}
 })
-
 //卡片仪表盘    删除按钮
 var Profile = Vue.extend({
     template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
-    data() {},
+    data: function () {
+         return {}
+    },
     props: ['echart_div_layout', 'layout_id'],
     methods: {
         delcard(layout, echart_div_layout, layout_id) {
@@ -3243,34 +3277,36 @@ var Profile = Vue.extend({
         },
     }
 })
-
 //分割线   删除按钮
 var linedelProfile = Vue.extend({
-    template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
-    data() {},
-    props: ['echart_div_layout', 'auto_line_info'],
+    template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
+    data: function () {
+         return {
+             delpng:this.delpng
+         }
+    },
+    props: ['echart_div_layout', 'auto_line_info','layout','auto_line_info_array'],
     methods: {
-        delcard(layout, echart_div_layout, auto_line_info) {
+        delcard(layout, echart_div_layout, auto_line_info,auto_line_info_array) {
             this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
-
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            global_component_array.layout = this.layout;
-            this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
+            // this.global_component_array.layout = this.layout;
+            // this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                     this.textlinearray.splice(this.textlinearray.indexOf(this.chart_obj_array[i]), 1);
                 }
             }
-
         },
     }
 })
-
 //边框   删除按钮
 var framedelProfile = Vue.extend({
     template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
-    data() {},
+    data: function () {
+         return {}
+    },
     props: ['echart_div_layout', 'auto_frame_info'],
     methods: {
         delcard(layout, echart_div_layout, auto_frame_info) {
@@ -3289,11 +3325,12 @@ var framedelProfile = Vue.extend({
         },
     }
 })
-
 //文本标签    删除按钮
 var labeldelProfile = Vue.extend({
     template: "<img src='@/assets/images/del.png' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
-    data() {},
+    data: function () {
+         return {}
+    },
     props: ['echart_div_layout', 'auto_label_info'],
     methods: {
         delcard(layout, echart_div_layout, auto_label_info) {
@@ -3312,68 +3349,6 @@ var labeldelProfile = Vue.extend({
         },
     }
 })
-
-//加载颜色选择器
-$('#border_color').colorpicker({
-    color: "#eb21eb",
-    format: "hex"
-});
-$('#label_color').colorpicker({
-    color: "transparent",
-    format: "hex"
-});
-$('#font_color').colorpicker({
-    color: "#000000",
-    format: "hex"
-});
-$('#echart_bgcolor').colorpicker({
-    color: "transparent",
-    format: "hex"
-});
-$("#border_color").blur(function () {
-    this.auto_frame_info.border_color = $("#border_color").val();
-});
-$("#label_color").blur(function () {
-    this.auto_label_info.label_color = $("#label_color").val();
-});
-$("#font_color").blur(function () {
-    this.auto_label_info.textStyle.color = $('#font_color').val();
-});
-
-window.onresize = function () {
-    if (this.is_showdel == false) {
-        if (!checkFull()) {
-            $(".navbar").show();
-            $('#toubu').show();
-            $('#fullScreen').show();
-            this.chooseTitle_show = true;
-            this.bordercolor_show = true;
-            $("#mybody").css("background-color", "background-color:rgb(255, 255, 255);");
-            //$('#fullScreenExit').hide();
-            this.is_showdel = true;
-            $("#mydiv img").each(function () {
-                $(this).css("display", "inline");
-            });
-            for (var i = 0; i < this.selectRow.length; i++) {
-                if (this.selectRow[i].chart_type != "card" && this.selectRow[i].chart_type != "table" &&
-                    this.selectRow[i].chart_type != "barmd" && this.selectRow[i].chart_type != "bubble") {
-                    $("#" + this.selectRow[i].component_id + " img").css("display", "none");
-                }
-            }
-        }
-    } else {
-        if (!checkFull()) {
-            $('#fullScreen').show();
-        }
-
-    }
-
-}
-
-function checkFull() {
-    return document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen;
-}
-
 //气泡图拖动时改变大小
 $(document).on("click", ".bubble", function () {
     for (var i = 0; i < this.bubbleIds.length; i++) {
@@ -3381,33 +3356,12 @@ $(document).on("click", ".bubble", function () {
         $("#" + this.bubbleId).css("overflow", "hidden");
     }
 })
-
 //多维柱状图拖动改变大小
 $(document).on("click", ".barmd", function () {
     for (var i = 0; i < this.barmdIds.length; i++) {
         this.changeToBarmdChart(document.getElementById(this.barmdIds[i]), this.barmd_echartdatas[i], this.bcolor);
     }
 })
-
-//加载对应的JS
-function loadBdScript(scriptId, url) {
-    var script = document.createElement("script")
-    script.type = "text/javascript";
-    if (script.readyState) {
-        script.onreadystatechange = function () {
-            if (script.readyState == "loaded" || script.readyState == "complete") {
-                script.onreadystatechange = null;
-            }
-        };
-    }
-    script.src = url;
-    script.id = scriptId;
-    document.getElementsByTagName("head")[0].appendChild(script);
-};
-// 展示省
-function showProvince(pName, Chinese_) {
-    loadBdScript('$'+pName+'JS','../../../js/province/'+pName+'.js');
-}
 </script>
 <style scoped>
 @import '/static/src/panal/css/bootstrap.min.css';
