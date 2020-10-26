@@ -5,7 +5,7 @@
         <el-button size="mini" type="success" @click="AllTable_SeparatorFun()" class="alltables">所有表分隔符设置</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps4">
-        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)">
+        <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" style="width: 100%" size="medium" border :data="ruleForm.unloadingFileData.slice((unloadingcurrentPage - 1) * unloadingpagesize, unloadingcurrentPage *unloadingpagesize)" :height="tableHeight">
             <el-table-column label="序号" align="center" width="60">
                 <template slot-scope="scope">
                     <span>{{scope.$index+(unloadingcurrentPage - 1) * unloadingpagesize + 1}}</span>
