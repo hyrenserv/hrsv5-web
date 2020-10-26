@@ -280,16 +280,26 @@
                     <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='treemap'|| auto_comp_sum.chart_type=='treemap'">
+                     v-if="auto_comp_sum.chart_theme =='table'">
+                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('table')"
+                         src="@/assets/images/chart/table.jpg" alt="二维表" title="二维表">
+                </div>
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='card'">
+                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('card')"
+                         src="@/assets/images/chart/card.jpg" alt="卡片" title="卡片">
+                </div>
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='treemap'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('treemap')"
                          src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="auto_comp_sum.chart_theme =='blend'">
+                     v-if="auto_comp_sum.chart_theme =='bl'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bl')"
                          src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
                     <!--<img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')"-->
-                         <!--src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">-->
+                    <!--src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">-->
                 </div>
                 <div style="margin-top:10px;"
                      v-if="auto_comp_sum.chart_theme =='map'">
@@ -350,14 +360,14 @@
                                 </div>
 
                                 <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"-->
-                                     <!--v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">-->
-                                    <!--<span class="el-input-group__prepends">是否显示引导线</span>-->
-                                    <!--<el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"-->
-                                               <!--class="selectPosition">-->
-                                        <!--<el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"-->
-                                                   <!--:label="item.value" :value="item.code">-->
-                                        <!--</el-option>-->
-                                    <!--</el-select>-->
+                                <!--v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">-->
+                                <!--<span class="el-input-group__prepends">是否显示引导线</span>-->
+                                <!--<el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"-->
+                                <!--class="selectPosition">-->
+                                <!--<el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"-->
+                                <!--:label="item.value" :value="item.code">-->
+                                <!--</el-option>-->
+                                <!--</el-select>-->
                                 <!--</div>-->
 
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
@@ -1513,16 +1523,16 @@
                     value: 'scatter',
                     label: '散点图'
                 }, {
-                //     value: 'card',
-                //     label: '卡片'
-                // }, {
-                //     value: 'table',
-                //     label: '二维表'
-                // }, {
+                    value: 'card',
+                    label: '卡片'
+                }, {
+                    value: 'table',
+                    label: '二维表'
+                }, {
                     value: 'treemap',
                     label: '矩形树图'
                 }, {
-                    value: 'blend',
+                    value: 'bl',
                     label: '混合图'
                 }, {
                     value: 'map',
@@ -2474,17 +2484,14 @@
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 } else if (type == "scatter") {
                     this.tips = "横轴,纵轴都必须为度量";
+                } else if (type == "table") {
+                    this.tips = "直接根据SQL得到的结果进行展示";
+                } else if (type == "card") {
+                    this.tips = "直接展示标题内容";
                 } else if (type == "bl") {
                     this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
                 } else if (type == "treemap") {
                     this.tips = "横轴接受1至2个维度,按第一个维度分类";
-                    // } else if (type == "barmd") {
-                    //     this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
-                // } else if (type == "bubble") {
-                //     this.tips = "横轴为1个维度,纵轴为1个度量";
-                //
-                // } else if (type == "blsimple") {
-                //     this.tips = "横轴为1个维度,纵轴必须为2个度量";
                 } else if (type == "map") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 }
@@ -2542,13 +2549,14 @@
                                 return;
                             }
                             this.changeToScatterChart(xColumns, yColumns, type, res.data);
-                        // } else if (type == "boxplot") {
-                        } else if (type == "bl") {
+                        } else if (type == "card") {
+                            this.$Msg.customizTitle("正在开发中", "warning");
+                        }  else if (type == "table") {
+                            this.$Msg.customizTitle("正在开发中", "warning");
+                        }  else if (type == "bl") {
                             this.$Msg.customizTitle("正在开发中", "warning");
                         } else if (type == "treemap") {
                             this.$Msg.customizTitle("正在开发中", "warning");
-                        // } else if (type == "bubble") {
-                        // } else if (type == "blsimple") {
                         } else if (type == "map") {
                             this.$Msg.customizTitle("正在开发中", "warning");
                         }
