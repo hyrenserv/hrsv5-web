@@ -501,7 +501,7 @@
                 </template>
                 <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.is_zipper_field" disabled v-if="scope.row.collectState==false" :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
-                    <el-checkbox v-model="scope.row.is_zipper_field" v-else  :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
+                    <el-checkbox v-model="scope.row.is_zipper_field" v-else :true-label="Isflag.Shi" :false-label="Isflag.Fou"></el-checkbox>
                 </template>
             </el-table-column>
             <el-table-column property="column_name" label="列名" align="center" width="150px" :show-overflow-tooltip="true"></el-table-column>
@@ -692,7 +692,7 @@ export default {
             isMd5All: false,
             isSqlMd5All: false,
             fieldMd5All: false,
-            oneFieldMd5All:false,
+            oneFieldMd5All: false,
             Isflag: {}
         };
     },
@@ -703,7 +703,9 @@ export default {
         this.sourceName = this.$Base64.decode(this.$route.query.source_name);
         this.edit = this.$route.query.edit;
         // this.getAllTableInfo()
-        this.$Code.getCodeItems({'category':'IsFlag'}).then(res=>{
+        this.$Code.getCodeItems({
+            'category': 'IsFlag'
+        }).then(res => {
             this.Isflag = res.data
         })
     },
@@ -781,7 +783,7 @@ export default {
                     }
 
                 }
-                this.tableData = JSON.parse(JSON.stringify(data));
+                this.tableData = data;
             });
         },
         //编辑状态获取第二个页面值
@@ -808,7 +810,7 @@ export default {
                     }
                 }
                 this.ruleForm.sqlExtractData = data ? data : [];
-                this.zdycallTable = JSON.parse(JSON.stringify(data));
+                this.zdycallTable = data;
             });
         },
         //编辑状态获得初始化信息
@@ -846,9 +848,9 @@ export default {
                         }
                     }
                     this.tableData = data;
-                    this.callTable = JSON.parse(JSON.stringify(data)); //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
-                    this.callTable2 = JSON.parse(JSON.stringify(data));
-                    this.callTable3 = JSON.parse(JSON.stringify(data));
+                    this.callTable = data; //存储之前编辑的数据，不做改动，方便点击下一步保存时对比
+                    this.callTable2 = data;
+                    this.callTable3 = data;
                     // this.Allis_selectionState = true;
                 }
             });
@@ -2132,7 +2134,7 @@ export default {
         },
         //第二个  选择列
         selectCol2(value, row) {
-            if(typeof row.sql === 'undefined') {
+            if (typeof row.sql === 'undefined') {
                 row.sql = this.xsTypeArr2All[value].sql
             }
             this.dialogSelectColumn2 = true;
@@ -3064,5 +3066,4 @@ export default {
     color: #fff;
     font-weight: bold;
 }
-
 </style>
