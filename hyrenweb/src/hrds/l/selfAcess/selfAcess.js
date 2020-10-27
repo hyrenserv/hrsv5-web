@@ -288,6 +288,15 @@ export function addVisualComponentInfo(data) {
     })
 }
 
+
+//更新可视化组件
+export function updateVisualComponentInfo(data) {
+    return request({
+        url: '/L/autoanalysis/operate/updateVisualComponentInfo',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
 //可视化组件回显
 export function getVisualComponentInfoById(data) {
     return request({

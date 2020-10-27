@@ -136,7 +136,8 @@
         </el-row>
         <el-row style="margin:16px 0 8px 0;">
             <div style="width:400px;margin:0 auto;">
-                <el-button size="small" @click="getAnswer" :loading="loadingsearch" :disabled="optionsWordsbuttons"
+                <el-button size="small" @click="getAnswer(false)" :loading="loadingsearch"
+                           :disabled="optionsWordsbuttons"
                            type="primary">得到答案
                 </el-button>
                 <el-input style="width:220px;margin-left:6px;" size="small" v-model="showNum"
@@ -228,46 +229,48 @@
                 </div>
                 <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
 
-                <div v-if="echarttype=='table'" id="type_table" style="height:440px;overflow: auto;">
+                <div v-if="auto_comp_sum.chart_type=='table'" id="type_table" style="height:440px;overflow: auto;">
                     //二位表
                 </div>
-                <div v-if="echarttype=='card'" style="margin-bottom:10px;height:440px">
+                <div v-if="auto_comp_sum.chart_type=='card'" style="margin-bottom:10px;height:440px">
                     <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
                         <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
                         <h1 id="carddiv"></h1>
                     </div>
                 </div>
-                <div v-if="echarttype!='table' && echarttype!='card'" id="myChart"
+                <div v-if="auto_comp_sum.chart_type!='table' && auto_comp_sum.chart_type!='card'" id="myChart"
                      style="width:100%; height: 440px; margin-bottom: 25px"></div>
 
             </el-col>
             <el-col :span="7">
-                <el-select v-model="changeGetchartsValue" size="small" placeholder="请选择" style="width:98%;"
-                           @change="changeGetcharts">
+                <el-select v-model="auto_comp_sum.chart_theme" size="small" placeholder="请选择" style="width:98%;"
+                >
                     <el-option v-for="item in optionsCharts" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='line'">
+                <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme == 'line' ">
                     <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')"
                          src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="changeGetchartsValue =='bar' || echarttype=='barmd' || echarttype=='polarbar'">
+                     v-if="auto_comp_sum.chart_theme =='bar' || auto_comp_sum.chart_type=='polarbar'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bar')"
                          src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
-                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('barmd')"
-                         src="@/assets/images/chart/bar-muldimension.png" alt="多维柱状图(3)" title="多维柱状图(3)">
+                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;"
+                         @click="echartshow('stackingbar')"
+                         src="@/assets/images/chart/stacking-bar.png" alt="堆叠柱状图" title="堆叠柱状图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('polarbar')"
                          src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
                 </div>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='scatter'|| echarttype=='bubble'">
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='scatter'|| auto_comp_sum.chart_type=='bubble'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('scatter')"
                          src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
-                    <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"
-                         src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
+                    <!--<img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bubble')"-->
+                    <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="changeGetchartsValue =='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                     v-if="auto_comp_sum.chart_theme =='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('pie')"
                          src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('fasanpie')"
@@ -275,18 +278,20 @@
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('huanpie')"
                          src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
                 </div>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='treemap'|| echarttype=='treemap'">
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='treemap'|| auto_comp_sum.chart_type=='treemap'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('treemap')"
                          src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
                 </div>
                 <div style="margin-top:10px;"
-                     v-if="changeGetchartsValue =='blend'|| echarttype=='bl' ||echarttype=='blsimple'">
+                     v-if="auto_comp_sum.chart_theme =='blend'|| auto_comp_sum.chart_type=='bl' ||auto_comp_sum.chart_type=='blsimple'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('bl')"
                          src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('blsimple')"
                          src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
                 </div>
-                <div style="margin-top:10px;" v-if="changeGetchartsValue =='map'|| echarttype=='map'">
+                <div style="margin-top:10px;"
+                     v-if="auto_comp_sum.chart_theme =='map'|| auto_comp_sum.chart_type=='map'">
                     <img style="width:87px;height:70px;cursor:pointer;margin-right:4px;" @click="echartshow('map')"
                          src="@/assets/images/chart/map.png" alt="地图" title="地图">
                 </div>
@@ -306,7 +311,7 @@
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">是否显示文本</span>
-                                    <el-select v-model="echartsLabel.show_label" placeholder="是否显示文本" size="small"
+                                    <el-select v-model="auto_comp_sum.show_label" placeholder="是否显示文本" size="small"
                                                class="selectPosition">
                                         <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"
                                                    :label="item.value" :value="item.code">
@@ -314,18 +319,18 @@
                                     </el-select>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="changeGetchartsValue!='map'">
+                                     v-if="auto_comp_sum.chart_theme!='map'">
                                     <span class="el-input-group__prepends">文本显示位置</span>
-                                    <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small"
+                                    <el-select v-model="auto_comp_sum.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="changeGetchartsValue!='pie' && echarttype!='fasanpie' && echarttype!='huanpie'">
+                                               v-show="auto_comp_sum.chart_theme!='pie' && auto_comp_sum.chart_type!='fasanpie' && auto_comp_sum.chart_type!='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
-                                    <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small"
+                                    <el-select v-model="auto_comp_sum.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="changeGetchartsValue=='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                                               v-show="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition1" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
@@ -338,15 +343,15 @@
                                         <div slot="content"><span>{a}表示系列名 <br/>{b}表示数据名<br/>{c}表示数据值<br/>{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
                                     </el-tooltip></span>
-                                    <el-input v-model="echartsLabel.formatter" placeholder="文本格式化" size="small"
+                                    <el-input v-model="auto_comp_sum.formatter" placeholder="文本格式化" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
 
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="changeGetchartsValue=='pie' || echarttype=='fasanpie' || echarttype=='huanpie'">
+                                     v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                                     <span class="el-input-group__prepends">是否显示引导线</span>
-                                    <el-select v-model="echartsLabel.show_line" placeholder="请选择" size="small"
+                                    <el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"
                                                class="selectPosition">
                                         <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"
                                                    :label="item.value" :value="item.code">
@@ -355,7 +360,7 @@
                                 </div>
 
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
-                                     v-if="changeGetchartsValue=='map'">
+                                     v-if="auto_comp_sum.chart_theme=='map'">
                                     <span class="el-input-group__prepends">中国地图或省份</span>
                                     <el-select v-model="seriesStyle.provincename" placeholder="请选择" size="small"
                                                class="selectPosition">
@@ -369,7 +374,7 @@
                             <div style="height:300px;overflow:auto;">
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">名称</span>
-                                    <el-input v-model="auto_comp_sum.chart_theme" placeholder="名称" size="small"
+                                    <el-input v-model="auto_comp_sum.title_name" placeholder="名称" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -559,12 +564,12 @@
                                                       class="selectPosition">
                                             </el-input>
                                         </div>
-                                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                            <span class="el-input-group__prepends">轴标签内容格式器</span>
-                                            <el-input v-model="xAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"
-                                                      class="selectPosition">
-                                            </el-input>
-                                        </div>
+                                        <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
+                                        <!--<span class="el-input-group__prepends">轴标签内容格式器</span>-->
+                                        <!--<el-input v-model="xAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"-->
+                                        <!--class="selectPosition">-->
+                                        <!--</el-input>-->
+                                        <!--</div>-->
                                     </div>
                                 </el-tab-pane>
                                 <el-tab-pane label="纵轴">
@@ -668,21 +673,21 @@
                                                       class="selectPosition">
                                             </el-input>
                                         </div>
-                                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                            <span class="el-input-group__prepends">轴标签内容格式器</span>
-                                            <el-input v-model="yAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"
-                                                      class="selectPosition">
-                                            </el-input>
-                                        </div>
+                                        <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
+                                        <!--<span class="el-input-group__prepends">轴标签内容格式器</span>-->
+                                        <!--<el-input v-model="yAxisLabel.formatter" placeholder="轴标签内容格式器" size="small"-->
+                                        <!--class="selectPosition">-->
+                                        <!--</el-input>-->
+                                        <!--</div>-->
                                     </div>
                                 </el-tab-pane>
                                 <el-tab-pane label="字体样式">
                                     <div style="height:240px;overflow:auto;">
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">背景色</span>
-                                            <el-color-picker v-model="axisStyle.backgroundColor"
+                                            <el-color-picker v-model="axisStyle.backgroundcolor"
                                                              style="width:20px;height:20px;"></el-color-picker>
-                                            <el-input v-model="axisStyle.backgroundColor" placeholder="背景色" size="small"
+                                            <el-input v-model="axisStyle.backgroundcolor" placeholder="背景色" size="small"
                                                       class="selectPosition">
                                             </el-input>
                                         </div>
@@ -697,7 +702,7 @@
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">垂直位置</span>
-                                            <el-select v-model="axisStyle.verticalAlign" placeholder="请选择" size="small"
+                                            <el-select v-model="axisStyle.verticalalign" placeholder="请选择" size="small"
                                                        class="selectPosition">
                                                 <el-option v-for="item in axisStyleverticalAlignArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
@@ -714,48 +719,48 @@
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">字体大小</span>
-                                            <el-input v-model="axisStyle.fontSize" placeholder="字体大小" size="small"
+                                            <el-input v-model="axisStyle.fontsize" placeholder="字体大小" size="small"
                                                       class="selectPosition">
                                             </el-input>
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">字体风格</span>
-                                            <el-select v-model="axisStyle.fontStyle" placeholder="请选择" size="small"
+                                            <el-select v-model="axisStyle.fontstyle" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in titleFont.titleFontfontStyleArr"
+                                                <el-option v-for="item in titleFontfontStyleArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">字体系列</span>
-                                            <el-select v-model="axisStyle.fontFamily" placeholder="请选择" size="small"
+                                            <el-select v-model="axisStyle.fontfamily" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in titleFont.titleFontfontFamilyArr"
+                                                <el-option v-for="item in titleFontfontFamilyArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">字体粗细</span>
-                                            <el-select v-model="axisStyle.fontWeight" placeholder="请选择" size="small"
+                                            <el-select v-model="axisStyle.fontweight" placeholder="请选择" size="small"
                                                        class="selectPosition">
-                                                <el-option v-for="item in  titleFont.titleFontfontWeightArr"
+                                                <el-option v-for="item in  titleFontfontWeightArr"
                                                            :key="item.value" :label="item.value" :value="item.code">
                                                 </el-option>
                                             </el-select>
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">边框颜色</span>
-                                            <el-color-picker v-model="axisStyle.borderColor"
+                                            <el-color-picker v-model="axisStyle.bordercolor"
                                                              style="width:20px;height:20px;"></el-color-picker>
-                                            <el-input v-model="axisStyle.borderColor" placeholder="边框颜色" size="small"
+                                            <el-input v-model="axisStyle.bordercolor" placeholder="边框颜色" size="small"
                                                       class="selectPosition">
                                             </el-input>
                                         </div>
                                         <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                             <span class="el-input-group__prepends">边框粗细</span>
-                                            <el-input v-model="axisStyle.borderWidth" placeholder="边框粗细" size="small"
+                                            <el-input v-model="axisStyle.borderwidth" placeholder="边框粗细" size="small"
                                                       class="selectPosition">
                                             </el-input>
                                         </div>
@@ -763,13 +768,13 @@
                                 </el-tab-pane>
                             </el-tabs>
                         </el-tab-pane>
-                        <el-tab-pane label="图例设置" v-if="changeGetchartsValue !=='map'">
+                        <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_theme !=='map'">
                             <div style="height:300px;overflow:auto;">
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例类型</span>
                                     <el-select v-model="legendStyle.type" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in legendStyle.legendStyletypeArr" :key="item.value"
+                                        <el-option v-for="item in legendStyletypeArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
@@ -794,25 +799,25 @@
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">左边距</span>
-                                    <el-input v-model="legendStyle.left" placeholder="左边距" size="small"
+                                    <el-input v-model="legendStyle.left_distance" placeholder="左边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">右边距</span>
-                                    <el-input v-model="legendStyle.right" placeholder="右边距" size="small"
+                                    <el-input v-model="legendStyle.right_distance" placeholder="右边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">上边距</span>
-                                    <el-input v-model="legendStyle.top" placeholder="上边距" size="small"
+                                    <el-input v-model="legendStyle.top_distance" placeholder="上边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">下边距</span>
-                                    <el-input v-model="legendStyle.bottom" placeholder="下边距" size="small"
+                                    <el-input v-model="legendStyle.bottom_distance" placeholder="下边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -832,7 +837,7 @@
                                     <span class="el-input-group__prepends">布局朝向</span>
                                     <el-select v-model="legendStyle.orient" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in legendStyle.legendStyleorientArr" :key="item.value"
+                                        <el-option v-for="item in legendStyleorientArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
@@ -841,63 +846,63 @@
                                     <span class="el-input-group__prepends">文本对齐</span>
                                     <el-select v-model="legendStyle.align" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in legendStyle.legendStylealignArr" :key="item.value"
+                                        <el-option v-for="item in legendStylealignArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                    <span class="el-input-group__prepends">内边距</span>
-                                    <el-input v-model="legendStyle.padding" placeholder="内边距" size="small"
-                                              class="selectPosition">
-                                    </el-input>
-                                </div>
+                                <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
+                                <!--<span class="el-input-group__prepends">内边距</span>-->
+                                <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
+                                <!--class="selectPosition">-->
+                                <!--</el-input>-->
+                                <!--</div>-->
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图形宽度</span>
-                                    <el-input v-model="legendStyle.itemWidth" placeholder="图形宽度" size="small"
+                                    <el-input v-model="legendStyle.itemwidth" placeholder="图形宽度" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图形高度</span>
-                                    <el-input v-model="legendStyle.itemHeight" placeholder="图形高度" size="small"
+                                    <el-input v-model="legendStyle.itemheight" placeholder="图形高度" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例关闭颜色</span>
-                                    <el-color-picker v-model="legendStyle.inactiveColor"
+                                    <el-color-picker v-model="legendStyle.inactivecolor"
                                                      style="width:20px;height:20px;"></el-color-picker>
-                                    <el-input v-model="legendStyle.inactiveColor" placeholder="图例关闭颜色" size="small"
+                                    <el-input v-model="legendStyle.inactivecolor" placeholder="图例关闭颜色" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例背景颜色</span>
-                                    <el-color-picker v-model="legendStyle.backgroundColor"
+                                    <el-color-picker v-model="legendStyle.backgroundcolor"
                                                      style="width:20px;height:20px;"></el-color-picker>
-                                    <el-input v-model="legendStyle.backgroundColor" placeholder="图例背景颜色" size="small"
+                                    <el-input v-model="legendStyle.backgroundcolor" placeholder="图例背景颜色" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例边框颜色</span>
-                                    <el-color-picker v-model="legendStyle.borderColor"
+                                    <el-color-picker v-model="legendStyle.bordercolor"
                                                      style="width:20px;height:20px;"></el-color-picker>
-                                    <el-input v-model="legendStyle.borderColor" placeholder="图例边框颜色" size="small"
+                                    <el-input v-model="legendStyle.bordercolor" placeholder="图例边框颜色" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例边框粗细</span>
-                                    <el-input v-model="legendStyle.borderWidth" placeholder="图例边框粗细" size="small"
+                                    <el-input v-model="legendStyle.borderwidth" placeholder="图例边框粗细" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                             </div>
 
                         </el-tab-pane>
-                        <el-tab-pane label="图例设置" v-if="changeGetchartsValue =='map'">
+                        <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_theme =='map'">
                             <div style="height:300px;overflow:auto;">
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">是否显示</span>
@@ -948,7 +953,7 @@
                                     <span class="el-input-group__prepends">布局朝向</span>
                                     <el-select v-model="legendStyle.orient" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in legendStyle.legendStyleorientArr" :key="item.value"
+                                        <el-option v-for="item in legendStyleorientArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
@@ -957,46 +962,46 @@
                                     <span class="el-input-group__prepends">文本对齐</span>
                                     <el-select v-model="legendStyle.align" placeholder="请选择" size="small"
                                                class="selectPosition">
-                                        <el-option v-for="item in legendStyle.legendStylealignArr" :key="item.value"
+                                        <el-option v-for="item in legendStylealignArr" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                    <span class="el-input-group__prepends">内边距</span>
-                                    <el-input v-model="legendStyle.padding" placeholder="内边距" size="small"
-                                              class="selectPosition">
-                                    </el-input>
-                                </div>
+                                <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
+                                <!--<span class="el-input-group__prepends">内边距</span>-->
+                                <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
+                                <!--class="selectPosition">-->
+                                <!--</el-input>-->
+                                <!--</div>-->
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例间隔</span>
-                                    <el-input v-model="legendStyle.itemGap" placeholder="图例间隔" size="small"
+                                    <el-input v-model="legendStyle.itemgap" placeholder="图例间隔" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图形宽度</span>
-                                    <el-input v-model="legendStyle.itemWidth" placeholder="图形宽度" size="small"
+                                    <el-input v-model="legendStyle.itemwidth" placeholder="图形宽度" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图形高度</span>
-                                    <el-input v-model="legendStyle.itemHeight" placeholder="图形高度" size="small"
+                                    <el-input v-model="legendStyle.itemheight" placeholder="图形高度" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例边框颜色</span>
-                                    <el-color-picker v-model="legendStyle.borderColor"
+                                    <el-color-picker v-model="legendStyle.bordercolor"
                                                      style="width:20px;height:20px;"></el-color-picker>
-                                    <el-input v-model="legendStyle.borderColor" placeholder="图例边框颜色" size="small"
+                                    <el-input v-model="legendStyle.bordercolor" placeholder="图例边框颜色" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">图例边框粗细</span>
-                                    <el-input v-model="legendStyle.borderWidth" placeholder="图例边框粗细" size="small"
+                                    <el-input v-model="legendStyle.borderwidth" placeholder="图例边框粗细" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -1080,7 +1085,6 @@
                 component_id: this.$route.query.component_id,
                 rule: validator.default,
                 formvalue: '',
-                echarttype: '',
                 myChart: '',
                 myChartType: '',
                 input: '',
@@ -1093,6 +1097,7 @@
                         code: '02'
                     }
                 ],
+                numbersArray: ['int', 'int8', 'int16', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'decimal'],
                 keyWords: '',
                 columnsWordsALL: [],
                 groupCondtionArr: [],
@@ -1146,7 +1151,7 @@
                 inputvalueOptions1: '',
                 markCodeOptionsValue: '',
                 canChangeFiflter: true,
-                showNum: null,
+                showNum: 100,
                 optionsWordsbuttons: true,
                 dynamicColumnTables: [],
                 dynamicColumnTableHiddens: false,
@@ -1154,10 +1159,10 @@
                 ex_destinationcurrentPage: 1,
                 ex_destinationpagesize: 5,
                 loadingsearch: false,
-                backgroundcolor: 'transparent',
-                color: '#000000',
-                borderwidth: '0',
-                bordercolor: '#000000',
+                backgroundcolor: '#000000',
+                // color: '#000000',
+                borderwidth: '1',
+                bordercolor: '#ffffff',
                 // 常规设置
                 echartsLabel: {
                     show_label: '1', //是否显示文本标签
@@ -1232,7 +1237,7 @@
                     code: 'right',
                     value: 'right'
                 }],
-                verticalalign: "top", //标题垂直位置
+
                 titleFontverticalAlignArr: [{
                     code: 'top',
                     value: 'top'
@@ -1281,19 +1286,17 @@
                 }],
                 //标题设置字段总和
                 titleFont: {
-                    align: "left", //标题水平位置
-                    backgroundcolor: "transparent", //标题背景色
-                    bordercolor: "transparent", //标题边框颜色
+                    align: "center", //标题水平位置
+                    backgroundcolor: "#ffffff", //标题背景色
+                    bordercolor: "#ffffff", //标题边框颜色
                     borderwidth: 0, //标题边框粗细
                     borderradius: 0, //坐标轴边框圆角
                     color: "#000000", //字体颜色
                     fontfamily: "Arial", //字体系列
-
+                    verticalalign: "top", //标题垂直位置
                     fontsize: 24, //字体大小
                     fontstyle: "normal", //字体风格
-
                     fontweight: "normal", //字体粗细
-
                     lineheight: "40", //字体行高
                 },
                 //轴线设置--x轴字段
@@ -1319,14 +1322,12 @@
                     data: [], //x轴数据
                     show: '1', //是否显示
                     position: "bottom", //轴位置
-
                     axisoffset: 0, //轴偏移量
                     name: "x轴", //轴名称
                     namelocation: "end", //轴名称位置
-                    min: "0",
-                    max: "100",
+                    min: "",
+                    max: "",
                     silent: "1",
-
                     nameTextStyle: {}, //--轴名称样式
                     namegap: 15, //名称与轴线距离
                     namerotate: 0, //名称旋转角度
@@ -1343,8 +1344,8 @@
                 xAxisLine: {
                     show: '1', //轴线是否显示
                     onzero: '1', //是否在0刻度上
-                    symbol: "none", //箭头显示方式
-                    symbolOffset: 0, //箭头偏移量
+                    // symbol: "none", //箭头显示方式
+                    // symboloffset: 0, //箭头偏移量
                 },
                 xAxisLabel: {
                     show: '1', //刻度标签是否显示
@@ -1379,8 +1380,8 @@
                     axisoffset: 0, //轴偏移量
                     name: "y轴", //轴名称
                     namelocation: "end", //轴名称位置
-                    min: "0",
-                    max: "100",
+                    // min: "0",
+                    // max: "100",
                     silent: "1",
 
                     nameTextStyle: {}, //--轴名称样式
@@ -1397,7 +1398,7 @@
                 },
                 yAxisLabel: {
                     show: '1', //刻度标签是否显示
-                    inside: 0, //刻度标签是否朝内
+                    inside: '0', //刻度标签是否朝内
                     rotate: 0, //刻度标签旋转角度
                     margin: 20, //刻度标签与轴线间距
                     formatter: null, //刻度标签内容格式器
@@ -1425,77 +1426,79 @@
                 //轴线字体
                 axisStyle: {
                     align: "center", //坐标轴水平位置
-
-                    verticalAlign: "middle", //坐标轴垂直位置
-
-                    backgroundColor: "transparent", //坐标轴背景色
-                    borderColor: "transparent", //坐标轴边框颜色
-                    borderWidth: 0, //坐标轴边框粗细
-                    borderRadius: 0, //坐标轴边框圆角
+                    verticalalign: "middle", //坐标轴垂直位置
+                    backgroundcolor: "#ffffff", //坐标轴背景色
+                    bordercolor: "#ffffff", //坐标轴边框颜色
+                    borderwidth: 0, //坐标轴边框粗细
+                    borderradius: 0, //坐标轴边框圆角
                     color: "#000000", //字体颜色
-                    fontFamily: "Arial", //字体系列
-                    fontSize: 12, //字体大小
-                    fontStyle: "normal", //字体风格
-                    fontWeight: "normal", //字体粗细
-                    lineHeight: "", //字体行高
+                    fontfamily: "Arial", //字体系列
+                    fontsize: 12, //字体大小
+                    fontstyle: "normal", //字体风格
+                    fontweight: "normal", //字体粗细
+                    lineheight: "", //字体行高
                 },
+                legendStyletypeArr: [{
+                    code: 'plain',
+                    value: '普通图例'
+                }, {
+                    code: 'scroll',
+                    value: '可滚动翻页的图例'
+                }],
+                legendStyleorientArr: [{
+                    code: 'horizontal',
+                    value: '横向布局'
+                }, {
+                    code: 'vertical',
+                    value: '纵向布局'
+                }],
+                legendStylealignArr: [{
+                    code: 'auto',
+                    value: '居中对齐'
+                }, {
+                    code: 'left',
+                    value: '左对齐'
+                }, {
+                    code: 'right',
+                    value: '右对齐'
+                }],
                 //图例设置字段信息总和
                 legendStyle: {
-                    legendStyletypeArr: [{
-                        code: 'plain',
-                        value: '普通图例'
-                    }, {
-                        code: 'scroll',
-                        value: '可滚动翻页的图例'
-                    }],
                     type: "plain", //图例类型
                     show: '1', //是否显示
-                    tooltip: '1',
-                    left: "center", //左边距
-                    top: "auto", //上边距
-                    right: "auto", //右边距
-                    bottom: "auto", //下边距
-                    width: "auto", //宽度
-                    height: "auto", //高度
+                    tooltip: '1',//是否显示提示
+                    left_distance: "10", //左边距
+                    top_distance: "0", //上边距
+                    right_distance: "0", //右边距
+                    bottom_distance: "0", //下边距
+                    width: "0", //宽度
+                    height: "0", //高度
                     orient: "horizontal", //布局朝向
-                    legendStyleorientArr: [{
-                        code: 'horizontal',
-                        value: '横向布局'
-                    }, {
-                        code: 'vertical',
-                        value: '纵向布局'
-                    }],
                     align: "auto", //图例与文本对齐,
-                    legendStylealignArr: [{
-                        code: 'auto',
-                        value: '居中对齐'
-                    }, {
-                        code: 'left',
-                        value: '左对齐'
-                    }, {
-                        code: 'right',
-                        value: '右对齐'
-                    }],
-                    padding: 5, //图例内边距
-                    itemGap: 10, //图例间隔
-                    itemWidth: 25, //图例宽度
-                    itemHeight: 14, //图例高度
-                    inactiveColor: "#cccccc", //图例关闭时颜色
-                    backgroundColor: "transparent", //图例背景颜色
-                    borderColor: "#cccccc", //边框颜色
-                    borderWidth: 0, //边框大小
+                    padding: 20, //图例内边距
+                    itemgap: 10, //图例间隔
+                    itemwidth: 25, //图例宽度
+                    itemheight: 14, //图例高度
+                    inactivecolor: "#000000", //图例关闭时颜色
+                    backgroundcolor: "#ffffff", //图例背景颜色
+                    bordercolor: "#ffffff", //边框颜色
+                    borderwidth: 0, //边框大小
                     interval: 100, //图例容量(地图)
                     intervalnumber: 4, //图例个数(地图)
-
                 },
                 //组件汇总表
                 auto_comp_sum: {
+                    title_name: "",
+                    chart_theme: "",
                     condition_sql: '',
-                    chart_theme: '',
-                    background: 'transparent',
+                    chart_type: '',
+                    background: '#ffffff',
                     component_id: '',
                     component_nam: '',
                     component_desc: '',
+                    show_label: '1',
+                    position: 'left',
+                    formatter: '{c} {b}'
                 },
                 optionsCharts: [{
                     value: 'line',
@@ -1504,11 +1507,11 @@
                     value: 'bar',
                     label: '柱状图'
                 }, {
-                    value: 'scatter',
-                    label: '散点图'
-                }, {
                     value: 'pie',
                     label: '饼图'
+                }, {
+                    value: 'scatter',
+                    label: '散点图'
                 }, {
                     value: 'card',
                     label: '卡片'
@@ -1525,7 +1528,6 @@
                     value: 'map',
                     label: '地理坐标/地图'
                 }],
-                changeGetchartsValue: '',
                 input1: '',
                 input2: '',
                 tips: '',
@@ -1533,6 +1535,8 @@
                 yValueArry: [],
                 value: '',
                 weiduArry: [],
+                allcolumns: [],
+                allnumcolumns: [],
                 originalweiduArry: [],
                 duliangArry: [],
                 originalduliangArry: [],
@@ -1557,10 +1561,11 @@
                     is_zebraline: "1",
                     zl_background: "#cccccc"
                 },
+                color: ['#e5323e', '#003366', '#fc8c54', '#30ff3a'],
 
             }
         },
-        mounted() {
+        created() {
             this.getWebSQLTreeData(); //获取树结构
             this.getMyAccessInfo();
             this.getCategoryItems();
@@ -1616,9 +1621,6 @@
                     this.dynamicColumnTableHiddens = false;
                 }
             },
-            // duliangArry(val) {
-            //
-            // },
         },
         methods: {
             getVisualComponentInfoById() {
@@ -1658,7 +1660,7 @@
                         itemAll.nameAll = itemAll.column_name;
                     })
                     this.groupCondtionArr = res.data.compGroup;
-                    this.getAnswer();
+                    this.getAnswer(true);
                     res.data.xAxisCol.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
                     })
@@ -1669,16 +1671,13 @@
                     this.yValueArry = res.data.yAxisCol;
                     this.xAxis = res.data.xAxisInfo[0];
                     this.yAxis = res.data.yAxisInfo[0];
-                    debugger;
-                    this.xAxisLine = res.data.xAxisline;
-                    this.yAxisLine = res.data.yAxisline;
-                    this.xAxisLabel = res.data.xAxislabel;
-                    this.yAxisLabel = res.data.yAxislabel;
+                    this.xAxisLine = res.data.xAxisLine;
+                    this.yAxisLine = res.data.yAxisLine;
+                    this.xAxisLabel = res.data.xAxisLabel;
+                    this.yAxisLabel = res.data.yAxisLabel;
                     this.legendStyle = res.data.legendInfo;
                     this.titleFont = res.data.titleFontInfo;
                     this.axisStyle = res.data.axisFontInfo;
-                    console.log(res.data)
-
                 });
             },
             huixiandealwithoptionsWords(column_name, code) {
@@ -1741,8 +1740,6 @@
                         break;
                 }
             },
-
-
             //选择数据来源
             changeSelectDataCollect(val) {
                 if (val === "01") {
@@ -1906,6 +1903,7 @@
                         }
                     })
                     this.weiduArry = res.data.columns;
+                    this.allcolumns = res.data.columns
                     //保存全部的weiduArry，用以模糊查询时恢复
                     this.originalweiduArry = this.weiduArry;
                     if (res.data.numColumns) {
@@ -1918,6 +1916,11 @@
                                 }
                             })
                             this.duliangArry = res.data.numColumns;
+                            this.allnumcolumns = [];
+                            res.data.numColumns.forEach(itemAll => {
+                                this.allnumcolumns.push(itemAll.nameAll);
+                            })
+                            // this.allnumcolumns = res.data.numColumns;
                             //保存全部的duliangArry，用以模糊查询时恢复
                             this.originalduliangArry = this.duliangArry;
                         }
@@ -1941,7 +1944,7 @@
                                         let arr = [];
                                         res.data.columns.forEach(value => {
                                             let object = {
-                                                label: value.column_name,
+                                                label: value.fetch_res_name,
                                                 children: [],
                                                 mark: '1',
                                                 code: '06'
@@ -2264,7 +2267,7 @@
                 return JSON.stringify(arry).indexOf(JSON.stringify(obj)) != -1;
             },
             // 获取答案
-            getAnswer() {
+            getAnswer(flag) {
                 // 处理数据
                 this.loadingsearch = true;
                 let parama = {};
@@ -2287,7 +2290,6 @@
                         repeatflag = true;
                     }
                     arry1.push(obj);
-
                 })
                 // 设置过滤条件数组
                 this.fiflterConditionArr.forEach(val => {
@@ -2314,19 +2316,75 @@
                     arry3.push(obj);
                 })
                 if (repeatflag) {
+                    this.loadingsearch = false;
                     return;
                 }
                 parama.autoCompDataSums = JSON.stringify(arry1);
                 parama.autoCompConds = JSON.stringify(arry2);
                 parama.autoCompGroups = JSON.stringify(arry3);
                 functionAll.getSqlByCondition(parama).then(res => {
+                    debugger;
                     this.loadingsearch = false;
                     if (res && res.success) {
-                        this.loadingsearch = true;
                         this.markexe_sql = res.data;
+                        if (flag) {
+                            this.echartshow(this.auto_comp_sum.chart_type);
+                        }
+                        debugger;
+                        if (!flag) {
+                            this.weiduArry = [];
+                            this.originalweiduArry = [];
+                            this.duliangArry = [];
+                            this.originalduliangArry = [];
+                            this.optionsWords.forEach((item) => {
+                                if (item.code != '07') {
+                                    let obj = {
+                                        nameAll: this.putcodenametogether(item.code, item.realName)
+                                    }
+                                    this.weiduArry.push(obj);
+                                    this.originalweiduArry.push(obj);
+                                    if (item.code == '01' || item.code == '02' || item.code == '03' || item.code == '04' || item.code == '05') {
+                                        this.duliangArry.push(obj);
+                                        this.originalduliangArry.push(obj);
+                                    }else{
+                                        if(this.allnumcolumns.indexOf(item.realName)!=-1 ){
+                                            this.duliangArry.push(obj);
+                                            this.originalduliangArry.push(obj);
+                                        }
+                                    }
+
+                                } else {
+                                    this.allcolumns.forEach((item) => {
+                                        this.weiduArry.push({nameAll: item.nameAll});
+                                        this.originalweiduArry.push({nameAll: item.nameAll});
+                                        if(this.allnumcolumns.indexOf(item.nameAll)!=-1 ){
+                                            this.duliangArry.push({nameAll: item.nameAll});
+                                            this.originalduliangArry.push({nameAll: item.nameAll});
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
                         this.getVisualComponentResult(res.data, this.showNum)
                     }
                 })
+            },
+            putcodenametogether(code, name) {
+                switch (code) {
+                    case '01':
+                        return 'sum(' + name + ')';
+                    case '02':
+                        return 'avg(' + name + ')';
+                    case '03':
+                        return 'max(' + name + ')';
+                    case '04':
+                        return 'min(' + name + ')';
+                    case '06':
+                        return name;
+                    case '05':
+                        return 'count(*)';
+                }
             },
             // 获取答案
             getVisualComponentResult(val, num) {
@@ -2334,7 +2392,7 @@
                     exe_sql: val,
                     showNum: num
                 }).then(res => {
-                    this.loadingsearch = false;
+
                     this.dynamicColumns = res.data.columnList;
                     this.dynamicColumnTables = res.data.visualComponentList;
                 })
@@ -2346,96 +2404,95 @@
             ex_destination_handleSizeChange(size) {
                 this.ex_destinationpagesize = size;
             },
-            // 获取不同表的显示图片
-            changeGetcharts(val) {
-                // if (val == 'line') {
-                //
-                // } else if (val == 'bar') {
-                //
-                // } else if (val == 'scatter') {
-                //
-                // } else if (val == 'pie') {
-                //
-                // } else if (val == 'treemap') {
-                //
-                // } else if (val == 'blend') {
-                //
-                // } else if (val == 'map') {
-                //
-                // }
-                console.log(val)
-            },
             // 删除横轴x的选择字段信息
             deleteXvalue(item, index) {
                 this.xValueArry.splice(index, 1);
-                this.weiduArry = this.originalweiduArry;
-                this.duliangArry = this.originalduliangArry;
+                let warry = [];
+                let darry = [];
+                this.weiduArry.forEach((item, index) => {
+                    warry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(warry, item.nameAll)) {
+                    this.weiduArry.push(item);
+                }
+                this.duliangArry.forEach((item, index) => {
+                    darry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(darry, item.nameAll)) {
+                    if (this.checkIfObjInArray(this.numbersArray, item.column_type))
+                        this.duliangArry.push(item);
+                }
             },
             // 删除横轴y的选择字段信息
             deleteYvalue(item, index) {
                 this.yValueArry.splice(index, 1);
-                this.weiduArry = this.originalweiduArry;
-                this.duliangArry = this.originalduliangArry;
-            },
-            // 获取表的数据信息
-            getChartShow() {
-                // functionAll.getChartShow({
-
-                // }).then(res=>{
-                //     exe_sql:  this.markexe_sql ,
-                //     x_columns:,
-                //     y_columns:,
-                //     chart_type:,
-                // })
+                let warry = [];
+                let darry = [];
+                this.weiduArry.forEach((item, index) => {
+                    warry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(warry, item.nameAll)) {
+                    this.weiduArry.push(item);
+                }
+                this.duliangArry.forEach((item, index) => {
+                    darry.push(item.nameAll);
+                });
+                if (!this.checkIfObjInArray(darry, item.nameAll)) {
+                    if (this.checkIfObjInArray(this.numbersArray, item.column_type))
+                        this.duliangArry.push(item);
+                }
             },
             // 选择图标类型
             echartshow(type) {
                 this.myChartType = type;
-                let xColumns = '';
-                let yColumns = '';
+                let xColumns = []
+                let yColumns = [];
                 //数据处理获取图信息
                 if (this.xValueArry.length > 0) {
                     this.xValueArry.forEach((item, index) => {
                         if (index != this.xValueArry.length - 1) {
-                            xColumns += item.nameAll + ','
+                            xColumns.push(item.nameAll)
                         } else {
-                            xColumns += item.nameAll
+                            xColumns.push(item.nameAll)
                         }
                     })
                 }
                 if (this.yValueArry.length > 0) {
                     this.yValueArry.forEach((item, index) => {
                         if (index != this.yValueArry.length - 1) {
-                            yColumns += item.nameAll + ','
+                            yColumns.push(item.nameAll)
                         } else {
-                            yColumns += item.nameAll
+                            yColumns.push(item.nameAll)
                         }
                     })
                 }
                 if (type == 'line') {
                     this.tips = "横轴为1个维度,纵轴接受多个度量";
-                } else if (type == 'bar') {
+                } else if (type == 'bar' || type == 'stackingbar') {
                     this.tips = "横轴为1个维度,纵轴接受多个度量";
+                } else if (type == "polarbar") {
+                    this.tips = "横轴为1个维度,纵轴为1个度量";
                 } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 } else if (type == "scatter") {
                     this.tips = "横轴,纵轴都必须为度量";
-                } else if (type == "boxplot") {
-                    this.tips = "";
                 } else if (type == "bl") {
                     this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
                 } else if (type == "treemap") {
                     this.tips = "横轴接受1至2个维度,按第一个维度分类";
-                } else if (type == "barmd") {
-                    this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
+                    // } else if (type == "barmd") {
+                    //     this.tips = "横轴接受1至3个维度,分类程度逐渐降低";
                 } else if (type == "bubble") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
-                } else if (type == "polarbar") {
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
+
                 } else if (type == "blsimple") {
                     this.tips = "横轴为1个维度,纵轴必须为2个度量";
                 } else if (type == "map") {
                     this.tips = "横轴为1个维度,纵轴为1个度量";
+                }
+                if (this.checkifvalidate(this.markexe_sql)) {
+                    this.$Msg.customizTitle("请先点击得到答案", "warning");
+                    return;
                 }
                 functionAll.getChartShow({
                     exe_sql: this.markexe_sql,
@@ -2443,34 +2500,183 @@
                     y_columns: yColumns,
                     chart_type: type,
                 }).then(res => {
-                    console.log(res.data)
-                    if (type == 'line') { //折线图
-                        this.changeToAreaChart(xColumns, yColumns, type, res.data)
-                    } else if (type == 'bar') { //标准柱状图
-                        this.changeToBarChart(xColumns, yColumns, type, res.data);
-                    } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
-                        this.changeToPieChart(xColumns, yColumns, type, res.data);
-                    } else if (type == "scatter") {
+                        if (type == 'line') { //折线图
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            this.changeToAreaChart(xColumns, yColumns, type, res.data)
+                        } else if (type == 'bar') { //标准柱状图
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            this.changeToBarChart(xColumns, yColumns, type, res.data);
+                        } else if (type == 'stackingbar') { //堆叠柱状图
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            this.changeToStackingBarChart(xColumns, yColumns, type, res.data);
+                        } else if (type == "polarbar") { //极坐标堆叠柱状图
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            this.changeToPolarBarChart(xColumns, yColumns, type, res.data);
+                        } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            if (yColumns.length > 1) {
+                                this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                return;
+                            }
+                            this.changeToPieChart(xColumns, yColumns, type, res.data);
+                        } else if (type == "scatter") {
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            if (yColumns.length > 1) {
+                                this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                return;
+                            }
+                            this.changeToScatterChart(xColumns, yColumns, type, res.data);
+                        } else if (type == "boxplot") {
 
-                    } else if (type == "boxplot") {
+                        } else if (type == "bl") {
 
-                    } else if (type == "bl") {
+                        } else if (type == "treemap") {
 
-                    } else if (type == "treemap") {
+                        } else if (type == "bubble") {
 
-                    } else if (type == "barmd") {
+                        } else if (type == "blsimple") {
 
-                    } else if (type == "bubble") {
+                        } else if (type == "map") {
 
-                    } else if (type == "polarbar") {
-
-                    } else if (type == "blsimple") {
-
-                    } else if (type == "map") {
-
+                        }
                     }
-                })
+                )
 
+            },
+            initproperty() {
+                var result = {};
+                //设置标题属性
+                var titles = {
+                    text: this.auto_comp_sum.title_name,
+                    x: this.titleFont.align,
+                    y: this.titleFont.verticalalign,
+                    backgroundColor: this.titleFont.backgroundcolor,
+                    borderColor: this.titleFont.bordercolor,
+                    borderWidth: this.titleFont.borderwidth,
+                    borderRadius: this.titleFont.borderradius,
+                    textStyle: {
+                        color: this.titleFont.color,
+                        fontFamily: this.titleFont.fontfamily,
+                        fontSize: this.titleFont.fontsize,
+                        fontStyle: this.titleFont.fontstyle,
+                        fontWeight: this.titleFont.fontweight,
+                        lineHeight: this.titleFont.lineheight,
+                    }
+                };
+                result.titles = titles;
+                //设置图上每个节点的显示情况
+                var labelOption = {
+                    normal: {
+                        show: this.auto_comp_sum.show_label == '1' ? true : false,
+                        position: this.auto_comp_sum.position,
+                        formatter: this.auto_comp_sum.formatter
+                    }
+                }
+                result.labelOption = labelOption;
+                var nameTextStyle = {
+                    color: this.axisStyle.color,
+                    lineHeight: this.axisStyle.lineheight,
+                    fontFamily: this.axisStyle.fontfamily,
+                    fontSize: this.axisStyle.fontsize,
+                    align: this.axisStyle.align,
+                    backgroundColor: this.axisStyle.backgroundcolor,
+                    borderColor: this.axisStyle.bordercolor,
+                    fontStyle: this.axisStyle.fontstyle,
+                    fontWeight: this.axisStyle.fontweight,
+                    borderWidth: this.axisStyle.borderwidth,
+                    borderRadius: this.axisStyle.borderradius,
+                    verticalAlign: this.axisStyle.verticalalign,
+                };
+                result.nameTextStyle = nameTextStyle;
+                var xAxis = {
+                    name: this.xAxis.name,
+                    position: this.xAxis.position,
+                    show: this.xAxis.show == '1' ? true : false,
+                    axisoOffset: this.xAxis.axisoffset,
+                    nameLocation: this.xAxis.namelocation,
+                    nameRotate: this.xAxis.namerotate,
+                    nameGap: this.xAxis.namegap
+                }
+                result.xAxis = xAxis;
+                var yAxis = {
+                    name: this.yAxis.name,
+                    position: this.yAxis.position,
+                    show: this.yAxis.show == '1' ? true : false,
+                    axisoOffset: this.yAxis.axisoffset,
+                    nameLocation: this.yAxis.namelocation,
+                    nameRotate: this.yAxis.namerotate,
+                    nameGap: this.yAxis.namegap
+                }
+                result.yAxis = yAxis;
+                var xaxisLine = {
+                    show: this.xAxisLine.show == '1' ? true : false,
+                    onZero: this.xAxisLine.onzero == '1' ? true : false,
+                };
+                result.xaxisLine = xaxisLine;
+                var xaxisLabel = {
+                    show: this.xAxisLabel.show == '1' ? true : false,
+                    inside: this.xAxisLabel.inside == '1' ? true : false,
+                    rotate: this.xAxisLabel.rotate,
+                    margin: this.xAxisLabel.margin,
+                    // formatter: this.xAxisLabel.formatter,
+                };
+                result.xaxisLabel = xaxisLabel;
+                var yaxisLine = {
+                    show: this.yAxisLine.show == '1' ? true : false,
+                    onZero: this.yAxisLine.onzero == '1' ? true : false,
+                };
+                result.yaxisLine = yaxisLine;
+                var yaxisLabel = {
+                    show: this.yAxisLabel.show == '1' ? true : false,
+                    inside: this.yAxisLabel.inside == '1' ? true : false,
+                    rotate: this.yAxisLabel.rotate,
+                    margin: this.yAxisLabel.margin,
+                    // formatter: this.yAxisLabel.formatter,
+                };
+                result.yaxisLabel = yaxisLabel;
+                var legendStyle = {
+                    type: this.legendStyle.type,
+                    show: this.legendStyle.show == '1' ? true : false,
+                    tooltip: this.legendStyle.tooltip == '1' ? true : false,
+                    left: this.legendStyle.left_distance,
+                    top: this.legendStyle.top_distance,
+                    right: this.legendStyle.right_distance,
+                    bottom: this.legendStyle.bottom_distance,
+                    width: this.legendStyle.width,
+                    height: this.legendStyle.height,
+                    orient: this.legendStyle.orient,
+                    align: this.legendStyle.align,
+                    // padding: this.legendStyle.padding,
+                    itemGap: this.legendStyle.itemgap,
+                    itemWidth: this.legendStyle.itemwidth,
+                    itemHeight: this.legendStyle.itemheight,
+                    inactiveColor: this.legendStyle.inactivecolor,
+                    backgroundColor: this.legendStyle.backgroundcolor,
+                    borderColor: this.legendStyle.bordercolor,
+                    borderWidth: this.legendStyle.borderwidth,
+                    interval: this.legendStyle.interval,
+                    intervalNumber: this.legendStyle.intervalnumber
+                };
+                result.legendStyle = legendStyle;
+                return result;
             },
             //初始化echart
             drawLine(option) {
@@ -2481,264 +2687,186 @@
             },
             // 折线图
             changeToAreaChart(x_columns, y_columns, type, data) {
-                let vm = this;
-                var legend_data = data.legend_data;
-                var seriesArray = data.seriesArray;
-                var xArray = data.xArray;
-                vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
-                vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
-                vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
-                vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
-                vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
-
-                vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
-                vm.xAxis.type = "category";
-                vm.xAxis.data = xArray;
-                vm.xAxis.nameTextStyle = vm.axisStyle;
-                vm.xAxis.axisLine = vm.xAxisLine;
-                vm.xAxis.axisLabel = vm.xAxisLabel;
-
-                vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
-                vm.yAxis.type = "value";
-                vm.yAxis.nameTextStyle = vm.axisStyle;
-                vm.yAxis.axisLine = vm.yAxisLine;
-                vm.yAxis.axisLabel = vm.yAxisLabel;
-
-                var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
-
-                vm.legendStyle.data = legend_data;
-                vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
-                vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
-                vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
-                let objDefine = Object.assign({}, vm.echartsLabel);
-                if (objDefine.show_label == "1") {
-                    objDefine.show_label = true;
-                } else {
-                    objDefine.show_label = false;
-                }
-                if (objDefine.show_line == "1") {
-                    objDefine.show_line = true;
-                } else {
-                    objDefine.show_line = false;
-                }
-                if (objDefine.smooth == "1") {
-                    objDefine.smooth = true;
-                } else {
-                    objDefine.smooth = false;
-                }
-                var itemStyles = transferSeriesItemStyle(objDefine);
-
-                for (var i = 0; i < seriesArray.length; i++) {
-                    seriesArray[i].itemStyle = itemStyles;
-                }
-
+                //https://echarts.apache.org/examples/zh/editor.html?c=area-stack
+                var result = this.initproperty();
+                data.seriesArray.forEach(val => {
+                    val.label = result.labelOption;
+                })
                 let option = {
-                    backgroundColor: vm.auto_comp_sum.background,
-                    title: titles,
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    legend: vm.legendStyle,
+                    backgroundColor: this.auto_comp_sum.background,
+                    title: result.titles,
+                    legend: Object.assign({}, result.legendStyle, {data: data.legend_data}),
                     grid: {
-                        left: '3%',
-                        right: '4%',
+                        left: '5%',
+                        right: '10%',
                         bottom: '3%',
                         containLabel: true
                     },
-                    toolbox: {
-                        feature: {
-                            saveAsImage: {}
-                        }
-                    },
-                    xAxis: vm.xAxis,
-                    yAxis: vm.yAxis,
-                    series: seriesArray
+                    xAxis: [
+                        Object.assign({}, {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: data.xArray,
+                            nameTextStyle: result.nameTextStyle,
+                            axisLine: result.xaxisLine,
+                            axisLabel: result.xaxisLabel,
+                        }, result.xAxis)
+                    ],
+                    yAxis: Object.assign({}, {
+                        type: 'value',
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.yaxisLine,
+                        axisLabel: result.yaxisLabel,
+                    }, result.yAxis),
+                    series: data.seriesArray
                 };
                 this.drawLine(option);
-            },
+            }
+            ,
             //柱状图
             changeToBarChart(x_columns, y_columns, type, data) {
-                let vm = this;
-                var legend_data = data.legend_data;
-                var seriesArray = data.seriesArray;
-                var xArray = data.xArray;
-
-                vm.axisStyle.borderWidth = parseInt(vm.axisStyle.borderWidth);
-                vm.xAxisLabel.margin = parseInt(vm.xAxisLabel.margin);
-                vm.yAxisLabel.margin = parseInt(vm.yAxisLabel.margin);
-                vm.xAxisLabel.formatter = vm.xAxisLabel.formatter == "" ? null : vm.xAxisLabel.formatter;
-                vm.yAxisLabel.formatter = vm.yAxisLabel.formatter == "" ? null : vm.yAxisLabel.formatter;
-
-                vm.xAxisLabel = Object.assign({}, vm.xAxisLabel, vm.axisStyle);
-                vm.xAxis.type = "category";
-                vm.xAxis.data = xArray;
-                vm.xAxis.nameTextStyle = vm.axisStyle;
-                vm.xAxis.axisLine = vm.xAxisLine;
-                vm.xAxis.axisLabel = vm.xAxisLabel;
-
-                vm.yAxisLabel = Object.assign({}, vm.yAxisLabel, vm.axisStyle);
-                vm.yAxis.type = "value";
-                vm.yAxis.nameTextStyle = vm.axisStyle;
-                vm.yAxis.axisLine = vm.yAxisLine;
-                vm.yAxis.axisLabel = vm.yAxisLabel;
-
-                var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
-                vm.legendStyle.data = legend_data;
-                vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
-                vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
-                vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
-                let objDefine = Object.assign({}, vm.echartsLabel);
-                if (objDefine.show_label == "1") {
-                    objDefine.show_label = 'ture';
-                } else {
-                    objDefine.show_label = 'false';
-                }
-                if (objDefine.show_line == "1") {
-                    objDefine.show_line = 'ture';
-                } else {
-                    objDefine.show_line = 'false';
-                }
-                if (objDefine.smooth == "1") {
-                    objDefine.smooth = 'ture';
-                } else {
-                    objDefine.smooth = 'false';
-                }
-                var itemStyles = transferSeriesItemStyle(objDefine);
-                for (var i = 0; i < seriesArray.length; i++) {
-                    seriesArray[i].itemStyle = itemStyles;
-                }
+                //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
+                var result = this.initproperty();
+                data.seriesArray.forEach(val => {
+                    val.label = result.labelOption;
+                })
                 let option = {
-                    backgroundColor: vm.auto_comp_sum.background,
-                    title: titles,
+                    backgroundColor: this.auto_comp_sum.background,
+                    title: result.titles,
+                    legend: Object.assign({}, result.legendStyle, {data: data.legend_data}),
+                    grid: {
+                        left: '5%',
+                        right: '10%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        Object.assign({}, {
+                            type: 'category',
+
+                            data: data.xArray,
+                            nameTextStyle: result.nameTextStyle,
+                            axisLine: result.xaxisLine,
+                            axisLabel: result.xaxisLabel,
+                        }, result.xAxis)
+                    ],
+                    yAxis: Object.assign({}, {
+                        type: 'value',
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.yaxisLine,
+                        axisLabel: result.yaxisLabel,
+                    }, result.yAxis),
+                    series: data.seriesArray
+                };
+                this.drawLine(option)
+            },
+            //堆叠柱状图
+            changeToStackingBarChart(x_columns, y_columns, type, data) {
+                //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
+                let option = {
+                    backgroundColor: this.auto_comp_sum.background,
+                    // color: this.color,
+                    // title: titles,
                     tooltip: {
                         trigger: 'axis',
-                        axisPointer: { // 坐标轴指示器，坐标轴触发有效
-                            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                         }
                     },
-                    legend: vm.legendStyle,
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            magicType: {
-                                show: true,
-                                type: ['stack', 'tiled']
-                            },
-                            saveAsImage: {
-                                show: true
-                            }
-                        }
-                    },
+                    legend: {data: data.legend_data},
                     grid: {
                         left: '3%',
                         right: '4%',
                         bottom: '3%',
                         containLabel: true
                     },
-                    xAxis: vm.xAxis,
-                    yAxis: vm.yAxis,
-                    series: seriesArray
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: data.xArray
+                        }
+                    ],
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: data.seriesArray
+                };
+                this.drawLine(option)
+            },
+            //极坐标堆叠图
+            changeToPolarBarChart(x_columns, y_columns, type, data) {
+                let option = {
+                    backgroundColor: this.auto_comp_sum.background,
+                    // color: this.color,
+                    angleAxis: {},
+                    radiusAxis: {
+                        type: 'category',
+                        data: data.xArray,
+                    },
+                    polar: {},
+                    series: data.seriesArray,
+                    legend: {data: data.legend_data},
                 };
                 this.drawLine(option)
             },
             //饼图
             changeToPieChart(x_columns, y_columns, type, data) {
-                let vm = this;
-                let objDefine = Object.assign({}, vm.echartsLabel);
-                if (objDefine.show_label == "1") {
-                    objDefine.show_label = 'ture';
-                } else {
-                    objDefine.show_label = 'false';
-                }
-                if (objDefine.show_line == "1") {
-                    objDefine.show_line = 'ture';
-                } else {
-                    objDefine.show_line = 'false';
-                }
-                if (objDefine.smooth == "1") {
-                    objDefine.smooth = 'ture';
-                } else {
-                    objDefine.smooth = 'false';
-                }
-                var legend_data = data.legendData;
-                var seriesArray = data.seriesArray;
-                var pietype = data.pietype;
-                if (pietype == 'huanpie') { //&& vm.echartsLabel.show_count==true
-                    var count = '总数：' + data.count;
-                } else {
-                    var count = "";
-                }
-
-                var titles = transferOptionTitles(vm.auto_comp_sum.chart_theme, vm.titleFont);
-                vm.legendStyle.data = legend_data;
-                vm.legendStyle.padding = parseInt(vm.legendStyle.padding);
-                vm.legendStyle.itemGap = parseInt(vm.legendStyle.itemGap);
-                vm.legendStyle.itemWidth = parseInt(vm.legendStyle.itemWidth);
-                var itemStyles = {
-                    normal: {
-                        label: {
-                            show: vm.echartsLabel.show_label,
-                            position: vm.echartsLabel.position,
-                            formatter: vm.echartsLabel.formatter
-                        },
-                        labelLine: {
-                            show: vm.echartsLabel.show_line
-                        }
-                    }
-                };
-                for (var i = 0; i < seriesArray.length; i++) {
-                    seriesArray[i].itemStyle = itemStyles;
-                    seriesArray[i].center = vm.seriesStyle.center;
-                }
-
                 var option = {
-                    backgroundColor: vm.auto_comp_sum.background,
-                    title: titles,
+                    color: this.color,
                     tooltip: {
                         trigger: 'item',
                         formatter: "{a} <br/>{b} : {c} ({d}%)"
                     },
-                    legend: vm.legendStyle,
+                    legend: {"data": data.legendData},
                     graphic: {
                         type: 'text',
                         left: 'center',
                         top: 'center',
                         style: {
-                            text: count,
+                            text: data.count,
                             textAlign: 'center',
                             fill: '#000',
                             width: 30,
                             height: 30
                         }
                     },
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            saveAsImage: {
-                                show: true
-                            }
-                        }
-                    },
                     calculable: true,
-                    series: seriesArray
+                    series: data.seriesArray
                 }
                 this.drawLine(option)
             },
+            //标准散点图
+            changeToScatterChart(x_columns, y_columns, type, data) {
+                var option = {
+                    backgroundColor: this.auto_comp_sum.background,
+                    xAxis: {},
+                    yAxis: {},
+                    series: [{
+                        data: data.scatterData,
+                        type: 'scatter'
+                    }]
+                };
+                this.drawLine(option)
+            },
+
+
             // 返回上一级
             goBack() {
                 this.$router.push({
                     name: 'visualizationindex'
                 })
-            },
+            }
+            ,
             checkifvalidate(val) {
                 return val == "" || val == undefined;
-            },
+            }
+            ,
             addVisualComponentInfo() {
                 if (this.checkifvalidate(this.auto_comp_sum.component_name)) {
                     this.$Msg.customizTitle('组件名称为空，请填写', 'warning');
                     return;
                 }
-                if (this.checkifvalidate(this.auto_comp_sum.chart_theme)) {
+                if (this.checkifvalidate(this.auto_comp_sum.title_name)) {
                     this.$Msg.customizTitle('标题名称为空，请填写', 'warning');
                     return;
                 }
@@ -2762,9 +2890,9 @@
                 this.yValueArry.forEach(val => {
                     y_columns.push(val.nameAll)
                 })
-                this.auto_comp_sum.data_source = this.markCodeIndex;
-                this.auto_comp_sum.sources_obj = this.markCodeIndex;
-                this.auto_comp_sum.chart_type = this.changeGetchartsValue;
+                this.auto_comp_sum.data_source = this.formvalue;
+                this.auto_comp_sum.sources_obj = this.input;
+                this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_theme;
                 this.fiflterConditionArr.forEach(val => {
                     obj = {
                         arithmetic_logic: val.realtion,
@@ -2815,12 +2943,21 @@
                 param.append('auto_labelString', '{}');
                 param.append('auto_legend_infoString', JSON.stringify(this.legendStyle));
                 // fromData();
-                functionAll.addVisualComponentInfo(param).then(res => {
-                    this.$Msg.customizTitle('保存成功', 'success');
-                    // this.$router.push({
-                    //     name: 'visualizationindex'
-                    // })
-                })
+                if (this.component_id != undefined) {
+                    functionAll.updateVisualComponentInfo(param).then(res => {
+                        this.$Msg.customizTitle('保存成功', 'success');
+                        // this.$router.push({
+                        //     name: 'visualizationindex'
+                        // })
+                    })
+                } else {
+                    functionAll.addVisualComponentInfo(param).then(res => {
+                        this.$Msg.customizTitle('保存成功', 'success');
+                        // this.$router.push({
+                        //     name: 'visualizationindex'
+                        // })
+                    })
+                }
             }
 
         }
