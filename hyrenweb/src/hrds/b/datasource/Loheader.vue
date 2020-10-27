@@ -21,6 +21,23 @@
     <!-- 弹出表单 -->
     <el-dialog title="上传文件" :visible.sync="dialogFormVisibleImport" width="42%" :before-close="beforeClose">
         <el-form :model="formImport" ref="formImport">
+            <el-form-item label="Agent IP地址" :label-width="formLabelWidth" prop="agent_ip" :rules="filter_rules([{required: true,dataType: 'ip_verification'}])">
+                <el-input v-model="formImport.agent_ip" autocomplete="off" style="width:284px" placeholder=" Ip"></el-input>
+                <el-tooltip class="item" effect="dark" content="要上传的数据源下Agent的IP地址" placement="right">
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </el-tooltip>
+            </el-form-item>
+            <el-form-item label="Agent 端口" :label-width="formLabelWidth" prop="agent_port" :rules="filter_rules([{required: true,dataType: 'port_verification'}])">
+                <el-input v-model="formImport.agent_port" autocomplete="off" style="width:284px" placeholder="Port"></el-input>
+                <el-tooltip class="item" effect="dark" content="要上传的数据源下Agent的端口" placement="right">
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </el-tooltip>
+            </el-form-item>
+            <el-form-item label="数据采集用户" :label-width="formLabelWidth" prop="user_id" :rules="rule.selected">
+                <el-select v-model="formImport.user_id" placeholder="请选择" style="width:284px">
+                    <el-option v-for="item in options" :key="item.dep_id" :label="item.user_name" :value="item.user_id"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="上传要导入的数据源" :label-width="formLabelWidth">
                 <el-upload class="upload-demo" ref="upload" accept=".hrds" :fileList="fileList" action="" :auto-upload="false" :on-change="handleChange">
                     <el-button size="small" type="primary">选择上传文件</el-button>
@@ -186,6 +203,9 @@ export default {
                 if (valid) {
                     let param = new FormData() // 创建form对象
                     param.append('file', this.fileList[0].raw);
+                    param.append('agent_ip', this.formImport.agent_ip);
+                    param.append('agent_port', this.formImport.agent_port);
+                    param.append('user_id', this.formImport.user_id);
                     functionAll.uploadFile(param).then(res => {
                         this.$emit("addEvent");
                         this.dialogFormVisibleImport = false;
