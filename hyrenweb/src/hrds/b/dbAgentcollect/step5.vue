@@ -2,7 +2,7 @@
 <div>
     <Step :active="active"></Step>
     <div class="cleanbtn">
-        <el-button size="mini" type="success" @click="AllSettingDestinationFun()">所有表目的地设置2222</el-button>
+        <el-button size="mini" type="success" @click="AllSettingDestinationFun()">所有表目的地设置</el-button>
     </div>
     <el-form ref="ruleForm" :model="ruleForm" class="steps5">
         <el-table :header-cell-style="{background:'#e6e0e0'}" ref="filterTable" stripe :default-sort="{prop: 'date', order: 'descending'}" size="medium" border :data="ruleForm.ex_destinationData.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)" :height="tableHeight">
