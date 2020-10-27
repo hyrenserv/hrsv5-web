@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-12">
             <div class="btn-group pull-left">
-                <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.chart_theme">
+                <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.dashboard_theme">
             </div>
         </div>
         <!--仪表板展示-->
@@ -135,7 +135,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="边框风格">
-                <el-select v-model="auto_frame_info.bordertype" placeholder="请选择边框风格">
+                <el-select v-model="auto_frame_info.border_style" placeholder="请选择边框风格">
                     <el-option label="实线边框" value="solid"></el-option>
                     <el-option label="点状边框" value="dotted"></el-option>
                     <el-option label="虚线边框" value="dashed"></el-option>
@@ -320,7 +320,7 @@ export default {
                 serial_number: null, //序号
                 x_axis_coord: null, //X轴坐标
                 y_axis_coord: null ,//y轴坐标
-                bordertype: "solid", //边框风格
+                border_style: "solid", //边框风格
                 border_color: "#eb21eb", //边框颜色
                 border_width: 2, //边框宽度
                 border_radius: 45, //边框圆角大小
@@ -334,7 +334,6 @@ export default {
             auto_dashboard_info: {
                 dashboard_name: "",
                 dashboard_desc: "",
-                chart_theme: "",
                 bordertype: "",
                 bordercolor: "",
                 borderwidth: "",
@@ -739,13 +738,11 @@ export default {
         }
     },
     mounted() {
-        this.$nextTick(function () {
-            if (this.is_gridLine == false) {
-                $("#grid_style").removeClass("grid");
-                this.is_gridLine = true;
-            }
-            this.auto_dashboard_info.chart_theme = "00";
-        })
+        if (this.is_gridLine == false) {
+            $("#grid_style").removeClass("grid");
+            this.is_gridLine = true;
+        }
+        this.auto_dashboard_info.dashboard_theme = "00";
         // 编辑时调用
         if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
             this.picshow = true;
@@ -761,7 +758,6 @@ export default {
                     this.chooseTitle_show = true;
                     this.bordercolor_show = true;
                     $("#dataDashboard").css("background-color", "background-color:rgb(255, 255, 255);");
-                    //$('#fullScreenExit').hide();
                     this.is_showdel = true;
                     $("#mydiv img").each(function () {
                         $(this).css("display", "inline");
@@ -783,6 +779,7 @@ export default {
     watch: {
         layout(layout) {
             var chart_obj_array = this.chart_obj_array;
+            var dashboard_theme = this.auto_dashboard_info.dashboard_theme;
             if (layout.length > 0) {
                 $("div[name='pic']").each(function () {
                     $(this).mouseup(function () {
@@ -796,7 +793,8 @@ export default {
                             "height": h
                         })
                         for (var i = 0; i < this.chart_obj_array.length; i++) {
-                            if (this.chart_obj_array[i].layouttype == "card") {
+                            var layouttype = this.chart_obj_array[i].layouttype;
+                            if (layouttype == "card") {
                                 if (this.chart_obj_array[i].id == thisid) {
                                     //卡片大小变化
                                     var id = this.chart_obj_array[i].id;
@@ -817,7 +815,7 @@ export default {
                                         }
                                     }
                                 }
-                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                            } else if (layouttype == "table") {
                                 if (this.chart_obj_array[i].id == thisid) {
                                     //表格大小变化
                                     var id = this.chart_obj_array[i].id;
@@ -827,7 +825,7 @@ export default {
                                     $this.find("div[name='tablediv']").css('height', idheight - 20 + "px");
                                     $this.find("table").css('height', idheight - 20 + "px");
                                 }
-                            } else if (this.chart_obj_array[i].layouttype == "label") {
+                            } else if (layouttype == "label") {
                                 if (this.chart_obj_array[i].id == thisid) {
                                     //文本标签大小变化
                                     var id = this.chart_obj_array[i].id;
@@ -850,12 +848,15 @@ export default {
                                     var difference = (idwidth - lablewidth) / 2;
                                     $this.find("div[class='labelclass']").css('margin-left', difference + "px");
                                 }
-                            } else if (this.chart_obj_array[i].layouttype == "borderline") {
+                            } else if (layouttype == "borderline") {
 
-                            } else if (this.chart_obj_array[i].layouttype == "frameline") {
+                            } else if (layouttype == "frameline") {
 
                             } else {
-                                this.chart_obj_array[i].resize();
+                                if (id!=undefined&&id!='') {
+                                    var Chart = echarts.init(document.getElementById(id), dashboard_theme);
+                                    Chart.resize();
+                                }
                             }
                         }
                     });
@@ -893,12 +894,12 @@ export default {
                     // this.auto_dashboard_info.bordercolor = res.data.bordercolor;
                     // this.auto_dashboard_info.bordertype = res.data.bordertype;
                     // this.auto_dashboard_info.borderwidth = res.data.borderwidth;
-                    this.auto_dashboard_info.chart_theme = res.data.chart_theme;
+                    this.auto_dashboard_info.dashboard_theme = res.data.dashboard_theme;
                     this.auto_dashboard_info.dashboard_id = res.data.dashboard_id;
                     this.auto_dashboard_info.dashboard_name = res.data.dashboard_name;
                     this.auto_dashboard_info.dashboard_desc = res.data.dashboard_desc;
                     this.auto_dashboard_info.background=res.data.background;
-                    var code =this.auto_dashboard_info.chart_theme;
+                    var code =this.auto_dashboard_info.dashboard_theme;
                     // 组件信息
                     this.selectRow=res.data.autoCompSum;
                     //把边框,文本标签,分割线的layout区分开
@@ -1224,7 +1225,7 @@ export default {
                     var auto_frame_info = this.auto_frame_info_list[i];
                     $("#" + id).css("overflow", "hidden");
                     $("#" + id).css("position", "relative");
-                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.bordertype +
+                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.border_style +
                         " " + auto_frame_info.border_color);
                     $("#" + id).css("border-radius", auto_frame_info.border_radius + "px");
                     if (this.auto_frame_info_list[i].is_shadow == '0') {
@@ -1316,7 +1317,7 @@ export default {
             var style = data.style;
             var type = data.type;
             var depth = data.depth;
-            this.auto_dashboard_info.chart_theme = data.code;
+            this.auto_dashboard_info.dashboard_theme = data.code;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (this.chart_obj_array[i].layouttype == "card") {
 
@@ -1331,9 +1332,7 @@ export default {
                 } else {
                     this.chart_obj_array[i].dispose();
                 }
-
             }
-
             if (code == "00") {
                 this.echart_theme = data;
             } else {
@@ -1389,35 +1388,30 @@ export default {
                     }
                 }
             }, 500);
-
-            this.label_layout = [];
-            this.line_layout = [];
-            this.frame_layout = [];
             this.layoutFlag = false;
             this.titleFlag = false;
-
+            // 仪表盘展示
             setTimeout(() => {
                 this.echartpic(this.global_component_array, this.global_component_id_array);
             }, 500);
-
+            // 文本标签主题设置
             setTimeout(() => {
                 if (this.textlabelarray.length > 0) {
                     this.textlabeltheme();
                 }
             }, 500);
-
+            // 分割线设置
             setTimeout(() => {
                 if (this.textlinearray.length > 0) {
                     this.textlinetheme();
                 }
             }, 500);
-
+            // 边框设置
             setTimeout(() => {
                 if (this.textframearray.length > 0) {
                     this.textframetheme();
                 }
             }, 500);
-
             setTimeout(() => {
                 this.grid_layout_backgroundcolor = style;
                 $("div[name='pic']").each(function () {
@@ -1461,38 +1455,37 @@ export default {
             }
         },
         //选择边框颜色
-        choosebordercolor(data) {
-            var code = data.code;
-            var style = data.style;
-            var type = data.type;
+        // choosebordercolor(data) {
+        //     var code = data.code;
+        //     var style = data.style;
+        //     var type = data.type;
+        //     this.auto_dashboard_info.bordercolor = data.code;
+        //     for (var i = 0; i < this.layout.length; i++) {
+        //         var id = this.layout[i].type;
+        //         $("#" + id).css("border-color", style.split(":")[1]);
+        //     }
 
-            this.auto_dashboard_info.bordercolor = data.code;
-            for (var i = 0; i < this.layout.length; i++) {
-                var id = this.layout[i].type;
-                $("#" + id).css("border-color", style.split(":")[1]);
-            }
-
-        },
+        // },
         //选择边框类型
-        choosebordertype(data) {
-            var style = data.style;
-            this.auto_dashboard_info.bordertype = data.code;
-            for (var i = 0; i < this.layout.length; i++) {
-                var id = this.layout[i].type;
-                $("#" + id).css("border-style", style.split(":")[1]);
-                //$("#"+id).css("border-color","black");
-            }
+        // choosebordertype(data) {
+        //     var style = data.style;
+        //     this.auto_dashboard_info.bordertype = data.code;
+        //     for (var i = 0; i < this.layout.length; i++) {
+        //         var id = this.layout[i].type;
+        //         $("#" + id).css("border-style", style.split(":")[1]);
+        //         //$("#"+id).css("border-color","black");
+        //     }
 
-        },
+        // },
         //选择边框粗细
-        chooseborderwidth(data) {
-            var style = data.type;
-            this.auto_dashboard_info.borderwidth = data.code;
-            for (var i = 0; i < this.layout.length; i++) {
-                var id = this.layout[i].type;
-                $("#" + id).css("border-width", style.split(":")[1]);
-            }
-        },
+        // chooseborderwidth(data) {
+        //     var style = data.type;
+        //     this.auto_dashboard_info.borderwidth = data.code;
+        //     for (var i = 0; i < this.layout.length; i++) {
+        //         var id = this.layout[i].type;
+        //         $("#" + id).css("border-width", style.split(":")[1]);
+        //     }
+        // },
         //保存仪表板
         saveDashboard() {
             var picnum = 0;
@@ -1507,13 +1500,16 @@ export default {
                 this.$Msg.customizTitle('请至少添加一个组件', 'warning')
                 return false;
             }
-            let bordertype = this.auto_frame_info.bordertype;
+            let bordertype = this.auto_frame_info.border_style;
             this.borderstyle.forEach(function(item, index) {
                 if (item.type==bordertype) {
                     bordertype=item.code;
                 }
             })
             this.auto_dashboard_info.bordertype=bordertype;
+            if (this.auto_dashboard_info.dashboard_theme==undefined||this.auto_dashboard_info.dashboard_theme=='') {
+                this.auto_dashboard_info.dashboard_theme='00';
+            }
             let param=new FormData();
             param.append("layout",JSON.stringify(this.layout));
             param.append("autoLabelInfo", JSON.stringify(this.auto_label_info_array));
@@ -1653,7 +1649,6 @@ export default {
                 "label": 2,
                 "static": true
             };
-
             if (this.layout.length > 0) {
                 var obj = this.layout[this.layout.length - 1];
                 if (obj.x >= 20) {
@@ -1676,14 +1671,12 @@ export default {
                 layout_obj.y = 0;
                 layout_obj.i = 1;
             }
-
             layout_obj.type = id;
-
             this.layout.push(layout_obj);
             this.$nextTick(function () {
                 $("#" + id).css("overflow", "hidden");
                 $("#" + id).css("position", "relative");
-                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.bordertype +
+                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.border_style +
                     " " + this.auto_frame_info.border_color);
                 $("#" + id).css("border-radius", this.auto_frame_info.border_radius + "px");
                 if (this.auto_frame_info.is_shadow == '0') {
@@ -1706,14 +1699,11 @@ export default {
                     }).$mount();
                     this.framedelimage(id, imagevueobj);
                 }
-
                 var obj = {};
                 obj.layouttype = "frameline";
                 obj.id = id;
                 this.chart_obj_array.push(obj);
-
                 this.textframearray.push(obj);
-
                 $("#" + id).trigger("mouseup");
             })
             this.dialogBorderVisible=false;
@@ -1873,15 +1863,12 @@ export default {
                 } else {
                     echartlayout = result_layout;
                 }
-
                 layoutId_array = [];
                 for (var index in echartlayout) {
                     layoutId_array.push(echartlayout[index].type);
                 }
                 result_layout = this.array_diff(data.layout, layoutId_array);
-                if (result_layout.length == "0") {
-
-                } else {
+                if (result_layout.length > 0) {
                     for (var i = 0; i < result_layout.length; i++) {
                         if (this.titleFlag == true) {
                             result_layout[i].x = "0";
@@ -1923,8 +1910,8 @@ export default {
                     var echartdata = JSON.parse(data[id]);
                     var type = echartdata.chart_type;
                     $("#" + id).css({
-                        "width": 500,
-                        "height": 360
+                        "width": 370,
+                        "height": 300
                     })
                     for (var j = 0; j < this.layout.length; j++) {
                         if (id == this.layout[j].type) {
@@ -2184,7 +2171,7 @@ export default {
 
                     } else if (type == "polarbar") {
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.changeToPolarBarChart(echartdata.radiusData, echartdata.seriesData, Chart, echart_div_layout, tmp_component_name, tmp_component_background);
+                        this.changeToPolarBarChart(echartdata.radiusData, echartdata.seriesData, Chart, echart_div_layout, tmp_component_name, tmp_component_background,id);
                         chart_obj_array.push(Chart);
                     } else if (type == "bubble") {
                         this.bubbleIds.push(id);
@@ -2415,20 +2402,20 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
                                     delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                    global_component_id_array = [];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(chart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -2561,20 +2548,20 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
                                     delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                    global_component_id_array = [];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(treemapChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(treemapChart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     treemapChart.clear;
@@ -2594,9 +2581,9 @@ export default {
                     itemStyle: {
                         normal: {
                             label: {
-                                show: this.echartsLabel.show_label,
-                                position: this.echartsLabel.position,
-                                formatter: this.echartsLabel.formatter,
+                                show: echartsLabel.show_label,
+                                position: echartsLabel.position,
+                                formatter: echartsLabel.formatter,
                             },
                             borderWidth: 1
                         },
@@ -2609,7 +2596,7 @@ export default {
                     data: seriesArray
                 }]
             };
-            this.global_component_id_array=global_component_id_array;
+            global_component_id_array=global_component_id_array;
             this.chart_obj_array=chart_obj_array;
             this.selectRow=selectRow;
             treemapChart.clear();
@@ -2664,20 +2651,20 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
                                     delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                    global_component_id_array = [];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(blChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(blChart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                           selectRow.splice(i, 1);
                                         }
                                     }
                                     blChart.clear;
@@ -2745,7 +2732,7 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
+                                if (is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
                                     global_component_array.layout = this.layout;
                                     delete global_component_array[layout.type];
@@ -2863,12 +2850,13 @@ export default {
                 legend: Object.assign({}, this.legendStyle, {data:legend_data}),
                 grid: {
                     left: '6%',
-                    right: '8%',
-                    bottom: '6%',
+                    right: '10%',
+                    bottom: '3%',
                     containLabel: true
                 },
                 toolbox: {
                     feature: {
+                        datazoom:{show:true},
                         mydeltool: {
                             show: true,
                             title: "删除",
@@ -2907,10 +2895,8 @@ export default {
             lineChart.resize();
         },
         //极坐标柱状图
-        changeToPolarBarChart(radiusData, seriesData, chart, layout, tmp_component_name, tmp_component_background) {
-
+        changeToPolarBarChart(radiusData, seriesData, chart, layout, tmp_component_name, tmp_component_background,id) {
             var titles = transferOptionTitles(tmp_component_name, this.title);
-
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
@@ -2938,20 +2924,20 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
                                     delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                    global_component_id_array = [];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(chart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -3020,9 +3006,9 @@ export default {
                 },
                 legend: this.legendStyle,
                 grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
+                    left: '4%',
+                    right: '10%',
+                    bottom: '4%',
                     containLabel: true
                 },
                 toolbox: {
@@ -3036,20 +3022,20 @@ export default {
                             title: "删除",
                             icon: "image://"+require("@/assets/images/del.png"),
                             onclick() {
-                                if (this.is_showdel == true) {
-                                    this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
+                                if (is_showdel == true) {
+                                    layout.splice(layout.indexOf(layout), 1);
+                                    global_component_array.layout = layout;
                                     delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
-                                    for (var i = 0; i < this.layout.length; i++) {
-                                        if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                    global_component_id_array = [];
+                                    for (var i = 0; i < layout.length; i++) {
+                                        if (layout[i].label == undefined) {
+                                            global_component_id_array.push(layout[i].type);
                                         }
                                     }
-                                    this.chart_obj_array.splice(this.chart_obj_array.indexOf(barChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    chart_obj_array.splice(chart_obj_array.indexOf(barChart), 1);
+                                    for (var i = 0; i < selectRow.length; i++) {
+                                        if (selectRow[i].component_id == id) {
+                                            selectRow.splice(i, 1);
                                         }
                                     }
                                     barChart.clear;
@@ -3288,7 +3274,7 @@ var tableProfile = Vue.extend({
     },
     methods:{}
 })
-//卡片仪表盘    删除按钮
+//卡片仪表盘删除按钮
 var cardPofile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
     data: function () {
@@ -3312,7 +3298,7 @@ var cardPofile = Vue.extend({
         },
     }
 })
-//分割线   删除按钮
+//分割线删除按钮
 var linedelProfile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_line_info)'>",
     data: function () {
@@ -3334,7 +3320,7 @@ var linedelProfile = Vue.extend({
         },
     }
 })
-//边框   删除按钮
+//边框删除按钮
 var framedelProfile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:5%;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_frame_info)'>",
     data: function () {
@@ -3357,7 +3343,7 @@ var framedelProfile = Vue.extend({
         },
     }
 })
-//文本标签    删除按钮
+//文本标签删除按钮
 var labeldelProfile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;top:1px;' class='pull-right' @click='delcard(this.layout,echart_div_layout,auto_label_info)'>",
     data: function () {

@@ -1,5 +1,5 @@
 <template>
-<div id="app" :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" style="height: 2000px">
+<div id="shoDashboard" :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" style="height: 2000px">
     <div class="container">
         <div class="row clearfix" id="mydiv">
             <div class="col-md-12 column">
@@ -18,7 +18,7 @@
 
 <script>
 import VueGridLayout from 'vue-grid-layout';
-import * as functionAll from "./api";
+import * as functionAll from "./serviceUser";
 export default {
     data() {
         return {
@@ -30,10 +30,8 @@ export default {
             echart_div_layouts: [],
             tmp_component_names: [],
             myCharts: [],
-
             barmdIds: [],
             barmd_echartdatas: [],
-
             cardstyle: "",
             cardname: "",
             bcolor: "",
@@ -300,7 +298,9 @@ export default {
     },
     methods: {
         dashboardRelease() {
-
+            functionAll.dashboardRelease({
+            }).then(res => {
+            });
         }
     }
 }

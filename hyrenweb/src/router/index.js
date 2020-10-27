@@ -1232,16 +1232,6 @@ export default new Router({
                     ],
                 },
                 {
-                    path: '/showDashboard',
-                    name: 'showDashboard',
-                    title: '报表展示',
-                    component: () => import('@/hrds/g/serviceuser/api/showDashboard.vue'),
-                    meta: [
-                        { name: '首页' },
-                        { name: '服务接口用户', url: '/serviceUser' },
-                        { name: '报表展示' },
-                    ],
-                },{
                     path: '/dashboardRelease',
                     name: 'dashboardRelease',
                     title: '报表使用说明文档',
@@ -1367,5 +1357,11 @@ export default new Router({
             title: '接口测试',
             component: () => import('@/hrds/g/serviceuser/interfaceTest.vue')
         },
+        {
+            path: '/showDashboard',
+            name: 'showDashboard',
+            title: '报表展示',
+            component: () => import('@/hrds/g/serviceuser/showDashboard.vue')
+        }
     ]
 })
