@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-12">
             <div class="btn-group pull-left">
-                <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.dashboard_theme">
+                <input v-show="false" style="border: 0px;" type="text" v-model="auto_dashboard_info.chart_theme">
             </div>
         </div>
         <!--仪表板展示-->
@@ -294,6 +294,7 @@ export default {
             bubbleIds: [],
             bubble_echartdatas: [],
             echart_div_layouts: [],
+            // 组件名称
             tmp_component_names: [],
             myCharts: [],
             barmdIds: [],
@@ -302,32 +303,20 @@ export default {
             cardname: "",
             bcolor: "",
             option: {},
-            foo: 1,
             // 组件汇总表信息
             auto_comp_sum_array: [],
             //组件汇总表
             auto_comp_sum: {
-                component_id: "",
-                user_id: "",
                 component_name: "",
                 component_desc: "",
                 data_source: "",
-                component_status: "",
                 sources_obj: "",
                 exe_sql: "",
                 chart_type: "",
-                create_date: "",
-                create_time: "",
-                create_user: "",
-                last_update_date: "",
-                last_update_time: "",
-                update_user: "",
-                ischecked: "",
                 background: "transparent", //常规设置
             },
             //仪表板边框组件信息表
             auto_frame_info: {
-                frame_id:null,
                 serial_number: null, //序号
                 x_axis_coord: null, //X轴坐标
                 y_axis_coord: null ,//y轴坐标
@@ -345,7 +334,7 @@ export default {
             auto_dashboard_info: {
                 dashboard_name: "",
                 dashboard_desc: "",
-                dashboard_theme: "",
+                chart_theme: "",
                 bordertype: "",
                 bordercolor: "",
                 borderwidth: "",
@@ -755,7 +744,7 @@ export default {
                 $("#grid_style").removeClass("grid");
                 this.is_gridLine = true;
             }
-            this.auto_dashboard_info.dashboard_theme = "00";
+            this.auto_dashboard_info.chart_theme = "00";
         })
         // 编辑时调用
         if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
@@ -901,21 +890,27 @@ export default {
                         this.auto_frame_info_list = res.data.frameInfo;
                     }
                     // 仪表盘信息
-                    this.auto_dashboard_info.bordercolor = res.data.bordercolor;
-                    this.auto_dashboard_info.bordertype = res.data.bordertype;
-                    this.auto_dashboard_info.borderwidth = res.data.borderwidth;
-                    this.auto_dashboard_info.dashboard_theme = res.data.dashboard_theme;
+                    // this.auto_dashboard_info.bordercolor = res.data.bordercolor;
+                    // this.auto_dashboard_info.bordertype = res.data.bordertype;
+                    // this.auto_dashboard_info.borderwidth = res.data.borderwidth;
+                    this.auto_dashboard_info.chart_theme = res.data.chart_theme;
                     this.auto_dashboard_info.dashboard_id = res.data.dashboard_id;
                     this.auto_dashboard_info.dashboard_name = res.data.dashboard_name;
                     this.auto_dashboard_info.dashboard_desc = res.data.dashboard_desc;
-                    var code =this.auto_dashboard_info.dashboard_theme;
-                    //把组件,文本标签,分割线的layout区分开
+                    this.auto_dashboard_info.background=res.data.background;
+                    var code =this.auto_dashboard_info.chart_theme;
+                    // 组件信息
+                    this.selectRow=res.data.autoCompSum;
+                    //把边框,文本标签,分割线的layout区分开
                     for (var i = 0; i < res.data.layout.length; i++) {
+                        // 文本标签
                         if ("0" == res.data.layout[i].label) {
                             this.label_layout.push(res.data.layout[i]);
                         } else if ("1" == res.data.layout[i].label) {
+                            // 分割线
                             this.line_layout.push(res.data.layout[i]);
                         } else if ("2" == res.data.layout[i].label) {
+                            // 边框
                             this.frame_layout.push(res.data.layout[i]);
                         } else {
                             this.layout.push(res.data.layout[i]);
@@ -953,6 +948,7 @@ export default {
                     setTimeout(() => {
                         for (var i = 0; i < this.layout.length; i++) {
                             if (this.layout[i].label == "0") {
+                                // 文本标签
                                 $("#" + this.layout[i].type).find("p").css({
                                     "background-color": this.titleData[index].ncolor,
                                     "color": this.titleData[index].fcolor
@@ -963,10 +959,12 @@ export default {
                                 });
                                 var id = $("#" + this.layout[i].type).attr("id");
                             } else if (this.layout[i].label == "1") {
+                                // 分割线
                                 $("#" + this.layout[i].type).find("div[class='lineclass']").css({
                                     'background-color': this.titleData[index].ncolor
                                 });
                             } else if (this.layout[i].label == "2") {
+                                // 边框
                                 $("#" + this.layout[i].type).css({
                                     'border': this.titleData[index].ncolor + ' 2px solid'
                                 });
@@ -1003,35 +1001,36 @@ export default {
                     }, 2000);
                     this.layoutFlag = false;
                     this.titleFlag = false;
+                    // 仪表盘展示
                     setTimeout(() => {
                         this.echartpic(this.global_component_array, this.global_component_id_array);
                     }, 500);
-                    setTimeout(() => {
-                        this.grid_layout_backgroundcolor = style;
-                        var bgcolor = this.auto_dashboard_info.background;
-                        this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
-                        //边框类型
-                        for (var i = 0; i < this.borderstyle.length; i++) {
-                            if (this.borderstyle[i].code == this.auto_dashboard_info.bordertype) {
-                                this.choosebordertype(this.borderstyle[i]);
-                            }
-                        }
-                        //边框颜色
-                        for (var i = 0; i < this.bordercolor.length; i++) {
-                            if (this.bordercolor[i].code == this.auto_dashboard_info.bordercolor) {
-                                this.choosebordercolor(this.bordercolor[i]);
-                            }
-                        }
-                        //边框粗细
-                        for (var i = 0; i < this.borderwidth.length; i++) {
-                            if (this.borderwidth[i].code == this.auto_dashboard_info.borderwidth) {
-                                this.chooseborderwidth(this.borderwidth[i]);
-                            }
-                        }
-                        $("div[name='pic']").each(function () {
-                            $(this).trigger("mouseup");
-                        });
-                    }, 500);
+                    // setTimeout(() => {
+                    //     this.grid_layout_backgroundcolor = style;
+                    //     var bgcolor = this.auto_dashboard_info.background;
+                    //     this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
+                    //     //边框类型
+                    //     for (var i = 0; i < this.borderstyle.length; i++) {
+                    //         if (this.borderstyle[i].code == this.auto_dashboard_info.bordertype) {
+                    //             this.choosebordertype(this.borderstyle[i]);
+                    //         }
+                    //     }
+                    //     //边框颜色
+                    //     for (var i = 0; i < this.bordercolor.length; i++) {
+                    //         if (this.bordercolor[i].code == this.auto_dashboard_info.bordercolor) {
+                    //             this.choosebordercolor(this.bordercolor[i]);
+                    //         }
+                    //     }
+                    //     //边框粗细
+                    //     for (var i = 0; i < this.borderwidth.length; i++) {
+                    //         if (this.borderwidth[i].code == this.auto_dashboard_info.borderwidth) {
+                    //             this.chooseborderwidth(this.borderwidth[i]);
+                    //         }
+                    //     }
+                    //     $("div[name='pic']").each(function () {
+                    //         $(this).trigger("mouseup");
+                    //     });
+                    // }, 500);
                     // 边框回显
                     setTimeout(() => {
                         this.frame_back();
@@ -1317,7 +1316,7 @@ export default {
             var style = data.style;
             var type = data.type;
             var depth = data.depth;
-            this.auto_dashboard_info.dashboard_theme = data.code;
+            this.auto_dashboard_info.chart_theme = data.code;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (this.chart_obj_array[i].layouttype == "card") {
 
@@ -2863,9 +2862,9 @@ export default {
                 },
                 legend: Object.assign({}, this.legendStyle, {data:legend_data}),
                 grid: {
-                    left: '10%',
-                    right: '10%',
-                    bottom: '10%',
+                    left: '6%',
+                    right: '8%',
+                    bottom: '6%',
                     containLabel: true
                 },
                 toolbox: {

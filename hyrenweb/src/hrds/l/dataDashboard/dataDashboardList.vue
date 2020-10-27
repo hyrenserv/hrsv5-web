@@ -13,9 +13,9 @@
         <el-table-column label="最后更新日期" prop='last_update_date' align="left"></el-table-column>
         <el-table-column label="操作" align="left">
             <template slot-scope="scope">
-                <el-button type="text" @click="releaseDashboardInfo(scope.row)">发布</el-button>
-                <el-button type="text" @click="goToDashbaord(scope.row)">编辑</el-button>
-                <el-button type="text" @click="deleteDashboardInfo(scope.row)">删除</el-button>
+                <el-button type="text" size="mini" @click="releaseDashboardInfo(scope.row)">发布</el-button>
+                <el-button type="text" size="mini" @click="goToDashbaord(scope.row)">编辑</el-button>
+                <el-button type="text" size="mini" @click="deleteDashboardInfo(scope.row)">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
