@@ -1964,8 +1964,8 @@ export default {
                 };
                 this.ruleForm_ParallelEx.db_allnum = res.data;
                 this.ruleForm_ParallelEx.rec_num_date =
-                    date.year +
-                    (date.month < 9 ? "0" + date.month : date.month) +
+                    date.year + "" +
+                    (date.month < 9 ? "0" + date.month : date.month) + "" +
                     (date.date < 9 ? "0" + date.date : date.date);
             });
         },

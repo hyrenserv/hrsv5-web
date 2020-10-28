@@ -1767,7 +1767,7 @@ export default {
             this.tablename = "";
         },
         //第二个页面 自定义是否抽取sql
-        checkedis_zdyparallelFun(row,index) {
+        checkedis_zdyparallelFun(row, index) {
             this.sqlIndex = row.sql
             let a = row.is_parallel;
             this.EXtable_name = row.table_name;
@@ -1994,7 +1994,7 @@ export default {
             let params = {};
             if (type === 'sql') {
                 if (this.sqlIndex == '') {
-                    this.$Msg.customizTitle('请在卸数方式的全量中设置SQL语句','error')
+                    this.$Msg.customizTitle('请在卸数方式的全量中设置SQL语句', 'error')
                     return
                 }
                 params["sql"] = this.sqlIndex;
@@ -2011,8 +2011,8 @@ export default {
                 };
                 this.ruleForm_ParallelEx.db_allnum = res.data;
                 this.ruleForm_ParallelEx.rec_num_date =
-                    date.year +
-                    (date.month < 9 ? "0" + date.month : date.month) +
+                    date.year + "" +
+                    (date.month < 9 ? "0" + date.month : date.month) + "" +
                     (date.date < 9 ? "0" + date.date : date.date);
             });
         },
