@@ -11,7 +11,7 @@ const service = axios.create({
   timeout: 5000000 // request timeout
 })
 
-let loadingInstance;
+let loadingInstance = [];
 //内存中正在请求的数量
 let loadingNum = 0;
 function startLoading() {
@@ -20,6 +20,7 @@ function startLoading() {
   }
   //请求数量加1
   loadingNum++;
+
 }
 function endLoading() {
   //请求数量减1
@@ -44,8 +45,11 @@ service.interceptors.request.use(
       // config.data = true;
       config.headers['Hyren_userCookie'] = getToken();
     }
-    return config;
-
+    // let data;
+    if (!loadingInstance.includes(config.url)) {
+      loadingInstance.push(config.url)
+      return config;
+    }
   },
   error => {
     endLoading()
