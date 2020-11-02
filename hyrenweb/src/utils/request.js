@@ -45,8 +45,10 @@ service.interceptors.request.use(
       // config.data = true;
       config.headers['Hyren_userCookie'] = getToken();
     }
-    // let data;
-    if (!loadingInstance.includes(config.url)) {
+    /**
+     * 这里对代码项的重复请求进行忽略,也就是说如果是代码项的请求不限制请求的次数
+     */
+    if (!loadingInstance.includes(config.url) || config.url.indexOf('/codes/') != -1) {
       loadingInstance.push(config.url)
       return config;
     }
@@ -70,6 +72,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    loadingInstance = loadingInstance.filter(item => item != response.config.url)
     // 对响应数据做些事，把loading动画关掉
     endLoading()
     const res = response.data
