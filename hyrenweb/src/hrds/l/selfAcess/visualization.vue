@@ -53,6 +53,7 @@
                 <div class="elcol8Button">
                     <el-button size="mini" @click="addWords" :disabled="disabled" type="info">添加字段</el-button>
                 </div>
+
             </el-col>
             <el-col :span="8" class="elcol8">
                 <p class="optionsWords">设置过滤条件
@@ -228,7 +229,7 @@
                 </div>
                 <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
 
-                <div v-if="auto_comp_sum.chart_theme=='table'" id="type_table" style="height:440px;overflow: auto;">
+                <div v-if="auto_comp_sum.chart_type=='table'" id="type_table" style="height:440px;overflow: auto;">
                     <el-table size="medium"
                               :data="dynamicColumnTables.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)"
                               border stripe style="width: 100%" v-if="dynamicColumnTableHiddens">
@@ -237,8 +238,7 @@
                                 <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px"
-                                         :prop="col"
+                        <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px" :prop="col"
                                          :label="col" :key="col">
                         </el-table-column>
                     </el-table>
@@ -327,7 +327,7 @@
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">是否显示文本</span>
-                                    <el-select v-model="auto_label.show_label" placeholder="是否显示文本" size="small"
+                                    <el-select v-model="auto_comp_sum.show_label" placeholder="是否显示文本" size="small"
                                                class="selectPosition">
                                         <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"
                                                    :label="item.value" :value="item.code">
@@ -337,16 +337,16 @@
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
                                      v-if="auto_comp_sum.chart_theme!='map'">
                                     <span class="el-input-group__prepends">文本显示位置</span>
-                                    <el-select v-model="auto_label.position" placeholder="文本显示位置" size="small"
+                                    <el-select v-model="auto_comp_sum.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="auto_comp_sum.chart_theme!='pie' && auto_comp_sum.chart_theme!='fasanpie' && auto_comp_sum.chart_theme!='huanpie'">
+                                               v-show="auto_comp_sum.chart_theme!='pie' && auto_comp_sum.chart_type!='fasanpie' && auto_comp_sum.chart_type!='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
-                                    <el-select v-model="auto_label.position" placeholder="文本显示位置" size="small"
+                                    <el-select v-model="auto_comp_sum.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_theme=='fasanpie' || auto_comp_sum.chart_theme=='huanpie'">
+                                               v-show="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition1" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
@@ -359,13 +359,13 @@
                                         <div slot="content"><span>{a}表示系列名 <br/>{b}表示数据名<br/>{c}表示数据值<br/>{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
                                     </el-tooltip></span>
-                                    <el-input v-model="auto_label.formatter" placeholder="文本格式化" size="small"
+                                    <el-input v-model="auto_comp_sum.formatter" placeholder="文本格式化" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
 
                                 <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"-->
-                                <!--v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_theme=='fasanpie' || auto_comp_sum.chart_theme=='huanpie'">-->
+                                <!--v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">-->
                                 <!--<span class="el-input-group__prepends">是否显示引导线</span>-->
                                 <!--<el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"-->
                                 <!--class="selectPosition">-->
@@ -378,7 +378,7 @@
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"
                                      v-if="auto_comp_sum.chart_theme=='map'">
                                     <span class="el-input-group__prepends">中国地图或省份</span>
-                                    <el-select v-model="chartsconfig.provincename" placeholder="请选择" size="small"
+                                    <el-select v-model="seriesStyle.provincename" placeholder="请选择" size="small"
                                                class="selectPosition">
                                         <el-option v-for="item in map_array" :key="item" :label="item" :value="item">
                                         </el-option>
@@ -1179,7 +1179,7 @@
                 borderwidth: '1',
                 bordercolor: '#ffffff',
                 // 常规设置
-                auto_label: {
+                echartsLabel: {
                     show_label: '1', //是否显示文本标签
                     position: "", //标签位置
                     formatter: "{b}", //格式化文本标签
@@ -1510,7 +1510,10 @@
                     background: '#ffffff',
                     component_id: '',
                     component_nam: '',
-                    component_desc: ''
+                    component_desc: '',
+                    show_label: '1',
+                    position: 'left',
+                    formatter: '{c} {b}'
                 },
                 optionsCharts: [{
                     value: 'line',
@@ -1556,7 +1559,7 @@
                 markarrx: [],
                 markarry: [],
                 //图表配置
-                chartsconfig: {
+                seriesStyle: {
                     type: "", //图表类型
                     center: ['50%', '50%'], //饼图的中心（圆心）坐标
                     provincename: "全国", //省份名称(地图)
@@ -1690,15 +1693,6 @@
                     this.legendStyle = res.data.legendInfo;
                     this.titleFont = res.data.titleFontInfo;
                     this.axisStyle = res.data.axisFontInfo;
-                    // 文本标签
-                    console.log(this.auto_label);
-                    this.auto_label = transferEchartsLabel(res.data.textLabel);
-                    // 图例设置
-                    this.legendStyle = transferLegendStyle(res.data.legendInfo);
-                    // 图标类型
-                    this.echarttype = res.data.compSum.chart_type;
-                    //图表配置
-                    this.chartsconfig = transferSeriesStyle(res.data.chartsconfig);
                 });
             },
             huixiandealwithoptionsWords(column_name, code) {
@@ -2348,7 +2342,7 @@
                     if (res && res.success) {
                         this.markexe_sql = res.data;
                         if (flag) {
-                            this.echartshow(this.auto_comp_sum.chart_theme);
+                            this.echartshow(this.auto_comp_sum.chart_type);
                         }
                         if (!flag) {
                             this.weiduArry = [];
@@ -2463,7 +2457,7 @@
             },
             // 选择图标类型
             echartshow(type) {
-                this.auto_comp_sum.chart_theme = type;
+                this.auto_comp_sum.chart_type = type;
                 let xColumns = []
                 let yColumns = [];
                 //数据处理获取图信息
@@ -2562,9 +2556,9 @@
                             this.changeToScatterChart(xColumns, yColumns, type, res.data);
                         } else if (type == "card") {
                             this.changeToCard();
-                        } else if (type == "table") {
+                        }  else if (type == "table") {
                             this.changeToTable();
-                        } else if (type == "bl") {
+                        }  else if (type == "bl") {
                             this.$Msg.customizTitle("正在开发中", "warning");
                         } else if (type == "treemap") {
                             this.$Msg.customizTitle("正在开发中", "warning");
@@ -2573,6 +2567,7 @@
                         }
                     }
                 )
+
             },
             initproperty() {
                 var result = {};
@@ -2595,16 +2590,10 @@
                     }
                 };
                 result.titles = titles;
-                var showLabel;
-                if (this.auto_comp_sum.show_label=='1') {
-                    showLabel=true;
-                }else{
-                    showLabel=false;
-                }
                 //设置图上每个节点的显示情况
                 var labelOption = {
                     normal: {
-                        show: showLabel,
+                        show: this.auto_comp_sum.show_label == '1' ? true : false,
                         position: this.auto_comp_sum.position,
                         formatter: this.auto_comp_sum.formatter
                     }
@@ -2762,6 +2751,7 @@
                     xAxis: [
                         Object.assign({}, {
                             type: 'category',
+
                             data: data.xArray,
                             nameTextStyle: result.nameTextStyle,
                             axisLine: result.xaxisLine,
@@ -2798,6 +2788,7 @@
                     xAxis: [
                         Object.assign({}, {
                             type: 'category',
+
                             data: data.xArray,
                             nameTextStyle: result.nameTextStyle,
                             axisLine: result.xaxisLine,
@@ -2893,6 +2884,8 @@
                 var result = this.initproperty();
                 var option = {
                     backgroundColor: this.auto_comp_sum.background,
+                    xAxis: {},
+                    yAxis: {},
                     title: result.titles,
                     legend: Object.assign({}, result.legendStyle, {data: data.legend_data}),
                     xAxis: [
@@ -2916,14 +2909,14 @@
                 console.log(JSON.stringify(option));
                 this.drawLine(option)
             },
-            changeToCard() {
+            changeToCard(){
                 var result = this.initproperty();
                 var option = {
                     title: result.titles,
                 }
                 this.drawLine(option)
             },
-            changeToTable() {
+            changeToTable(){
                 let option = {};
                 this.drawLine(option);
             },
@@ -2970,6 +2963,7 @@
                 })
                 this.auto_comp_sum.data_source = this.formvalue;
                 this.auto_comp_sum.sources_obj = this.input;
+                // this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_theme;
                 this.fiflterConditionArr.forEach(val => {
                     obj = {
                         arithmetic_logic: val.realtion,
@@ -3004,27 +2998,6 @@
                     x_columns: x_columns,
                     y_columns: y_columns,
                 }));
-                this.chartsconfig.type=this.auto_comp_sum.chart_theme
-                if (this.auto_label.show_label) {
-                    this.auto_label.show_label='1';
-                }else{
-                    this.auto_label.show_label='0';
-                }
-                if (this.auto_label.show_line) {
-                    this.auto_label.show_line='1';
-                }else{
-                    this.auto_label.show_line='0';
-                }
-                if (this.auto_label.smooth) {
-                    this.auto_label.smooth='1';
-                }else{
-                    this.auto_label.smooth='0';
-                }
-                if (this.legendStyle.show) {
-                    this.legendStyle.show='1';
-                }else{
-                    this.legendStyle.show='0';
-                }
                 param.append('auto_comp_sumString', JSON.stringify(this.auto_comp_sum));
                 param.append('autoCompCondString', JSON.stringify(autoCompConds));
                 param.append('autoCompGroupString', JSON.stringify(autoCompGroups));
@@ -3037,8 +3010,8 @@
                 param.append('xAxisLineString', JSON.stringify(this.xAxisLine));
                 param.append('yAxisLineString', JSON.stringify(this.yAxisLine));
                 param.append('auto_table_infoString', JSON.stringify(this.auto_table_info));
-                param.append('auto_chartsconfigString', JSON.stringify(this.chartsconfig));
-                param.append('auto_labelString', JSON.stringify(this.auto_label));
+                param.append('auto_chartsconfigString', '{}');
+                param.append('auto_labelString', '{}');
                 param.append('auto_legend_infoString', JSON.stringify(this.legendStyle));
                 // fromData();
                 if (this.component_id != undefined) {
@@ -3051,9 +3024,9 @@
                 } else {
                     functionAll.addVisualComponentInfo(param).then(res => {
                         this.$Msg.customizTitle('保存成功', 'success');
-                        this.$router.push({
-                            name: 'visualizationindex'
-                        })
+                        // this.$router.push({
+                        //     name: 'visualizationindex'
+                        // })
                     })
                 }
             }
