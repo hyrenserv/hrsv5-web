@@ -238,7 +238,8 @@
                                 <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px" :prop="col"
+                        <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px"
+                                         :prop="col"
                                          :label="col" :key="col">
                         </el-table-column>
                     </el-table>
@@ -2556,9 +2557,9 @@
                             this.changeToScatterChart(xColumns, yColumns, type, res.data);
                         } else if (type == "card") {
                             this.changeToCard();
-                        }  else if (type == "table") {
+                        } else if (type == "table") {
                             this.changeToTable();
-                        }  else if (type == "bl") {
+                        } else if (type == "bl") {
                             this.$Msg.customizTitle("正在开发中", "warning");
                         } else if (type == "treemap") {
                             this.$Msg.customizTitle("正在开发中", "warning");
@@ -2751,7 +2752,6 @@
                     xAxis: [
                         Object.assign({}, {
                             type: 'category',
-
                             data: data.xArray,
                             nameTextStyle: result.nameTextStyle,
                             axisLine: result.xaxisLine,
@@ -2788,7 +2788,6 @@
                     xAxis: [
                         Object.assign({}, {
                             type: 'category',
-
                             data: data.xArray,
                             nameTextStyle: result.nameTextStyle,
                             axisLine: result.xaxisLine,
@@ -2881,25 +2880,40 @@
             },
             //标准散点图
             changeToScatterChart(x_columns, y_columns, type, data) {
+                var result = this.initproperty();
                 var option = {
                     backgroundColor: this.auto_comp_sum.background,
-                    xAxis: {},
-                    yAxis: {},
+                    title: result.titles,
+                    legend: Object.assign({}, result.legendStyle, {data: data.legend_data}),
+                    xAxis: [
+                        Object.assign({}, {
+                            nameTextStyle: result.nameTextStyle,
+                            axisLine: result.xaxisLine,
+                            axisLabel: result.xaxisLabel,
+                        }, result.xAxis)
+                    ],
+                    yAxis: Object.assign({}, {
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.yaxisLine,
+                        axisLabel: result.yaxisLabel,
+                    }, result.yAxis),
                     series: [{
                         data: data.scatterData,
+                        label: result.labelOption,
                         type: 'scatter'
                     }]
                 };
+                console.log(JSON.stringify(option));
                 this.drawLine(option)
             },
-            changeToCard(){
+            changeToCard() {
                 var result = this.initproperty();
                 var option = {
                     title: result.titles,
                 }
                 this.drawLine(option)
             },
-            changeToTable(){
+            changeToTable() {
                 let option = {};
                 this.drawLine(option);
             },
@@ -3007,9 +3021,9 @@
                 } else {
                     functionAll.addVisualComponentInfo(param).then(res => {
                         this.$Msg.customizTitle('保存成功', 'success');
-                        // this.$router.push({
-                        //     name: 'visualizationindex'
-                        // })
+                        this.$router.push({
+                            name: 'visualizationindex'
+                        })
                     })
                 }
             }
