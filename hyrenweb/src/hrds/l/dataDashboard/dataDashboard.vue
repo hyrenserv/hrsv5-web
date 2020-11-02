@@ -24,7 +24,7 @@
         <div class="row clearfix" v-show="picshow" id="mydiv">
             <div class="col-md-12 column">
                 <div class="panel-body">
-                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
+                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel" :is-resizable="is_showdel" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
                         <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
                             <div :id="item.type" style="width: 300px;height:200px;"></div>
                         </grid-item>
@@ -280,7 +280,6 @@ export default {
             currPage:1,
             pageSize:10,
             addTitelForm: {},
-            selectRow: [],
             dialogBackgroundVisible: false,
             dialogAddComponentVisible: false,
             dialogDashboardVisible: false,
@@ -293,7 +292,7 @@ export default {
             echartdata: [],
             bubbleIds: [],
             bubble_echartdatas: [],
-            echart_div_layouts: [],
+            echart_layouts: [],
             // 组件名称
             tmp_component_names: [],
             myCharts: [],
@@ -303,8 +302,6 @@ export default {
             cardname: "",
             bcolor: "",
             option: {},
-            // 组件汇总表信息
-            auto_comp_sum_array: [],
             //组件汇总表
             auto_comp_sum: {
                 component_name: "",
@@ -337,14 +334,19 @@ export default {
                 bordertype: "",
                 bordercolor: "",
                 borderwidth: "",
+                dashboard_theme:"",
                 background: "#eeeeee",
+                is_gridline:'0'
             },
             picshow: false,
-            layoutFlag: false,
             titleFlag: false,
             echartThemeJson: require("@/assets/images/theme/source.jpg"),
             delpng:require('@/assets/images/del.png'),
             selectRow: [],
+             // 所有组件汇总表信息
+            auto_comp_sum_array: [],
+            // 已选组件
+            autoCompSums:[],
             //主题设置参数
             titleData: [{
                     "code": "00",
@@ -521,10 +523,11 @@ export default {
             ],
             grid_layout_backgroundcolor: "background-color:transparent;",
             chart_obj_array: [],
+            // 
             echart_theme: "",
             chooseTitle_show: false,
-            global_component_array: [],
-            global_component_id_array:[],
+            dashboard_component_array: [],
+            dashboard_component_id_array:[],
             tmp_card_layout: "",
             bordercolor_show: false,
             tabledata: [],
@@ -733,20 +736,20 @@ export default {
                 show_line: true, //是否显示文本标签引导线
                 smooth: false, //是否平滑视觉引导线
             },
-            is_gridLine: false,
             is_showdel: true,
         }
     },
     mounted() {
-        if (this.is_gridLine == false) {
+        if (this.auto_dashboard_info.is_gridline == '0') {
             $("#grid_style").removeClass("grid");
-            this.is_gridLine = true;
+            this.auto_dashboard_info.is_gridline = '1';
         }
-        this.auto_dashboard_info.dashboard_theme = "00";
         // 编辑时调用
         if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
             this.picshow = true;
             this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+        }else{
+            this.auto_dashboard_info.dashboard_theme = "00";
         }
         // 监控窗口变化
         window.addEventListener('resize', () => {
@@ -762,10 +765,10 @@ export default {
                     $("#mydiv img").each(function () {
                         $(this).css("display", "inline");
                     });
-                    for (var i = 0; i < this.selectRow.length; i++) {
-                        if (this.selectRow[i].chart_type != "card" && this.selectRow[i].chart_type != "table" &&
-                            this.selectRow[i].chart_type != "barmd" && this.selectRow[i].chart_type != "bubble") {
-                            $("#" + this.selectRow[i].component_id + " img").css("display", "none");
+                    for (var i = 0; i < this.autoCompSums.length; i++) {
+                        if (this.autoCompSums[i].chart_type != "card" && this.autoCompSums[i].chart_type != "table" &&
+                            this.autoCompSums[i].chart_type != "barmd" && this.autoCompSums[i].chart_type != "bubble") {
+                            $("#" + this.autoCompSums[i].component_id + " img").css("display", "none");
                         }
                     }
                 }
@@ -783,7 +786,6 @@ export default {
             if (layout.length > 0) {
                 $("div[name='pic']").each(function () {
                     $(this).mouseup(function () {
-                        this.chart_obj_array=chart_obj_array;
                         var $this = $(this);
                         var thisid = $this.children('div').attr("id")
                         var w = $(this).width() + "px";
@@ -792,12 +794,12 @@ export default {
                             "width": w,
                             "height": h
                         })
-                        for (var i = 0; i < this.chart_obj_array.length; i++) {
-                            var layouttype = this.chart_obj_array[i].layouttype;
-                            if (layouttype == "card") {
-                                if (this.chart_obj_array[i].id == thisid) {
+                        for (var i = 0; i < chart_obj_array.length; i++) {
+                            var echarttype = chart_obj_array[i].echarttype;
+                            if (echarttype == "card") {
+                                if (chart_obj_array[i].id == thisid) {
                                     //卡片大小变化
-                                    var id = this.chart_obj_array[i].id;
+                                    var id = chart_obj_array[i].id;
                                     var idwidth = $("#" + id).width();
                                     var idheight = $("#" + id).height();
                                     $this.find("div[class='cardclass']").css('font-size', "12px");
@@ -815,20 +817,20 @@ export default {
                                         }
                                     }
                                 }
-                            } else if (layouttype == "table") {
-                                if (this.chart_obj_array[i].id == thisid) {
+                            } else if (echarttype == "table") {
+                                if (chart_obj_array[i].id == thisid) {
                                     //表格大小变化
-                                    var id = this.chart_obj_array[i].id;
+                                    var id = chart_obj_array[i].id;
                                     var idwidth = $("#" + id).width();
                                     var idheight = $("#" + id).height();
                                     var domH = Math.sqrt(idwidth * idwidth + idheight * idheight);
                                     $this.find("div[name='tablediv']").css('height', idheight - 20 + "px");
                                     $this.find("table").css('height', idheight - 20 + "px");
                                 }
-                            } else if (layouttype == "label") {
-                                if (this.chart_obj_array[i].id == thisid) {
+                            } else if (echarttype == "label") {
+                                if (chart_obj_array[i].id == thisid) {
                                     //文本标签大小变化
-                                    var id = this.chart_obj_array[i].id;
+                                    var id = chart_obj_array[i].id;
                                     var idwidth = $("#" + id).width();
                                     var idheight = $("#" + id).height();
                                     $this.find("div[class='labelclass']").css('font-size', "12px");
@@ -848,21 +850,17 @@ export default {
                                     var difference = (idwidth - lablewidth) / 2;
                                     $this.find("div[class='labelclass']").css('margin-left', difference + "px");
                                 }
-                            } else if (layouttype == "borderline") {
+                            } else if (echarttype == "borderline") {
 
-                            } else if (layouttype == "frameline") {
+                            } else if (echarttype == "frameline") {
 
                             } else {
-                                if (id!=undefined&&id!='') {
-                                    var Chart = echarts.init(document.getElementById(id), dashboard_theme);
-                                    Chart.resize();
-                                }
+                                chart_obj_array[i].resize();
                             }
                         }
                     });
                 });
             }
-
         }
     },
     methods: {
@@ -871,13 +869,56 @@ export default {
                 path: 'dataDashboardList'
             })
         },
+        //获取可视化组件信息
+        getVisualComponentInfo() {
+            this.dialogAddComponentVisible = true;
+            functionAll.getVisualComponentInfo({}).then(res => {
+                if (res && res.success) {
+                    this.auto_comp_sum_array = res.data;
+                    this.totalSize = res.data.length;
+                }
+            })
+        },
+         //确定组件
+        showComponentOnDashboard() {
+            this.dialogAddComponentVisible = false;
+            this.picshow = true;
+            if (this.selectRow.length <= 0) {
+                this.$Msg.customizTitle('请至少选择一个组件', 'warning')
+                return;
+            }
+            for (var i = 0; i < this.selectRow.length; i++) {
+                this.dashboard_component_id_array.push(this.selectRow[i].component_id);
+            }
+            let param = new FormData();
+            this.autoCompSums=this.selectRow;
+            param.append('autoCompSums', JSON.stringify(this.autoCompSums));
+            functionAll.showComponentOnDashboard(param).then(res => {
+                if (res && res.success) {
+                    this.titleFlag = true;
+                    this.dashboard_component_array=res.data;
+                    //把边框,文本标签,分割线的layout区分开
+                    this.divideLayout(res.data);
+                    setTimeout(() => {
+                        this.echartpic(res.data, this.dashboard_component_id_array);
+                    }, 500);
+                    setTimeout(() => {
+                        this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
+                        $("div[name='pic']").each(function () {
+                            $(this).trigger("mouseup");
+                        });
+                    }, 500);
+                    this.$refs.multipleComponent.clearSelection();
+                }
+            })
+        },
         //根据仪表盘ID与仪表盘名称获取仪表盘信息
         getDataDashboardInfoById(dashboard_id) {
             functionAll.getDataDashboardInfoById({
                 "dashboard_id": dashboard_id
             }).then(res => {
                 if (res&&res.success) {
-                    this.global_component_array = res.data;
+                    this.dashboard_component_array = res.data;
                     // 分割线
                      if (undefined != res.data.autoLineInfo && '' !=  res.data.autoLineInfo) {
                         this.auto_line_info_array = res.data.autoLineInfo;
@@ -891,93 +932,34 @@ export default {
                         this.auto_frame_info_list = res.data.frameInfo;
                     }
                     // 仪表盘信息
-                    // this.auto_dashboard_info.bordercolor = res.data.bordercolor;
-                    // this.auto_dashboard_info.bordertype = res.data.bordertype;
-                    // this.auto_dashboard_info.borderwidth = res.data.borderwidth;
-                    this.auto_dashboard_info.dashboard_theme = res.data.dashboard_theme;
-                    this.auto_dashboard_info.dashboard_id = res.data.dashboard_id;
-                    this.auto_dashboard_info.dashboard_name = res.data.dashboard_name;
-                    this.auto_dashboard_info.dashboard_desc = res.data.dashboard_desc;
-                    this.auto_dashboard_info.background=res.data.background;
-                    var code =this.auto_dashboard_info.dashboard_theme;
+                    this.auto_dashboard_info=res.data.auto_dashboard_info;
                     // 组件信息
-                    this.selectRow=res.data.autoCompSum;
+                    this.autoCompSums=res.data.autoCompSums;
                     //把边框,文本标签,分割线的layout区分开
-                    for (var i = 0; i < res.data.layout.length; i++) {
-                        // 文本标签
-                        if ("0" == res.data.layout[i].label) {
-                            this.label_layout.push(res.data.layout[i]);
-                        } else if ("1" == res.data.layout[i].label) {
-                            // 分割线
-                            this.line_layout.push(res.data.layout[i]);
-                        } else if ("2" == res.data.layout[i].label) {
-                            // 边框
-                            this.frame_layout.push(res.data.layout[i]);
-                        } else {
-                            this.layout.push(res.data.layout[i]);
-                        }
-                    }
+                    this.divideLayout(res.data);
                     for (var i = 0; i < this.layout.length; i++) {
-                        var id = this.layout[i].type;
-                        this.global_component_id_array.push(id);
+                        this.dashboard_component_id_array.push(this.layout[i].type);
                     }
-                    var style = "";
-                    var type = "";
-                    var echart_theme_obj = {};
-                    for (var i = 0; i < this.titleData.length; i++) {
-                        if (this.titleData[i].code == code) {
-                            style = this.titleData[i].style;
-                            type = this.titleData[i].type;
-                            echart_theme_obj = this.titleData[i];
-                        }
-                    }
-                    if (code == "00") {
-                        this.echart_theme = echart_theme_obj;
+                    if (this.auto_dashboard_info.dashboard_theme == "00") {
+                        // 原始主题
+                        this.echart_theme = this.titleData;
                     } else {
                         $.getJSON(this.echartThemeJson, function (themeJSON) {
                             echarts.registerTheme(type, themeJSON[type]);
-                            this.echart_theme = echart_theme_obj;
+                            this.echart_theme = this.titleData;
                         });
                     }
                     var index = 0;
                     for (var i = 0; i < this.titleData.length; i++) {
-                        if (code == "0" + i) {
+                        if (this.auto_dashboard_info.dashboard_theme == "0" + i) {
                             index = i;
                         }
                     }
                     this.bcolor = this.titleData[index].bcolor;
-                    setTimeout(() => {
-                        for (var i = 0; i < this.layout.length; i++) {
-                            if (this.layout[i].label == "0") {
-                                // 文本标签
-                                $("#" + this.layout[i].type).find("p").css({
-                                    "background-color": this.titleData[index].ncolor,
-                                    "color": this.titleData[index].fcolor
-                                });
-                                $("#" + this.layout[i].type).find("p").css({
-                                    'background-color': this.titleData[index].ncolor,
-                                    "color": this.titleData[index].fcolor
-                                });
-                                var id = $("#" + this.layout[i].type).attr("id");
-                            } else if (this.layout[i].label == "1") {
-                                // 分割线
-                                $("#" + this.layout[i].type).find("div[class='lineclass']").css({
-                                    'background-color': this.titleData[index].ncolor
-                                });
-                            } else if (this.layout[i].label == "2") {
-                                // 边框
-                                $("#" + this.layout[i].type).css({
-                                    'border': this.titleData[index].ncolor + ' 2px solid'
-                                });
-                            } else {
-
-                            }
-                        }
-                    }, 2000);
                     // 卡片表格回显
                     setTimeout(() => {
                         for (var i = 0; i < this.chart_obj_array.length; i++) {
-                            if (this.chart_obj_array[i].layouttype == "card") {
+                            if (this.chart_obj_array[i].echarttype == "card") {
                                 $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
                                     "background-color": this.titleData[index].ncolor,
                                     "color": this.titleData[index].fcolor
@@ -992,7 +974,7 @@ export default {
 
                                 this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
                                 this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                            } else if (this.chart_obj_array[i].echarttype == "table") {
                                 this.tabStyle.th_background = this.titleData[index].ncolor;
                                 this.tabStyle.zl_background = this.titleData[index].ncolor;
                             } else {
@@ -1000,38 +982,11 @@ export default {
                             }
                         }
                     }, 2000);
-                    this.layoutFlag = false;
                     this.titleFlag = false;
                     // 仪表盘展示
                     setTimeout(() => {
-                        this.echartpic(this.global_component_array, this.global_component_id_array);
+                        this.echartpic(this.dashboard_component_array, this.dashboard_component_id_array);
                     }, 500);
-                    // setTimeout(() => {
-                    //     this.grid_layout_backgroundcolor = style;
-                    //     var bgcolor = this.auto_dashboard_info.background;
-                    //     this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
-                    //     //边框类型
-                    //     for (var i = 0; i < this.borderstyle.length; i++) {
-                    //         if (this.borderstyle[i].code == this.auto_dashboard_info.bordertype) {
-                    //             this.choosebordertype(this.borderstyle[i]);
-                    //         }
-                    //     }
-                    //     //边框颜色
-                    //     for (var i = 0; i < this.bordercolor.length; i++) {
-                    //         if (this.bordercolor[i].code == this.auto_dashboard_info.bordercolor) {
-                    //             this.choosebordercolor(this.bordercolor[i]);
-                    //         }
-                    //     }
-                    //     //边框粗细
-                    //     for (var i = 0; i < this.borderwidth.length; i++) {
-                    //         if (this.borderwidth[i].code == this.auto_dashboard_info.borderwidth) {
-                    //             this.chooseborderwidth(this.borderwidth[i]);
-                    //         }
-                    //     }
-                    //     $("div[name='pic']").each(function () {
-                    //         $(this).trigger("mouseup");
-                    //     });
-                    // }, 500);
                     // 边框回显
                     setTimeout(() => {
                         this.frame_back();
@@ -1047,130 +1002,31 @@ export default {
              }
          })
         },
-        //获取可视化组件信息
-        getVisualComponentInfo() {
-            this.dialogAddComponentVisible = true;
-            functionAll.getVisualComponentInfo({}).then(res => {
-                if (res && res.success) {
-                    this.auto_comp_sum_array = res.data;
-                    this.totalSize = res.data.length;
-                }
-            })
-        },
-         //表数据实现分页功能
-        handleCurrentChangeList(currPage) {
-            //把val赋给当前页面
-            this.currPage = currPage;
-        },
-        // 改变每页显示条数
-        handleSizeChange(pageSize) {
-            this.pageSize = pageSize;
-        },
-        //确定组件
-        showComponentOnDashboard() {
-            this.dialogAddComponentVisible = false;
-            this.picshow = true;
-            if (this.selectRow.length <= 0) {
-                this.$Msg.customizTitle('请至少选择一个组件', 'warning')
-                return;
-            }
-            var component_id_array = [];
-            for (var i = 0; i < this.selectRow.length; i++) {
-                component_id_array.push(this.selectRow[i].component_id);
-            }
-            this.global_component_id_array = component_id_array;
-            let param = new FormData();
-            param.append('autoCompSums', JSON.stringify(this.selectRow));
-            functionAll.showComponentOnDashboard(param).then(res => {
-                if (res && res.success) {
-                    this.layoutFlag = false;
-                    this.titleFlag = true;
-                    this.global_component_array=res.data;
-                    this.layout=res.data.layout;
-                    setTimeout(() => {
-                        this.echartpic(res.data, component_id_array);
-                    }, 500);
-
-                    setTimeout(() => {
-                        this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
-                        $("div[name='pic']").each(function () {
-                            $(this).trigger("mouseup");
-                        });
-                    }, 500);
-                    this.$refs.multipleComponent.clearSelection();
-                }
-            })
-        },
-        // 关闭组件弹窗
-        beforeAddComponentClose() {
-            this.dialogAddComponentVisible = false;
-            this.$refs.multipleComponent.clearSelection();
-        },
-        // 关闭主题弹框
-        beforeTitleClose() {
-            this.dialogTitleVisible = false;
-        },
-        // 关闭仪表盘弹框
-        beforeDashboardClose() {
-            this.dialogDashboardVisible = false;
-        },
-        // 关闭分割线弹框
-        beforeTextLineClose() {
-            this.dialogTextLineVisible = false;
-        },
-        // 关闭背景色弹框
-        beforeBackgroundClose() {
-            this.dialogBackgroundVisible = false;
-        },
-        // 关闭边框弹框
-        beforeBorderClose() {
-            this.dialogBorderVisible = false;
-        },
-        // 关闭文本标签弹框
-        beforeTextLabelClose() {
-            this.dialogTextLabelVisible = false;
-        },
-        // 取消
-        cancel() {
-            this.$refs.multipleComponent.clearSelection();
-            this.dialogAddComponentVisible = false
-        },
-        // 表全选
-        allComponentSelect(all) {
-            this.selectRow = all
-        },
-        // 表复选框选中
-        componentSelectionChange(selectTrue) {
-            this.selectRow = selectTrue;
-        },
-       // 全屏预览
-       fullScreen() {
-            var el = document.documentElement;
-            var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-            if (typeof rfs != "undefined" && rfs) {
-                rfs.call(el);
-            };
-            $(".navbar").hide();
-            $('#toubu').hide();
-            $("#dataDashboard").css("background-color", this.grid_layout_backgroundcolor);
-            this.is_showdel = false;
-            $("#mydiv img").each(function () {
-                $(this).css("display", "none");
-            });
-            for (var i = 0; i < this.selectRow.length; i++) {
-                if (this.selectRow[i].chart_type != "card" && this.selectRow[i].chart_type != "table") {
-                    var frame_img = document.getElementById(this.selectRow[i].component_id).children[0];
-                    var img_style = "width:25px;height:25px;position:absolute;right:0px;z-index:999;";
-                    if (this.selectRow[i].background == "transparent") {
-                        img_style += this.grid_layout_backgroundcolor;
-                    } else {
-                        img_style += this.selectRow[i].background;
+        //把边框,文本标签,分割线的layout区分开
+        divideLayout(data){
+            for (var i = 0; i < data.layout.length; i++) {
+                // 文本标签
+                if (data.layout[i].label!=undefined && "0" == data.layout[i].label) {
+                    if (this.label_layout.findIndex(item => item.type=== data.layout[i].type)==-1) {
+                        this.label_layout.push(data.layout[i]);
                     }
-                    var imgHTML = "<img src='@/assets/images/hidedel.png' style=" + img_style + " class='pull-right'>";
-                    $(frame_img).append(imgHTML);
+                } else if (data.layout[i].label!=undefined && "1" == data.layout[i].label) {
+                    // 分割线
+                    if (this.line_layout.findIndex(item => item.type=== data.layout[i].type)==-1) {
+                        this.line_layout.push(data.layout[i]);
+                    }
+                } else if (data.layout[i].label!=undefined && "2" == data.layout[i].label) {
+                    // 边框
+                    if (this.frame_layout.findIndex(item => item.type=== data.layout[i].type)==-1) {
+                        this.frame_layout.push(data.layout[i]);
+                    }
+                } else {
+                    // 组件信息
+                    if (this.layout.findIndex(item => item.type=== data.layout[i].type)==-1) {
+                        this.layout.push(data.layout[i]);
+                    }
                 }
             }
-            return;
         },
         //分割线编辑回显
         textline_back() {
@@ -1203,14 +1059,14 @@ export default {
                             chart_obj_array:this.chart_obj_array,
                             delpng:this.delpng,
                             textlinearray:this.textlinearray,
-                            global_component_array:this.global_component_array,
+                            dashboard_component_array:this.dashboard_component_array,
                             line_layout:this.line_layout
                         }
                     }).$mount();
                     this.linedelimage(id, imagevueobj);
                 }
                 var obj = {};
-                obj.layouttype = "borderline";
+                obj.echarttype = "borderline";
                 obj.id = id;
                 this.chart_obj_array.push(obj);
                 this.textlinearray.push(obj);
@@ -1219,45 +1075,45 @@ export default {
         },
         //边框回显
         frame_back() {
-                for (var i = 0; i < this.frame_layout.length; i++) {
-                    var layout_obj = this.frame_layout[i];
-                    var id = this.frame_layout[i].type;
-                    var auto_frame_info = this.auto_frame_info_list[i];
-                    $("#" + id).css("overflow", "hidden");
-                    $("#" + id).css("position", "relative");
-                    $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.border_style +
-                        " " + auto_frame_info.border_color);
-                    $("#" + id).css("border-radius", auto_frame_info.border_radius + "px");
-                    if (this.auto_frame_info_list[i].is_shadow == '0') {
-                        $("#" + id).css("box-shadow", "1px 1px 10px 5px #888888");
-                    }
-                    //添加打叉按钮
-                    if (this.is_showdel == true) {
-                        var imagevueobj = new framedelProfile({
-                            propsData: {
-                                echart_div_layout: layout_obj,
-                                auto_frame_info: auto_frame_info,
-                                delpng:this.delpng,
-                                auto_frame_info_list:this.auto_frame_info_list,
-                                layout:this.layout,
-                                global_component_array:this.global_component_array,
-                                frame_layout:this.frame_layout,
-                                textframearray:this.textframearray,
-                                chart_obj_array:this.chart_obj_array
-                            }
-                        }).$mount();
-                        this.framedelimage(id, imagevueobj);
-                    }
-
-                    var obj = {};
-                    obj.layouttype = "frameline";
-                    obj.id = id;
-                    this.chart_obj_array.push(obj);
-
-                    this.textframearray.push(obj);
-
-                    $("#" + id).trigger("mouseup");
+            for (var i = 0; i < this.frame_layout.length; i++) {
+                var layout_obj = this.frame_layout[i];
+                var id = this.frame_layout[i].type;
+                var auto_frame_info = this.auto_frame_info_list[i];
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).css("border", auto_frame_info.border_width + "px " + auto_frame_info.border_style +
+                    " " + auto_frame_info.border_color);
+                $("#" + id).css("border-radius", auto_frame_info.border_radius + "px");
+                if (this.auto_frame_info_list[i].is_shadow == '0') {
+                    $("#" + id).css("box-shadow", "1px 1px 10px 5px #888888");
                 }
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new framedelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_frame_info: auto_frame_info,
+                            delpng:this.delpng,
+                            auto_frame_info_list:this.auto_frame_info_list,
+                            layout:this.layout,
+                            dashboard_component_array:this.dashboard_component_array,
+                            frame_layout:this.frame_layout,
+                            textframearray:this.textframearray,
+                            chart_obj_array:this.chart_obj_array
+                        }
+                    }).$mount();
+                    this.framedelimage(id, imagevueobj);
+                }
+
+                var obj = {};
+                obj.echarttype = "frameline";
+                obj.id = id;
+                this.chart_obj_array.push(obj);
+
+                this.textframearray.push(obj);
+
+                $("#" + id).trigger("mouseup");
+            }
         },
         //文本标签编辑回显
         textlabel_back() {
@@ -1281,7 +1137,6 @@ export default {
                 style += "; font-size:" + textStyle.fontsize + "px";
                 html = html + "<p style='" + style + "'>" + auto_label_info.label_content + "</p>"
                 $("#" + id).html(html);
-
                 //添加打叉按钮
                 if (this.is_showdel == true) {
                     var imagevueobj = new labeldelProfile({
@@ -1291,7 +1146,7 @@ export default {
                             delpng:this.delpng,
                             auto_label_info_array:this.auto_label_info_array,
                             layout:this.layout,
-                            global_component_array:this.global_component_array,
+                            dashboard_component_array:this.dashboard_component_array,
                             label_layout:this.label_layout,
                             textlabelarray:this.textlabelarray,
                             chart_obj_array:this.chart_obj_array
@@ -1299,958 +1154,395 @@ export default {
                     }).$mount();
                     this.labeldelimage(id, imagevueobj);
                 }
-
                 var obj = {};
-                obj.layouttype = "label";
+                obj.echarttype = "label";
                 obj.id = id;
                 obj.content = auto_label_info.label_content;
                 this.chart_obj_array.push(obj);
-
-                this.textlabelarray.push(obj);
-
-                $("#" + id).trigger("mouseup");
-            }
-        },
-        //选择主题
-        chooseTitle(data) {
-            var code = data.code;
-            var style = data.style;
-            var type = data.type;
-            var depth = data.depth;
-            this.auto_dashboard_info.dashboard_theme = data.code;
-            for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (this.chart_obj_array[i].layouttype == "card") {
-
-                } else if (this.chart_obj_array[i].layouttype == "table") {
-
-                } else if (this.chart_obj_array[i].layouttype == "label") {
-
-                } else if (this.chart_obj_array[i].layouttype == "borderline") {
-
-                } else if (this.chart_obj_array[i].layouttype == "frameline") {
-
-                } else {
-                    this.chart_obj_array[i].dispose();
-                }
-            }
-            if (code == "00") {
-                this.echart_theme = data;
-            } else {
-                $.getJSON(this.echartThemeJson, function (themeJSON) {
-                    echarts.registerTheme(type, themeJSON[type]);
-                    this.echart_theme = data;
-                });
-            }
-            var chart_obj_array=this.chart_obj_array;
-            var cardname=this.cardname;
-            var cardstyle=this.cardstyle;
-            var tabStyle=this.tabStyle;
-            //更换卡片，标签，分割线，表的颜色为组件的主要颜色
-            setTimeout(() => {
-                for (var i = 0; i < chart_obj_array.length; i++) {
-                    this.bcolor = data.bcolor;
-                    if (chart_obj_array[i].layouttype == "card") {
-                        $("#" + chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                            "background-color": data.ncolor,
-                            "color": data.fcolor
-                        });
-                        $("#" + chart_obj_array[i].id).find("div[class='cardclass']").css({
-                            'background-color': data.ncolor,
-                            "color": data.fcolor
-                        });
-                        cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.title.fontFamily;
-                        cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                        cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-                        cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
-                        cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                    } else if (chart_obj_array[i].layouttype == "table") {
-                        tabStyle.th_background = this.bcolor
-                        tabStyle.zl_background = this.bcolor;
-                    } else if (chart_obj_array[i].layouttype == "label") {
-                        $("#" + chart_obj_array[i].id).find("p").css({
-                            "background-color": data.ncolor,
-                            "color": data.fcolor
-                        });
-                        $("#" + chart_obj_array[i].id).find("p").css({
-                            'background-color': data.ncolor,
-                            "color": data.fcolor
-                        });
-                    } else if (chart_obj_array[i].layouttype == 'borderline') {
-                        $("#" + chart_obj_array[i].id).find("div[class='lineclass']").css({
-                            'background-color': data.ncolor
-                        });
-                    } else if (chart_obj_array[i].layouttype == "frameline") {
-                        $("#" + chart_obj_array[i].id).css({
-                            'border': data.ncolor + ' 2px solid'
-                        });
-                    } else {
-
-                    }
-                }
-            }, 500);
-            this.layoutFlag = false;
-            this.titleFlag = false;
-            // 仪表盘展示
-            setTimeout(() => {
-                this.echartpic(this.global_component_array, this.global_component_id_array);
-            }, 500);
-            // 文本标签主题设置
-            setTimeout(() => {
-                if (this.textlabelarray.length > 0) {
-                    this.textlabeltheme();
-                }
-            }, 500);
-            // 分割线设置
-            setTimeout(() => {
-                if (this.textlinearray.length > 0) {
-                    this.textlinetheme();
-                }
-            }, 500);
-            // 边框设置
-            setTimeout(() => {
-                if (this.textframearray.length > 0) {
-                    this.textframetheme();
-                }
-            }, 500);
-            setTimeout(() => {
-                this.grid_layout_backgroundcolor = style;
-                $("div[name='pic']").each(function () {
-                    $(this).trigger("mouseup");
-                });
-            }, 500);
-            this.dialogTitleVisible=false;
-        },
-        //文本标签主题设置
-        textlabeltheme() {
-            if (this.echart_theme != "") {
-                if (this.echart_theme.depth == "sheng") {
-                    for (var i = 0; i < this.textlabelarray.length; i++) {
-                        this.chart_obj_array.push(this.textlabelarray[i]);
-                        var id = this.textlabelarray[i].id;
-                        $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
-                    }
-                } else if (this.echart_theme.depth == "qian") {
-                    for (var i = 0; i < this.textlabelarray.length; i++) {
-                        this.chart_obj_array.push(this.textlabelarray[i]);
-                        var id = this.textlabelarray[i].id;
-                        $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
-                    }
-                }
-            }
-        },
-        //分割线主题设置
-        textlinetheme() {
-            if (this.echart_theme != "") {
-                for (var i = 0; i < this.textlinearray.length; i++) {
-                    this.chart_obj_array.push(this.textlinearray[i]);
-                }
-            }
-        },
-        //边框主题设置
-        textframetheme() {
-            if (this.echart_theme != "") {
-                for (var i = 0; i < this.textframearray.length; i++) {
-                    this.chart_obj_array.push(this.textframearray[i]);
-                }
-            }
-        },
-        //选择边框颜色
-        // choosebordercolor(data) {
-        //     var code = data.code;
-        //     var style = data.style;
-        //     var type = data.type;
-        //     this.auto_dashboard_info.bordercolor = data.code;
-        //     for (var i = 0; i < this.layout.length; i++) {
-        //         var id = this.layout[i].type;
-        //         $("#" + id).css("border-color", style.split(":")[1]);
-        //     }
-
-        // },
-        //选择边框类型
-        // choosebordertype(data) {
-        //     var style = data.style;
-        //     this.auto_dashboard_info.bordertype = data.code;
-        //     for (var i = 0; i < this.layout.length; i++) {
-        //         var id = this.layout[i].type;
-        //         $("#" + id).css("border-style", style.split(":")[1]);
-        //         //$("#"+id).css("border-color","black");
-        //     }
-
-        // },
-        //选择边框粗细
-        // chooseborderwidth(data) {
-        //     var style = data.type;
-        //     this.auto_dashboard_info.borderwidth = data.code;
-        //     for (var i = 0; i < this.layout.length; i++) {
-        //         var id = this.layout[i].type;
-        //         $("#" + id).css("border-width", style.split(":")[1]);
-        //     }
-        // },
-        //保存仪表板
-        saveDashboard() {
-            var picnum = 0;
-            $("div[name='pic']").each(function () {
-                picnum++;
-            });
-            if (this.auto_dashboard_info.dashboard_name == '' || typeof (this.auto_dashboard_info.dashboard_name) == 'undefined') {
-                this.$Msg.customizTitle('仪表盘名称不能为空', 'warning')
-                return;
-            }
-            if (picnum == 0) {
-                this.$Msg.customizTitle('请至少添加一个组件', 'warning')
-                return false;
-            }
-            let bordertype = this.auto_frame_info.border_style;
-            this.borderstyle.forEach(function(item, index) {
-                if (item.type==bordertype) {
-                    bordertype=item.code;
-                }
-            })
-            this.auto_dashboard_info.bordertype=bordertype;
-            if (this.auto_dashboard_info.dashboard_theme==undefined||this.auto_dashboard_info.dashboard_theme=='') {
-                this.auto_dashboard_info.dashboard_theme='00';
-            }
-            let param=new FormData();
-            param.append("layout",JSON.stringify(this.layout));
-            param.append("autoLabelInfo", JSON.stringify(this.auto_label_info_array));
-            param.append("autoLineInfo", JSON.stringify(this.auto_line_info_array));
-            param.append("autoFrameInfo", JSON.stringify(this.auto_frame_info_list));
-            // param.append("autoFontInfo", {});
-            param.append("autoDashboardInfo", JSON.stringify(this.auto_dashboard_info));
-            if (this.auto_dashboard_info.dashboard_id==undefined||this.auto_dashboard_info.dashboard_id=='') {
-                functionAll.saveDataDashboardInfo(param).then(res => {
-                    if (res&&res.success) {
-                        this.$Msg.customizTitle('保存成功', 'success')
-                        this.$router.push({
-                            name: 'dataDashboardList'
-                        })
-                    }
-                });
-            }else{
-                functionAll.updateDataDashboardInfo(param).then(res => {
-                if (res&&res.success) {
-                    this.$Msg.customizTitle('更新成功', 'success')
-                    this.$router.push({
-                         name: 'dataDashboardList'
-                     })
-                }
-            });
-            }
-            
-        },
-        //确定分割线
-        confirmtextline() {
-            if (this.layout.length <= 0) {
-                return false;
-            }
-            this.auto_line_info_array.push(this.auto_line_info);
-            var id = parseInt(Math.random() * 10000 + 10000);
-            if (this.auto_line_info.line_type == 'heng') {
-                var layout_obj = {
-                    "w": 40,
-                    "h": 3,
-                    "type": id,
-                    "moved": false,
-                    "label": 1,
-                    "static": true
-                };
-            } else {
-                var layout_obj = {
-                    "w": 3,
-                    "h": 30,
-                    "type": id,
-                    "moved": false,
-                    "label": 1,
-                    "static": true
-                };
-            }
-
-            if (this.layout.length > 0) {
-                var obj = this.layout[this.layout.length - 1];
-                if (obj.x >= 20) {
-                    layout_obj.x = 0;
-                    layout_obj.y = parseInt(obj.y) + 4;
-                    layout_obj.i = id;
-                } else {
-                    if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
-                        layout_obj.x = parseInt(0);
-                        layout_obj.y = parseInt(obj.y) + 4;
-                        layout_obj.i = id;
-                    } else {
-                        layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
-                        layout_obj.y = parseInt(obj.y);
-                        layout_obj.i = id;
-                    }
-                }
-            } else {
-                layout_obj.x = 0;
-                layout_obj.y = 0;
-                layout_obj.i = 1;
-            }
-
-            this.layout.push(layout_obj);
-
-            this.$nextTick(function () {
-                if (this.auto_line_info.line_type == 'heng') {
-                    var html = "<div name='linecomponentname'></div>" +
-                      "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
-                } else {
-                    var html = "<div name='linecomponentname'></div>" +
-                       "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
-                }
-                $("#" + id).css("overflow", "hidden");
-                $("#" + id).css("position", "relative");
-                $("#" + id).html(html);
-                this.islineshow=true;
-                for (var i = 0; i < this.labelfontcolor.length; i++) {
-                    if (this.labelfontcolor[i].code == this.auto_line_info.line_color) {
-                        $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[i].type);
-                    }
-                }
-                //添加打叉按钮
-                if (this.is_showdel == true) {
-                    var imagevueobj = new linedelProfile({
-                        propsData: {
-                            echart_div_layout: layout_obj,
-                            auto_line_info: this.auto_line_info,
-                            layout:this.layout,
-                            auto_line_info_array:this.auto_line_info_array,
-                            chart_obj_array:this.chart_obj_array,
-                            delpng:this.delpng,
-                            textlinearray:this.textlinearray,
-                            global_component_array:this.global_component_array,
-                            line_layout:this.line_layout
-                        }
-                    }).$mount();
-                    this.linedelimage(id, imagevueobj);
-                }
-                var obj = {};
-                obj.layouttype = "borderline";
-                obj.id = id;
-                this.chart_obj_array.push(obj);
-
-                this.textlinearray.push(obj);
-
-                $("#" + id).trigger("mouseup");
-            })
-            this.dialogTextLineVisible=false;
-        },
-        //添加边框
-        confirmFrameLine() {
-            if (this.layout.length <= 0) {
-                return false;
-            }
-            this.auto_frame_info_list.push(Object.assign({}, this.auto_frame_info));
-            var id = parseInt(Math.random() * 10000 + 10000);
-            var layout_obj = {
-                "w": 40,
-                "h": 32,
-                "moved": false,
-                "label": 2,
-                "static": true
-            };
-            if (this.layout.length > 0) {
-                var obj = this.layout[this.layout.length - 1];
-                if (obj.x >= 20) {
-                    layout_obj.x = 0;
-                    layout_obj.y = parseInt(obj.y) + 4;
-                    layout_obj.i = id;
-                } else {
-                    if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
-                        layout_obj.x = parseInt(0);
-                        layout_obj.y = parseInt(obj.y) + 4;
-                        layout_obj.i = id;
-                    } else {
-                        layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
-                        layout_obj.y = parseInt(obj.y);
-                        layout_obj.i = id;
-                    }
-                }
-            } else {
-                layout_obj.x = 0;
-                layout_obj.y = 0;
-                layout_obj.i = 1;
-            }
-            layout_obj.type = id;
-            this.layout.push(layout_obj);
-            this.$nextTick(function () {
-                $("#" + id).css("overflow", "hidden");
-                $("#" + id).css("position", "relative");
-                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.border_style +
-                    " " + this.auto_frame_info.border_color);
-                $("#" + id).css("border-radius", this.auto_frame_info.border_radius + "px");
-                if (this.auto_frame_info.is_shadow == '0') {
-                    $("#" + id).css("box-shadow", "1px 1px 10px 5px #888888");
-                }
-                //添加打叉按钮
-                if (this.is_showdel == true) {
-                    var imagevueobj = new framedelProfile({
-                        propsData: {
-                            echart_div_layout: layout_obj,
-                            auto_frame_info: this.auto_frame_info,
-                            delpng:this.delpng,
-                            auto_frame_info_list:this.auto_frame_info_list,
-                            layout:this.layout,
-                            global_component_array:this.global_component_array,
-                            frame_layout:this.frame_layout,
-                            textframearray:this.textframearray,
-                            chart_obj_array:this.chart_obj_array
-                        }
-                    }).$mount();
-                    this.framedelimage(id, imagevueobj);
-                }
-                var obj = {};
-                obj.layouttype = "frameline";
-                obj.id = id;
-                this.chart_obj_array.push(obj);
-                this.textframearray.push(obj);
-                $("#" + id).trigger("mouseup");
-            })
-            this.dialogBorderVisible=false;
-        },
-        //确定文本标签
-        confirmTextLable() {
-            if (this.layout.length <= 0) {
-                return false;
-            }
-            if (this.auto_label_info.label_content == "") {
-                this.$Msg.customizTitle('请输入文本标签的内容', 'warning')
-                return false;
-            }
-            //JSON拷贝
-            this.auto_label_info_array.push(Object.assign({}, this.auto_label_info));
-            var layout_obj = {
-                "w": 30,
-                "h": 7,
-                "moved": false,
-                "label": 0,
-                "static": true
-            };
-            var id = parseInt(Math.random() * 10000 + 10000);
-            if (this.layout.length > 0) {
-                var obj = this.layout[this.layout.length - 1];
-                if (obj.x >= 20) {
-                    layout_obj.x = 0;
-                    layout_obj.y = parseInt(obj.y) + 4;
-                    layout_obj.i = id;
-                } else {
-                    if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
-                        layout_obj.x = parseInt(0);
-                        layout_obj.y = parseInt(obj.y) + 4;
-                        layout_obj.i = id;
-                    } else {
-                        layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
-                        layout_obj.y = parseInt(obj.y);
-                        layout_obj.i = id;
-                    }
-                }
-            } else {
-                layout_obj.x = 0;
-                layout_obj.y = 0;
-                layout_obj.i = 1;
-            }
-            layout_obj.type = id;
-            this.layout.push(layout_obj);
-            this.$nextTick(function () {
-                //标签处理
-                var textStyle = this.auto_label_info.textStyle;
-                $("#" + id).css("overflow", "hidden");
-                $("#" + id).css("position", "relative");
-                $("#" + id).css("margin-top", "2px");
-                $("#" + id).css("background", this.auto_label_info.label_color);
-                $("#" + id).css("display", "flex");
-                $("#" + id).css("align-items", textStyle.verticalAlign);
-                $("#" + id).css("justify-content", textStyle.align);
-                //字体处理
-                var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontFamily;
-                style += "; font-style:" + textStyle.fontStyle + "; font-weight:" + textStyle.fontWeight;
-                style += "; text-align:" + textStyle.align + "; vertical-align:" + textStyle.verticalAlign;
-                style += "; font-size:" + textStyle.fontSize + "px";
-                var html = "<div name='labelcomponentname'></div>";
-                html = html + "<p style='" + style + "'>" + this.auto_label_info.label_content + "</p>"
-                $("#" + id).html(html);
-                //添加打叉按钮
-                if (this.is_showdel == true) {
-                    var imagevueobj = new labeldelProfile({
-                        propsData: {
-                            echart_div_layout: layout_obj,
-                            auto_label_info: this.auto_label_info,
-                            delpng:this.delpng,
-                            auto_label_info_array:this.auto_label_info_array,
-                            layout:this.layout,
-                            global_component_array:this.global_component_array,
-                            label_layout:this.label_layout,
-                            textlabelarray:this.textlabelarray,
-                            chart_obj_array:this.chart_obj_array
-                        }
-                    }).$mount();
-                    this.labeldelimage(id, imagevueobj);
-                }
-
-                var obj = {};
-                obj.layouttype = "label";
-                obj.id = id;
-                obj.content = this.auto_label_info.label_content;
-                this.chart_obj_array.push(obj);
                 this.textlabelarray.push(obj);
                 $("#" + id).trigger("mouseup");
-            })
-            this.dialogTextLabelVisible=false;
-        },
-        //确认仪表板背景色
-        confirmBackgroudColor() {
-            var bgcolor = this.auto_dashboard_info.background;
-            this.auto_dashboard_info.background = bgcolor;
-            this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
-            this.dialogBackgroundVisible=false;
-        },
-        //找出新增前后不同的组件
-        array_diff(compelx, part) {
-            var result = [];
-            for (var index in compelx) {
-                var component_id = compelx[index].type;
-                if ($.inArray(component_id, part) < 0) {
-                    result.push(compelx[index]);
-                }
             }
-            return result;
-        },
-        //找出新增前后相同的组件
-        array_alike(compelx, part) {
-            var result = [];
-            for (var index in compelx) {
-                var component_id = compelx[index].type;
-                if ($.inArray(component_id, part) < 0) {} else {
-                    result.push(compelx[index]);
-                }
-            }
-            return result;
         },
         //仪表板展示
         echartpic(data, component_id_array) {
-            var echartlayout = [];
-            for (var index in this.layout) {
-                if (this.layout[index].label == "0") {
-                    this.label_layout.push(this.layout[index]);
-                } else if (this.layout[index].label == "1") {
-                    this.line_layout.push(this.layout[index]);
-                } else if (this.layout[index].label == "2") {
-                    this.frame_layout.push(this.layout[index]);
-                } else {
-                    echartlayout.push(this.layout[index]);
-                }
-            }
+            // 新增前后相同的组件
             var result_layout = [];
+            // 所有组件ID
             var layoutId_array = [];
-            if (echartlayout.length > data.layout.length) { //减少
-                for (var index in data.layout) {
-                    layoutId_array.push(data.layout[index].type);
-                }
-                result_layout = this.array_alike(echartlayout, layoutId_array);
-                if (result_layout.length == "0") {
-                    echartlayout = data.layout;
+            for (var index in data.layout) {
+                layoutId_array.push(data.layout[index].type);
+            }
+            if (this.layout.length > data.layout.length) { //减少
+                // 找出前后相同的组件
+                result_layout = this.array_alike(this.layout, layoutId_array);
+                if (result_layout.length == 0) {
+                    this.layout = data.layout;
                 } else {
-                    echartlayout = result_layout;
+                    // 相同的组件
+                    this.layout = result_layout;
+                    // [].push.apply(a, b):将b追加到a里面，如果a为数组，也可以写成a.push(b)
+                    if (this.label_layout.length!=0) {
+                        [].push.apply(this.layout,this.label_layout);
+                    }
+                    console.log($.inArray(this.layout[i],this.line_layout));
+                    if (this.line_layout.length!=0) {
+                        [].push.apply(this.layout,this.line_layout);
+                    }
+                    if (this.frame_layout.length!=0) {
+                        [].push.apply(this.layout,this.frame_layout);
+                    }
                 }
-                this.layoutFlag = true;
             } else { //替换,新增
-                for (var index in data.layout) {
-                    layoutId_array.push(data.layout[index].type);
-                }
-                result_layout = this.array_alike(echartlayout, layoutId_array);
-                if (result_layout.length == "0") {
-                    echartlayout = data.layout;
+                // 找出前后相同的组件
+                result_layout = this.array_alike(this.layout, layoutId_array);
+                if (result_layout.length == 0) {
+                    this.layout = data.layout;
                 } else {
-                    echartlayout = result_layout;
+                    this.layout = result_layout;
                 }
                 layoutId_array = [];
-                for (var index in echartlayout) {
-                    layoutId_array.push(echartlayout[index].type);
+                for (var index in this.layout) {
+                    layoutId_array.push(this.layout[index].type);
                 }
+                // 找出前后不同的组件
                 result_layout = this.array_diff(data.layout, layoutId_array);
                 if (result_layout.length > 0) {
                     for (var i = 0; i < result_layout.length; i++) {
                         if (this.titleFlag == true) {
-                            result_layout[i].x = "0";
-                            result_layout[i].y = "0";
+                            result_layout[i].x = 0;
+                            result_layout[i].y = 0;
                         }
-                        echartlayout.push(result_layout[i]);
+                        this.layout.push(result_layout[i]);
                     }
                 }
                 //新增的文本标签、分割线、线框
-                var eachart_type = [];
-                var before_after_layout_diff = [];
-                for (var i = 0; i < echartlayout.length; i++) {
-                    eachart_type.push(echartlayout[i].type);
-                }
-                before_after_layout_diff = this.array_diff(this.layout, eachart_type);
-                if (before_after_layout_diff.length != 0) {
-                    for (var i = 0; i < before_after_layout_diff.length; i++) {
-                        echartlayout.push(before_after_layout_diff[i]);
-                    }
-                }
+                // var eachart_type = [];
+                // var before_after_layout_diff = [];
+                // for (var i = 0; i < this.layout.length; i++) {
+                //     eachart_type.push(this.layout[i].type);
+                // }
+                // before_after_layout_diff = this.array_diff(this.layout, eachart_type);
+                // if (before_after_layout_diff.length != 0) {
+                //     for (var i = 0; i < before_after_layout_diff.length; i++) {
+                //         this.layout.push(before_after_layout_diff[i]);
+                //     }
+                // }
             }
-            this.layout = echartlayout;
-            if (this.layoutFlag == true) {
-                if (this.label_layout.length != "0") {
-                    [].push.apply(this.layout, this.label_layout);
-                }
-                if (this.line_layout.length != "0") {
-                    [].push.apply(this.layout, this.line_layout);
-                }
-                if (this.frame_layout.length != "0") {
-                    [].push.apply(this.layout, this.frame_layout);
-                }
-            }
-            this.global_component_array.layout = this.layout;
+            this.dashboard_component_array.layout = this.layout;
             var chart_obj_array=[];
             this.$nextTick(function () {
-                for (var i = 0; i < component_id_array.length; i++) {
-                    var id = component_id_array[i];
-                    var echartdata = JSON.parse(data[id]);
-                    var type = echartdata.chart_type;
-                    $("#" + id).css({
-                        "width": 370,
-                        "height": 300
-                    })
-                    for (var j = 0; j < this.layout.length; j++) {
-                        if (id == this.layout[j].type) {
-                            var echart_div_layout = this.layout[j];
-                            //标题设置
-                            var title = echart_div_layout.titleFontInfo;
-                            this.title = transferTitle(title);
-                            //轴线字体
-                            var axisStyle = echart_div_layout.axisFontInfo;
-                            this.axisStyle = transferAxisStyle(axisStyle);
-                            //轴线配置--x轴(xAxis)
-                            var xAxis = echart_div_layout.xAxisInfo[0];
-                            if (xAxis.show=='1') {
-                                xAxis.show="true";
-                            }
-                            if (xAxis.silent=='1') {
-                                xAxis.silent="true";
-                            }else{
-                                xAxis.silent="false";
-                            }
-                            this.xAxis = transferxAxis(xAxis);
-                            //x轴(xAxisLine)
-                            var xAxisLine = echart_div_layout.xAxisLine;
-                            if (xAxisLine.show=='1') {
-                                xAxisLine.show="true";
-                            }
-                            this.xAxisLine = transferxAxisLine(xAxisLine);
-                            //x轴(xAxisLabel)
-                            var xAxisLabel = echart_div_layout.xAxisLabel;
-                            if (xAxisLabel.show=='1') {
-                                xAxisLabel.show="true";
-                            }
-                            this.xAxisLabel = transferxAxisLabel(xAxisLabel);
-                            //轴线配置--y轴
-                            var yAxis = echart_div_layout.yAxisInfo[0];
-                            if (yAxis.show=='1') {
-                                yAxis.show="true";
-                            }
-                             if (yAxis.silent=='1') {
-                                yAxis.silent="true";
-                            }else{
-                                yAxis.silent="false";
-                            }
-                            this.yAxis = transferyAxis(yAxis);
-                            //y轴(yAxisLine)
-                            var yAxisLine = echart_div_layout.yAxisLine;
-                            if (yAxisLine.show=='1') {
-                                yAxisLine.show="true";
-                            }
-                            this.yAxisLine = transferyAxisLine(yAxisLine);
-                            //y轴(yAxisLabel)
-                            var yAxisLabel = echart_div_layout.yAxisLabel;
-                            if (yAxisLabel.show=='1') {
-                                yAxisLabel.show="true";
-                            }
-                            this.yAxisLabel = transferyAxisLabel(yAxisLabel);
-                            //二维表
-                            var tableStyle = echart_div_layout.twoDimensionalTable
-                            this.tabStyle.th_background = tableStyle.th_background;
-                            this.tabStyle.is_gridline = tableStyle.is_gridline;
-                            this.tabStyle.is_zebraline = tableStyle.is_zebraline;
-                            this.tabStyle.zl_background = tableStyle.zl_background;
-                            //图表配置
-                            // var seriesStyle = echart_div_layout.chartsconfig;
-                            // seriesStyle.center = JSON.stringify(seriesStyle.center);
-                            // seriesStyle.center = JSON.parse(seriesStyle.center);
-                            // this.seriesStyle = transferSeriesStyle(seriesStyle);
-                            //文本标签
-                            // var echartsLabel = echart_div_layout.textLabel;
-                            // this.echartsLabel = transferEchartsLabel(echartsLabel);
-                            //图例设置
-                            var legendStyle = echart_div_layout.legendInfo;
-                            if (legendStyle.show=='1') {
-                                legendStyle.show="true";
-                            }
-                            this.legendStyle = transferLegendStyle(legendStyle);
+            for (var i = 0; i < component_id_array.length; i++) {
+                var id = component_id_array[i];
+                var echartdata = JSON.parse(data[id]);
+                var type = echartdata.chart_type;
+                $("#" + id).css({
+                    "width": 370,
+                    "height": 300
+                })
+                for (var j = 0; j < this.layout.length; j++) {
+                    if (id == this.layout[j].type) {
+                        var echart_div_layout = this.layout[j];
+                        //标题设置
+                        var title = echart_div_layout.titleFontInfo;
+                        this.title = transferTitle(title);
+                        //轴线字体
+                        var axisStyle = echart_div_layout.axisFontInfo;
+                        this.axisStyle = transferAxisStyle(axisStyle);
+                        //轴线配置--x轴(xAxis)
+                        var xAxis = echart_div_layout.xAxisInfo[0];
+                        if (xAxis.show=='1') {
+                            xAxis.show="true";
                         }
-                    }
-                    //定义全国省份的数组
-                    var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
-                        'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
-                        'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang',
-                        'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing',
-                        'xianggang', 'aomen', 'taiwan'
-                    ];
-
-                    var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江',
-                        '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
-                        '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
-                    ];
-
-                    for (var l = 0; l < provincesText.length; l++) {
-                        if (this.seriesStyle.provincename == provincesText[l]) {
-                            //显示对应省份的方法
-                            this.showProvince(provinces[l], provincesText[l])
-                            break;
+                        if (xAxis.silent=='1') {
+                            xAxis.silent="true";
+                        }else{
+                            xAxis.silent="false";
                         }
-                    }
-                    var tmp_component_name = "";
-                    var tmp_component_background = "";
-                    for (var k = 0; k < this.selectRow.length; k++) {
-                        if (component_id_array[i] == this.selectRow[k].component_id) {
-                            tmp_component_name = this.selectRow[k].chart_theme;
-                            tmp_component_background = this.selectRow[k].background;
+                        this.xAxis = transferxAxis(xAxis);
+                        //x轴(xAxisLine)
+                        var xAxisLine = echart_div_layout.xAxisLine;
+                        if (xAxisLine.show=='1') {
+                            xAxisLine.show="true";
                         }
-                    }
-                    if (type == "line") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.echartline(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "bar") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.echartbar(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
-                        var Chart = echarts.init(document.getElementById(id), 'dark');
-                        this.echartpie(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "scatter") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.echartscatter(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "boxplot") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.echartboxplot(echartdata, Chart, id, echart_div_layout, tmp_component_name);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "bl") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.echartbl(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "treemap") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.echartTreemap(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "card") {
-                        this.tmp_card_layout = echart_div_layout;
-                        var cardname = "background:" + this.title.backgroundColor + ";color:" + this.title.color + ";font-family:" + this.title.fontFamily;
-                        cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                        cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-                        var cardstyle = "word-wrap:break-word;text-align:center;background:" + this.title.backgroundColor + ";color:" + this.title.color;
-                        cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                        var html;
-                        //卡片样式变化
-                        if (this.cardstyle == '') {
-                            html = "<div name='cardcomponentname' style='" + cardname + "'>" + tmp_component_name + "</div>" +
-                                "<div class='cardclass' style='" + cardstyle + "'></div>"
-                        } else {
-                            html = "<div name='cardcomponentname' style='" + this.cardname + "'>" + tmp_component_name + "</div>" +
-                                "<div class='cardclass' style='" + this.cardstyle + "'></div>"
+                        this.xAxisLine = transferxAxisLine(xAxisLine);
+                        //x轴(xAxisLabel)
+                        var xAxisLabel = echart_div_layout.xAxisLabel;
+                        if (xAxisLabel.show=='1') {
+                            xAxisLabel.show="true";
                         }
-                        $("#" + id).html(html);
-                        $("#" + id).css("overflow", "hidden");
-                        $("#" + id).find("div[class='cardclass']").html(echartdata.CardData);
-
-                        //添加打叉按钮
-                        if (this.is_showdel == true) {
-                            var imagevueobj = new cardPofile({
-                                propsData: {
-                                    echart_div_layout: echart_div_layout,
-                                    layout_id: id,
-                                    delpng:this.delpng,
-                                    layout:this.layout,
-                                    global_component_array:this.global_component_array,
-                                    chart_obj_array:this.chart_obj_array,
-                                    selectRow:this.selectRow
-                                }
-                            }).$mount();
-                            this.carddelimage(id, imagevueobj);
+                        this.xAxisLabel = transferxAxisLabel(xAxisLabel);
+                        //轴线配置--y轴
+                        var yAxis = echart_div_layout.yAxisInfo[0];
+                        if (yAxis.show=='1') {
+                            yAxis.show="true";
                         }
-                        var obj = {};
-                        obj.layouttype = type;
-                        obj.id = id;
-                        obj.cardtext = echartdata.CardData;
-                        chart_obj_array.push(obj);
-                    } else if (type == "table") {
-                        this.tmp_card_layout = echart_div_layout;
-                        this.tabledata = echartdata.TableData;
-                        this.tabledatalength = this.tabledata.length;
-                        var backgroundstyle = "";
-                        var fontstyle = "";
-                        //表格样式变化
-                        var html = "<div>" +
-                            "<div name='tablecomponentname'>" + tmp_component_name +
-                            "</div>" +
-                            "</div>";
-                        $("#" + id).html(html);
-                        $("#" + id).css("overflow", "hidden");
-
-                        //删除按钮
-                        if (this.is_showdel == true) {
-                            var imagevueobj = new Profile({
-                                propsData: {
-                                    echart_div_layout: echart_div_layout,
-                                    layout_id: id,
-                                }
-                            }).$mount();
-                            this.tabledelimage(id, imagevueobj);
+                            if (yAxis.silent=='1') {
+                            yAxis.silent="true";
+                        }else{
+                            yAxis.silent="false";
                         }
-                        //表格数据
-                        var tablevueobj = new tableProfile({
-                            propsData: {
-                                tabledata: this.tabledata,
-                                tabledatalength: this.tabledatalength,
-                                backgroundstyle: backgroundstyle,
-                                fontstyle: fontstyle,
-                            }
-                        }).$mount();
-                        //样式挂载
-                        this.tableimage(id, tablevueobj);
-
-                        if (this.bcolor != "#40E3F7") {
-                            this.tabStyle.th_background = this.bcolor;
-                            this.tabStyle.zl_background = this.bcolor;
+                        this.yAxis = transferyAxis(yAxis);
+                        //y轴(yAxisLine)
+                        var yAxisLine = echart_div_layout.yAxisLine;
+                        if (yAxisLine.show=='1') {
+                            yAxisLine.show="true";
                         }
-                        var th_background = this.tabStyle.th_background;
-                        $("#" + id + " table[name='tablename'] thead tr th").css("background", th_background);
-                        if (this.tabStyle.is_zebraline == "0") {
-                            $("#" + id + " table[name='tablename']").addClass("table-striped");
-                        } else {
-                            $("#" + id + " table[name='tablename']").removeClass("table-striped");
-                            this.tabStyle.zl_background = "";
+                        this.yAxisLine = transferyAxisLine(yAxisLine);
+                        //y轴(yAxisLabel)
+                        var yAxisLabel = echart_div_layout.yAxisLabel;
+                        if (yAxisLabel.show=='1') {
+                            yAxisLabel.show="true";
                         }
-                        var zl_background = this.tabStyle.zl_background;
-                        $("#" + id + " .table-striped > tbody > tr:nth-of-type(odd)").css("background", zl_background);
-                        if (this.tabStyle.is_gridline == "0") {
-                            $("#" + id + " table[name='tablename']").addClass("table-bordered");
-                        } else {
-                            $("#" + id + " table[name='tablename']").removeClass("table-bordered");
+                        this.yAxisLabel = transferyAxisLabel(yAxisLabel);
+                        //二维表
+                        var tableStyle = echart_div_layout.twoDimensionalTable
+                        this.tabStyle.th_background = tableStyle.th_background;
+                        this.tabStyle.is_gridline = tableStyle.is_gridline;
+                        this.tabStyle.is_zebraline = tableStyle.is_zebraline;
+                        this.tabStyle.zl_background = tableStyle.zl_background;
+                        //图表配置
+                        // var seriesStyle = echart_div_layout.chartsconfig;
+                        // seriesStyle.center = JSON.stringify(seriesStyle.center);
+                        // seriesStyle.center = JSON.parse(seriesStyle.center);
+                        // this.seriesStyle = transferSeriesStyle(seriesStyle);
+                        //文本标签
+                        // var echartsLabel = echart_div_layout.textLabel;
+                        // this.echartsLabel = transferEchartsLabel(echartsLabel);
+                        //图例设置
+                        var legendStyle = echart_div_layout.legendInfo;
+                        if (legendStyle.show=='1') {
+                            legendStyle.show="true";
                         }
-
-                        var obj = {};
-                        obj.layouttype = type;
-                        obj.id = id;
-                        chart_obj_array.push(obj);
-                    } else if (type == "barmd") { //多维柱状图
-                        $("#" + id).css('width', "600px");
-                        $("#" + id).css('height', "400px");
-                        this.barmdIds.push(id);
-                        this.barmd_echartdatas.push(echartdata);
-                        var Chart = this.changeToBarmdChart(document.getElementById(id), echartdata, this.bcolor);
-                        chart_obj_array.push(Chart.chart);
-                        $('#' + id).next('span').addClass('barmd');
-                        //添加打叉按钮
-                        if (this.is_showdel == true) {
-                            var imagevueobj = new Profile({
-                                propsData: {
-                                    echart_div_layout: echart_div_layout,
-                                    layout_id: id,
-                                }
-                            }).$mount();
-                            this.MDdelimage(id, imagevueobj);
-                        }
-                        //延迟模拟点击达到放大缩小的效果
-                        setTimeout(() => {
-                            $('.barmd').click();
-                        }, 100);
-
-                    } else if (type == "polarbar") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.changeToPolarBarChart(echartdata.radiusData, echartdata.seriesData, Chart, echart_div_layout, tmp_component_name, tmp_component_background,id);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "bubble") {
-                        this.bubbleIds.push(id);
-                        var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
-
-                        this.bubble_echartdatas.push(echartdata);
-                        this.echart_div_layouts.push(echart_div_layout);
-                        this.tmp_component_names.push(tmp_component_name);
-                        this.myCharts.push(myChart);
-
-                        this.echartBubble(echartdata, myChart, id, echart_div_layout, tmp_component_name, this.bcolor);
-                        chart_obj_array.push(myChart);
-                        $("#" + id).css("overflow", "hidden");
-                        $('#' + id).next('span').addClass('bubble'); //给所有的气泡图的拉伸按钮添加class
-                        //添加打叉按钮
-                        if (this.is_showdel == true) {
-                            var imagevueobj = new cardPofile({
-                                propsData: {
-                                    echart_div_layout: echart_div_layout,
-                                    layout_id: id,
-                                    delpng:this.delpng,
-                                    layout:this.layout,
-                                    global_component_array:this.global_component_array,
-                                    chart_obj_array:this.chart_obj_array,
-                                    selectRow:this.selectRow
-                                }
-                            }).$mount();
-                            this.MDdelimage(id, imagevueobj);
-                        }
-                        //延迟模拟点击达到放大缩小的效果
-                        setTimeout(() => {
-                            $('.bubble').click();
-                        }, 100);
-                    } else if (type == "blsimple") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        this.changeToBLSimpleChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        chart_obj_array.push(Chart);
-                    } else if (type == "map") {
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                        setTimeout(() => {
-                            this.changeToMapChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
-                        }, 500);
-                        chart_obj_array.push(Chart);
+                        this.legendStyle = transferLegendStyle(legendStyle);
                     }
                 }
+                //定义全国省份的数组
+                var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
+                    'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
+                    'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang',
+                    'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing',
+                    'xianggang', 'aomen', 'taiwan'
+                ];
+                var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江',
+                    '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
+                    '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
+                ];
+                // 显示省份
+                for (var l = 0; l < provincesText.length; l++) {
+                    if (this.seriesStyle.provincename == provincesText[l]) {
+                        //显示对应省份的方法
+                        this.showProvince(provinces[l], provincesText[l])
+                        break;
+                    }
+                }
+                var tmp_component_name = "";
+                var tmp_component_background = "";
+                for (var k = 0; k < this.autoCompSums.length; k++) {
+                    if (component_id_array[i] == this.autoCompSums[k].component_id) {
+                        tmp_component_name = this.autoCompSums[k].chart_theme;
+                        tmp_component_background = this.autoCompSums[k].background;
+                    }
+                }
+                if (type == "line") {// 折线图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.echartline(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "bar") {// 柱状图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.echartbar(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {//饼图
+                    var Chart = echarts.init(document.getElementById(id), 'dark');
+                    this.echartpie(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "scatter") {// 散点图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.echartscatter(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "boxplot") {// 盒须图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.echartboxplot(echartdata, Chart, id, echart_div_layout, tmp_component_name);
+                    chart_obj_array.push(Chart);
+                } else if (type == "bl") {// 柱状折线混合图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.echartbl(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "treemap") {// 矩形树图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.echartTreemap(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "card") {// 卡片图
+                    this.tmp_card_layout = echart_div_layout;
+                    var cardname = "background:" + this.title.backgroundColor + ";color:" + this.title.color + ";font-family:" + this.title.fontFamily;
+                    cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                    cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
+                    var cardstyle = "word-wrap:break-word;text-align:center;background:" + this.title.backgroundColor + ";color:" + this.title.color;
+                    cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                    var html;
+                    //卡片样式变化
+                    if (this.cardstyle == '') {
+                        html = "<div name='cardcomponentname' style='" + cardname + "'>" + tmp_component_name + "</div>" +
+                            "<div class='cardclass' style='" + cardstyle + "'></div>"
+                    } else {
+                        html = "<div name='cardcomponentname' style='" + this.cardname + "'>" + tmp_component_name + "</div>" +
+                            "<div class='cardclass' style='" + this.cardstyle + "'></div>"
+                    }
+                    $("#" + id).html(html);
+                    $("#" + id).css("overflow", "hidden");
+                    $("#" + id).find("div[class='cardclass']").html(echartdata.CardData);
+                    //添加打叉按钮
+                    if (this.is_showdel == true) {
+                        var imagevueobj = new cardProfile({
+                            propsData: {
+                                echart_div_layout: echart_div_layout,
+                                layout_id: id,
+                                delpng:this.delpng,
+                                layout:this.layout,
+                                dashboard_component_array:this.dashboard_component_array,
+                                chart_obj_array:this.chart_obj_array,
+                                autoCompSums:this.autoCompSums
+                            }
+                        }).$mount();
+                        this.carddelimage(id, imagevueobj);
+                    }
+                    var obj = {};
+                    obj.echarttype = type;
+                    obj.id = id;
+                    obj.cardtext = echartdata.CardData;
+                    chart_obj_array.push(obj);
+                } else if (type == "table") { // 表格图
+                    this.tmp_card_layout = echart_div_layout;
+                    this.tabledata = echartdata.TableData;
+                    this.tabledatalength = this.tabledata.length;
+                    var backgroundstyle = "";
+                    var fontstyle = "";
+                    //表格样式变化
+                    var html = "<div>" +
+                        "<div name='tablecomponentname'>" + tmp_component_name +
+                        "</div>" +
+                        "</div>";
+                    $("#" + id).html(html);
+                    $("#" + id).css("overflow", "hidden");
+
+                    //删除按钮
+                    if (this.is_showdel == true) {
+                        var imagevueobj = new cardProfile({
+                            propsData: {
+                                echart_div_layout: echart_div_layout,
+                                layout_id: id,
+                            }
+                        }).$mount();
+                        this.tabledelimage(id, imagevueobj);
+                    }
+                    //表格数据
+                    var tablevueobj = new tableProfile({
+                        propsData: {
+                            tabledata: this.tabledata,
+                            tabledatalength: this.tabledatalength,
+                            backgroundstyle: backgroundstyle,
+                            fontstyle: fontstyle,
+                        }
+                    }).$mount();
+                    //样式挂载
+                    this.tableimage(id, tablevueobj);
+                    if (this.bcolor != "#40E3F7") {
+                        this.tabStyle.th_background = this.bcolor;
+                        this.tabStyle.zl_background = this.bcolor;
+                    }
+                    var th_background = this.tabStyle.th_background;
+                    $("#" + id + " table[name='tablename'] thead tr th").css("background", th_background);
+                    if (this.tabStyle.is_zebraline == "0") {
+                        $("#" + id + " table[name='tablename']").addClass("table-striped");
+                    } else {
+                        $("#" + id + " table[name='tablename']").removeClass("table-striped");
+                        this.tabStyle.zl_background = "";
+                    }
+                    var zl_background = this.tabStyle.zl_background;
+                    $("#" + id + " .table-striped > tbody > tr:nth-of-type(odd)").css("background", zl_background);
+                    if (this.tabStyle.is_gridline == "0") {
+                        $("#" + id + " table[name='tablename']").addClass("table-bordered");
+                    } else {
+                        $("#" + id + " table[name='tablename']").removeClass("table-bordered");
+                    }
+
+                    var obj = {};
+                    obj.echarttype = type;
+                    obj.id = id;
+                    chart_obj_array.push(obj);
+                } else if (type == "barmd") { //多维柱状图
+                    $("#" + id).css('width', "600px");
+                    $("#" + id).css('height', "400px");
+                    this.barmdIds.push(id);
+                    this.barmd_echartdatas.push(echartdata);
+                    var Chart = this.changeToBarmdChart(document.getElementById(id), echartdata, this.bcolor);
+                    chart_obj_array.push(Chart.chart);
+                    $('#' + id).next('span').addClass('barmd');
+                    //添加打叉按钮
+                    if (this.is_showdel == true) {
+                        var imagevueobj = new cardProfile({
+                            propsData: {
+                                echart_div_layout: echart_div_layout,
+                                layout_id: id,
+                            }
+                        }).$mount();
+                        this.MDdelimage(id, imagevueobj);
+                    }
+                    //延迟模拟点击达到放大缩小的效果
+                    setTimeout(() => {
+                        $('.barmd').click();
+                    }, 100);
+
+                } else if (type == "polarbar") {// 极坐标柱状图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.changeToPolarBarChart(echartdata.radiusData, echartdata.seriesData, Chart, echart_div_layout, tmp_component_name, tmp_component_background,id);
+                    chart_obj_array.push(Chart);
+                } else if (type == "bubble") {// 气泡图
+                    this.bubbleIds.push(id);
+                    var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.bubble_echartdatas.push(echartdata);
+                    this.echart_layouts.push(echart_div_layout);
+                    this.tmp_component_names.push(tmp_component_name);
+                    this.myCharts.push(myChart);
+                    this.echartBubble(echartdata, myChart, id, echart_div_layout, tmp_component_name, this.bcolor);
+                    chart_obj_array.push(myChart);
+                    $("#" + id).css("overflow", "hidden");
+                    $('#' + id).next('span').addClass('bubble'); //给所有的气泡图的拉伸按钮添加class
+                    //添加打叉按钮
+                    if (this.is_showdel == true) {
+                        var imagevueobj = new cardProfile({
+                            propsData: {
+                                echart_div_layout: echart_div_layout,
+                                layout_id: id,
+                                delpng:this.delpng,
+                                layout:this.layout,
+                                dashboard_component_array:this.dashboard_component_array,
+                                chart_obj_array:this.chart_obj_array,
+                                autoCompSums:this.autoCompSums
+                            }
+                        }).$mount();
+                        this.MDdelimage(id, imagevueobj);
+                    }
+                    //延迟模拟点击达到放大缩小的效果
+                    setTimeout(() => {
+                        $('.bubble').click();
+                    }, 100);
+                } else if (type == "blsimple") {// 柱状折线混合图-简单
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    this.changeToBLSimpleChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    chart_obj_array.push(Chart);
+                } else if (type == "map") {//地图
+                    var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                    setTimeout(() => {
+                        this.changeToMapChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    }, 500);
+                    chart_obj_array.push(Chart);
+                }
+            }
             })
             this.chart_obj_array=chart_obj_array;
             setTimeout(() => {
                 this.confirmBackgroudColor();
             }, 100);
-        },
-        //卡片组件     添加删除按钮
-        carddelimage(id, imagevueobj) {
-            $("#" + id).find("div[name='cardcomponentname']").append(imagevueobj.$el);
-        },
-        //图表组件     添加删除按钮
-        tabledelimage(id, imagevueobj) {
-            $("#" + id).find("div[name='tablecomponentname']").append(imagevueobj.$el);
-        },
-        //图表组件
-        tableimage(id, tablevueobj) {
-            $("#" + id).append(tablevueobj.$el);
-        },
-        //标签组件
-        labeldelimage(id, imagevueobj) {
-            $("#" + id).find("div[name='labelcomponentname']").append(imagevueobj.$el);
-            //$("#"+id).append(imagevueobj.$el);
-        },
-        //分割线组件
-        linedelimage(id, imagevueobj) {
-            $("#" + id).find("div[name='linecomponentname']").append(imagevueobj.$el);
-        },
-        //MD组件
-        MDdelimage(id, imagevueobj) {
-            $("#" + id).prepend(imagevueobj.$el);
-        },
-        //边框
-        framedelimage(id, imagevueobj) {
-            $("#" + id).prepend(imagevueobj.$el);
         },
         //地图
         changeToMapChart(mapData, chart, id, layout, tmp_component_name, tmp_component_background) {
@@ -2296,18 +1588,18 @@ export default {
                             onclick() {
                                 if (this.is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
-                                    delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
+                                    dashboard_component_array.layout = this.layout;
+                                    delete dashboard_component_array[layout.type];
+                                    this.dashboard_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                            this.dashboard_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    for (var i = 0; i < this.autoCompSums.length; i++) {
+                                        if (this.autoCompSums[i].component_id == id) {
+                                            this.autoCompSums.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -2404,18 +1696,18 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
-                                    global_component_id_array = [];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
+                                    dashboard_component_id_array = [];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                            selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                            autoCompSums.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -2530,9 +1822,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             option = {
                 backgroundColor: tmp_component_background,
@@ -2550,18 +1842,18 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
-                                    global_component_id_array = [];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
+                                    dashboard_component_id_array = [];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(treemapChart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                            selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                            autoCompSums.splice(i, 1);
                                         }
                                     }
                                     treemapChart.clear;
@@ -2596,9 +1888,9 @@ export default {
                     data: seriesArray
                 }]
             };
-            global_component_id_array=global_component_id_array;
+            dashboard_component_id_array=dashboard_component_id_array;
             this.chart_obj_array=chart_obj_array;
-            this.selectRow=selectRow;
+            this.autoCompSums=autoCompSums;
             treemapChart.clear();
             treemapChart.setOption(option);
             treemapChart.resize();
@@ -2634,9 +1926,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             option = {
                 backgroundColor: tmp_component_background,
@@ -2653,18 +1945,18 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
-                                    global_component_id_array = [];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
+                                    dashboard_component_id_array = [];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(blChart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                           selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                           autoCompSums.splice(i, 1);
                                         }
                                     }
                                     blChart.clear;
@@ -2679,9 +1971,9 @@ export default {
                 yAxis: [this.yAxis, this.yAxis],
                 series: seriesArray
             };
-            this.global_component_id_array=global_component_id_array;
+            this.dashboard_component_id_array=dashboard_component_id_array;
             this.chart_obj_array=chart_obj_array;
-            this.selectRow=selectRow;
+            this.autoCompSums=autoCompSums;
             blChart.clear();
             blChart.setOption(option);
             blChart.resize();
@@ -2703,9 +1995,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             option = {
                 title: [{
@@ -2734,18 +2026,18 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     this.layout.splice(this.layout.indexOf(layout), 1);
-                                    global_component_array.layout = this.layout;
-                                    delete global_component_array[layout.type];
-                                    this.global_component_id_array = [];
+                                    dashboard_component_array.layout = this.layout;
+                                    delete dashboard_component_array[layout.type];
+                                    this.dashboard_component_id_array = [];
                                     for (var i = 0; i < this.layout.length; i++) {
                                         if (this.layout[i].label == undefined) {
-                                            this.global_component_id_array.push(this.layout[i].type);
+                                            this.dashboard_component_id_array.push(this.layout[i].type);
                                         }
                                     }
                                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(boxplotChart), 1);
-                                    for (var i = 0; i < this.selectRow.length; i++) {
-                                        if (this.selectRow[i].component_id == id) {
-                                            this.selectRow.splice(i, 1);
+                                    for (var i = 0; i < this.autoCompSums.length; i++) {
+                                        if (this.autoCompSums[i].component_id == id) {
+                                            this.autoCompSums.splice(i, 1);
                                         }
                                     }
                                     boxplotChart.clear;
@@ -2801,9 +2093,9 @@ export default {
                     }
                 ]
             };
-            this.global_component_id_array=global_component_id_array;
+            this.dashboard_component_id_array=dashboard_component_id_array;
             this.chart_obj_array=chart_obj_array;
-            this.selectRow=selectRow;
+            this.autoCompSums=autoCompSums;
             boxplotChart.clear();
             boxplotChart.setOption(option);
             boxplotChart.resize();
@@ -2837,9 +2129,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -2864,17 +2156,17 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(lineChart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                            selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                            autoCompSums.splice(i, 1);
                                         }
                                     }
                                     lineChart.clear;
@@ -2887,11 +2179,11 @@ export default {
                 yAxis: this.yAxis,
                 series: seriesArray
             };
-            this.global_component_id_array=global_component_id_array;
+            this.dashboard_component_id_array=dashboard_component_id_array;
             this.chart_obj_array=chart_obj_array;
-            this.selectRow=selectRow;
+            this.autoCompSums=autoCompSums;
             lineChart.clear();
-            lineChart.setOption(option,true);
+            lineChart.setOption(option);
             lineChart.resize();
         },
         //极坐标柱状图
@@ -2900,9 +2192,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -2926,18 +2218,18 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
-                                    global_component_id_array = [];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
+                                    dashboard_component_id_array = [];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(chart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                            selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                            autoCompSums.splice(i, 1);
                                         }
                                     }
                                     chart.clear;
@@ -2956,9 +2248,9 @@ export default {
                     show: false
                 }
             };
-            this.global_component_id_array=global_component_id_array;
+            this.dashboard_component_id_array=dashboard_component_id_array;
             this.chart_obj_array=chart_obj_array;
-            this.selectRow=selectRow;
+            this.autoCompSums=autoCompSums;
             chart.clear();
             chart.setOption(option);
             chart.resize();
@@ -2991,9 +2283,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -3024,18 +2316,18 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
-                                    global_component_id_array = [];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
+                                    dashboard_component_id_array = [];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(barChart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                            selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                            autoCompSums.splice(i, 1);
                                         }
                                     }
                                     barChart.clear;
@@ -3048,9 +2340,9 @@ export default {
                 yAxis: this.yAxis,
                 series: seriesArray
             };
-             this.global_component_id_array=global_component_id_array;
+             this.dashboard_component_id_array=dashboard_component_id_array;
             this.chart_obj_array=chart_obj_array;
-            this.selectRow=selectRow;
+            this.autoCompSums=autoCompSums;
             this.option = option;
             barChart.clear();
             barChart.setOption(option);
@@ -3075,9 +2367,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array = [];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array = [];
 
             var option = {
                     backgroundColor: tmp_component_background,
@@ -3108,17 +2400,17 @@ export default {
                                 onclick() {
                                     if (is_showdel == true) {
                                         layout.splice(layout.indexOf(layout), 1);
-                                        global_component_array.layout = layout;
-                                        delete global_component_array[layout.type];
+                                        dashboard_component_array.layout = layout;
+                                        delete dashboard_component_array[layout.type];
                                         for (var i = 0; i < layout.length; i++) {
                                             if (layout[i].label == undefined) {
-                                                global_component_id_array.push(layout[i].type);
+                                                dashboard_component_id_array.push(layout[i].type);
                                             }
                                         }
                                         chart_obj_array.splice(chart_obj_array.indexOf(pieChart), 1);
-                                        for (var i = 0; i < selectRow.length; i++) {
-                                            if (selectRow[i].component_id == id) {
-                                                selectRow.splice(i, 1);
+                                        for (var i = 0; i < autoCompSums.length; i++) {
+                                            if (autoCompSums[i].component_id == id) {
+                                                autoCompSums.splice(i, 1);
                                             }
                                         }
                                         pieChart.clear;
@@ -3130,8 +2422,8 @@ export default {
                     series: seriesArray
                 };
             this.chart_obj_array=chart_obj_array;
-            this.global_component_id_array=global_component_id_array;
-            this.selectRow=selectRow;
+            this.dashboard_component_id_array=dashboard_component_id_array;
+            this.autoCompSums=autoCompSums;
             this.option=option;
             pieChart.clear();
             pieChart.setOption(option);
@@ -3158,9 +2450,9 @@ export default {
             var is_showdel =this.is_showdel;
             var layout =this.layout;
             var chart_obj_array =this.chart_obj_array;
-            var global_component_array=this.global_component_array;
-            var selectRow=this.selectRow;
-            var global_component_id_array=[];
+            var dashboard_component_array=this.dashboard_component_array;
+            var autoCompSums=this.autoCompSums;
+            var dashboard_component_id_array=[];
 
             var option = {
                 backgroundColor: tmp_component_background,
@@ -3180,17 +2472,17 @@ export default {
                             onclick() {
                                 if (is_showdel == true) {
                                     layout.splice(layout.indexOf(layout), 1);
-                                    global_component_array.layout = layout;
-                                    delete global_component_array[layout.type];
+                                    dashboard_component_array.layout = layout;
+                                    delete dashboard_component_array[layout.type];
                                     for (var i = 0; i < layout.length; i++) {
                                         if (layout[i].label == undefined) {
-                                            global_component_id_array.push(layout[i].type);
+                                            dashboard_component_id_array.push(layout[i].type);
                                         }
                                     }
                                     chart_obj_array.splice(chart_obj_array.indexOf(scatterChart), 1);
-                                    for (var i = 0; i < selectRow.length; i++) {
-                                        if (selectRow[i].component_id == id) {
-                                            selectRow.splice(i, 1);
+                                    for (var i = 0; i < autoCompSums.length; i++) {
+                                        if (autoCompSums[i].component_id == id) {
+                                            autoCompSums.splice(i, 1);
                                         }
                                     }
                                     scatterChart.clear;
@@ -3222,7 +2514,506 @@ export default {
             scatterChart.setOption(option);
             scatterChart.resize();
         },
-        //仪表板保存按钮
+        //找出新增前后不同的组件
+        array_diff(compelx, part) {
+            var result = [];
+            for (var index in compelx) {
+                // 如果数组中不存在该值,则返回-1
+                if ($.inArray(compelx[index].type, part) ==-1) {
+                    result.push(compelx[index]);
+                }
+            }
+            return result;
+        },
+        //找出新增前后相同的组件
+        array_alike(compelx, part) {
+            var result = [];
+            for (var index in compelx) {
+                // 如果数组中不存在该值,则返回-1
+                if ($.inArray(compelx[index].type, part) !=-1) {
+                    result.push(compelx[index]);
+                }
+            }
+            return result;
+        },
+         // 展示省
+        showProvince(pName, Chinese_) {
+            loadBdScript('$'+pName+'JS','../../../js/province/'+pName+'.js');
+        },
+        //网格线
+        gridLine() {
+            if (this.auto_dashboard_info.is_gridline == '0') {
+                $("#grid_style").removeClass("grid");
+                this.auto_dashboard_info.is_gridline = '1';
+            } else {
+                $("#grid_style").addClass("grid");
+                this.auto_dashboard_info.is_gridline = '0';
+            }
+        },
+        // 全屏预览
+       fullScreen() {
+            var el = document.documentElement;
+            var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+            if (typeof rfs != "undefined" && rfs) {
+                rfs.call(el);
+            };
+            $(".navbar").hide();
+            $('#toubu').hide();
+            $("#dataDashboard").css("background-color", this.grid_layout_backgroundcolor);
+            this.is_showdel = false;
+            $("#mydiv img").each(function () {
+                $(this).css("display", "none");
+            });
+            for (var i = 0; i < this.autoCompSums.length; i++) {
+                if (this.autoCompSums[i].chart_type != "card" && this.autoCompSums[i].chart_type != "table") {
+                    var frame_img = document.getElementById(this.autoCompSums[i].component_id).children[0];
+                    var img_style = "width:25px;height:25px;position:absolute;right:0px;z-index:999;";
+                    if (this.autoCompSums[i].background == "transparent") {
+                        img_style += this.grid_layout_backgroundcolor;
+                    } else {
+                        img_style += this.autoCompSums[i].background;
+                    }
+                    var imgHTML = "<img src='@/assets/images/hidedel.png' style=" + img_style + " class='pull-right'>";
+                    $(frame_img).append(imgHTML);
+                }
+            }
+            return;
+        },
+        // 检查是否全屏
+        checkFull() {
+            return document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen;
+        },
+         //选择主题
+        chooseTitle(data) {
+            this.auto_dashboard_info.dashboard_theme = data.code;
+            for (var i = 0; i < this.chart_obj_array.length; i++) {
+                if (this.chart_obj_array[i].echarttype == "card") {
+
+                } else if (this.chart_obj_array[i].echarttype == "table") {
+
+                } else if (this.chart_obj_array[i].echarttype == "label") {
+
+                } else if (this.chart_obj_array[i].echarttype == "borderline") {
+
+                } else if (this.chart_obj_array[i].echarttype == "frameline") {
+
+                } else {
+                    this.chart_obj_array[i].dispose();
+                }
+            }
+            if (data.code == "00") {
+                // 原始主题
+                this.echart_theme = data;
+            } else {
+                $.getJSON(this.echartThemeJson, function (themeJSON) {
+                    echarts.registerTheme(data.type, themeJSON[data.type]);
+                    this.echart_theme = data;
+                });
+            }
+            //更换卡片，标签，分割线，表的颜色为组件的主要颜色
+            for (var i = 0; i < this.chart_obj_array.length; i++) {
+                this.bcolor = data.bcolor;
+                if (this.chart_obj_array[i].echarttype == "card") {
+                    $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                        "background-color": data.ncolor,
+                        "color": data.fcolor
+                    });
+                    $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                        'background-color': data.ncolor,
+                        "color": data.fcolor
+                    });
+                    this.cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.title.fontFamily;
+                    this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                    this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
+                    this.cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
+                    this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                } else if (this.chart_obj_array[i].echarttype == "table") {
+                    this.tabStyle.th_background = this.bcolor
+                    this.tabStyle.zl_background = this.bcolor;
+                } else if (this.chart_obj_array[i].echarttype == "label") {
+                    $("#" + this.chart_obj_array[i].id).find("p").css({
+                        "background-color": data.ncolor,
+                        "color": data.fcolor
+                    });
+                    $("#" + this.chart_obj_array[i].id).find("p").css({
+                        'background-color': data.ncolor,
+                        "color": data.fcolor
+                    });
+                } else if (this.chart_obj_array[i].echarttype == 'borderline') {
+                    $("#" + this.chart_obj_array[i].id).find("div[class='lineclass']").css({
+                        'background-color': data.ncolor
+                    });
+                } else if (this.chart_obj_array[i].echarttype == "frameline") {
+                    $("#" + this.chart_obj_array[i].id).css({
+                        'border': data.ncolor + ' 2px solid'
+                    });
+                } else {
+
+                }
+            }
+            this.titleFlag = false;
+            // 仪表盘展示
+            setTimeout(() => {
+                if (this.$route.query.dashboard_id!=undefined&&this.$route.query.dashboard_id!='') {
+                    this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+                }
+                this.echartpic(this.dashboard_component_array, this.dashboard_component_id_array);
+            }, 500);
+            // 文本标签主题设置
+            setTimeout(() => {
+                if (this.textlabelarray.length > 0) {
+                    this.textlabeltheme();
+                }
+            }, 500);
+            // 分割线设置
+            setTimeout(() => {
+                if (this.textlinearray.length > 0) {
+                    this.textlinetheme();
+                }
+            }, 500);
+            // 边框设置
+            setTimeout(() => {
+                if (this.textframearray.length > 0) {
+                    this.textframetheme();
+                }
+            }, 500);
+            setTimeout(() => {
+                this.grid_layout_backgroundcolor = data.style;
+                $("div[name='pic']").each(function () {
+                    $(this).trigger("mouseup");
+                });
+            }, 500);
+            this.dialogTitleVisible=false;
+        },
+        //文本标签选择主题设置
+        textlabeltheme() {
+            if (this.echart_theme != "") {
+                if (this.echart_theme.depth == "sheng") {
+                    for (var i = 0; i < this.textlabelarray.length; i++) {
+                        this.chart_obj_array.push(this.textlabelarray[i]);
+                        var id = this.textlabelarray[i].id;
+                        $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
+                    }
+                } else if (this.echart_theme.depth == "qian") {
+                    for (var i = 0; i < this.textlabelarray.length; i++) {
+                        this.chart_obj_array.push(this.textlabelarray[i]);
+                        var id = this.textlabelarray[i].id;
+                        $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
+                    }
+                }
+            }
+        },
+        //分割线选择主题设置
+        textlinetheme() {
+            if (this.echart_theme != "") {
+                for (var i = 0; i < this.textlinearray.length; i++) {
+                    this.chart_obj_array.push(this.textlinearray[i]);
+                }
+            }
+        },
+        //边框选择主题设置
+        textframetheme() {
+            if (this.echart_theme != "") {
+                for (var i = 0; i < this.textframearray.length; i++) {
+                    this.chart_obj_array.push(this.textframearray[i]);
+                }
+            }
+        },
+        //确定分割线
+        confirmtextline() {
+            if (this.layout.length <= 0) {
+                return false;
+            }
+            this.auto_line_info_array.push(this.auto_line_info);
+            var id = parseInt(Math.random() * 10000 + 10000);
+            if (this.auto_line_info.line_type == 'heng') {
+                var layout_obj = {
+                    "w": 40,
+                    "h": 3,
+                    "type": id,
+                    "moved": false,
+                    "label": 1,
+                    "static": true
+                };
+            } else {
+                var layout_obj = {
+                    "w": 3,
+                    "h": 30,
+                    "type": id,
+                    "moved": false,
+                    "label": 1,
+                    "static": true
+                };
+            }
+
+            if (this.layout.length > 0) {
+                var obj = this.layout[this.layout.length - 1];
+                if (obj.x >= 20) {
+                    layout_obj.x = 0;
+                    layout_obj.y = parseInt(obj.y) + 4;
+                    layout_obj.i = id;
+                } else {
+                    if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
+                        layout_obj.x = parseInt(0);
+                        layout_obj.y = parseInt(obj.y) + 4;
+                        layout_obj.i = id;
+                    } else {
+                        layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
+                        layout_obj.y = parseInt(obj.y);
+                        layout_obj.i = id;
+                    }
+                }
+            } else {
+                layout_obj.x = 0;
+                layout_obj.y = 0;
+                layout_obj.i = 1;
+            }
+
+            this.layout.push(layout_obj);
+
+            this.$nextTick(function () {
+                if (this.auto_line_info.line_type == 'heng') {
+                    var html = "<div name='linecomponentname'></div>" +
+                      "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px'></div>"
+                } else {
+                    var html = "<div name='linecomponentname'></div>" +
+                       "<div class='lineclass' style='width:2px;height:1000px;overflow:hidden;margin-left:10px'></div>"
+                }
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).html(html);
+                this.islineshow=true;
+                for (var i = 0; i < this.labelfontcolor.length; i++) {
+                    if (this.labelfontcolor[i].code == this.auto_line_info.line_color) {
+                        $("#" + id).find("div[class='lineclass']").css('background', this.labelfontcolor[i].type);
+                    }
+                }
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new linedelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_line_info: this.auto_line_info,
+                            layout:this.layout,
+                            auto_line_info_array:this.auto_line_info_array,
+                            chart_obj_array:this.chart_obj_array,
+                            delpng:this.delpng,
+                            textlinearray:this.textlinearray,
+                            dashboard_component_array:this.dashboard_component_array,
+                            line_layout:this.line_layout
+                        }
+                    }).$mount();
+                    this.linedelimage(id, imagevueobj);
+                }
+                var obj = {};
+                obj.echarttype = "borderline";
+                obj.id = id;
+                this.chart_obj_array.push(obj);
+
+                this.textlinearray.push(obj);
+
+                $("#" + id).trigger("mouseup");
+            })
+            this.dialogTextLineVisible=false;
+        },
+        //添加边框
+        confirmFrameLine() {
+            if (this.layout.length <= 0) {
+                return false;
+            }
+            this.auto_frame_info_list.push(Object.assign({}, this.auto_frame_info));
+            var id = parseInt(Math.random() * 10000 + 10000);
+            var layout_obj = {
+                "w": 40,
+                "h": 32,
+                "moved": false,
+                "label": 2,
+                "static": true
+            };
+            if (this.layout.length > 0) {
+                var obj = this.layout[this.layout.length - 1];
+                if (obj.x >= 20) {
+                    layout_obj.x = 0;
+                    layout_obj.y = parseInt(obj.y) + 4;
+                    layout_obj.i = id;
+                } else {
+                    if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
+                        layout_obj.x = parseInt(0);
+                        layout_obj.y = parseInt(obj.y) + 4;
+                        layout_obj.i = id;
+                    } else {
+                        layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
+                        layout_obj.y = parseInt(obj.y);
+                        layout_obj.i = id;
+                    }
+                }
+            } else {
+                layout_obj.x = 0;
+                layout_obj.y = 0;
+                layout_obj.i = 1;
+            }
+            layout_obj.type = id;
+            this.layout.push(layout_obj);
+            this.$nextTick(function () {
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).css("border", this.auto_frame_info.border_width + "px " + this.auto_frame_info.border_style +
+                    " " + this.auto_frame_info.border_color);
+                $("#" + id).css("border-radius", this.auto_frame_info.border_radius + "px");
+                if (this.auto_frame_info.is_shadow == '0') {
+                    $("#" + id).css("box-shadow", "1px 1px 10px 5px #888888");
+                }
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new framedelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_frame_info: this.auto_frame_info,
+                            delpng:this.delpng,
+                            auto_frame_info_list:this.auto_frame_info_list,
+                            layout:this.layout,
+                            dashboard_component_array:this.dashboard_component_array,
+                            frame_layout:this.frame_layout,
+                            textframearray:this.textframearray,
+                            chart_obj_array:this.chart_obj_array
+                        }
+                    }).$mount();
+                    this.framedelimage(id, imagevueobj);
+                }
+                var obj = {};
+                obj.echarttype = "frameline";
+                obj.id = id;
+                this.chart_obj_array.push(obj);
+                this.textframearray.push(obj);
+                $("#" + id).trigger("mouseup");
+            })
+            this.dialogBorderVisible=false;
+        },
+        //确定文本标签
+        confirmTextLable() {
+            if (this.layout.length <= 0) {
+                return false;
+            }
+            if (this.auto_label_info.label_content == "") {
+                this.$Msg.customizTitle('请输入文本标签的内容', 'warning')
+                return false;
+            }
+            //JSON拷贝
+            this.auto_label_info_array.push(Object.assign({}, this.auto_label_info));
+            var layout_obj = {
+                "w": 30,
+                "h": 7,
+                "moved": false,
+                "label": 0,
+                "static": true
+            };
+            var id = parseInt(Math.random() * 10000 + 10000);
+            if (this.layout.length > 0) {
+                var obj = this.layout[this.layout.length - 1];
+                if (obj.x >= 20) {
+                    layout_obj.x = 0;
+                    layout_obj.y = parseInt(obj.y) + 4;
+                    layout_obj.i = id;
+                } else {
+                    if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
+                        layout_obj.x = parseInt(0);
+                        layout_obj.y = parseInt(obj.y) + 4;
+                        layout_obj.i = id;
+                    } else {
+                        layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
+                        layout_obj.y = parseInt(obj.y);
+                        layout_obj.i = id;
+                    }
+                }
+            } else {
+                layout_obj.x = 0;
+                layout_obj.y = 0;
+                layout_obj.i = 1;
+            }
+            layout_obj.type = id;
+            this.layout.push(layout_obj);
+            this.$nextTick(function () {
+                //标签处理
+                var textStyle = this.auto_label_info.textStyle;
+                $("#" + id).css("overflow", "hidden");
+                $("#" + id).css("position", "relative");
+                $("#" + id).css("margin-top", "2px");
+                $("#" + id).css("background", this.auto_label_info.label_color);
+                $("#" + id).css("display", "flex");
+                $("#" + id).css("align-items", textStyle.verticalAlign);
+                $("#" + id).css("justify-content", textStyle.align);
+                //字体处理
+                var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontFamily;
+                style += "; font-style:" + textStyle.fontStyle + "; font-weight:" + textStyle.fontWeight;
+                style += "; text-align:" + textStyle.align + "; vertical-align:" + textStyle.verticalAlign;
+                style += "; font-size:" + textStyle.fontSize + "px";
+                var html = "<div name='labelcomponentname'></div>";
+                html = html + "<p style='" + style + "'>" + this.auto_label_info.label_content + "</p>"
+                $("#" + id).html(html);
+                //添加打叉按钮
+                if (this.is_showdel == true) {
+                    var imagevueobj = new labeldelProfile({
+                        propsData: {
+                            echart_div_layout: layout_obj,
+                            auto_label_info: this.auto_label_info,
+                            delpng:this.delpng,
+                            auto_label_info_array:this.auto_label_info_array,
+                            layout:this.layout,
+                            dashboard_component_array:this.dashboard_component_array,
+                            label_layout:this.label_layout,
+                            textlabelarray:this.textlabelarray,
+                            chart_obj_array:this.chart_obj_array
+                        }
+                    }).$mount();
+                    this.labeldelimage(id, imagevueobj);
+                }
+                var obj = {};
+                obj.echarttype = "label";
+                obj.id = id;
+                obj.content = this.auto_label_info.label_content;
+                this.chart_obj_array.push(obj);
+                this.textlabelarray.push(obj);
+                $("#" + id).trigger("mouseup");
+            })
+            this.dialogTextLabelVisible=false;
+        },
+        //确认仪表板背景色
+        confirmBackgroudColor() {
+            var bgcolor = this.auto_dashboard_info.background;
+            this.auto_dashboard_info.background = bgcolor;
+            this.grid_layout_backgroundcolor = "background-color:" + bgcolor;
+            this.dialogBackgroundVisible=false;
+        },
+         //卡片组件     添加删除按钮
+        carddelimage(id, imagevueobj) {
+            $("#" + id).find("div[name='cardcomponentname']").append(imagevueobj.$el);
+        },
+        //图表组件     添加删除按钮
+        tabledelimage(id, imagevueobj) {
+            $("#" + id).find("div[name='tablecomponentname']").append(imagevueobj.$el);
+        },
+        //图表组件 添加删除按钮
+        tableimage(id, tablevueobj) {
+            $("#" + id).append(tablevueobj.$el);
+        },
+        //标签组件 添加删除按钮
+        labeldelimage(id, imagevueobj) {
+            $("#" + id).find("div[name='labelcomponentname']").append(imagevueobj.$el);
+            //$("#"+id).append(imagevueobj.$el);
+        },
+        //分割线组件 添加删除按钮
+        linedelimage(id, imagevueobj) {
+            $("#" + id).find("div[name='linecomponentname']").append(imagevueobj.$el);
+        },
+        //MD组件 添加删除按钮
+        MDdelimage(id, imagevueobj) {
+            $("#" + id).prepend(imagevueobj.$el);
+        },
+        //边框 添加删除按钮
+        framedelimage(id, imagevueobj) {
+            $("#" + id).prepend(imagevueobj.$el);
+        },
+         //仪表板保存按钮
         addDashboardButton() {
             if (this.layout.length <= 0) {
                 this.$Msg.customizTitle('请至少选择一个组件', 'warning')
@@ -3230,28 +3021,110 @@ export default {
                 this.dialogDashboardVisible = true;
             }
         },
-        //网格线
-        gridLine() {
-            if (this.is_gridLine == false) {
-                $("#grid_style").removeClass("grid");
-                this.is_gridLine = true;
-            } else {
-                $("#grid_style").addClass("grid");
-                this.is_gridLine = false;
+        //保存仪表板
+        saveDashboard() {
+            var picnum = 0;
+            $("div[name='pic']").each(function () {
+                picnum++;
+            });
+            if (picnum == 0) {
+                this.$Msg.customizTitle('请至少添加一个组件', 'warning')
+                return false;
+            }
+            if (this.auto_dashboard_info.dashboard_name == '' || typeof (this.auto_dashboard_info.dashboard_name) == 'undefined') {
+                this.$Msg.customizTitle('仪表盘名称不能为空', 'warning')
+                return;
+            }
+            let bordertype = this.auto_frame_info.border_style;
+            this.borderstyle.forEach(function(item, index) {
+                if (item.type==bordertype) {
+                    bordertype=item.code;
+                }
+            })
+            this.auto_dashboard_info.bordertype=bordertype;
+            if (this.auto_dashboard_info.dashboard_theme==undefined||this.auto_dashboard_info.dashboard_theme=='') {
+                this.auto_dashboard_info.dashboard_theme='00';
+            }
+            let param=new FormData();
+            param.append("layout",JSON.stringify(this.layout));
+            param.append("autoLabelInfo", JSON.stringify(this.auto_label_info_array));
+            param.append("autoLineInfo", JSON.stringify(this.auto_line_info_array));
+            param.append("autoFrameInfo", JSON.stringify(this.auto_frame_info_list));
+            param.append("autoDashboardInfo", JSON.stringify(this.auto_dashboard_info));
+            if (this.auto_dashboard_info.dashboard_id==undefined||this.auto_dashboard_info.dashboard_id=='') {
+                functionAll.saveDataDashboardInfo(param).then(res => {
+                    if (res&&res.success) {
+                        this.$Msg.customizTitle('保存成功', 'success')
+                        this.$router.push({
+                            name: 'dataDashboardList'
+                        })
+                    }
+                });
+            }else{
+                functionAll.updateDataDashboardInfo(param).then(res => {
+                    if (res&&res.success) {
+                        this.$Msg.customizTitle('更新成功', 'success')
+                        this.$router.push({
+                            name: 'dataDashboardList'
+                        })
+                    }
+                });
             }
         },
-        // 检查是否全屏
-        checkFull() {
-            return document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen;
+         // 关闭组件弹窗
+        beforeAddComponentClose() {
+            this.dialogAddComponentVisible = false;
+            this.$refs.multipleComponent.clearSelection();
         },
-        // 展示省
-        showProvince(pName, Chinese_) {
-            loadBdScript('$'+pName+'JS','../../../js/province/'+pName+'.js');
-        }
+        // 关闭主题弹框
+        beforeTitleClose() {
+            this.dialogTitleVisible = false;
+        },
+        // 关闭仪表盘弹框
+        beforeDashboardClose() {
+            this.dialogDashboardVisible = false;
+        },
+        // 关闭分割线弹框
+        beforeTextLineClose() {
+            this.dialogTextLineVisible = false;
+        },
+        // 关闭背景色弹框
+        beforeBackgroundClose() {
+            this.dialogBackgroundVisible = false;
+        },
+        // 关闭边框弹框
+        beforeBorderClose() {
+            this.dialogBorderVisible = false;
+        },
+        // 关闭文本标签弹框
+        beforeTextLabelClose() {
+            this.dialogTextLabelVisible = false;
+        },
+        // 取消
+        cancel() {
+            this.$refs.multipleComponent.clearSelection();
+            this.dialogAddComponentVisible = false
+        },
+        // 表全选
+        allComponentSelect(all) {
+            this.selectRow = all
+        },
+        // 表复选框选中
+        componentSelectionChange(selectTrue) {
+            this.selectRow = selectTrue;
+        },
+        //表数据实现分页功能
+        handleCurrentChangeList(currPage) {
+            //把val赋给当前页面
+            this.currPage = currPage;
+        },
+        // 改变每页显示条数
+        handleSizeChange(pageSize) {
+            this.pageSize = pageSize;
+        },
 
     },
 }
-
 //table
 var tableProfile = Vue.extend({
     template: "<div class='tableclass' name='tablediv'>" +
@@ -3275,24 +3148,24 @@ var tableProfile = Vue.extend({
     methods:{}
 })
 //卡片仪表盘删除按钮
-var cardPofile = Vue.extend({
+var cardProfile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'layout_id','delpng','layout','global_component_array','chart_obj_array','selectRow'],
+    props: ['echart_div_layout', 'layout_id','delpng','layout','dashboard_component_array','chart_obj_array','autoCompSums'],
     methods: {
-        delcard(layout, echart_div_layout, layout_id) {
-            this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array.layout = this.layout;
+        delcard() {
+            this.layout.splice(this.layout.indexOf(this.echart_div_layout), 1);
+            this.dashboard_component_array.layout = this.layout;
             for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                if (this.echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                 }
             }
-            for (var i = 0; i < this.selectRow.length; i++) {
-                if (this.selectRow[i].component_id == layout_id) {
-                    this.selectRow.splice(i, 1);
+            for (var i = 0; i < this.autoCompSums.length; i++) {
+                if (this.autoCompSums[i].component_id == layout_id) {
+                    this.autoCompSums.splice(i, 1);
                 }
             }
         },
@@ -3304,15 +3177,15 @@ var linedelProfile = Vue.extend({
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'auto_line_info','layout','auto_line_info_array','chart_obj_array','delpng','textlinearray','global_component_array','line_layout'],
+    props: ['echart_div_layout', 'auto_line_info','layout','auto_line_info_array','chart_obj_array','delpng','textlinearray','dashboard_component_array','line_layout','line_layout'],
     methods: {
-        delcard(layout, echart_div_layout, auto_line_info,auto_line_info_array) {
-            this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(auto_line_info), 1);
-            this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array.layout = this.layout;
-            this.line_layout.splice(this.line_layout.indexOf(echart_div_layout), 1);
+        delcard() {
+            this.auto_line_info_array.splice(this.auto_line_info_array.indexOf(this.auto_line_info), 1);
+            this.layout.splice(this.layout.indexOf(this.echart_div_layout), 1);
+            this.dashboard_component_array.layout = this.layout;
+            this.line_layout.splice(this.line_layout.indexOf(this.echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                if (this.echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                     this.textlinearray.splice(this.textlinearray.indexOf(this.chart_obj_array[i]), 1);
                 }
@@ -3326,15 +3199,15 @@ var framedelProfile = Vue.extend({
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'auto_frame_info','delpng','auto_frame_info_list','layout','global_component_array','frame_layout','textframearray','chart_obj_array'],
+    props: ['echart_div_layout', 'auto_frame_info','delpng','auto_frame_info_list','layout','dashboard_component_array','frame_layout','textframearray','chart_obj_array','frame_layout'],
     methods: {
-        delcard(layout, echart_div_layout, auto_frame_info) {
-            this.auto_frame_info_list.splice(this.auto_frame_info_list.indexOf(auto_frame_info), 1);
-            this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array.layout = this.layout;
-            this.frame_layout.splice(this.frame_layout.indexOf(echart_div_layout), 1);
+        delcard() {
+            this.auto_frame_info_list.splice(this.auto_frame_info_list.indexOf(this.auto_frame_info), 1);
+            this.layout.splice(this.layout.indexOf(this.echart_div_layout), 1);
+            this.dashboard_component_array.layout = this.layout;
+            this.frame_layout.splice(this.frame_layout.indexOf(this.echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                if (this.echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                     this.textframearray.splice(this.textframearray.indexOf(this.chart_obj_array[i]), 1);
                 }
@@ -3349,15 +3222,15 @@ var labeldelProfile = Vue.extend({
     data: function () {
          return {}
     },
-    props: ['echart_div_layout', 'auto_label_info','delpng','auto_label_info_array','layout','global_component_array','label_layout','textlabelarray','chart_obj_array'],
+    props: ['echart_div_layout', 'auto_label_info','delpng','auto_label_info_array','layout','dashboard_component_array','label_layout','textlabelarray','chart_obj_array','label_layout'],
     methods: {
-        delcard(layout, echart_div_layout, auto_label_info) {
-            this.auto_label_info_array.splice(this.auto_label_info_array.indexOf(auto_label_info), 1);
-            this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
-            this.global_component_array.layout = this.layout;
-            this.label_layout.splice(this.label_layout.indexOf(echart_div_layout), 1);
+        delcard() {
+            this.auto_label_info_array.splice(this.auto_label_info_array.indexOf(this.auto_label_info), 1);
+            this.layout.splice(this.layout.indexOf(this.echart_div_layout), 1);
+            this.dashboard_component_array.layout = this.layout;
+            this.label_layout.splice(this.label_layout.indexOf(this.echart_div_layout), 1);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
-                if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                if (this.echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                     this.textlabelarray.splice(this.textlabelarray.indexOf(this.chart_obj_array[i]), 1);
                 }
@@ -3369,7 +3242,7 @@ var labeldelProfile = Vue.extend({
 //气泡图拖动时改变大小
 $(document).on("click", ".bubble", function () {
     for (var i = 0; i < this.bubbleIds.length; i++) {
-        this.echartBubble(this.bubble_echartdatas[i], this.myCharts[i], this.bubbleIds[i], this.echart_div_layouts[i], this.tmp_component_names[i], this.bcolor);
+        this.echartBubble(this.bubble_echartdatas[i], this.myCharts[i], this.bubbleIds[i], this.echart_layouts[i], this.tmp_component_names[i], this.bcolor);
         $("#" + this.bubbleId).css("overflow", "hidden");
     }
 })

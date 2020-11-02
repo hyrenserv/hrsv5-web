@@ -1358,10 +1358,10 @@ export default new Router({
             component: () => import('@/hrds/g/serviceuser/interfaceTest.vue')
         },
         {
-            path: '/showDashboard',
-            name: 'showDashboard',
+            path: '/showReleaseDashboard',
+            name: 'showReleaseDashboard',
             title: '报表展示',
-            component: () => import('@/hrds/g/serviceuser/showDashboard.vue')
+            component: () => import('@/hrds/g/serviceuser/api/showReleaseDashboard.vue')
         }
     ]
 })

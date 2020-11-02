@@ -135,7 +135,8 @@ export default {
     watch: {
         $route(to, from) {
             this.$router.go(0)
-        }
+        },
+        
     },
     mounted() {
         this.getIpAndPort();
@@ -146,9 +147,9 @@ export default {
             interfaceFunctionAll.getIpAndPort()
                 .then(res => {
                     this.ipAndPort = "http://" + res.data +
-                        "/G/action/hrds/g/biz/serviceuser/impl/" + this.$route.query.url;
+                        "/G/action/hrds/g/biz/serviceuser/impl/showReleaseDashboard";
                     this.requestAddressForToken =
-                        this.ipAndPort + "?token=abcdef&url=" + this.$route.query.url + "&interface_code=MTAwMzM2MDM4OA=="
+                        this.ipAndPort + "?token=abcdef&url=showReleaseDashboard" + this.$route.query.url + "&interface_code=MTAwMzM2MDM4OA=="
                     this.requestAddress = this.ipAndPort + "?user_id=1005&user_password=111111" +
                         "&url=" + this.$route.query.url + "&interface_code=MTAwMzM2MDM4OA=="
                 })

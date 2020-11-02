@@ -10,3 +10,11 @@ export function getIpAndPort() {
         url: '/G/serviceuser/getIpAndPort',
     })
 }
+/**
+ * 仪表板外部发布接口
+ */
+export function showReleaseDashboard() {
+    return request({
+        url: '/G/serviceuser/impl/showReleaseDashboard',
+    })
+}
