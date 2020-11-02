@@ -931,25 +931,25 @@
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">左边距</span>
-                                    <el-input v-model="legendStyle.left" placeholder="左边距" size="small"
+                                    <el-input v-model="legendStyle.left_distance" placeholder="左边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">右边距</span>
-                                    <el-input v-model="legendStyle.right" placeholder="右边距" size="small"
+                                    <el-input v-model="legendStyle.right_distance" placeholder="右边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">上边距</span>
-                                    <el-input v-model="legendStyle.top" placeholder="上边距" size="small"
+                                    <el-input v-model="legendStyle.top_distance" placeholder="上边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
                                 <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                     <span class="el-input-group__prepends">下边距</span>
-                                    <el-input v-model="legendStyle.bottom" placeholder="下边距" size="small"
+                                    <el-input v-model="legendStyle.bottom_distance" placeholder="下边距" size="small"
                                               class="selectPosition">
                                     </el-input>
                                 </div>
@@ -3017,16 +3017,16 @@
                 if (this.component_id != undefined) {
                     functionAll.updateVisualComponentInfo(param).then(res => {
                         this.$Msg.customizTitle('保存成功', 'success');
-                        // this.$router.push({
-                        //     name: 'visualizationindex'
-                        // })
+                        this.$router.push({
+                            name: 'visualizationindex'
+                        })
                     })
                 } else {
                     functionAll.addVisualComponentInfo(param).then(res => {
                         this.$Msg.customizTitle('保存成功', 'success');
-                        // this.$router.push({
-                        //     name: 'visualizationindex'
-                        // })
+                        this.$router.push({
+                            name: 'visualizationindex'
+                        })
                     })
                 }
             }
