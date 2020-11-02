@@ -340,7 +340,6 @@ export default {
             },
             picshow: false,
             titleFlag: false,
-            echartThemeJson: require("@/assets/images/theme/source.jpg"),
             delpng:require('@/assets/images/del.png'),
             selectRow: [],
              // 所有组件汇总表信息
@@ -524,7 +523,7 @@ export default {
             grid_layout_backgroundcolor: "background-color:transparent;",
             chart_obj_array: [],
             // 
-            echart_theme: "",
+            echart_theme: {},
             chooseTitle_show: false,
             dashboard_component_array: [],
             dashboard_component_id_array:[],
@@ -912,8 +911,8 @@ export default {
                 }
             })
         },
-        //根据仪表盘ID与仪表盘名称获取仪表盘信息
         getDataDashboardInfoById(dashboard_id) {
+        //根据仪表盘ID与仪表盘名称获取仪表盘信息
             functionAll.getDataDashboardInfoById({
                 "dashboard_id": dashboard_id
             }).then(res => {
@@ -940,15 +939,13 @@ export default {
                     for (var i = 0; i < this.layout.length; i++) {
                         this.dashboard_component_id_array.push(this.layout[i].type);
                     }
-                    if (this.auto_dashboard_info.dashboard_theme == "00") {
-                        // 原始主题
-                        this.echart_theme = this.titleData;
-                    } else {
-                        $.getJSON(this.echartThemeJson, function (themeJSON) {
-                            echarts.registerTheme(type, themeJSON[type]);
-                            this.echart_theme = this.titleData;
-                        });
+                    var dashboard_theme={};
+                    if (this.auto_dashboard_info.dashboard_theme != "00") {
+                        // 非原始主题
+                        let cc = require('@/static/EchartTheme.json')
+                        echarts.registerTheme(type, cc[type]);
                     }
+                    this.echart_theme=this.titleData;
                     var index = 0;
                     for (var i = 0; i < this.titleData.length; i++) {
                         if (this.auto_dashboard_info.dashboard_theme == "0" + i) {
@@ -959,7 +956,7 @@ export default {
                     // 卡片表格回显
                     setTimeout(() => {
                         for (var i = 0; i < this.chart_obj_array.length; i++) {
-                            if (this.chart_obj_array[i].echarttype == "card") {
+                            if (this.chart_obj_array[i].echarttype == "card") {// 卡片
                                 $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
                                     "background-color": this.titleData[index].ncolor,
                                     "color": this.titleData[index].fcolor
@@ -974,11 +971,9 @@ export default {
 
                                 this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
                                 this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                            } else if (this.chart_obj_array[i].echarttype == "table") {
+                            } else if (this.chart_obj_array[i].echarttype == "table") {// 表格
                                 this.tabStyle.th_background = this.titleData[index].ncolor;
                                 this.tabStyle.zl_background = this.titleData[index].ncolor;
-                            } else {
-
                             }
                         }
                     }, 2000);
@@ -1343,9 +1338,12 @@ export default {
                         tmp_component_background = this.autoCompSums[k].background;
                     }
                 }
+                console.log(tmp_component_name,'tmp_component_name');
+                console.log(tmp_component_background,'tmp_component_background');
+                console.log(echart_div_layout,'echart_div_layout');
                 if (type == "line") {// 折线图
                     var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
-                    this.echartline(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
+                    this.echartline(echartdata, Chart, id, "rgba(41,52,65,1)", tmp_component_name, tmp_component_background);
                     chart_obj_array.push(Chart);
                 } else if (type == "bar") {// 柱状图
                     var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
@@ -2586,6 +2584,7 @@ export default {
          //选择主题
         chooseTitle(data) {
             this.auto_dashboard_info.dashboard_theme = data.code;
+            // this.divideLayout(this.dashboard_component_array,this.dashboard_component_id_array)
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (this.chart_obj_array[i].echarttype == "card") {
 
@@ -2601,19 +2600,20 @@ export default {
                     this.chart_obj_array[i].dispose();
                 }
             }
-            if (data.code == "00") {
-                // 原始主题
-                this.echart_theme = data;
-            } else {
-                $.getJSON(this.echartThemeJson, function (themeJSON) {
-                    echarts.registerTheme(data.type, themeJSON[data.type]);
-                    this.echart_theme = data;
-                });
+           var dashboard_theme ={};
+           if (data.code != "00") {
+               let cc  = require("@/static/EchartTheme.json")
+               console.log(cc[data.type],'cc[data.type]');
+                // 非原始主题
+                // $.getJSON('../../../static/EchartTheme.json', function (themeJSON) {
+                    echarts.registerTheme(data.type, cc[data.type]);
+                // });
             }
+            this.echart_theme=data;
             //更换卡片，标签，分割线，表的颜色为组件的主要颜色
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 this.bcolor = data.bcolor;
-                if (this.chart_obj_array[i].echarttype == "card") {
+                if (this.chart_obj_array[i].echarttype == "card") {// 卡片
                     $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
                         "background-color": data.ncolor,
                         "color": data.fcolor
@@ -2627,10 +2627,10 @@ export default {
                     this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
                     this.cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
                     this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                } else if (this.chart_obj_array[i].echarttype == "table") {
+                } else if (this.chart_obj_array[i].echarttype == "table") {// 表格
                     this.tabStyle.th_background = this.bcolor
                     this.tabStyle.zl_background = this.bcolor;
-                } else if (this.chart_obj_array[i].echarttype == "label") {
+                } else if (this.chart_obj_array[i].echarttype == "label") {// 文本标签
                     $("#" + this.chart_obj_array[i].id).find("p").css({
                         "background-color": data.ncolor,
                         "color": data.fcolor
@@ -2639,11 +2639,11 @@ export default {
                         'background-color': data.ncolor,
                         "color": data.fcolor
                     });
-                } else if (this.chart_obj_array[i].echarttype == 'borderline') {
+                } else if (this.chart_obj_array[i].echarttype == 'borderline') {// 分割线
                     $("#" + this.chart_obj_array[i].id).find("div[class='lineclass']").css({
                         'background-color': data.ncolor
                     });
-                } else if (this.chart_obj_array[i].echarttype == "frameline") {
+                } else if (this.chart_obj_array[i].echarttype == "frameline") {// 边框
                     $("#" + this.chart_obj_array[i].id).css({
                         'border': data.ncolor + ' 2px solid'
                     });
@@ -2655,8 +2655,9 @@ export default {
             // 仪表盘展示
             setTimeout(() => {
                 if (this.$route.query.dashboard_id!=undefined&&this.$route.query.dashboard_id!='') {
-                    this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+                    // this.getDataDashboardInfoById(this.$route.query.dashboard_id);
                 }
+                console.log(this.dashboard_component_array);
                 this.echartpic(this.dashboard_component_array, this.dashboard_component_id_array);
             }, 500);
             // 文本标签主题设置
