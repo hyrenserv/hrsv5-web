@@ -18,7 +18,7 @@
 
 <script>
 import VueGridLayout from 'vue-grid-layout';
-import * as functionAll from "./serviceUser";
+import * as functionAll from "./api";
 export default {
     data() {
         return {
@@ -294,11 +294,13 @@ export default {
         }
     },
     mounted() {
-        this.dashboardRelease();
+        debugger
+        this.showReleaseDashboard();
     },
     methods: {
-        dashboardRelease() {
-            functionAll.dashboardRelease({
+        showReleaseDashboard() {
+            console.log("aaaaaaaaaaaa");
+            functionAll.showReleaseDashboard({
             }).then(res => {
             });
         }
