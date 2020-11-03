@@ -1099,7 +1099,7 @@ export default {
                     } else {
                         img_style += this.selectRow[i].background;
                     }
-                    var imgHTML = "<img src='@/assets/images/hidedel.png' style=" + img_style + " class='pull-right'>";
+                    var imgHTML = "<img src="+require('@/assets/images/hidedel.png')+" style=" + img_style + " class='pull-right'>";
                     $(frame_img).append(imgHTML);
                 }
             }
