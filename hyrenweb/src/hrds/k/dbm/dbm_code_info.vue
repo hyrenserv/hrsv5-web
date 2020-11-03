@@ -16,46 +16,44 @@
     <!--  -->
     <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" @select-all='allselect' @selection-change="handleSelectionChange" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick" @filter-change="codeClass_fulterChangeFun">
         <el-table-column type="expand">
-            <template slot-scope="props">
-                <el-row style="margin-bottom:10px">
-                    <el-col :span='5'>
-                        <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeItem_Value">
-                            <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeItemInfo"></el-button>
-                        </el-input>
-                    </el-col>
-                    <el-col :span='13'>&nbsp;</el-col>
-                    <el-col :span='6' style="text-align:right" class='allbutton'>
-                        <el-button size="mini" type="primary" @click="addCodeItemFun()">新增代码项</el-button>
-                        <el-button size="mini" type="danger" class='el-icon-remove-outline' @click="delectcodeitemALLFun()">删除代码项</el-button>
-                    </el-col>
-                </el-row>
-                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}" @selection-change="item_handleSelectionChange" @select-all='item_allselect'>
-                    <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
-                    </el-table-column>
-                    <el-table-column label="序号" align="center" width="60">
-                        <template scope="scope">
-                            <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_encode" label="代码编号">
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_item_name" label="代码名称" width="100" :show-overflow-tooltip="true">
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_value" label="代码值">
-                    </el-table-column>
-                    <el-table-column align="center" prop="dbm_level" label="层级">
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_remark" label="代码描述" width="150" :show-overflow-tooltip="true">
-                    </el-table-column>
-                    <el-table-column label="操作" align="center">
-                        <template slot-scope="scope">
-                            <el-button type="text" size="small" class='editcolor' @click="editCodeItemFun(scope.row)">编辑</el-button>
-                            <el-button type="text" size="small" class='delcolor' @click="delCodeItemFun(scope.row)">删除</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <el-pagination @size-change="item_handleSizeChange" @current-change="item_handleCurrentChange" :current-page="itemcurrentPage" :page-sizes="[10, 50, 100, 200]" :page-size="itempagesize" layout="total,prev, pager, next" :total="dataList.length" class='pagerigth'></el-pagination>
-            </template>
+            <el-row style="margin-bottom:10px">
+                <el-col :span='5'>
+                    <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeItem_Value">
+                        <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeItemInfo"></el-button>
+                    </el-input>
+                </el-col>
+                <el-col :span='13'>&nbsp;</el-col>
+                <el-col :span='6' style="text-align:right" class='allbutton'>
+                    <el-button size="mini" type="primary" @click="addCodeItemFun()">新增代码项</el-button>
+                    <el-button size="mini" type="danger" class='el-icon-remove-outline' @click="delectcodeitemALLFun()">删除代码项</el-button>
+                </el-col>
+            </el-row>
+            <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}" @selection-change="item_handleSelectionChange" @select-all='item_allselect'>
+                <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
+                </el-table-column>
+                <el-table-column label="序号" align="center" width="60">
+                    <template scope="scope">
+                        <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" prop="code_encode" label="代码编号">
+                </el-table-column>
+                <el-table-column align="center" prop="code_item_name" label="代码名称" width="100" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column align="center" prop="code_value" label="代码值">
+                </el-table-column>
+                <el-table-column align="center" prop="dbm_level" label="层级">
+                </el-table-column>
+                <el-table-column align="center" prop="code_remark" label="代码描述" width="150" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" class='editcolor' @click="editCodeItemFun(scope.row)">编辑</el-button>
+                        <el-button type="text" size="small" class='delcolor' @click="delCodeItemFun(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination @size-change="item_handleSizeChange" @current-change="item_handleCurrentChange" :current-page="itemcurrentPage" :page-sizes="[10, 50, 100, 200]" :page-size="itempagesize" layout="total,prev, pager, next" :total="dataList.length" class='pagerigth'></el-pagination>
         </el-table-column>
         <el-table-column width="55" align="center" type="selection" :reserve-selection="true">
         </el-table-column>
@@ -142,7 +140,7 @@
     </el-dialog>
     <!-- 新增代码项弹框 -->
     <el-dialog title="新增代码项" :visible.sync="dialogaddCodeXableVisible" width="40%" class='data_edit'>
-         <div slot="title">
+        <div slot="title">
             <span class="dialogtitle el-icon-caret-right">{{title}}代码项</span>
         </div>
         <el-row>
@@ -290,16 +288,21 @@ export default {
             this.selectrow.forEach(o => {
                 this.code_type_id_s.push(o.code_type_id);
             });
-            let that = this,
-                arr = [];
-            arr = this.code_type_id_s
-            dataBenchmarkingAllFun.batchReleaseDbmCodeTypeInfo({
-                "code_type_id_s": arr
-            }).then(res => {
-                message.issueSuccess(res)
-                that.code_type_id_s = []
-                that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-            });
+            if (this.code_type_id_s.length === 0) {
+                this.$Msg.customizTitle("需要发布的代码类不能为空!", "warning")
+            } else {
+                let that = this,
+                    arr = [];
+                arr = this.code_type_id_s
+                dataBenchmarkingAllFun.batchReleaseDbmCodeTypeInfo({
+                    "code_type_id_s": arr
+                }).then(res => {
+                    message.issueSuccess(res)
+                    that.code_type_id_s = []
+                    this.selectrow = []
+                    that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                });
+            }
         },
         //单个代码类发布
         issueFun(row) {
