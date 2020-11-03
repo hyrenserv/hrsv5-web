@@ -20,6 +20,7 @@ export function getTableInfoByTableName_cache(data) {
 export function getTableColumnInfoBySql(data) {
     return request({
         url: '/B/websqlquery/getTableColumnInfoBySql',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }

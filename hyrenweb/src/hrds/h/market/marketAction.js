@@ -143,15 +143,18 @@ export function deleteDMDataTable(data) {
 export function getDataBySQL(data) {
     return request({
         url: '/H/market/getDataBySQL',
-        params: data
+        headers: { 'Content-Type': 'multipart/form-data' },
+        data: data
     })
 }
 
 //根据sql,解析,获取字段
 export function getColumnBySql(data) {
+    debugger;
     return request({
         url: '/H/market/getColumnBySql',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 
@@ -446,7 +449,8 @@ export function saveDmCategory(data) {
 export function getIfRelationDatabase(data) {
     return request({
         url: '/H/market/getIfRelationDatabase',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 
