@@ -10,9 +10,10 @@
     </el-row>
     <el-row :gutter='20'>
         <el-col :span="6">
-            <div class="mytree" hight='260'>
-                <div style='height:0.1px'>&nbsp;</div>
-                <el-tree accordion class="filter-tree" :data="versionManageTreeData" :indent="0" id="tree">
+            <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
+            <div style='height:0.1px'>&nbsp;</div>
+            <div class='mytree' height='260'>
+                <el-tree accordion class="filter-tree" :data="versionManageTreeData" :indent="0" :filter-node-method="filterNode" ref="tree">
                     <span class="span-ellipsis" slot-scope="{ node, data }">
                         <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== '' && data.tree_page_source=='market_version_manage'">
                             <el-checkbox @change="choiceCheck($event,data)" v-model="data.ischoice" :key='data.id'></el-checkbox>{{node.label.substring(0,4)}}-{{node.label.substring(4,6)}}-{{node.label.substring(6,8)}}
@@ -97,6 +98,8 @@ export default {
     },
     data() {
         return {
+            //搜索框
+            filterText: '',
             //页面默认显示数据结构对比标签
             activeName: 'first',
             //表结构信息对比变量
@@ -119,7 +122,28 @@ export default {
         //页面初始化时获取源数据列表树
         this.getMarketVerManageTreeData();
     },
+    watch: {
+        //设置检索内容
+        filterText(val) {
+            this.$refs.tree.filter(val);
+        },
+    },
     methods: {
+        // 节点搜索
+        filterNode(value, data) {
+            // 如果检索内容为空,直接返回
+            if (!value) return true;
+            // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
+            // 检索内容为 original_name table_name hyren_name
+            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+                return (
+                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
+                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
+                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                )
+
+            }
+        },
         tabClick() {
             if (this.activeName == 'second') {
                 let that = this
