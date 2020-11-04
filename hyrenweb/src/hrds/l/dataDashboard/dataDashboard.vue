@@ -19,7 +19,7 @@
         <div class="row clearfix" v-show="picshow" id="mydiv">
             <div class="col-md-12 column">
                 <div class="panel-body">
-                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:rgb(255, 255, 255)'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
+                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
                         <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
                             <div :id="item.type" style="width: 300px;height:200px;"></div>
                         </grid-item>
@@ -340,7 +340,7 @@ export default {
             },
             picshow: false,
             titleFlag: false,
-            echartThemeJson: require("@/assets/json/echartTheme.json"),
+            echartThemeJson: require("@/assets/json/EchartTheme.json"),
             delpng:require('@/assets/images/del.png'),
             selectRow: [],
             //主题设置参数
@@ -349,8 +349,8 @@ export default {
                     "CN_type": "原始",
                     "type": "source",
                     "bcolor": "#40E3F7",
-                    "fcolor": "rgb(255,255,255)",
-                    "ncolor": "rgb(67,142,185)",
+                    "fcolor": "#FFFFFF",
+                    "ncolor": "#438EB9",
                     "style": "background-color:transparent;",
                     "depth": "qian",
                     "picurl": require("@/assets/images/theme/source.jpg")
@@ -360,8 +360,8 @@ export default {
                     "CN_type": "万圣节",
                     "type": "halloween",
                     "bcolor": "#FF715E",
-                    "fcolor": "rgb(255,255,255)",
-                    "ncolor": "rgb(255,113,94)",
+                    "fcolor": "#FFFFFF",
+                    "ncolor": "#FF715E",
                     "style": "background-color:#6E6E6E;background-size: 100% 100%;",
                     "depth": "sheng",
                     "picurl": require("@/assets/images/theme/halloween.jpg")
@@ -371,9 +371,9 @@ export default {
                     "CN_type": "紫色",
                     "type": "purple",
                     "bcolor": "#9B8BBA",
-                    "fcolor": "rgb(255,255,255)",
-                    "ncolor": "rgb(155,139,186)",
-                    "style": "background-color: rgb(91, 92, 110);",
+                    "fcolor": "#FFFFFF",
+                    "ncolor": "#9B8BBA",
+                    "style": "background-color: #5B5C6E;",
                     "depth": "sheng",
                     "picurl": require("@/assets/images/theme/purple.jpg")
                 },
@@ -382,9 +382,9 @@ export default {
                     "CN_type": "恩索思",
                     "type": "essos",
                     "bcolor": "#893448",
-                    "fcolor": "rgb(255,255,255)",
-                    "ncolor": "rgb(137,52,72)",
-                    "style": "background-color: rgba(242, 234, 191, 0.15);",
+                    "fcolor": "#FFFFFF",
+                    "ncolor": "#893448",
+                    "style": "background-color: #F2EABF;",
                     "depth": "qian",
                     "picurl": require("@/assets/images/theme/essos.jpg")
                 },
@@ -393,9 +393,9 @@ export default {
                     "CN_type": "粉笔",
                     "type": "chalk",
                     "bcolor": "#FC97AF",
-                    "fcolor": "rgb(255,255,255)",
-                    "ncolor": "rgb(252,151,175)",
-                    "style": "background-color: rgb(41, 52, 65);",
+                    "fcolor": "#FFFFFF",
+                    "ncolor": "#FC97AF",
+                    "style": "background-color: #293441;",
                     "depth": "sheng",
                     "picurl": require("@/assets/images/theme/chalk.jpg")
                 },
@@ -457,8 +457,8 @@ export default {
                 },
             ],
             bordercolor:[
-                {"code":"01","type":"black","style":"border-color:rgb(0, 0, 0)"},
-                {"code":"02","type":"white","style":"border-color:rgb(255, 255, 255)"},
+                {"code":"01","type":"black","style":"border-color:#000000"},
+                {"code":"02","type":"white","style":"border-color:#FFFFFF"},
                 {"code":"03","type":"purple","style":"border-color:#B23AEE"},
                 {"code":"04","type":"grey","style":"border-color:#8B8386"},
                 {"code":"05","type":"red","style":"border-color:#EE0000"},
@@ -711,7 +711,7 @@ export default {
                     $('#fullScreen').show();
                     this.chooseTitle_show = true;
                     this.bordercolor_show = true;
-                    $("#dataDashboard").css("background-color", "background-color:rgb(255, 255, 255);");
+                    $("#dataDashboard").css("background-color", "background-color:#FFFFFF;");
                     this.is_showdel = true;
                     $("#mydiv img").each(function () {
                         $(this).css("display", "inline");
@@ -851,8 +851,8 @@ export default {
                     this.selectRow=res.data.autoCompSums;
                     //把边框,文本标签,分割线的layout区分开
                     for (var i = 0; i < res.data.layout.length; i++) {
-                        // 文本标签
                         if ("0" == res.data.layout[i].label) {
+                             // 文本标签
                             this.label_layout.push(res.data.layout[i]);
                         } else if ("1" == res.data.layout[i].label) {
                             // 分割线
@@ -861,6 +861,7 @@ export default {
                             // 边框
                             this.frame_layout.push(res.data.layout[i]);
                         } else {
+                            // 其它组件
                             this.layout.push(res.data.layout[i]);
                         }
                     }
@@ -869,33 +870,6 @@ export default {
                         var id = this.layout[i].type;
                         this.global_component_id_array.push(id);
                     }
-                    // 卡片表格回显
-                    setTimeout(() => {
-                        for (var i = 0; i < this.chart_obj_array.length; i++) {
-                            if (this.chart_obj_array[i].layouttype == "card") {
-                                $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                                    "background-color": this.titleData[index].ncolor,
-                                    "color": this.titleData[index].fcolor
-                                });
-                                $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
-                                    'background-color': this.titleData[index].ncolor,
-                                    "color": this.titleData[index].fcolor
-                                });
-                                this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
-                                this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
-                                this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
-
-                                this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
-                                this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
-                            } else if (this.chart_obj_array[i].layouttype == "table") {
-                                this.tabStyle.th_background = this.titleData[index].ncolor;
-                                this.tabStyle.zl_background = this.titleData[index].ncolor;
-                            }
-                        }
-                    }, 2000);
-                    this.titleFlag = false;
-                    // 仪表盘展示
-                    this.echartpic(this.global_component_array, this.global_component_id_array);
                     // 主题样式
                     var style = "";
                     var type = "";
@@ -912,9 +886,9 @@ export default {
                     if (code != "00") {
                         echarts.registerTheme(type, this.echartThemeJson[type]);
                         //更换卡片，标签，分割线，表格、边框的颜色为组件的主题颜色
-                        setTimeout(() => {
-                           this.changeTitle(this.echart_theme);
-                        }, 2000);
+                        setTimeout(()=>{
+                            this.changeTitle(this.echart_theme);
+                        },2000)
                     }
                     var index = 0;
                     for (var i = 0; i < this.titleData.length; i++) {
@@ -923,18 +897,53 @@ export default {
                         }
                     }
                     this.bcolor = this.titleData[index].bcolor;
+                    // 卡片表格回显
+                    setTimeout(()=>{
+                        for (var i = 0; i < this.chart_obj_array.length; i++) {
+                            if (this.chart_obj_array[i].layouttype == "card") {
+                                $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                                    "background-color": this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                                    'background-color': this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.title.fontFamily;
+                                this.cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
+                                this.cardname += ";font-size:" + this.title.fontSize + "px;line-height:" + this.title.lineHeight + "px;text-align:center;padding-left:15px";
+    
+                                this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
+                                this.cardstyle += ";font-family:" + this.title.fontFamily + ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight + "px";
+                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                                this.tabStyle.th_background = this.titleData[index].ncolor;
+                                this.tabStyle.zl_background = this.titleData[index].ncolor;
+                            }
+                        }
+                    },2000)
+                    this.titleFlag = false;
+                    // 仪表盘展示
+                    setTimeout(()=>{
+                        this.echartpic(this.global_component_array, this.global_component_id_array);
+                    },500)
                     // 文本标签回显
-                    setTimeout(() => {
+                    setTimeout(()=>{
                         this.textlabel_back();
-                    }, 1000);
+                    },1000)
                     // 分割线回显
-                    setTimeout(() => {
+                    setTimeout(()=>{
                         this.textline_back();
-                    }, 1000);
+                    },1000)
                     // 边框回显
-                    setTimeout(() => {
+                    setTimeout(()=>{
                         this.frame_back();
-                    }, 1000);
+                    },1000)
+                    setTimeout(()=>{
+                        this.grid_layout_backgroundcolor = this.auto_dashboard_info.background;
+                        $("div[name='pic']").each(function () {
+                            $(this).trigger("mouseup");
+                        });
+                    },500)
                  }
              })
         },
@@ -1176,6 +1185,7 @@ export default {
         },
         //更换卡片，标签，分割线，表格、边框的颜色为组件的主题颜色
         changeTitle(data){
+            this.$nextTick(function(){
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (this.chart_obj_array[i].layouttype == "card") {// 卡片
                     $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
@@ -1213,6 +1223,7 @@ export default {
                     });
                 }
             }
+            });
         },
         //文本标签主题设置
         textlabeltheme() {
@@ -1551,7 +1562,7 @@ export default {
                     }, 500);
 
                     setTimeout(() => {
-                        this.grid_layout_backgroundcolor = "background-color:rgb(255, 255, 255);";
+                        this.grid_layout_backgroundcolor = "background-color:#FFFFFF;";
                         $("div[name='pic']").each(function () {
                             $(this).trigger("mouseup");
                         });
@@ -3211,7 +3222,6 @@ var framedelProfile = Vue.extend({
             this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
             this.global_component_array.layout = this.layout;
             this.frame_layout.splice(this.frame_layout.indexOf(echart_div_layout), 1);
-            console.log(this.chart_obj_array);
             for (var i = 0; i < this.chart_obj_array.length; i++) {
                 if (echart_div_layout.type == this.chart_obj_array[i].id) {
                     this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
