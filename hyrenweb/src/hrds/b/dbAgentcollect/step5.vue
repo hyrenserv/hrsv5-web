@@ -52,20 +52,20 @@
                     &nbsp;&nbsp;&nbsp;<el-button v-if="scope.row.is_zipper" type="text" @click="innerVisible=true;watchText(scope.row)">选择拉链字段</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label=" 存储方式" align="center" width="200">
+            <el-table-column label=" 存储方式" align="center" width="180">
                 <template slot="header">
                     <!-- <el-checkbox v-if="Allis_zippercheck==false">
                         <span class="allclickColor">存储方式</span>
                     </el-checkbox> -->
                     <el-popover placement="right" width="120" height="50" v-model="visible">
-                        <el-select v-if="Allis_zippercheck" placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="medium">
+                        <el-select v-if="Allis_zippercheck" placeholder="存储方式" v-model="allstoragetype" size="medium">
                             <el-option v-for="(item,index) in zipper" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select>
-                        <el-select v-else placeholder="存储方式" v-model="allstoragetype" style="width:140px" size="mini">
+                        <el-select v-else placeholder="存储方式" v-model="allstoragetype" size="mini">
                             <el-option v-for="(item,index) in notzipper" :key="index" :label="item.value" :value="item.code"></el-option>
                         </el-select>
                         <div style="text-align: right; margin:30px 0 5px 0">
-                            <el-button size="mini" type="text" @click="allStorageModeCloseFun()">取消</el-button>
+                            <el-button size="mini" type="danger" @click="allStorageModeCloseFun()">取消</el-button>
                             <el-button type="primary" size="mini" @click="allStorageModeFun()">确定</el-button>
                         </div>
                         <el-checkbox slot="reference" @change="allcunchuFun(allcunchu)" :checked="allcunchu" v-model="allcunchu">
@@ -334,7 +334,9 @@
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 import * as addTaskAllFun from "./dbAgentcollect";
-import {getStoreDataBase} from '../addTask/addTask'
+import {
+    getStoreDataBase
+} from '../addTask/addTask'
 import * as message from "@/utils/js/message";
 import Step from "./step";
 import {
@@ -458,6 +460,8 @@ export default {
         }
     },
     created() {
+        this.storeTypeFun();
+        this.specialfieldFun();
         let params2 = {};
         params2["category"] = "StorageType";
         this.$Code.getCategoryItems(params2).then(res => {
@@ -537,10 +541,6 @@ export default {
                                     arr[i].is_zipper = false;
                                 }
                                 this.checkSorageData[arr[i].table_name + '_zip'] = arr[i].is_zipper
-                                // console.log(typeof arr[i].storage_type);
-                                // if (typeof arr[i].storage_type === 'undefined') {
-                                //     arr[i].storage_type = this.zipperData.Tihuan;
-                                // }
                                 if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
                                 }
@@ -553,9 +553,6 @@ export default {
                                 } else {
                                     arr[i].is_zipper = false;
                                 }
-                                // if (typeof arr[i].storage_type === 'undefined') {
-                                //     arr[i].storage_type = this.zipperData.Tihuan;
-                                // }
                                 if (!arr[i].storage_time) {
                                     arr[i].storage_time = 1;
                                 }
@@ -569,8 +566,7 @@ export default {
                 this.tableloadingInfo = "暂无数据";
             }
         });
-        this.storeTypeFun();
-        this.specialfieldFun();
+
         // this.getSaveDataFun();
     },
     methods: {

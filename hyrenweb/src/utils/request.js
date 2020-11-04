@@ -11,7 +11,7 @@ const service = axios.create({
   timeout: 5000000 // request timeout
 })
 
-let loadingInstance;
+let loadingInstance = [];
 //内存中正在请求的数量
 let loadingNum = 0;
 function startLoading() {
@@ -20,6 +20,7 @@ function startLoading() {
   }
   //请求数量加1
   loadingNum++;
+
 }
 function endLoading() {
   //请求数量减1
@@ -44,8 +45,13 @@ service.interceptors.request.use(
       // config.data = true;
       config.headers['Hyren_userCookie'] = getToken();
     }
-    return config;
-
+    /**
+     * 这里对代码项的重复请求进行忽略,也就是说如果是代码项的请求不限制请求的次数
+     */
+    if (!loadingInstance.includes(config.url) || config.url.indexOf('/codes/') != -1) {
+      loadingInstance.push(config.url)
+      return config;
+    }
   },
   error => {
     endLoading()
@@ -66,6 +72,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    loadingInstance = loadingInstance.filter(item => item != response.config.url)
     // 对响应数据做些事，把loading动画关掉
     endLoading()
     const res = response.data
