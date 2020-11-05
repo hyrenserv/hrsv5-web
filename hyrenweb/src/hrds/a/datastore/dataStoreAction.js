@@ -185,3 +185,21 @@ export function getDataLayerAttrKey(data) {
         params: data
     })
 }
+/**(15)
+ * 获取支持外部表的属性key值
+ */
+export function getExternalTableAttrKey(data) {
+    return request({
+        url: '/A/datastore/getExternalTableAttrKey',
+        params: data
+    })
+}
+/**(16)
+ * 根据数据库类型获取数据存储层配置属性key
+ */
+export function getAttrKeyByDatabaseType(data) {
+    return request({
+        url: '/A/datastore/getAttrKeyByDatabaseType',
+        params: data
+    })
+}
