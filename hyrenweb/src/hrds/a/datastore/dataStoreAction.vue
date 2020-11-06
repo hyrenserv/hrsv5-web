@@ -109,7 +109,7 @@
                             <el-input size="meduim" v-model="scope.row.storage_property_val" style="width:98%"></el-input>
                         </el-form-item>
                         <el-upload v-else-if="scope.row.is_file=='1'" class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
-                            <el-button size="small" type="info" @click="handleEdit(scope.$index, scope.row)">选择文件</el-button>
+                            <el-button size="small" type="info" @click="selectFile(scope.$index, scope.row)">选择文件</el-button>
                         </el-upload>
                     </template>
                 </el-table-column>
@@ -123,7 +123,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
-                        <el-button type="danger" size="small" v-if="scope.$index < numberCount" disabled @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
+                        <el-button type="danger" size="small" v-if="scope.$index < numberCount" disabled>删除</el-button>
                         <el-button type="danger" size="small" v-else @click="dialogFormVisibleAdd = true;deleteArry(scope.$index, scope.row);">删除</el-button>
                     </template>
                 </el-table-column>
@@ -163,7 +163,6 @@ export default {
             selectedUploadValue: false,
             selectedValue: false,
             numberCount: '',
-            selectedValueTabledata: [],
             change_storelayer: [],
             storeType: [],
             checkboxType: [],
@@ -179,7 +178,7 @@ export default {
             uploadindex:'',
             dataKey :'',
             fileArry:[],
-             storageLayerParamInfo: [],
+            storageLayerParamInfo: [],
             databaseData: [{
                     key: 'database_type',
                     value: '数据库类型'
@@ -790,11 +789,9 @@ export default {
                 }
             }
         },
-        handleEdit(index, row) {
+        selectFile(index, row) {
             this.uploadindex=index;
-            this.selectedValueTabledata = [];
             this.dataKey = row.storage_property_key;
-            this.selectedValueTabledata.push(row);
         },
         // 删除上传文件
         removeFile(file, fileList) {
@@ -808,17 +805,6 @@ export default {
                     }
                 })
             }
-        },
-        // 确定填写value
-        SaveselectedValue() {
-            this.selectedValue = false;
-        },
-        // 取消填写value
-        cancelSaveselectedValue() {
-            this.selectedValueTabledata.forEach((item) => {
-                delete item.radio;
-            });
-            this.selectedValue = false;
         },
         // 确定选择好要上传的文件
         SaveselectedUploadValue() {

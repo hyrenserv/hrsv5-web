@@ -19,7 +19,7 @@
 
             <el-table-column prop="store_type" width="202" label="数据存储层配置属性" align="center">
                 <template slot-scope="scope">
-                    <el-button type="info" size="mini" @click="dataSaveConfigure = true;handleEdit(scope.$index, scope.row)">数据存储层配置属性</el-button>
+                    <el-button type="info" size="mini" @click="dataSaveConfigure = true;searchDataStoreById(scope.$index, scope.row)">数据存储层配置属性</el-button>
                 </template>
             </el-table-column>
 
@@ -34,7 +34,7 @@
     <!-- 数据存储层配置属性弹出框 -->
     <el-dialog title="数据存储层配置属性" :visible.sync="dataSaveConfigure" width="60%">
         <el-form>
-            <el-table :data="tableDataConfigure" border stripe size="medium">
+            <el-table :data="storeLayerAttrData" border stripe size="medium">
                 <el-table-column type="index" label="序号" width="64" align="center"></el-table-column>
 
                 <el-table-column prop="storage_property_key" show-overflow-tooltip label="key" align="center"></el-table-column>
@@ -101,7 +101,7 @@
                 <el-col :span="12">
                     <el-form-item label="是否支持外部表" prop="is_hadoopclient" :rules="rule.selected" label-width="150px">
                         <el-radio-group v-model="form.is_hadoopclient">
-                            <el-radio v-for="item in YesNo" :key="item.value" :label="item.code">{{item.value}}</el-radio>
+                            <el-radio v-for="item in YesNo" :key="item.value" :label="item.code" @change="changeHadoopclient">{{item.value}}</el-radio>
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
@@ -132,54 +132,52 @@
                     </el-col>
                 </el-col>
                 <span class="saveDataSpan">数据存储层配置属性</span>
-                <el-button size="medium" class="partTwoBtn" type="success" @click="addTableDataRow">增加行</el-button>
-                <el-table :data="form.tableDataConfigure" border stripe size="medium">
+                <el-tooltip placement="right" effect="light" v-if="showAddBtn">
+                    <div slot="content">
+                        <el-link type="primary">存储层可配置参数说明:</el-link><br />
+                        <span v-for="item in storageLayerParamInfo" :key="item.key">
+                            <el-link type="danger">{{item.key}}</el-link> : {{item.value}}<br />
+                        </span>
+                    </div>
+                    <span><i class="el-icon-info" /></span>
+                </el-tooltip>
+                <el-button size="mini" class="partTwoBtn" v-if="showAddBtn" type="success" @click="addTableDataRow('0')">添加行</el-button>
+                <el-button size="mini" class="partTwoBtn" v-if="showAddFileBtn" type="success" @click="addTableDataRow('1')">添加文件行</el-button>
+                <el-table :data="storeLayerAttrData" border stripe size="medium">
                     <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
 
                     <el-table-column label="key" align="center" :key="2">
                         <template slot-scope="scope">
-                            <el-input size="meduim" disabled v-if="scope.$index < lengthdata " v-model="scope.row.storage_property_key"></el-input>
+                            <el-input size="meduim" disabled v-if="scope.$index < numberCount " v-model="scope.row.storage_property_key"></el-input>
                             <el-input size="meduim" v-else v-model="scope.row.storage_property_key"></el-input>
                         </template>
                     </el-table-column>
 
-                    <el-table-column label="value" align="center" v-if="showValue" :key="3">
+                    <el-table-column label="value" align="center" :key="3">
                         <template slot-scope="scope">
-                            <el-select v-if="scope.$index == 0 &&scope.row.storage_property_key == 'database_type'" v-model="scope.row.storage_property_val" style="width:98%">
-                                <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
-                            </el-select>
-                            <el-input v-else size="meduim" v-model="scope.row.storage_property_val" style="width:98%"></el-input>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column label="value" align="center" :key="4" v-if="selectVlueOrUpload">
-                        <template slot-scope="scope">
-                            <el-upload v-if="scope.$index > uploadindexless  &&  scope.$index < uploadindexmore " class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
-                                <el-button size="small" type="info" @click="handleEditchange(scope.$index, scope.row)">选择文件</el-button>
+                            <el-form-item v-if="scope.row.storage_property_key == 'database_type'">
+                                <el-select v-model="scope.row.storage_property_val" style="width:98%" @change="getAttrKeyByDatabaseType">
+                                    <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item v-else-if="scope.row.is_file=='0'" :rules="filter_rules([{required: true}])">
+                                <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
+                            </el-form-item>
+                            <el-upload v-else-if="scope.row.is_file=='1'" class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile" style="width:98%">
+                                <el-button size="small" type="info" @click="selectFile(scope.$index, scope.row)">选择文件</el-button>
                             </el-upload>
-
-                            <el-select v-if="scope.$index <= inputindex &&scope.$index == 0 &&scope.row.storage_property_key == 'database_type' " v-model="scope.row.storage_property_val" style="width:98%">
-                                <el-option v-for="item in databaseType" :key="item.code" :label="item.value" :value="item.code"></el-option>
-                            </el-select>
-
-                            <el-input type="text" size="meduim" v-model="scope.row.storage_property_val" v-else-if="scope.$index <= inputindex " style="width:98%"></el-input>
-
-                            <el-radio-group v-model="scope.row.radio" v-if="scope.$index >= uploadindexmore">
-                                <el-radio @change="selectedValue=true;handleEditValue(scope.$index, scope.row)" label="0">填写value</el-radio>
-                                <el-radio @change="selectedUploadValue=true;handleEditValue(scope.$index, scope.row)" label="1">选择文件</el-radio>
-                            </el-radio-group>
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="dsla_remark" label="描述" align="center">
                         <template slot-scope="scope">
-                            <el-input type="textarea" v-model="scope.row.dsla_remark" autosize></el-input>
+                            <el-input type="textarea" size="meduim" v-model="scope.row.dsla_remark" autosize></el-input>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="操作" width="80" align="center">
                         <template slot-scope="scope">
-                            <el-button type="danger" size="small" disabled v-if="scope.row.storage_property_val !=undefined &&scope.row.storage_property_val.indexOf('.xml') !=-1 ">删除</el-button>
+                            <el-button type="danger" size="small" disabled v-if="scope.$index < numberCount">删除</el-button>
                             <el-button type="danger" size="small" v-else @click="deleteTableDataRow(scope.$index, scope.row);">删除</el-button>
                         </template>
                     </el-table-column>
@@ -192,46 +190,6 @@
         </div>
     </el-dialog>
     <!-- 编辑弹出框完 -->
-    <!-- 填写value弹出框 -->
-    <el-dialog title="value" :visible.sync="selectedValue">
-        <el-form>
-            <el-table :data="selectedValueTabledata" border stripe size="medium">
-                <el-table-column type="index" label="序号" width="64" align="center" :key="1"></el-table-column>
-
-                <el-table-column label="key" prop="storage_property_key" align="center" :key="2">
-                    <template slot-scope="scope">
-                        <el-input size="meduim" disabled v-model="scope.row.storage_property_key"></el-input>
-                    </template>
-                </el-table-column>
-
-                <el-table-column label="value" align="center" :key="3">
-                    <template slot-scope="scope">
-                        <el-input size="meduim" v-model="scope.row.storage_property_val"></el-input>
-                    </template>
-                </el-table-column>
-
-            </el-table>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancelSaveselectedValue" size="mini" type="danger">取消</el-button>
-            <el-button @click="SaveselectedValue" size="mini" type="primary">确认</el-button>
-        </div>
-    </el-dialog>
-
-    <!-- 上传导入文件弹出框 -->
-    <el-dialog title="上传导入的文件 " :visible.sync="selectedUploadValue" width="30%">
-        <el-form>
-            <el-form-item label="上传要导入的文件 :">
-                <el-upload class="upload-demo" ref="upload" :file-list="fileList" action="" :auto-upload="false" :on-change="handleChange" :on-remove="removeFile">
-                    <el-button size="small" type="info">选择上传文件</el-button>
-                </el-upload>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="cancelSaveselectedUploadValue" size="mini" type="danger">取消</el-button>
-            <el-button @click="SaveselectedUploadValue" size="mini" type="primary">确认</el-button>
-        </div>
-    </el-dialog>
 </div>
 </template>
 
@@ -239,28 +197,12 @@
 import * as functionAll from "./dataStoreAction";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
-let arr = [];
-let arr2 = [];
-let tableDataLength;
-let tableDatas = [];
-let fileArry = [];
-let dataKey;
-let index;
-let flag = 0;
-let flag2 = 0;
-let flag3 = 0;
-let flag4 = 0;
-let flag5 = 0;
-let flag6 = 0;
-let uploadindex;
-let valueIndex;
-let storetype;
-let uploadIndex;
-let arrMarkall = [];
-let diffentMark = [];
+
 export default {
     data() {
         return {
+            showAddBtn: false,
+            showAddFileBtn: false,
             form: {
                 dsl_name: '',
                 dtcs_id: '',
@@ -270,7 +212,6 @@ export default {
                 store_type: '',
                 dsl_remark: '',
                 dsla_storelayer: [],
-                tableDataConfigure: [],
             },
             oldDataArry: [],
             showValue: true,
@@ -279,7 +220,7 @@ export default {
             selectedUploadValue: false,
             selectedValue: false,
             showNumberDisabled: '',
-            lengthdata: '',
+            numberCount: '',
             deleteLength: '',
             uploadindexmore: '',
             uploadindexless: '',
@@ -289,7 +230,7 @@ export default {
             typeLengthinfo: [],
             fileList: [],
             dsl_id: '',
-            tableDataConfigure: [],
+            storeLayerAttrData: [],
             change_storelayer: [],
             tableData: [],
             storeType: [],
@@ -299,12 +240,227 @@ export default {
             markArrindex: [],
             dataSaveConfigure: false,
             dialogFormVisibleUpdate: false,
-            rule: validator.default
+            rule: validator.default,
+            uploadindex: '',
+            dataKey: '',
+            fileArry: [],
+            storageLayerParamInfo: [],
+            databaseData: [{
+                    key: 'database_type',
+                    value: '数据库类型'
+                },
+                {
+                    key: 'database_driver',
+                    value: '数据库驱动'
+                },
+                {
+                    key: 'jdbc_url',
+                    value: '数据库连接url地址'
+                },
+                {
+                    key: 'database_name',
+                    value: '数据库名称'
+                },
+                {
+                    key: 'database_pwd',
+                    value: '数据库密码'
+                },
+                {
+                    key: 'user_name',
+                    value: '用户名'
+                },
+                {
+                    key: 'sftp_host',
+                    value: '数据库服务器所在主机sftp的ip,支持外部表时使用'
+                },
+                {
+                    key: 'sftp_port',
+                    value: '数据库服务器所在主机sftp的端口,支持外部表时使用'
+                },
+                {
+                    key: 'sftp_user',
+                    value: '数据库服务器所在主机sftp指定的用户名,支持外部表时使用'
+                },
+                {
+                    key: 'sftp_pwd',
+                    value: '数据库服务器所在主机sftp用户对应的密码,支持外部表时使用'
+                },
+                {
+                    key: 'external_root_path',
+                    value: '指定sftp文件到数据库服务器所在主机的根目录,支持外部表时使用'
+                },
+                {
+                    key: 'external_director',
+                    value: "oracle服务器外部表loader文件目录对应的对象名称," +
+                        "oracle的dba需要执行 create directory 'external_directory' as 'external_root_path',支持外部表时使用"
+                },
+                {
+                    key: 'database_code',
+                    value: '数据库的编码，本系统支持的参数为： UTF-8、GBK、UTF-16、GB2312、ISO-8859-1,支持外部表时使用'
+                },
+                {
+                    key: 'minPoolSize',
+                    value: '数据库连接池的参数，最小连接数，非必须'
+                },
+                {
+                    key: 'maxPoolSize',
+                    value: '数据库连接池的参数,最大连接数，非必须'
+                },
+                {
+                    key: 'fetch_size',
+                    value: '连接是设置拉取批次的大小，非必须'
+                },
+            ],
+            solrData: [{
+                    key: 'solr_zk_url',
+                    value: '连接solr的zk连接'
+                },
+                {
+                    key: 'collection',
+                    value: 'solr指定的collection'
+                },
+            ],
+            hbaseData: [{
+                    key: 'database_driver',
+                    value: '数据库驱动'
+                },
+                {
+                    key: 'jdbc_url',
+                    value: '数据库连接url地址'
+                },
+                {
+                    key: 'database_name',
+                    value: '数据库名称'
+                },
+                {
+                    key: 'database_pwd',
+                    value: '数据库密码'
+                },
+                {
+                    key: 'user_name',
+                    value: '用户名'
+                },
+                {
+                    key: 'increment_engine',
+                    value: 'hbase算增量的执行引擎，本系统支持的参数为：hive、phoenix'
+                },
+                {
+                    key: 'platform',
+                    value: 'hadoop平台的版本，本系统支持填写参数为： normal、fic50、fic60、fic80、cdh5_13'
+                },
+                {
+                    key: 'hadoop_user_name',
+                    value: '操作hdfs的用户名'
+                },
+                {
+                    key: 'prncipal_name',
+                    value: '集群认证名称'
+                },
+                {
+                    key: 'zkhost',
+                    value: 'solr的zookeeper配置'
+                },
+                {
+                    key: 'keytab_user',
+                    value: '集群有Kerberos认证，认证用户名称,可以不填'
+                },
+                {
+                    key: 'keytab_file',
+                    value: 'kerberos认证文件名称,上传文件参数项'
+                },
+                {
+                    key: 'hbase-site.xml',
+                    value: 'hadoop集群hbase配置文件'
+                },
+                {
+                    key: 'hdfs-site.xml',
+                    value: 'hadoop集群hdfs配置文件'
+                },
+            ],
+            hiveData: [{
+                    key: 'database_driver',
+                    value: '数据库驱动'
+                },
+                {
+                    key: 'jdbc_url',
+                    value: '数据库连接url地址'
+                },
+                {
+                    key: 'database_name',
+                    value: '数据库名称'
+                },
+                {
+                    key: 'database_pwd',
+                    value: '数据库密码'
+                },
+                {
+                    key: 'user_name',
+                    value: '用户名'
+                },
+                {
+                    key: 'database_code',
+                    value: '数据库的编码，本系统支持的参数为： UTF-8、GBK、UTF-16、GB2312、ISO-8859-1,支持外部表时使用'
+                },
+                {
+                    key: 'external_root_path',
+                    value: '指定sftp文件到数据库服务器所在主机的根目录,支持外部表时使用'
+                },
+                {
+                    key: 'platform',
+                    value: 'hadoop平台的版本，本系统支持填写参数为： normal、fic50、fic60、fic80、cdh5_13，支持外部表时使用'
+                },
+                {
+                    key: 'hadoop_user_name',
+                    value: '操作hdfs的用户名，支持外部表时使用'
+                },
+                {
+                    key: 'prncipal_name',
+                    value: '集群认证名称，支持外部表时使用'
+                },
+                {
+                    key: 'keytab_user',
+                    value: '集群有Kerberos认证，认证用户名称,可以不填，支持外部表时使用'
+                },
+                {
+                    key: 'keytab_file',
+                    value: 'kerberos认证文件名称,上传文件参数项，支持外部表时使用'
+                },
+                {
+                    key: 'hdfs-site.xml',
+                    value: 'hadoop集群hdfs配置文件，支持外部表时使用'
+                },
+                {
+                    key: 'core-site.xml',
+                    value: 'hadoop集群核心配置文件，支持外部表时使用'
+                },
+            ],
+            elasticSearchDaa: [],
+            mongodbData: [],
+            carBonData: [{
+                    key: 'database_driver',
+                    value: '数据库驱动'
+                },
+                {
+                    key: 'jdbc_url',
+                    value: '数据库连接url地址'
+                },
+                {
+                    key: 'database_name',
+                    value: '数据库名称'
+                },
+                {
+                    key: 'database_pwd',
+                    value: '数据库密码'
+                },
+                {
+                    key: 'user_name',
+                    value: '用户名'
+                },
+            ],
         }
     },
     created() {
         this.searchDataStore();
-        fileArry = [];
     },
     methods: {
         // 查询首页信息
@@ -329,50 +485,52 @@ export default {
             })
         },
         // 获取表格当前行数据
-        handleEdit(index, row) {
-            this.searchDataStoreById(row.dsl_id);
+        selectFile(index, row) {
+            this.uploadindex = index;
+            this.dataKey = row.storage_property_key;
         },
         // 根据dsl_id显示对应的数据(数据存储层配置属性)
-        searchDataStoreById(e) {
+        searchDataStoreById(dsl_id) {
             this.checkboxType = [];
             functionAll.searchDataStoreById({
-                dsl_id: e
+                dsl_id: dsl_id
             }).then((res) => {
-                // 是否显示下载按钮
-                if (res.data.store_type == 2 || res.data.store_type == 3) {
-                    this.showDownloadButton = true;
-                    let i = 0;
-                    res.data.layerAndAttr.forEach((item) => {
-                        if (item.is_file == 0) {
-                            i++;
+                if (res && res.success) {
+                    // 是否显示下载按钮
+                    if (res.data.store_type == 2 || res.data.store_type == 3) {
+                        this.showDownloadButton = true;
+                        let i = 0;
+                        res.data.layerAndAttr.forEach((item) => {
+                            if (item.is_file == 0) {
+                                i++;
+                            }
+                        });
+                        if (res.data.store_type == 2) {
+                            this.showNumberDisabled = i;
+                        } else if (res.data.store_type == 3) {
+                            this.showNumberDisabled = i;
                         }
-                    });
-                    if (res.data.store_type == 2) {
-                        this.showNumberDisabled = i;
-                    } else if (res.data.store_type == 3) {
-                        this.showNumberDisabled = i;
-                    }
 
-                } else {
-                    this.showDownloadButton = false;
-                }
-                this.tableDataConfigure = res.data.layerAndAttr;
-                this.form.dsl_name = res.data.dsl_name;
-                this.form.store_type = res.data.store_type;
-                res.data.layerAndAdded.forEach((item) => {
-                    if (item.dsla_storelayer) {
-                        functionAll.getValue({
-                            category: "StoreLayerAdded",
-                            code: item.dsla_storelayer
-                        }).then((res) => {
-                            this.checkboxType.push({
-                                value: res.data,
-                                code: item.dsla_storelayer
-                            })
-                            this.form.dsla_storelayer = true;
-                        })
+                    } else {
+                        this.showDownloadButton = false;
                     }
-                })
+                    this.storeLayerAttrData = res.data.layerAndAttr;
+                    this.form.dsl_name = res.data.dsl_name;
+                    this.form.store_type = res.data.store_type;
+                    res.data.layerAndAdded.forEach((item) => {
+                        if (item.dsla_storelayer) {
+                            functionAll.getValue({
+                                category: "StoreLayerAdded",
+                                code: item.dsla_storelayer
+                            }).then((res) => {
+                                this.checkboxType.push({
+                                    value: res.data,
+                                    code: item.dsla_storelayer
+                                })
+                            })
+                        }
+                    })
+                }
             })
         },
         // 数据存储完整信息
@@ -397,7 +555,7 @@ export default {
         },
         // 根据dsl_id删除对应的数据
         deleteArry(row) {
-            this.$confirm('确定删除存储层'+row.dsl_name+'吗?', '提示', {
+            this.$confirm('确定删除存储层' + row.dsl_name + '吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
@@ -431,140 +589,69 @@ export default {
             functionAll.searchDataStoreById({
                 dsl_id: e
             }).then((res) => {
-                // 获取编辑参数
-                storetype = res.data.store_type;
-                let arry = [];
-                let arr = [];
-                let arr2 = [];
-                let arr3 = [];
-                // 处理tableData格式正确性
-                res.data.layerAndAttr.forEach((item) => {
-                    if (item.is_file == 0) {
-                        arr.push(item);
-                    } else if (item.is_file == 1) {
-                        arr2.push(item);
-                    }
-                })
-                for (let index = 0; index < arr.length; index++) {
-                    if (arr[index].storage_property_key == "database_type") {
-                        arr3.push(arr[index]);
-                        arr.splice(index, 1);
-                        this.getCategoryItems("DatabaseType");
-                    }
-                }
-                arry = [...arr3, ...arr, ...arr2]
-                let j = arr.length - 1;
-                let i = res.data.layerAndAttr.length;
-                if (row.store_type == "hive") {
-                    this.getDataLayerAttrKeyTwo("2")
-                } else if (row.store_type == "Hbase") {
-                    this.getDataLayerAttrKeyTwo("2")
-                };
-                // 编辑显示选择文件
-                if (row.store_type == "hive" || row.store_type == "Hbase") {
-                    if (row.store_type == "hive") {
-                        this.inputindex = j;
-                        this.uploadindexmore = arry.length;
-                        this.uploadindexless = j;
-                        this.showValue = false;
-                        this.selectVlueOrUpload = true;
-                        let length = arry.length;
-                        flag = 1;
-                        flag2 = 0;
-                        flag3 = 0;
-                        flag4 = 0;
-                        flag5 = 0;
-                        flag6 = 0;
-                        this.form.tableDataConfigure = arry;
-                    } else if (row.store_type == "Hbase") {
-                        this.inputindex = j;
-                        this.uploadindexmore = arry.length;
-                        this.uploadindexless = j;
-                        this.showValue = false;
-                        this.selectVlueOrUpload = true;
-                        let length = arry.length;
-                        flag = 0;
-                        flag2 = 0;
-                        flag3 = 1;
-                        flag4 = 0;
-                        flag5 = 0;
-                        flag6 = 0;
-                        this.form.tableDataConfigure = arry;
-                    }
-                    diffentMark = arry;
-                } else {
-                    if (row.store_type == "solr") {
-                        flag = 0;
-                        flag2 = 0;
-                        flag3 = 0;
-                        flag4 = 1;
-                        flag5 = 0;
-                        flag6 = 0;
-                    } else if (row.store_type == "ElasticSearch") {
-                        flag = 0;
-                        flag2 = 0;
-                        flag3 = 0;
-                        flag4 = 0;
-                        flag5 = 1;
-                        flag6 = 0;
-                    } else if (row.store_type == "mongodb") {
-                        flag = 0;
-                        flag2 = 0;
-                        flag3 = 0;
-                        flag4 = 0;
-                        flag5 = 0;
-                        flag6 = 1;
-                    } else if (row.store_type == "关系型数据库") {
-                        flag = 0;
-                        flag2 = 1;
-                        flag3 = 0;
-                        flag4 = 0;
-                        flag5 = 0;
-                        flag6 = 0;
-                    }
-                    this.showValue = true;
-                    this.selectVlueOrUpload = false;
-                    fileArry = [];
-                    this.form.tableDataConfigure = arry;
-                    arrMarkall = arry;
-                }
-                this.form.dsl_name = res.data.dsl_name;
-                this.form.dtcs_id = res.data.dtcs_id;
-                this.form.dlcs_id = res.data.dlcs_id;
-                valueIndex = res.data.store_type;
-                if (res.data.dsl_remark) {
-                    this.form.dsl_remark = res.data.dsl_remark;
-                }
-                this.form.store_type = res.data.store_type;
-                if (res.data.layerAndAdded.length > 0) {
-                    if (res.data.layerAndAdded[0].dslad_remark != "undefined") {
-                        this.form.dslad_remark = res.data.layerAndAdded[0].dslad_remark;
-                    } else {
-                        this.form.dslad_remark = '';
-                    }
-                }
-                this.form.is_hadoopclient = res.data.is_hadoopclient;
-                this.form.dsla_storelayer = [];
-                arr = [];
-                if (res.data.layerAndAdded.length == 0) {
-                    this.getCategoryItems("StoreLayerAdded");
-                } else {
-                    res.data.layerAndAdded.forEach((item) => {
-                        if (item.dsla_storelayer) {
-                            functionAll.getValue({
-                                category: "StoreLayerAdded",
-                                code: item.dsla_storelayer
-                            }).then((res) => {
-                                if (res && res.success) {
-                                    arr.push({
-                                        value: res.data,
-                                        code: item.dsla_storelayer
-                                    })
-                                    this.fixedError2(arr);
-                                }
-                            })
+                if (res && res.success) {
+                    // 获取存储层类型
+                    this.form.store_type = res.data.store_type;
+                    this.numberCount = res.data.layerAndAttr.length;
+                    // 编辑显示选择文件
+                    this.storeLayerAttrData = res.data.layerAndAttr;
+                    this.showAddBtn = true;
+                    if (row.store_type == "hive" || row.store_type == "Hbase") {
+                        this.showAddFileBtn = true;
+                        if (row.store_type == "hive") {
+                            this.storageLayerParamInfo = this.hiveData;
+                        } else if (row.store_type == "Hbase") {
+                            this.storageLayerParamInfo = this.hbaseData;
                         }
-                    });
+                    } else {
+                        this.showAddFileBtn = false;
+                        if (row.store_type == "solr") {
+                            this.storageLayerParamInfo = this.solrData;
+                        } else if (row.store_type == "ElasticSearch") {
+                            this.storageLayerParamInfo = this.elasticSearchDaa;
+                        } else if (row.store_type == "mongodb") {
+                            this.storageLayerParamInfo = this.mongodbData;
+                        } else if (row.store_type == "关系型数据库") {
+                            this.storageLayerParamInfo = this.databaseData;
+                        }
+                    }
+                    this.form.dsl_name = res.data.dsl_name;
+                    this.form.dtcs_id = res.data.dtcs_id;
+                    this.form.dlcs_id = res.data.dlcs_id;
+                    if (res.data.dsl_remark) {
+                        this.form.dsl_remark = res.data.dsl_remark;
+                    }
+                    this.form.store_type = res.data.store_type;
+                    if (res.data.layerAndAdded.length > 0) {
+                        if (res.data.layerAndAdded[0].dslad_remark != "undefined") {
+                            this.form.dslad_remark = res.data.layerAndAdded[0].dslad_remark;
+                        } else {
+                            this.form.dslad_remark = '';
+                        }
+                    }
+                    this.form.is_hadoopclient = res.data.is_hadoopclient;
+                    this.form.dsla_storelayer = [];
+                    if (res.data.layerAndAdded.length == 0) {
+                        this.getCategoryItems("StoreLayerAdded");
+                    } else {
+                        res.data.layerAndAdded.forEach((item) => {
+                            if (item.dsla_storelayer) {
+                                functionAll.getValue({
+                                    category: "StoreLayerAdded",
+                                    code: item.dsla_storelayer
+                                }).then((res) => {
+                                    if (res && res.success) {
+                                        let arr = [];
+                                        arr.push({
+                                            value: res.data,
+                                            code: item.dsla_storelayer
+                                        })
+                                        this.fixedError2(arr);
+                                    }
+                                })
+                            }
+                        });
+                    }
                 }
             })
         },
@@ -573,12 +660,10 @@ export default {
             functionAll.getCategoryItems({
                 category: "StoreLayerAdded"
             }).then((res) => {
-                arr2 = res.data;
-                this.form.dsla_storelayer.splice(0, this.form.dsla_storelayer.length)
                 arr.forEach((item) => {
-                    arr2.forEach((select) => {
+                    res.data.forEach((select) => {
                         if (item.code == select.code) {
-                            this.checkboxType = arr2;
+                            this.checkboxType = res.data;
                             this.form.dsla_storelayer.push(item.value);
                         }
                     })
@@ -594,20 +679,16 @@ export default {
         },
         // 编辑时table删除一行
         deleteArrydata(index, row) {
-            this.form.tableDataConfigure.splice(index, 1)
-        },
-        // 获取编辑时的文件名称
-        handleEditchange(index, row) {
-            dataKey = row.storage_property_key;
+            this.storeLayerAttrData.splice(index, 1)
         },
         //更新数据
         upDate(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 处理参数
-                    if (this.form.tableDataConfigure.length == 0) {
+                    if (this.storeLayerAttrData.length == 0) {
                         this.$Msg.customizTitle('表格数据信息为必填项', 'warning')
-                    } else if (this.form.tableDataConfigure.length > 0) {
+                    } else if (this.storeLayerAttrData.length > 0) {
                         this.change_storelayer = [];
                         this.form.dsla_storelayer.forEach((item) => {
                             if (item == "主键") {
@@ -637,7 +718,7 @@ export default {
 
                         // 处理参数dataStoreLayerAttr
                         let valueArr = [];
-                        this.form.tableDataConfigure.forEach((item) => {
+                        this.storeLayerAttrData.forEach((item) => {
                             if (item.is_file != 1 || JSON.stringify(item).indexOf("is_file") == -1) {
                                 valueArr.push(item);
                             }
@@ -646,7 +727,7 @@ export default {
                             item['is_file'] = 0;
                         })
                         // 如果是hbase
-                        if (valueIndex == 3) {
+                        if (this.form.store_type == 3) {
                             let arrtable = [];
                             valueArr.forEach(item => {
                                 if (item.storage_property_val) {
@@ -661,7 +742,7 @@ export default {
                             })
                             arrtable = [...arrtable, ...this.markArrindex]
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
-                        } else if (valueIndex == 2) {
+                        } else if (this.form.store_type == 2) {
                             let arrtable = [];
                             for (let i = 0; i < valueArr.length; i++) {
                                 if (valueArr[i].storage_property_val) {
@@ -672,16 +753,7 @@ export default {
                             arrtable = [...arrtable, ...this.markArrindex]
                             param.append('dataStoreLayerAttr', JSON.stringify(arrtable));
                         } else {
-                            if (tableDatas.length > 0) {
-                                tableDatas.forEach((item) => {
-                                    if (item.radio) {
-                                        delete item.radio
-                                    }
-                                })
-                                param.append('dataStoreLayerAttr', JSON.stringify(tableDatas));
-                            } else {
-                                param.append('dataStoreLayerAttr', JSON.stringify(this.form.tableDataConfigure));
-                            };
+                            param.append('dataStoreLayerAttr', JSON.stringify(this.storeLayerAttrData));
                         }
                         //    处理参数dsla_storelayer
                         for (let index = 0; index < this.change_storelayer.length; index++) {
@@ -690,9 +762,9 @@ export default {
                         param.append('dtcs_id', this.form.dtcs_id);
                         param.append('dlcs_id', this.form.dlcs_id);
                         // 处理上传文件参数
-                        if (fileArry.length > 0) {
-                            for (let index = 0; index < fileArry.length; index++) {
-                                param.append('files', fileArry[index]);
+                        if (this.fileArry.length > 0) {
+                            for (let index = 0; index < this.fileArry.length; index++) {
+                                param.append('files', this.fileArry[index]);
                             }
                         } else {
                             param.append('files', '');
@@ -706,7 +778,6 @@ export default {
                                 this.searchDataStore();
                                 // 关闭弹出层
                                 this.dialogFormVisibleUpdate = false;
-                                fileArry = [];
                                 this.fileList = [];
                             }
                         })
@@ -719,7 +790,7 @@ export default {
             this.searchDataStore();
             this.dialogFormVisibleUpdate = false;
             this.$refs.form.resetFields();
-            this.form.tableDataConfigure = [];
+            this.storeLayerAttrData = [];
         },
         // 关闭弹出框之前触发事件
         beforeClose() {
@@ -810,123 +881,157 @@ export default {
             })
         },
         // 根据存储类型动态显示key
-        changedata(val) {
-            let dataList = [];
-            let numberCount = '';
-            let numberCountfile = '';
-            valueIndex = val;
+        changedata() {
             this.$refs.form.clearValidate();
-            functionAll.getDataLayerAttrKey({
-                store_type: val
+            // 根据hadoop客户端不同调用后台不同方法
+            this.changeHadoopclient();
+        },
+        // 改变hadoop客户端（是否外部表）
+        changeHadoopclient() {
+            var flag = true;
+            // 根据存储层定义表主键ID与存储层配置存储类型查询存储层属性信息
+            if (this.form.store_type != undefined && this.form.store_type != '') {
+                functionAll.getLayerAttrByIdAndType({
+                    store_type: this.form.store_type,
+                    dsl_id: this.dsl_id,
+                    is_hadoopclient: this.form.is_hadoopclient
+                }).then(res => {
+                    if (res && res.success) {
+                        this.storeLayerAttrData = res.data;
+                        if (res.data.length == 0) {
+                            // 非回显数据切换
+                            if (this.form.store_type != undefined && this.form.store_type != '') {
+                                if (this.form.is_hadoopclient == '1') {
+                                    // 支持外部表
+                                    if (this.form.store_type != '1') {
+                                        // 只有非关系型数据库时调用此方法
+                                        this.getExternalTableAttrKey(this.form.is_hadoopclient, this.form.store_type);
+                                    } else {
+                                        // 关系型数据库数据库类型切换
+                                        this.getAttrKeyByDatabaseType(this.database_type)
+                                    }
+                                } else {
+                                    // 不支持外部表
+                                    this.getDataLayerAttrKey(this.form.store_type, this.database_type);
+                                }
+                            }
+                        } else {
+                            // 数组排序，回显数据
+                            res.data.sort(function (a, b) {
+                                var x = a['is_file'];
+                                var y = b['is_file'];
+                                return ((x < y) ? -1 : ((x < y) ? 1 : 0));
+                            });
+                        }
+                    }
+                });
+            }
+        },
+        // 获取支持外部表的属性key值
+        getExternalTableAttrKey(is_hadoopclient, store_type, database_type) {
+            this.database_type = database_type;
+            functionAll.getExternalTableAttrKey({
+                store_type: store_type,
+                is_hadoopclient: is_hadoopclient
             }).then(res => {
-                let arry = [];
-                let arr = [];
-                let arrNew = [];
-                for (let index = 0; index < res.data.jdbcKey.length; index++) {
-                    if (res.data.jdbcKey[index] == "database_type") {
-                        arr.push(res.data.jdbcKey[index]);
-                        this.getCategoryItems("DatabaseType");
-                    } else {
-                        arrNew.push(res.data.jdbcKey[index]);
-                    }
-                }
-                // 数据合并
-                dataList = [...arr, ...arrNew, ...res.data.fileKey];
-                // 记录需要判断的长度
-                numberCount = res.data.jdbcKey.length;
-                numberCountfile = res.data.fileKey.length;
-                dataList.forEach((item, index) => {
-                    arry.push({
-                        'storage_property_key': item
-                    })
-                })
-                this.form.tableDataConfigure = arry;
-                tableDataLength = this.form.tableDataConfigure.length;
-                this.lengthdata = 0;
-                this.deleteLength = 0;
-                if (val === "1") {
-                    this.showValue = true;
-                    this.selectVlueOrUpload = false;
-                    this.showDownloadButton = false;
-                    if (flag2 == 1) {
-                        this.form.tableDataConfigure = arrMarkall;
-                        this.lengthdata = 0
-                    } else {
-
-                    }
-                } else if (val === "2") {
-                    if (flag == 1) {
-                        this.form.tableDataConfigure = diffentMark;
-                        this.lengthdata = 0
-                    } else {
-
-                    }
-                    this.showDownloadButton = false;
-                    this.showValue = false;
-                    this.selectVlueOrUpload = true;
-                    this.uploadindexless = numberCount - 1;
-                    this.uploadindexmore = this.form.tableDataConfigure.length;
-                    this.inputindex = numberCount - 1;
-                } else if (val === "3") {
-                    if (flag3 == 1) {
-                        this.form.tableDataConfigure = diffentMark;
-                        this.lengthdata = 0
-                    } else {
-
-                    }
-                    this.showValue = false;
-                    this.selectVlueOrUpload = true;
-                    this.showDownloadButton = false;
-                    this.uploadindexless = numberCount - 1;
-                    this.uploadindexmore = this.form.tableDataConfigure.length;
-                    this.inputindex = numberCount - 1;
-                } else if (val === "4") {
-                    this.showValue = true;
-                    this.selectVlueOrUpload = false;
-                    if (flag4 == 1) {
-                        this.form.tableDataConfigure = arrMarkall;
-                        this.lengthdata = 0
-                    } else {
-
-                    }
-                    this.showDownloadButton = false;
-                } else if (val === "5") {
-                    this.showValue = true;
-                    if (flag5 == 1) {
-                        this.form.tableDataConfigure = arrMarkall;
-                        this.lengthdata = 0
-                    } else {
-
-                    }
-                    this.showDownloadButton = false;
-                    this.selectVlueOrUpload = false;
-                } else if (val === "6") {
-                    this.showValue = true;
-                    if (flag6 == 1) {
-                        this.form.tableDataConfigure = arrMarkall;
-                        this.lengthdata = 0
-                    } else {
-
-                    }
-                    this.showDownloadButton = false;
-                    this.selectVlueOrUpload = false;
+                if (res && res.success) {
+                    this.dataProcessing(res.data, this.form.store_type, database_type);
                 }
             })
+        },
+        // 根据存储层类型获取数据存储层配置属性key
+        getDataLayerAttrKey(store_type, database_type) {
+            this.database_type = database_type;
+            functionAll.getDataLayerAttrKey({
+                store_type: store_type
+            }).then(res => {
+                if (res && res.success) {
+                    this.dataProcessing(res.data, store_type, database_type);
+                }
+            })
+        },
+        // 根据数据库类型获取数据存储层配置属性key
+        getAttrKeyByDatabaseType(database_type) {
+            this.database_type = database_type;
+            if (this.form.is_hadoopclient == '1' && database_type != undefined && database_type != '') {
+                // 只有当支持外部表时才调用此方法
+                functionAll.getAttrKeyByDatabaseType({
+                    store_type: this.form.store_type,
+                    is_hadoopclient: this.form.is_hadoopclient,
+                    database_type: database_type
+                }).then(res => {
+                    if (res && res.success) {
+                        this.dataProcessing(res.data, this.form.store_type, database_type);
+                    }
+                })
+            }
+        },
+        // 处理存储层属性数据
+        dataProcessing(data, store_type, database_type) {
+            let arry = [];
+            for (let i = 0; i < data.jdbcKey.length; i++) {
+                let obj = {
+                    'storage_property_key': data.jdbcKey[i],
+                    'is_file': '0'
+                };
+                if (data.jdbcKey[i] == "database_type") {
+                    this.getCategoryItems("DatabaseType");
+                    if (database_type != undefined && database_type != '') {
+                        obj['storage_property_val'] = database_type;
+                    }
+                    arry.unshift(obj)
+                } else {
+                    arry.push(obj)
+                }
+            }
+            for (let j = 0; j < data.fileKey.length; j++) {
+                arry.push({
+                    'storage_property_key': data.fileKey[j],
+                    'is_file': '1'
+                })
+            }
+            // 赋值给表格
+            this.storeLayerAttrData = arry;
+            this.numberCount = this.storeLayerAttrData.length;
+            this.showAddBtn = true;
+            if (store_type === "1") { // 关系型数据库
+                this.showAddFileBtn = false;
+                this.storageLayerParamInfo = this.databaseData;
+            } else if (store_type === "2") { // hive
+                this.showAddFileBtn = true;
+                this.storageLayerParamInfo = this.hiveData;
+            } else if (store_type === "3") { // hbase
+                this.showAddFileBtn = true;
+                this.storageLayerParamInfo = this.hbaseData;
+            } else if (store_type === "4") { // solr
+                this.showAddFileBtn = false;
+                this.storageLayerParamInfo = this.solrData;
+            } else if (store_type === "5") { // elasticSearch
+                this.showAddFileBtn = false;
+                this.storageLayerParamInfo = this.elasticSearchData;
+            } else if (store_type === "6") { // mongodb
+                this.showAddFileBtn = false;
+                this.storageLayerParamInfo = this.mongodbData;
+            } else if (store_type === "7") { // carbondata
+                this.showAddFileBtn = false;
+                this.storageLayerParamInfo = this.carBonData;
+            }
         },
         // 保存上传文件
         handleChange(file, fileList) {
             if (fileList.length > 1) {
                 this.$Msg.customizTitle("最多上传一条,请删除多余项", "warning");
             } else {
-                if (dataKey == file.name) {
-                    fileArry.push(file.raw);
+                if (this.dataKey == file.name) {
+                    this.fileArry.push(file.raw);
                     let obj = {
-                        storage_property_key: dataKey,
+                        storage_property_key: this.dataKey,
                         storage_property_val: file.name,
                         is_file: '1'
                     }
                     this.markArrindex.push(obj);
                 } else {
+                    this.fileArry.splice(file, 1);
                     let index = fileList.findIndex(item => item.name == file.name);
                     fileList.splice(index, 1);
                     this.$Msg.customizTitle("文件选择失败,请选择与key命名相同的文件", "warning");
@@ -935,12 +1040,12 @@ export default {
         },
         // 删除上传文件
         removeFile(file, fileList) {
-            if (fileArry.length != 0) {
-                if (JSON.stringify(fileArry).indexOf(JSON.stringify(file)) != -1) {
-                    fileArry.splice(file, 1);
+            if (this.fileArry.length != 0) {
+                if (JSON.stringify(this.fileArry).indexOf(JSON.stringify(file)) != -1) {
+                    this.fileArry.splice(file, 1);
                 }
                 fileList.forEach((item) => {
-                    if (item.name != dataKey) {
+                    if (item.name != this.dataKey) {
                         this.$Msg.customizTitle("请保留与key命名相同的文件", "warning");
                     }
                 })
@@ -975,55 +1080,22 @@ export default {
             })
         },
         // 编辑的新增
-        addTableDataRow() {
-            this.form.tableDataConfigure.push({
+        addTableDataRow(is_file) {
+            this.storeLayerAttrData.push({
                 storage_property_key: "",
                 storage_property_val: "",
                 dsla_remark: "",
+                is_file: is_file,
                 dsl_id: this.dsl_id,
             });
         },
         // 删除一行信息
         deleteTableDataRow(index, row) {
-            this.form.tableDataConfigure.splice(index, 1);
-        },
-        // 确定填写value
-        SaveselectedValue() {
-            this.selectedValue = false;
-        },
-        // 取消填写value
-        cancelSaveselectedValue() {
-            this.selectedValueTabledata.forEach((item) => {
-                delete item.radio;
-            });
-            this.selectedValue = false;
-        },
-        // 确定选择好要上传的文件
-        SaveselectedUploadValue() {
-            if (fileArry.length > 0) {
-                this.fileList = [];
-                this.selectedUploadValue = false;
-            } else {
-                this.$Msg.customizTitle("请选择上传文件保存", "warning");
+            this.storeLayerAttrData.splice(index, 1);
+            if (row.is_file == '1') {
+                let index = this.fileArry.findIndex(item => item.name == this.dataKey);
+                this.fileArry.splice(index, 1);
             }
-        },
-        // 取消选择上传文件
-        cancelSaveselectedUploadValue() {
-            this.form.tableDataConfigure.forEach((item, index) => {
-                if (index == uploadindex) {
-                    if (item.radio) {
-                        delete item.radio;
-                    }
-                }
-            });
-            this.selectedUploadValue = false;
-            this.fileList = [];
-        },
-        // 获取对应的key值
-        handleEditValue(index, row) {
-            this.selectedValueTabledata = [];
-            dataKey = row.storage_property_key;
-            this.selectedValueTabledata.push(row)
         },
     }
 }
@@ -1060,8 +1132,9 @@ export default {
 }
 
 .dataStoreAction .partTwoBtn {
-    margin: 20px 0 2px;
     float: right;
+    margin-top: 20px;
+    margin-left: 15px;
 }
 
 /* span字体样式 */

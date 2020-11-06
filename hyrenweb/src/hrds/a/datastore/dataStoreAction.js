@@ -203,3 +203,12 @@ export function getAttrKeyByDatabaseType(data) {
         params: data
     })
 }
+/**(17)
+ * 根据数据库类型获取数据存储层配置属性key
+ */
+export function getLayerAttrByIdAndType(data) {
+    return request({
+        url: '/A/datastore/getLayerAttrByIdAndType',
+        params: data
+    })
+}
