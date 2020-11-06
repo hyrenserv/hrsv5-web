@@ -175,9 +175,9 @@ export default {
             markArrindex: [],
             database_type: '',
             numberCount: 0,
-            uploadindex:'',
-            dataKey :'',
-            fileArry:[],
+            uploadindex: '',
+            dataKey: '',
+            fileArry: [],
             storageLayerParamInfo: [],
             databaseData: [{
                     key: 'database_type',
@@ -447,6 +447,7 @@ export default {
         // 改变hadoop客户端（是否外部表）
         changeHadoopclient(is_hadoopclient) {
             if (this.form.store_type != undefined && this.form.store_type != '') {
+                this.fileArry = [];
                 if (is_hadoopclient == '1') {
                     // 支持外部表
                     if (this.form.store_type != '1') {
@@ -458,7 +459,7 @@ export default {
                     }
                 } else {
                     // 不支持外部表
-                    this.getDataLayerAttrKey(this.form.store_type,this.database_type);
+                    this.getDataLayerAttrKey(this.form.store_type, this.database_type);
                 }
             }
         },
@@ -475,13 +476,13 @@ export default {
             })
         },
         // 根据存储层类型获取数据存储层配置属性key
-        getDataLayerAttrKey(store_type,database_type) {
+        getDataLayerAttrKey(store_type, database_type) {
             this.database_type = database_type;
             functionAll.getDataLayerAttrKey({
                 store_type: store_type
             }).then(res => {
                 if (res && res.success) {
-                    this.dataProcessing(res.data, store_type,database_type);
+                    this.dataProcessing(res.data, store_type, database_type);
                 }
             })
         },
@@ -564,6 +565,10 @@ export default {
         // 删除表格的当前行
         deleteArry(index, row) {
             this.form.tableData.splice(index, 1);
+            if (row.is_file == '1') {
+                let index = this.fileArry.findIndex(item => item.name == this.dataKey);
+                this.fileArry.splice(index, 1);
+            }
         },
         // 点击保存添加
         saveData(formName) {
@@ -790,7 +795,7 @@ export default {
             }
         },
         selectFile(index, row) {
-            this.uploadindex=index;
+            this.uploadindex = index;
             this.dataKey = row.storage_property_key;
         },
         // 删除上传文件
@@ -806,27 +811,6 @@ export default {
                 })
             }
         },
-        // 确定选择好要上传的文件
-        SaveselectedUploadValue() {
-            if (this.fileArry.length > 0) {
-                this.fileList = [];
-                this.selectedUploadValue = false;
-            } else {
-                message.customizTitle("请选择上传文件保存", "warning");
-            }
-        },
-        // 取消选择上传文件
-        cancelSaveselectedUploadValue() {
-            this.form.tableData.forEach((item, index) => {
-                if (index == this.uploadindex) {
-                    if (item.radio) {
-                        delete item.radio;
-                    }
-                }
-            });
-            this.selectedUploadValue = false;
-            this.fileList = [];
-        }
     }
 }
 </script>

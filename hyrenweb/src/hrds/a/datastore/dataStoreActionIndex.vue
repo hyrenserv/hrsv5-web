@@ -901,6 +901,7 @@ export default {
                         if (res.data.length == 0) {
                             // 非回显数据切换
                             if (this.form.store_type != undefined && this.form.store_type != '') {
+                                this.fileArry = [];
                                 if (this.form.is_hadoopclient == '1') {
                                     // 支持外部表
                                     if (this.form.store_type != '1') {
