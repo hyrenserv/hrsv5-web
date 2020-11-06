@@ -407,7 +407,7 @@ export default {
                     delete arr[0].data_mart_ids
                     functionAll.saveDmCategory({
                         data_mart_id: this.$route.query.id,
-                        dmCategories: JSON.stringify(arr)
+                        categoryRelationBeans: JSON.stringify(arr)
                     }).then(res => {
                         if (res && res.success) {
                             this.$Msg.customizTitle('添加成功', 'success')
