@@ -870,7 +870,7 @@ export default {
             })
         },
         // 根据存储类型动态显示key
-        changedata() {
+        changedata(store_type) {
             this.$refs.form.clearValidate();
             this.storeType.forEach(element => {
                 if (element.code == store_type) {
