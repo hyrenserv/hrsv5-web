@@ -73,7 +73,7 @@
             <span class="saveDataSpan">数据存储层配置属性</span>
             <el-tooltip placement="right" effect="light" v-if="showAddBtn">
                 <div slot="content">
-                    <el-link type="primary">存储层可配置参数说明:</el-link><br />
+                    <el-link type="primary">{{store_type_ch}}--存储层可配置参数说明:</el-link><br />
                     <span v-for="item in storageLayerParamInfo" :key="item.key">
                         <el-link type="danger">{{item.key}}</el-link> : {{item.value}}<br />
                     </span>
@@ -173,6 +173,7 @@ export default {
             databaseType: [],
             rule: validator.default,
             markArrindex: [],
+            store_type_ch: '',
             database_type: '',
             numberCount: 0,
             uploadindex: '',
@@ -440,6 +441,11 @@ export default {
         // 根据存储类型动态显示key
         changedata(store_type) {
             this.$refs.form.clearValidate();
+            this.storeType.forEach(element => {
+                if (element.code == store_type) {
+                    this.store_type_ch = element.value;
+                }
+            });
             // 根据是否外部表查询存储层属性数据
             this.changeHadoopclient()
 

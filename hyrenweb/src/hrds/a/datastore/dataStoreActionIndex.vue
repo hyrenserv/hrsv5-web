@@ -19,7 +19,7 @@
 
             <el-table-column prop="store_type" width="202" label="数据存储层配置属性" align="center">
                 <template slot-scope="scope">
-                    <el-button type="info" size="mini" @click="dataSaveConfigure = true;searchDataStoreById(scope.$index, scope.row)">数据存储层配置属性</el-button>
+                    <el-button type="info" size="mini" @click="dataSaveConfigure = true;searchDataStoreById(scope.row)">数据存储层配置属性</el-button>
                 </template>
             </el-table-column>
 
@@ -134,7 +134,7 @@
                 <span class="saveDataSpan">数据存储层配置属性</span>
                 <el-tooltip placement="right" effect="light" v-if="showAddBtn">
                     <div slot="content">
-                        <el-link type="primary">存储层可配置参数说明:</el-link><br />
+                        <el-link type="primary">{{store_type_ch}}--存储层可配置参数说明:</el-link><br />
                         <span v-for="item in storageLayerParamInfo" :key="item.key">
                             <el-link type="danger">{{item.key}}</el-link> : {{item.value}}<br />
                         </span>
@@ -237,6 +237,7 @@ export default {
             checkboxType: [],
             YesNo: [],
             databaseType: [],
+            store_type_ch: '',
             markArrindex: [],
             dataSaveConfigure: false,
             dialogFormVisibleUpdate: false,
@@ -490,10 +491,10 @@ export default {
             this.dataKey = row.storage_property_key;
         },
         // 根据dsl_id显示对应的数据(数据存储层配置属性)
-        searchDataStoreById(dsl_id) {
+        searchDataStoreById(row) {
             this.checkboxType = [];
             functionAll.searchDataStoreById({
-                dsl_id: dsl_id
+                dsl_id: row.dsl_id
             }).then((res) => {
                 if (res && res.success) {
                     // 是否显示下载按钮
@@ -523,34 +524,17 @@ export default {
                                 category: "StoreLayerAdded",
                                 code: item.dsla_storelayer
                             }).then((res) => {
-                                this.checkboxType.push({
-                                    value: res.data,
-                                    code: item.dsla_storelayer
-                                })
+                                if (res && res.success) {
+                                    this.checkboxType.push({
+                                        value: res.data,
+                                        code: item.dsla_storelayer
+                                    })
+                                    this.form.dsla_storelayer.push(res.data);
+                                }
                             })
                         }
                     })
                 }
-            })
-        },
-        // 数据存储完整信息
-        getDataLayerAttrKeyTwo(val) {
-            functionAll.getDataLayerAttrKey({
-                store_type: val
-            }).then(res => {
-                let arry = [];
-                let arr = [];
-                let arrNew = [];
-                for (let index = 0; index < res.data.jdbcKey.length; index++) {
-                    if (res.data.jdbcKey[index] == "database_type") {
-                        arr.push(res.data.jdbcKey[index]);
-                        this.getCategoryItems("DatabaseType");
-                    } else {
-                        arrNew.push(res.data.jdbcKey[index]);
-                    }
-                }
-                // 数据合并
-                this.oldDataArry = [...arr, ...arrNew, ...res.data.fileKey];
             })
         },
         // 根据dsl_id删除对应的数据
@@ -592,6 +576,11 @@ export default {
                 if (res && res.success) {
                     // 获取存储层类型
                     this.form.store_type = res.data.store_type;
+                    this.storeType.forEach(element => {
+                        if (element.code == res.data.store_type) {
+                            this.store_type_ch = element.value;
+                        }
+                    });
                     this.numberCount = res.data.layerAndAttr.length;
                     // 编辑显示选择文件
                     this.storeLayerAttrData = res.data.layerAndAttr;
@@ -883,6 +872,11 @@ export default {
         // 根据存储类型动态显示key
         changedata() {
             this.$refs.form.clearValidate();
+            this.storeType.forEach(element => {
+                if (element.code == store_type) {
+                    this.store_type_ch = element.value;
+                }
+            });
             // 根据hadoop客户端不同调用后台不同方法
             this.changeHadoopclient();
         },
