@@ -19,9 +19,11 @@
         <div class="row clearfix" v-show="picshow" id="mydiv">
             <div class="col-md-12 column">
                 <div class="panel-body">
-                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'" class="grid" id="grid_style" style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel==true" :is-resizable="is_showdel==true" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
+                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'" class="grid" id="grid_style"
+                         style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel" 
+                         :is-resizable="is_showdel" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
                         <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
-                            <div :id="item.type" style="width: 300px;height:200px;"></div>
+                            <div :id="item.type" style="width: 370px;height:280px;"></div>
                         </grid-item>
                     </grid-layout>
                 </div>
@@ -161,7 +163,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogBorderVisible=false" size="mini">取 消</el-button>
-            <el-button type="primary" @click="confirmFrameLine" size="mini">确 认
+            <el-button type="primary" @click="confirmFrame" size="mini">确 认
             </el-button>
         </div>
     </el-dialog>
@@ -267,8 +269,12 @@
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
 import * as functionAll from "./dataDashboard";
-// require('echarts/dist/extension/dataTool.js');
+
 export default {
+    components: {
+        GridLayout: VueGridLayout.GridLayout,
+        GridItem: VueGridLayout.GridItem
+    },
     data() {
         return {
             totalSize:0,
@@ -803,7 +809,7 @@ export default {
                                 }
                             } else if (layouttype == "borderline") {
 
-                            } else if (layouttype == "frameline") {
+                            } else if (layouttype == "frame") {
 
                             } else {
                                 if (id!=undefined&&id!='') {
@@ -850,21 +856,7 @@ export default {
                     // 组件信息
                     this.selectRow=res.data.autoCompSums;
                     //把边框,文本标签,分割线的layout区分开
-                    for (var i = 0; i < res.data.layout.length; i++) {
-                        if ("0" == res.data.layout[i].label) {
-                             // 文本标签
-                            this.label_layout.push(res.data.layout[i]);
-                        } else if ("1" == res.data.layout[i].label) {
-                            // 分割线
-                            this.line_layout.push(res.data.layout[i]);
-                        } else if ("2" == res.data.layout[i].label) {
-                            // 边框
-                            this.frame_layout.push(res.data.layout[i]);
-                        } else {
-                            // 其它组件
-                            this.layout.push(res.data.layout[i]);
-                        }
-                    }
+                    this.differenceLayout();
                     // 组件ID
                     for (var i = 0; i < this.layout.length; i++) {
                         var id = this.layout[i].type;
@@ -926,6 +918,10 @@ export default {
                     setTimeout(()=>{
                         this.echartpic(this.global_component_array, this.global_component_id_array);
                     },500)
+                    // 边框回显
+                    setTimeout(()=>{
+                        this.frame_back();
+                    },1000)
                     // 文本标签回显
                     setTimeout(()=>{
                         this.textlabel_back();
@@ -933,10 +929,6 @@ export default {
                     // 分割线回显
                     setTimeout(()=>{
                         this.textline_back();
-                    },1000)
-                    // 边框回显
-                    setTimeout(()=>{
-                        this.frame_back();
                     },1000)
                     setTimeout(()=>{
                         this.grid_layout_backgroundcolor = this.auto_dashboard_info.background;
@@ -947,11 +939,28 @@ export default {
                  }
              })
         },
+        //把边框,文本标签,分割线的layout区分开
+        differenceLayout(){
+            for (var i = 0; i < this.global_component_array.layout.length; i++) {
+                if ("0" == this.global_component_array.layout[i].label) {
+                     // 文本标签
+                    this.label_layout.push(this.global_component_array.layout[i]);
+                } else if ("1" == this.global_component_array.layout[i].label) {
+                    // 分割线
+                    this.line_layout.push(this.global_component_array.layout[i]);
+                } else if ("2" == this.global_component_array.layout[i].label) {
+                    // 边框
+                    this.frame_layout.push(this.global_component_array.layout[i]);
+                } else {
+                    // 其它组件
+                    this.layout.push(this.global_component_array.layout[i]);
+                }
+            }
+        },
         //分割线编辑回显
         textline_back() {
             this.$nextTick(function(){   
                 for (var i = 0; i < this.line_layout.length; i++) {
-                    var layout_obj = this.line_layout[i];
                     var id = this.line_layout[i].type;
                     if (this.auto_line_info_array[i].line_type == 'heng') {
                         var html = "<div name='linecomponentname'></div>" +
@@ -972,7 +981,7 @@ export default {
                     if (this.is_showdel) {
                         var imagevueobj = new linedelProfile({
                             propsData: {
-                                echart_div_layout: layout_obj,
+                                echart_div_layout: this.line_layout[i],
                                 auto_line_info: this.auto_line_info,
                                 layout:this.layout,
                                 auto_line_info_array:this.auto_line_info_array,
@@ -998,7 +1007,6 @@ export default {
         frame_back() {
             this.$nextTick(function(){
                 for (var i = 0; i < this.frame_layout.length; i++) {
-                    var layout_obj = this.frame_layout[i];
                     var id = this.frame_layout[i].type;
                     var auto_frame_info = this.auto_frame_info_list[i];
                     $("#" + id).css("overflow", "hidden");
@@ -1013,8 +1021,8 @@ export default {
                     if (this.is_showdel) {
                         var imagevueobj = new framedelProfile({
                             propsData: {
-                                echart_div_layout: layout_obj,
-                                auto_frame_info: this.auto_frame_info,
+                                echart_div_layout: this.frame_layout[i],
+                                auto_frame_info: auto_frame_info,
                                 delpng:this.delpng,
                                 auto_frame_info_list:this.auto_frame_info_list,
                                 layout:this.layout,
@@ -1027,7 +1035,7 @@ export default {
                         this.framedelimage(id, imagevueobj);
                     }
                     var obj = {};
-                    obj.layouttype = "frameline";
+                    obj.layouttype = "frame";
                     obj.id = id;
                     this.chart_obj_array.push(obj);
                     this.textframearray.push(obj);
@@ -1039,7 +1047,6 @@ export default {
         textlabel_back() {
             this.$nextTick(function(){
                 for (var i = 0; i < this.label_layout.length; i++) {
-                    var layout_obj = this.label_layout[i];
                     var id = this.label_layout[i].type;
                     var auto_label_info = this.auto_label_info_array[i];
                     var textStyle = auto_label_info.textStyle;
@@ -1062,7 +1069,7 @@ export default {
                     if (this.is_showdel) {
                         var imagevueobj = new labeldelProfile({
                             propsData: {
-                                echart_div_layout: layout_obj,
+                                echart_div_layout: this.label_layout[i],
                                 auto_label_info: auto_label_info,
                                 delpng:this.delpng,
                                 auto_label_info_array:this.auto_label_info_array,
@@ -1135,7 +1142,7 @@ export default {
 
                 } else if (this.chart_obj_array[i].layouttype == "borderline") {// 分割线
 
-                } else if (this.chart_obj_array[i].layouttype == "frameline") { // 边框
+                } else if (this.chart_obj_array[i].layouttype == "frame") { // 边框
 
                 } else {
                     this.chart_obj_array[i].dispose();
@@ -1217,7 +1224,7 @@ export default {
                     $("#" + this.chart_obj_array[i].id).find("div[class='lineclass']").css({
                         'background-color': data.ncolor
                     });
-                } else if (this.chart_obj_array[i].layouttype == "frameline") {// 边框
+                } else if (this.chart_obj_array[i].layouttype == "frame") {// 边框
                     $("#" + this.chart_obj_array[i].id).css({
                         'border': data.ncolor + ' 2px solid'
                     });
@@ -1456,7 +1463,7 @@ export default {
             this.dialogTextLineVisible=false;
         },
         //添加边框
-        confirmFrameLine() {
+        confirmFrame() {
             if (this.layout.length <= 0) {
                 return false;
             }
@@ -1520,7 +1527,7 @@ export default {
                     this.framedelimage(id, imagevueobj);
                 }
                 var obj = {};
-                obj.layouttype = "frameline";
+                obj.layouttype = "frame";
                 obj.id = id;
                 this.chart_obj_array.push(obj);
                 this.textframearray.push(obj);
@@ -1557,16 +1564,17 @@ export default {
                 if (res && res.success) {
                     this.titleFlag = true;
                     this.global_component_array=res.data;
-                    setTimeout(() => {
+                    //把边框,文本标签,分割线的layout区分开
+                    this.differenceLayout();
+                    // setTimeout(() => {
                         this.echartpic(res.data, component_id_array);
-                    }, 500);
-
-                    setTimeout(() => {
+                    // }, 500);
+                    // setTimeout(() => {
                         this.grid_layout_backgroundcolor = "background-color:#FFFFFF;";
                         $("div[name='pic']").each(function () {
                             $(this).trigger("mouseup");
                         });
-                    }, 500);
+                    // }, 500);
                     this.$refs.multipleComponent.clearSelection();
                 }
             })
@@ -1637,18 +1645,6 @@ export default {
         //仪表板展示
         echartpic(data, component_id_array) {
             var echartlayout = [];
-            // 区分分割线、边框、文本标签、组件信息
-            for (var index in this.layout) {
-                if (this.layout[index].label == "0") {
-                    this.label_layout.push(this.layout[index]);
-                } else if (this.layout[index].label == "1") {
-                    this.line_layout.push(this.layout[index]);
-                } else if (this.layout[index].label == "2") {
-                    this.frame_layout.push(this.layout[index]);
-                } else {
-                    echartlayout.push(this.layout[index]);
-                }
-            }
             // 所有组件ID
             var layoutId_array = [];
             for (var index in data.layout) {
@@ -1812,35 +1808,35 @@ export default {
                             tmp_component_background = this.selectRow[k].background;
                         }
                     }
-                    if (type == "line") {
+                    if (type == "line") {// 折线图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartline(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "bar") {
+                    } else if (type == "bar") {// 柱状图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartbar(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
+                    } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {// 饼图、环形饼图、发散饼图
                         var Chart = echarts.init(document.getElementById(id), 'dark');
                         this.echartpie(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "scatter") {
+                    } else if (type == "scatter") {// 散点图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartscatter(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "boxplot") {
+                    } else if (type == "boxplot") {// 盒须图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartboxplot(echartdata, Chart, id, echart_div_layout, tmp_component_name);
                         chart_obj_array.push(Chart);
-                    } else if (type == "bl") {
+                    } else if (type == "bl") {// 柱状折线混合图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartbl(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "treemap") {
+                    } else if (type == "treemap") {// 矩形树图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.echartTreemap(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "card") {
+                    } else if (type == "card") {// 卡片
                         this.tmp_card_layout = echart_div_layout;
                         var cardname = "background:" + this.title.backgroundColor + ";color:" + this.title.color + ";font-family:" + this.title.fontFamily;
                         cardname += ";font-style:" + this.title.fontStyle + ";font-weight:" + this.title.fontWeight;
@@ -1862,7 +1858,7 @@ export default {
 
                         //添加打叉按钮
                         if (this.is_showdel) {
-                            var imagevueobj = new cardPofile({
+                            var imagevueobj = new proFile({
                                 propsData: {
                                     echart_div_layout: echart_div_layout,
                                     layout_id: id,
@@ -1880,7 +1876,7 @@ export default {
                         obj.id = id;
                         obj.cardtext = echartdata.CardData;
                         chart_obj_array.push(obj);
-                    } else if (type == "table") {
+                    } else if (type == "table") {// 二维表
                         this.tmp_card_layout = echart_div_layout;
                         this.tabledata = echartdata.TableData;
                         this.tabledatalength = this.tabledata.length;
@@ -1893,10 +1889,9 @@ export default {
                             "</div>";
                         $("#" + id).html(html);
                         $("#" + id).css("overflow", "hidden");
-
                         //删除按钮
                         if (this.is_showdel) {
-                            var imagevueobj = new Profile({
+                            var imagevueobj = new proFile({
                                 propsData: {
                                     echart_div_layout: echart_div_layout,
                                     layout_id: id,
@@ -1950,7 +1945,7 @@ export default {
                         $('#' + id).next('span').addClass('barmd');
                         //添加打叉按钮
                         if (this.is_showdel) {
-                            var imagevueobj = new Profile({
+                            var imagevueobj = new proFile({
                                 propsData: {
                                     echart_div_layout: echart_div_layout,
                                     layout_id: id,
@@ -1963,11 +1958,11 @@ export default {
                             $('.barmd').click();
                         }, 100);
 
-                    } else if (type == "polarbar") {
+                    } else if (type == "polarbar") {// 极坐标柱状图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.changeToPolarBarChart(echartdata.radiusData, echartdata.seriesData, Chart, echart_div_layout, tmp_component_name, tmp_component_background,id);
                         chart_obj_array.push(Chart);
-                    } else if (type == "bubble") {
+                    } else if (type == "bubble") {// 气泡图
                         this.bubbleIds.push(id);
                         var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
 
@@ -1982,7 +1977,7 @@ export default {
                         $('#' + id).next('span').addClass('bubble'); //给所有的气泡图的拉伸按钮添加class
                         //添加打叉按钮
                         if (this.is_showdel) {
-                            var imagevueobj = new cardPofile({
+                            var imagevueobj = new proFile({
                                 propsData: {
                                     echart_div_layout: echart_div_layout,
                                     layout_id: id,
@@ -1999,11 +1994,11 @@ export default {
                         setTimeout(() => {
                             $('.bubble').click();
                         }, 100);
-                    } else if (type == "blsimple") {
+                    } else if (type == "blsimple") {// 柱状折线混合图-简单
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         this.changeToBLSimpleChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                         chart_obj_array.push(Chart);
-                    } else if (type == "map") {
+                    } else if (type == "map") {// 地图
                         var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                         setTimeout(() => {
                             this.changeToMapChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
@@ -3164,7 +3159,7 @@ var tableProfile = Vue.extend({
     methods:{}
 })
 //卡片仪表盘删除按钮
-var cardPofile = Vue.extend({
+var proFile = Vue.extend({
     template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(this.layout,echart_div_layout,layout_id)'>",
     data: function () {
          return {}
@@ -3270,7 +3265,7 @@ $(document).on("click", ".barmd", function () {
 })
 </script>
 <style scoped>
- @import '/static/src/panal/css/bootstrap.min.css';
+@import '/static/src/panal/css/bootstrap.min.css';
 
 .el-input{
     width: 360px;
