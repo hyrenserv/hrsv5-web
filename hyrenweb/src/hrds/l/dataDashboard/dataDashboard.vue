@@ -15,19 +15,16 @@
                 <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
             </div>
         </div>
+        <el-divider/>
         <!--仪表板展示-->
-        <div class="row clearfix" v-show="picshow" id="mydiv">
-            <div class="col-md-12 column">
-                <div class="panel-body">
-                    <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'" class="grid" id="grid_style"
-                         style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel" 
-                         :is-resizable="is_showdel" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
-                        <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" :static="item.static">
-                            <div :id="item.type" style="width: 370px;height:280px;"></div>
-                        </grid-item>
-                    </grid-layout>
-                </div>
-            </div>
+        <div v-show="picshow" id="mydiv">
+            <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'" class="grid" id="grid_style"
+                    style="height: 2000px;" :col-num="100" :row-height="11" :layout.sync="layout" :is-draggable="is_showdel" :autoSize="true"
+                    :is-resizable="is_showdel" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]" :use-css-transforms="true">
+                <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i" >
+                    <div :id="item.type" style="width: 370px;height:300px;"></div>
+                </grid-item>
+            </grid-layout>
         </div>
     </div>
     <!-- 添加组件模态框 -->
@@ -265,16 +262,12 @@
     </el-dialog>
 </div>
 </template>
+
 <script>
 import Vue from 'vue';
 import VueGridLayout from 'vue-grid-layout';
 import * as functionAll from "./dataDashboard";
-
 export default {
-    components: {
-        GridLayout: VueGridLayout.GridLayout,
-        GridItem: VueGridLayout.GridItem
-    },
     data() {
         return {
             totalSize:0,
@@ -696,6 +689,10 @@ export default {
             is_showdel: true,
         }
     },
+    components: {
+        GridLayout: VueGridLayout.GridLayout,
+        GridItem: VueGridLayout.GridItem
+    },
     mounted() {
         if (this.is_gridline == false) {
             $("#grid_style").removeClass("grid");
@@ -856,27 +853,34 @@ export default {
                     // 组件信息
                     this.selectRow=res.data.autoCompSums;
                     //把边框,文本标签,分割线的layout区分开
-                    this.differenceLayout();
+                    for(var i=0;i<res.data.layout.length;i++){
+                        if("0"==res.data.layout[i].label){
+                            this.label_layout.push(res.data.layout[i]);
+                        }else if("1"==res.data.layout[i].label){
+                            this.line_layout.push(res.data.layout[i]);
+                        }else if("2" == res.data.layout[i].label){
+                            this.frame_layout.push(res.data.layout[i]);
+                        }else{
+                            this.layout.push(res.data.layout[i]);
+                        }
+                    }
                     // 组件ID
+                    var component_id_array=[];
                     for (var i = 0; i < this.layout.length; i++) {
                         var id = this.layout[i].type;
-                        this.global_component_id_array.push(id);
+                        component_id_array.push(id);
                     }
-                    // 主题样式
-                    var style = "";
-                    var type = "";
-                    var echart_theme_obj={};
+                    this.global_component_id_array=component_id_array;
                     // 获取当前主题
+                    var echart_theme_obj={};
                     for(var i=0;i<this.titleData.length;i++){
                         if(this.titleData[i].code == code){
-                            style = this.titleData[i].style;
-                            type = this.titleData[i].type;
                             echart_theme_obj = this.titleData[i];
                         }
                     }
-                    this.echart_theme = echart_theme_obj;
+                    this.echart_theme=echart_theme_obj;
                     if (code != "00") {
-                        echarts.registerTheme(type, this.echartThemeJson[type]);
+                        echarts.registerTheme(echart_theme_obj.type, this.echartThemeJson[echart_theme_obj.type]);
                         //更换卡片，标签，分割线，表格、边框的颜色为组件的主题颜色
                         setTimeout(()=>{
                             this.changeTitle(this.echart_theme);
@@ -916,7 +920,7 @@ export default {
                     this.titleFlag = false;
                     // 仪表盘展示
                     setTimeout(()=>{
-                        this.echartpic(this.global_component_array, this.global_component_id_array);
+                        this.echartpic(res.data,component_id_array);
                     },500)
                     // 边框回显
                     setTimeout(()=>{
@@ -938,24 +942,6 @@ export default {
                     },500)
                  }
              })
-        },
-        //把边框,文本标签,分割线的layout区分开
-        differenceLayout(){
-            for (var i = 0; i < this.global_component_array.layout.length; i++) {
-                if ("0" == this.global_component_array.layout[i].label) {
-                     // 文本标签
-                    this.label_layout.push(this.global_component_array.layout[i]);
-                } else if ("1" == this.global_component_array.layout[i].label) {
-                    // 分割线
-                    this.line_layout.push(this.global_component_array.layout[i]);
-                } else if ("2" == this.global_component_array.layout[i].label) {
-                    // 边框
-                    this.frame_layout.push(this.global_component_array.layout[i]);
-                } else {
-                    // 其它组件
-                    this.layout.push(this.global_component_array.layout[i]);
-                }
-            }
         },
         //分割线编辑回显
         textline_back() {
@@ -1152,7 +1138,6 @@ export default {
                 echarts.registerTheme(data.type, this.echartThemeJson[data.type]);
             }
             this.echart_theme = data;
-            var chart_obj_array=this.chart_obj_array;
             var cardname=this.cardname;
             var cardstyle=this.cardstyle;
             var tabStyle=this.tabStyle;
@@ -1545,7 +1530,7 @@ export default {
                 }
             })
         },
-        //添加组件
+        //添加组件到仪表盘
         showComponentOnDashboard() {
             this.dialogAddComponentVisible = false;
             this.picshow = true;
@@ -1561,21 +1546,19 @@ export default {
             let param = new FormData();
             param.append('autoCompSums', JSON.stringify(this.selectRow));
             functionAll.showComponentOnDashboard(param).then(res => {
+                this.$refs.multipleComponent.clearSelection();
                 if (res && res.success) {
                     this.titleFlag = true;
                     this.global_component_array=res.data;
-                    //把边框,文本标签,分割线的layout区分开
-                    this.differenceLayout();
-                    // setTimeout(() => {
-                        this.echartpic(res.data, component_id_array);
-                    // }, 500);
-                    // setTimeout(() => {
+                    setTimeout(() => {
+                            this.echartpic(res.data, component_id_array);
+                    }, 500);
+                    setTimeout(() => {
                         this.grid_layout_backgroundcolor = "background-color:#FFFFFF;";
                         $("div[name='pic']").each(function () {
                             $(this).trigger("mouseup");
                         });
-                    // }, 500);
-                    this.$refs.multipleComponent.clearSelection();
+                    }, 500);
                 }
             })
         },
@@ -1644,54 +1627,60 @@ export default {
         },
         //仪表板展示
         echartpic(data, component_id_array) {
-            var echartlayout = [];
-            // 所有组件ID
-            var layoutId_array = [];
-            for (var index in data.layout) {
-                layoutId_array.push(data.layout[index].type);
+             //把边框,文本标签,分割线的layout区分开
+            for (var i = 0; i < this.layout.length; i++) {
+                if ("0" == this.layout[i].label) {
+                    // 文本标签
+                    this.label_layout.push(this.layout[i]);
+                } else if ("1" == this.layout[i].label) {
+                    // 分割线
+                    this.line_layout.push(this.layout[i]);
+                } else if ("2" == this.layout[i].label) {
+                    // 边框
+                    this.frame_layout.push(this.layout[i]);
+                }
             }
             var result_layout = [];
-            var layoutId_array = [];
-            if (echartlayout.length > data.layout.length) { //减少
-                result_layout = this.array_alike(echartlayout, layoutId_array);
-                if (result_layout.length == "0") {
-                    echartlayout = data.layout;
+            if (this.layout.length==0) {// 新增
+                 this.layout=data.layout;
+            } else if (this.layout.length > data.layout.length) { //组件减少
+                // 所有组件ID
+                var layoutId_array = [];
+                for (var index in data.layout) {
+                    layoutId_array.push(data.layout[index].type);
+                }
+                result_layout = this.array_alike(this.layout, layoutId_array);
+                if (result_layout.length == 0) {
+                    this.layout = data.layout;
                 } else {
-                    echartlayout = result_layout;
+                    this.layout = result_layout;
                     // [].push.apply(a, b):将b追加到a里面，如果a为数组，也可以写成a.push(b)
-                    if (this.label_layout.length!=0) {
+                    if (this.label_layout.length != 0) {
                         [].push.apply(this.layout,this.label_layout);
                     }
-                    if (this.line_layout.length!=0) {
+                    if (this.line_layout.length != 0) {
                         [].push.apply(this.layout,this.line_layout);
                     }
-                    if (this.frame_layout.length!=0) {
+                    if (this.frame_layout.length != 0) {
                         [].push.apply(this.layout,this.frame_layout);
                     }
                 }
-            } else { //替换,新增
-                result_layout = this.array_alike(echartlayout, layoutId_array);
-                if (result_layout.length == "0") {
-                    echartlayout = data.layout;
-                } else {
-                    echartlayout = result_layout;
-                }
-                layoutId_array = [];
-                for (var index in echartlayout) {
-                    layoutId_array.push(echartlayout[index].type);
+            } else { //替换
+                var layoutId_array = [];
+                for (var index in this.layout) {
+                    layoutId_array.push(this.layout[index].type);
                 }
                 result_layout = this.array_diff(data.layout, layoutId_array);
                 if (result_layout.length > 0) {
                     for (var i = 0; i < result_layout.length; i++) {
-                        if (this.titleFlag == true) {
-                            result_layout[i].x = "0";
-                            result_layout[i].y = "0";
-                        }
-                        echartlayout.push(result_layout[i]);
+                        // if (this.titleFlag == true) {
+                        //     result_layout[i].x = 0;
+                        //     result_layout[i].y = 0;
+                        // }
+                        this.layout.push(result_layout[i]);
                     }
                 }
             }
-            this.layout = echartlayout;
             this.global_component_array.layout = this.layout;
             var chart_obj_array=[];
             this.$nextTick(function () {
@@ -1699,10 +1688,10 @@ export default {
                     var id = component_id_array[i];
                     var echartdata = JSON.parse(data[id]);
                     var type = echartdata.chart_type;
-                    $("#" + id).css({
-                        "width": 370,
-                        "height": 300
-                    })
+                    // $("#" + id).css({
+                    //     "width": 370,
+                    //     "height": 300
+                    // })
                     for (var j = 0; j < this.layout.length; j++) {
                         if (id == this.layout[j].type) {
                             var echart_div_layout = this.layout[j];
@@ -2013,23 +2002,29 @@ export default {
             }, 100);
         },
         //找出新增前后不同的组件
-        array_diff(compelx, part) {
+        array_diff(layout, layoutId_array) {
             var result = [];
-            for (var index in compelx) {
-                var component_id = compelx[index].type;
-                if ($.inArray(component_id, part) < 0) {
-                    result.push(compelx[index]);
+            for (var index in layout) {
+                var component_id = layout[index].type;
+                // 用于在数组中搜索指定的值,并返回其索引值。如果数组中不存在该值,则返回-1
+                if ($.inArray(component_id, layoutId_array) ==-1) {
+                    if (result.indexOf(layout[index])==-1) {
+                        result.push(layout[index]);
+                    }
                 }
             }
             return result;
         },
         //找出新增前后相同的组件
-        array_alike(compelx, part) {
+        array_alike(layout, layoutId_array) {
             var result = [];
-            for (var index in compelx) {
-                var component_id = compelx[index].type;
-                if ($.inArray(component_id, part) < 0) {} else {
-                    result.push(compelx[index]);
+            for (var index in layout) {
+                var component_id = layout[index].type;
+                // 用于在数组中搜索指定的值,并返回其索引值。如果数组中不存在该值,则返回-1
+                if ($.inArray(component_id, layoutId_array) !=-1) {
+                    if (result.indexOf(layout[index])==-1) {
+                        result.push(layout[index]);
+                    }
                 }
             }
             return result;
@@ -3272,17 +3267,6 @@ $(document).on("click", ".barmd", function () {
 }
 .el-select{
     width: 360px;
-}
-.table>tbody>tr>td {
-    vertical-align: inherit !important;
-}
-
-.table>thead>tr>th {
-    vertical-align: inherit !important;
-}
-
-.zitidaxiao {
-    font-size: 200%;
 }
 
 .grid {
