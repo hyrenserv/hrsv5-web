@@ -41,20 +41,20 @@
                                 <el-col>
                                     <div class="ctxt" name="ctxt">
                                         <el-table :data="tableStructureInfo" style='min-height:400px'>
-                                            <el-table-column v-for="(item,index) in tableVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
-                                                <el-table-column label="中文" :prop="'field_ch_name' +item" align="center">
+                                            <el-table-column v-for="(item,index) in tableVersionData" :key="index" :label="processingDate(item)" align="center" show-overflow-tooltip>
+                                                <el-table-column label="中文" :prop="'field_ch_name' +item" align="center" show-overflow-tooltip>
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_cn_name'+item]}}</p>
                                                         <p v-else>{{scope.row['field_cn_name'+item]}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column label="英文" :prop="'field_en_name' +item" align="center">
+                                                <el-table-column label="英文" :prop="'field_en_name' +item" align="center" show-overflow-tooltip>
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_en_name'+item]}}</p>
                                                         <p v-else>{{scope.row['field_en_name'+item]}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column label="类型" :prop="'field_type' +item" align="center">
+                                                <el-table-column label="类型" :prop="'field_type' +item" align="center" width="130px" show-overflow-tooltip>
                                                     <template slot-scope="scope">
                                                         <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_type'+item]}}{{scope.row['field_length'+item]}}</p>
                                                         <p v-else>{{scope.row['field_type'+item]}} {{scope.row['field_length'+item]}}</p>
@@ -82,7 +82,6 @@
                     </div>
                 </el-tab-pane>
             </el-tabs>
-
         </el-col>
     </el-row>
 </div>
@@ -227,6 +226,14 @@ export default {
             }
 
         },
+        //处理显示日期
+        processingDate(item) {
+            if (item === '00000000') {
+                return item.substring(0, 4) + '-' + item.substring(4, 6) + '-' + item.substring(6, 8) + ' (该版本未成功运行)'
+            } else {
+                return item.substring(0, 4) + '-' + item.substring(4, 6) + '-' + item.substring(6, 8)
+            }
+        },
         // 获取数据表结构数据方法
         getDataTableStructureInfos() {
             let params = {}
@@ -277,32 +284,10 @@ export default {
             });
         },
     }
-
 }
 </script>
 
 <style lang="less" scoped>
-#bbgl /deep/ td {
-    margin: 0 auto;
-    color: #333;
-    line-height: 22px;
-    font-size: 12px;
-    font-family: "宋体", Verdana, Geneva, sans-serif;
-    background-color: #fff;
-    text-align: center;
-
-}
-
-/* #bbgl>>>.el-tree-node .is-leaf+.span-ellipsis .el-checkbox .el-checkbox__inner {
-    display: inline-block;
-}
-
-#bbgl>>>.el-tree-node .el-checkbox__input>.el-checkbox__inner {
-
-    display: none;
-    margin: 0
-} */
-/*  */
 .changered {
     color: #b70707
 }
