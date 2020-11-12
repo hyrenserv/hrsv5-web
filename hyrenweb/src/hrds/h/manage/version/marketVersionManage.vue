@@ -74,7 +74,7 @@
                             <el-table :data="tableMappingData" border style='min-height:400px'>
                                 <el-table-column v-for="(item,index) in mappingVersionData" :key="index" :label="item.substring(0,4)+'-'+item.substring(4,6)+'-'+item.substring(6,8)" align="center">
                                     <template slot-scope="scope">
-                                        <SqlEditor :ref="'sqleditor'+item" :readOnly='true' :lineNumbers='false' class='textasql' style="text-align: left;" />
+                                        <SqlEditor :ref="'sqleditor'+item" :readOnly='true' :lineNumbers='false' class='textasql' style="text-align: left;" :key="scope.row.id" />
                                     </template>
                                 </el-table-column>
                             </el-table>
