@@ -54,9 +54,9 @@
                                                         <p v-else>{{scope.row['field_en_name'+item]}}</p>
                                                     </template>
                                                 </el-table-column>
-                                                <el-table-column label="类型" :prop="'field_type' +item" align="center" width="130px" show-overflow-tooltip>
+                                                <el-table-column label="类型" :prop="'field_type' +item" align="center" show-overflow-tooltip>
                                                     <template slot-scope="scope">
-                                                        <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_type'+item]}}{{scope.row['field_length'+item]}}</p>
+                                                        <p v-if="scope.row['is_same'+item]=='0'" class="changered">{{scope.row['field_type'+item]}} {{scope.row['field_length'+item]}}</p>
                                                         <p v-else>{{scope.row['field_type'+item]}} {{scope.row['field_length'+item]}}</p>
                                                     </template>
                                                 </el-table-column>
@@ -253,10 +253,11 @@ export default {
                         this.tableStructureInfo[i]['field_type' + key] = res.data[key][i].datatable_field_info.field_type
                         let field_length = res.data[key][i].datatable_field_info.field_length;
                         if (field_length === '' || undefined === typeof field_length) {
-                            this.tableStructureInfo[i]['field_length' + key] = res.data[key][i].datatable_field_info.field_length
+                            field_length = ''
                         } else {
-                            this.tableStructureInfo[i]['field_length' + key] = '(' + res.data[key][i].datatable_field_info.field_length + ')'
+                            field_length = '(' + res.data[key][i].datatable_field_info.field_length + ')'
                         }
+                        this.tableStructureInfo[i]['field_length' + key] = field_length
                         this.tableStructureInfo[i]['is_same' + key] = res.data[key][i].is_same
                     }
                 }
