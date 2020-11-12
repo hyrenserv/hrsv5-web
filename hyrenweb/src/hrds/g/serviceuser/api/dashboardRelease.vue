@@ -62,8 +62,6 @@
 </div>
 </template>
 
-<
-
 <script>
 import * as interfaceFunctionAll from "./api";
 
@@ -147,7 +145,7 @@ export default {
             interfaceFunctionAll.getIpAndPort()
                 .then(res => {
                     this.ipAndPort = "http://" + res.data +
-                        "/G/action/hrds/g/biz/serviceuser/impl/showReleaseDashboard";
+                        "/L/action/hrds/l/biz/autoanalysis/operate/getDataDashboardInfoById";
                     this.requestAddressForToken =
                         this.ipAndPort + "?token=abcdef&url=showReleaseDashboard" + this.$route.query.url + "&interface_code=MTAwMzM2MDM4OA=="
                     this.requestAddress = this.ipAndPort + "?user_id=1005&user_password=111111" +

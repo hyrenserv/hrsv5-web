@@ -31,3 +31,12 @@ export function searchInterfaceInfo(data) {
         params:data
     })
 }
+/**
+ * 仪表板外部发布接口展示
+ */
+export function showReleaseDashboard(data) {
+    return request({
+        url: '/G/serviceuser/impl/showReleaseDashboard',
+        params:data
+    })
+}
