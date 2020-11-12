@@ -252,7 +252,7 @@ export default {
                         this.tableStructureInfo[i]['field_en_name' + key] = res.data[key][i].datatable_field_info.field_cn_name
                         this.tableStructureInfo[i]['field_type' + key] = res.data[key][i].datatable_field_info.field_type
                         let field_length = res.data[key][i].datatable_field_info.field_length;
-                        if (field_length === '--' || undefined === typeof field_length) {
+                        if (field_length === '--' || field_length === '' || undefined === typeof field_length) {
                             field_length = ''
                         } else {
                             field_length = '(' + res.data[key][i].datatable_field_info.field_length + ')'
