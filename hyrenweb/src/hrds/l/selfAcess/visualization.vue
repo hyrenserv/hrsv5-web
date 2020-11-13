@@ -120,20 +120,20 @@
             <el-input style="width:220px;margin-left:6px;" size="small" v-model="showNum" placeholder="显示条数"></el-input>
         </div>
     </el-row>
-    <el-row class="elRowtitle" v-if="dynamicColumnTableHiddens">
+    <el-row class="elRowtitle" v-if="isDataShow">
         <p class="tempalteInfo">结果信息</p>
     </el-row>
-    <div class="lines" v-if="dynamicColumnTableHiddens"></div>
-    <el-table size="medium" :data="dynamicColumnTables.slice((ex_destinationcurrentPage - 1) * ex_destinationpagesize, ex_destinationcurrentPage *ex_destinationpagesize)" border stripe style="width: 100%" v-if="dynamicColumnTableHiddens">
+    <div class="lines" v-if="isDataShow"></div>
+    <el-table size="medium" :data="dynamicColumnTables.slice((answerCurrPage - 1) * answerPageSize, answerCurrPage *answerPageSize)" border stripe style="width: 100%" v-if="isDataShow">
         <el-table-column label="序号" width="64" align="center">
             <template scope="scope">
-                <span>{{scope.$index+(ex_destinationcurrentPage - 1) * ex_destinationpagesize + 1}}</span>
+                <span>{{scope.$index+(answerCurrPage - 1) * answerPageSize + 1}}</span>
             </template>
         </el-table-column>
         <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px" :prop="col" :label="col" :key="col">
         </el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="ex_destinationcurrentPage" v-if="dynamicColumnTableHiddens" :page-sizes="[5, 10, 20, 50 ,100]" :page-size="ex_destinationpagesize" layout="total, sizes, prev, pager, next, jumper" :total="dynamicColumnTables.length" class="locationcenter"></el-pagination>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="answerCurrPage" v-if="isDataShow" :page-sizes="[5, 10, 20, 50 ,100]" :page-size="answerPageSize" layout="total, sizes, prev, pager, next, jumper" :total="dynamicColumnTables.length" class="locationcenter"></el-pagination>
     <div class="lines"></div>
     <el-row class="elRowtitle">
         <p class="tempalteInfo">可视化设置</p>
@@ -186,7 +186,7 @@
                     </div>
                 </draggable>
             </div>
-            <div style="font-size:16px;color:red;margin:6px 10px;">{{tips}}</div>
+            <div style="font-size:16px;color:red;margin:6px 10px 0px 10px;">{{tips}}</div>
             <div v-if="auto_comp_sum.chart_type=='table'" style="wdith:100%;overflow: auto;">
                 <el-table id="tableStyle" size="medium" :data="echartTableData.slice((currPage - 1) * pageSize, currPage * pageSize)" style="width: 100%" :row-style="getRowStyle" :border="show_border" :stripe="show_stripe">
                     <el-table-column label="序号" width="64" align="center">
@@ -199,54 +199,59 @@
                 </el-table>
                 <el-pagination @size-change="echartTableSizeChange" @current-change="echartCurrentChange" :current-page="currPage" :page-sizes="[5, 10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="echartTableData.length" class="locationcenter"></el-pagination>
             </div>
-            <div id="myChart" style="width:100%; height: 440px; margin-bottom: 25px"></div>
+            <div v-if="auto_comp_sum.chart_type=='card'" style="margin-bottom:10px;height:440px" class="thumbnails">
+                <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
+                    <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
+                    <h1 id="carddiv"></h1>
+                </div>
+            </div>
+            <div id="myChart" v-if="auto_comp_sum.chart_type!='table' && auto_comp_sum.chart_type!='card'" style="width:100%; height: 440px; margin-bottom: 25px"></div>
         </el-col>
         <el-col :span="7">
-            {{auto_comp_sum.chart_theme}}
-            <el-select v-model="auto_comp_sum.chart_theme" size="small" placeholder="请选择" style="width:98%;">
+            <el-select v-model="auto_comp_sum.chart_type" size="small" placeholder="请选择图表类型" style="width:98%;" clearable>
                 <el-option v-for="item in optionsCharts" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme == 'line' ">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type == 'line' ">
                 <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')" src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='bar'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='bar'">
                 <img class="imgStyle" @click="echartshow('bar')" src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
                 <img class="imgStyle" @click="echartshow('stackingbar')" src="@/assets/images/chart/stacking-bar.png" alt="堆叠柱状图" title="堆叠柱状图">
                 <img class="imgStyle" @click="echartshow('polarbar')" src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
             </div>
 
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='pie' ">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='pie' ">
                 <img class="imgStyle" @click="echartshow('pie')" src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
                 <img class="imgStyle" @click="echartshow('fasanpie')" src="@/assets/images/chart/pie-customized.png" alt="发散饼图" title="发散饼图">
                 <img class="imgStyle" @click="echartshow('huanpie')" src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='scatter'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='scatter'">
                 <img class="imgStyle" @click="echartshow('scatter')" src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
                 <!--<img class="imgStyle" @click="echartshow('bubble')"-->
                 <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='table'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='table'">
                 <img class="imgStyle" @click="echartshow('table')" src="@/assets/images/chart/table.jpg" alt="二维表" title="二维表">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='card'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='card'">
                 <img class="imgStyle" @click="echartshow('card')" src="@/assets/images/chart/card.jpg" alt="卡片" title="卡片">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='treemap'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='treemap'">
                 <img class="imgStyle" @click="echartshow('treemap')" src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='bl'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='bl'">
                 <img class="imgStyle" @click="echartshow('bl')" src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
                 <!--<img class="imgStyle" @click="echartshow('blsimple')"-->
                 <!--src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">-->
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_theme =='map'">
+            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='map'">
                 <img class="imgStyle" @click="echartshow('map')" src="@/assets/images/chart/map.png" alt="地图" title="地图">
             </div>
             <div style="position: relative;">
-                <el-button v-if="auto_comp_sum.chart_theme !=='' && auto_comp_sum.chart_theme !==undefined" size="mini" icon="el-icon-refresh" style="position: absolute;top:0;right:0;z-index:10;top:10px;right:4px;"></el-button>
-                <el-tabs type="border-card" size="mini" v-if="auto_comp_sum.chart_theme !=='' && auto_comp_sum.chart_theme !==undefined">
-                    <el-tab-pane label="常规设置" v-if="auto_comp_sum.chart_theme !=='table' && auto_comp_sum.chart_theme !=='card'">
+                <el-button v-if="auto_comp_sum.chart_type !='' && auto_comp_sum.chart_type !=undefined" size="mini" icon="el-icon-refresh" style="position: absolute;top:0;right:0;z-index:10;top:10px;right:4px;"></el-button>
+                <el-tabs type="border-card" size="mini" v-if="auto_comp_sum.chart_type !='' && auto_comp_sum.chart_type !=undefined">
+                    <el-tab-pane label="常规设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card'">
                         <div style="height:170px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图表背景颜色</span>
@@ -256,18 +261,18 @@
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">是否显示文本</span>
-                                <el-select v-model="auto_comp_sum.show_label" placeholder="是否显示文本" size="small" class="selectPosition">
+                                <el-select v-model="echartsLabel.show_label" placeholder="是否显示文本" size="small" class="selectPosition">
                                     <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_theme!='map'">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type!='map'">
                                 <span class="el-input-group__prepends">文本显示位置</span>
-                                <el-select v-model="auto_comp_sum.position" placeholder="文本显示位置" size="small" class="selectPosition" v-show="auto_comp_sum.chart_theme!='pie' && auto_comp_sum.chart_type!='fasanpie' && auto_comp_sum.chart_type!='huanpie'">
+                                <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small" class="selectPosition" v-if="auto_comp_sum.chart_type!='pie' && auto_comp_sum.chart_type!='fasanpie' && auto_comp_sum.chart_type!='huanpie'">
                                     <el-option v-for="item in normalOptions.optionposition" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
-                                <el-select v-model="auto_comp_sum.position" placeholder="文本显示位置" size="small" class="selectPosition" v-show="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
+                                <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small" class="selectPosition" v-if="auto_comp_sum.chart_type=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
                                     <el-option v-for="item in normalOptions.optionposition1" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
@@ -277,22 +282,18 @@
                                         <div slot="content"><span>{a}表示系列名 <br />{b}表示数据名<br />{c}表示数据值<br />{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
                                     </el-tooltip></span>
-                                <el-input v-model="auto_comp_sum.formatter" placeholder="文本格式化" size="small" class="selectPosition">
+                                <el-input v-model="echartsLabel.formatter" placeholder="文本格式化" size="small" class="selectPosition">
                                 </el-input>
                             </div>
 
-                            <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;"-->
-                            <!--v-if="auto_comp_sum.chart_theme=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">-->
-                            <!--<span class="el-input-group__prepends">是否显示引导线</span>-->
-                            <!--<el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small"-->
-                            <!--class="selectPosition">-->
-                            <!--<el-option v-for="item in normalOptions.optionShowlabel" :key="item.value"-->
-                            <!--:label="item.value" :value="item.code">-->
-                            <!--</el-option>-->
-                            <!--</el-select>-->
-                            <!--</div>-->
-
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_theme=='map'">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type=='pie' || auto_comp_sum.chart_type=='fasanpie' || auto_comp_sum.chart_type=='huanpie'">
+                                <span class="el-input-group__prepends">是否显示引导线</span>
+                                <el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small" class="selectPosition">
+                                    <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type=='map'">
                                 <span class="el-input-group__prepends">中国地图或省份</span>
                                 <el-select v-model="seriesStyle.provincename" placeholder="请选择" size="small" class="selectPosition">
                                     <el-option v-for="item in map_array" :key="item" :label="item" :value="item">
@@ -301,11 +302,11 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="标题设置" v-if="auto_comp_sum.chart_theme !=='table' && auto_comp_sum.chart_theme !=='card'">
+                    <el-tab-pane label="标题设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card'">
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">名称</span>
-                                <el-input v-model="auto_comp_sum.title_name" placeholder="名称" size="small" class="selectPosition">
+                                <el-input v-model="auto_comp_sum.chart_theme" placeholder="名称" size="small" class="selectPosition">
                                 </el-input>
                             </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
@@ -373,7 +374,7 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="轴线设置" v-if="auto_comp_sum.chart_theme !=='table' && auto_comp_sum.chart_theme !=='card'">
+                    <el-tab-pane label="轴线设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card' && auto_comp_sum.chart_type!='treemap' && auto_comp_sum.chart_type!='map'">
                         <el-tabs type="border-card" size="mini" style="margin-top:0px;">
                             <el-tab-pane label="横轴">
                                 <div style="height:240px;overflow:auto;">
@@ -553,7 +554,7 @@
                                     <!--</div>-->
                                 </div>
                             </el-tab-pane>
-                            <el-tab-pane label="字体样式" v-if="auto_comp_sum.chart_theme !=='table' && auto_comp_sum.chart_theme !=='card'">
+                            <el-tab-pane label="字体样式" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card'">
                                 <div style="height:240px;overflow:auto;">
                                     <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                         <span class="el-input-group__prepends">背景色</span>
@@ -622,9 +623,9 @@
                             </el-tab-pane>
                         </el-tabs>
                     </el-tab-pane>
-                    <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_theme !=='map' && auto_comp_sum.chart_theme !=='table' && auto_comp_sum.chart_theme !=='card'">
+                    <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card' && auto_comp_sum.chart_type!='treemap'">
                         <div style="height:300px;overflow:auto;">
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
                                 <span class="el-input-group__prepends">图例类型</span>
                                 <el-select v-model="legendStyle.type" placeholder="请选择" size="small" class="selectPosition">
                                     <el-option v-for="item in legendStyletypeArr" :key="item.value" :label="item.value" :value="item.code">
@@ -665,12 +666,20 @@
                                 <el-input v-model="legendStyle.bottom_distance" placeholder="下边距" size="small" class="selectPosition">
                                 </el-input>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
+                                <span class="el-input-group__prepends">图例个数</span>
+                                <el-input class="selectPosition" placeholder="图例个数" v-model="legendStyle.intervalnumber" />
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
+                                <span class="el-input-group__prepends">图例容量</span>
+                                <el-input class="selectPosition" placeholder="图例容量" v-model="legendStyle.interval" />
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
                                 <span class="el-input-group__prepends">图例宽度</span>
                                 <el-input v-model="legendStyle.width" placeholder="图例宽度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
                                 <span class="el-input-group__prepends">图例高度</span>
                                 <el-input v-model="legendStyle.height" placeholder="图例高度" size="small" class="selectPosition">
                                 </el-input>
@@ -689,12 +698,15 @@
                                     </el-option>
                                 </el-select>
                             </div>
-                            <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
-                            <!--<span class="el-input-group__prepends">内边距</span>-->
-                            <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
-                            <!--class="selectPosition">-->
-                            <!--</el-input>-->
-                            <!--</div>-->
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">内边距</span>
+                                <el-input v-model="legendStyle.padding" placeholder="内边距" size="small" class="selectPosition">
+                                </el-input>
+                            </div>
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                                <span class="el-input-group__prepends">图例间隔</span>
+                                <el-input class="selectPosition" placeholder="图例间隔" v-model="legendStyle.itemgap" />
+                            </div>
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图形宽度</span>
                                 <el-input v-model="legendStyle.itemwidth" placeholder="图形宽度" size="small" class="selectPosition">
@@ -705,13 +717,13 @@
                                 <el-input v-model="legendStyle.itemheight" placeholder="图形高度" size="small" class="selectPosition">
                                 </el-input>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
                                 <span class="el-input-group__prepends">图例关闭颜色</span>
                                 <el-color-picker v-model="legendStyle.inactivecolor" style="width:20px;height:20px;"></el-color-picker>
                                 <el-input v-model="legendStyle.inactivecolor" placeholder="图例关闭颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
                                 <span class="el-input-group__prepends">图例背景颜色</span>
                                 <el-color-picker v-model="legendStyle.backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
                                 <el-input v-model="legendStyle.backgroundcolor" placeholder="图例背景颜色" size="small" class="selectPosition">
@@ -730,94 +742,7 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="图例设置(地图）" v-if="auto_comp_sum.chart_theme =='map' && auto_comp_sum.chart_theme !=='table' && auto_comp_sum.chart_theme !=='card'">
-                        <div style="height:300px;overflow:auto;">
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">是否显示</span>
-                                <el-select v-model="legendStyle.show" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in axisCheck" :key="item.value" :label="item.value" :value="item.code">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">左边距</span>
-                                <el-input v-model="legendStyle.left_distance" placeholder="左边距" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">右边距</span>
-                                <el-input v-model="legendStyle.right_distance" placeholder="右边距" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">上边距</span>
-                                <el-input v-model="legendStyle.top_distance" placeholder="上边距" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">下边距</span>
-                                <el-input v-model="legendStyle.bottom_distance" placeholder="下边距" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图例个数</span>
-                                <el-input v-model="legendStyle.intervalnumber" placeholder="图例个数" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图例容量</span>
-                                <el-input v-model="legendStyle.interval" placeholder="图例容量" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">布局朝向</span>
-                                <el-select v-model="legendStyle.orient" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in legendStyleorientArr" :key="item.value" :label="item.value" :value="item.code">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">文本对齐</span>
-                                <el-select v-model="legendStyle.align" placeholder="请选择" size="small" class="selectPosition">
-                                    <el-option v-for="item in legendStylealignArr" :key="item.value" :label="item.value" :value="item.code">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <!--<div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">-->
-                            <!--<span class="el-input-group__prepends">内边距</span>-->
-                            <!--<el-input v-model="legendStyle.padding" placeholder="内边距" size="small"-->
-                            <!--class="selectPosition">-->
-                            <!--</el-input>-->
-                            <!--</div>-->
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图例间隔</span>
-                                <el-input v-model="legendStyle.itemgap" placeholder="图例间隔" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图形宽度</span>
-                                <el-input v-model="legendStyle.itemwidth" placeholder="图形宽度" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图形高度</span>
-                                <el-input v-model="legendStyle.itemheight" placeholder="图形高度" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图例边框颜色</span>
-                                <el-color-picker v-model="legendStyle.bordercolor" style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-model="legendStyle.bordercolor" placeholder="图例边框颜色" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
-                                <span class="el-input-group__prepends">图例边框粗细</span>
-                                <el-input v-model="legendStyle.borderwidth" placeholder="图例边框粗细" size="small" class="selectPosition">
-                                </el-input>
-                            </div>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="二维表" v-if="auto_comp_sum.chart_theme=='table'">
+                    <el-tab-pane label="二维表" v-if="auto_comp_sum.chart_type=='table'">
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">表头背景色</span>
@@ -846,6 +771,55 @@
                             <el-button class="previewData" @click="echartshow('table')">预览</el-button>
                         </div>
                     </el-tab-pane>
+                    <el-table-pane v-if="auto_comp_sum.chart_type=='card'" label="卡片">
+                        <div class="input-group" style="margin-top:10px;">
+                            <span class="el-input-group__prepends">标题名称</span>
+                            <input type="text" class="selectPosition" v-model="auto_comp_sum.chart_type" autocomplete="off" />
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends">标题行高</span>
+                            <input type="text" class="selectPosition" v-model="titleFont.lineHeight" name="title_lineHeight" autocomplete="off" />
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends" style="width: 81px">背景色</span>
+                            <input type="text" class="selectPosition" v-model="titleFont.backgroundColor" id="card_bgColor" autocomplete="off" style="width: 118%" />
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends">字体颜色</span>
+                            <input type="text" class="selectPosition" v-model="titleFont.color" id="card_color" autocomplete="off" />
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends">字体大小</span>
+                            <input type="text" class="selectPosition" v-model="titleFont.fontSize" name="title_size" autocomplete="off" />
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends">字体风格</span>
+                            <select v-model="titleFont.fontStyle" class="selectPosition">
+                                <option value="normal">标准风格</option>
+                                <option value="italic">斜体风格</option>
+                                <option value="oblique">倾斜风格</option>
+                            </select>
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends">字体系列</span>
+                            <select v-model="titleFont.fontFamily" class="selectPosition">
+                                <option value="sans-serif">无衬线字体</option>
+                                <option value="serif">衬线字体</option>
+                                <option value="monospace">等宽字体</option>
+                                <option value="Arial">宋体</option>
+                            </select>
+                        </div>
+                        <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <span class="el-input-group__prepends">字体粗细</span>
+                            <select v-model="titleFont.fontWeight" class="selectPosition">
+                                <option value="lighter">细的</option>
+                                <option value="normal">标准的</option>
+                                <option value="bold">粗的</option>
+                                <option value="bolder">加粗的</option>
+                            </select>
+                        </div>
+                        <el-button class="previewData" @click="echartshow('card')">预览</el-button>
+                    </el-table-pane>
                 </el-tabs>
             </div>
         </el-col>
@@ -857,10 +831,10 @@
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
             <el-tree class="filter-tree elDialogInfo" :data="webSqlTreeData" :indent='0' :filter-node-method="filterNode" ref="tree" @node-click="nodeClickChartTree">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
-                    <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
+                    <span :title="data.description" v-if="'undefined' != typeof data.file_id && data.file_id != ''">
                         <i class=" el-icon-document"></i>
-                        <template v-if="'undefined' !== typeof data.original_name && data.original_name !== ''">{{data.original_name}}</template>
-                        <template v-else-if="data.original_name === '' && data.table_name!==''">{{data.table_name}}</template>
+                        <template v-if="'undefined' != typeof data.original_name && data.original_name != ''">{{data.original_name}}</template>
+                        <template v-else-if="data.original_name === '' && data.table_name!=''">{{data.table_name}}</template>
                         <template v-else>{{data.hyren_name}}</template>
                     </span>
                     <span :title="data.description" v-else>
@@ -995,10 +969,10 @@ export default {
             showNum: 100,
             optionsWordsbuttons: true,
             dynamicColumnTables: [],
-            dynamicColumnTableHiddens: false,
+            isDataShow: false,
             dynamicColumns: [],
-            ex_destinationcurrentPage: 1,
-            ex_destinationpagesize: 5,
+            answerCurrPage: 1,
+            answerPageSize: 5,
             loadingsearch: false,
             backgroundcolor: '#000000',
             // color: '#000000',
@@ -1310,7 +1284,7 @@ export default {
                 height: "0", //高度
                 orient: "horizontal", //布局朝向
                 align: "auto", //图例与文本对齐,
-                padding: 20, //图例内边距
+                padding: 5, //图例内边距
                 itemgap: 10, //图例间隔
                 itemwidth: 25, //图例宽度
                 itemheight: 14, //图例高度
@@ -1323,7 +1297,6 @@ export default {
             },
             //组件汇总表
             auto_comp_sum: {
-                title_name: "",
                 chart_theme: "",
                 condition_sql: '',
                 chart_type: '',
@@ -1331,38 +1304,38 @@ export default {
                 component_id: '',
                 component_nam: '',
                 component_desc: '',
-                show_label: '1',
-                position: 'left',
-                formatter: '{c} {b}'
             },
             optionsCharts: [{
-                value: 'line',
-                label: '折线图'
-            }, {
-                value: 'bar',
-                label: '柱状图'
-            }, {
-                value: 'pie',
-                label: '饼图'
-            }, {
-                value: 'scatter',
-                label: '散点图'
-            }, {
-                value: 'card',
-                label: '卡片'
-            }, {
-                value: 'table',
-                label: '二维表'
-            }, {
-                value: 'treemap',
-                label: '矩形树图'
-            }, {
-                value: 'bl',
-                label: '混合图'
-            }, {
-                value: 'map',
-                label: '地理坐标/地图'
-            }],
+                    value: 'line',
+                    label: '折线图',
+
+                }, {
+                    value: 'bar',
+                    label: '柱状图',
+                }, {
+                    value: 'pie',
+                    label: '饼图',
+                }, {
+                    value: 'scatter',
+                    label: '散点图',
+                }, {
+                    value: 'table',
+                    label: '二维表',
+                },
+                {
+                    value: 'card',
+                    label: '卡片',
+                }, {
+                    value: 'treemap',
+                    label: '矩形树图',
+                }, {
+                    value: 'bl',
+                    label: '混合图',
+                }, {
+                    value: 'map',
+                    label: '地理坐标/地图',
+                }
+            ],
             input1: '',
             input2: '',
             tips: '',
@@ -1398,7 +1371,6 @@ export default {
                 zl_background: ""
             },
             color: ['#e5323e', '#003366', '#fc8c54', '#30ff3a'],
-
         }
     },
     created() {
@@ -1450,71 +1422,66 @@ export default {
                 this.optionsWordsbuttons = true;
             }
         },
-        dynamicColumnTables(val) {
-            if (val.length > 0) {
-                this.dynamicColumnTableHiddens = true;
-            } else {
-                this.dynamicColumnTableHiddens = false;
-            }
-        },
     },
     methods: {
         getVisualComponentInfoById() {
             functionAll.getVisualComponentInfoById({
                 component_id: this.component_id
             }).then(res => {
-                this.auto_comp_sum = res.data.compSum;
-                this.input = res.data.compSum.sources_obj;
-                this.formvalue = res.data.compSum.data_source;
-                this.markCodeIndex = res.data.compSum.data_source;
-                res.data.columnAndNumberColumnInfo.columns.forEach(itemAll => {
-                    if (this.formvalue == '01') {
-                        itemAll.nameAll = itemAll.fetch_res_name;
-                    } else {
+                if (res && res.success) {
+                    this.auto_comp_sum = res.data.compSum;
+                    this.input = res.data.compSum.sources_obj;
+                    this.formvalue = res.data.compSum.data_source;
+                    this.markCodeIndex = res.data.compSum.data_source;
+                    res.data.columnAndNumberColumnInfo.columns.forEach(itemAll => {
+                        if (this.formvalue == '01') {
+                            itemAll.nameAll = itemAll.fetch_res_name;
+                        } else {
+                            itemAll.nameAll = itemAll.column_name;
+                        }
+                    })
+                    this.weiduArry = res.data.columnAndNumberColumnInfo.columns;
+                    this.originalweiduArry = res.data.columnAndNumberColumnInfo.columns;
+                    res.data.columnAndNumberColumnInfo.numColumns.forEach(itemAll => {
+                        if (this.formvalue == '01') {
+                            itemAll.nameAll = itemAll.fetch_res_name;
+                        } else {
+                            itemAll.nameAll = itemAll.column_name;
+                        }
+                    })
+                    this.duliangArry = res.data.columnAndNumberColumnInfo.numColumns;
+                    this.originalduliangArry = res.data.columnAndNumberColumnInfo.numColumns;
+                    res.data.compDataSum.forEach(itemAll => {
+                        this.huixiandealwithoptionsWords(itemAll.column_name, itemAll.summary_type)
+                    })
+                    res.data.compCond.forEach(itemAll => {
+                        itemAll.nameAll = itemAll.cond_en_column + itemAll.arithmetic_logic + itemAll.cond_value;
+                    })
+                    this.fiflterConditionArr = res.data.compCond;
+                    res.data.compGroup.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
-                    }
-                })
-                this.weiduArry = res.data.columnAndNumberColumnInfo.columns;
-                this.originalweiduArry = res.data.columnAndNumberColumnInfo.columns;
-                res.data.columnAndNumberColumnInfo.numColumns.forEach(itemAll => {
-                    if (this.formvalue == '01') {
-                        itemAll.nameAll = itemAll.fetch_res_name;
-                    } else {
+                    })
+                    this.groupCondtionArr = res.data.compGroup;
+                    this.getAnswer(true);
+                    res.data.xAxisCol.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
-                    }
-                })
-                this.duliangArry = res.data.columnAndNumberColumnInfo.numColumns;
-                this.originalduliangArry = res.data.columnAndNumberColumnInfo.numColumns;
-                res.data.compDataSum.forEach(itemAll => {
-                    this.huixiandealwithoptionsWords(itemAll.column_name, itemAll.summary_type)
-                })
-                res.data.compCond.forEach(itemAll => {
-                    itemAll.nameAll = itemAll.cond_en_column + itemAll.arithmetic_logic + itemAll.cond_value;
-                })
-                this.fiflterConditionArr = res.data.compCond;
-                res.data.compGroup.forEach(itemAll => {
-                    itemAll.nameAll = itemAll.column_name;
-                })
-                this.groupCondtionArr = res.data.compGroup;
-                this.getAnswer(true);
-                res.data.xAxisCol.forEach(itemAll => {
-                    itemAll.nameAll = itemAll.column_name;
-                })
-                this.xValueArry = res.data.xAxisCol;
-                res.data.yAxisCol.forEach(itemAll => {
-                    itemAll.nameAll = itemAll.column_name;
-                })
-                this.yValueArry = res.data.yAxisCol;
-                this.xAxis = res.data.xAxisInfo[0];
-                this.yAxis = res.data.yAxisInfo[0];
-                this.xAxisLine = res.data.xAxisLine;
-                this.yAxisLine = res.data.yAxisLine;
-                this.xAxisLabel = res.data.xAxisLabel;
-                this.yAxisLabel = res.data.yAxisLabel;
-                this.legendStyle = res.data.legendInfo;
-                this.titleFont = res.data.titleFontInfo;
-                this.axisStyle = res.data.axisFontInfo;
-                this.auto_table_info = res.data.twoDimensionalTable;
+                    })
+                    this.xValueArry = res.data.xAxisCol;
+                    res.data.yAxisCol.forEach(itemAll => {
+                        itemAll.nameAll = itemAll.column_name;
+                    })
+                    this.yValueArry = res.data.yAxisCol;
+                    this.xAxis = res.data.xAxisInfo[0];
+                    this.yAxis = res.data.yAxisInfo[0];
+                    this.xAxisLine = res.data.xAxisLine;
+                    this.yAxisLine = res.data.yAxisLine;
+                    this.xAxisLabel = res.data.xAxisLabel;
+                    this.yAxisLabel = res.data.yAxisLabel;
+                    this.legendStyle = res.data.legendInfo;
+                    this.titleFont = res.data.titleFontInfo;
+                    this.axisStyle = res.data.axisFontInfo;
+                    this.auto_table_info = res.data.twoDimensionalTable;
+                }
             });
         },
         huixiandealwithoptionsWords(column_name, code) {
@@ -1604,11 +1571,11 @@ export default {
             if (!value) return true;
             // 如果传入的value和data中的name相同说明是匹配到了,匹配时转小写匹配
             // 检索内容为 original_name table_name hyren_name
-            if ('undefined' !== typeof data.file_id && data.file_id !== '') {
+            if ('undefined' != typeof data.file_id && data.file_id != '') {
                 return (
-                    ('undefined' !== typeof data.original_name && data.original_name !== '' && data.original_name.indexOf(value) !== -1) ||
-                    ('undefined' !== typeof data.table_name && data.table_name !== '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) !== -1) ||
-                    ('undefined' !== typeof data.hyren_name && data.hyren_name !== '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+                    ('undefined' != typeof data.original_name && data.original_name != '' && data.original_name.indexOf(value) != -1) ||
+                    ('undefined' != typeof data.table_name && data.table_name != '' && data.table_name.toLowerCase().indexOf(value.toLowerCase()) != -1) ||
+                    ('undefined' != typeof data.hyren_name && data.hyren_name != '' && data.hyren_name.toLowerCase().indexOf(value.toLowerCase()) != -1)
                 )
 
             }
@@ -2240,17 +2207,23 @@ export default {
                 exe_sql: val,
                 showNum: num
             }).then(res => {
-
-                this.dynamicColumns = res.data.columnList;
-                this.dynamicColumnTables = res.data.visualComponentList;
+                if (res && res.success) {
+                    this.dynamicColumns = res.data.columnList;
+                    this.dynamicColumnTables = res.data.visualComponentList;
+                    if (res.data.visualComponentList.length > 0) {
+                        this.isDataShow = true;
+                    } else {
+                        this.isDataShow = false;
+                    }
+                }
             })
         },
         //分页
         handleCurrentChange(current) {
-            this.ex_destinationcurrentPage = current;
+            this.answerCurrPage = current;
         },
         handleSizeChange(size) {
-            this.ex_destinationpagesize = size;
+            this.answerPageSize = size;
         },
         // 二维表分页
         echartTableSizeChange(size) {
@@ -2321,25 +2294,25 @@ export default {
                     }
                 })
             }
-            if (type == 'line') {
+            if (type == 'line') { // 折线图
                 this.tips = "横轴为1个维度,纵轴接受多个度量";
-            } else if (type == 'bar' || type == 'stackingbar') {
+            } else if (type == 'bar' || type == 'stackingbar') { // 标准柱状图、堆叠柱状图
                 this.tips = "横轴为1个维度,纵轴接受多个度量";
-            } else if (type == "polarbar") {
+            } else if (type == "polarbar") { // 极坐标柱状图
                 this.tips = "横轴为1个维度,纵轴为1个度量";
-            } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {
+            } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
                 this.tips = "横轴为1个维度,纵轴为1个度量";
-            } else if (type == "scatter") {
+            } else if (type == "scatter") { //散点图
                 this.tips = "横轴,纵轴都必须为度量";
-            } else if (type == "table") {
+            } else if (type == "table") { // 二维表
                 this.tips = "直接根据SQL得到的结果进行展示";
             } else if (type == "card") {
                 this.tips = "直接展示标题内容";
-            } else if (type == "bl") {
+            } else if (type == "bl") { // 柱状折线混合图
                 this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
-            } else if (type == "treemap") {
-                this.tips = "横轴接受1至2个维度,按第一个维度分类";
-            } else if (type == "map") {
+            } else if (type == "treemap") { // 矩形树图
+                this.tips = "横轴接受1至2个维度,按第一个维度分类,纵轴都必须为度量";
+            } else if (type == "map") { // 地理坐标、地图
                 this.tips = "横轴为1个维度,纵轴为1个度量";
             }
             if (this.checkifvalidate(this.markexe_sql)) {
@@ -2413,104 +2386,55 @@ export default {
                         this.$Msg.customizTitle("正在开发中", "warning");
                     } else if (type == "treemap") { // 矩形树图
                         this.changeToTreemapChart(xColumns, yColumns, type, res.data);
-
                     } else if (type == "map") { // 地图
-                        this.$Msg.customizTitle("正在开发中", "warning");
+                        //定义全国省份的数组
+                        var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
+                            'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
+                            'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang',
+                            'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing',
+                            'xianggang', 'aomen', 'taiwan'
+                        ];
+
+                        var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江',
+                            '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
+                            '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
+                        ];
+
+                        for (var l = 0; l < provincesText.length; l++) {
+                            if (this.seriesStyle.provincename == provincesText[l]) {
+                                //显示对应省份的方法
+                                showProvince(provinces[l], provincesText[l])
+                                break;
+                            }
+                        }
+                        this.changeToMapChart(xColumns, yColumns, type, res.data);
                     }
                 }
             })
         },
         initproperty() {
             var result = {};
-            //设置标题属性
-            var titles = {
-                text: this.auto_comp_sum.title_name,
-                x: this.titleFont.align,
-                y: this.titleFont.verticalalign,
-                backgroundColor: this.titleFont.backgroundcolor,
-                borderColor: this.titleFont.bordercolor,
-                borderWidth: this.titleFont.borderwidth,
-                borderRadius: this.titleFont.borderradius,
-                textStyle: {
-                    color: this.titleFont.color,
-                    fontFamily: this.titleFont.fontfamily,
-                    fontSize: this.titleFont.fontsize,
-                    fontStyle: this.titleFont.fontstyle,
-                    fontWeight: this.titleFont.fontweight,
-                    lineHeight: this.titleFont.lineheight,
-                }
-            };
-            result.titles = titles;
+            // 初始化标题属性
+            this.initTitleStyle(result);
             //设置图上每个节点的显示情况
             var labelOption = {
                 normal: {
-                    show: this.auto_comp_sum.show_label == '1' ? true : false,
-                    position: this.auto_comp_sum.position,
-                    formatter: this.auto_comp_sum.formatter
+                    show: this.echartsLabel.show_label == '1' ? true : false,
+                    position: this.echartsLabel.position,
+                    formatter: this.echartsLabel.formatter
                 }
             }
             result.labelOption = labelOption;
-            var nameTextStyle = {
-                color: this.axisStyle.color,
-                lineHeight: this.axisStyle.lineheight,
-                fontFamily: this.axisStyle.fontfamily,
-                fontSize: this.axisStyle.fontsize,
-                align: this.axisStyle.align,
-                backgroundColor: this.axisStyle.backgroundcolor,
-                borderColor: this.axisStyle.bordercolor,
-                fontStyle: this.axisStyle.fontstyle,
-                fontWeight: this.axisStyle.fontweight,
-                borderWidth: this.axisStyle.borderwidth,
-                borderRadius: this.axisStyle.borderradius,
-                verticalAlign: this.axisStyle.verticalalign,
-            };
-            result.nameTextStyle = nameTextStyle;
-            var xAxis = {
-                name: this.xAxis.name,
-                position: this.xAxis.position,
-                show: this.xAxis.show == '1' ? true : false,
-                axisoOffset: this.xAxis.axisoffset,
-                nameLocation: this.xAxis.namelocation,
-                nameRotate: this.xAxis.namerotate,
-                nameGap: this.xAxis.namegap
-            }
-            result.xAxis = xAxis;
-            var yAxis = {
-                name: this.yAxis.name,
-                position: this.yAxis.position,
-                show: this.yAxis.show == '1' ? true : false,
-                axisoOffset: this.yAxis.axisoffset,
-                nameLocation: this.yAxis.namelocation,
-                nameRotate: this.yAxis.namerotate,
-                nameGap: this.yAxis.namegap
-            }
-            result.yAxis = yAxis;
-            var xaxisLine = {
-                show: this.xAxisLine.show == '1' ? true : false,
-                onZero: this.xAxisLine.onzero == '1' ? true : false,
-            };
-            result.xaxisLine = xaxisLine;
-            var xaxisLabel = {
-                show: this.xAxisLabel.show == '1' ? true : false,
-                inside: this.xAxisLabel.inside == '1' ? true : false,
-                rotate: this.xAxisLabel.rotate,
-                margin: this.xAxisLabel.margin,
-                // formatter: this.xAxisLabel.formatter,
-            };
-            result.xaxisLabel = xaxisLabel;
-            var yaxisLine = {
-                show: this.yAxisLine.show == '1' ? true : false,
-                onZero: this.yAxisLine.onzero == '1' ? true : false,
-            };
-            result.yaxisLine = yaxisLine;
-            var yaxisLabel = {
-                show: this.yAxisLabel.show == '1' ? true : false,
-                inside: this.yAxisLabel.inside == '1' ? true : false,
-                rotate: this.yAxisLabel.rotate,
-                margin: this.yAxisLabel.margin,
-                // formatter: this.yAxisLabel.formatter,
-            };
-            result.yaxisLabel = yaxisLabel;
+            // 初始化轴配置信息
+            this.initAxisStyle(result);
+            // 初始化图例信息
+            this.initLengendStyle(result);
+
+            return result;
+        },
+        // 初始化图例信息
+        initLengendStyle(result) {
+            // 图例信息
             var legendStyle = {
                 type: this.legendStyle.type,
                 show: this.legendStyle.show == '1' ? true : false,
@@ -2535,7 +2459,99 @@ export default {
                 intervalNumber: this.legendStyle.intervalnumber
             };
             result.legendStyle = legendStyle;
-            return result;
+        },
+        // 初始化轴配置信息
+        initAxisStyle(result) {
+            // 轴字体样式信息
+            var nameTextStyle = {
+                color: this.axisStyle.color,
+                lineHeight: this.axisStyle.lineheight,
+                fontFamily: this.axisStyle.fontfamily,
+                fontSize: this.axisStyle.fontsize,
+                align: this.axisStyle.align,
+                backgroundColor: this.axisStyle.backgroundcolor,
+                borderColor: this.axisStyle.bordercolor,
+                fontStyle: this.axisStyle.fontstyle,
+                fontWeight: this.axisStyle.fontweight,
+                borderWidth: this.axisStyle.borderwidth,
+                borderRadius: this.axisStyle.borderradius,
+                verticalAlign: this.axisStyle.verticalalign,
+            };
+            result.nameTextStyle = nameTextStyle;
+            // x轴配置信息
+            var xAxis = {
+                name: this.xAxis.name,
+                position: this.xAxis.position,
+                show: this.xAxis.show == '1' ? true : false,
+                axisoOffset: this.xAxis.axisoffset,
+                nameLocation: this.xAxis.namelocation,
+                nameRotate: this.xAxis.namerotate,
+                nameGap: this.xAxis.namegap
+            }
+            result.xAxis = xAxis;
+            // y轴配置信息
+            var yAxis = {
+                name: this.yAxis.name,
+                position: this.yAxis.position,
+                show: this.yAxis.show == '1' ? true : false,
+                axisoOffset: this.yAxis.axisoffset,
+                nameLocation: this.yAxis.namelocation,
+                nameRotate: this.yAxis.namerotate,
+                nameGap: this.yAxis.namegap
+            }
+            result.yAxis = yAxis;
+            // x轴线信息
+            var xaxisLine = {
+                show: this.xAxisLine.show == '1' ? true : false,
+                onZero: this.xAxisLine.onzero == '1' ? true : false,
+            };
+            result.xaxisLine = xaxisLine;
+            // x轴标签信息
+            var xaxisLabel = {
+                show: this.xAxisLabel.show == '1' ? true : false,
+                inside: this.xAxisLabel.inside == '1' ? true : false,
+                rotate: this.xAxisLabel.rotate,
+                margin: this.xAxisLabel.margin,
+                // formatter: this.xAxisLabel.formatter,
+            };
+            result.xaxisLabel = xaxisLabel;
+            // y轴线信息
+            var yaxisLine = {
+                show: this.yAxisLine.show == '1' ? true : false,
+                onZero: this.yAxisLine.onzero == '1' ? true : false,
+            };
+            result.yaxisLine = yaxisLine;
+            // y轴标签信息
+            var yaxisLabel = {
+                show: this.yAxisLabel.show == '1' ? true : false,
+                inside: this.yAxisLabel.inside == '1' ? true : false,
+                rotate: this.yAxisLabel.rotate,
+                margin: this.yAxisLabel.margin,
+                // formatter: this.yAxisLabel.formatter,
+            };
+            result.yaxisLabel = yaxisLabel;
+        },
+        //初始化标题样式
+        initTitleStyle(result) {
+            //设置标题属性
+            var titles = {
+                text: this.auto_comp_sum.title_name,
+                x: this.titleFont.align,
+                y: this.titleFont.verticalalign,
+                backgroundColor: this.titleFont.backgroundcolor,
+                borderColor: this.titleFont.bordercolor,
+                borderWidth: this.titleFont.borderwidth,
+                borderRadius: this.titleFont.borderradius,
+                textStyle: {
+                    color: this.titleFont.color,
+                    fontFamily: this.titleFont.fontfamily,
+                    fontSize: this.titleFont.fontsize,
+                    fontStyle: this.titleFont.fontstyle,
+                    fontWeight: this.titleFont.fontweight,
+                    lineHeight: this.titleFont.lineheight,
+                }
+            };
+            result.titles = titles;
         },
         //初始化echart
         drawLine(option) {
@@ -2624,7 +2640,6 @@ export default {
         },
         //堆叠柱状图
         changeToStackingBarChart(x_columns, y_columns, type, data) {
-            //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
             var result = this.initproperty();
             data.seriesArray.forEach(val => {
                 val.label = result.labelOption;
@@ -2644,7 +2659,6 @@ export default {
                 xAxis: [
                     Object.assign({}, {
                         type: 'category',
-
                         data: data.xArray,
                         nameTextStyle: result.nameTextStyle,
                         axisLine: result.xaxisLine,
@@ -2768,7 +2782,6 @@ export default {
                     type: 'scatter'
                 }]
             };
-            console.log(JSON.stringify(option));
             this.drawLine(option)
         },
         // 卡片
@@ -2798,13 +2811,11 @@ export default {
         },
         // 矩形树图
         changeToTreemapChart(x_columns, y_columns, type, data) {
-            var result = this.initproperty();
+            var result = {};
+            this.initTitleStyle(result);
             var option = {
                 backgroundColor: this.auto_comp_sum.background,
                 title: result.titles,
-                legend: Object.assign({}, result.legendStyle, {
-                    data: data.legend_data
-                }),
                 tooltip: {
                     trigger: 'item',
                     formatter: "{b}: {c}",
@@ -2822,7 +2833,7 @@ export default {
                 },
                 calculable: false,
                 series: [{
-                    name: this.auto_comp_sum.chart_theme,
+                    name: this.auto_comp_sum.chart_type,
                     type: 'treemap',
                     leafDepth: undefined,
                     breadcrumb: {
@@ -2843,8 +2854,92 @@ export default {
                             }
                         }
                     },
-                    data: data.seriesArray
+                    data: data.seriesData
                 }]
+            };
+            this.drawLine(option);
+        },
+        // 地理坐标/地图
+        changeToMapChart(x_columns, y_columns, type, data) {
+            var result = {};
+            this.initTitleStyle(result)
+            this.legendStyle.padding = parseInt(this.legendStyle.padding);
+            this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
+            this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+            this.legendStyle.intervalnumber = parseInt(this.legendStyle.intervalnumber);
+            this.legendStyle.interval = parseInt(this.legendStyle.interval);
+            var pName = "";
+            if (this.seriesStyle.provincename == "全国") {
+                pName = "china";
+            } else {
+                pName = this.seriesStyle.provincename;
+            }
+            var splitList = [];
+            for (var i = 0; i < this.legendStyle.intervalnumber; i++) {
+                if (i == 0) {
+                    splitList.push({
+                        start: 0,
+                        end: this.legendStyle.interval
+                    });
+                } else {
+                    splitList.push({
+                        start: this.legendStyle.interval * i,
+                        end: this.legendStyle.interval * (i + 1)
+                    });
+                }
+            }
+
+            var option = {
+                backgroundColor: this.auto_comp_sum.background,
+                title: result.titles,
+                tooltip: {
+                    formatter: '{b}:{c}',
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                //小导航图标
+                visualMap: {
+                    show: this.legendStyle.show == '1' ? true : false,
+                    left: this.legendStyle.left,
+                    top: this.legendStyle.top,
+                    right: this.legendStyle.right,
+                    bottom: this.legendStyle.bottom,
+                    orient: this.legendStyle.orient,
+                    align: this.legendStyle.align,
+                    padding: this.legendStyle.padding,
+                    itemGap: this.legendStyle.itemgap,
+                    itemWidth: this.legendStyle.itemwidth,
+                    itemHeight: this.legendStyle.itemheight,
+                    borderColor: this.legendStyle.bordercolor,
+                    borderWidth: this.legendStyle.borderwidth,
+                    splitList: splitList,
+                },
+                series: [{
+                    type: 'map',
+                    mapType: pName,
+                    selectedMode: 'multiple',
+                    label: {
+                        normal: {
+                            show: this.echartsLabel.show_label,
+                            position: this.echartsLabel.position,
+                            formatter: this.echartsLabel.formatter,
+                        },
+                        emphasis: {
+                            show: true
+                        }
+                    },
+                    roam: true,
+                    data: data.seriesData, //数据
+                }, ]
             };
             this.drawLine(option);
         },
@@ -2871,38 +2966,51 @@ export default {
         },
         addVisualComponentInfo() {
             let param = new FormData();
-            if (this.auto_comp_sum.chart_theme != 'table' && this.auto_table_info.chart_theme != 'card') {
+            if (this.auto_comp_sum.chart_type != 'table' && this.auto_table_info.chart_theme != 'card') {
                 if (this.checkifvalidate(this.auto_comp_sum.component_name)) {
                     this.$Msg.customizTitle('组件名称为空，请填写', 'warning');
                     return;
                 }
-                if (this.checkifvalidate(this.auto_comp_sum.title_name)) {
-                    this.$Msg.customizTitle('标题名称为空，请填写', 'warning');
-                    return;
-                }
-                if (this.checkifvalidate(this.xAxis.name)) {
-                    this.$Msg.customizTitle('横轴名称为空，请填写', 'warning');
-                    return;
-                }
-                if (this.checkifvalidate(this.yAxis.name)) {
-                    this.$Msg.customizTitle('纵轴名称为空，请填写', 'warning');
-                    return;
-                }
+                // if (this.checkifvalidate(this.auto_comp_sum.title_name)) {
+                //     this.$Msg.customizTitle('标题名称为空，请填写', 'warning');
+                //     return;
+                // }
                 let autoAxisInfos = [];
                 autoAxisInfos.push(this.xAxis);
                 autoAxisInfos.push(this.yAxis);
+                // 文本标签信息
+                param.append('auto_labelString', JSON.stringify(this.echartsLabel));
+                // 标题信息
                 param.append('titleFontString', JSON.stringify(this.titleFont));
-                param.append('axisStyleFontString', JSON.stringify(this.axisStyle));
-                param.append('autoAxisInfoString', JSON.stringify(autoAxisInfos));
-                param.append('xAxisLabelString', JSON.stringify(this.xAxisLabel));
-                param.append('yAxisLabelString', JSON.stringify(this.yAxisLabel));
-                param.append('xAxisLineString', JSON.stringify(this.xAxisLine));
-                param.append('yAxisLineString', JSON.stringify(this.yAxisLine));
-                param.append('auto_legend_infoString', JSON.stringify(this.legendStyle));
-                param.append('auto_chartsconfigString', '{}');
-                param.append('auto_labelString', '{}');
+                if (this.auto_comp_sum.chart_type != 'treemap') { // 矩形树图
+                    if (this.auto_comp_sum.chart_type != 'map') { // 地理坐标、地图
+                        if (this.checkifvalidate(this.xAxis.name)) {
+                            this.$Msg.customizTitle('横轴名称为空，请填写', 'warning');
+                            return;
+                        }
+                        if (this.checkifvalidate(this.yAxis.name)) {
+                            this.$Msg.customizTitle('纵轴名称为空，请填写', 'warning');
+                            return;
+                        }
+                        // 轴线字体信息
+                        param.append('axisStyleFontString', JSON.stringify(this.axisStyle));
+                        // 轴配置信息
+                        param.append('autoAxisInfoString', JSON.stringify(autoAxisInfos));
+                        // 轴标签配置信息
+                        param.append('xAxisLabelString', JSON.stringify(this.xAxisLabel));
+                        param.append('yAxisLabelString', JSON.stringify(this.yAxisLabel));
+                        // 轴线配置信息
+                        param.append('xAxisLineString', JSON.stringify(this.xAxisLine));
+                        param.append('yAxisLineString', JSON.stringify(this.yAxisLine));
+                    }
+                    // 图例信息
+                    param.append('auto_legend_infoString', JSON.stringify(this.legendStyle));
+                }
+                // 图表信息
+                param.append('auto_chartsconfigString', JSON.stringify(this.seriesStyle));
             }
-            if (this.auto_comp_sum.chart_theme == 'table') {
+            if (this.auto_comp_sum.chart_type == 'table') {
+                // 二维表设置
                 param.append('auto_table_infoString', JSON.stringify(this.auto_table_info));
             }
             let x_columns = [];
@@ -2919,7 +3027,7 @@ export default {
             })
             this.auto_comp_sum.data_source = this.formvalue;
             this.auto_comp_sum.sources_obj = this.input;
-            // this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_theme;
+            // this.auto_comp_sum.chart_type = this.auto_comp_sum.chart_type;
             this.fiflterConditionArr.forEach(val => {
                 obj = {
                     arithmetic_logic: val.realtion,
