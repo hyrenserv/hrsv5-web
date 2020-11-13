@@ -2535,7 +2535,7 @@ export default {
         initTitleStyle(result) {
             //设置标题属性
             var titles = {
-                text: this.auto_comp_sum.title_name,
+                text: this.auto_comp_sum.chart_theme,
                 x: this.titleFont.align,
                 y: this.titleFont.verticalalign,
                 backgroundColor: this.titleFont.backgroundcolor,
@@ -2966,15 +2966,11 @@ export default {
         },
         addVisualComponentInfo() {
             let param = new FormData();
-            if (this.auto_comp_sum.chart_type != 'table' && this.auto_table_info.chart_theme != 'card') {
+            if (this.auto_comp_sum.chart_type != 'table' && this.auto_table_info.chart_type != 'card') {
                 if (this.checkifvalidate(this.auto_comp_sum.component_name)) {
                     this.$Msg.customizTitle('组件名称为空，请填写', 'warning');
                     return;
                 }
-                // if (this.checkifvalidate(this.auto_comp_sum.title_name)) {
-                //     this.$Msg.customizTitle('标题名称为空，请填写', 'warning');
-                //     return;
-                // }
                 let autoAxisInfos = [];
                 autoAxisInfos.push(this.xAxis);
                 autoAxisInfos.push(this.yAxis);
@@ -3058,6 +3054,9 @@ export default {
                 x_columns: x_columns,
                 y_columns: y_columns,
             }));
+            if (this.auto_comp_sum.chart_theme == '') {
+                this.auto_comp_sum.chart_theme == this.auto_comp_sum.chart_type;
+            }
             param.append('auto_comp_sumString', JSON.stringify(this.auto_comp_sum));
             param.append('autoCompCondString', JSON.stringify(autoCompConds));
             param.append('autoCompGroupString', JSON.stringify(autoCompGroups));
