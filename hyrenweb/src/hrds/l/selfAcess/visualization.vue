@@ -187,7 +187,7 @@
                 </draggable>
             </div>
             <div style="font-size:16px;color:red;margin:6px 10px 0px 10px;">{{tips}}</div>
-            <div v-if="auto_comp_sum.chart_type=='table'" style="wdith:100%;overflow: auto;">
+            <div v-show="echart_type=='table'" style="wdith:100%;overflow: auto;">
                 <el-table id="tableStyle" size="medium" :data="echartTableData.slice((currPage - 1) * pageSize, currPage * pageSize)" style="width: 100%" :row-style="getRowStyle" :border="show_border" :stripe="show_stripe">
                     <el-table-column label="序号" width="64" align="center">
                         <template scope="scope">
@@ -199,59 +199,58 @@
                 </el-table>
                 <el-pagination @size-change="echartTableSizeChange" @current-change="echartCurrentChange" :current-page="currPage" :page-sizes="[5, 10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="echartTableData.length" class="locationcenter"></el-pagination>
             </div>
-            <div v-if="auto_comp_sum.chart_type=='card'" style="margin-bottom:10px;height:440px" class="thumbnails">
+            <div v-show="echart_type=='card'" style="margin-bottom:10px;height:440px" class="thumbnails">
                 <div style="transform: translate(-50%,-50%);top:50%;left:50%;position:absolute;">
                     <p id="cardp">{{auto_comp_sum.chart_theme}}</p>
                     <h1 id="carddiv"></h1>
                 </div>
             </div>
-            <div id="myChart" v-if="auto_comp_sum.chart_type!='table' && auto_comp_sum.chart_type!='card'" style="width:100%; height: 440px; margin-bottom: 25px"></div>
+            <div id="myChart" v-show="echart_type!='table' && echart_type!='card'" style="width:100%; height: 440px; margin-bottom: 25px"></div>
         </el-col>
         <el-col :span="7">
-            <el-select v-model="auto_comp_sum.chart_type" size="small" placeholder="请选择图表类型" style="width:98%;" clearable>
+            <el-select v-model="echart_type" size="small" placeholder="请选择图表类型" style="width:98%;" clearable @change="showChartType">
                 <el-option v-for="item in optionsCharts" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type == 'line' ">
+            <div style="margin-top:10px;" v-show="echart_type == 'line' ">
                 <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')" src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='bar'">
+            <div style="margin-top:10px;" v-show="echart_type =='bar'">
                 <img class="imgStyle" @click="echartshow('bar')" src="@/assets/images/chart/bar.png" alt="标准柱状图" title="标准柱状图">
                 <img class="imgStyle" @click="echartshow('stackingbar')" src="@/assets/images/chart/stacking-bar.png" alt="堆叠柱状图" title="堆叠柱状图">
                 <img class="imgStyle" @click="echartshow('polarbar')" src="@/assets/images/chart/bar-polar.png" alt="极坐标柱状图" title="极坐标柱状图">
             </div>
 
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='pie' ">
+            <div style="margin-top:10px;" v-show="echart_type =='pie' ">
                 <img class="imgStyle" @click="echartshow('pie')" src="@/assets/images/chart/pie.png" alt="标准饼图" title="标准饼图">
                 <img class="imgStyle" @click="echartshow('fasanpie')" src="@/assets/images/chart/pie-customized.png" alt="发散饼图" title="发散饼图">
                 <img class="imgStyle" @click="echartshow('huanpie')" src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='scatter'">
+            <div style="margin-top:10px;" v-show="echart_type =='scatter'">
                 <img class="imgStyle" @click="echartshow('scatter')" src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
-                <!--<img class="imgStyle" @click="echartshow('bubble')"-->
-                <!--src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
+                <img class="imgStyle" @click="echartshow('bubble')" src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='table'">
+            <div style="margin-top:10px;" v-show="echart_type =='table'">
                 <img class="imgStyle" @click="echartshow('table')" src="@/assets/images/chart/table.jpg" alt="二维表" title="二维表">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='card'">
+            <div style="margin-top:10px;" v-show="echart_type =='card'">
                 <img class="imgStyle" @click="echartshow('card')" src="@/assets/images/chart/card.jpg" alt="卡片" title="卡片">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='treemap'">
+            <div style="margin-top:10px;" v-show="echart_type =='treemap'">
                 <img class="imgStyle" @click="echartshow('treemap')" src="@/assets/images/chart/treemap.png" alt="矩形树图" title="矩形树图">
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='bl'">
+            <div style="margin-top:10px;" v-show="echart_type =='bl'">
                 <img class="imgStyle" @click="echartshow('bl')" src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
                 <!--<img class="imgStyle" @click="echartshow('blsimple')"-->
                 <!--src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">-->
             </div>
-            <div style="margin-top:10px;" v-if="auto_comp_sum.chart_type =='map'">
+            <div style="margin-top:10px;" v-show="echart_type =='map'">
                 <img class="imgStyle" @click="echartshow('map')" src="@/assets/images/chart/map.png" alt="地图" title="地图">
             </div>
             <div style="position: relative;">
                 <el-button v-if="auto_comp_sum.chart_type !='' && auto_comp_sum.chart_type !=undefined" size="mini" icon="el-icon-refresh" style="position: absolute;top:0;right:0;z-index:10;top:10px;right:4px;"></el-button>
                 <el-tabs type="border-card" size="mini" v-if="auto_comp_sum.chart_type !='' && auto_comp_sum.chart_type !=undefined">
-                    <el-tab-pane label="常规设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card'">
+                    <el-tab-pane label="常规设置" v-if="echart_type !='table' && echart_type !='card'">
                         <div style="height:170px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">图表背景颜色</span>
@@ -259,14 +258,14 @@
                                 <el-input v-model="auto_comp_sum.background" placeholder="图表背景颜色" size="small" class="selectPosition">
                                 </el-input>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type!='bubble' && auto_comp_sum.chart_type!='polarbar'">
                                 <span class="el-input-group__prepends">是否显示文本</span>
                                 <el-select v-model="echartsLabel.show_label" placeholder="是否显示文本" size="small" class="selectPosition">
                                     <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
                                     </el-option>
                                 </el-select>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type!='map'">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type!='map' && auto_comp_sum.chart_type!='bubble' && auto_comp_sum.chart_type!='polarbar'">
                                 <span class="el-input-group__prepends">文本显示位置</span>
                                 <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small" class="selectPosition" v-if="auto_comp_sum.chart_type!='pie' && auto_comp_sum.chart_type!='fasanpie' && auto_comp_sum.chart_type!='huanpie'">
                                     <el-option v-for="item in normalOptions.optionposition" :key="item.value" :label="item.value" :value="item.code">
@@ -277,7 +276,7 @@
                                     </el-option>
                                 </el-select>
                             </div>
-                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
+                            <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type!='bubble' && auto_comp_sum.chart_type!='polarbar'">
                                 <span class="el-input-group__prepends">文本格式化<el-tooltip class="item" effect="dark" placement="top" style="margin-left:-8px; color:black">
                                         <div slot="content"><span>{a}表示系列名 <br />{b}表示数据名<br />{c}表示数据值<br />{d}%表示百分比(饼图)</span></div>
                                         <i class="el-icon-question elIconInfo"></i>
@@ -302,7 +301,7 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="标题设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card'">
+                    <el-tab-pane label="标题设置" v-if="echart_type !='table' && echart_type !='card'">
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">名称</span>
@@ -374,7 +373,7 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="轴线设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card' && auto_comp_sum.chart_type!='treemap' && auto_comp_sum.chart_type!='map'">
+                    <el-tab-pane label="轴线设置" v-if="echart_type !='table' && echart_type !='card' && echart_type!='treemap' && echart_type!='map' && echart_type!='bubble' && echart_type!='polarbar'">
                         <el-tabs type="border-card" size="mini" style="margin-top:0px;">
                             <el-tab-pane label="横轴">
                                 <div style="height:240px;overflow:auto;">
@@ -623,7 +622,7 @@
                             </el-tab-pane>
                         </el-tabs>
                     </el-tab-pane>
-                    <el-tab-pane label="图例设置" v-if="auto_comp_sum.chart_type !='table' && auto_comp_sum.chart_type !='card' && auto_comp_sum.chart_type!='treemap'">
+                    <el-tab-pane label="图例设置" v-if="echart_type !='table' && echart_type !='card' && echart_type!='treemap' && echart_type!='bubble' && echart_type!='polarbar'">
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;" v-if="auto_comp_sum.chart_type !='map'">
                                 <span class="el-input-group__prepends">图例类型</span>
@@ -742,7 +741,7 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="二维表" v-if="auto_comp_sum.chart_type=='table'">
+                    <el-tab-pane label="二维表" v-if="echart_type=='table'">
                         <div style="height:300px;overflow:auto;">
                             <div style="width:100%;height:34px;margin-bottom:6px;  position: relative;">
                                 <span class="el-input-group__prepends">表头背景色</span>
@@ -771,7 +770,7 @@
                             <el-button class="previewData" @click="echartshow('table')">预览</el-button>
                         </div>
                     </el-tab-pane>
-                    <el-table-pane v-if="auto_comp_sum.chart_type=='card'" label="卡片">
+                    <el-table-pane v-if="echart_type=='card'" label="卡片">
                         <div class="input-group" style="margin-top:10px;">
                             <span class="el-input-group__prepends">标题名称</span>
                             <input type="text" class="selectPosition" v-model="auto_comp_sum.chart_type" autocomplete="off" />
@@ -879,7 +878,7 @@
     </el-dialog>
 </div>
 </template>
-
+<script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
 <script>
 import * as functionAll from "./selfAcess";
 import draggable from 'vuedraggable';
@@ -1318,7 +1317,8 @@ export default {
                 }, {
                     value: 'scatter',
                     label: '散点图',
-                }, {
+                }
+                , {
                     value: 'table',
                     label: '二维表',
                 },
@@ -1371,6 +1371,7 @@ export default {
                 zl_background: ""
             },
             color: ['#e5323e', '#003366', '#fc8c54', '#30ff3a'],
+            echart_type:''
         }
     },
     created() {
@@ -1430,6 +1431,7 @@ export default {
             }).then(res => {
                 if (res && res.success) {
                     this.auto_comp_sum = res.data.compSum;
+                    this.echart_type=res.data.compSum.chart_type
                     this.input = res.data.compSum.sources_obj;
                     this.formvalue = res.data.compSum.data_source;
                     this.markCodeIndex = res.data.compSum.data_source;
@@ -2270,9 +2272,14 @@ export default {
                     this.duliangArry.push(item);
             }
         },
+        showChartType(type){
+            this.echart_type=type;
+            this.echartshow(type)
+        },
         // 选择图标类型
         echartshow(type) {
             this.auto_comp_sum.chart_type = type;
+            this.echart_type=type;
             let xColumns = []
             let yColumns = [];
             //数据处理获取图信息
@@ -2304,9 +2311,11 @@ export default {
                 this.tips = "横轴为1个维度,纵轴为1个度量";
             } else if (type == "scatter") { //散点图
                 this.tips = "横轴,纵轴都必须为度量";
+            } else if (type == "bubble") { //气泡图
+                this.tips = "横轴为1个维度,纵轴为1个度量";
             } else if (type == "table") { // 二维表
                 this.tips = "直接根据SQL得到的结果进行展示";
-            } else if (type == "card") {
+            } else if (type == "card") { // 卡片
                 this.tips = "直接展示标题内容";
             } else if (type == "bl") { // 柱状折线混合图
                 this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
@@ -2318,12 +2327,6 @@ export default {
             if (this.checkifvalidate(this.markexe_sql)) {
                 this.$Msg.customizTitle("请先点击得到答案", "warning");
                 return;
-            }
-            if (type != 'card' && type != 'table') {
-                if (xColumns.length == 0 || yColumns.length == 0) {
-                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                    return;
-                }
             }
             functionAll.getChartShow({
                 exe_sql: this.markexe_sql,
@@ -2350,11 +2353,13 @@ export default {
                             return;
                         }
                         this.changeToStackingBarChart(xColumns, yColumns, type, res.data);
+                        this.echart_type="bar";
                     } else if (type == "polarbar") { //极坐标堆叠柱状图
                         if (xColumns.length > 1) {
                             this.$Msg.customizTitle("维度大于1，请修改", "warning");
                             return;
                         }
+                        this.echart_type="bar";
                         this.changeToPolarBarChart(xColumns, yColumns, type, res.data);
                     } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
                         if (xColumns.length > 1) {
@@ -2365,10 +2370,11 @@ export default {
                             this.$Msg.customizTitle("度量大于1，请修改", "warning");
                             return;
                         }
+                        this.echart_type="pie";
                         this.changeToPieChart(xColumns, yColumns, type, res.data);
                     } else if (type == "scatter") { // 标准散点图
                         if (xColumns.length > 1) {
-                            this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                            this.$Msg.customizTitle("度量大于1，请修改", "warning");
                             return;
                         }
                         if (yColumns.length > 1) {
@@ -2376,6 +2382,17 @@ export default {
                             return;
                         }
                         this.changeToScatterChart(xColumns, yColumns, type, res.data);
+                    } else if (type == "bubble") { // 气泡图
+                        // if (xColumns.length > 1) {
+                        //     this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                        //     return;
+                        // }
+                        // if (yColumns.length > 1) {
+                        //     this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                        //     return;
+                        // }
+                        // this.changeToBubbleChart(xColumns, yColumns, type, res.data);
+                        this.$Msg.customizTitle("正在开发中","warning")
                     } else if (type == "card") { // 卡片
                         this.changeToCard();
                     } else if (type == "table") { // 二维表
@@ -2383,7 +2400,7 @@ export default {
                         this.echartTableColumns = res.data.columns;
                         this.changeToTable();
                     } else if (type == "bl") { // 柱状折线混合图
-                        this.$Msg.customizTitle("正在开发中", "warning");
+                        this.changeToBlChart(xColumns, yColumns, type, res.data);
                     } else if (type == "treemap") { // 矩形树图
                         this.changeToTreemapChart(xColumns, yColumns, type, res.data);
                     } else if (type == "map") { // 地图
@@ -2550,7 +2567,7 @@ export default {
                     fontWeight: this.titleFont.fontweight,
                     lineHeight: this.titleFont.lineheight,
                 }
-            };
+            };result.titles
             result.titles = titles;
         },
         //初始化echart
@@ -2558,7 +2575,7 @@ export default {
             this.myChart = echarts.init(document.getElementById('myChart'));
             var myChart = this.myChart;
             myChart.clear();
-            myChart.setOption(option);
+            myChart.setOption(option, true)
         },
         // 折线图
         changeToAreaChart(x_columns, y_columns, type, data) {
@@ -2621,7 +2638,6 @@ export default {
                 xAxis: [
                     Object.assign({}, {
                         type: 'category',
-
                         data: data.xArray,
                         nameTextStyle: result.nameTextStyle,
                         axisLine: result.xaxisLine,
@@ -2719,6 +2735,72 @@ export default {
             }
             this.drawLine(option)
         },
+        // 柱状折线混合图
+        changeToBlChart(x_columns, y_columns, type, data) {
+            var legend_data = data.legend_data;
+            var seriesArray = data.seriesArray;
+            var xArray = data.xArray;
+
+            this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
+            this.xAxis.offset = parseInt(this.xAxis.offset);
+            this.xAxisLabel.margin = parseInt(this.xAxisLabel.margin);
+            this.yAxisLabel.margin = parseInt(this.yAxisLabel.margin);
+            this.xAxisLabel.formatter = this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter;
+            this.yAxisLabel.formatter = this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter;
+
+            this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
+            this.xAxis.type = "category";
+            this.xAxis.data = xArray;
+            this.xAxis.nameTextStyle = this.axisStyle;
+            this.xAxis.axisLine = this.xAxisLine;
+            this.xAxis.axisLabel = this.xAxisLabel;
+
+            this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
+            this.yAxis.type = "value";
+            this.yAxis.nameTextStyle = this.axisStyle;
+            this.yAxis.axisLine = this.yAxisLine;
+            this.yAxis.axisLabel = this.yAxisLabel;
+            this.yAxis.position = "";
+
+            var titles = transferOptionTitles(this.auto_comp_sum.chart_theme, this.titleFont);
+            this.legendStyle.data = legend_data;
+            this.legendStyle.padding = parseInt(this.legendStyle.padding);
+            this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
+            this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+
+            var itemStyles = transferSeriesItemStyle(this.echartsLabel);
+            for (var i = 0; i < seriesArray.length; i++) {
+                seriesArray[i].itemStyle = itemStyles;
+            }
+            let option = {
+                backgroundColor: this.auto_comp_sum.background,
+                title: titles,
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar', 'stack', 'tiled']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                legend: this.legendStyle,
+                xAxis: this.xAxis,
+                yAxis: [this.yAxis, this.yAxis],
+                series: seriesArray
+            };
+            this.drawLine(option);
+        },
         //饼图
         changeToPieChart(x_columns, y_columns, type, data) {
             //https://echarts.apache.org/examples/zh/editor.html?c=pie-rich-text
@@ -2783,6 +2865,15 @@ export default {
                 }]
             };
             this.drawLine(option)
+        },
+        //气泡图
+        changeToBubbleChart: function (x_columns, y_columns, type, data) {
+            this.myChart = echarts.init(document.getElementById('myChart'));
+            var myChart = this.myChart;
+            myChart.clear();
+            var result ={};
+            this.initTitleStyle(result);
+            renderBubbleChart(data.seriesData, document.getElementById('myChart'), result.titles, this.auto_comp_sum.background);
         },
         // 卡片
         changeToCard() {
