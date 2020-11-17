@@ -98,9 +98,9 @@ export default {
             })
         },
         getTablenameWords(execute_sql) { //根据sql查询的表名获取对应的字段
-            commons.getTableColumnInfoBySql({
-                sql: execute_sql
-            }).then(res => {
+            let param = new FormData();
+            param.append("sql",execute_sql);
+            commons.getTableColumnInfoBySql(param).then(res => {
                 let arr = [];
                 let arry = [];
                 res.data.forEach(item => {
