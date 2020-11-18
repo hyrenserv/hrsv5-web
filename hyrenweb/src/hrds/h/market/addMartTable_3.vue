@@ -18,7 +18,7 @@
             <el-input class="inputframe" type="textarea" :autosize="true" readonly v-model="querysql" />
         </el-row>
         <el-row>
-            <el-col :span="20">
+            <el-col :span="18">
                 <el-row>
                     <span>变量</span>
                 </el-row>
@@ -35,10 +35,12 @@
     <!--</el-form>-->
     <div slot="footer" class="dialog-footer">
         <el-button type="primary" size="medium" class="rightbtn" @click="excutmartjob()">立即执行</el-button>
-        <el-button type="primary" size="medium" class="rightbtn" @click="producefun()">生成作业</el-button>
+        <el-button type="success" size="medium" class="rightbtn" @click="producefun()">生成作业</el-button>
+        <el-button type="info" size="medium" class="rightbtn" @click="scriptfun()">生成脚本</el-button>
         <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
     </div>
 
+    <!-- 生成作业开始 -->
     <el-dialog title="生成作业" :visible.sync="dialogProdeceJobs" width="50%" class="alltable">
         <div slot="title">
             <span class="dialogtitle el-icon-caret-right">生成作业</span>
@@ -60,6 +62,7 @@
             <el-button type="primary" size="mini" @click="savemartjobtoetl()">确 定</el-button>
         </div>
     </el-dialog>
+    <!--生成作业结束-->
 
     <transition name="fade">
         <loading v-if="isLoading" />
@@ -165,6 +168,14 @@ export default {
             functionAll.queryAllEtlSys().then((res) => {
                 if (res && res.success) {
                     this.alletlsys = res.data;
+                }
+            })
+        },
+        //生成脚本
+        scriptfun() {
+            functionAll.generatingScript({"datatable_id": this.datatable_id}).then((res) => {
+                if (res && res.success) {
+                    this.$Msg.customizTitle('脚本生成成功!');
                 }
             })
         },

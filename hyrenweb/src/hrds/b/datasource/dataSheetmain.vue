@@ -18,7 +18,7 @@
 
     <!-- 实现点击编辑按钮进行数据更改-->
     <!-- 编辑的弹出表单 -->
-    <el-dialog title="编辑数据源" :visible.sync="dialogFormVisibleAdd" width="40%">
+    <el-dialog title="编辑数据源" v-dialogDrag :visible.sync="dialogFormVisibleAdd" width="40%">
         <el-form :model="formUpdate" ref="formUpdate">
             <el-form-item label=" 数据源编号" :label-width="formLabelWidth" >
                 <el-input v-model="formUpdate.datasource_number" autocomplete="off" placeholder="数据源编号" style="width:284px" :disabled="true"></el-input>
@@ -175,7 +175,7 @@ export default {
             functionAll.downloadFile({
                 source_id: this.source_id
             }).then((res) => {
-                this.filename = this.data[index].source_id;
+                this.filename = this.data[index].datasource_name;
                 const blob = new Blob([res.data]);
                 if (window.navigator.msSaveOrOpenBlob) {
                     // 兼容IE10
