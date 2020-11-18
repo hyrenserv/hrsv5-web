@@ -208,7 +208,6 @@
             <div id="myChart" v-show="echart_type!='card' && echart_type!='table'" style="width:100%; height: 440px; margin-bottom: 25px"></div>
         </el-col>
         <el-col :span="7">
-            {{echart_type}}-----{{value}}
             <el-select v-model="value" size="small" placeholder="请选择图表类型" style="width:98%;" @change="changeChartType">
                 <el-option v-for="item in optionsCharts" :key="item.value" :value="item.value" :label="item.label"></el-option>
             </el-select>
@@ -238,8 +237,7 @@
             </div>
             <div style="margin-top:10px;" v-show="value =='bl' || echart_type=='blsimple'">
                 <img class="imgStyle" @click="echartshow('bl')" src="@/assets/images/chart/bar-line.png" alt="柱状折线混合图" title="柱状折线混合图">
-                <!--<img class="imgStyle" @click="echartshow('blsimple')"-->
-                <!--src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">-->
+                <img class="imgStyle" @click="echartshow('blsimple')" src="@/assets/images/chart/barline-simple.png" alt="柱状折线混合图-简单" title="柱状折线混合图-简单">
             </div>
             <div style="margin-top:10px;" v-show="value =='map' || echart_type=='map'">
                 <img class="imgStyle" @click="echartshow('map')" src="@/assets/images/chart/map.png" alt="地图" title="地图">
@@ -2300,7 +2298,6 @@ export default {
         // 选择图标类型
         echartshow(type) {
             this.echart_type = type;
-            this.auto_comp_sum.chart_theme = type;
             this.auto_comp_sum.chart_type = type;
             let xColumns = []
             let yColumns = [];
@@ -2345,6 +2342,8 @@ export default {
                 this.tips = "横轴接受1至2个维度,按第一个维度分类,纵轴都必须为度量";
             } else if (type == "map") { // 地理坐标、地图
                 this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "blsimple") {
+                this.tips = "横轴为1个维度,纵轴必须为2个度量";
             }
             if (this.checkifvalidate(this.auto_comp_sum.exe_sql)) {
                 this.$Msg.customizTitle("请先点击得到答案", "warning");
@@ -2424,6 +2423,16 @@ export default {
                             this.$Msg.customizTitle("正在开发中", "warning")
                         } else if (type == "bl") { // 柱状折线混合图
                             this.changeToBlChart(xColumns, yColumns, type, res.data);
+                        } else if (type == "blsimple") { // 柱状折线混合图-简单
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            if (yColumns.length != 2) {
+                                this.$Msg.customizTitle("度量必须为2，请修改", "warning");
+                                return;
+                            }
+                            this.changeToBLSimpleChart(xColumns, yColumns, type, res.data);
                         } else if (type == "treemap") { // 矩形树图
                             this.changeToTreemapChart(xColumns, yColumns, type, res.data);
                         } else if (type == "map") { // 地图
@@ -2790,8 +2799,8 @@ export default {
             var titles = transferOptionTitles(this.auto_comp_sum.chart_theme, this.titleFont);
             this.legendStyle.data = legend_data;
             this.legendStyle.padding = parseInt(this.legendStyle.padding);
-            this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
-            this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
+            this.legendStyle.itemgap = parseInt(this.legendStyle.itemgap);
+            this.legendStyle.itemwidth = parseInt(this.legendStyle.itemwidth);
 
             var itemStyles = transferSeriesItemStyle(this.echartsLabel);
             for (var i = 0; i < seriesArray.length; i++) {
@@ -2823,6 +2832,106 @@ export default {
                 xAxis: this.xAxis,
                 yAxis: [this.yAxis, this.yAxis],
                 series: seriesArray
+            };
+            this.drawLine(option);
+        },
+        //柱状折线混合图-简单
+        changeToBLSimpleChart(x_columns, y_columns, type, blsimpleData) {
+            var xAxisdata = blsimpleData.xAxisData;
+            var series1Name = blsimpleData.series1Name;
+            var series1Data = blsimpleData.series1Data;
+            var series2Name = blsimpleData.series2Name;
+            var series2Data = blsimpleData.series2Data;
+
+            this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
+            this.xAxis.offset = parseInt(this.xAxis.offset);
+            this.xAxisLabel.margin = parseInt(this.xAxisLabel.margin);
+            this.yAxisLabel.margin = parseInt(this.yAxisLabel.margin);
+            this.xAxisLabel.formatter = this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter;
+            this.yAxisLabel.formatter = this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter;
+
+            this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
+            this.xAxis.type = "category";
+            this.xAxis.data = xAxisdata;
+            this.xAxis.nameTextStyle = this.axisStyle;
+            this.xAxis.axisLine = this.xAxisLine;
+            this.xAxis.axisLabel = this.xAxisLabel;
+            var xAxisPointer = {
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+            this.xAxis = Object.assign({}, this.xAxis, xAxisPointer);
+
+            this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
+            this.yAxis.type = "value";
+            this.yAxis.nameTextStyle = this.axisStyle;
+            this.yAxis.axisLine = this.yAxisLine;
+            this.yAxis.axisLabel = this.yAxisLabel;
+            this.yAxis.position = "";
+
+            var titles = transferOptionTitles(this.auto_comp_sum.chart_theme, this.titleFont);
+            this.legendStyle.data = [];
+            this.legendStyle.data.push(series1Name);
+            this.legendStyle.data.push(series2Name);
+            this.legendStyle.padding = parseInt(this.legendStyle.padding);
+            this.legendStyle.itemgap = parseInt(this.legendStyle.itemgap);
+            this.legendStyle.itemwidth = parseInt(this.legendStyle.itemwidth);
+
+            var option = {
+                backgroundColor: this.auto_comp_sum.background,
+                title: titles,
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    feature: {
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                legend: this.legendStyle,
+                xAxis: this.xAxis,
+                yAxis: [this.yAxis, this.yAxis],
+                series: [{
+                        name: series1Name,
+                        type: 'bar',
+                        yAxisIndex: 0,
+                        data: series1Data,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: this.echartsLabel.show_label,
+                                    position: this.echartsLabel.position,
+                                    formatter: this.echartsLabel.formatter,
+                                },
+                            }
+                        },
+                    },
+                    {
+                        name: series2Name,
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: series2Data,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: this.echartsLabel.show_label,
+                                    position: this.echartsLabel.position,
+                                    formatter: this.echartsLabel.formatter,
+                                },
+                            }
+                        },
+                    }
+                ]
             };
             this.drawLine(option);
         },
@@ -3178,9 +3287,6 @@ export default {
                 x_columns: x_columns,
                 y_columns: y_columns,
             }));
-            if (this.auto_comp_sum.chart_theme == '') {
-                this.auto_comp_sum.chart_theme == this.auto_comp_sum.chart_type;
-            }
             param.append('auto_comp_sumString', JSON.stringify(this.auto_comp_sum));
             param.append('autoCompCondString', JSON.stringify(autoCompConds));
             param.append('autoCompGroupString', JSON.stringify(autoCompGroups));
