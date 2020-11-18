@@ -210,15 +210,7 @@
         <el-col :span="7">
             {{echart_type}}-----{{value}}
             <el-select v-model="value" size="small" placeholder="请选择图表类型" style="width:98%;" @change="changeChartType">
-                <el-option value="line" label="折线图" key="line"></el-option>
-                <el-option value="bar" label="柱状图" key="bar"></el-option>
-                <el-option value="scatter" label="散点图" key="scatter"></el-option>
-                <el-option value="pie" label="饼图" key="pie"></el-option>
-                <el-option v-show="dynamicColumns.length==1 && echartTableData.length==1" value="card" label="卡片" key="card"></el-option>
-                <el-option value="table" label="二维表" key="table"></el-option>
-                <el-option value="treemap" label="矩形树图" key="treemap"></el-option>
-                <el-option value="bl" label="混合图" key="bl"></el-option>
-                <el-option value="map" label="地理坐标/地图" key="map"></el-option>
+                <el-option v-for="item in optionsCharts" :key="item.value" :value="item.value" :label="item.label"></el-option>
             </el-select>
             <div style="margin-top:10px;" v-show="value == 'line' || echart_type=='line'">
                 <img style="width:87px;height:70px;cursor:pointer;" @click="echartshow('line')" src="@/assets/images/chart/line.png" alt="标准折线图" title="标准折线图">
@@ -252,7 +244,7 @@
             <div style="margin-top:10px;" v-show="value =='map' || echart_type=='map'">
                 <img class="imgStyle" @click="echartshow('map')" src="@/assets/images/chart/map.png" alt="地图" title="地图">
             </div>
-            <div style="position: relative;" v-show="value !='table' && value !='card'">
+            <div style="position: relative;" v-show="value !='table' && value !='card' && value !='' && value !=undefined">
                 <el-button @click="refreshEchart" size="mini" icon="el-icon-refresh" style="position: absolute;top:0;right:0;z-index:10;top:10px;right:4px;"></el-button>
                 <el-tabs type="border-card" size="mini" v-if="value !='table' && value !='card'">
                     <el-tab-pane label="常规设置" v-if="value !='table' && value !='card'">
@@ -787,10 +779,12 @@
                 </div>
                 <div class="divStyle">
                     <span class="el-input-group__prepends">背景色</span>
+                    <el-color-picker v-model="titleFont.backgroundcolor" style="width:20px;height:20px;"></el-color-picker>
                     <el-input class="selectPosition" v-model="titleFont.backgroundcolor" placeholder="背景色" size="small" />
                 </div>
                 <div class="divStyle">
                     <span class="el-input-group__prepends">字体颜色</span>
+                    <el-color-picker v-model="titleFont.color" style="width:20px;height:20px;"></el-color-picker>
                     <el-input class="selectPosition" v-model="titleFont.color" placeholder="字体颜色" size="small" />
                 </div>
                 <div class="divStyle">
@@ -1309,6 +1303,31 @@ export default {
                 component_nam: '',
                 component_desc: '',
             },
+            optionsCharts: [{
+                value: 'line',
+                label: '折线图',
+            }, {
+                value: 'bar',
+                label: '柱状图',
+            }, {
+                value: 'pie',
+                label: '饼图',
+            }, {
+                value: 'scatter',
+                label: '散点图',
+            }, {
+                value: 'table',
+                label: '二维表',
+            }, {
+                value: 'treemap',
+                label: '矩形树图',
+            }, {
+                value: 'bl',
+                label: '混合图',
+            }, {
+                value: 'map',
+                label: '地理坐标/地图',
+            }],
             input1: '',
             input2: '',
             tips: '',
@@ -1453,6 +1472,7 @@ export default {
                     res.data.yAxisCol.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
                     })
+                    this.getColumnByName(this.auto_comp_sum.sources_obj,this.auto_comp_sum.data_source)
                     this.yValueArry = res.data.yAxisCol;
                     this.xAxis = res.data.xAxisInfo[0];
                     this.yAxis = res.data.yAxisInfo[0];
@@ -1647,7 +1667,8 @@ export default {
         },
         // 点击删除设置显示字段信息
         clickClose(item, index) {
-            this.optionsWords.splice(index, 1)
+            this.optionsWords.splice(index, 1);
+            this.disabled=false;
         },
         // 取消选择
         cancelSelect() {
@@ -1877,7 +1898,7 @@ export default {
         },
         // 删除分组条件
         clickCloseGroupWords(item, index) {
-            this.groupCondtionArr.splice(index, 1)
+            this.groupCondtionArr.splice(index, 1);
         },
         // 添加过滤条件
         fiflterCondition() {
@@ -2199,6 +2220,12 @@ export default {
                     } else {
                         this.isDataShow = false;
                     }
+                    if (res.data.visualComponentList.length == 1 && res.data.columnList.length == 1) {
+                        this.optionsCharts.push({
+                            value: 'card',
+                            label: '卡片',
+                        })
+                    }
                 }
             })
         },
@@ -2255,7 +2282,7 @@ export default {
             }
         },
         // 改变图标类型
-        changeChartType() {
+        changeChartType(row) {
             this.$forceUpdate();
             this.echart_type = this.value;
             if (this.value == 'table' || this.value == 'card') {
@@ -3317,7 +3344,7 @@ export default {
 
 .previewData {
     position: absolute;
-    width: 100%;
+    width: 29%;
     height: 33px;
 }
 
