@@ -740,7 +740,7 @@
 
             </div>
             <!--二维表-->
-            <div style="height:300px;overflow:auto;margin-top:55px" v-show="value=='table'">
+            <div style="height:300px;overflow:auto;margin-top:26px" v-show="value=='table'">
                 <div class="divStyle">
                     <span class="el-input-group__prepends">表头背景色</span>
                     <el-color-picker v-model="auto_table_info.th_background" style="width:20px;height:20px;"></el-color-picker>
@@ -768,7 +768,7 @@
                 <el-button class="previewData" @click="echartshow('table')">预览</el-button>
             </div>
             <!--卡片-->
-            <div style="height:300px;overflow:auto;margin-top:55px" v-show="value=='card'">
+            <div style="height:360px;overflow:auto;margin-top:26px" v-show="value=='card'">
                 <div class="divStyle">
                     <span class="el-input-group__prepends">标题名称</span>
                     <el-input class="selectPosition" v-model="auto_comp_sum.chart_theme" placeholder="标题名称" size="small" />
@@ -1340,7 +1340,6 @@ export default {
             originalweiduArry: [],
             duliangArry: [],
             originalduliangArry: [],
-            markexe_sql: '',
             markarrx: [],
             markarry: [],
             //图表配置
@@ -1464,6 +1463,9 @@ export default {
                         itemAll.nameAll = itemAll.column_name;
                     })
                     this.groupCondtionArr = res.data.compGroup;
+                    if (this.echart_type == 'card') {
+                        this.showNum = 1;
+                    }
                     this.getAnswer(true);
                     res.data.xAxisCol.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
@@ -1472,7 +1474,7 @@ export default {
                     res.data.yAxisCol.forEach(itemAll => {
                         itemAll.nameAll = itemAll.column_name;
                     })
-                    this.getColumnByName(this.auto_comp_sum.sources_obj,this.auto_comp_sum.data_source)
+                    this.getColumnByName(this.auto_comp_sum.sources_obj, this.auto_comp_sum.data_source)
                     this.yValueArry = res.data.yAxisCol;
                     this.xAxis = res.data.xAxisInfo[0];
                     this.yAxis = res.data.yAxisInfo[0];
@@ -1668,7 +1670,7 @@ export default {
         // 点击删除设置显示字段信息
         clickClose(item, index) {
             this.optionsWords.splice(index, 1);
-            this.disabled=false;
+            this.disabled = false;
         },
         // 取消选择
         cancelSelect() {
@@ -2138,9 +2140,12 @@ export default {
             functionAll.getSqlByCondition(parama).then(res => {
                 this.loadingsearch = false;
                 if (res && res.success) {
-                    this.markexe_sql = res.data;
+                    this.auto_comp_sum.exe_sql = res.data;
+                    this.getVisualComponentResult(this.auto_comp_sum.exe_sql, this.showNum)
                     if (flag) {
-                        this.echartshow(this.echart_type);
+                        setTimeout(() => {
+                            this.echartshow(this.echart_type);
+                        }, 2000);
                     }
                     if (!flag) {
                         this.weiduArry = [];
@@ -2185,7 +2190,6 @@ export default {
                             }
                         });
                     }
-                    this.getVisualComponentResult(res.data, this.showNum)
                 }
             })
         },
@@ -2342,7 +2346,7 @@ export default {
             } else if (type == "map") { // 地理坐标、地图
                 this.tips = "横轴为1个维度,纵轴为1个度量";
             }
-            if (this.checkifvalidate(this.markexe_sql)) {
+            if (this.checkifvalidate(this.auto_comp_sum.exe_sql)) {
                 this.$Msg.customizTitle("请先点击得到答案", "warning");
                 return;
             }
@@ -2357,7 +2361,7 @@ export default {
                 this.changeToTable();
             } else { // 其他图表类型
                 functionAll.getChartShow({
-                    exe_sql: this.markexe_sql,
+                    exe_sql: this.auto_comp_sum.exe_sql,
                     x_columns: xColumns,
                     y_columns: yColumns,
                     chart_type: type,
@@ -3126,6 +3130,10 @@ export default {
                 // 二维表设置
                 param.append('auto_table_infoString', JSON.stringify(this.auto_table_info));
             }
+            if (this.value == 'card') {
+                // 标题信息
+                param.append('titleFontString', JSON.stringify(this.titleFont));
+            }
             let x_columns = [];
             let y_columns = [];
             let obj = {};
@@ -3344,8 +3352,11 @@ export default {
 
 .previewData {
     position: absolute;
+    background-color: #F5F7FA;
+    color: #909399;
     width: 29%;
     height: 33px;
+    margin-bottom: -6px;
 }
 
 /*滚动条样式*/
