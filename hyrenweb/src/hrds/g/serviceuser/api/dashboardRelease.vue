@@ -64,6 +64,7 @@
 
 <script>
 import * as interfaceFunctionAll from "./api";
+import * as config from "../../../../../vue.config";
 
 export default {
     name: "dashboardRelease",
@@ -96,12 +97,6 @@ export default {
                     isRequired: '必填',
                     remark: '请求路径(dashboardRelease)',
                 },
-                {
-                    field: 'interface_code',
-                    fieldType: 'String',
-                    isRequired: '必填(MTAwMzM2MDM4OA==)',
-                    remark: '接口编码',
-                }
             ],
             errorData: [{
                     state: 'UNAUTHORIZED',
@@ -134,9 +129,15 @@ export default {
         $route(to, from) {
             this.$router.go(0)
         },
-        
+
     },
     mounted() {
+        this.tableData.push({
+            field: 'interface_code',
+            fieldType: 'String',
+            isRequired: '必填(' + this.$route.query.interface_code + ')',
+            remark: '接口编码',
+        })
         this.getIpAndPort();
     },
     methods: {
@@ -144,12 +145,12 @@ export default {
         getIpAndPort() {
             interfaceFunctionAll.getIpAndPort()
                 .then(res => {
-                    this.ipAndPort = "http://" + res.data +
-                        "/L/action/hrds/l/biz/autoanalysis/operate/getDataDashboardInfoById";
-                    this.requestAddressForToken =
-                        this.ipAndPort + "?token=abcdef&url=showReleaseDashboard" + this.$route.query.url + "&interface_code=MTAwMzM2MDM4OA=="
+                    this.ipAndPort = "http://" + res.data.split(":")[0] +
+                        ":" + config.devServer.port + "/#/showReleaseDashboard";
+                    this.requestAddressForToken = this.ipAndPort + "?token=abcdef" +
+                        "&url=" + this.$route.query.url + "&interface_code=" + this.$route.query.interface_code
                     this.requestAddress = this.ipAndPort + "?user_id=1005&user_password=111111" +
-                        "&url=" + this.$route.query.url + "&interface_code=MTAwMzM2MDM4OA=="
+                        "&url=" + this.$route.query.url + "&interface_code=" + this.$route.query.interface_code
                 })
         },
     }

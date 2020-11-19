@@ -29,7 +29,7 @@
         <el-table-column label="接口使用API查看" align="left" prop="interface_name">
             <template slot-scope="scope">
                 <router-link :to="{path:scope.row.url,query:{interface_use_id:scope.row.interface_use_id,
-                            url:scope.row.url}}" :key="scope.row.interface_use_id">
+                            url:scope.row.url,interface_code:scope.row.interface_code}}" :key="scope.row.interface_use_id">
                     <el-button size="mini" type="text" class='editcolor'>
                         {{scope.row.interface_name}}
                     </el-button>
