@@ -208,6 +208,7 @@
             <div id="myChart" v-show="echart_type!='card' && echart_type!='table'" style="width:100%; height: 440px; margin-bottom: 25px"></div>
         </el-col>
         <el-col :span="7">
+            {{value}}---{{echart_type}}
             <el-select v-model="value" size="small" placeholder="请选择图表类型" style="width:98%;" @change="changeChartType">
                 <el-option v-for="item in optionsCharts" :key="item.value" :value="item.value" :label="item.label"></el-option>
             </el-select>
@@ -225,11 +226,11 @@
                 <img class="imgStyle" @click="echartshow('fasanpie')" src="@/assets/images/chart/pie-customized.png" alt="发散饼图" title="发散饼图">
                 <img class="imgStyle" @click="echartshow('huanpie')" src="@/assets/images/chart/pie-doughnut.png" alt="环形饼图" title="环形饼图">
             </div>
-            <div style="margin-top:10px;" v-if="value =='scatter' || echart_type=='bubble'">
+            <div style="margin-top:10px;" v-show="value =='scatter' || echart_type=='bubble'">
                 <img class="imgStyle" @click="echartshow('scatter')" src="@/assets/images/chart/scatter.png" alt="标准散点图" title="标准散点图">
                 <img class="imgStyle" @click="echartshow('bubble')" src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">
             </div>
-            <div style="margin-top:10px;" v-show="value =='card'">
+            <div style="margin-top:10px;" v-show="value =='card' || echart_type=='card'">
                 <img class="imgStyle" @click="echartshow('card')" src="@/assets/images/chart/card.jpg" alt="卡片" title="卡片">
             </div>
             <div style="margin-top:10px;" v-show="value =='treemap' || echart_type=='treemap'">
@@ -1473,17 +1474,39 @@ export default {
                         itemAll.nameAll = itemAll.column_name;
                     })
                     this.getColumnByName(this.auto_comp_sum.sources_obj, this.auto_comp_sum.data_source)
-                    this.yValueArry = res.data.yAxisCol;
-                    this.xAxis = res.data.xAxisInfo[0];
-                    this.yAxis = res.data.yAxisInfo[0];
-                    this.xAxisLine = res.data.xAxisLine;
-                    this.yAxisLine = res.data.yAxisLine;
-                    this.xAxisLabel = res.data.xAxisLabel;
-                    this.yAxisLabel = res.data.yAxisLabel;
-                    this.legendStyle = res.data.legendInfo;
-                    this.titleFont = res.data.titleFontInfo;
-                    this.axisStyle = res.data.axisFontInfo;
-                    this.auto_table_info = res.data.twoDimensionalTable;
+                    if (res.data.yAxisCol != '' && res.data.yAxisCol != undefined) {
+                        this.yValueArry = res.data.yAxisCol;
+                    }
+                    if (res.data.xAxisInfo != '' && res.data.xAxisInfo != undefined) {
+                        this.xAxis = res.data.xAxisInfo[0];
+                    }
+                    if (res.data.yAxisInfo != '' && res.data.yAxisInfo != undefined) {
+                        this.yAxis = res.data.yAxisInfo[0];
+                    }
+                    if (res.data.xAxisLine != '' && res.data.xAxisLine != undefined) {
+                        this.xAxisLine = res.data.xAxisLine;
+                    }
+                    if (res.data.yAxisLine != '' && res.data.yAxisLine != undefined) {
+                        this.yAxisLine = res.data.yAxisLine;
+                    }
+                    if (res.data.xAxisLabel != '' && res.data.xAxisLabel != undefined) {
+                        this.xAxisLabel = res.data.xAxisLabel;
+                    }
+                    if (res.data.yAxisLabel != '' && res.data.yAxisLabel != undefined) {
+                        this.yAxisLabel = res.data.yAxisLabel;
+                    }
+                    if (res.data.legendInfo != '' && res.data.legendInfo != undefined) {
+                        this.legendStyle = res.data.legendInfo;
+                    }
+                    if (res.data.titleFontInfo != '' && res.data.titleFontInfo != undefined) {
+                        this.titleFont = res.data.titleFontInfo;
+                    }
+                    if (res.data.axisFontInfo != '' && res.data.axisFontInfo != undefined) {
+                        this.axisStyle = res.data.axisFontInfo;
+                    }
+                    if (res.data.twoDimensionalTable != '' && res.data.twoDimensionalTable != undefined) {
+                        this.auto_table_info = res.data.twoDimensionalTable;
+                    }
                 }
             });
         },
@@ -2284,12 +2307,16 @@ export default {
             }
         },
         // 改变图标类型
-        changeChartType(row) {
-            this.$forceUpdate();
+        changeChartType() {
+            // this.$forceUpdate();
+            setTimeout(() => {
+                this.$set(this.optionsCharts, 'value', this.value)
+            }, 5000);
             this.echart_type = this.value;
             if (this.value == 'table' || this.value == 'card') {
                 this.echartshow(this.value)
             }
+            console.log(this.value, this.echart_type);
         },
         // 刷新echart
         refreshEchart() {
