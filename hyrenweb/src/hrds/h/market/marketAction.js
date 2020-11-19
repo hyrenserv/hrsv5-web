@@ -559,6 +559,10 @@ export function generatingScript(data) {
     return request({
         url: '/H/scriptsql/generatingScript',
         params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
 

@@ -36,7 +36,7 @@
     <div slot="footer" class="dialog-footer">
         <el-button type="primary" size="medium" class="rightbtn" @click="excutmartjob()">立即执行</el-button>
         <el-button type="success" size="medium" class="rightbtn" @click="producefun()">生成作业</el-button>
-        <el-button type="info" size="medium" class="rightbtn" @click="scriptfun()">生成脚本</el-button>
+        <el-button type="primary" size="medium" class="rightbtn" @click="scriptfun()">下载脚本</el-button>
         <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
     </div>
 
@@ -173,9 +173,30 @@ export default {
         },
         //生成脚本
         scriptfun() {
-            functionAll.generatingScript({"datatable_id": this.datatable_id}).then((res) => {
-                if (res && res.success) {
-                    this.$Msg.customizTitle('脚本生成成功!');
+            functionAll.generatingScript({
+                "datatable_id": this.datatable_id
+            }).then((res) => {
+                if (res) {
+                    let filename = res.headers['content-disposition'].split('=')[1]
+                    const blob = new Blob([res.data]);
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, this.filename);
+                    } else {
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        aTag.download = filename;
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
+                    }
                 }
             })
         },
