@@ -719,7 +719,7 @@
                 if ('undefined' !== typeof data.file_id && data.file_id != "") {
                     functionAll.queryAllColumnOnTableName({
                         'source': data.data_layer,
-                        'id': data.id
+                        'id': data.file_id
                     }).then((res) => {
                         this.tablecolumn = res.data.columnresult;
                         this.sqltablename = res.data.tablename;
