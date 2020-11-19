@@ -338,7 +338,6 @@ export default {
             }).then(res => {
                 let ccc = res.data
                 ccc.forEach((item, index) => {
-                    console.log(this.zipperData);
                     if (this.zipperData.includes(item.code)) {
                         this.allstoragetype.push(item)
                     }

@@ -150,7 +150,6 @@ export function getDataBySQL(data) {
 
 //根据sql,解析,获取字段
 export function getColumnBySql(data) {
-    debugger;
     return request({
         url: '/H/market/getColumnBySql',
         data: data,
@@ -551,6 +550,14 @@ export function savePrePolymerization(data) {
 export function deletePrePolymerization(data) {
     return request({
         url: '/H/market/deletePrePolymerization',
+        params: data,
+    })
+}
+
+//生成作业脚本
+export function generatingScript(data) {
+    return request({
+        url: '/H/scriptsql/generatingScript',
         params: data,
     })
 }
