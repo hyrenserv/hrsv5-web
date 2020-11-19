@@ -11,8 +11,8 @@ export function getAllDslInMart() {
 }
 
 /**
-* 获取登录用户数据集市首页信息
-*/
+ * 获取登录用户数据集市首页信息
+ */
 export function getMarketInfo() {
     return request({
         url: '/H/market/getMarketInfo'
@@ -31,9 +31,9 @@ export function addMarket(data) {
 }
 
 /**
-* 获取登录用户集市查询存储配置表
-* @param data
-*/
+ * 获取登录用户集市查询存储配置表
+ * @param data
+ */
 export function searchDataStore() {
     return request({
         url: '/H/market/searchDataStore'
@@ -143,15 +143,18 @@ export function deleteDMDataTable(data) {
 export function getDataBySQL(data) {
     return request({
         url: '/H/market/getDataBySQL',
-        params: data
+        headers: { 'Content-Type': 'multipart/form-data' },
+        data: data
     })
 }
 
 //根据sql,解析,获取字段
 export function getColumnBySql(data) {
+    debugger;
     return request({
         url: '/H/market/getColumnBySql',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 
@@ -446,7 +449,8 @@ export function saveDmCategory(data) {
 export function getIfRelationDatabase(data) {
     return request({
         url: '/H/market/getIfRelationDatabase',
-        params: data
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
 
