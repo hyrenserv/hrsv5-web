@@ -60,18 +60,18 @@
         </el-table-column>
         <el-table-column label="类型描述" prop="value_size" align='center' show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="是否必填" align='center' width="120">
-            <template slot-scope="scope">
-                <el-radio-group v-model="scope.row.is_required" v-if="scope.row.is_required ==0">
-                    <el-radio :label="'1'">是</el-radio>
-                    <el-radio :label="'0'">否</el-radio>
-                </el-radio-group>
-                <el-radio-group v-model="scope.row.is_required" v-else disabled>
-                    <el-radio :label="'1'">是</el-radio>
-                    <el-radio :label="'0'">否</el-radio>
-                </el-radio-group>
-            </template>
-        </el-table-column>
+        <!--<el-table-column label="是否必填" align='center' width="120">-->
+            <!--<template slot-scope="scope">-->
+                <!--<el-radio-group v-model="scope.row.is_required" v-if="scope.row.is_required ==0">-->
+                    <!--<el-radio :label="'1'">是</el-radio>-->
+                    <!--<el-radio :label="'0'">否</el-radio>-->
+                <!--</el-radio-group>-->
+                <!--<el-radio-group v-model="scope.row.is_required" v-else disabled>-->
+                    <!--<el-radio :label="'1'">是</el-radio>-->
+                    <!--<el-radio :label="'0'">否</el-radio>-->
+                <!--</el-radio-group>-->
+            <!--</template>-->
+        <!--</el-table-column>-->
     </el-table>
     <el-row v-if="dynamicColumnTable.length >0" style="margin-bottom:20px;">
         <el-row class="elRows">
