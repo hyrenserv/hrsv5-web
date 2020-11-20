@@ -2607,7 +2607,6 @@ export default {
                 nameLocation: this.xAxis.namelocation,
                 nameRotate: this.xAxis.namerotate,
                 nameGap: this.xAxis.namegap,
-                data: this.xAxis.data
             }
             if (this.echart_type == 'blsimple') {
                 xAxis.xAxisPointer = {
@@ -2615,6 +2614,7 @@ export default {
                         type: 'shadow'
                     }
                 }
+                xAxis.data=this.xAxis.data
             }
             result.xAxis = xAxis;
             // y轴配置信息
