@@ -208,7 +208,6 @@
             <div id="myChart" v-show="echart_type!='card' && echart_type!='table'" style="width:100%; height: 440px; margin-bottom: 25px"></div>
         </el-col>
         <el-col :span="7">
-            {{value}}---{{echart_type}}
             <el-select v-model="value" size="small" placeholder="请选择图表类型" style="width:98%;" @change="changeChartType">
                 <el-option v-for="item in optionsCharts" :key="item.value" :value="item.value" :label="item.label"></el-option>
             </el-select>
@@ -1427,6 +1426,8 @@ export default {
                         this.value = 'scatter';
                     } else if (this.echart_type == 'fasanpie' || this.echart_type == 'huanpie') {
                         this.value = 'pie';
+                    } else if (this.echart_type == 'blsimple') {
+                        this.value = 'bl';
                     } else {
                         this.value = res.data.compSum.chart_type;
                     }
@@ -1474,37 +1475,43 @@ export default {
                         itemAll.nameAll = itemAll.column_name;
                     })
                     this.getColumnByName(this.auto_comp_sum.sources_obj, this.auto_comp_sum.data_source)
-                    if (res.data.yAxisCol != '' && res.data.yAxisCol != undefined) {
+                    if (res.data.xAxisCol != '' && res.data.xAxisCol != undefined && res.data.xAxisCol.length != 0) {
+                        this.xValueArry = res.data.xAxisCol;
+                    }
+                    if (res.data.yAxisCol != '' && res.data.yAxisCol != undefined && res.data.yAxisCol.length != 0) {
                         this.yValueArry = res.data.yAxisCol;
                     }
-                    if (res.data.xAxisInfo != '' && res.data.xAxisInfo != undefined) {
-                        this.xAxis = res.data.xAxisInfo[0];
-                    }
-                    if (res.data.yAxisInfo != '' && res.data.yAxisInfo != undefined) {
-                        this.yAxis = res.data.yAxisInfo[0];
-                    }
-                    if (res.data.xAxisLine != '' && res.data.xAxisLine != undefined) {
-                        this.xAxisLine = res.data.xAxisLine;
-                    }
-                    if (res.data.yAxisLine != '' && res.data.yAxisLine != undefined) {
-                        this.yAxisLine = res.data.yAxisLine;
-                    }
-                    if (res.data.xAxisLabel != '' && res.data.xAxisLabel != undefined) {
-                        this.xAxisLabel = res.data.xAxisLabel;
-                    }
-                    if (res.data.yAxisLabel != '' && res.data.yAxisLabel != undefined) {
-                        this.yAxisLabel = res.data.yAxisLabel;
-                    }
-                    if (res.data.legendInfo != '' && res.data.legendInfo != undefined) {
-                        this.legendStyle = res.data.legendInfo;
-                    }
-                    if (res.data.titleFontInfo != '' && res.data.titleFontInfo != undefined) {
+                    if (res.data.titleFontInfo != '' && res.data.titleFontInfo != undefined && JSON.stringify(res.data.titleFontInfo) != '{}') {
                         this.titleFont = res.data.titleFontInfo;
                     }
-                    if (res.data.axisFontInfo != '' && res.data.axisFontInfo != undefined) {
+                    if (res.data.axisFontInfo != '' && res.data.axisFontInfo != undefined && JSON.stringify(res.data.axisFontInfo) != '{}') {
                         this.axisStyle = res.data.axisFontInfo;
                     }
-                    if (res.data.twoDimensionalTable != '' && res.data.twoDimensionalTable != undefined) {
+                    if (res.data.xAxisInfo != '' && res.data.xAxisInfo != undefined && JSON.stringify(res.data.xAxisInfo) != '{}') {
+                        this.xAxis = res.data.xAxisInfo[0];
+                    }
+                    if (res.data.yAxisInfo != '' && res.data.yAxisInfo != undefined && JSON.stringify(res.data.yAxisInfo) != '{}') {
+                        this.yAxis = res.data.yAxisInfo[0];
+                    }
+                    if (res.data.xAxisLine != '' && res.data.xAxisLine != undefined && JSON.stringify(res.data.xAxisLine) != '{}') {
+                        this.xAxisLine = res.data.xAxisLine;
+                    }
+                    if (res.data.yAxisLine != '' && res.data.yAxisLine != undefined && JSON.stringify(res.data.yAxisLine) != '{}') {
+                        this.yAxisLine = res.data.yAxisLine;
+                    }
+                    if (res.data.xAxisLabel != '' && res.data.xAxisLabel != undefined && JSON.stringify(res.data.xAxisLabel) != '{}') {
+                        this.xAxisLabel = res.data.xAxisLabel;
+                    }
+                    if (res.data.yAxisLabel != '' && res.data.yAxisLabel != undefined && JSON.stringify(res.data.yAxisLabel) != '{}') {
+                        this.yAxisLabel = res.data.yAxisLabel;
+                    }
+                    if (res.data.legendInfo != '' && res.data.legendInfo != undefined && JSON.stringify(res.data.legendInfo) != '{}') {
+                        this.legendStyle = res.data.legendInfo;
+                    }
+                    if (res.data.textLabel != '' && res.data.textLabel != undefined && JSON.stringify(res.data.textLabel) != '{}') {
+                        this.echartsLabel = res.data.textLabel;
+                    }
+                    if (res.data.twoDimensionalTable != '' && res.data.twoDimensionalTable != undefined && JSON.stringify(res.data.twoDimensionalTable) != '{}') {
                         this.auto_table_info = res.data.twoDimensionalTable;
                     }
                 }
@@ -2308,15 +2315,11 @@ export default {
         },
         // 改变图标类型
         changeChartType() {
-            // this.$forceUpdate();
-            setTimeout(() => {
-                this.$set(this.optionsCharts, 'value', this.value)
-            }, 5000);
             this.echart_type = this.value;
+            this.changeTips(this.value);
             if (this.value == 'table' || this.value == 'card') {
                 this.echartshow(this.value)
             }
-            console.log(this.value, this.echart_type);
         },
         // 刷新echart
         refreshEchart() {
@@ -2347,31 +2350,7 @@ export default {
                     }
                 })
             }
-            if (type == 'line') { // 折线图
-                this.tips = "横轴为1个维度,纵轴接受多个度量";
-            } else if (type == 'bar' || type == 'stackingbar') { // 标准柱状图、堆叠柱状图
-                this.tips = "横轴为1个维度,纵轴接受多个度量";
-            } else if (type == "polarbar") { // 极坐标柱状图
-                this.tips = "横轴为1个维度,纵轴为1个度量";
-            } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
-                this.tips = "横轴为1个维度,纵轴为1个度量";
-            } else if (type == "scatter") { //散点图
-                this.tips = "横轴,纵轴都必须为度量";
-            } else if (type == "bubble") { //气泡图
-                this.tips = "横轴为1个维度,纵轴为1个度量";
-            } else if (type == "table") { // 二维表
-                this.tips = "直接根据SQL得到的结果进行展示";
-            } else if (type == "card") { // 卡片
-                this.tips = "直接展示标题内容";
-            } else if (type == "bl") { // 柱状折线混合图
-                this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
-            } else if (type == "treemap") { // 矩形树图
-                this.tips = "横轴接受1至2个维度,按第一个维度分类,纵轴都必须为度量";
-            } else if (type == "map") { // 地理坐标、地图
-                this.tips = "横轴为1个维度,纵轴为1个度量";
-            } else if (type == "blsimple") {
-                this.tips = "横轴为1个维度,纵轴必须为2个度量";
-            }
+            this.changeTips(type);
             if (this.checkifvalidate(this.auto_comp_sum.exe_sql)) {
                 this.$Msg.customizTitle("请先点击得到答案", "warning");
                 return;
@@ -2394,11 +2373,15 @@ export default {
                 }).then(res => {
                     if (res && res.success) {
                         if (type == 'line') { //折线图
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
                             if (xColumns.length > 1) {
                                 this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                 return;
                             }
-                            this.changeToAreaChart(xColumns, yColumns, type, res.data)
+                            this.changeToLine(xColumns, yColumns, type, res.data)
                         } else if (type == 'bar') { //标准柱状图
                             if (xColumns.length > 1) {
                                 this.$Msg.customizTitle("维度大于1，请修改", "warning");
@@ -2418,6 +2401,10 @@ export default {
                             }
                             this.changeToPolarBarChart(xColumns, yColumns, type, res.data);
                         } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
                             if (xColumns.length > 1) {
                                 this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                 return;
@@ -2428,6 +2415,10 @@ export default {
                             }
                             this.changeToPieChart(xColumns, yColumns, type, res.data);
                         } else if (type == "scatter") { // 标准散点图
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
                             if (xColumns.length > 1) {
                                 this.$Msg.customizTitle("度量大于1，请修改", "warning");
                                 return;
@@ -2449,8 +2440,16 @@ export default {
                             // this.changeToBubbleChart(xColumns, yColumns, type, res.data);
                             this.$Msg.customizTitle("正在开发中", "warning")
                         } else if (type == "bl") { // 柱状折线混合图
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
                             this.changeToBlChart(xColumns, yColumns, type, res.data);
                         } else if (type == "blsimple") { // 柱状折线混合图-简单
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
                             if (xColumns.length > 1) {
                                 this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                 return;
@@ -2461,8 +2460,24 @@ export default {
                             }
                             this.changeToBLSimpleChart(xColumns, yColumns, type, res.data);
                         } else if (type == "treemap") { // 矩形树图
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
                             this.changeToTreemapChart(xColumns, yColumns, type, res.data);
                         } else if (type == "map") { // 地图
+                            if (xColumns.length == 0 || yColumns.length == 0) {
+                                this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                                return;
+                            }
+                            if (xColumns.length > 1) {
+                                this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                return;
+                            }
+                            if (yColumns.length > 1) {
+                                this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                return;
+                            }
                             //定义全国省份的数组
                             var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
                                 'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
@@ -2487,6 +2502,33 @@ export default {
                         }
                     }
                 })
+            }
+        },
+        changeTips(type) {
+            if (type == 'line') { // 折线图
+                this.tips = "横轴为1个维度,纵轴接受多个度量";
+            } else if (type == 'bar' || type == 'stackingbar') { // 标准柱状图、堆叠柱状图
+                this.tips = "横轴为1个维度,纵轴接受多个度量";
+            } else if (type == "polarbar") { // 极坐标柱状图
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "scatter") { //散点图
+                this.tips = "横轴,纵轴都必须为度量";
+            } else if (type == "bubble") { //气泡图
+                this.tips = "横轴为1个维度,纵轴为1个度量";
+            } else if (type == "table") { // 二维表
+                this.tips = "直接根据SQL得到的结果进行展示";
+            } else if (type == "card") { // 卡片
+                this.tips = "直接展示标题内容";
+            } else if (type == "bl") { // 柱状折线混合图
+                this.tips = "纵轴前两个字段为柱状图,从第三个字段开始为折线图";
+            } else if (type == "blsimple") {
+                this.tips = "横轴为1个维度,纵轴必须为2个度量";
+            } else if (type == "treemap") { // 矩形树图
+                this.tips = "横轴接受1至2个维度,按第一个维度分类,纵轴都必须为度量";
+            } else if (type == "map") { // 地理坐标、地图
+                this.tips = "横轴为1个维度,纵轴为1个度量";
             }
         },
         initproperty() {
@@ -2524,7 +2566,7 @@ export default {
                 height: this.legendStyle.height,
                 orient: this.legendStyle.orient,
                 align: this.legendStyle.align,
-                // padding: this.legendStyle.padding,
+                padding: this.legendStyle.padding == '' || this.legendStyle.padding == undefined ? nulll : parseInt(this.legendStyle.padding),
                 itemGap: this.legendStyle.itemgap,
                 itemWidth: this.legendStyle.itemwidth,
                 itemHeight: this.legendStyle.itemheight,
@@ -2533,7 +2575,8 @@ export default {
                 borderColor: this.legendStyle.bordercolor,
                 borderWidth: this.legendStyle.borderwidth,
                 interval: this.legendStyle.interval,
-                intervalNumber: this.legendStyle.intervalnumber
+                intervalNumber: this.legendStyle.intervalnumber,
+                data: []
             };
             result.legendStyle = legendStyle;
         },
@@ -2563,7 +2606,15 @@ export default {
                 axisoOffset: this.xAxis.axisoffset,
                 nameLocation: this.xAxis.namelocation,
                 nameRotate: this.xAxis.namerotate,
-                nameGap: this.xAxis.namegap
+                nameGap: this.xAxis.namegap,
+            }
+            if (this.echart_type == 'blsimple') {
+                xAxis.xAxisPointer = {
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+                xAxis.data=this.xAxis.data
             }
             result.xAxis = xAxis;
             // y轴配置信息
@@ -2589,7 +2640,7 @@ export default {
                 inside: this.xAxisLabel.inside == '1' ? true : false,
                 rotate: this.xAxisLabel.rotate,
                 margin: this.xAxisLabel.margin,
-                // formatter: this.xAxisLabel.formatter,
+                formatter: this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter
             };
             result.xaxisLabel = xaxisLabel;
             // y轴线信息
@@ -2604,7 +2655,7 @@ export default {
                 inside: this.yAxisLabel.inside == '1' ? true : false,
                 rotate: this.yAxisLabel.rotate,
                 margin: this.yAxisLabel.margin,
-                // formatter: this.yAxisLabel.formatter,
+                formatter: this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter
             };
             result.yaxisLabel = yaxisLabel;
         },
@@ -2639,7 +2690,7 @@ export default {
             myChart.setOption(option, true)
         },
         // 折线图
-        changeToAreaChart(x_columns, y_columns, type, data) {
+        changeToLine(x_columns, y_columns, type, data) {
             //https://echarts.apache.org/examples/zh/editor.html?c=area-stack
             var result = this.initproperty();
             data.seriesArray.forEach(val => {
@@ -2798,44 +2849,10 @@ export default {
         },
         // 柱状折线混合图
         changeToBlChart(x_columns, y_columns, type, data) {
-            var legend_data = data.legend_data;
-            var seriesArray = data.seriesArray;
-            var xArray = data.xArray;
-
-            this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
-            this.xAxis.offset = parseInt(this.xAxis.offset);
-            this.xAxisLabel.margin = parseInt(this.xAxisLabel.margin);
-            this.yAxisLabel.margin = parseInt(this.yAxisLabel.margin);
-            this.xAxisLabel.formatter = this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter;
-            this.yAxisLabel.formatter = this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter;
-
-            this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
-            this.xAxis.type = "category";
-            this.xAxis.data = xArray;
-            this.xAxis.nameTextStyle = this.axisStyle;
-            this.xAxis.axisLine = this.xAxisLine;
-            this.xAxis.axisLabel = this.xAxisLabel;
-
-            this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
-            this.yAxis.type = "value";
-            this.yAxis.nameTextStyle = this.axisStyle;
-            this.yAxis.axisLine = this.yAxisLine;
-            this.yAxis.axisLabel = this.yAxisLabel;
-            this.yAxis.position = "";
-
-            var titles = transferOptionTitles(this.auto_comp_sum.chart_theme, this.titleFont);
-            this.legendStyle.data = legend_data;
-            this.legendStyle.padding = parseInt(this.legendStyle.padding);
-            this.legendStyle.itemgap = parseInt(this.legendStyle.itemgap);
-            this.legendStyle.itemwidth = parseInt(this.legendStyle.itemwidth);
-
-            var itemStyles = transferSeriesItemStyle(this.echartsLabel);
-            for (var i = 0; i < seriesArray.length; i++) {
-                seriesArray[i].itemStyle = itemStyles;
-            }
+            var result = this.initproperty();
             let option = {
                 backgroundColor: this.auto_comp_sum.background,
-                title: titles,
+                title: result.titles,
                 tooltip: {
                     trigger: 'axis'
                 },
@@ -2855,59 +2872,47 @@ export default {
                     }
                 },
                 calculable: true,
-                legend: this.legendStyle,
-                xAxis: this.xAxis,
-                yAxis: [this.yAxis, this.yAxis],
-                series: seriesArray
+                legend: Object.assign({}, result.legendStyle, {
+                    data: data.legend_data
+                }),
+                xAxis: [
+                    Object.assign({}, {
+                        type: 'category',
+                        data: data.xArray,
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.xaxisLine,
+                        axisLabel: result.xaxisLabel,
+                    }, result.xAxis)
+                ],
+                yAxis: Object.assign({}, {
+                    type: 'value',
+                    nameTextStyle: result.nameTextStyle,
+                    axisLine: result.yaxisLine,
+                    axisLabel: result.yaxisLabel,
+                }, result.yAxis),
+                series: data.seriesArray
             };
             this.drawLine(option);
         },
         //柱状折线混合图-简单
-        changeToBLSimpleChart(x_columns, y_columns, type, blsimpleData) {
-            var xAxisdata = blsimpleData.xAxisData;
-            var series1Name = blsimpleData.series1Name;
-            var series1Data = blsimpleData.series1Data;
-            var series2Name = blsimpleData.series2Name;
-            var series2Data = blsimpleData.series2Data;
-
-            this.axisStyle.borderWidth = parseInt(this.axisStyle.borderWidth);
-            this.xAxis.offset = parseInt(this.xAxis.offset);
-            this.xAxisLabel.margin = parseInt(this.xAxisLabel.margin);
-            this.yAxisLabel.margin = parseInt(this.yAxisLabel.margin);
-            this.xAxisLabel.formatter = this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter;
-            this.yAxisLabel.formatter = this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter;
-
-            this.xAxisLabel = Object.assign({}, this.xAxisLabel, this.axisStyle);
-            this.xAxis.type = "category";
-            this.xAxis.data = xAxisdata;
-            this.xAxis.nameTextStyle = this.axisStyle;
-            this.xAxis.axisLine = this.xAxisLine;
-            this.xAxis.axisLabel = this.xAxisLabel;
-            var xAxisPointer = {
-                axisPointer: {
-                    type: 'shadow'
-                }
-            }
-            this.xAxis = Object.assign({}, this.xAxis, xAxisPointer);
-
-            this.yAxisLabel = Object.assign({}, this.yAxisLabel, this.axisStyle);
-            this.yAxis.type = "value";
-            this.yAxis.nameTextStyle = this.axisStyle;
-            this.yAxis.axisLine = this.yAxisLine;
-            this.yAxis.axisLabel = this.yAxisLabel;
-            this.yAxis.position = "";
-
-            var titles = transferOptionTitles(this.auto_comp_sum.chart_theme, this.titleFont);
-            this.legendStyle.data = [];
-            this.legendStyle.data.push(series1Name);
-            this.legendStyle.data.push(series2Name);
-            this.legendStyle.padding = parseInt(this.legendStyle.padding);
-            this.legendStyle.itemgap = parseInt(this.legendStyle.itemgap);
-            this.legendStyle.itemwidth = parseInt(this.legendStyle.itemwidth);
-
+        changeToBLSimpleChart(x_columns, y_columns, type, data) {
+            var series1Name = data.series1Name;
+            var series1Data = data.series1Data;
+            var series2Name = data.series2Name;
+            var series2Data = data.series2Data;
+            this.xAxis.data = data.xAxisData;
+            var result = this.initproperty()
+            result.legendStyle.data.push(series1Name);
+            result.legendStyle.data.push(series2Name);
+            var yAxis = Object.assign({}, {
+                type: 'value',
+                nameTextStyle: result.nameTextStyle,
+                axisLine: result.yaxisLine,
+                axisLabel: result.yaxisLabel,
+            }, result.yAxis);
             var option = {
                 backgroundColor: this.auto_comp_sum.background,
-                title: titles,
+                title: result.titles,
                 tooltip: {
                     trigger: 'axis'
                 },
@@ -2925,9 +2930,19 @@ export default {
                         }
                     }
                 },
-                legend: this.legendStyle,
-                xAxis: this.xAxis,
-                yAxis: [this.yAxis, this.yAxis],
+                legend: Object.assign({}, result.legendStyle, {
+                    data: data.legend_data
+                }),
+                xAxis: [
+                    Object.assign({}, {
+                        type: 'category',
+                        data: data.xArray,
+                        nameTextStyle: result.nameTextStyle,
+                        axisLine: result.xaxisLine,
+                        axisLabel: result.xaxisLabel,
+                    }, result.xAxis)
+                ],
+                yAxis: [yAxis, yAxis],
                 series: [{
                         name: series1Name,
                         type: 'bar',
@@ -2935,11 +2950,7 @@ export default {
                         data: series1Data,
                         itemStyle: {
                             normal: {
-                                label: {
-                                    show: this.echartsLabel.show_label,
-                                    position: this.echartsLabel.position,
-                                    formatter: this.echartsLabel.formatter,
-                                },
+                                label: result.labelOption,
                             }
                         },
                     },
@@ -2950,11 +2961,7 @@ export default {
                         data: series2Data,
                         itemStyle: {
                             normal: {
-                                label: {
-                                    show: this.echartsLabel.show_label,
-                                    position: this.echartsLabel.position,
-                                    formatter: this.echartsLabel.formatter,
-                                },
+                                label: result.labelOption,
                             }
                         },
                     }
