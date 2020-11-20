@@ -2803,20 +2803,8 @@ export default {
             };
             this.drawLine(option)
         },
-        //极坐标堆叠图
+        //极坐标柱状图
         changeToPolarBarChart(x_columns, y_columns, type, data) {
-            // let option = {
-            //     backgroundColor: this.auto_comp_sum.background,
-            //     // color: this.color,
-            //     angleAxis: {},
-            //     radiusAxis: {
-            //         type: 'category',
-            //         data: data.xArray,
-            //     },
-            //     polar: {},
-            //     series: data.seriesArray,
-            //     legend: {data: data.legend_data},
-            // };
             var result = this.initproperty();
             data.seriesArray.forEach(val => {
                 val.label = result.labelOption;
@@ -2838,7 +2826,6 @@ export default {
                 ],
                 polar: {},
                 angleAxis: Object.assign({}, {
-                    // type: 'value',
                     nameTextStyle: result.nameTextStyle,
                     axisLine: result.yaxisLine,
                     axisLabel: result.yaxisLabel,
