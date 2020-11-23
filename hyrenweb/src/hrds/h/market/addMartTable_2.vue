@@ -312,12 +312,15 @@
                                      align="center">
                         <template slot-scope="scope">
                             <div v-if="scope.row.field_process != '5'">
-                                <el-select :disabled="iflock" v-if="scope.row.field_process == '3'"
+                                <!-- <el-select :disabled="iflock" v-if="scope.row.field_process == '3'"
                                            v-model="scope.row.process_mapping" style="width:100%" placeholder="请选择">
                                     <el-option v-for="(item,index) in allfromcolumn" :key="index" :label="item.value"
                                                :value="item.value">
                                     </el-option>
-                                </el-select>
+                                </el-select> -->
+                                <el-input v-if="scope.row.field_process == '3'" readonly v-model="scope.row.process_mapping">
+                                                                <el-button slot="append" @click="showTableColumns(scope.row)">列选择</el-button>
+                                                            </el-input>     
                                 <el-input :disabled="iflock" v-else-if="scope.row.field_process != '4'"
                                           v-model="scope.row.process_mapping" autocomplete="off"
                                           placeholder="处理方式参数"></el-input>
@@ -327,14 +330,18 @@
                                 </el-input>
                             </div>
                             <div v-if="scope.row.field_process == '5'">
-                                <el-select :disabled="iflock" v-model="scope.row.process_mapping" style="width:50%;"
+                              <!--   <el-select :disabled="iflock" v-model="scope.row.process_mapping" style="width:50%;"
                                            placeholder="请选择">
                                     <el-option v-for="(item,index) in allfromcolumn" :key="index" :label="item.value"
                                                :value="item.value">
                                     </el-option>
                                 </el-select>
                                 <el-input style="width:50%" v-model="scope.row.group_mapping" autocomplete="off"
-                                          placeholder="分组映射填写"></el-input>
+                                          placeholder="分组映射填写"></el-input> -->
+                                          <el-input placeholder="请输入内容" readonly v-model="scope.row.process_mapping">
+                                                                          <el-button slot="append" @click="showTableColumns(scope.row)">列选择</el-button>
+                                                                      </el-input>
+                                                                      <el-input style="width:50%" v-model="scope.row.group_mapping" autocomplete="off" placeholder="分组映射填写"></el-input>
                             </div>
                         </template>
                     </el-table-column>
@@ -565,6 +572,23 @@
         <transition name="fade">
             <loading v-if="isLoading"/>
         </transition>
+        <template v-if="allfromcolumn.length > 0">
+                <el-dialog title="字段列表" :visible.sync="isShowColumns" width="50%">
+                    <el-table :data="allfromcolumn.filter(data => !columnSearch || data.value.toLowerCase().includes(columnSearch.toLowerCase()))" size="mini" height="400">
+                        <el-table-column type="index" label="序号" align='center'></el-table-column>
+                        <el-table-column prop="value" label="字段英文名" show-overflow-tooltip align="left">
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot="header" slot-scope="scope">
+                                <el-input v-model="columnSearch" size="mini" placeholder="输入列名搜索" />
+                            </template>
+                            <template slot-scope="scope">
+                                <el-button @click="handleClick(scope.row)" type="text" size="small">选择</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-dialog>
+            </template>
     </div>
 </template>
 
@@ -652,7 +676,10 @@
                 activeName: '',
                 tablename: '',
                 ifRelationDatabase: false,
-                pre_partition: ''
+                pre_partition: '',
+                isShowColumns: false,
+                selectColumn: {},
+                columnSearch: ''
 
             };
         },
@@ -969,20 +996,6 @@
                         if (group_mapping === '' || group_mapping == undefined) {
                             this.$Msg.customizTitle("第" + (i + 1) + "行分组映射为空", 'warning');
                             return false;
-                        }
-                    }
-
-                    var field_type = this.columnbysql[i].field_type;
-                    if (field_type == "decimal" || field_type == "varchar") {
-                        if (!this.columnbysql[i].hasOwnProperty("field_length")) {
-                            this.$Msg.customizTitle("第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度", 'warning');
-                            return false;
-                        } else {
-                            var field_length = this.columnbysql[i].field_length;
-                            if (field_length == "") {
-                                this.$Msg.customizTitle("第" + (i + 1) + "行字段类型为" + field_type + "且没有长度，请填写长度", 'warning');
-                                return false;
-                            }
                         }
                     }
 
@@ -1386,7 +1399,15 @@
                 this.setRow['process_mapping'] = this.ruleStr
                 this.columnbysql.slice(this.setRow, 1)
                 this.ruleDialog = false
-            }
+            },
+            handleClick(row) {
+                        this.selectColumn['process_mapping'] = row.value
+                        this.isShowColumns = false
+                    },
+                    showTableColumns(row) {
+                        this.selectColumn = row;
+                        this.isShowColumns = true
+                    }
         }
     }
 </script>
