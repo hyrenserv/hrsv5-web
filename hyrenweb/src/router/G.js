@@ -1,0 +1,187 @@
+export default [
+    {
+        path: '/serviceMage',
+        name: 'serviceMage',
+        title: '服务接口管理',
+        component: () => import('@/hrds/g/serviceMage.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口管理' },
+        ],
+    },
+    {
+        path: '/userManage',
+        name: 'userManage',
+        title: '用户管理',
+        component: () => import('@/hrds/g/usermanage/userManage.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口管理', url: '/serviceMage' },
+            { name: '用户管理' },
+        ],
+    },
+    {
+        path: '/releaseManage',
+        name: 'releaseManage',
+        title: '发布管理',
+        component: () => import('@/hrds/g/releasemanage/releaseManage.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口管理', url: '/serviceMage' },
+            { name: '发布管理' },
+        ],
+    },
+    {
+        path: '/dataRangeManage',
+        name: 'dataRangeManage',
+        title: '数据范围管理',
+        component: () => import('@/hrds/g/datarangemanage/dataRangeManage.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口管理', url: '/serviceMage' },
+            { name: '数据范围管理' },
+        ],
+    },
+    {
+        path: '/interfaceUseMonitor',
+        name: 'interfaceUseMonitor',
+        title: '接口使用监控',
+        component: () => import('@/hrds/g/interfaceusemonitor/interfaceUseMonitor.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口管理', url: '/serviceMage' },
+            { name: '接口使用监控' },
+        ],
+    },
+    {
+        path: '/serviceUser',
+        name: 'serviceUser',
+        title: '服务接口用户',
+        component: () => import('@/hrds/g/serviceuser/serviceUser.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户' },
+        ],
+    },
+    {
+        path: '/getToken',
+        name: 'getToken',
+        title: '获取token值接口',
+        component: () => import('@/hrds/g/serviceuser/api/getToken.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '获取token' },
+        ],
+    },
+    {
+        path: '/generalQuery',
+        name: 'generalQuery',
+        title: '单表普通查询接口',
+        component: () => import('@/hrds/g/serviceuser/api/generalQuery.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '单表普通查询接口' },
+        ],
+    },
+    {
+        path: '/sqlInterfaceSearch',
+        name: 'sqlInterfaceSearch',
+        title: 'sql查询接口',
+        component: () => import('@/hrds/g/serviceuser/api/sqlInterfaceSearch.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: 'sql查询接口' },
+        ],
+    },
+    {
+        path: '/rowKeySearch',
+        name: 'rowKeySearch',
+        title: 'rowkey查询接口',
+        component: () => import('@/hrds/g/serviceuser/api/rowKeySearch.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: 'rowkey查询接口' },
+        ],
+    },
+    {
+        path: '/fileAttributeSearch',
+        name: 'fileAttributeSearch',
+        title: '文件属性搜索接口',
+        component: () => import('@/hrds/g/serviceuser/api/fileAttributeSearch.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '文件属性搜索接口' },
+        ],
+    },
+    {
+        path: '/tableStructureQuery',
+        name: 'tableStructureQuery',
+        title: '表结构查询接口',
+        component: () => import('@/hrds/g/serviceuser/api/tableStructureQuery.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '表结构查询接口' },
+        ],
+    },
+    {
+        path: '/tableSearchGetJson',
+        name: 'tableSearchGetJson',
+        title: '表结构查询-获取json信息接口',
+        component: () => import('@/hrds/g/serviceuser/api/tableSearchGetJson.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '表结构查询-获取json信息接口' },
+        ],
+    },
+    {
+        path: '/tableUsePermissions',
+        name: 'tableUsePermissions',
+        title: '表使用权限查询接口',
+        component: () => import('@/hrds/g/serviceuser/api/tableUsePermissions.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '表使用权限查询接口' },
+        ],
+    },
+    {
+        path: '/uuidDownload',
+        name: 'uuidDownload',
+        title: 'UUID下载接口',
+        component: () => import('@/hrds/g/serviceuser/api/uuidDownload.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: 'UUID下载接口' },
+        ],
+    },
+    {
+        path: '/hbaseSolrQuery',
+        name: 'hbaseSolrQuery',
+        title: 'Solr查询Hbase数据接口',
+        component: () => import('@/hrds/g/serviceuser/api/hbaseSolrQuery.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: 'Solr查询Hbase数据接口' },
+        ],
+    },
+    {
+        path: '/dashboardRelease',
+        name: 'dashboardRelease',
+        title: '报表使用说明文档',
+        component: () => import('@/hrds/g/serviceuser/api/dashboardRelease.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: '报表使用说明文档' },
+        ],
+    },
+]
