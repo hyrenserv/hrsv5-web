@@ -78,11 +78,11 @@
             </el-row>
             <div class="lines"></div>
             <el-table size="medium" :data="tableDataPra" border stripe style="width: 100%" class="eltables">
-                <el-table-column type="index" label="选择" width="70px" align='center'>
-                    <template slot-scope="scope">
-                        <el-checkbox name="nature" :checked="scope.row.checked ==true" v-model="scope.row.checked" @change="selectCheckbox(scope.row.checked,scope.row,scope.$index)"></el-checkbox>
-                    </template>
-                </el-table-column>
+                <!--<el-table-column type="index" label="选择" width="70px" align='center'>-->
+                    <!--<template slot-scope="scope">-->
+                        <!--<el-checkbox name="nature" :checked="scope.row.checked ==true" v-model="scope.row.checked" @change="selectCheckbox(scope.row.checked,scope.row,scope.$index)"></el-checkbox>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
                 <el-table-column prop="cond_para_name" show-overflow-tooltip label="参数名称" align='center'>
                 </el-table-column>
                 <el-table-column prop="cond_en_column" show-overflow-tooltip label="英文名称" align='center'>
@@ -468,7 +468,7 @@ export default {
             this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
             functionAll.getPreviewData({
                 template_sql: this.basicInfoForm.sqlMain,
-                showNum: Number(this.inputText)
+                showNum: this.inputText
             }).then(res => {
                 if (res.data.length > 0) {
                     this.dynamicColumn = Object.keys(res.data[0])
@@ -531,20 +531,20 @@ export default {
             document.execCommand("Copy"); // 执行浏览器复制命令
             oInput.remove();
         },
-        //模板参数checkbox选择
-        selectCheckbox(key, row, index) {
-            if (key === true) { //添加
-                // row.con_row = index;
-                if (this.markResultArr.findIndex(item => String(item) == String(row)) === -1) {
-                    this.markResultArr.push(row)
-                }
-            } else { //删除
-                let index = this.markResultArr.findIndex(item => String(item) == String(row));
-                if (index !== 1) {
-                    this.markResultArr.splice(index, 1)
-                }
-            }
-        },
+        // //模板参数checkbox选择
+        // selectCheckbox(key, row, index) {
+        //     if (key === true) { //添加
+        //         // row.con_row = index;
+        //         if (this.markResultArr.findIndex(item => String(item) == String(row)) === -1) {
+        //             this.markResultArr.push(row)
+        //         }
+        //     } else { //删除
+        //         let index = this.markResultArr.findIndex(item => String(item) == String(row));
+        //         if (index !== 1) {
+        //             this.markResultArr.splice(index, 1)
+        //         }
+        //     }
+        // },
         // 获取代码项
         getCategoryItems() {
             functionAll.getCategoryItems({

@@ -49,10 +49,12 @@
         <el-table-column label="条件值" align='center' prop="pre_value" show-overflow-tooltip width="254">
             <template slot-scope="scope">
                 <div v-if="scope.row.value_type =='枚举'">
-                    <el-input v-model="scope.row.pre_value" size="mini" placeholder="条件值" style="width:160px;margin-right:6px;"></el-input><span @click="moreChooseClick(scope.$index,scope.row)" class="moreChoose">更多选择</span>
+                    <el-input v-model="scope.row.pre_value" v-if="scope.row.is_required ==1"  size="mini" placeholder="条件值" style="width:160px;margin-right:6px;"></el-input><span @click="moreChooseClick(scope.$index,scope.row)" class="moreChoose">更多选择</span>
+                    <el-input v-model="scope.row.pre_value" v-if="scope.row.is_required ==0" disabled size="mini" placeholder="条件值" style="width:160px;margin-right:6px;"></el-input><span @click="moreChooseClick(scope.$index,scope.row)" class="moreChoose">更多选择</span>
                 </div>
                 <div v-else>
-                    <el-input v-model="scope.row.pre_value" size="mini" placeholder="条件值"></el-input>
+                    <el-input v-model="scope.row.pre_value" v-if="scope.row.is_required ==1" size="mini" placeholder="条件值"></el-input>
+                    <el-input v-model="scope.row.pre_value" v-if="scope.row.is_required ==0" disabled  size="mini" placeholder="条件值"></el-input>
                 </div>
             </template>
         </el-table-column>
@@ -60,18 +62,18 @@
         </el-table-column>
         <el-table-column label="类型描述" prop="value_size" align='center' show-overflow-tooltip>
         </el-table-column>
-        <!--<el-table-column label="是否必填" align='center' width="120">-->
-            <!--<template slot-scope="scope">-->
-                <!--<el-radio-group v-model="scope.row.is_required" v-if="scope.row.is_required ==0">-->
-                    <!--<el-radio :label="'1'">是</el-radio>-->
-                    <!--<el-radio :label="'0'">否</el-radio>-->
-                <!--</el-radio-group>-->
-                <!--<el-radio-group v-model="scope.row.is_required" v-else disabled>-->
-                    <!--<el-radio :label="'1'">是</el-radio>-->
-                    <!--<el-radio :label="'0'">否</el-radio>-->
-                <!--</el-radio-group>-->
-            <!--</template>-->
-        <!--</el-table-column>-->
+        <el-table-column label="是否必填" align='center' width="120">
+            <template slot-scope="scope">
+                <el-radio-group v-model="scope.row.is_required" v-if="scope.row.is_required ==0" disabled>
+                    <el-radio :label="'1'">是</el-radio>
+                    <el-radio :label="'0'">否</el-radio>
+                </el-radio-group>
+                <el-radio-group v-model="scope.row.is_required" v-else disabled>
+                    <el-radio :label="'1'">是</el-radio>
+                    <el-radio :label="'0'">否</el-radio>
+                </el-radio-group>
+            </template>
+        </el-table-column>
     </el-table>
     <el-row v-if="dynamicColumnTable.length >0" style="margin-bottom:20px;">
         <el-row class="elRows">
