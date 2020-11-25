@@ -263,4 +263,12 @@ export default {
 .el-main>>>.el-backtop {
     right: 5px !important;
 }
+
+.happy-scroll {
+    overflow: scroll
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
 </style>
