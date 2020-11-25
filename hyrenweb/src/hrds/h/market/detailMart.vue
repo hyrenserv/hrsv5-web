@@ -8,6 +8,10 @@
                 <el-button size="mini" type="success">
                     <i class="fa fa-cloud-upload"></i> 导入数据</el-button>
             </el-upload>
+            <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange2" :limit="1" :on-exceed="handleExceed" :fileList="fileList2">
+                <el-button size="mini" type="success">
+                    <i class="fa fa-cloud-upload"></i> 交行导入数据</el-button>
+            </el-upload>
             <el-button type="success" class="els" @click="downloadExcel()" size="mini">
                 <i class="fa fa-cloud-download"></i>Excel模板下载
             </el-button>
@@ -89,6 +93,13 @@
         </div>
     </el-dialog>
 
+    <el-dialog title="导入Excel" :visible.sync="dialogImportData2" :before-close="importDatacancel2">
+        <span v-if="fileList != ''">确认导入 “ {{fileList2[0].name}} ” </span>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
+            <el-button type="primary" @click="importData2" size="mini">保存</el-button>
+        </div>
+    </el-dialog>
     <transition name="fade">
         <loading v-if="isLoading" />
     </transition>
@@ -136,6 +147,7 @@ import * as message from "@/utils/js/message";
 import Loading from '../../components/loading'
 
 let arr = [];
+let arr2 = [];
 export default {
     components: {
         Loading
@@ -151,8 +163,10 @@ export default {
             selectedetltask: "",
             selecteddatatable_id: "",
             fileList: [],
+            fileList2: [],
             isLoading: false,
             dialogImportData: false,
+            dialogImportData2: false,
             tableHeight: '',
             dialogVisible: false,
             formInline: {
@@ -318,6 +332,15 @@ export default {
             }
             arr = fileList;
         },
+        handleChange2(file, fileList) {
+            this.fileList2 = fileList;
+            if (fileList.length != 0) {
+                this.dialogImportData2 = true;
+            } else {
+                this.dialogImportData2 = false;
+            }
+            arr2 = fileList;
+        },
         //文件超出个数限制时的钩子
         handleExceed(files, fileList) {
             this.$message.warning(`只能选择一个文件`);
@@ -325,6 +348,11 @@ export default {
         importDatacancel() {
             this.dialogImportData = false;
             this.fileList = [];
+            this.$message.info('已取消上传');
+        },
+        importDatacancel2() {
+            this.dialogImportData2 = false;
+            this.fileList2 = [];
             this.$message.info('已取消上传');
         },
         importData() {
@@ -339,6 +367,27 @@ export default {
                     this.isLoading = false;
                     if (res && res.success) {
                         this.dialogImportData = false;
+                        this.$Msg.customizTitle("文件上传成功", "success");
+                        this.querydmdatatable(this.data_mart_id);
+                        this.fileList = [];
+                    }
+                });
+            } else {
+                this.$Msg.customizTitle("请选择上传文件", "warning");
+            }
+        },
+        importData2() {
+            if (arr2.length > 0) {
+                let param = new FormData() // 创建form对象
+                for (let i = 0; i < arr2.length; i++) {
+                    param.append('file', arr[i].raw);
+                }
+                param.append('data_mart_id', this.data_mart_id);
+                this.isLoading = true;
+                functionAll.uploadExcelFile2(param).then(res => {
+                    this.isLoading = false;
+                    if (res && res.success) {
+                        this.dialogImportData2 = false;
                         this.$Msg.customizTitle("文件上传成功", "success");
                         this.querydmdatatable(this.data_mart_id);
                         this.fileList = [];

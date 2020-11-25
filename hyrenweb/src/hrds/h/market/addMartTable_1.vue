@@ -13,7 +13,7 @@
     <el-form :model="dm_datatable" ref="dm_datatable" class="demo-form-inline" :inline="true" label-width="200px">
         <el-row>
             <el-col :span="10">
-                <el-form-item label="表英文名" prop="datatable_en_name" :rules="filter_rules([{required:true, dataType:'table'}])">
+                <el-form-item label="表英文名" prop="datatable_en_name" :rules="filter_rules([{required:true}])">
                     <el-input :disabled="ennameiflock" v-model="dm_datatable.datatable_en_name" @change="checkrepeat()" placeholder="表英文名">
                         <el-button slot="append" icon="el-icon-zoom-in" @click="showalreadyexisttablename()"></el-button>
                     </el-input>

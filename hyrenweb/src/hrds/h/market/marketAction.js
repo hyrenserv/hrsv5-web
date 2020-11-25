@@ -397,6 +397,16 @@ export function uploadExcelFile(data) {
     })
 }
 
+//上传execl表格
+export function uploadExcelFile2(data) {
+    return request({
+        url: '/H/market/uploadExcelFile2',
+        method: 'post',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
 //查询所有集市表名
 export function getalldatatable_en_name(data) {
     return request({
