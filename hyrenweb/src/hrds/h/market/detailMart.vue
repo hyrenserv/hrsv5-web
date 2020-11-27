@@ -53,6 +53,8 @@
                 </el-button>
                 <el-button size="mini" type="text" v-if="scope.row.isadd" @click="pushtoaddmart3(scope.row)">立即执行
                 </el-button>
+                <el-button size="mini" type="text" v-if="scope.row.isadd" @click="exportMappingExcel(scope.row)">导出MappingExcel
+                </el-button>
                 <!-- <el-button size="mini" type="text" v-if="scope.row.isadd" @click="downloaddmdatatable(scope.row)">导出
                 </el-button> -->
                 <el-button v-if="scope.row.iscb" type="text" size="mini" @click="dialogVisible = true;prepolymerization(scope.row)">预聚合
@@ -94,7 +96,7 @@
     </el-dialog>
 
     <el-dialog title="导入Excel" :visible.sync="dialogImportData2" :before-close="importDatacancel2">
-        <span v-if="fileList != ''">确认导入 “ {{fileList2[0].name}} ” </span>
+        <span v-if="fileList2 != ''">确认导入 “ {{fileList2[0].name}} ” </span>
         <div slot="footer" class="dialog-footer">
             <el-button @click="importDatacancel" size="mini" type="danger">取消</el-button>
             <el-button type="primary" @click="importData2" size="mini">保存</el-button>
@@ -230,6 +232,40 @@ export default {
                     datatable_id: row.datatable_id,
                 }
             });
+        },
+        exportMappingExcel(row){
+            let datatable_id = row.datatable_id;
+            let datatable_en_name = row.datatable_en_name;
+            message.confirmMsg('确定导出 ' + datatable_en_name + ' 吗').then(res => {
+                let that = this;
+                functionAll.exportMappingExcel({
+                    datatable_id: datatable_id,
+                    tablename: datatable_en_name,
+                }).then(res => {
+                    // if (res && res.success) {
+                    let filename = datatable_en_name + ".xlsx"
+                    const blob = new Blob([res.data]);
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // 兼容IE10
+                        navigator.msSaveBlob(blob, filename);
+                    } else {
+                        //  chrome/firefox
+                        let aTag = document.createElement("a");
+                        // document.body.appendChild(aTag);
+                        aTag.download = filename;
+                        aTag.href = URL.createObjectURL(blob);
+                        if (aTag.all) {
+                            aTag.click();
+                        } else {
+                            //  兼容firefox
+                            var evt = document.createEvent("MouseEvents");
+                            evt.initEvent("click", true, true);
+                            aTag.dispatchEvent(evt);
+                        }
+                        URL.revokeObjectURL(aTag.href);
+                    }
+                })
+            }).catch(() => {})
         },
         // downloaddmdatatable(row) {
         //     let datatable_id = row.datatable_id;
@@ -380,7 +416,7 @@ export default {
             if (arr2.length > 0) {
                 let param = new FormData() // 创建form对象
                 for (let i = 0; i < arr2.length; i++) {
-                    param.append('file', arr[i].raw);
+                    param.append('file', arr2[i].raw);
                 }
                 param.append('data_mart_id', this.data_mart_id);
                 this.isLoading = true;

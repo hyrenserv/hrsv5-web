@@ -306,6 +306,19 @@ export function downloadMart(data) {
 // }
 
 
+//导出集市mapping信息表
+export function exportMappingExcel(data) {
+    return request({
+        url: '/H/market/exportMappingExcel',
+        method: 'post',
+        params: data,
+        responseType: 'blob',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 //导入集市工程
 export function uploadFile(data) {
     return request({
