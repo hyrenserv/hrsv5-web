@@ -841,7 +841,6 @@
                                         var Chart = echarts.init(document.getElementById(id), dashboard_theme);
                                         Chart.resize();
                                     }
-                                    // chart_obj_array[i].resize();
                                 }
                             }
                         });
@@ -852,8 +851,12 @@
         methods: {
             resizedEvent(i, newH, newW, newHPx, newWPx) {
                 console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+                // this.resizeTheChart();
                 // debugger;
-                //TODO 这里需要在变换grid-item大小的时候 同时也变换里面内容的大小
+                $("#"+i).height(newH*10);
+                $("#"+i).width(newW*10);
+                var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
+                Chart.resize();
             },
             // 返回上一级
             goIndex() {
@@ -1661,6 +1664,7 @@
             },
             //仪表板展示
             echartpic(data, component_id_array) {
+                debugger;
                 //把边框,文本标签,分割线的layout区分开
                 for (var i = 0; i < this.layout.length; i++) {
                     if ("0" == this.layout[i].label) {
@@ -2049,6 +2053,10 @@
                     }
                 })
                 this.chart_obj_array = chart_obj_array;
+                for(var i=0;i<this.layout.length;i++){
+                    let layoutElement = this.layout[i];
+                    this.resizedEvent(layoutElement.i,layoutElement.h,layoutElement.w,layoutElement.y,layoutElement.x);
+                }
                 setTimeout(() => {
                     this.confirmBackgroudColor();
                 }, 100);
