@@ -12,15 +12,15 @@
                     </el-button>
                     <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="gridLine">网格线
                     </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogTextLabelVisible=true">添加文本标签
-                    </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogTextLineVisible=true">添加分割线
-                    </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogBorderVisible=true">添加边框
-                    </el-button>
+                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
+                    <!--@click="dialogTextLabelVisible=true">添加文本标签-->
+                    <!--</el-button>-->
+                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
+                    <!--@click="dialogTextLineVisible=true">添加分割线-->
+                    <!--</el-button>-->
+                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
+                    <!--@click="dialogBorderVisible=true">添加边框-->
+                    <!--</el-button>-->
                     <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                     <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
                     <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
@@ -120,7 +120,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogTextLineVisible=false" size="mini">取 消</el-button>
-                <el-button type="primary" @click="confirmtextline" size="mini">确 认
+                <el-button type="primary" @click="confirmtextline(48,5,0,0)" size="mini">确 认
                 </el-button>
             </div>
         </el-dialog>
@@ -851,12 +851,38 @@
         methods: {
             resizedEvent(i, newH, newW, newHPx, newWPx) {
                 console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-                // this.resizeTheChart();
-                // debugger;
-                $("#"+i).height(newH*10);
-                $("#"+i).width(newW*10);
+                //TODO
+                //针对 添加的分割线，文本标签，边框等，均因为存在放大缩小问题 而暂时注释
+                // var lineflag = false;
+                // var index1;
+                // var index2;
+                // this.textlinearray.forEach(function (item, index) {
+                //     var id = item.id;
+                //     if (id == i) {
+                //         index1 = index;
+                //         lineflag = true;
+                //     }
+                // })
+                // this.chart_obj_array.forEach(function (item, index) {
+                //     var id = item.id;
+                //     if (id == i) {
+                //         index2 = index;
+                //     }
+                // });
+                // if (lineflag) {
+                //     this.textlinearray.splice(index1, 1);
+                //     // $("#" + i).hide();
+                //     this.chart_obj_array.splice(index2, 1);
+                //     this.confirmtextline(newW, newH, newWPx, newHPx);
+                // }
+                // if (!lineflag) {
+                $("#" + i).height(newH * 10);
+                $("#" + i).width(newW * 10);
                 var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
                 Chart.resize();
+                // }
+                // console.log(this.chart_obj_array);
+                // console.log(this.textlinearray);
             },
             // 返回上一级
             goIndex() {
@@ -1310,8 +1336,8 @@
                 //JSON拷贝
                 this.auto_label_info_array.push(Object.assign({}, this.auto_label_info));
                 var layout_obj = {
-                    "w": 30,
-                    "h": 7,
+                    "w": 48,
+                    "h": 27,
                     "moved": false,
                     "label": 0,
                     "static": false
@@ -1388,7 +1414,7 @@
                 this.dialogTextLabelVisible = false;
             },
             //添加分割线
-            confirmtextline() {
+            confirmtextline(w, h, x, y) {
                 if (this.layout.length <= 0) {
                     return false;
                 }
@@ -1396,8 +1422,10 @@
                 var id = parseInt(Math.random() * 10000 + 10000);
                 if (this.auto_line_info.line_type == 'heng') {
                     var layout_obj = {
-                        "w": 40,
-                        "h": 3,
+                        "w": w,
+                        "h": h,
+                        "x": x,
+                        "y": y,
                         "type": id,
                         "moved": false,
                         "label": 1,
@@ -1405,40 +1433,41 @@
                     };
                 } else {
                     var layout_obj = {
-                        "w": 3,
-                        "h": 30,
+                        "w": h,
+                        "h": w,
+                        "x": x,
+                        "y": y,
                         "type": id,
                         "moved": false,
                         "label": 1,
                         "static": false
                     };
                 }
-
-                if (this.layout.length > 0) {
-                    var obj = this.layout[this.layout.length - 1];
-                    if (obj.x >= 20) {
-                        layout_obj.x = 0;
-                        layout_obj.y = parseInt(obj.y) + 4;
-                        layout_obj.i = id;
-                    } else {
-                        if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
-                            layout_obj.x = parseInt(0);
+                if (x == 0 || y == 0) {
+                    if (this.layout.length > 0) {
+                        var obj = this.layout[this.layout.length - 1];
+                        if (obj.x >= 20) {
+                            layout_obj.x = 0;
                             layout_obj.y = parseInt(obj.y) + 4;
                             layout_obj.i = id;
                         } else {
-                            layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
-                            layout_obj.y = parseInt(obj.y);
-                            layout_obj.i = id;
+                            if (parseInt(obj.x) + parseInt(obj.w) >= 19) {
+                                layout_obj.x = parseInt(0);
+                                layout_obj.y = parseInt(obj.y) + 4;
+                                layout_obj.i = id;
+                            } else {
+                                layout_obj.x = parseInt(obj.x) + parseInt(obj.w) + 1;
+                                layout_obj.y = parseInt(obj.y);
+                                layout_obj.i = id;
+                            }
                         }
+                    } else {
+                        layout_obj.x = 0;
+                        layout_obj.y = 0;
+                        layout_obj.i = 1;
                     }
-                } else {
-                    layout_obj.x = 0;
-                    layout_obj.y = 0;
-                    layout_obj.i = 1;
                 }
-
                 this.layout.push(layout_obj);
-
                 this.$nextTick(function () {
                     if (this.auto_line_info.line_type == 'heng') {
                         var html = "<div name='linecomponentname'></div>" +
@@ -1492,8 +1521,8 @@
                 this.auto_frame_info_list.push(Object.assign({}, this.auto_frame_info));
                 var id = parseInt(Math.random() * 10000 + 10000);
                 var layout_obj = {
-                    "w": 40,
-                    "h": 32,
+                    "w": 48,
+                    "h": 27,
                     "moved": false,
                     "label": 2,
                     "static": false
@@ -1664,7 +1693,6 @@
             },
             //仪表板展示
             echartpic(data, component_id_array) {
-                debugger;
                 //把边框,文本标签,分割线的layout区分开
                 for (var i = 0; i < this.layout.length; i++) {
                     if ("0" == this.layout[i].label) {
@@ -2053,9 +2081,9 @@
                     }
                 })
                 this.chart_obj_array = chart_obj_array;
-                for(var i=0;i<this.layout.length;i++){
+                for (var i = 0; i < this.layout.length; i++) {
                     let layoutElement = this.layout[i];
-                    this.resizedEvent(layoutElement.i,layoutElement.h,layoutElement.w,layoutElement.y,layoutElement.x);
+                    this.resizedEvent(layoutElement.i, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
                 }
                 setTimeout(() => {
                     this.confirmBackgroudColor();
