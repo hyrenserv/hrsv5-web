@@ -12,15 +12,15 @@
                     </el-button>
                     <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="gridLine">网格线
                     </el-button>
-                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
-                    <!--@click="dialogTextLabelVisible=true">添加文本标签-->
-                    <!--</el-button>-->
-                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
-                    <!--@click="dialogTextLineVisible=true">添加分割线-->
-                    <!--</el-button>-->
-                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
-                    <!--@click="dialogBorderVisible=true">添加边框-->
-                    <!--</el-button>-->
+                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                               @click="dialogTextLabelVisible=true">添加文本标签
+                    </el-button>
+                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                               @click="dialogTextLineVisible=true">添加分割线
+                    </el-button>
+                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                               @click="dialogBorderVisible=true">添加边框
+                    </el-button>
                     <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                     <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
                     <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
@@ -517,7 +517,7 @@
                     "label_title": "",
                     "label_content": "",
                     "label_size": "0",
-                    "label_color": "transparent",
+                    "label_color": "#FFFFFF",
                     textStyle: { //字体配置
                         color: "#000000",
                         fontFamily: "SimSun",
@@ -850,39 +850,44 @@
         },
         methods: {
             resizedEvent(i, newH, newW, newHPx, newWPx) {
-                console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+                // console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
                 //TODO
                 //针对 添加的分割线，文本标签，边框等，均因为存在放大缩小问题 而暂时注释
-                // var lineflag = false;
-                // var index1;
-                // var index2;
-                // this.textlinearray.forEach(function (item, index) {
-                //     var id = item.id;
-                //     if (id == i) {
-                //         index1 = index;
-                //         lineflag = true;
-                //     }
-                // })
-                // this.chart_obj_array.forEach(function (item, index) {
-                //     var id = item.id;
-                //     if (id == i) {
-                //         index2 = index;
-                //     }
-                // });
-                // if (lineflag) {
-                //     this.textlinearray.splice(index1, 1);
-                //     // $("#" + i).hide();
-                //     this.chart_obj_array.splice(index2, 1);
-                //     this.confirmtextline(newW, newH, newWPx, newHPx);
-                // }
-                // if (!lineflag) {
-                $("#" + i).height(newH * 10);
-                $("#" + i).width(newW * 10);
-                var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
-                Chart.resize();
-                // }
-                // console.log(this.chart_obj_array);
-                // console.log(this.textlinearray);
+                var lineflag = false;
+                var textflag = false;
+                var frameflag = false;
+                this.layout.forEach(function (item, index) {
+                    var id = item.i;
+                    if (id == i) {
+                        if (item.label == '1') {
+                            lineflag = true;
+                        }
+                        if (item.label == '0') {
+                            textflag = true;
+                        }
+                        if (item.label == '2') {
+                            frameflag = true;
+                        }
+                    }
+                })
+                if (lineflag) {
+                    $("#" + i).width(newW * 10);
+                    $("#" + i).height(newH * 10);
+                    //TODO 回显的时候 这里没法直接变长
+                } else if (textflag) {
+                    $("#" + i).width(newW * 10);
+                    $("#" + i).height(newH * 10);
+                    //TODO 回显的时候 这里没法直接变大
+                } else if (frameflag) {
+                    $("#" + i).width(newW * 10);
+                    $("#" + i).height(newH * 10);
+                    //TODO 回显的时候 这里没法直接变大
+                } else {
+                    $("#" + i).height(newH * 10);
+                    $("#" + i).width(newW * 10);
+                    var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
+                    Chart.resize();
+                }
             },
             // 返回上一级
             goIndex() {
@@ -1500,6 +1505,7 @@
                                 line_layout: this.line_layout
                             }
                         }).$mount();
+                        console.log(imagevueobj);
                         this.linedelimage(id, imagevueobj);
                     }
                     var obj = {};
