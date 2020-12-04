@@ -42,6 +42,13 @@ const childrenMemus = {
             title: '表数据对标',
             icon: 'el-icon-film',
             component: () => import('@/hrds/k/tdb/tdb.vue')
+        },
+        {
+            path: '/tdb_result',
+            name: 'tdb_result',
+            title: '表数据对标结果查看',
+            icon: 'el-icon-film',
+            component: () => import('@/hrds/k/tdb_result/tdb_result.vue')
         }
     ],
     27: [
