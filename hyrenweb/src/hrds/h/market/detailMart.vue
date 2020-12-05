@@ -4,17 +4,17 @@
         <!-- <i class="block_icon fa text-warning fa-globe blue"></i> -->
         <span class="topTitleOspan">数据加工</span>
         <div class="elButton ">
-            <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">
-                <el-button size="mini" type="success">
-                    <i class="fa fa-cloud-upload"></i> 导入数据</el-button>
-            </el-upload>
+            <!--<el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange" :limit="1" :on-exceed="handleExceed" :fileList="fileList">-->
+                <!--<el-button size="mini" type="success">-->
+                    <!--<i class="fa fa-cloud-upload"></i> 导入数据</el-button>-->
+            <!--</el-upload>-->
             <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange2" :limit="1" :on-exceed="handleExceed" :fileList="fileList2">
                 <el-button size="mini" type="success">
-                    <i class="fa fa-cloud-upload"></i> 交行导入数据</el-button>
+                    <i class="fa fa-cloud-upload"></i> 交行Mapping导入数据</el-button>
             </el-upload>
-            <el-button type="success" class="els" @click="downloadExcel()" size="mini">
-                <i class="fa fa-cloud-download"></i>Excel模板下载
-            </el-button>
+            <!--<el-button type="success" class="els" @click="downloadExcel()" size="mini">-->
+                <!--<i class="fa fa-cloud-download"></i>Excel模板下载-->
+            <!--</el-button>-->
             <el-button type="primary" @click="adddmdatatable()" size="mini">
                 <i class="el-icon-circle-plus-outline"></i>新增数据表
             </el-button>
