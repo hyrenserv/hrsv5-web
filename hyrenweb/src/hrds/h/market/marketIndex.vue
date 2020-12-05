@@ -276,9 +276,14 @@ export default {
         },
 
         addmarket(formName) {
+            debugger;
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     let arr = JSON.parse(JSON.stringify(this.formAdd.tableDataAdd))
+                    if(arr.length == 0){
+                        this.$Msg.customizTitle('请添加分类', 'warning')
+                        return;
+                    }
                     if (this.addOrUpdate == true) { //判断是新增还是更新
                         arr.forEach((item => {
                             if (item.parent_category_idMark) { //如果存在这个就是编辑时候被更改了
