@@ -566,6 +566,7 @@ export default {
             this.getCategoryItems("IsFlag");
             this.searchDataLayerDataTypeLengthInfo();
             this.searchDataLayerDataTypeInfo();
+            this.getCategoryItems("DatabaseType");
         },
         // 处理编辑附加信息冲突问题的方法
         fixedError(e, row) {
