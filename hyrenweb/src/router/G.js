@@ -184,4 +184,26 @@ export default [
             { name: '报表使用说明文档' },
         ],
     },
+    {
+        path: '/sqlQueryRelation',
+        name: 'sqlQueryRelation',
+        title: '报表使用说明文档',
+        component: () => import('@/hrds/g/serviceuser/api/sqlQueryRelation.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: 'sql血缘查询接口' },
+        ],
+    },
+    {
+        path: '/sqlExecute',
+        name: 'sqlExecute',
+        title: '报表使用说明文档',
+        component: () => import('@/hrds/g/serviceuser/api/sqlExecute.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '服务接口用户', url: '/serviceUser' },
+            { name: 'sql执行接口' },
+        ],
+    },
 ]

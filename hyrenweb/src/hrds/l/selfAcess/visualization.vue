@@ -2904,6 +2904,7 @@
                 this.myChart = echarts.init(document.getElementById('myChart'));
                 var myChart = this.myChart;
                 myChart.clear();
+                console.log(JSON.stringify(option))
                 myChart.setOption(option, true)
             },
             // 折线图

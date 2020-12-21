@@ -53,7 +53,7 @@
                 </el-button>
                 <el-button size="mini" type="text" v-if="scope.row.isadd" @click="pushtoaddmart3(scope.row)">立即执行
                 </el-button>
-                <el-button size="mini" type="text" v-if="scope.row.isadd" @click="exportMappingExcel(scope.row)">导出MappingExcel
+                <el-button size="mini" type="text" v-if="scope.row.isadd && scope.row.remark != undefined" @click="exportMappingExcel(scope.row)">导出MappingExcel
                 </el-button>
                 <!-- <el-button size="mini" type="text" v-if="scope.row.isadd" @click="downloaddmdatatable(scope.row)">导出
                 </el-button> -->
@@ -242,6 +242,8 @@ export default {
                     datatable_id: datatable_id,
                     tablename: datatable_en_name,
                 }).then(res => {
+                    console.log(res);
+                    debugger;
                     // if (res && res.success) {
                     let filename = datatable_en_name + ".xlsx"
                     const blob = new Blob([res.data]);

@@ -733,6 +733,10 @@
             } else {
                 this.auto_dashboard_info.dashboard_theme = "00";
             }
+            for (var i = 0; i < this.layout.length; i++) {
+                let layoutElement = this.layout[i];
+                this.resizedEvent(layoutElement.i, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
+            }
             // 监控窗口变化
             window.addEventListener('resize', () => {
                 if (this.is_showdel == false) {
@@ -871,16 +875,16 @@
                     }
                 })
                 if (lineflag) {
-                    $("#" + i).width(newW * 10);
-                    $("#" + i).height(newH * 10);
+                    $("#" + i).width(newW * 10+"px");
+                    $("#" + i).height(newH * 10+"px");
                     //TODO 回显的时候 这里没法直接变长
                 } else if (textflag) {
-                    $("#" + i).width(newW * 10);
-                    $("#" + i).height(newH * 10);
+                    $("#" + i).width(newW * 10+"px");
+                    $("#" + i).height(newH * 10+"px");
                     //TODO 回显的时候 这里没法直接变大
                 } else if (frameflag) {
-                    $("#" + i).width(newW * 10);
-                    $("#" + i).height(newH * 10);
+                    $("#" + i).width(newW * 10+"px");
+                    $("#" + i).height(newH * 10+"px");
                     //TODO 回显的时候 这里没法直接变大
                 } else {
                     $("#" + i).height(newH * 10);
@@ -2745,6 +2749,7 @@
                 this.selectRow = selectRow;
                 lineChart.clear();
                 lineChart.setOption(option, true);
+                // console.log(JSON.stringify(option));
                 lineChart.resize();
             },
             //极坐标柱状图展示
