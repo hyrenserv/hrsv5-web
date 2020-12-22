@@ -1946,7 +1946,6 @@
                         } else if (type == "bubble") {// 气泡图
                             this.bubbleIds.push(id);
                             var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
-
                             this.bubble_echartdatas.push(echartdata);
                             this.echart_div_layouts.push(echart_div_layout);
                             this.tmp_component_names.push(tmp_component_name);
@@ -2663,6 +2662,19 @@
                 boxplotChart.setOption(option);
                 boxplotChart.resize();
             },
+            //初始化
+            initproperty() {
+                var result = {};
+                // 初始化标题属性
+                generatepic.initTitleStyle(this.auto_comp_sum.chart_theme, this.titleFont, result);
+                //设置图上每个节点的显示情况
+                generatepic.initLabelOption(this.echartsLabel, result);
+                // 初始化轴配置信息
+                generatepic.initAxisStyle(this.axisStyle, this.xAxis, this.echart_type, this.yAxis, this.xAxisLine, this.xaxisLabel, this.yaxisLine, this.yaxisLabel, result);
+                // 初始化图例信息
+                generatepic.initLengendStyle(this.legendStyle, result);
+                return result;
+            },
             //折线图展示
             echartline(echartdata, lineChart, id, echart_div_layout, tmp_component_name, tmp_component_background) {
                 var legend_data = echartdata.legend_data;
@@ -2749,7 +2761,7 @@
                 this.selectRow = selectRow;
                 lineChart.clear();
                 lineChart.setOption(option, true);
-                // console.log(JSON.stringify(option));
+                console.log(JSON.stringify(option));
                 lineChart.resize();
             },
             //极坐标柱状图展示
@@ -3004,55 +3016,7 @@
                 stackingBarChart.setOption(option);
                 stackingBarChart.resize();
             },
-            initproperty() {
-                var result = {};
-                // 初始化标题属性
-                this.initTitleStyle(result);
-                //设置图上每个节点的显示情况
-                var labelOption = {
-                    normal: {
-                        show: this.echartsLabel.show_label == '1' ? true : false,
-                        position: this.echartsLabel.position,
-                        formatter: this.echartsLabel.formatter
-                    }
-                }
-                result.labelOption = labelOption;
-                // 初始化轴配置信息
-                this.initAxisStyle(result);
-                // 初始化图例信息
-                this.initLengendStyle(result);
 
-                return result;
-            },
-            // 初始化图例信息
-            initLengendStyle(result) {
-                // 图例信息
-                var legendStyle = {
-                    type: this.legendStyle.type,
-                    show: this.legendStyle.show == '1' ? true : false,
-                    tooltip: this.legendStyle.tooltip == '1' ? true : false,
-                    left: this.legendStyle.left,
-                    top: this.legendStyle.top,
-                    right: this.legendStyle.right,
-                    bottom: this.legendStyle.bottom,
-                    width: this.legendStyle.width,
-                    height: this.legendStyle.height,
-                    orient: this.legendStyle.orient,
-                    align: this.legendStyle.align,
-                    padding: this.legendStyle.padding == '' || this.legendStyle.padding == undefined ? nulll : parseInt(this.legendStyle.padding),
-                    itemGap: this.legendStyle.itemGap,
-                    itemWidth: this.legendStyle.itemWidth,
-                    itemHeight: this.legendStyle.itemHeight,
-                    inactiveColor: this.legendStyle.inactiveColor,
-                    backgroundColor: this.legendStyle.backgroundColor,
-                    borderColor: this.legendStyle.borderColor,
-                    borderWidth: this.legendStyle.borderWidth,
-                    interval: this.legendStyle.interval,
-                    intervalNumber: this.legendStyle.intervalnumber,
-                    data: []
-                };
-                result.legendStyle = legendStyle;
-            },
             //饼图展示
             echartpie(echartdata, pieChart, id, echart_div_layout, tmp_component_name, tmp_component_background) {
                 var legend_data = echartdata.legendData;
@@ -3225,108 +3189,6 @@
                 scatterChart.clear();
                 scatterChart.setOption(option);
                 scatterChart.resize();
-            },
-            // 初始化轴配置信息
-            initAxisStyle(result) {
-                // 轴字体样式信息
-                var nameTextStyle = {
-                    color: this.axisStyle.color,
-                    lineHeight: this.axisStyle.lineHeight,
-                    fontFamily: this.axisStyle.fontFamily,
-                    fontSize: this.axisStyle.fontSize,
-                    align: this.axisStyle.align,
-                    backgroundColor: this.axisStyle.backgroundColor,
-                    borderColor: this.axisStyle.borderColor,
-                    fontStyle: this.axisStyle.fontStyle,
-                    fontWeight: this.axisStyle.fontWeight,
-                    borderWidth: this.axisStyle.borderWidth,
-                    borderRadius: this.axisStyle.borderRadius,
-                    verticalAlign: this.axisStyle.verticalAlign,
-                };
-                result.nameTextStyle = nameTextStyle;
-                // x轴配置信息
-                var xAxis = {
-                    name: this.xAxis.name,
-                    position: this.xAxis.position,
-                    show: this.xAxis.show == '1' ? true : false,
-                    offset: this.xAxis.offset,
-                    nameLocation: this.xAxis.nameLocation,
-                    nameRotate: this.xAxis.nameRotate,
-                    nameGap: this.xAxis.nameGap,
-                }
-                if (this.echart_type == 'blsimple') {
-                    xAxis.xAxisPointer = {
-                        axisPointer: {
-                            type: 'shadow'
-                        }
-                    }
-                    xAxis.data = this.xAxis.data
-                }
-                result.xAxis = xAxis;
-                // y轴配置信息
-                var yAxis = {
-                    name: this.yAxis.name,
-                    position: this.yAxis.position,
-                    show: this.yAxis.show == '1' ? true : false,
-                    offset: this.yAxis.offset,
-                    nameLocation: this.yAxis.nameLocation,
-                    nameRotate: this.yAxis.nameRotate,
-                    nameGap: this.yAxis.nameGap
-                }
-                result.yAxis = yAxis;
-                // x轴线信息
-                var xaxisLine = {
-                    show: this.xAxisLine.show == '1' ? true : false,
-                    onZero: this.xAxisLine.onZero == '1' ? true : false,
-                };
-                result.xaxisLine = xaxisLine;
-                // x轴标签信息
-                var xaxisLabel = {
-                    show: this.xAxisLabel.show == '1' ? true : false,
-                    inside: this.xAxisLabel.inside == '1' ? true : false,
-                    rotate: this.xAxisLabel.rotate,
-                    margin: this.xAxisLabel.margin,
-                    formatter: this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter
-                };
-                result.xaxisLabel = xaxisLabel;
-                // y轴线信息
-                var yaxisLine = {
-                    show: this.yAxisLine.show == '1' ? true : false,
-                    onZero: this.yAxisLine.onZero == '1' ? true : false,
-                };
-                result.yaxisLine = yaxisLine;
-                // y轴标签信息
-                var yaxisLabel = {
-                    show: this.yAxisLabel.show == '1' ? true : false,
-                    inside: this.yAxisLabel.inside == '1' ? true : false,
-                    rotate: this.yAxisLabel.rotate,
-                    margin: this.yAxisLabel.margin,
-                    formatter: this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter
-                };
-                result.yaxisLabel = yaxisLabel;
-            },
-            //初始化标题样式
-            initTitleStyle(result) {
-                //设置标题属性
-                var titles = {
-                    text: this.auto_comp_sum.chart_theme,
-                    x: this.titleFont.align,
-                    y: this.titleFont.verticalalign,
-                    backgroundColor: this.titleFont.backgroundColor,
-                    borderColor: this.titleFont.borderColor,
-                    borderWidth: this.titleFont.borderWidth,
-                    borderRadius: this.titleFont.borderRadius,
-                    textStyle: {
-                        color: this.titleFont.color,
-                        fontFamily: this.titleFont.fontFamily,
-                        fontSize: this.titleFont.fontSize,
-                        fontStyle: this.titleFont.fontStyle,
-                        fontWeight: this.titleFont.fontWeight,
-                        lineHeight: this.titleFont.lineHeight,
-                    }
-                };
-                result.titles
-                result.titles = titles;
             },
             //卡片组件     添加删除按钮
             carddelimage(id, imagevueobj) {

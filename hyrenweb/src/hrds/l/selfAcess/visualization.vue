@@ -283,7 +283,6 @@
                 <div style="margin-top:10px;" v-show="value =='scatter' || echart_type=='bubble'">
                     <img class="imgStyle" @click="echartshow('scatter')" src="@/assets/images/chart/scatter.png"
                          alt="标准散点图" title="标准散点图">
-                    <!--<img class="imgStyle" @click="echartshow('bubble')" src="@/assets/images/chart/bubble.png" alt="气泡图" title="气泡图">-->
                 </div>
                 <div style="margin-top:10px;" v-show="value =='card' || echart_type=='card'">
                     <img class="imgStyle" @click="echartshow('card')" src="@/assets/images/chart/card.jpg" alt="卡片"
@@ -1091,6 +1090,17 @@
     import * as functionAll from "./selfAcess";
     import draggable from 'vuedraggable';
     import * as validator from "@/utils/js/validator";
+    import * as generatepic from "../generatePic/generatePic";
+    import * as drawLine from "../generatePic/line";
+    import * as drawBarChart from "../generatePic/barChart";
+    import * as drawStackingBarChart from "../generatePic/stackingBarChart";
+    import * as drawPolarBarChart from "../generatePic/polarBarChart";
+    import * as drawPieChart from "../generatePic/pieChart";
+    import * as drawScatterChart from "../generatePic/scatterChart";
+    import * as drawBlChart from "../generatePic/blChart";
+    import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
+    import * as drawTreeMapChart from "../generatePic/treeMapChart";
+    import * as drawMapChart from "../generatePic/mapChart";
 
     require('echarts/dist/extension/dataTool.js');
     export default {
@@ -2594,25 +2604,33 @@
                                     this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                     return;
                                 }
-                                this.changeToLine(xColumns, yColumns, type, res.data)
+                                var result = this.initproperty();
+                                var option = drawLine.drawLine(result, res.data);
+                                this.drawPic(option);
                             } else if (type == 'bar') { //标准柱状图
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                     return;
                                 }
-                                this.changeToBarChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawBarChart.drawBarChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == 'stackingbar') { //堆叠柱状图
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                     return;
                                 }
-                                this.changeToStackingBarChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawStackingBarChart.drawStackingBarChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == "polarbar") { //极坐标堆叠柱状图
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1，请修改", "warning");
                                     return;
                                 }
-                                this.changeToPolarBarChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawPolarBarChart.drawPolarBarChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
                                 if (xColumns.length == 0 || yColumns.length == 0) {
                                     this.$Msg.customizTitle("请先选择横纵轴", "warning");
@@ -2626,7 +2644,12 @@
                                     this.$Msg.customizTitle("度量大于1，请修改", "warning");
                                     return;
                                 }
-                                this.changeToPieChart(xColumns, yColumns, type, res.data);
+                                if (this.echartsLabel.position != "inside" && this.echartsLabel.position != "outside") {
+                                    this.echartsLabel.position = "outside";
+                                }
+                                var result = this.initproperty();
+                                var option = drawPieChart.drawPieChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == "scatter") { // 标准散点图
                                 if (xColumns.length == 0 || yColumns.length == 0) {
                                     this.$Msg.customizTitle("请先选择横纵轴", "warning");
@@ -2640,24 +2663,17 @@
                                     this.$Msg.customizTitle("度量大于1，请修改", "warning");
                                     return;
                                 }
-                                this.changeToScatterChart(xColumns, yColumns, type, res.data);
-                            } else if (type == "bubble") { // 气泡图
-                                // if (xColumns.length > 1) {
-                                //     this.$Msg.customizTitle("维度大于1，请修改", "warning");
-                                //     return;
-                                // }
-                                // if (yColumns.length > 1) {
-                                //     this.$Msg.customizTitle("度量大于1，请修改", "warning");
-                                //     return;
-                                // }
-                                // this.changeToBubbleChart(xColumns, yColumns, type, res.data);
-                                this.$Msg.customizTitle("正在开发中", "warning")
+                                var result = this.initproperty();
+                                var option = drawScatterChart.drawScatterChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == "bl") { // 柱状折线混合图
                                 if (xColumns.length == 0 || yColumns.length == 0) {
                                     this.$Msg.customizTitle("请先选择横纵轴", "warning");
                                     return;
                                 }
-                                this.changeToBlChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawBlChart.drawBlChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == "blsimple") { // 柱状折线混合图-简单
                                 if (xColumns.length == 0 || yColumns.length == 0) {
                                     this.$Msg.customizTitle("请先选择横纵轴", "warning");
@@ -2671,13 +2687,17 @@
                                     this.$Msg.customizTitle("度量必须为2，请修改", "warning");
                                     return;
                                 }
-                                this.changeToBLSimpleChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawBlSimpleChart.drawBlSimpleChart(result, res.data);
+                                this.drawPic(option);
                             } else if (type == "treemap") { // 矩形树图
                                 if (xColumns.length == 0 || yColumns.length == 0) {
                                     this.$Msg.customizTitle("请先选择横纵轴", "warning");
                                     return;
                                 }
-                                this.changeToTreemapChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawTreeMapChart.drawTreeMapChart(result, res.data,this.echartsLabel,this.auto_comp_sum);
+                                this.drawPic(option);
                             } else if (type == "map") { // 地图
                                 if (xColumns.length == 0 || yColumns.length == 0) {
                                     this.$Msg.customizTitle("请先选择横纵轴", "warning");
@@ -2711,7 +2731,9 @@
                                         break;
                                     }
                                 }
-                                this.changeToMapChart(xColumns, yColumns, type, res.data);
+                                var result = this.initproperty();
+                                var option = drawMapChart.drawMapChart(result, res.data,this.seriesStyle);
+                                this.drawPic(option);
                             }
                         }
                     })
@@ -2732,8 +2754,6 @@
                     this.tips = "横轴为1个维度,纵轴为1个度量";
                 } else if (type == "scatter") { //散点图
                     this.tips = "横轴,纵轴都必须为度量";
-                } else if (type == "bubble") { //气泡图
-                    this.tips = "横轴为1个维度,纵轴为1个度量";
                 } else if (type == "table") { // 二维表
                     this.tips = "直接根据SQL得到的结果进行展示";
                 } else if (type == "card") { // 卡片
@@ -2751,513 +2771,28 @@
             initproperty() {
                 var result = {};
                 // 初始化标题属性
-                this.initTitleStyle(result);
+                generatepic.initTitleStyle(this.auto_comp_sum.chart_theme, this.titleFont, result);
                 //设置图上每个节点的显示情况
-                var labelOption = {
-                    normal: {
-                        show: this.echartsLabel.show_label == '1' ? true : false,
-                        position: this.echartsLabel.position,
-                        formatter: this.echartsLabel.formatter
-                    }
-                }
-                result.labelOption = labelOption;
+                generatepic.initLabelOption(this.echartsLabel, result);
                 // 初始化轴配置信息
-                this.initAxisStyle(result);
+                generatepic.initAxisStyle(this.axisStyle, this.xAxis, this.echart_type, this.yAxis, this.xAxisLine, this.xAxisLabel, this.yAxisLine, this.yAxisLabel, result);
                 // 初始化图例信息
-                this.initLengendStyle(result);
-
+                generatepic.initLengendStyle(this.legendStyle, result);
+                result.background = this.auto_comp_sum.background
                 return result;
             },
-            // 初始化图例信息
-            initLengendStyle(result) {
-                // 图例信息
-                var legendStyle = {
-                    type: this.legendStyle.type,
-                    show: this.legendStyle.show == '1' ? true : false,
-                    tooltip: this.legendStyle.tooltip == '1' ? true : false,
-                    left: this.legendStyle.left_distance,
-                    top: this.legendStyle.top_distance,
-                    right: this.legendStyle.right_distance,
-                    bottom: this.legendStyle.bottom_distance,
-                    width: this.legendStyle.width,
-                    height: this.legendStyle.height,
-                    orient: this.legendStyle.orient,
-                    align: this.legendStyle.align,
-                    padding: this.legendStyle.padding == '' || this.legendStyle.padding == undefined ? nulll : parseInt(this.legendStyle.padding),
-                    itemGap: this.legendStyle.itemgap,
-                    itemWidth: this.legendStyle.itemwidth,
-                    itemHeight: this.legendStyle.itemheight,
-                    inactiveColor: this.legendStyle.inactivecolor,
-                    backgroundColor: this.legendStyle.backgroundcolor,
-                    borderColor: this.legendStyle.bordercolor,
-                    borderWidth: this.legendStyle.borderwidth,
-                    interval: this.legendStyle.interval,
-                    intervalNumber: this.legendStyle.intervalnumber,
-                    data: []
-                };
-                result.legendStyle = legendStyle;
-            },
-            // 初始化轴配置信息
-            initAxisStyle(result) {
-                // 轴字体样式信息
-                var nameTextStyle = {
-                    color: this.axisStyle.color,
-                    lineHeight: this.axisStyle.lineheight,
-                    fontFamily: this.axisStyle.fontfamily,
-                    fontSize: this.axisStyle.fontsize,
-                    align: this.axisStyle.align,
-                    backgroundColor: this.axisStyle.backgroundcolor,
-                    borderColor: this.axisStyle.bordercolor,
-                    fontStyle: this.axisStyle.fontstyle,
-                    fontWeight: this.axisStyle.fontweight,
-                    borderWidth: this.axisStyle.borderwidth,
-                    borderRadius: this.axisStyle.borderradius,
-                    verticalAlign: this.axisStyle.verticalalign,
-                };
-                result.nameTextStyle = nameTextStyle;
-                // x轴配置信息
-                var xAxis = {
-                    name: this.xAxis.name,
-                    position: this.xAxis.position,
-                    show: this.xAxis.show == '1' ? true : false,
-                    axisoOffset: this.xAxis.axisoffset,
-                    nameLocation: this.xAxis.namelocation,
-                    nameRotate: this.xAxis.namerotate,
-                    nameGap: this.xAxis.namegap,
-                }
-                if (this.echart_type == 'blsimple') {
-                    xAxis.xAxisPointer = {
-                        axisPointer: {
-                            type: 'shadow'
-                        }
-                    }
-                    xAxis.data = this.xAxis.data
-                }
-                result.xAxis = xAxis;
-                // y轴配置信息
-                var yAxis = {
-                    name: this.yAxis.name,
-                    position: this.yAxis.position,
-                    show: this.yAxis.show == '1' ? true : false,
-                    axisoOffset: this.yAxis.axisoffset,
-                    nameLocation: this.yAxis.namelocation,
-                    nameRotate: this.yAxis.namerotate,
-                    nameGap: this.yAxis.namegap
-                }
-                result.yAxis = yAxis;
-                // x轴线信息
-                var xaxisLine = {
-                    show: this.xAxisLine.show == '1' ? true : false,
-                    onZero: this.xAxisLine.onzero == '1' ? true : false,
-                };
-                result.xaxisLine = xaxisLine;
-                // x轴标签信息
-                var xaxisLabel = {
-                    show: this.xAxisLabel.show == '1' ? true : false,
-                    inside: this.xAxisLabel.inside == '1' ? true : false,
-                    rotate: this.xAxisLabel.rotate,
-                    margin: this.xAxisLabel.margin,
-                    formatter: this.xAxisLabel.formatter == "" ? null : this.xAxisLabel.formatter
-                };
-                result.xaxisLabel = xaxisLabel;
-                // y轴线信息
-                var yaxisLine = {
-                    show: this.yAxisLine.show == '1' ? true : false,
-                    onZero: this.yAxisLine.onzero == '1' ? true : false,
-                };
-                result.yaxisLine = yaxisLine;
-                // y轴标签信息
-                var yaxisLabel = {
-                    show: this.yAxisLabel.show == '1' ? true : false,
-                    inside: this.yAxisLabel.inside == '1' ? true : false,
-                    rotate: this.yAxisLabel.rotate,
-                    margin: this.yAxisLabel.margin,
-                    formatter: this.yAxisLabel.formatter == "" ? null : this.yAxisLabel.formatter
-                };
-                result.yaxisLabel = yaxisLabel;
-            },
-            //初始化标题样式
-            initTitleStyle(result) {
-                //设置标题属性
-                var titles = {
-                    text: this.auto_comp_sum.chart_theme,
-                    x: this.titleFont.align,
-                    y: this.titleFont.verticalalign,
-                    backgroundColor: this.titleFont.backgroundcolor,
-                    borderColor: this.titleFont.bordercolor,
-                    borderWidth: this.titleFont.borderwidth,
-                    borderRadius: this.titleFont.borderradius,
-                    textStyle: {
-                        color: this.titleFont.color,
-                        fontFamily: this.titleFont.fontfamily,
-                        fontSize: this.titleFont.fontsize,
-                        fontStyle: this.titleFont.fontstyle,
-                        fontWeight: this.titleFont.fontweight,
-                        lineHeight: this.titleFont.lineheight,
-                    }
-                };
-                result.titles
-                result.titles = titles;
-            },
             //初始化echart
-            drawLine(option) {
+            drawPic(option) {
                 this.myChart = echarts.init(document.getElementById('myChart'));
                 var myChart = this.myChart;
                 myChart.clear();
-                console.log(JSON.stringify(option))
                 myChart.setOption(option, true)
-            },
-            // 折线图
-            changeToLine(x_columns, y_columns, type, data) {
-                //https://echarts.apache.org/examples/zh/editor.html?c=area-stack
-                var result = this.initproperty();
-                data.seriesArray.forEach(val => {
-                    val.label = result.labelOption;
-                })
-                let option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    grid: {
-                        left: '5%',
-                        right: '10%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: [
-                        Object.assign({}, {
-                            type: 'category',
-                            boundaryGap: false,
-                            data: data.xArray,
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    yAxis: Object.assign({}, {
-                        type: 'value',
-                        nameTextStyle: result.nameTextStyle,
-                        axisLine: result.yaxisLine,
-                        axisLabel: result.yaxisLabel,
-                    }, result.yAxis),
-                    series: data.seriesArray
-                };
-                this.drawLine(option);
-            },
-            //柱状图
-            changeToBarChart(x_columns, y_columns, type, data) {
-                //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
-                var result = this.initproperty();
-                data.seriesArray.forEach(val => {
-                    val.label = result.labelOption;
-                })
-                let option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    grid: {
-                        left: '5%',
-                        right: '10%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: [
-                        Object.assign({}, {
-                            type: 'category',
-                            data: data.xArray,
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    yAxis: Object.assign({}, {
-                        type: 'value',
-                        nameTextStyle: result.nameTextStyle,
-                        axisLine: result.yaxisLine,
-                        axisLabel: result.yaxisLabel,
-                    }, result.yAxis),
-                    series: data.seriesArray
-                };
-                this.drawLine(option)
-            },
-            //堆叠柱状图
-            changeToStackingBarChart(x_columns, y_columns, type, data) {
-                var result = this.initproperty();
-                data.seriesArray.forEach(val => {
-                    val.label = result.labelOption;
-                })
-                let option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    grid: {
-                        left: '5%',
-                        right: '10%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: [
-                        Object.assign({}, {
-                            type: 'category',
-                            data: data.xArray,
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    yAxis: Object.assign({}, {
-                        type: 'value',
-                        nameTextStyle: result.nameTextStyle,
-                        axisLine: result.yaxisLine,
-                        axisLabel: result.yaxisLabel,
-                    }, result.yAxis),
-                    series: data.seriesArray
-                };
-                this.drawLine(option)
-            },
-            //极坐标柱状图
-            changeToPolarBarChart(x_columns, y_columns, type, data) {
-                var result = this.initproperty();
-                data.seriesArray.forEach(val => {
-                    val.label = result.labelOption;
-                })
-                let option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    radiusAxis: [
-                        Object.assign({}, {
-                            type: 'category',
-                            data: data.xArray,
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    polar: {},
-                    angleAxis: Object.assign({}, {
-                        nameTextStyle: result.nameTextStyle,
-                        axisLine: result.yaxisLine,
-                        axisLabel: result.yaxisLabel,
-                    }, result.yAxis),
-                    series: data.seriesArray
-                }
-                this.drawLine(option)
-            },
-            // 柱状折线混合图
-            changeToBlChart(x_columns, y_columns, type, data) {
-                var result = this.initproperty();
-                let option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            magicType: {
-                                show: true,
-                                type: ['line', 'bar', 'stack', 'tiled']
-                            },
-                            restore: {
-                                show: true
-                            },
-                            saveAsImage: {
-                                show: true
-                            }
-                        }
-                    },
-                    calculable: true,
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    xAxis: [
-                        Object.assign({}, {
-                            type: 'category',
-                            data: data.xArray,
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    yAxis: Object.assign({}, {
-                        type: 'value',
-                        nameTextStyle: result.nameTextStyle,
-                        axisLine: result.yaxisLine,
-                        axisLabel: result.yaxisLabel,
-                    }, result.yAxis),
-                    series: data.seriesArray
-                };
-                console.log(JSON.stringify(option));
-                this.drawLine(option);
-            },
-            //柱状折线混合图-简单
-            changeToBLSimpleChart(x_columns, y_columns, type, data) {
-                var series1Name = data.series1Name;
-                var series1Data = data.series1Data;
-                var series2Name = data.series2Name;
-                var series2Data = data.series2Data;
-                this.xAxis.data = data.xAxisData;
-                var result = this.initproperty()
-                result.legendStyle.data.push(series1Name);
-                result.legendStyle.data.push(series2Name);
-                var yAxis = Object.assign({}, {
-                    type: 'value',
-                    nameTextStyle: result.nameTextStyle,
-                    axisLine: result.yaxisLine,
-                    axisLabel: result.yaxisLabel,
-                }, result.yAxis);
-                var option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    toolbox: {
-                        feature: {
-                            magicType: {
-                                show: true,
-                                type: ['line', 'bar']
-                            },
-                            restore: {
-                                show: true
-                            },
-                            saveAsImage: {
-                                show: true
-                            }
-                        }
-                    },
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    xAxis: [
-                        Object.assign({}, {
-                            type: 'category',
-                            data: data.xArray,
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    yAxis: [yAxis, yAxis],
-                    series: [{
-                        name: series1Name,
-                        type: 'bar',
-                        yAxisIndex: 0,
-                        data: series1Data,
-                        itemStyle: {
-                            normal: {
-                                label: result.labelOption,
-                            }
-                        },
-                    },
-                        {
-                            name: series2Name,
-                            type: 'line',
-                            yAxisIndex: 1,
-                            data: series2Data,
-                            itemStyle: {
-                                normal: {
-                                    label: result.labelOption,
-                                }
-                            },
-                        }
-                    ]
-                };
-                this.drawLine(option);
-            },
-            //饼图
-            changeToPieChart(x_columns, y_columns, type, data) {
-                if (this.echartsLabel.position != "inside" && this.echartsLabel.position != "outside") {
-                    this.echartsLabel.position = "outside";
-                }
-                //https://echarts.apache.org/examples/zh/editor.html?c=pie-rich-text
-                var result = this.initproperty();
-                data.seriesArray.forEach(val => {
-                    val.label = result.labelOption;
-                })
-                var option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{a} <br/>{b} : {c} ({d}%)"
-                    },
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legendData
-                    }),
-                    graphic: {
-                        type: 'text',
-                        left: 'center',
-                        top: 'center',
-                        style: {
-                            text: data.count,
-                            textAlign: 'center',
-                            fill: '#000',
-                            width: 30,
-                            height: 30
-                        }
-                    },
-                    calculable: true,
-                    series: data.seriesArray
-                }
-                this.drawLine(option)
-            },
-            //标准散点图
-            changeToScatterChart(x_columns, y_columns, type, data) {
-                var result = this.initproperty();
-                var option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    xAxis: {},
-                    yAxis: {},
-                    title: result.titles,
-                    legend: Object.assign({}, result.legendStyle, {
-                        data: data.legend_data
-                    }),
-                    xAxis: [
-                        Object.assign({}, {
-                            nameTextStyle: result.nameTextStyle,
-                            axisLine: result.xaxisLine,
-                            axisLabel: result.xaxisLabel,
-                        }, result.xAxis)
-                    ],
-                    yAxis: Object.assign({}, {
-                        nameTextStyle: result.nameTextStyle,
-                        axisLine: result.yaxisLine,
-                        axisLabel: result.yaxisLabel,
-                    }, result.yAxis),
-                    series: [{
-                        data: data.scatterData,
-                        label: result.labelOption,
-                        type: 'scatter'
-                    }]
-                };
-                this.drawLine(option)
-            },
-            //气泡图
-            changeToBubbleChart: function (x_columns, y_columns, type, data) {
-                this.myChart = echarts.init(document.getElementById('myChart'));
-                var myChart = this.myChart;
-                myChart.clear();
-                var result = {};
-                this.initTitleStyle(result);
-                renderBubbleChart(data.seriesData, document.getElementById('myChart'), result.titles, this.auto_comp_sum.background);
             },
             // 卡片
             changeToCard() {
                 $("#cardp").css("font-size", this.titleFont.fontSize + "px");
                 $("#cardp").css("line-height", parseInt(this.titleFont.lineheight) + "px");
                 $("#carddiv").css("font-size", this.titleFont.fontsize + "px");
-
                 $(".thumbnails").css("background", this.titleFont.backgroundcolor);
                 $(".thumbnails").css("color", this.titleFont.color);
                 $(".thumbnails").css("font-style", this.titleFont.fontstyle);
@@ -3280,140 +2815,6 @@
                     this.show_border = true;
                 }
                 $("#tableStyle").css("background", this.auto_table_info.th_background);
-            },
-            // 矩形树图
-            changeToTreemapChart(x_columns, y_columns, type, data) {
-                var result = {};
-                this.initTitleStyle(result);
-                var option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{b}: {c}",
-                    },
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            restore: {
-                                show: true
-                            },
-                            saveAsImage: {
-                                show: true
-                            }
-                        }
-                    },
-                    calculable: false,
-                    series: [{
-                        name: this.auto_comp_sum.chart_type,
-                        type: 'treemap',
-                        leafDepth: undefined,
-                        breadcrumb: {
-                            show: false,
-                        },
-                        itemStyle: {
-                            normal: {
-                                label: {
-                                    show: this.echartsLabel.show_label,
-                                    position: this.echartsLabel.position,
-                                    formatter: this.echartsLabel.formatter,
-                                },
-                                borderWidth: 1
-                            },
-                            emphasis: {
-                                label: {
-                                    show: true
-                                }
-                            }
-                        },
-                        data: data.seriesData
-                    }]
-                };
-                this.drawLine(option);
-            },
-            // 地理坐标/地图
-            changeToMapChart(x_columns, y_columns, type, data) {
-                var result = {};
-                this.initTitleStyle(result)
-                this.legendStyle.padding = parseInt(this.legendStyle.padding);
-                this.legendStyle.itemGap = parseInt(this.legendStyle.itemGap);
-                this.legendStyle.itemWidth = parseInt(this.legendStyle.itemWidth);
-                this.legendStyle.intervalnumber = parseInt(this.legendStyle.intervalnumber);
-                this.legendStyle.interval = parseInt(this.legendStyle.interval);
-                var pName = "";
-                if (this.seriesStyle.provincename == "全国") {
-                    pName = "china";
-                } else {
-                    pName = this.seriesStyle.provincename;
-                }
-                var splitList = [];
-                for (var i = 0; i < this.legendStyle.intervalnumber; i++) {
-                    if (i == 0) {
-                        splitList.push({
-                            start: 0,
-                            end: this.legendStyle.interval
-                        });
-                    } else {
-                        splitList.push({
-                            start: this.legendStyle.interval * i,
-                            end: this.legendStyle.interval * (i + 1)
-                        });
-                    }
-                }
-
-                var option = {
-                    backgroundColor: this.auto_comp_sum.background,
-                    title: result.titles,
-                    tooltip: {
-                        formatter: '{b}:{c}',
-                    },
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            restore: {
-                                show: true
-                            },
-                            saveAsImage: {
-                                show: true
-                            }
-                        }
-                    },
-                    //小导航图标
-                    visualMap: {
-                        show: this.legendStyle.show == '1' ? true : false,
-                        left: this.legendStyle.left,
-                        top: this.legendStyle.top,
-                        right: this.legendStyle.right,
-                        bottom: this.legendStyle.bottom,
-                        orient: this.legendStyle.orient,
-                        align: this.legendStyle.align,
-                        padding: this.legendStyle.padding,
-                        itemGap: this.legendStyle.itemgap,
-                        itemWidth: this.legendStyle.itemwidth,
-                        itemHeight: this.legendStyle.itemheight,
-                        borderColor: this.legendStyle.bordercolor,
-                        borderWidth: this.legendStyle.borderwidth,
-                        splitList: splitList,
-                    },
-                    series: [{
-                        type: 'map',
-                        mapType: pName,
-                        selectedMode: 'multiple',
-                        label: {
-                            normal: {
-                                show: this.echartsLabel.show_label,
-                                position: this.echartsLabel.position,
-                                formatter: this.echartsLabel.formatter,
-                            },
-                            emphasis: {
-                                show: true
-                            }
-                        },
-                        roam: true,
-                        data: data.seriesData, //数据
-                    },]
-                };
-                this.drawLine(option);
             },
             getRowStyle({
                             row,
