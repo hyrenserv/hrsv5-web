@@ -30,6 +30,15 @@ export function verifySqlIsLegal(data) {
         params: data
     })
 }
+/**
+ * 根据ID查询列信息
+ */
+export function searchFieldById(data) {
+    return request({
+        url: '/L/autoanalysis/manage/searchFieldById',
+        params:data
+    })
+}
 //自主取数模板结果预览数据
 export function getPreviewData(data) {
     return request({

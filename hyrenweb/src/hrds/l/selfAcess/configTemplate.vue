@@ -79,9 +79,9 @@
             <div class="lines"></div>
             <el-table size="medium" :data="tableDataPra" border stripe style="width: 100%" class="eltables">
                 <!--<el-table-column type="index" label="选择" width="70px" align='center'>-->
-                    <!--<template slot-scope="scope">-->
-                        <!--<el-checkbox name="nature" :checked="scope.row.checked ==true" v-model="scope.row.checked" @change="selectCheckbox(scope.row.checked,scope.row,scope.$index)"></el-checkbox>-->
-                    <!--</template>-->
+                <!--<template slot-scope="scope">-->
+                <!--<el-checkbox name="nature" :checked="scope.row.checked ==true" v-model="scope.row.checked" @change="selectCheckbox(scope.row.checked,scope.row,scope.$index)"></el-checkbox>-->
+                <!--</template>-->
                 <!--</el-table-column>-->
                 <el-table-column prop="cond_para_name" show-overflow-tooltip label="参数名称" align='center'>
                 </el-table-column>
@@ -185,7 +185,7 @@
         <!--树菜单-->
         <div class='mytree '>
             <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="mini" />
-            <el-tree class="filter-tree elDialogInfo" :data="webSqlTreeData" :indent='0' :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick">
+            <el-tree class="filter-tree elDialogInfo" :data="webSqlTreeData" :indent='0' :filter-node-method="filterNode" ref="tree" @node-contextmenu="rightClick" @node-click="showTableColumn">
                 <span class="span-ellipsis" slot-scope="{ node, data }">
                     <span :title="data.description" v-if="'undefined' !== typeof data.file_id && data.file_id !== ''">
                         <i class=" el-icon-document"></i>
@@ -198,6 +198,20 @@
                     </span>
                 </span>
             </el-tree>
+        </div>
+    </el-dialog>
+    <el-dialog title="查看字段信息" :visible.sync="dialogShowColumnVisible" :before-close="beforeShowFieldClose">
+        <el-table :data="columnData" border style="width: 100%" ref="multipleColumnTable" :row-key="(row)=>{ return row.column_id}" height="450" size="medium" @select="columnSelectionChange" @select-all='allColumnSelect'>
+            <el-table-column width="40" align="left" type="selection" :reserve-selection="true">
+            </el-table-column>
+            <el-table-column type="index" label="序号" width="50px" align='left' />
+            <el-table-column prop="column_name" label="字段英文名" align="left" />
+            <el-table-column prop="column_ch_name" label="字段中文名" align="left" />
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cancel" size="mini">取 消</el-button>
+            <el-button type="primary" @click="changeSql" size="mini">确 认
+            </el-button>
         </div>
     </el-dialog>
 
@@ -294,7 +308,11 @@ export default {
                 label: "label"
             },
             querydatadialogshow: false,
-            databysql: []
+            databysql: [],
+            columnData: [],
+            columnChange: [],
+            dialogShowColumnVisible: false,
+            sqltablename: ''
         }
     },
     mounted() {
@@ -351,7 +369,6 @@ export default {
 
                 })
             }
-
         },
         // 返回上一级
         goBack() {
@@ -516,6 +533,53 @@ export default {
             } else {
                 return false;
             }
+        },
+        // 根据表名展示列信息
+        showTableColumn(data) {
+            this.columnChange=[];
+            if ('undefined' !== typeof data.file_id && data.file_id != "") {
+                this.dialogShowColumnVisible = true;
+                functionAll.searchFieldById({
+                    'data_layer': data.data_layer,
+                    'file_id': data.file_id
+                }).then((res) => {
+                    if (res && res.success) {
+                        this.columnData = res.data.column_info_list;
+                        this.sqltablename = res.data.hyren_name;
+                    }
+                });
+            }
+        },
+        // 确认
+        changeSql() {
+            let sql = "SELECT ";
+            for (let i = 0; i < this.columnChange.length; i++) {
+                sql += this.columnChange[i].column_name + ","
+            }
+            sql = sql.substr(0, sql.length - 1);
+            sql += " FROM " + this.sqltablename;
+            this.basicInfoForm.sqlMain = sql;
+            this.$refs.sqleditormain.setmVal(sql)
+            this.formaterSql(sql)
+            this.dialogShowColumnVisible = false;
+            this.dialogData = false;
+            this.$refs.multipleColumnTable.clearSelection();
+        },
+        beforeShowFieldClose() {
+            this.dialogShowColumnVisible = false;
+        },
+        // 取消
+        cancel() {
+            this.$refs.multipleColumnTable.clearSelection();
+            this.dialogShowColumnVisible = false
+        },
+        // 选择字段全选
+        allColumnSelect(all) {
+            this.columnChange = all;
+        },
+        // 选择字段复选框选中
+        columnSelectionChange(selectTrue) {
+            this.columnChange = selectTrue;
         },
         foo() {
             this.menuVisible = false
