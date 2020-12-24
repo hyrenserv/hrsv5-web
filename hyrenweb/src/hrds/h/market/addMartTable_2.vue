@@ -69,13 +69,12 @@
         <el-dialog title="关联表信息" :visible.sync="relationTableVisible" width="85%">
             <el-form :inline="true" class="demo-form-inline" :label-position="labelPosition"
                      label-width="80px">
-                <el-form-item>
-                    <label type="text"><h1>选中的表：{{tableNameListString}}</h1></label>
-                </el-form-item>
-                <h1>Select</h1>
-                <el-input type="textarea" rows="5" disabled v-model="relationTableAttr.selectColumns"
-                          placeholder="选中的列"/>
-                <el-row>
+                <el-row :gutter="10">
+                    <el-col>
+                        <el-form-item label="select">
+                            <el-input type="textarea" rows="4" maxlength="50" autosize disabled v-model="relationTableAttr.selectColumns" placeholder="选择列"/>
+                        </el-form-item>
+                    </el-col>
                     <el-col>
                         <el-form-item label="表名称">
                             <el-input v-model="relationTableList[0].table_name" placeholder="表名称">
@@ -85,7 +84,7 @@
                             <label type="text">T1</label>
                         </el-form-item>
                     </el-col>
-                    <el-col v-for="(item,index) in relationTableList" :key="index" :span="24">
+                    <el-col v-for="(item,index) in relationTableList_1" :key="index" :span="24">
                         <el-form-item label="JOIN 条件">
                             <el-select v-model="item.joinType" placeholder="请选择join条件"
                                        style="width: 160px">
@@ -703,9 +702,24 @@
                 },
                 relationTableList: [{
                     table_name: 'a',
-                    joinType: 'LEFT JOIN',
-                    on_condition: '1=2',
                 }, {
+                    table_name: 'b',
+                    joinType: 'INNER JOIN',
+                    on_condition: '3=2',
+                }, {
+                    table_name: 'c',
+                    joinType: 'FULL JOIN',
+                    on_condition: '4=2',
+                }, {
+                    table_name: 'd',
+                    joinType: 'LEFT JOIN',
+                    on_condition: '5=2',
+                }, {
+                    table_name: 'e',
+                    joinType: 'RIGHT JOIN',
+                    on_condition: '6=2',
+                }],
+                relationTableList_1: [{
                     table_name: 'b',
                     joinType: 'INNER JOIN',
                     on_condition: '3=2',
@@ -725,7 +739,7 @@
                 relationTableAttr: {},
                 selectTableVisible: false,
                 selectTableCreateVisible: false,
-                relationTableVisible: false,
+                relationTableVisible: true,
                 labelPosition: 'right',
                 currPage: 1,
                 pageSize: 10,
@@ -787,6 +801,7 @@
             getCheckedNodes() {
                 var nodeArray = this.$refs.tree.getCheckedNodes();
                 this.tableNameList = [];
+                this.relationTableList_1 = [];
                 // this.tableNameListString = [];
                 for (var i = 0; i < nodeArray.length; i++) {
                     var node = nodeArray[i];
@@ -804,8 +819,11 @@
                 this.tableNameListString = this.tableNameListString.substring(0, this.tableNameListString.length - 1)
                 console.log(this.tableNameList);
                 this.relationTableVisible = true;
+                debugger;
+                for (var i = 1; i < this.relationTableList.length; i++) {
+                    this.relationTableList_1.push(this.relationTableList[i]);
+                }
                 //TODO
-                // this.relationTableList.push({},{},{});
             },
             getifrelationdatabase() {
                 this.basicInfoForm.sqlMain = this.$refs.sqleditormain.getmVal();
