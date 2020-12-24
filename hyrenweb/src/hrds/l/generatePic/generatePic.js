@@ -34,7 +34,7 @@ export function initLabelOption(echartsLabel, result) {
 }
 
 
-export function initAxisStyle(axisStyle,xAxis,echart_type,yAxis,xAxisLine,xAxisLabel,yAxisLine,yAxisLabel,result) {
+export function initAxisStyle(axisStyle,xAxis,yAxis,xAxisLine,xAxisLabel,yAxisLine,yAxisLabel,result) {
     // 轴字体样式信息
     var nameTextStyle = {
         color: axisStyle.color,
@@ -60,14 +60,6 @@ export function initAxisStyle(axisStyle,xAxis,echart_type,yAxis,xAxisLine,xAxisL
         nameLocation: xAxis.namelocation,
         nameRotate: xAxis.namerotate,
         nameGap: xAxis.namegap,
-    }
-    if (echart_type == 'blsimple') {
-        xAxis.xAxisPointer = {
-            axisPointer: {
-                type: 'shadow'
-            }
-        }
-        xAxis.data = xAxis.data
     }
     result.xAxis = xAxis;
     // y轴配置信息

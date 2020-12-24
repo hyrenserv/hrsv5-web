@@ -2775,7 +2775,7 @@
                 //设置图上每个节点的显示情况
                 generatepic.initLabelOption(this.echartsLabel, result);
                 // 初始化轴配置信息
-                generatepic.initAxisStyle(this.axisStyle, this.xAxis, this.echart_type, this.yAxis, this.xAxisLine, this.xAxisLabel, this.yAxisLine, this.yAxisLabel, result);
+                generatepic.initAxisStyle(this.axisStyle, this.xAxis, this.yAxis, this.xAxisLine, this.xAxisLabel, this.yAxisLine, this.yAxisLabel, result);
                 // 初始化图例信息
                 generatepic.initLengendStyle(this.legendStyle, result);
                 result.background = this.auto_comp_sum.background
