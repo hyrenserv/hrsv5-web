@@ -589,3 +589,11 @@ export function generatingScript(data) {
     })
 }
 
+//获取表的关联信息
+export function getRelationTable(data) {
+    return request({
+        url: '/H/market/getRelationTable',
+        params: data
+    })
+}
+

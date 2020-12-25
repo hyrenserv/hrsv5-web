@@ -72,7 +72,8 @@
                 <el-row :gutter="10">
                     <el-col>
                         <el-form-item label="select">
-                            <el-input type="textarea" rows="4" maxlength="50" autosize disabled v-model="relationTableAttr.selectColumns" placeholder="选择列"/>
+                            <el-input type="textarea" rows="4" maxlength="50" autosize disabled
+                                      v-model="relationTableAttr.selectColumns" placeholder="选择列"/>
                         </el-form-item>
                     </el-col>
                     <el-col>
@@ -739,7 +740,7 @@
                 relationTableAttr: {},
                 selectTableVisible: false,
                 selectTableCreateVisible: false,
-                relationTableVisible: true,
+                relationTableVisible: false,
                 labelPosition: 'right',
                 currPage: 1,
                 pageSize: 10,
@@ -802,27 +803,27 @@
                 var nodeArray = this.$refs.tree.getCheckedNodes();
                 this.tableNameList = [];
                 this.relationTableList_1 = [];
-                // this.tableNameListString = [];
+                this.tableNameListString = "";
                 for (var i = 0; i < nodeArray.length; i++) {
                     var node = nodeArray[i];
                     var table_name = node.table_name;
                     var children = node.children;
                     if (children.length == 0 && table_name != undefined) {
                         this.tableNameList.push(table_name);
-                        tableNameListString += table_name + ",";
+                        this.tableNameListString += table_name + ",";
                     }
                 }
-                // if (nodeArray.length == 0) {
-                //     this.$Msg.customizTitle('请勾选左侧树形菜单上的表', 'warning');
-                //     return;
-                // }
-                this.tableNameListString = this.tableNameListString.substring(0, this.tableNameListString.length - 1)
-                console.log(this.tableNameList);
-                this.relationTableVisible = true;
-                debugger;
-                for (var i = 1; i < this.relationTableList.length; i++) {
-                    this.relationTableList_1.push(this.relationTableList[i]);
+                if (nodeArray.length == 0) {
+                    this.$Msg.customizTitle('请勾选左侧树形菜单上的表', 'warning');
+                    return;
                 }
+                this.tableNameListString = this.tableNameListString.substring(0, this.tableNameListString.length - 1)
+                functionAll.getRelationTable({
+                    "tableNameListString": this.tableNameListString,
+                }).then(((res) => {
+                    this.relationTableVisible = true;
+                    debugger;
+                }))
                 //TODO
             },
             getifrelationdatabase() {
