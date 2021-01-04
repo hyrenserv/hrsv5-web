@@ -11,6 +11,17 @@ export default [
         ],
     },
     {
+        path: '/largeScreenDisplay_1',
+        name: 'largeScreenDisplay_1',
+        title: '大屏展示1',
+        component: () => import('@/hrds/l/dataDashboard/largeScreenDisplay_1.vue'),
+        meta: [
+            { name: '首页' },
+            { name: '数据仪表盘', url: '/dataDashboardList' },
+            { name: '大屏展示' },
+        ],
+    },
+    {
         path: '/dataDashboardList',
         name: 'dataDashboardList',
         title: '数据仪表盘',

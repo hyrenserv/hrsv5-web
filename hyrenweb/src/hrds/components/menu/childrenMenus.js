@@ -1,26 +1,26 @@
 const childrenMemus = {
-    95: [
-        {
-            path: '/dataStoreLayer',
-            name: 'dataStoreActionIndex',
-            title: '存储层定义',
-            icon: 'el-icon-s-unfold',
-            component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')
-        }, {
-            path: '/typeLengthContrastInfo',
-            name: 'typeLengthContrastInfo',
-            title: '数据长度对比',
-            icon: 'el-icon-search',
-            component: () => import('@/hrds/a/datastore/typeLengthContrastInfo.vue')
-        },
-        {
-            path: '/dataTypeContrastInfo',
-            name: 'dataTypeContrastInfo',
-            title: '数据类型对比',
-            icon: 'el-icon-search',
-            component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')
-        }
-    ],
+    // 95: [
+    //     {
+    //         path: '/dataStoreLayer',
+    //         name: 'dataStoreActionIndex',
+    //         title: '存储层定义',
+    //         icon: 'el-icon-s-unfold',
+    //         component: () => import('@/hrds/a/datastore/dataStoreActionIndex.vue')
+    //     }, {
+    //         path: '/typeLengthContrastInfo',
+    //         name: 'typeLengthContrastInfo',
+    //         title: '数据长度对比',
+    //         icon: 'el-icon-search',
+    //         component: () => import('@/hrds/a/datastore/typeLengthContrastInfo.vue')
+    //     },
+    //     {
+    //         path: '/dataTypeContrastInfo',
+    //         name: 'dataTypeContrastInfo',
+    //         title: '数据类型对比',
+    //         icon: 'el-icon-search',
+    //         component: () => import('@/hrds/a/datastore/dataTypeContrastInfo.vue')
+    //     }
+    // ],
     55: [
         {
             path: '/dbck',

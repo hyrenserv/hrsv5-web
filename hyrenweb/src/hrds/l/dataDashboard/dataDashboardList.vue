@@ -3,6 +3,7 @@
     <el-row class="elRows">
         <span>自主分析->数据仪表盘</span>
         <el-button type="primary" size='mini' class='creatPanelBtn' @click="creatPanel()">新建仪表盘</el-button>
+        <!--<el-button type="primary" size='mini' class='creatPanelBtn' @click="createLargeScreen()">新建大屏展示</el-button>-->
     </el-row>
     <el-table size='medium' :data="dataDashboardList" border style="width: 100%;">
         <el-table-column label="序号" type="index" width="50" align="left"></el-table-column>
@@ -43,6 +44,13 @@ export default {
                 query: {}
             })
         },
+        createLargeScreen() {
+            this.$router.push({
+                path: '/largeScreenDisplay_1',
+                query: {}
+            })
+        },
+
         // 获取代码项
         getCategoryItems() {
             functionAll.getCategoryItems({
