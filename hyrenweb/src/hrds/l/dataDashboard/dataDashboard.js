@@ -65,3 +65,11 @@ export function updateDataDashboardInfo(data) {
         headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
+
+export function getComponentByDashboardId(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getComponentByDashboardId',
+        params:data
+    })
+
+}

@@ -2581,6 +2581,7 @@
                 if (type == "card") { // 卡片
                     var value = '';
                     for (var key in this.echartTableData[0]) {
+
                         value = this.echartTableData[0][key];
                     }
                     $("#carddiv").text(value);
