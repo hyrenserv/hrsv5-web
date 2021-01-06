@@ -2697,7 +2697,7 @@
                                     return;
                                 }
                                 var result = this.initproperty();
-                                var option = drawTreeMapChart.drawTreeMapChart(result, res.data,this.echartsLabel,this.auto_comp_sum);
+                                var option = drawTreeMapChart.drawTreeMapChart(result, res.data, this.echartsLabel, this.auto_comp_sum);
                                 this.drawPic(option);
                             } else if (type == "map") { // 地图
                                 if (xColumns.length == 0 || yColumns.length == 0) {
@@ -2733,7 +2733,7 @@
                                     }
                                 }
                                 var result = this.initproperty();
-                                var option = drawMapChart.drawMapChart(result, res.data,this.seriesStyle);
+                                var option = drawMapChart.drawMapChart(result, res.data, this.seriesStyle);
                                 this.drawPic(option);
                             }
                         }
