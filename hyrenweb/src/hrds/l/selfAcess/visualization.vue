@@ -41,13 +41,14 @@
                 <div class="showArryDiv">
                     <ul>
                         <li v-for="(item,index) in optionsWords" class="showArryDivContent" :key="item.name"
-                            style="padding-left:10px;height:30px;line-height:30px;"> {{item.name}} <span
-                                style="cursor:pointer;" @click="clickClose(item,index)"><i
-                                class="el-icon-close"></i></span><span v-if="optionsWords.length >1"
-                                                                       @click="moveUp(index,item,optionsWords)"><i
-                                class="el-icon-top"></i></span><span v-if="optionsWords.length >1"
-                                                                     @click="moveDown(index,item,optionsWords)"><i
-                                class="el-icon-bottom"></i></span></li>
+                            style="padding-left:10px;height:30px;line-height:30px;"> {{item.name}}
+                            <span style="cursor:pointer;" @click="clickClose(item,index)">
+                                <i class="el-icon-close"></i></span>
+                            <span v-if="optionsWords.length >1" @click="moveUp(index,item,optionsWords)">
+                                <i class="el-icon-top"></i></span>
+                            <span v-if="optionsWords.length >1" @click="moveDown(index,item,optionsWords)"><i
+                                    class="el-icon-bottom"></i></span>
+                        </li>
                     </ul>
                 </div>
                 <div class="elcol8Button">
@@ -1171,7 +1172,7 @@
                     label: '逐个选择表字段',
                     children: []
                 }],
-                disabled: true,
+                disabled: false,
                 groupHidden: false,
                 addfiflterCondition: false,
                 addfiflterConditionDetails: false,
@@ -1920,6 +1921,7 @@
             },
             // 点击删除设置显示字段信息
             clickClose(item, index) {
+                debugger;
                 this.optionsWords.splice(index, 1);
                 this.disabled = false;
             },
@@ -1970,7 +1972,7 @@
                     })
                     this.weiduArry = res.data.columns;
                     this.allcolumns = res.data.columns
-                    //保存全部的weiduArry，用以模糊查询时恢复
+                    //保存全部的weiduArry,用以模糊查询时恢复
                     this.originalweiduArry = this.weiduArry;
                     if (res.data.numColumns) {
                         if (res.data.numColumns.length > 0) {
@@ -1987,7 +1989,7 @@
                                 this.allnumcolumns.push(itemAll.nameAll);
                             })
                             // this.allnumcolumns = res.data.numColumns;
-                            //保存全部的duliangArry，用以模糊查询时恢复
+                            //保存全部的duliangArry,用以模糊查询时恢复
                             this.originalduliangArry = this.duliangArry;
                         }
                     }
@@ -2127,13 +2129,13 @@
                     tableData.splice(val, 0, upDate);
                     this.showNumArry = tableData;
                 } else {
-                    this.$Msg.customizTitle("已经是第一条，不可上移", "warning");
+                    this.$Msg.customizTitle("已经是第一条,不可上移", "warning");
                 }
             },
             // 数据下移
             moveDown(val, data, tableData) {
                 if (val + 1 === tableData.length) {
-                    this.$Msg.customizTitle("已经是最后一条，不可下移", "warning");
+                    this.$Msg.customizTitle("已经是最后一条,不可下移", "warning");
                 } else {
                     let downDate = tableData[val + 1];
                     tableData.splice(val + 1, 1);
@@ -2224,20 +2226,20 @@
             fiflterSqlOptions() {
                 if (this.markCodeOptionsValue === "介于") {
                     let obj = {
-                        nameAll: this.keyWords + " 介于" + this.inputvalueOptions1 + '，' + this.inputvalueOptions2,
+                        nameAll: this.keyWords + " 介于" + this.inputvalueOptions1 + ',' + this.inputvalueOptions2,
                         key: this.keyWords,
                         realtion: '介于',
                         number: '01',
-                        value: this.inputvalueOptions1 + '，' + this.inputvalueOptions2,
+                        value: this.inputvalueOptions1 + ',' + this.inputvalueOptions2,
                     }
                     this.fiflterConditionArr.push(obj);
                 } else if (this.markCodeOptionsValue === "不介于") {
                     let obj = {
-                        nameAll: this.keyWords + " 不介于" + this.inputvalueOptions1 + '，' + this.inputvalueOptions2,
+                        nameAll: this.keyWords + " 不介于" + this.inputvalueOptions1 + ',' + this.inputvalueOptions2,
                         key: this.keyWords,
                         realtion: '不介于',
                         number: '02',
-                        value: this.inputvalueOptions1 + '，' + this.inputvalueOptions2,
+                        value: this.inputvalueOptions1 + ',' + this.inputvalueOptions2,
                     }
                     this.fiflterConditionArr.push(obj);
                 } else if (this.markCodeOptionsValue === "为空") {
@@ -2602,7 +2604,7 @@
                                     return;
                                 }
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 var result = this.initproperty();
@@ -2610,7 +2612,7 @@
                                 this.drawPic(option);
                             } else if (type == 'bar') { //标准柱状图
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 var result = this.initproperty();
@@ -2618,7 +2620,7 @@
                                 this.drawPic(option);
                             } else if (type == 'stackingbar') { //堆叠柱状图
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 var result = this.initproperty();
@@ -2626,7 +2628,7 @@
                                 this.drawPic(option);
                             } else if (type == "polarbar") { //极坐标堆叠柱状图
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 var result = this.initproperty();
@@ -2638,11 +2640,11 @@
                                     return;
                                 }
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 if (yColumns.length > 1) {
-                                    this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("度量大于1,请修改", "warning");
                                     return;
                                 }
                                 if (this.echartsLabel.position != "inside" && this.echartsLabel.position != "outside") {
@@ -2657,11 +2659,11 @@
                                     return;
                                 }
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("度量大于1,请修改", "warning");
                                     return;
                                 }
                                 if (yColumns.length > 1) {
-                                    this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("度量大于1,请修改", "warning");
                                     return;
                                 }
                                 var result = this.initproperty();
@@ -2681,11 +2683,11 @@
                                     return;
                                 }
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 if (yColumns.length != 2) {
-                                    this.$Msg.customizTitle("度量必须为2，请修改", "warning");
+                                    this.$Msg.customizTitle("度量必须为2,请修改", "warning");
                                     return;
                                 }
                                 var result = this.initproperty();
@@ -2705,11 +2707,11 @@
                                     return;
                                 }
                                 if (xColumns.length > 1) {
-                                    this.$Msg.customizTitle("维度大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
                                 }
                                 if (yColumns.length > 1) {
-                                    this.$Msg.customizTitle("度量大于1，请修改", "warning");
+                                    this.$Msg.customizTitle("度量大于1,请修改", "warning");
                                     return;
                                 }
                                 //定义全国省份的数组
@@ -2843,7 +2845,7 @@
                 let param = new FormData();
                 if (this.value != 'table' && this.value != 'card') {
                     if (this.checkifvalidate(this.auto_comp_sum.component_name)) {
-                        this.$Msg.customizTitle('组件名称为空，请填写', 'warning');
+                        this.$Msg.customizTitle('组件名称为空,请填写', 'warning');
                         return;
                     }
                     let autoAxisInfos = [];
@@ -2856,11 +2858,11 @@
                     if (this.value != 'treemap') { // 矩形树图
                         if (this.value != 'map') { // 地理坐标、地图
                             if (this.checkifvalidate(this.xAxis.name)) {
-                                this.$Msg.customizTitle('横轴名称为空，请填写', 'warning');
+                                this.$Msg.customizTitle('横轴名称为空,请填写', 'warning');
                                 return;
                             }
                             if (this.checkifvalidate(this.yAxis.name)) {
-                                this.$Msg.customizTitle('纵轴名称为空，请填写', 'warning');
+                                this.$Msg.customizTitle('纵轴名称为空,请填写', 'warning');
                                 return;
                             }
                             // 轴线字体信息

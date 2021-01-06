@@ -842,7 +842,8 @@
 
                                 } else {
                                     if (id != undefined && id != '') {
-                                        var Chart = echarts.init(document.getElementById(id), dashboard_theme);
+                                        var Chart = echarts.init(document.getElementById(id));
+                                        // var Chart = echarts.init(document.getElementById(id), dashboard_theme);
                                         Chart.resize();
                                     }
                                 }
@@ -889,7 +890,8 @@
                 } else {
                     $("#" + i).height(newH * 10);
                     $("#" + i).width(newW * 10);
-                    var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
+                    var Chart = echarts.init(document.getElementById(i));
+                    // var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
                     Chart.resize();
                 }
             },
@@ -1907,7 +1909,7 @@
                                 tmp_component_background = this.selectRow[k].background;
                             }
                         }
-                        var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                        var Chart = echarts.init(document.getElementById(id));
                         var toolbox = this.initToolBox(echart_div_layout, Chart, id);
                         if (type == "line") {// 折线图
 
@@ -1921,32 +1923,32 @@
                             this.echartpie(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "scatter") {// 散点图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.echartscatter(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "boxplot") {// 盒须图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.echartboxplot(echartdata, Chart, toolbox, tmp_component_name);
                             chart_obj_array.push(Chart);
                         } else if (type == "bl") {// 柱状折线混合图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.echartbl(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "treemap") {// 矩形树图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.echartTreemap(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "stackingbar") { //堆叠柱状图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.changeToStackingBarChart(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "polarbar") {// 极坐标柱状图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.changeToPolarBarChart(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "bubble") {// 气泡图
                             this.bubbleIds.push(id);
-                            var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var myChart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.bubble_echartdatas.push(echartdata);
                             this.echart_div_layouts.push(echart_div_layout);
                             this.tmp_component_names.push(tmp_component_name);
@@ -1976,11 +1978,11 @@
                                 $('.bubble').click();
                             }, 100);
                         } else if (type == "blsimple") {// 柱状折线混合图-简单
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             this.changeToBLSimpleChart(echartdata, Chart, toolbox, tmp_component_name, tmp_component_background);
                             chart_obj_array.push(Chart);
                         } else if (type == "map") {// 地图
-                            var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
+                            // var Chart = echarts.init(document.getElementById(id), this.echart_theme.type);
                             setTimeout(() => {
                                 this.changeToMapChart(echartdata, Chart, id, echart_div_layout, tmp_component_name, tmp_component_background);
                             }, 500);
