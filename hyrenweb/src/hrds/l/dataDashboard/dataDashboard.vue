@@ -19,7 +19,7 @@
                                @click="dialogTextLineVisible=true">添加分割线
                     </el-button>
                     <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
-                               <!--@click="dialogBorderVisible=true">添加边框-->
+                    <!--@click="dialogBorderVisible=true">添加边框-->
                     <!--</el-button>-->
                     <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                     <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
@@ -742,7 +742,6 @@
             })
         },
         mounted() {
-            debugger;
             // 监控窗口变化
             window.addEventListener('resize', () => {
                 if (this.is_showdel == false) {
@@ -860,10 +859,10 @@
             }
         },
         methods: {
-            moveEvent: function(i, newX, newY){
+            moveEvent: function (i, newX, newY) {
                 // console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
             },
-            movedEvent: function(i, newX, newY){
+            movedEvent: function (i, newX, newY) {
                 // console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
             },
             resizedEvent(i, newH, newW, newHPx, newWPx) {
@@ -876,7 +875,6 @@
                 this.layout.forEach(function (item, index) {
                     var id = item.i;
                     if (id == i) {
-
                         if (item.label == '1') {
                             lineflag = true;
                         }
@@ -885,13 +883,16 @@
                         }
                         if (item.label == '2') {
                             frameflag = true;
-                        }else{
+                        } else {
                             i = item.type;
                             item.i = item.type;
                         }
                     }
                 })
                 if (lineflag) {
+                    console.log(i);
+                    console.log(newW);
+                    console.log(newH);
                     $("#" + i).width(newW * 10 + "px");
                     $("#" + i).height(newH * 10 + "px");
                     //TODO 回显的时候 这里没法直接变长
@@ -941,6 +942,8 @@
                         // 组件信息
                         this.selectRow = res.data.autoCompSums;
                         //把边框,文本标签,分割线的layout区分开
+                        console.log(this.layout);
+                        debugger;
                         for (var i = 0; i < res.data.layout.length; i++) {
                             if ("0" == res.data.layout[i].label) {
                                 this.label_layout.push(res.data.layout[i]);
@@ -952,6 +955,7 @@
                                 this.layout.push(res.data.layout[i]);
                             }
                         }
+                        console.log(this.layout);
                         // 组件ID
                         var component_id_array = [];
                         for (var i = 0; i < this.layout.length; i++) {
@@ -1010,16 +1014,18 @@
                             // 仪表盘展示
                             // setTimeout(() => {
                             this.echartpic(res.data, component_id_array);
-                            for (var i = 0; i < this.layout.length; i++) {
-                                let layoutElement = this.layout[i];
-                                this.resizedEvent(layoutElement.type, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
-                            }
+
                             // 边框回显
                             this.frame_back();
                             // 文本标签回显
                             this.textlabel_back();
                             // 分割线回显
                             this.textline_back();
+                            debugger;
+                            for (var i = 0; i < this.layout.length; i++) {
+                                let layoutElement = this.layout[i];
+                                this.resizedEvent(layoutElement.type, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
+                            }
                             this.grid_layout_backgroundcolor = this.auto_dashboard_info.background;
                             $("div[name='pic']").each(function () {
                                 $(this).trigger("mouseup");
@@ -1033,6 +1039,8 @@
                 this.$nextTick(function () {
                     for (var i = 0; i < this.line_layout.length; i++) {
                         var id = this.line_layout[i].type;
+                        var w = this.line_layout[i].w;
+                        var h = this.line_layout[i].h;
                         if (this.auto_line_info_array[i].line_type == 'heng') {
                             var html = "<div name='linecomponentname'></div>" +
                                 "<div class='lineclass' style='width:100%;height:2px;overflow:hidden;margin-top:15px;'></div>"
@@ -1042,6 +1050,8 @@
                         }
                         $("#" + id).css("overflow", "hidden");
                         $("#" + id).css("position", "relative");
+                        $("#" + id).css("height", h * 10 + "px");
+                        $("#" + id).css("width", w * 10 + "px");
                         $("#" + id).html(html);
                         for (var j = 0; j < this.linefontcolor.length; j++) {
                             if (this.linefontcolor[j].code == this.auto_line_info_array[i].line_color) {
@@ -1119,6 +1129,8 @@
                 this.$nextTick(function () {
                     for (var i = 0; i < this.label_layout.length; i++) {
                         var id = this.label_layout[i].type;
+                        var h = this.label_layout[i].h;
+                        var w = this.label_layout[i].w;
                         var auto_label_info = this.auto_label_info_array[i];
                         var textStyle = auto_label_info.textStyle;
                         $("#" + id).css("overflow", "hidden");
@@ -1128,6 +1140,8 @@
                         $("#" + id).css("display", "flex");
                         $("#" + id).css("align-items", textStyle.verticalalign);
                         $("#" + id).css("justify-content", textStyle.align);
+                        $("#" + id).css("height", h * 10 + "px");
+                        $("#" + id).css("width", w * 10 + "px");
                         var html = "<div name='labelcomponentname'></div>";
                         //字体处理
                         var style = "color:" + textStyle.color + "; font-family:" + textStyle.fontfamily;
