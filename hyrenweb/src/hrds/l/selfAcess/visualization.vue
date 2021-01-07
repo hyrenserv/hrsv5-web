@@ -157,7 +157,7 @@
                 </template>
             </el-table-column>
             <el-table-column v-for="col in dynamicColumns" show-overflow-tooltip min-width="200px" :prop="col"
-                             :label="col" :key="col">
+                             :label="col" :key="Math.random()">
             </el-table-column>
         </el-table>
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -2128,6 +2128,10 @@
                     tableData.splice(val - 1, 1);
                     tableData.splice(val, 0, upDate);
                     this.showNumArry = tableData;
+                    this.dynamicColumns=[];
+                    for (let i = 0; i < tableData.length; i++) {
+                        this.dynamicColumns.push(this.putcodenametogether(tableData[i].code,tableData[i].realName))
+                    }
                 } else {
                     this.$Msg.customizTitle("已经是第一条,不可上移", "warning");
                 }
@@ -2141,6 +2145,10 @@
                     tableData.splice(val + 1, 1);
                     tableData.splice(val, 0, downDate);
                     this.showNumArry = tableData;
+                    this.dynamicColumns=[];
+                    for (let i = 0; i < tableData.length; i++) {
+                        this.dynamicColumns.push(this.putcodenametogether(tableData[i].code,tableData[i].realName))
+                    }
                 }
             },
             // 添加组件
@@ -2469,7 +2477,9 @@
                     showNum: num
                 }).then(res => {
                     if (res && res.success) {
-                        this.dynamicColumns = res.data.columnList;
+                        if (this.dynamicColumns.length==0) {
+                            this.dynamicColumns = res.data.columnList;
+                        }
                         this.dynamicColumnTables = res.data.visualComponentList;
                         this.echartTableData = res.data.visualComponentList;
                         if (res.data.visualComponentList.length > 0) {
