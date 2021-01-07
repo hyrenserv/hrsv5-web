@@ -18,9 +18,9 @@
                     <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
                                @click="dialogTextLineVisible=true">添加分割线
                     </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogBorderVisible=true">添加边框
-                    </el-button>
+                    <!--<el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"-->
+                               <!--@click="dialogBorderVisible=true">添加边框-->
+                    <!--</el-button>-->
                     <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
                     <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
                     <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
@@ -32,13 +32,15 @@
                 <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
                              class="grid" id="grid_style"
                              style="height: 2000px;" :col-num="110" :row-height="11" :layout.sync="layout"
-                             :is-draggable="is_showdel" :autoSize="true"
-                             :is-resizable="is_showdel" :is-mirrored="false" :vertical-compact="false" :margin="[0, 0]"
+                             :isDraggable="is_showdel" :autoSize="true"
+                             :isResizable="is_showdel" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]"
                              :use-css-transforms="true">
                     <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout"
                                :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i"
                                :type="item.type"
-                               @resized="resizedEvent">
+                               @resized="resizedEvent"
+                               @move="moveEvent"
+                               @moved="movedEvent">
                         <div :id="item.type" style="width: 500px;height:300px;"></div>
                     </grid-item>
                 </grid-layout>
@@ -292,6 +294,7 @@
 </template>
 
 <script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
+<!--<script src="vue-grid-layout.umd.min.js"></script>-->
 <script>
     import Vue from 'vue';
     import VueGridLayout from 'vue-grid-layout';
@@ -723,7 +726,6 @@
             }
         },
         created() {
-            console.log(111111)
             // 编辑时调用
             if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
                 this.picshow = true;
@@ -732,7 +734,6 @@
             } else {
                 this.auto_dashboard_info.dashboard_theme = "00";
             }
-            console.log(1.5)
             this.$nextTick(() => {
                 if (!this.is_gridline) {
                     $("#grid_style").removeClass("grid");
@@ -741,7 +742,6 @@
             })
         },
         mounted() {
-            console.log(22222)
             debugger;
             // 监控窗口变化
             window.addEventListener('resize', () => {
@@ -860,15 +860,20 @@
             }
         },
         methods: {
+            moveEvent: function(i, newX, newY){
+                // console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
+            },
+            movedEvent: function(i, newX, newY){
+                // console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
+            },
             resizedEvent(i, newH, newW, newHPx, newWPx) {
-                console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+                // console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
                 //TODO
                 //针对 添加的分割线，文本标签，边框等，均因为存在放大缩小问题 而暂时注释
                 var lineflag = false;
                 var textflag = false;
                 var frameflag = false;
                 this.layout.forEach(function (item, index) {
-                    console.log(item);
                     var id = item.i;
                     if (id == i) {
 
@@ -882,6 +887,7 @@
                             frameflag = true;
                         }else{
                             i = item.type;
+                            item.i = item.type;
                         }
                     }
                 })
@@ -900,9 +906,6 @@
                 } else {
                     $("#" + i).height(newH * 10);
                     $("#" + i).width(newW * 10);
-                    console.log("i:" + i);
-                    console.log("js:", document.getElementById(i));
-                    console.log("jquery:", $("#" + i));
                     var Chart = echarts.init(document.getElementById(i));
                     Chart.resize();
                 }
@@ -949,7 +952,6 @@
                                 this.layout.push(res.data.layout[i]);
                             }
                         }
-                        console.log(this.layout);
                         // 组件ID
                         var component_id_array = [];
                         for (var i = 0; i < this.layout.length; i++) {
@@ -1521,7 +1523,6 @@
                                 line_layout: this.line_layout
                             }
                         }).$mount();
-                        console.log(imagevueobj);
                         this.linedelimage(id, imagevueobj);
                     }
                     var obj = {};
@@ -2670,7 +2671,6 @@
                 this.selectRow = selectRow;
                 lineChart.clear();
                 lineChart.setOption(option, true);
-                console.log(JSON.stringify(option));
                 lineChart.resize();
             },
             //极坐标柱状图展示

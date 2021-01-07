@@ -146,7 +146,7 @@
                         Chart.setOption(ChartOpt);
                         window.addEventListener('resize', () => {
                             this.height = window.innerHeight * 0.35;
-                            $('#Chart'+i).attr('style', 'height:' + this.height + 'px')
+                            $('#Chart' + i).attr('style', 'height:' + this.height + 'px')
                             Chart.resize();
                         });
                         j++;
@@ -196,7 +196,7 @@
                     this.span_2 = 8;
                 }
             },
-            init(component_id) {
+            init2(component_id) {
                 var data = [
                     {
                         "order": 1,
@@ -332,6 +332,25 @@
                 };
                 return ChartOpt;
             },
+            //TODO
+            init(component_id) {
+                var item = this.getVisualComponentInfoById(component_id);
+
+            },
+            //初始化公共内容
+            initproperty(item) {
+                var result = {};
+                // 初始化标题属性
+                generatepic.initTitleStyle(item.auto_comp_sum.chart_theme, item.titleFont, result);
+                //设置图上每个节点的显示情况
+                generatepic.initLabelOption(item.echartsLabel, result);
+                // 初始化轴配置信息
+                generatepic.initAxisStyle(item.axisStyle, item.xAxis, item.yAxis, item.xAxisLine, item.xAxisLabel, item.yAxisLine, item.yAxisLabel, result);
+                // 初始化图例信息
+                generatepic.initLengendStyle(item.legendStyle, result);
+                // result.background = this.auto_comp_sum.background
+                return result;
+            },
             //获取今日日期
             getToday() {
                 const now = new Date();
@@ -340,6 +359,142 @@
                 const day = now.getDate();
                 this.today = year + "年" + month + "月" + day + "日";
             },
+            //拿到组件信息
+            getVisualComponentInfoById(component_id) {
+                var item = {};
+                functionAll.getVisualComponentInfoById({
+                    component_id: component_id
+                }).then(res => {
+                    debugger;
+                    if (res && res.success) {
+                        item.auto_comp_sum = res.data.compSum;
+                        item.echart_type = res.data.compSum.chart_type;
+                        if (res.data.xAxisCol != '' && res.data.xAxisCol != undefined && res.data.xAxisCol.length != 0) {
+                            var xColumns = [];
+                            res.data.xAxisCol.forEach((item) => {
+                                xColumns.push(item.nameAll)
+                            })
+                            item.xColumns = xColumns
+                        }
+                        if (res.data.yAxisCol != '' && res.data.yAxisCol != undefined && res.data.yAxisCol.length != 0) {
+                            var yColumns = [];
+                            res.data.yAxisCol.forEach((item) => {
+                                yColumns.push(item.nameAll)
+                            })
+                            item.yColumns = yColumns
+                        }
+                        //titleFont
+                        if (res.data.titleFontInfo != '' && res.data.titleFontInfo != undefined && JSON.stringify(res.data.titleFontInfo) != '{}') {
+                            item.titleFont = res.data.titleFontInfo;
+                        }
+                        //axisStyle
+                        if (res.data.axisFontInfo != '' && res.data.axisFontInfo != undefined && JSON.stringify(res.data.axisFontInfo) != '{}') {
+                            item.axisStyle = res.data.axisFontInfo;
+                        }
+                        //xAxis
+                        if (res.data.xAxisInfo != '' && res.data.xAxisInfo != undefined && JSON.stringify(res.data.xAxisInfo) != '{}') {
+                            item.xAxis = res.data.xAxisInfo[0];
+                        }
+                        //yAxis
+                        if (res.data.yAxisInfo != '' && res.data.yAxisInfo != undefined && JSON.stringify(res.data.yAxisInfo) != '{}') {
+                            item.yAxis = res.data.yAxisInfo[0];
+                        }
+                        //xAxisLine
+                        if (res.data.xAxisLine != '' && res.data.xAxisLine != undefined && JSON.stringify(res.data.xAxisLine) != '{}') {
+                            item.xAxisLine = res.data.xAxisLine;
+                        }
+                        //yAxisLine
+                        if (res.data.yAxisLine != '' && res.data.yAxisLine != undefined && JSON.stringify(res.data.yAxisLine) != '{}') {
+                            item.yAxisLine = res.data.yAxisLine;
+                        }
+                        //xAxisLabel
+                        if (res.data.xAxisLabel != '' && res.data.xAxisLabel != undefined && JSON.stringify(res.data.xAxisLabel) != '{}') {
+                            item.xAxisLabel = res.data.xAxisLabel;
+                        }
+                        //yAxisLabel
+                        if (res.data.yAxisLabel != '' && res.data.yAxisLabel != undefined && JSON.stringify(res.data.yAxisLabel) != '{}') {
+                            item.yAxisLabel = res.data.yAxisLabel;
+                        }
+                        //legendStyle
+                        if (res.data.legendInfo != '' && res.data.legendInfo != undefined && JSON.stringify(res.data.legendInfo) != '{}') {
+                            item.legendStyle = res.data.legendInfo;
+                        }
+                        //echartsLabel
+                        if (res.data.textLabel != '' && res.data.textLabel != undefined && JSON.stringify(res.data.textLabel) != '{}') {
+                            item.echartsLabel = res.data.textLabel;
+                        }
+                        debugger;
+                        functionAll.getChartShow({
+                            exe_sql: item.auto_comp_sum.exe_sql,
+                            x_columns: item.xColumns,
+                            y_columns: item.yColumns,
+                            chart_type: item.echart_type,
+                        }).then(res => {
+                            if (item.echart_type == 'line') { //折线图
+                                var result = this.initproperty(item);
+                                var option = drawLine.drawLine(result, res.data);
+                                return option;
+                            } else if (item.echart_type == 'bar') { //标准柱状图
+                                var result = this.initproperty(item);
+                                var option = drawBarChart.drawBarChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == 'stackingbar') { //堆叠柱状图
+                                var result = this.initproperty(item);
+                                var option = drawStackingBarChart.drawStackingBarChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == "polarbar") { //极坐标堆叠柱状图
+                                var result = this.initproperty(item);
+                                var option = drawPolarBarChart.drawPolarBarChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == "pie" || item.echart_type == "huanpie" || item.echart_type == "fasanpie") { // 饼图、环饼、发散饼
+                                var result = this.initproperty(item);
+                                var option = drawPieChart.drawPieChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == "scatter") { // 标准散点图
+                                var result = this.initproperty(item);
+                                var option = drawScatterChart.drawScatterChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == "bl") { // 柱状折线混合图
+                                var result = this.initproperty(item);
+                                var option = drawBlChart.drawBlChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == "blsimple") { // 柱状折线混合图-简单
+                                var result = this.initproperty(item);
+                                var option = drawBlSimpleChart.drawBlSimpleChart(result, res.data);
+                                return option;
+                            } else if (item.echart_type == "treemap") { // 矩形树图
+                                var result = this.initproperty(item);
+                                var option = drawTreeMapChart.drawTreeMapChart(result, res.data, this.echartsLabel, this.auto_comp_sum);
+                                return option;
+                                // } else if (item.echart_type == "map") { // 地图
+                                //     //定义全国省份的数组
+                                //     var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
+                                //         'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
+                                //         'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang',
+                                //         'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing',
+                                //         'xianggang', 'aomen', 'taiwan'
+                                //     ];
+                                //     var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江',
+                                //         '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
+                                //         '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
+                                //     ];
+                                //     for (var l = 0; l < provincesText.length; l++) {
+                                //         if (this.seriesStyle.provincename == provincesText[l]) {
+                                //             //显示对应省份的方法
+                                //             this.showProvince(provinces[l], provincesText[l])
+                                //             break;
+                                //         }
+                                //     }
+                                //     var result = this.initproperty(item);
+                                //     var option = drawMapChart.drawMapChart(result, res.data, this.seriesStyle);
+                                //     return option;
+                            }
+                        })
+                    }
+                });
+            },
+
+
         },
     }
 </script>

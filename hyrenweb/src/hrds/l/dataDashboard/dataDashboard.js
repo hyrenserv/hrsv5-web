@@ -71,5 +71,20 @@ export function getComponentByDashboardId(data) {
         url: '/L/autoanalysis/operate/getComponentByDashboardId',
         params:data
     })
+}
 
+//可视化组件回显
+export function getVisualComponentInfoById(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getVisualComponentInfoById',
+        params: data
+    })
+}
+
+//获取图表显示
+export function getChartShow(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getChartShow',
+        params: data
+    })
 }
