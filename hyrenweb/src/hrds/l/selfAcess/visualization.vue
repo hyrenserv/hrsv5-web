@@ -2580,6 +2580,13 @@
                     this.$Msg.customizTitle("请先点击得到答案", "warning");
                     return;
                 }
+                if (type!='card' && type!='table') {
+                    if (xColumns.length == 0 || yColumns.length == 0) {
+                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
+                    return;
+                    }
+                }
+                 
                 if (type == "card") { // 卡片
                     var value = '';
                     for (var key in this.echartTableData[0]) {
@@ -2599,10 +2606,6 @@
                     }).then(res => {
                         if (res && res.success) {
                             if (type == 'line') { //折线图
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
@@ -2635,10 +2638,6 @@
                                 var option = drawPolarBarChart.drawPolarBarChart(result, res.data);
                                 this.drawPic(option);
                             } else if (type == "pie" || type == "huanpie" || type == "fasanpie") { // 饼图、环饼、发散饼
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
@@ -2654,10 +2653,6 @@
                                 var option = drawPieChart.drawPieChart(result, res.data);
                                 this.drawPic(option);
                             } else if (type == "scatter") { // 标准散点图
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("度量大于1,请修改", "warning");
                                     return;
@@ -2670,18 +2665,10 @@
                                 var option = drawScatterChart.drawScatterChart(result, res.data);
                                 this.drawPic(option);
                             } else if (type == "bl") { // 柱状折线混合图
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 var result = this.initproperty();
                                 var option = drawBlChart.drawBlChart(result, res.data);
                                 this.drawPic(option);
                             } else if (type == "blsimple") { // 柱状折线混合图-简单
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
@@ -2694,18 +2681,10 @@
                                 var option = drawBlSimpleChart.drawBlSimpleChart(result, res.data);
                                 this.drawPic(option);
                             } else if (type == "treemap") { // 矩形树图
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 var result = this.initproperty();
                                 var option = drawTreeMapChart.drawTreeMapChart(result, res.data, this.echartsLabel, this.auto_comp_sum);
                                 this.drawPic(option);
                             } else if (type == "map") { // 地图
-                                if (xColumns.length == 0 || yColumns.length == 0) {
-                                    this.$Msg.customizTitle("请先选择横纵轴", "warning");
-                                    return;
-                                }
                                 if (xColumns.length > 1) {
                                     this.$Msg.customizTitle("维度大于1,请修改", "warning");
                                     return;
