@@ -37,6 +37,7 @@
                              :use-css-transforms="true">
                     <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout"
                                :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i"
+                               :type="item.type"
                                @resized="resizedEvent">
                         <div :id="item.type" style="width: 500px;height:300px;"></div>
                     </grid-item>
@@ -721,22 +722,27 @@
                 is_showdel: true,
             }
         },
-        mounted() {
-            if (this.is_gridline == false) {
-                $("#grid_style").removeClass("grid");
-                this.is_gridline = true;
-            }
+        created() {
+            console.log(111111)
             // 编辑时调用
             if (this.$route.query.dashboard_id != undefined && this.$route.query.dashboard_id != '') {
                 this.picshow = true;
                 this.getDataDashboardInfoById(this.$route.query.dashboard_id);
+
             } else {
                 this.auto_dashboard_info.dashboard_theme = "00";
             }
-            for (var i = 0; i < this.layout.length; i++) {
-                let layoutElement = this.layout[i];
-                this.resizedEvent(layoutElement.i, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
-            }
+            console.log(1.5)
+            this.$nextTick(() => {
+                if (!this.is_gridline) {
+                    $("#grid_style").removeClass("grid");
+                    this.is_gridline = true;
+                }
+            })
+        },
+        mounted() {
+            console.log(22222)
+            debugger;
             // 监控窗口变化
             window.addEventListener('resize', () => {
                 if (this.is_showdel == false) {
@@ -855,15 +861,17 @@
         },
         methods: {
             resizedEvent(i, newH, newW, newHPx, newWPx) {
-                // console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+                console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
                 //TODO
                 //针对 添加的分割线，文本标签，边框等，均因为存在放大缩小问题 而暂时注释
                 var lineflag = false;
                 var textflag = false;
                 var frameflag = false;
                 this.layout.forEach(function (item, index) {
+                    console.log(item);
                     var id = item.i;
                     if (id == i) {
+
                         if (item.label == '1') {
                             lineflag = true;
                         }
@@ -872,6 +880,8 @@
                         }
                         if (item.label == '2') {
                             frameflag = true;
+                        }else{
+                            i = item.type;
                         }
                     }
                 })
@@ -890,8 +900,10 @@
                 } else {
                     $("#" + i).height(newH * 10);
                     $("#" + i).width(newW * 10);
+                    console.log("i:" + i);
+                    console.log("js:", document.getElementById(i));
+                    console.log("jquery:", $("#" + i));
                     var Chart = echarts.init(document.getElementById(i));
-                    // var Chart = echarts.init(document.getElementById(i), this.echart_theme.type);
                     Chart.resize();
                 }
             },
@@ -937,6 +949,7 @@
                                 this.layout.push(res.data.layout[i]);
                             }
                         }
+                        console.log(this.layout);
                         // 组件ID
                         var component_id_array = [];
                         for (var i = 0; i < this.layout.length; i++) {
@@ -967,52 +980,49 @@
                         }
                         this.bcolor = this.titleData[index].bcolor;
                         // 卡片表格回显
-                        setTimeout(() => {
-                            for (var i = 0; i < this.chart_obj_array.length; i++) {
-                                if (this.chart_obj_array[i].layouttype == "card") {
-                                    $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                                        "background-color": this.titleData[index].ncolor,
-                                        "color": this.titleData[index].fcolor
-                                    });
-                                    $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
-                                        'background-color': this.titleData[index].ncolor,
-                                        "color": this.titleData[index].fcolor
-                                    });
-                                    this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.titleFont.fontFamily;
-                                    this.cardname += ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight;
-                                    this.cardname += ";font-size:" + this.titleFont.fontSize + "px;line-height:" + this.titleFont.lineHeight + "px;text-align:center;padding-left:15px";
+                        // setTimeout(() => {
+                        for (var i = 0; i < this.chart_obj_array.length; i++) {
+                            if (this.chart_obj_array[i].layouttype == "card") {
+                                $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
+                                    "background-color": this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
+                                    'background-color': this.titleData[index].ncolor,
+                                    "color": this.titleData[index].fcolor
+                                });
+                                this.cardname = "background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor + ";font-family:" + this.titleFont.fontFamily;
+                                this.cardname += ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight;
+                                this.cardname += ";font-size:" + this.titleFont.fontSize + "px;line-height:" + this.titleFont.lineHeight + "px;text-align:center;padding-left:15px";
 
-                                    this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
-                                    this.cardstyle += ";font-family:" + this.titleFont.fontFamily + ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight + "px";
-                                } else if (this.chart_obj_array[i].layouttype == "table") {
-                                    this.tabStyle.th_background = this.titleData[index].ncolor;
-                                    this.tabStyle.zl_background = this.titleData[index].ncolor;
-                                }
+                                this.cardstyle = "word-wrap:break-word;text-align:center;background:" + this.titleData[index].ncolor + ";color:" + this.titleData[index].fcolor;
+                                this.cardstyle += ";font-family:" + this.titleFont.fontFamily + ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight + "px";
+                            } else if (this.chart_obj_array[i].layouttype == "table") {
+                                this.tabStyle.th_background = this.titleData[index].ncolor;
+                                this.tabStyle.zl_background = this.titleData[index].ncolor;
                             }
-                        }, 2000)
+                        }
+                        // }, 2000)
                         this.titleFlag = false;
-                        // 仪表盘展示
-                        setTimeout(() => {
+                        this.$nextTick(() => {
+                            // 仪表盘展示
+                            // setTimeout(() => {
                             this.echartpic(res.data, component_id_array);
-                        }, 500)
-                        // 边框回显
-                        setTimeout(() => {
+                            for (var i = 0; i < this.layout.length; i++) {
+                                let layoutElement = this.layout[i];
+                                this.resizedEvent(layoutElement.type, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
+                            }
+                            // 边框回显
                             this.frame_back();
-                        }, 1000)
-                        // 文本标签回显
-                        setTimeout(() => {
+                            // 文本标签回显
                             this.textlabel_back();
-                        }, 1000)
-                        // 分割线回显
-                        setTimeout(() => {
+                            // 分割线回显
                             this.textline_back();
-                        }, 1000)
-                        setTimeout(() => {
                             this.grid_layout_backgroundcolor = this.auto_dashboard_info.background;
                             $("div[name='pic']").each(function () {
                                 $(this).trigger("mouseup");
                             });
-                        }, 500)
+                        })
                     }
                 })
             },
@@ -1630,6 +1640,10 @@
                         this.global_component_array = res.data;
                         setTimeout(() => {
                             this.echartpic(res.data, component_id_array);
+                            for (var i = 0; i < this.layout.length; i++) {
+                                let layoutElement = this.layout[i];
+                                this.resizedEvent(layoutElement.type, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
+                            }
                         }, 500);
                         setTimeout(() => {
                             this.grid_layout_backgroundcolor = "background-color:#FFFFFF;";
@@ -2093,13 +2107,7 @@
                     }
                 })
                 this.chart_obj_array = chart_obj_array;
-                for (var i = 0; i < this.layout.length; i++) {
-                    let layoutElement = this.layout[i];
-                    this.resizedEvent(layoutElement.i, layoutElement.h, layoutElement.w, layoutElement.y, layoutElement.x);
-                }
-                setTimeout(() => {
-                    this.confirmBackgroudColor();
-                }, 100);
+                this.confirmBackgroudColor();
             },
             //找出新增前后不同的组件
             array_diff(layout, layoutId_array) {
@@ -2596,7 +2604,7 @@
                                             selectRow.splice(i, 1);
                                         }
                                     }
-                                    lineChart.clear;
+                                    // lineChart.clear;
                                 }
                             }
                         },
