@@ -1921,8 +1921,11 @@
             },
             // 点击删除设置显示字段信息
             clickClose(item, index) {
-                debugger;
                 this.optionsWords.splice(index, 1);
+                this.dynamicColumns=[];
+                for (let i = 0; i < this.optionsWords.length; i++) {
+                    this.dynamicColumns.push(this.putcodenametogether(this.optionsWords[i].code,this.optionsWords[i].realName))
+                }
                 this.disabled = false;
             },
             // 取消选择
