@@ -77,6 +77,7 @@ export function initAxisStyle(axisStyle,xAxis,yAxis,xAxisLine,xAxisLabel,yAxisLi
     var xaxisLine = {
         show: xAxisLine.show == '1' ? true : false,
         onZero: xAxisLine.onzero == '1' ? true : false,
+        lineStyle: {}
     };
     result.xaxisLine = xaxisLine;
     // x轴标签信息
@@ -92,6 +93,7 @@ export function initAxisStyle(axisStyle,xAxis,yAxis,xAxisLine,xAxisLabel,yAxisLi
     var yaxisLine = {
         show: yAxisLine.show == '1' ? true : false,
         onZero: yAxisLine.onzero == '1' ? true : false,
+        lineStyle: {}
     };
     result.yaxisLine = yaxisLine;
     // y轴标签信息
@@ -130,7 +132,8 @@ export function initLengendStyle(legendStyle,result) {
         borderWidth: legendStyle.borderwidth,
         interval: legendStyle.interval,
         intervalnumber: legendStyle.intervalnumber,
-        data: []
+        data: [],
+        textStyle:{}
     };
     result.legendStyle =  legendStyle;
 }
