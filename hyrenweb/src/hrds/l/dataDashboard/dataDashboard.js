@@ -88,3 +88,13 @@ export function getChartShow(data) {
         params: data
     })
 }
+
+
+//保存大屏展示图
+export function saveLargeScreen(data) {
+    debugger;
+    return request({
+        url: '/L/autoanalysis/operate/saveLargeScreen',
+        params: data
+    })
+}
