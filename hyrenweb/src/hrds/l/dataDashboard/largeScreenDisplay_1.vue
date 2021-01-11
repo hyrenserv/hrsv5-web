@@ -3,7 +3,7 @@
     <div id="largeScreenDisplay_1">
         <!--<body style="overflow: hidden">-->
         <div id="header">
-            <h3 class="header-title">大屏展示</h3>
+            <h3 class="header-title">{{dashboard_name}}</h3>
             <div class="header-info header-info-r">日期：<span id="nowDate">{{today}}</span></div>
         </div>
 
@@ -12,19 +12,16 @@
             <el-row>
                 <el-col id="id_1" :span="span_1">
                     <div class="chart-wrapper">
-                        <h3 class="chart-title">{{chart1_title}}</h3>
                         <div id="Chart1"></div>
                     </div>
                 </el-col>
                 <el-col id="id_2" :span="span_1">
                     <div class="chart-wrapper">
-                        <h3 class="chart-title">{{chart2_title}}</h3>
                         <div id="Chart2"></div>
                     </div>
                 </el-col>
                 <el-col id="id_3" :span="span_1">
                     <div class="chart-wrapper">
-                        <h3 class="chart-title">{{chart3_title}}</h3>
                         <div id="Chart3"></div>
                     </div>
                 </el-col>
@@ -32,20 +29,17 @@
             <el-row>
                 <el-col id="id_4" :span="span_2">
                     <div class="chart-wrapper">
-                        <h3 class="chart-title">{{chart4_title}}</h3>
                         <div id="Chart4"></div>
                     </div>
 
                 </el-col>
                 <el-col id="id_5" :span="span_2">
                     <div class="chart-wrapper">
-                        <h3 class="chart-title">{{chart5_title}}</h3>
                         <div id="Chart5"></div>
                     </div>
                 </el-col>
                 <el-col id="id_6" :span="span_2">
                     <div class="chart-wrapper">
-                        <h3 class="chart-title">{{chart6_title}}</h3>
                         <div id="Chart6"></div>
                     </div>
                 </el-col>
@@ -79,21 +73,14 @@
             return {
                 today: "",
                 height: '',
-                chart1_title: "chart1_title",
-                chart2_title: "chart2_title",
-                chart3_title: "chart3_title",
-                chart4_title: "chart4_title",
-                chart5_title: "chart5_title",
-                chart6_title: "chart6_title",
                 span_1: 8,
                 span_2: 8,
-                // dashboard_id: this.$route.query.dashboard_id,
-                dashboard_id: "796706808990326784",
-                // dashboard_id: "797127312410730496",
+                dashboard_id: this.$route.query.dashboard_id,
+                dashboard_name: this.$route.query.dashboard_name,
             }
         },
         created() {
-            this.height = window.innerHeight * 0.35
+            this.height = window.innerHeight * 0.35;
             this.$nextTick(() => {
                 $('#Chart1').attr('style', 'height:' + this.height + 'px')
                 $('#Chart2').attr('style', 'height:' + this.height + 'px')
@@ -106,10 +93,8 @@
             window.addEventListener('resize', () => {
                 $('#largeScreenDisplay_1').attr('style', 'height:' + (window.innerHeight - 75) + 'px')
             });
-            // this.$nextTick(() => {
             this.getToday();
             this.integration();
-            // });
         },
         mounted() {
 
@@ -204,7 +189,6 @@
                 }
             },
             async improveoption(option) {
-                debugger;
                 option.title.backgroundColor = "transparent";
                 option.legend.backgroundColor = "transparent";
                 option.legend.textStyle.color = "#b0c2f9";

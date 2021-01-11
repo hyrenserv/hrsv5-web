@@ -3,7 +3,7 @@
         <el-row class="elRows">
             <span>自主分析->数据仪表盘</span>
             <el-button type="primary" size='mini' class='creatPanelBtn' @click="creatPanel()">新建仪表盘</el-button>
-            <!--<el-button type="primary" size='mini' class='creatPanelBtn' @click="createLargeScreen()">新建大屏展示</el-button>-->
+            <el-button type="primary" size='mini' class='creatPanelBtn' @click="createLargeScreen()">新建大屏展示</el-button>
         </el-row>
         <el-table size='medium' :data="dataDashboardList" border style="width: 100%;">
             <el-table-column label="序号" type="index" width="50" align="left"></el-table-column>
@@ -15,18 +15,32 @@
             <el-table-column label="操作" align="left">
                 <template slot-scope="scope">
                     <el-button type="text" size="mini" @click="releaseDashboardInfo(scope.row)">发布</el-button>
-                    <el-button type="text" size="mini" @click="goToDashbaord(scope.row)">编辑</el-button>
+                    <el-button type="text" size="mini" v-if="!scope.row.iflargescreen"
+                               @click="goToDashbaord(scope.row)">编辑仪表盘
+                    </el-button>
+                    <el-button type="text" size="mini" v-if="scope.row.iflargescreen"
+                               @click="goToLargeScreen(scope.row)">查看大屏
+                    </el-button>
+                    <el-button type="text" size="mini" v-if="scope.row.iflargescreen"
+                               @click="editLargeScreen(scope.row)">编辑大屏
+                    </el-button>
                     <el-button type="text" size="mini" @click="deleteDashboardInfo(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
-        <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%"
-                   :before-close="beforeAddComponentClose">
+        <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%">
             <el-table :data="auto_comp_sum_array.slice((currPage - 1) * pageSize,currPage * pageSize)" border
-                      style="width: 100%" ref="multipleComponent" :row-key="(row)=>{ return row.column_id}"
-                      size="medium" @select="componentSelectionChange" @select-all='allComponentSelect'>
-                <el-table-column width="40" align="center" type="selection" :reserve-selection="true"/>
+                      style="width: 100%">
+                <el-table-column width="55" align="center" prop="selectionstate">
+                    <!--<template slot="header" slot-scope="scope">-->
+                    <!--<el-checkbox @change="allCheck()" v-model="allchecked" :checked="allchecked"></el-checkbox>-->
+                    <!--</template>-->
+                    <template slot-scope="scope">
+                        <el-checkbox :checked="scope.row.selectionstate"
+                                     v-model="scope.row.selectionstate"></el-checkbox>
+                    </template>
+                </el-table-column>
                 <el-table-column label="序号" width="50px" align="left">
                     <template slot-scope="scope">
                         <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
@@ -43,14 +57,13 @@
                                class='locationcenter'/>
             </el-row>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="cancel" size="mini">取 消</el-button>
+                <el-button @click="dialogAddComponentVisible = false" size="mini">取 消</el-button>
                 <el-button type="primary" @click="addLargeScreen" size="mini">确 认
                 </el-button>
             </div>
         </el-dialog>
 
-        <el-dialog title="添加仪表盘" :visible.sync="dialogDashboardVisible" width="50%"
-                   :before-close="beforeDashboardClose">
+        <el-dialog title="添加大屏展示" :visible.sync="dialogDashboardVisible" width="50%">
             <el-form label-width="160px">
                 <el-form-item label="仪表盘名称">
                     <el-input v-model="large_dashboard_name"></el-input>
@@ -84,9 +97,12 @@
                 currPage: 1,
                 pageSize: 10,
                 totalSize: 0,
-                selectRow: [],
-                large_dashboard_name:"",
-                large_dashboard_desc:""
+                selectRow2: "",
+                large_dashboard_name: "",
+                large_dashboard_desc: "",
+                isadd: false,
+                dashboard_id: "",
+                component_id_list: [],
             }
         },
         mounted() {
@@ -101,6 +117,7 @@
                 })
             },
             createLargeScreen() {
+                this.isadd = false;
                 this.dialogAddComponentVisible = true;
                 functionAll.getVisualComponentInfo({}).then(res => {
                     if (res && res.success) {
@@ -120,45 +137,56 @@
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
             },
-            componentSelectionChange(selectTrue) {
-                this.selectRow = selectTrue;
-            },
-            allComponentSelect(all) {
-                this.selectRow = all
-            },
-            // 关闭组件弹窗
-            beforeAddComponentClose() {
-                this.dialogAddComponentVisible = false;
-                this.$refs.multipleComponent.clearSelection();
-            },
             addLargeScreen() {
-                if (this.selectRow.length <= 0) {
+                this.component_id_list = [];
+                for (var i = 0; i < this.auto_comp_sum_array.length; i++) {
+                    var item = this.auto_comp_sum_array[i];
+                    if (item.selectionstate) {
+                        this.component_id_list.push(item.component_id);
+                    }
+                }
+                if (this.component_id_list.length <= 0) {
                     this.$Msg.customizTitle('请至少选择一个组件', 'warning')
                 } else {
+                    if (this.isadd) {
+
+                    }
                     this.dialogDashboardVisible = true;
                 }
             },
-            beforeDashboardClose() {
-                this.dialogDashboardVisible = false;
-            },
-            confirmLargeScreen(){
-              //保存
-                var component_id_list = [];
-                this.selectRow.forEach(item=>{
-                    component_id_list.push(item.component_id);
-                });
-                debugger;
-                functionAll.saveLargeScreen({
-                    component_id_list:component_id_list,
-                    dashboard_name:this.large_dashboard_name,
-                    dashboard_desc:this.large_dashboard_desc,
-                }).then(res =>{
-                    this.$router.push({
-                        path: '/largeScreenDisplay_1',
-                        query: {"dashboard_id":res.data}
-                    })
-                });
-              //跳转
+            confirmLargeScreen() {
+                if (!this.isadd) {
+                    //新增保存
+                    functionAll.saveLargeScreen({
+                        component_id_list: this.component_id_list,
+                        dashboard_name: this.large_dashboard_name,
+                        dashboard_desc: this.large_dashboard_desc,
+                    }).then(res => {
+                        this.$router.push({
+                            path: '/largeScreenDisplay_1',
+                            query: {
+                                "dashboard_id": res.data,
+                                "dashboard_name": this.large_dashboard_name
+                            }
+                        })
+                    });
+                }else{
+                    functionAll.updateLargeScreen({
+                        dashboard_id:this.dashboard_id,
+                        component_id_list: this.component_id_list,
+                        dashboard_name: this.large_dashboard_name,
+                        dashboard_desc: this.large_dashboard_desc,
+                    }).then(res => {
+                        this.$router.push({
+                            path: '/largeScreenDisplay_1',
+                            query: {
+                                "dashboard_id": res.data,
+                                "dashboard_name": this.large_dashboard_name
+                            }
+                        })
+                    });
+                }
+                //跳转
             },
             // 获取代码项
             getCategoryItems() {
@@ -186,6 +214,7 @@
                             })
                         })
                         this.dataDashboardList = res.data;
+
                     }
                 })
             },
@@ -218,6 +247,15 @@
                     }
                 })
             },
+            goToLargeScreen(row) {
+                this.$router.push({
+                    path: '/largeScreenDisplay_1',
+                    query: {
+                        "dashboard_id": row.dashboard_id,
+                        "dashboard_name": row.dashboard_name
+                    }
+                })
+            },
             //数据仪表盘删除
             deleteDashboardInfo(row) {
                 this.$confirm('确认删除仪表盘(' + row.dashboard_name + ')吗?', '提示', {
@@ -234,6 +272,21 @@
                             this.getDataDashboardInfo();
                         }
                     })
+                })
+            },
+            editLargeScreen(row) {
+                this.isadd = true;
+                this.dashboard_id = row.dashboard_id;
+                this.large_dashboard_name = row.dashboard_name;
+                this.large_dashboard_desc = row.dashboard_desc;
+                this.dialogAddComponentVisible = true;
+                functionAll.getLargeScreenComponentInfoByDashboardId({
+                    "dashboard_id": row.dashboard_id
+                }).then(res => {
+                    if (res && res.success) {
+                        this.auto_comp_sum_array = res.data;
+                        this.totalSize = res.data.length;
+                    }
                 })
             },
         }

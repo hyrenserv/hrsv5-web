@@ -92,9 +92,26 @@ export function getChartShow(data) {
 
 //保存大屏展示图
 export function saveLargeScreen(data) {
-    debugger;
     return request({
         url: '/L/autoanalysis/operate/saveLargeScreen',
         params: data
     })
 }
+
+
+//更新大屏展示图
+export function updateLargeScreen(data) {
+    return request({
+        url: '/L/autoanalysis/operate/updateLargeScreen',
+        params: data
+    })
+}
+
+//查看大屏组件
+export function getLargeScreenComponentInfoByDashboardId(data) {
+    return request({
+        url: '/L/autoanalysis/operate/getLargeScreenComponentInfoByDashboardId',
+        params: data
+    })
+}
+
