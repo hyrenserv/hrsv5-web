@@ -1922,11 +1922,15 @@
             // 点击删除设置显示字段信息
             clickClose(item, index) {
                 this.optionsWords.splice(index, 1);
-                this.dynamicColumns=[];
-                for (let i = 0; i < this.optionsWords.length; i++) {
-                    this.dynamicColumns.push(this.putcodenametogether(this.optionsWords[i].code,this.optionsWords[i].realName))
+                if (this.optionsWords.length==0) {
+                    this.isDataShow=false;
+                }else{
+                    this.dynamicColumns=[];
+                    for (let i = 0; i < this.optionsWords.length; i++) {
+                        this.dynamicColumns.push(this.putcodenametogether(this.optionsWords[i].code,this.optionsWords[i].realName))
+                    }
+                    this.disabled = false;
                 }
-                this.disabled = false;
             },
             // 取消选择
             cancelSelect() {
@@ -2118,7 +2122,11 @@
             },
             // 添加字段信息
             addWords() {
-                this.selectWords = true;
+                if (this.input == '') {
+                    this.$Msg.customizTitle("请先选择数据源与表名", "warning");
+                }else{
+                    this.selectWords = true;
+                }
             },
             // 取消字段添加
             cancelSelectWords() {
@@ -2154,9 +2162,13 @@
                     }
                 }
             },
-            // 添加组件
+            // 添加分组条件按钮
             addGroup() {
-                this.groupHidden = !this.groupHidden;
+                if (this.input=='') {
+                    this.$Msg.customizTitle('请先选择数据源与表名','warning');
+                } else {
+                    this.groupHidden = !this.groupHidden;
+                }
             },
             // 添加分组条件
             addGroupWords(item, index) {
@@ -2168,7 +2180,11 @@
             },
             // 添加过滤条件
             fiflterCondition() {
-                this.addfiflterCondition = !this.addfiflterCondition;
+                if (this.input=='') {
+                    this.$Msg.customizTitle('请先选择数据源与表名','warning');
+                } else {
+                    this.addfiflterCondition = !this.addfiflterCondition;
+                }
             },
             // 条件过滤字段
             addfiflterConditionWords(item, index) {
