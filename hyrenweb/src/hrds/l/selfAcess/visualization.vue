@@ -148,6 +148,7 @@
             <p class="tempalteInfo">结果信息</p>
         </el-row>
         <div class="lines" v-if="isDataShow"></div>
+        {{dynamicColumns}}
         <el-table size="medium"
                   :data="dynamicColumnTables.slice((answerCurrPage - 1) * answerPageSize, answerCurrPage *answerPageSize)"
                   border stripe style="width: 100%" v-if="isDataShow">
@@ -2496,9 +2497,7 @@
                     showNum: num
                 }).then(res => {
                     if (res && res.success) {
-                        if (this.dynamicColumns.length==0) {
-                            this.dynamicColumns = res.data.columnList;
-                        }
+                        this.dynamicColumns = res.data.columnList;
                         this.dynamicColumnTables = res.data.visualComponentList;
                         this.echartTableData = res.data.visualComponentList;
                         if (res.data.visualComponentList.length > 0) {
