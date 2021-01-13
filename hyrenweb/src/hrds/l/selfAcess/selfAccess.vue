@@ -78,27 +78,35 @@ export default {
         // 点击搜索按钮搜索
         searchInfo(){
             if(this.searchMark =="auto"){
-                functionAll.getAccessTemplateInfoByName({
-                    template_name:inputText
-                }).then(res=>{
-                    res.data.forEach(item => {
-                        if (item.create_date && item.create_time) {
-                            item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
-                        }
-                })
-                this.tableDataSelf = res.data;
-                })
+                if (this.inputText!='') {
+                    functionAll.getAccessTemplateInfoByName({
+                        template_name:this.inputText
+                    }).then(res=>{
+                        res.data.forEach(item => {
+                            if (item.create_date && item.create_time) {
+                                item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                            }
+                    })
+                    this.tableDataSelf = res.data;
+                    })
+                }else{
+                    this.getAccessTemplateInfo();
+                }
             }else if(this.searchMark =="my"){
-                functionAll.getMyAccessInfoByName({
-                    template_name:inputText
-                }).then(res=>{
-                    res.data.forEach(item => {
-                        if (item.create_date && item.create_time) {
-                            item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
-                        }
-                })
-                this.tableDataMy = res.data;
-                })
+                if (this.inputText!='') {
+                    functionAll.getMyAccessInfoByName({
+                        fetch_name:this.inputText
+                    }).then(res=>{
+                        res.data.forEach(item => {
+                            if (item.create_date && item.create_time) {
+                                item.create_dateFormat = fixedAll.dateFormat(item.create_date) + " " + fixedAll.hourFormat(item.create_time);
+                            }
+                    })
+                    this.tableDataMy = res.data;
+                    })
+                }else{
+                    this.getMyAccessInfo();
+                }
             }
         },
         // 获取自主取数表格初始值
