@@ -7,6 +7,13 @@ export function drawBarChart(result,data) {
     let option = {
         backgroundColor: result.background,
         title: result.titles,
+        toolbox: {
+            show : true,
+            feature : {
+                magicType : {show: true, type: ['stack', 'tiled']},
+                saveAsImage : {show: true}
+            }
+        },
         legend: Object.assign({}, result.legendStyle, {
             data: data.legend_data
         }),

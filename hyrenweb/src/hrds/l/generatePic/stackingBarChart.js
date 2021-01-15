@@ -1,12 +1,16 @@
 //堆叠柱状图
 export function drawStackingBarChart(result,data) {
-    //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
     data.seriesArray.forEach(val => {
         val.label = result.labelOption;
     })
     let option = {
         backgroundColor: result.background,
         title: result.titles,
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
         legend: Object.assign({}, result.legendStyle, {
             data: data.legend_data
         }),

@@ -20,16 +20,9 @@ export function drawBlSimpleChart(result, data) {
         },
         toolbox: {
             feature: {
-                magicType: {
-                    show: true,
-                    type: ['line', 'bar']
-                },
-                restore: {
-                    show: true
-                },
-                saveAsImage: {
-                    show: true
-                }
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
             }
         },
         legend: Object.assign({}, result.legendStyle, {
@@ -38,11 +31,11 @@ export function drawBlSimpleChart(result, data) {
         xAxis: [
             Object.assign({}, {
                 type: 'category',
-                data: data.xArray,
+                data: data.xAxisData,
                 nameTextStyle: result.nameTextStyle,
                 axisLine: result.xaxisLine,
                 axisLabel: result.xaxisLabel,
-            }, result.xAxis)
+            }, result.xAxis,)
         ],
         yAxis: [yAxis, yAxis],
         series: [{
@@ -51,9 +44,8 @@ export function drawBlSimpleChart(result, data) {
             yAxisIndex: 0,
             data: series1Data,
             itemStyle: {
-                normal: {
-                    label: result.labelOption,
-                }
+                label: result.labelOption,
+
             },
         },
             {
@@ -62,9 +54,7 @@ export function drawBlSimpleChart(result, data) {
                 yAxisIndex: 1,
                 data: series2Data,
                 itemStyle: {
-                    normal: {
-                        label: result.labelOption,
-                    }
+                    label: result.labelOption,
                 },
             }
         ]

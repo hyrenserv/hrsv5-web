@@ -7,6 +7,12 @@ export function drawPieChart(result, data) {
     var option = {
         backgroundColor: result.background,
         title: result.titles,
+        toolbox: {
+            show : true,
+            feature : {
+                saveAsImage : {show: true}
+            }
+        },
         tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c} ({d}%)"

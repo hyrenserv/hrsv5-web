@@ -148,7 +148,6 @@
             <p class="tempalteInfo">结果信息</p>
         </el-row>
         <div class="lines" v-if="isDataShow"></div>
-        {{dynamicColumns}}
         <el-table size="medium"
                   :data="dynamicColumnTables.slice((answerCurrPage - 1) * answerPageSize, answerCurrPage *answerPageSize)"
                   border stripe style="width: 100%" v-if="isDataShow">
@@ -1405,14 +1404,10 @@
                     axis_type: "2", //轴类型
                     show: '1', //是否显示
                     position: "left", //轴位置
-
                     axisoffset: 0, //轴偏移量
                     name: "y轴", //轴名称
                     namelocation: "end", //轴名称位置
-                    // min: "0",
-                    // max: "100",
                     silent: "1",
-
                     nameTextStyle: {}, //--轴名称样式
                     namegap: 15, //名称与轴线距离
                     namerotate: 0, //名称旋转角度
@@ -2618,7 +2613,6 @@
                 if (type == "card") { // 卡片
                     var value = '';
                     for (var key in this.echartTableData[0]) {
-
                         value = this.echartTableData[0][key];
                     }
                     $("#carddiv").text(value);
@@ -2733,7 +2727,6 @@
                                     '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
                                     '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
                                 ];
-
                                 for (var l = 0; l < provincesText.length; l++) {
                                     if (this.seriesStyle.provincename == provincesText[l]) {
                                         //显示对应省份的方法

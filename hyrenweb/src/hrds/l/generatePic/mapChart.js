@@ -1,7 +1,5 @@
 // 地理坐标/地图
-export function drawMapChart(result, data,seriesStyle) {
-    var result = {};
-    var legendStyle = result.legendStyle;
+export function drawMapChart(result,data,seriesStyle) {
     var pName = "";
     if (seriesStyle.provincename == "全国") {
         pName = "china";
@@ -9,21 +7,20 @@ export function drawMapChart(result, data,seriesStyle) {
         pName = seriesStyle.provincename;
     }
     var splitList = [];
-    for (var i = 0; i < legendStyle.intervalnumber; i++) {
+    for (var i = 0; i < result.legendStyle.intervalnumber; i++) {
         if (i == 0) {
             splitList.push({
                 start: 0,
-                end: legendStyle.interval
+                end: result.legendStyle.interval
             });
         } else {
             splitList.push({
-                start: legendStyle.interval * i,
-                end: legendStyle.interval * (i + 1)
+                start: result.legendStyle.interval * i,
+                end: result.legendStyle.interval * (i + 1)
             });
         }
     }
-
-    var option = {
+    let option = {
         backgroundColor: result.background,
         title: result.titles,
         tooltip: {
@@ -42,19 +39,19 @@ export function drawMapChart(result, data,seriesStyle) {
         },
         //小导航图标
         visualMap: {
-            show: legendStyle.show == '1' ? true : false,
-            left: legendStyle.left,
-            top: legendStyle.top,
-            right: legendStyle.right,
-            bottom: legendStyle.bottom,
-            orient: legendStyle.orient,
-            align: legendStyle.align,
-            padding: legendStyle.padding,
-            itemGap: legendStyle.itemgap,
-            itemWidth: legendStyle.itemwidth,
-            itemHeight: legendStyle.itemheight,
-            borderColor: legendStyle.bordercolor,
-            borderWidth: legendStyle.borderwidth,
+            show: result.legendStyle.show == '1' ? true : false,
+            left: result.legendStyle.left,
+            top: result.legendStyle.top,
+            right: result.legendStyle.right,
+            bottom: result.legendStyle.bottom,
+            orient: result.legendStyle.orient,
+            align: result.legendStyle.align,
+            padding: result.legendStyle.padding,
+            itemGap: result.legendStyle.itemgap,
+            itemWidth: result.legendStyle.itemwidth,
+            itemHeight: result.legendStyle.itemheight,
+            borderColor: result.legendStyle.bordercolor,
+            borderWidth: result.legendStyle.borderwidth,
             splitList: splitList,
         },
         series: [{
@@ -66,5 +63,5 @@ export function drawMapChart(result, data,seriesStyle) {
             data: data.seriesData, //数据
         },]
     };
-    drawPic(option);
+    return option;
 }

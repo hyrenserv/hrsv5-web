@@ -6,6 +6,11 @@ export function drawPolarBarChart(result,data) {
     let option = {
         backgroundColor: result.background,
         title: result.titles,
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
         legend: Object.assign({}, result.legendStyle, {
             data: data.legend_data
         }),

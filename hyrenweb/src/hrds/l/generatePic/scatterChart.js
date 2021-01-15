@@ -3,6 +3,11 @@ export function drawScatterChart(result, data) {
     var option = {
         backgroundColor: result.background,
         title: result.titles,
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
         legend: Object.assign({}, result.legendStyle, {
             data: data.legend_data
         }),
