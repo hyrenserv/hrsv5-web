@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+/* global */
+* {margin:0;padding:0;box-sizing:border-box;}
+.tpl06 {
+	width:100%;
+	height:100%;
+	min-height:635px;
+	position:relative;
+	font-family:"Microsoft Yahei", Arial, sans-serif;
+	background-color:#0f1c30;
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:100% 100%;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+
+/* layout */
+.header06 {
+	margin:0 auto;
+	width:100%;
+	height:65px;
+	max-width:1920px;
+	background:url("../../../../assets/images/tpl6/header.png") center no-repeat;
+	overflow:hidden;
+}
+.header-title {line-height:64px;text-align:center;font-size:34px;font-weight:400;color:#fff;}
+.header-date {position:absolute;top:32px;font-size:18px;color:#73aae5;right:20px;}

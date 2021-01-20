@@ -250,7 +250,7 @@
                     </div>
                 </div>
                 <div id="myChart" v-show="echart_type!='card' && echart_type!='table'"
-                     style="width:100%; height: 440px; margin-bottom: 25px"></div>
+                     style="width:100%; height: 480px;"></div>
             </el-col>
             <el-col :span="7">
                 <el-select v-model="value" size="small" placeholder="请选择图表类型" style="width:98%;"

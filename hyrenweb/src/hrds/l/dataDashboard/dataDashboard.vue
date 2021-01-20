@@ -27,11 +27,16 @@
             <!--仪表板展示-->
             <div v-show="picshow" id="mydiv">
                 <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
-                             class="grid" id="grid_style"
+                             :class="[is_gridline?'grid':'titleClass']" id="grid_style"
                              style="height: 2000px;" :col-num="110" :row-height="11" :layout.sync="layout"
                              :isDraggable="is_del" :autoSize="true"
                              :isResizable="is_del" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]"
                              :use-css-transforms="true">
+                    <header :class="header" v-if="show_header">
+                        <h3 class="header-title">{{auto_dashboard_info.dashboard_name}}</h3>
+                        <div class="header-date">日期：{{today}}<span id="nowDate"></span></div>
+                    </header>
+                    <footer :class="footer" v-if="show_footer"></footer>
                     <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout"
                                :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i"
                                :type="item.type"
@@ -243,8 +248,6 @@
     </div>
 </template>
 
-<script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
-<!--<script src="vue-grid-layout.umd.min.js"></script>-->
 <script>
     import Vue from 'vue';
     import VueGridLayout from 'vue-grid-layout';
@@ -260,6 +263,7 @@
     import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
     import * as drawTreeMapChart from "../generatePic/treeMapChart";
     import * as drawMapChart from "../generatePic/mapChart";
+import { Chart } from 'highcharts';
     export default {
         components: {
             GridLayout: VueGridLayout.GridLayout,
@@ -282,7 +286,7 @@
                 echartdata: [],
                 bubbleIds: [],
                 bubble_echartdatas: [],
-                echart_div_layouts: [],
+                echart_layouts: [],
                 // 组件名称
                 tmp_component_names: [],
                 myCharts: [],
@@ -291,7 +295,8 @@
                 cardstyle: "",
                 cardname: "",
                 bcolor: "",
-                option: {},
+                tcolr:"",
+                lcolr:"",
                 // 组件汇总表集合信息
                 auto_comp_sum_array: [],
                 //组件汇总表
@@ -317,65 +322,59 @@
                     is_gridline: '0'
                 },
                 picshow: false,
-                titleFlag: false,
                 echartThemeJson: require("@/assets/json/EchartTheme.json"),
                 delpng: require('@/assets/images/del.png'),
                 selectRow: [],
                 //主题设置参数
                 titleData: [{
-                    "code": "00",
-                    "CN_type": "原始",
-                    "type": "source",
-                    "bcolor": "#40E3F7",
-                    "fcolor": "#FFFFFF",
-                    "ncolor": "#438EB9",
-                    "style": "background-color:transparent;",
-                    "depth": "qian",
-                    "picurl": require("@/assets/images/theme/source.jpg")
-                },
+                        "code": "00",
+                        "CN_type": "原始",
+                        "type": "source",
+                        "tcolor": "#FFFFFF",
+                        "lcolor": "#FFFFFF",
+                        "picurl": require("@/assets/images/theme/source.jpg")
+                    },
                     {
                         "code": "01",
-                        "CN_type": "万圣节",
-                        "type": "halloween",
-                        "bcolor": "#FF715E",
-                        "fcolor": "#FFFFFF",
-                        "ncolor": "#FF715E",
-                        "style": "background-color:#6E6E6E;background-size: 100% 100%;",
-                        "depth": "sheng",
-                        "picurl": require("@/assets/images/theme/halloween.jpg")
+                        "CN_type": "综合模板1",
+                        "tcolor": "#3f44ff",
+                        "lcolor": "#b0c2f9",
+                        "picurl": require("@/assets/images/tpl1/thumb.jpg")
                     },
                     {
                         "code": "02",
-                        "CN_type": "紫色",
-                        "type": "purple",
-                        "bcolor": "#9B8BBA",
-                        "fcolor": "#FFFFFF",
-                        "ncolor": "#9B8BBA",
-                        "style": "background-color: #5B5C6E;",
-                        "depth": "sheng",
-                        "picurl": require("@/assets/images/theme/purple.jpg")
+                        "CN_type": "综合模板2",
+                        "tcolor": "#3f44ff",
+                        "lcolor": "#b0c2f9",
+                        "picurl": require("@/assets/images/tpl2/thumb.jpg")
                     },
                     {
                         "code": "03",
-                        "CN_type": "恩索思",
-                        "type": "essos",
-                        "bcolor": "#893448",
-                        "fcolor": "#FFFFFF",
-                        "ncolor": "#893448",
-                        "style": "background-color: #F2EABF;",
-                        "depth": "qian",
-                        "picurl": require("@/assets/images/theme/essos.jpg")
+                        "CN_type": "综合模板3",
+                        "tcolor": "#3f44ff",
+                        "lcolor": "#b0c2f9",
+                        "picurl": require("@/assets/images/tpl3/thumb.jpg")
                     },
                     {
                         "code": "04",
-                        "CN_type": "粉笔",
-                        "type": "chalk",
-                        "bcolor": "#FC97AF",
-                        "fcolor": "#FFFFFF",
-                        "ncolor": "#FC97AF",
-                        "style": "background-color: #293441;",
-                        "depth": "sheng",
-                        "picurl": require("@/assets/images/theme/chalk.jpg")
+                        "CN_type": "综合模板4",
+                        "tcolor": "#3f44ff",
+                        "lcolor": "#b0c2f9",
+                        "picurl": require("@/assets/images/tpl4/thumb.jpg")
+                    },
+                    {
+                        "code": "05",
+                        "CN_type": "旭日东升饼图",
+                        "tcolor": "#3f44ff",
+                        "lcolor": "#b0c2f9",
+                        "picurl": require("@/assets/images/tpl5/thumb.jpg")
+                    },
+                    {
+                        "code": "06",
+                        "CN_type": "地图",
+                        "tcolor": "#3f44ff",
+                        "lcolor": "#b0c2f9",
+                        "picurl": require("@/assets/images/tpl6/thumb.jpg")
                     },
                 ],
                 grid_layout_backgroundcolor: "background-color:transparent;",// 背景色
@@ -594,6 +593,12 @@
                 },
                 is_gridline: false, // 是否使用网格线
                 is_del: true,// 是否可以删除组件
+                titleClass:'grid',//主题样式
+                show_footer:false,// 显示底部样式
+                show_header:false,// 显示头部样式
+                footer:'',
+                header:'',
+                today:''
             }
         },
         created() {
@@ -608,14 +613,14 @@
             this.$nextTick(() => {
                 if (!this.is_gridline) {
                     $("#grid_style").removeClass("grid");
-                    this.is_gridline = true;
                 }
             })
+            this.getToday();
         },
         mounted() {
             // 监控窗口变化
             window.addEventListener('resize', () => {
-                if (this.is_del == false) {
+                if (this.is_del ) {
                     if (!this.checkFull()) {
                         $('#toubu').show();
                         this.chooseTitle_show = true;
@@ -711,7 +716,6 @@
                                 } else {
                                     if (id != undefined && id != '') {
                                         var Chart = echarts.init(document.getElementById(id));
-                                        // var Chart = echarts.init(document.getElementById(id), dashboard_theme);
                                         Chart.resize();
                                     }
                                 }
@@ -722,6 +726,14 @@
             }
         },
         methods: {
+            //获取今日日期
+            getToday() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                this.today = year + "年" + month + "月" + day + "日";
+            },
             resizedEvent(i, newH, newW, newHPx, newWPx) {
                 var lineflag = false;
                 var textflag = false;
@@ -803,10 +815,9 @@
                         }
                         this.echart_theme = echart_theme_obj;
                         if (code != "00") {
-                            echarts.registerTheme(echart_theme_obj.type, this.echartThemeJson[echart_theme_obj.type]);
                             //更换卡片，标签，分割线，表格的颜色为组件的主题颜色
                             setTimeout(() => {
-                                this.changeTitle(this.echart_theme);
+                                this.chooseTitle(this.echart_theme);
                             }, 2000)
                         }
                         var index = 0;
@@ -838,7 +849,6 @@
                                 this.tabStyle.zl_background = this.titleData[index].ncolor;
                             }
                         }
-                        this.titleFlag = false;
                         this.$nextTick(() => {
                             // 仪表盘展示
                             this.echartpic(res.data, component_id_array);                          
@@ -943,9 +953,9 @@
                     }
                 });
             },
-            initPropsData(echart_div_layout,auto_info,auto_info_array,line_or_label_layout,textarray,type){
+            initPropsData(echart_layout,auto_info,auto_info_array,line_or_label_layout,textarray,type){
                 return {   
-                    echart_div_layout: echart_div_layout,
+                    echart_layout: echart_layout,
                     line_or_label_layout: line_or_label_layout,
                     layout: this.layout,
                     auto_info:auto_info,
@@ -997,85 +1007,38 @@
             //选择主题
             chooseTitle(data) {
                 this.auto_dashboard_info.dashboard_theme = data.code;
-                for (var i = 0; i < this.chart_obj_array.length; i++) {
-                    var layouttype = this.chart_obj_array[i].layouttype;
-                    if (layouttype != "card" && layouttype!='table' && layouttype!='label' && layouttype!='borderline') {
-                        // 非表格、 卡片、文本标签、分割线        
-                        this.chart_obj_array[i].dispose();
-                    }
+                this.tcolor = data.tcolor;
+                this.lcolor = data.lcolor;
+                $("#grid_style").removeClass(this.titleClass);
+                this.footer="footer"+data.code;
+                this.header="header"+data.code
+                this.titleClass="tpl"+data.code;
+                if (data.code=='00') {
+                    this.titleClass="grid";
+                    this.show_footer = false;
+                    this.show_header = false;
+                }else if (data.code=='01') {
+                    this.show_header = true;
+                    this.show_footer = true;
+                }else if (data.code=='02') {
+                    this.show_header = true;
+                    this.show_footer = true;
+                }else if (data.code=='03') {
+                    this.show_header = true;
+                    this.show_footer = false;
+                } else if (data.code=='04') {
+                    this.show_header = false;
+                    this.show_footer = false;
+                } else if (data.code=='05') {
+                    this.show_header = true;
+                    this.show_footer = false;
+                } else if (data.code=='06') {
+                    this.show_header = true;
+                    this.show_footer = false;
                 }
-                if (data.code != "00") {
-                    echarts.registerTheme(data.type, this.echartThemeJson[data.type]);
-                }
-                this.echart_theme = data;
-                var cardname = this.cardname;
-                var cardstyle = this.cardstyle;
-                var tabStyle = this.tabStyle;
-                //更换卡片，标签，分割线，表格的颜色为组件的主题颜色
-                this.changeTitle(data);
-                this.titleFlag = false;
-                // 仪表盘展示
-                this.echartpic(this.global_component_array, this.global_component_id_array);
-                // 文本标签主题设置
-                setTimeout(() => {
-                    if (this.textlabelarray.length > 0) {
-                        this.textlabeltheme();
-                    }
-                }, 500);
-                // 分割线设置
-                setTimeout(() => {
-                    if (this.textlinearray.length > 0) {
-                        this.textlinetheme();
-                    }
-                }, 500);
-                setTimeout(() => {
-                    this.grid_layout_backgroundcolor = data.style;
-                    let start = this.grid_layout_backgroundcolor.indexOf(":") + 1;
-                    let end = this.grid_layout_backgroundcolor.indexOf(";");
-                    this.auto_dashboard_info.background = this.grid_layout_backgroundcolor.substring(start, end).trim();
-                    $("div[name='pic']").each(function () {
-                        $(this).trigger("mouseup");
-                    });
-                }, 500);
+                $("#grid_style").addClass(this.titleClass);
+                this.echartpic(this.global_component_array,this.global_component_id_array)
                 this.dialogTitleVisible = false;
-            },
-            //更换卡片，标签，分割线，表格的颜色为组件的主题颜色
-            changeTitle(data) {
-                this.$nextTick(function () {
-                    for (var i = 0; i < this.chart_obj_array.length; i++) {
-                        if (this.chart_obj_array[i].layouttype == "card") {// 卡片
-                            $("#" + this.chart_obj_array[i].id).find("div[name='cardcomponentname']").css({
-                                "background-color": data.ncolor,
-                                "color": data.fcolor
-                            });
-                            $("#" + this.chart_obj_array[i].id).find("div[class='cardclass']").css({
-                                'background-color': data.ncolor,
-                                "color": data.fcolor
-                            });
-                            cardname = "background:" + data.ncolor + ";color:" + data.fcolor + ";font-family:" + this.titleFont.fontFamily;
-                            cardname += ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight;
-                            cardname += ";font-size:" + this.titleFont.fontSize + "px;line-height:" + this.titleFont.lineHeight + "px;text-align:center;padding-left:15px";
-                            cardstyle = "word-wrap:break-word;text-align:center;background:" + data.ncolor + ";color:" + data.fcolor;
-                            cardstyle += ";font-family:" + this.titleFont.fontFamily + ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight + "px";
-                        } else if (this.chart_obj_array[i].layouttype == "table") {// 表格
-                            tabStyle.th_background = data.bcolor
-                            tabStyle.zl_background = data.bcolor;
-                        } else if (this.chart_obj_array[i].layouttype == "label") {// 文本标签
-                            $("#" + this.chart_obj_array[i].id).find("p").css({
-                                "background-color": data.ncolor,
-                                "color": data.fcolor
-                            });
-                            $("#" + this.chart_obj_array[i].id).find("p").css({
-                                'background-color': data.ncolor,
-                                "color": data.fcolor
-                            });
-                        } else if (this.chart_obj_array[i].layouttype == 'borderline') {// 分割线
-                            $("#" + this.chart_obj_array[i].id).find("div[class='lineclass']").css({
-                                'background-color': data.ncolor
-                            });
-                        }
-                    }
-                });
             },
             //文本标签主题设置
             textlabeltheme() {
@@ -1105,12 +1068,10 @@
             },
             //添加网格线
             gridLine() {
-                if (this.is_gridline == false) {
-                    $("#grid_style").removeClass("grid");
-                    this.is_gridline = true;
-                } else {
+                if (this.is_gridline) {
                     $("#grid_style").addClass("grid");
-                    this.is_gridline = false;
+                } else {
+                    $("#grid_style").removeClass("grid");
                 }
             },
             //添加文本标签
@@ -1309,7 +1270,6 @@
                 functionAll.showComponentOnDashboard(param).then(res => {
                     this.$refs.multipleComponent.clearSelection();
                     if (res && res.success) {
-                        this.titleFlag = true;
                         this.global_component_array = res.data;
                         setTimeout(() => {
                             this.echartpic(res.data, component_id_array);
@@ -1435,63 +1395,7 @@
                         var id = component_id_array[i];
                         var echartdata = JSON.parse(data[id]);
                         var type = echartdata.chart_type;
-                        for (var j = 0; j < this.layout.length; j++) {
-                            if (id == this.layout[j].type) {
-                                var echart_div_layout = this.layout[j];
-                                //标题设置
-                                if (echart_div_layout.titleFontInfo != '' && echart_div_layout.titleFontInfo != undefined && JSON.stringify(echart_div_layout.titleFontInfo) != '{}') {
-                                    this.titleFont = echart_div_layout.titleFontInfo;
-                                }
-                                //轴线字体
-                                if (echart_div_layout.axisFontInfo != '' && echart_div_layout.axisFontInfo != undefined && JSON.stringify(echart_div_layout.axisFontInfo) != '{}') {
-                                    this.axisStyle = echart_div_layout.axisFontInfo;
-                                }
-                                //轴线配置--x轴(xAxis)
-                                if (echart_div_layout.xAxisInfo != '' && echart_div_layout.xAxisInfo != undefined && JSON.stringify(echart_div_layout.xAxisInfo) != '{}') {
-                                    this.xAxis = echart_div_layout.xAxisInfo[0];
-                                }
-                                //x轴(xAxisLine)
-                                if (echart_div_layout.xAxisLine != '' && echart_div_layout.xAxisLine != undefined && JSON.stringify(echart_div_layout.xAxisLine) != '{}') {
-                                    this.xAxisLine = echart_div_layout.xAxisLine;
-                                }
-                                //x轴(xAxisLabel)
-                                if (echart_div_layout.xAxisLabel != '' && echart_div_layout.xAxisLabel != undefined && JSON.stringify(echart_div_layout.xAxisLabel) != '{}') {
-                                    this.xAxisLabel = echart_div_layout.xAxisLabel;
-                                }
-                                //轴线配置--y轴
-                                if (echart_div_layout.yAxisInfo != '' && echart_div_layout.yAxisInfo != undefined && JSON.stringify(echart_div_layout.yAxisInfo) != '{}') {
-                                    this.yAxis = echart_div_layout.yAxisInfo[0];
-                                }
-                                //y轴(yAxisLine)
-                                if (echart_div_layout.yAxisLine != '' && echart_div_layout.yAxisLine != undefined && JSON.stringify(echart_div_layout.yAxisLine) != '{}') {
-                                    this.yAxisLine = echart_div_layout.yAxisLine;
-                                }
-                                //y轴(yAxisLabel)
-                                if (echart_div_layout.yAxisLabel != '' && echart_div_layout.yAxisLabel != undefined && JSON.stringify(echart_div_layout.yAxisLabel) != '{}') {
-                                    this.yAxisLabel = echart_div_layout.yAxisLabel;
-                                }
-                                //二维表
-                                if (echart_div_layout.twoDimensionalTable != '' && echart_div_layout.twoDimensionalTable != undefined && JSON.stringify(echart_div_layout.twoDimensionalTable) != '{}') {
-                                    var tableStyle = echart_div_layout.twoDimensionalTable
-                                    this.tabStyle.th_background = tableStyle.th_background;
-                                    this.tabStyle.is_gridline = tableStyle.is_gridline;
-                                    this.tabStyle.is_zebraline = tableStyle.is_zebraline;
-                                    this.tabStyle.zl_background = tableStyle.zl_background;
-                                }
-                                //图表配置
-                                if (echart_div_layout.chartsconfig != '' && echart_div_layout.chartsconfig != undefined && JSON.stringify(echart_div_layout.chartsconfig) != '{}') {
-                                    this.seriesStyle = echart_div_layout.chartsconfig;
-                                }
-                                //文本标签
-                                if (echart_div_layout.textLabel != '' && echart_div_layout.textLabel != undefined && JSON.stringify(echart_div_layout.textLabel) != '{}') {
-                                    this.echartsLabel = echart_div_layout.textLabel;
-                                }
-                                //图例设置
-                                if (echart_div_layout.legendInfo != '' && echart_div_layout.legendInfo != undefined && JSON.stringify(echart_div_layout.legendInfo) != '{}') {
-                                    this.legendStyle = echart_div_layout.legendInfo;
-                                }
-                            }
-                        }
+                        var echart_layout=  this.getEchartProperties(id);
                         var tmp_component_name = "";
                         var tmp_component_background = "";
                         for (var k = 0; k < this.selectRow.length; k++) {
@@ -1500,58 +1404,17 @@
                                 tmp_component_background = this.selectRow[k].background;
                             }
                         }
-                        var Chart = echarts.init(document.getElementById(id));
-                        var mydeltool = this.initMyDelTool(echart_div_layout, Chart, id);
-                        var result = this.initProperty();
-                        if (type == "line") {// 折线图
-                            var option = drawLine.drawLine(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "bar") {// 柱状图
-                            var option = drawBarChart.drawBarChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {// 饼图、环形饼图、发散饼图
-                            var option = drawPieChart.drawPieChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "stackingbar") { //堆叠柱状图
-                            var option = drawStackingBarChart.drawStackingBarChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "polarbar") {// 极坐标柱状图
-                            var option = drawPolarBarChart.drawPolarBarChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "bl") {// 柱状折线混合图
-                            var option = drawBlChart.drawBlChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                       } else if (type == "blsimple") {// 柱状折线混合图-简单
-                            var option = drawBlSimpleChart.drawBlSimpleChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                            } else if (type == "scatter") {// 散点图
-                            var option = drawScatterChart.drawScatterChart(result,echartdata);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "treemap") {// 矩形树图
-                            var option = drawTreeMapChart.drawTreeMapChart(result,echartdata,this.echartsLabel, this.auto_comp_sum);
-                            this.setChartOption(Chart,option,this.global_component_id_array,mydeltool);
-                        } else if (type == "map") {// 地图
-                           //定义全国省份的数组
-                            var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
-                                'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
-                                'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang',
-                                'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing',
-                                'xianggang', 'aomen', 'taiwan'
-                            ];
-                            var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江',
-                                '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
-                                '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
-                            ];
-                            for (var l = 0; l < provincesText.length; l++) {
-                                if (this.seriesStyle.provincename == provincesText[l]) {
-                                    //显示对应省份的方法
-                                    this.showProvince(provinces[l], provincesText[l])
-                                    break;
-                                }
+                        var chart = echarts.init(document.getElementById(id));
+                        var mydeltool = this.initMyDelTool(echart_layout, chart, id);
+                        // 根据图例类型获取option
+                        var option = this.getOption(type,echartdata);
+                        if (type!='card' && type !='table') {
+                            if (this.show_header || this.show_footer) {
+                                option = generatepic.improveoption(option,this.tcolor,this.lcolor)
                             }
-                            var option = drawMapChart.drawMapChart(result, echartdata, this.seriesStyle);
-                            this.setOption(option);
-                        } else if (type == "card") {// 卡片
+                            this.setChartOption(chart,option,this.global_component_id_array,mydeltool);
+                        }
+                        if (type == "card") {// 卡片
                             var cardname = "background:" + this.titleFont.backgroundColor + ";color:" + this.titleFont.color + ";font-family:" + this.titleFont.fontFamily;
                             cardname += ";font-style:" + this.titleFont.fontStyle + ";font-weight:" + this.titleFont.fontWeight;
                             cardname += ";font-size:" + this.titleFont.fontSize + "px;line-height:" + this.titleFont.lineHeight + "px;text-align:center;padding-left:15px";
@@ -1573,7 +1436,7 @@
                             if (this.is_del) {
                                 var imagevueobj = new commonDelProFile({
                                     propsData: {
-                                        echart_div_layout:echart_div_layout,
+                                        echart_layout:echart_layout,
                                         layout: this.layout,
                                         chart_obj_array:this.chart_obj_array,
                                         global_component_array:this.global_component_array,
@@ -1588,7 +1451,8 @@
                             obj.layouttype = type;
                             obj.id = id;
                             obj.cardtext = echartdata.cardData;
-                        } else if (type == "table") {// 二维表
+                        }
+                        if (type == "table") {// 二维表
                             this.tableData = echartdata.tableData;
                             this.tableDataLength = this.tableData.length;
                             var backgroundstyle = "";
@@ -1601,7 +1465,7 @@
                             if (this.is_del) {
                                 var imagevueobj = new commonDelProFile({
                                     propsData: {
-                                        echart_div_layout: echart_div_layout,
+                                        echart_layout: echart_layout,
                                         layout_id: id,
                                         delpng: this.delpng,
                                         layout: this.layout,
@@ -1652,6 +1516,110 @@
                 this.chart_obj_array = chart_obj_array;
                 this.confirmBackgroudColor();
             },
+            getEchartProperties(id){
+                for (var j = 0; j < this.layout.length; j++) {
+                    if (id == this.layout[j].type) {
+                        var echart_layout = this.layout[j];
+                        //标题设置
+                        if (echart_layout.titleFontInfo != '' && echart_layout.titleFontInfo != undefined && JSON.stringify(echart_layout.titleFontInfo) != '{}') {
+                            this.titleFont = echart_layout.titleFontInfo;
+                        }
+                        //轴线字体
+                        if (echart_layout.axisFontInfo != '' && echart_layout.axisFontInfo != undefined && JSON.stringify(echart_layout.axisFontInfo) != '{}') {
+                            this.axisStyle = echart_layout.axisFontInfo;
+                        }
+                        //轴线配置--x轴(xAxis)
+                        if (echart_layout.xAxisInfo != '' && echart_layout.xAxisInfo != undefined && JSON.stringify(echart_layout.xAxisInfo) != '{}') {
+                            this.xAxis = echart_layout.xAxisInfo[0];
+                        }
+                        //x轴(xAxisLine)
+                        if (echart_layout.xAxisLine != '' && echart_layout.xAxisLine != undefined && JSON.stringify(echart_layout.xAxisLine) != '{}') {
+                            this.xAxisLine = echart_layout.xAxisLine;
+                        }
+                        //x轴(xAxisLabel)
+                        if (echart_layout.xAxisLabel != '' && echart_layout.xAxisLabel != undefined && JSON.stringify(echart_layout.xAxisLabel) != '{}') {
+                            this.xAxisLabel = echart_layout.xAxisLabel;
+                        }
+                        //轴线配置--y轴
+                        if (echart_layout.yAxisInfo != '' && echart_layout.yAxisInfo != undefined && JSON.stringify(echart_layout.yAxisInfo) != '{}') {
+                            this.yAxis = echart_layout.yAxisInfo[0];
+                        }
+                        //y轴(yAxisLine)
+                        if (echart_layout.yAxisLine != '' && echart_layout.yAxisLine != undefined && JSON.stringify(echart_layout.yAxisLine) != '{}') {
+                            this.yAxisLine = echart_layout.yAxisLine;
+                        }
+                        //y轴(yAxisLabel)
+                        if (echart_layout.yAxisLabel != '' && echart_layout.yAxisLabel != undefined && JSON.stringify(echart_layout.yAxisLabel) != '{}') {
+                            this.yAxisLabel = echart_layout.yAxisLabel;
+                        }
+                        //二维表
+                        if (echart_layout.twoDimensionalTable != '' && echart_layout.twoDimensionalTable != undefined && JSON.stringify(echart_layout.twoDimensionalTable) != '{}') {
+                            var tableStyle = echart_layout.twoDimensionalTable
+                            this.tabStyle.th_background = tableStyle.th_background;
+                            this.tabStyle.is_gridline = tableStyle.is_gridline;
+                            this.tabStyle.is_zebraline = tableStyle.is_zebraline;
+                            this.tabStyle.zl_background = tableStyle.zl_background;
+                        }
+                        //图表配置
+                        if (echart_layout.chartsconfig != '' && echart_layout.chartsconfig != undefined && JSON.stringify(echart_layout.chartsconfig) != '{}') {
+                            this.seriesStyle = echart_layout.chartsconfig;
+                        }
+                        //文本标签
+                        if (echart_layout.textLabel != '' && echart_layout.textLabel != undefined && JSON.stringify(echart_layout.textLabel) != '{}') {
+                            this.echartsLabel = echart_layout.textLabel;
+                        }
+                        //图例设置
+                        if (echart_layout.legendInfo != '' && echart_layout.legendInfo != undefined && JSON.stringify(echart_layout.legendInfo) != '{}') {
+                            this.legendStyle = echart_layout.legendInfo;
+                        }
+                    }
+                }
+            },
+            // 根据图例类型获取option
+            getOption(type,echartdata){
+                var result = this.initProperty();
+                var option;
+                if (type == "line") {// 折线图
+                    option = drawLine.drawLine(result,echartdata);
+                } else if (type == "bar") {// 柱状图
+                    option = drawBarChart.drawBarChart(result,echartdata);
+                } else if (type == "pie" || type == "huanpie" || type == "fasanpie") {// 饼图、环形饼图、发散饼图
+                    option = drawPieChart.drawPieChart(result,echartdata);
+                } else if (type == "stackingbar") { //堆叠柱状图
+                    option = drawStackingBarChart.drawStackingBarChart(result,echartdata);
+                } else if (type == "polarbar") {// 极坐标柱状图
+                    option = drawPolarBarChart.drawPolarBarChart(result,echartdata);
+                } else if (type == "bl") {// 柱状折线混合图
+                    option = drawBlChart.drawBlChart(result,echartdata);
+                } else if (type == "blsimple") {// 柱状折线混合图-简单
+                    option = drawBlSimpleChart.drawBlSimpleChart(result,echartdata);
+                } else if (type == "scatter") {// 散点图
+                    option = drawScatterChart.drawScatterChart(result,echartdata);
+                } else if (type == "treemap") {// 矩形树图
+                    option = drawTreeMapChart.drawTreeMapChart(result,echartdata,this.echartsLabel, this.auto_comp_sum);
+                } else if (type == "map") {// 地图
+                    //定义全国省份的数组
+                    var provinces = ['shanghai', 'hebei', 'shanxi', 'neimenggu', 'liaoning', 'jilin',
+                        'heilongjiang', 'jiangsu', 'zhejiang', 'anhui', 'fujian', 'jiangxi', 'shandong', 'henan',
+                        'hubei', 'hunan', 'guangdong', 'guangxi', 'hainan', 'sichuan', 'guizhou', 'yunnan', 'xizang',
+                        'shanxi1', 'gansu', 'qinghai', 'ningxia', 'xinjiang', 'beijing', 'tianjin', 'chongqing',
+                        'xianggang', 'aomen', 'taiwan'
+                    ];
+                    var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江',
+                        '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
+                        '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
+                    ];
+                    for (var l = 0; l < provincesText.length; l++) {
+                        if (this.seriesStyle.provincename == provincesText[l]) {
+                            //显示对应省份的方法
+                            this.showProvince(provinces[l], provincesText[l])
+                            break;
+                        }
+                    }
+                    option = drawMapChart.drawMapChart(result,echartdata,this.seriesStyle);
+                }
+                return option;
+            },
             //找出新增前后不同的组件
             array_diff(layout, layoutId_array) {
                 var result = [];
@@ -1694,7 +1662,8 @@
                 result.background = this.auto_comp_sum.background
                 return result;
             },
-            initMyDelTool(echart_div_layout, TypeChart, id) {
+            // 初始化删除组件
+            initMyDelTool(echart_layout, TypeChart, id) {
                 var is_del = this.is_del;
                 var layout = this.layout;
                 var chart_obj_array = this.chart_obj_array;
@@ -1707,9 +1676,9 @@
                     icon: "image://" + require("@/assets/images/del.png"),
                     onclick() {
                         if (is_del) {
-                            layout.splice(layout.indexOf(echart_div_layout), 1);
+                            layout.splice(layout.indexOf(echart_layout), 1);
                             global_component_array.layout = layout;
-                            delete global_component_array[echart_div_layout.type];
+                            delete global_component_array[echart_layout.type];
                             for (var i = 0; i < layout.length; i++) {
                                 if (layout[i].label == undefined) {
                                     global_component_id_array.push(layout[i].type);
@@ -1726,6 +1695,7 @@
                 }
                 return mydeltool;
             },
+            // 公共数据项
             setChartOption(chart,option,global_component_id_array,mydeltool){
                 option.toolbox.feature.mydeltool = mydeltool;
                 if (global_component_id_array.length > 0) {
@@ -1833,17 +1803,17 @@
     })
     //卡片仪表盘删除按钮
     var commonDelProFile = Vue.extend({
-        template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(layout,echart_div_layout,layout_id)'>",
+        template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(layout,echart_layout,layout_id)'>",
         data: function () {
             return {}
         },
-        props: ['echart_div_layout', 'layout','chart_obj_array','global_component_array','layout_id','selectRow','delpng'],
+        props: ['echart_layout', 'layout','chart_obj_array','global_component_array','layout_id','selectRow','delpng'],
         methods: {
-            delcard(layout, echart_div_layout, layout_id) {
-                this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
+            delcard(layout, echart_layout, layout_id) {
+                this.layout.splice(this.layout.indexOf(echart_layout), 1);
                 this.global_component_array.layout = this.layout;
                 for (var i = 0; i < this.chart_obj_array.length; i++) {
-                    if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                    if (echart_layout.type == this.chart_obj_array[i].id) {
                         this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                     }
                 }
@@ -1855,23 +1825,23 @@
             },
         }
     })
-    //分割线删除按钮
+    //分割线或文本标签删除按钮
     var lineOrLabelDelProfile = Vue.extend({
-        template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(layout, echart_div_layout, auto_info, auto_info_array,line_or_label_layout,textarray,type)'>",
+        template: "<img :src='delpng' style='width:15px;height:15px;cursor:pointer;position:absolute;right:1px;z-index:999;' class='pull-right' @click='delcard(layout, echart_layout, auto_info, auto_info_array,line_or_label_layout,textarray,type)'>",
         data: function () {
             return {}
         },
-        props: ['echart_div_layout','line_or_label_layout','layout','auto_info', 'auto_info_array', 'textarray','chart_obj_array','global_component_array', 'delpng','type'],
+        props: ['echart_layout','line_or_label_layout','layout','auto_info', 'auto_info_array', 'textarray','chart_obj_array','global_component_array', 'delpng','type'],
         methods: {
-            delcard(layout, echart_div_layout, auto_info, auto_info_array,line_or_label_layout,textarray,type) {
+            delcard(layout, echart_layout, auto_info, auto_info_array,line_or_label_layout,textarray,type) {
                 auto_info_array.splice(auto_info_array.indexOf(auto_info), 1);
-                this.layout.splice(this.layout.indexOf(echart_div_layout), 1);
+                this.layout.splice(this.layout.indexOf(echart_layout), 1);
                 this.global_component_array.layout = this.layout;
                 if (line_or_label_layout.length!=0) {
-                    line_or_lable_layout.splice(line_or_lable_layout.indexOf(echart_div_layout), 1);
+                    line_or_lable_layout.splice(line_or_lable_layout.indexOf(echart_layout), 1);
                 }
                 for (var i = 0; i < this.chart_obj_array.length; i++) {
-                    if (echart_div_layout.type == this.chart_obj_array[i].id) {
+                    if (echart_layout.type == this.chart_obj_array[i].id) {
                         this.chart_obj_array.splice(this.chart_obj_array.indexOf(this.chart_obj_array[i]), 1);
                         textarray.splice(textarray.indexOf(this.chart_obj_array[i]), 1);
                     }
@@ -1891,6 +1861,12 @@
 </script>
 <style scoped>
     @import '/static/src/panal/css/bootstrap.min.css';
+    @import './css/tpl1.css';
+    @import './css/tpl2.css';
+    @import './css/tpl3.css';
+    @import './css/tpl4.css';
+    @import './css/tpl5.css';
+    @import './css/tpl6.css';
 
     .el-input {
         width: 360px;
