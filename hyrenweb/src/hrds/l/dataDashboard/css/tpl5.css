@@ -1,0 +1,22 @@
+@charset "utf-8";
+
+/* global */
+* {margin:0;padding:0;box-sizing:border-box;}
+.tpl05 {
+	width:100%;
+	height:100%;
+	position:relative;
+	font-family:"Microsoft Yahei", Arial, sans-serif;
+	background:#030C3B url("../../../../assets/images/tpl5/bg.png") ;
+	overflow:hidden;
+}
+
+/* layout */
+.header05 {
+	position:relative;
+	height:72px;
+	background:#030C3B url("../../../../assets/images/tpl5/header.png") 0 0 / 100% 100% no-repeat;
+	overflow:hidden;
+}
+.header-title {line-height:64px;text-align:center;font-size:32px;font-weight:400;color:#fff;}
+.header-date {position:absolute;top:32px;font-size:18px;color:#73aae5;right:20px;}

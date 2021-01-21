@@ -138,8 +138,6 @@
                         continue;
                     }
                     var option = await this.init(component_id_list[j]);
-                    // var option = await this.init3();
-                    console.log(JSON.stringify(option));
                     const Chart = echarts.init(document.getElementById("Chart" + i), "shine");
                     Chart.setOption(option);
                     window.addEventListener('resize', () => {
@@ -685,5 +683,5 @@
     }
 </script>
 <style scoped>
-    @import './css/largeScreenDisplay_1.css';
+    @import './css/tpl1.css';
 </style>

@@ -138,4 +138,38 @@ export function initLengendStyle(legendStyle,result) {
     result.legendStyle =  legendStyle;
 }
 
+export function improveoption(option,tcolor,lcolor) {
+    option.title.backgroundColor = "transparent";
+    option.legend.backgroundColor = "transparent";
+    option.legend.textStyle.color = "#b0c2f9";
+    option.title.textStyle.color = "#3f44ff";
+    if (option.xAxis != undefined) {
+        if (option.xAxis instanceof Array) {
+            for (var i = 0; i < option.xAxis.length; i++) {
+                option.xAxis[i].nameTextStyle.color = tcolor;// 控制坐标轴x轴字体颜色
+                option.xAxis[i].nameTextStyle.backgroundColor = "transparent";
+                option.xAxis[i].axisLine.lineStyle.color = lcolor;// 控制坐标轴数字颜色
+            }
+        } else {
+            option.xAxis.nameTextStyle.color = tcolor;
+            option.xAxis.nameTextStyle.backgroundColor = "transparent";
+            option.xAxis.axisLine.lineStyle.color = lcolor;
+        }
+    }
+    if (option.yAxis != undefined) {
+        if (option.yAxis instanceof Array) {
+            for (var i = 0; i < option.yAxis.length; i++) {
+                option.yAxis[i].nameTextStyle.color = tcolor;
+                option.yAxis[i].nameTextStyle.backgroundColor = "transparent";
+                option.yAxis[i].axisLine.lineStyle.color = lcolor;
+            }
+        } else {
+            option.yAxis.nameTextStyle.color = tcolor;// 控制坐标轴y轴字体颜色
+            option.yAxis.nameTextStyle.backgroundColor = "transparent";
+            option.yAxis.axisLine.lineStyle.color = lcolor;// 控制坐标轴数字颜色
+        }
+    }
+    return option;
+}
+
 
