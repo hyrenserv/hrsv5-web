@@ -416,14 +416,7 @@ import { Chart } from 'highcharts';
                         "tcolor": "#3f44ff",
                         "lcolor": "#b0c2f9",
                         "picurl": require("@/assets/images/tpl5/thumb.jpg")
-                    },
-                    {
-                        "code": "06",
-                        "CN_type": "地图",
-                        "tcolor": "#3f44ff",
-                        "lcolor": "#b0c2f9",
-                        "picurl": require("@/assets/images/tpl6/thumb.jpg")
-                    },
+                    }
                 ],
                 grid_layout_backgroundcolor: "background-color:transparent;",// 背景色
                 chart_obj_array: [],
@@ -1081,9 +1074,6 @@ import { Chart } from 'highcharts';
                     this.show_footer = false;
                     this.wrapper_show = true;
                 } else if (data.code=='05') {
-                    this.show_header = true;
-                    this.show_footer = false;
-                } else if (data.code=='06') {
                     this.show_header = true;
                     this.show_footer = false;
                 }
@@ -1932,8 +1922,6 @@ import { Chart } from 'highcharts';
     @import './css/tpl3.css';
     @import './css/tpl4.css';
     @import './css/tpl5.css';
-    @import './css/tpl6.css';
-
     .el-input {
         width: 360px;
     }
