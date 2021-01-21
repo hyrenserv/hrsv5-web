@@ -18,8 +18,8 @@
 	background:url("../../../../assets/images/tpl1/header.png") 0 0 / 100% 100% no-repeat;
 	overflow:hidden;
 }
-.header-title01 {line-height:64px;text-align:center;font-size:32px;font-weight:400;color:#fff;}
-.header-date01 {position:absolute;top:32px;font-size:18px;color:#73aae5;}
+.header-title {line-height:64px;text-align:center;font-size:32px;font-weight:400;color:#fff;}
+.header-date {position:absolute;top:32px;font-size:18px;color:#73aae5;}
 .footer01 {
 	position:absolute;
 	bottom:0;

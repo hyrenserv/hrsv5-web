@@ -3,6 +3,11 @@ export function drawPieChart(result, data) {
     //https://echarts.apache.org/examples/zh/editor.html?c=pie-rich-text
     data.seriesArray.forEach(val => {
         val.label = result.labelOption;
+        val.labelLine={  
+            normal:{  
+                length:1
+            }  
+        }
     })
     var option = {
         backgroundColor: result.background,
@@ -15,7 +20,8 @@ export function drawPieChart(result, data) {
         },
         tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+            formatter: "{a} <br/>{b} : {c} ({d}%)",
+            confine:true
         },
         legend: Object.assign({}, result.legendStyle, {
             data: data.legendData

@@ -28,7 +28,7 @@
             <div v-show="picshow" id="mydiv">
                 <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
                              :class="[is_gridline?'grid':'titleClass']" id="grid_style"
-                             style="height: 2000px;" :col-num="110" :row-height="11" :layout.sync="layout"
+                             style="height: 800px;" :col-num="110" :row-height="11" :layout.sync="layout"
                              :isDraggable="is_del" :autoSize="true"
                              :isResizable="is_del" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]"
                              :use-css-transforms="true">
@@ -36,6 +36,54 @@
                         <h3 class="header-title">{{auto_dashboard_info.dashboard_name}}</h3>
                         <div class="header-date">日期：{{today}}<span id="nowDate"></span></div>
                     </header>
+                    <div class="wrapper" v-if="wrapper_show">
+                        <div class="container-fluid">
+                            <div class="row fill-h">
+                                <div class="col-lg-3 fill-h">
+                                    <div class="xpanel-wrapper xpanel-wrapper-2">
+                                        <div class="xpanel">
+                                            <!-- 地图飞线 -->
+                                            <div class="fill-h" id="flyMap"></div>
+                                        </div>
+                                    </div>
+                                    <div class="xpanel-wrapper xpanel-wrapper-2">
+                                        <div class="xpanel">
+                                            <!-- 世界地图 -->
+                                            <div class="fill-h" id="worldMap"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 fill-h">
+                                    <div class="xpanel-wrapper xpanel-wrapper-1">
+                                        <div class="xpanel">
+                                            <!-- 地图散点 -->
+                                            <div class="fill-h" id="scatterMap"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 fill-h">
+                                    <div class="xpanel-wrapper xpanel-wrapper-3">
+                                        <div class="xpanel">
+                                            <!-- 省份地图 -->
+                                            <div class="fill-h" id="provinceMap"></div>
+                                        </div>
+                                    </div>
+                                    <div class="xpanel-wrapper xpanel-wrapper-3">
+                                        <div class="xpanel">
+                                            <!-- 城市地图 -->
+                                            <div class="fill-h" id="cityMap"></div>
+                                        </div>
+                                    </div>
+                                    <div class="xpanel-wrapper xpanel-wrapper-3">
+                                        <div class="xpanel">
+                                            <!-- 区县地图 -->
+                                            <div class="fill-h" id="countyMap"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <footer :class="footer" v-if="show_footer"></footer>
                     <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout"
                                :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i"
@@ -596,6 +644,7 @@ import { Chart } from 'highcharts';
                 titleClass:'grid',//主题样式
                 show_footer:false,// 显示底部样式
                 show_header:false,// 显示头部样式
+                wrapper_show:false,
                 footer:'',
                 header:'',
                 today:''
@@ -1013,6 +1062,7 @@ import { Chart } from 'highcharts';
                 this.footer="footer"+data.code;
                 this.header="header"+data.code
                 this.titleClass="tpl"+data.code;
+                this.wrapper_show = false;
                 if (data.code=='00') {
                     this.titleClass="grid";
                     this.show_footer = false;
@@ -1027,8 +1077,9 @@ import { Chart } from 'highcharts';
                     this.show_header = true;
                     this.show_footer = false;
                 } else if (data.code=='04') {
-                    this.show_header = false;
+                    this.show_header = true;
                     this.show_footer = false;
+                    this.wrapper_show = true;
                 } else if (data.code=='05') {
                     this.show_header = true;
                     this.show_footer = false;
@@ -1728,7 +1779,22 @@ import { Chart } from 'highcharts';
             },
             // 展示省
             showProvince(pName, Chinese_) {
-                loadBdScript('$' + pName + 'JS', '../../../js/province/' + pName + '.js');
+                this.loadBdScript('$' + pName + 'JS', '../province/' + pName + '.js');
+            },
+            //加载对应的JS
+            loadBdScript(scriptId, url) {
+                var script = document.createElement("script")
+                script.type = "text/javascript";
+                if (script.readyState){
+                    script.onreadystatechange = function(){
+                        if (script.readyState == "loaded" || script.readyState == "complete"){
+                            script.onreadystatechange = null;
+                        }
+                    };
+                }
+                script.src = url;
+                script.id = scriptId;
+                document.getElementsByTagName("head")[0].appendChild(script);
             },
             //表数据实现分页功能
             handleCurrentChangeList(currPage) {

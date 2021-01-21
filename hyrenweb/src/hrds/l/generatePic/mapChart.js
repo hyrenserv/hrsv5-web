@@ -56,7 +56,7 @@ export function drawMapChart(result,data,seriesStyle) {
         },
         series: [{
             type: 'map',
-            mapType: pName,
+            map: pName,
             selectedMode: 'multiple',
             label: result.labelOption,
             roam: true,

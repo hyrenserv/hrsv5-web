@@ -1086,7 +1086,6 @@
     </div>
 </template>
 
-<script src="/static/src/panal/js/relation/bubbleUtil.js"></script>
 <script>
     import * as functionAll from "./selfAcess";
     import draggable from 'vuedraggable';
@@ -1185,7 +1184,7 @@
                 inputvalueOptions1: '',
                 markCodeOptionsValue: '',
                 canChangeFiflter: true,
-                showNum: 100,
+                showNum: null,
                 optionsWordsbuttons: true,
                 dynamicColumnTables: [],
                 isDataShow: false,
@@ -2625,6 +2624,7 @@
                         x_columns: xColumns,
                         y_columns: yColumns,
                         chart_type: type,
+                        showNum:this.showNum
                     }).then(res => {
                         if (res && res.success) {
                             if (type == 'line') { //折线图
@@ -2744,7 +2744,22 @@
             },
             // 展示省
             showProvince(pName, Chinese_) {
-                loadBdScript('$' + pName + 'JS', '../../../js/province/' + pName + '.js');
+                this.loadBdScript('$' + pName + 'JS', '../province/' + pName + '.js');
+            },
+            //加载对应的JS
+            loadBdScript(scriptId, url) {
+                var script = document.createElement("script")
+                script.type = "text/javascript";
+                if (script.readyState){
+                    script.onreadystatechange = function(){
+                        if (script.readyState == "loaded" || script.readyState == "complete"){
+                            script.onreadystatechange = null;
+                        }
+                    };
+                }
+                script.src = url;
+                script.id = scriptId;
+                document.getElementsByTagName("head")[0].appendChild(script);
             },
             changeTips(type) {
                 if (type == 'line') { // 折线图
@@ -2787,9 +2802,8 @@
             //初始化echart
             drawPic(option) {
                 this.myChart = echarts.init(document.getElementById('myChart'));
-                var myChart = this.myChart;
-                myChart.clear();
-                myChart.setOption(option, true)
+                this.myChart.clear();
+                this.myChart.setOption(option, true)
             },
             // 卡片
             changeToCard() {
