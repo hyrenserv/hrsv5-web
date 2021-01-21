@@ -15,7 +15,10 @@
         <el-table-column prop="category_same" label="分类" sortable width="150"></el-table-column>
         <el-table-column align="right">
             <template slot="header" slot-scope="scope" >
-                <el-input v-model="table_code" size="mini" @keyup.enter.native="fitterTableData()" placeholder="输入表名称搜索" />
+                <el-tooltip placement="top">
+                    <div slot="content">搜索条件格式为:key=value<br/>例如:name=S10_I_USER或者class=5<br/>不写key默认为表名称搜索</div>
+                    <el-input v-model="table_code" size="mini" @keyup.enter.native="fitterTableData()" placeholder="输入表名称或分类搜索"/>
+                </el-tooltip>
             </template>
         </el-table-column>
     </el-table>

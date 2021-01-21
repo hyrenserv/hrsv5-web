@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import NeoVis from '../../../utils/js/neovis.js';
+import NeoVis from 'neovis.js';
 export default {
     components: {
         NeoVis,
