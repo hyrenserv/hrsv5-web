@@ -23,11 +23,11 @@
         </el-table-column>
         <el-table-column label="操作" align='left' width="160">
             <template slot-scope="scope">
-                <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑
+                <el-button size="mini" type="text" class="editcolor" @click="handleEdit(scope.$index, scope.row)">编辑
                 </el-button>
-                <el-button size="mini" type="text" @click="vieSql(scope.$index, scope.row)">查看sql
+                <el-button size="mini" type="text" class="sendcolor" @click="vieSql(scope.$index, scope.row)">查看sql
                 </el-button>
-                <el-button size="mini" class="endAgent" type="text" @click="deleteVisualComponent(scope.row)">删除
+                <el-button size="mini" class="delcolor" type="text" @click="deleteVisualComponent(scope.row)">删除
                 </el-button>
             </template>
         </el-table-column>
