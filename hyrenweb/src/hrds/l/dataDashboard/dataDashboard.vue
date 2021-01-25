@@ -1715,6 +1715,7 @@ import { Chart } from 'highcharts';
                     show: true,
                     title: "删除",
                     icon: "image://" + require("@/assets/images/del.png"),
+                    color:"#3f44ff",
                     onclick() {
                         if (is_del) {
                             layout.splice(layout.indexOf(echart_layout), 1);
