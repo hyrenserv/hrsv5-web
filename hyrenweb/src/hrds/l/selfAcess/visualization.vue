@@ -794,7 +794,7 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <div class="divStyle">
+                                <div class="divStyle" v-show="value !='map'">
                                     <span class="el-input-group__prepends">是否显示提示</span>
                                     <el-select v-model="legendStyle.tooltip" placeholder="请选择" size="small"
                                                class="selectPosition">
@@ -827,12 +827,12 @@
                                               class="selectPosition">
                                     </el-input>
                                 </div>
-                                <div class="divStyle" v-show="value !='map'">
+                                <div class="divStyle">
                                     <span class="el-input-group__prepends">图例个数</span>
                                     <el-input class="selectPosition" placeholder="图例个数"
                                               v-model="legendStyle.intervalnumber"/>
                                 </div>
-                                <div class="divStyle" v-show="value !='map'">
+                                <div class="divStyle">
                                     <span class="el-input-group__prepends">图例容量</span>
                                     <el-input class="selectPosition" placeholder="图例容量" size="small" v-model="legendStyle.interval"/>
                                 </div>
@@ -1097,8 +1097,7 @@
     import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
     import * as drawTreeMapChart from "../generatePic/treeMapChart";
     import * as drawMapChart from "../generatePic/mapChart";
-
-    require('echarts/dist/extension/dataTool.js');
+    import * as sh from "../province/shanghai";
     export default {
         components: {
             draggable
@@ -1195,7 +1194,7 @@
                 // 常规设置
                 echartsLabel: {
                     show_label: '1', //是否显示文本标签
-                    position: "top", //标签位置
+                    position: "outside", //标签位置
                     formatter: "{b}", //格式化文本标签
                     show_line: '1', //是否显示文本标签引导线
                     smooth: '0', //是否平滑视觉引导线
@@ -2723,12 +2722,12 @@
                                 for (var l = 0; l < provincesText.length; l++) {
                                     if (this.seriesStyle.provincename == provincesText[l]) {
                                         //显示对应省份的方法
-                                        this.showProvince(provinces[l], provincesText[l])
+                                        this.showProvince(provinces[l])
                                         break;
                                     }
                                 }
                                 var result = this.initproperty();
-                                var option = drawMapChart.drawMapChart(result, res.data, this.seriesStyle);
+                                var option = drawMapChart.drawMapChart(result, res.data ,this.seriesStyle);
                                 this.drawPic(option);
                             }
                         }
@@ -2736,22 +2735,11 @@
                 }
             },
             // 展示省
-            showProvince(pName, Chinese_) {
-                this.loadBdScript('$' + pName + 'JS', '../province/' + pName + '.js');
-            },
-            //加载对应的JS
-            loadBdScript(scriptId, url) {
+            showProvince(pName) {
                 var script = document.createElement("script")
                 script.type = "text/javascript";
-                if (script.readyState){
-                    script.onreadystatechange = function(){
-                        if (script.readyState == "loaded" || script.readyState == "complete"){
-                            script.onreadystatechange = null;
-                        }
-                    };
-                }
-                script.src = url;
-                script.id = scriptId;
+                script.src = '/node_modules/echarts/map/js/province/'+pName+'.js';
+                script.id = '$'+pName+'JS';
                 document.getElementsByTagName("head")[0].appendChild(script);
             },
             changeTips(type) {
