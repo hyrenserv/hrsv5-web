@@ -24,10 +24,18 @@ export function initTitleStyle(text, titleFont, result) {
 export function initLabelOption(echartsLabel, result) {
     //设置标题属性
     var labelOption = {
-        normal: {
-            show: echartsLabel.show_label == '1' ? true : false,
-            position: echartsLabel.position,
-            formatter: echartsLabel.formatter
+        label:{
+            normal: {
+                show: echartsLabel.show_label == '1' ? true : false,
+                position: echartsLabel.position,
+                formatter: echartsLabel.formatter
+            }
+        },
+        labelLine:{
+            normal: {
+                show: echartsLabel.show_line == '1' ? true : false,
+                length: 1,
+            }
         }
     }
     result.labelOption = labelOption

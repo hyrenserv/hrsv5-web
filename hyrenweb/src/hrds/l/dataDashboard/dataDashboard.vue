@@ -311,7 +311,7 @@
     import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
     import * as drawTreeMapChart from "../generatePic/treeMapChart";
     import * as drawMapChart from "../generatePic/mapChart";
-import { Chart } from 'highcharts';
+    import { Chart } from 'highcharts';
     export default {
         components: {
             GridLayout: VueGridLayout.GridLayout,
@@ -332,19 +332,9 @@ import { Chart } from 'highcharts';
                 dialogTextLabelVisible: false,
                 layout: [],
                 echartdata: [],
-                bubbleIds: [],
-                bubble_echartdatas: [],
-                echart_layouts: [],
-                // 组件名称
-                tmp_component_names: [],
-                myCharts: [],
-                barmdIds: [],
-                barmd_echartdatas: [],
                 cardstyle: "",
                 cardname: "",
                 bcolor: "",
-                tcolr:"",
-                lcolr:"",
                 // 组件汇总表集合信息
                 auto_comp_sum_array: [],
                 //组件汇总表
@@ -370,7 +360,6 @@ import { Chart } from 'highcharts';
                     is_gridline: '0'
                 },
                 picshow: false,
-                echartThemeJson: require("@/assets/json/EchartTheme.json"),
                 delpng: require('@/assets/images/del.png'),
                 selectRow: [],
                 //主题设置参数
@@ -1080,32 +1069,6 @@ import { Chart } from 'highcharts';
                 $("#grid_style").addClass(this.titleClass);
                 this.echartpic(this.global_component_array,this.global_component_id_array)
                 this.dialogTitleVisible = false;
-            },
-            //文本标签主题设置
-            textlabeltheme() {
-                if (this.echart_theme != "") {
-                    if (this.echart_theme.depth == "sheng") {
-                        for (var i = 0; i < this.textlabelarray.length; i++) {
-                            this.chart_obj_array.push(this.textlabelarray[i]);
-                            var id = this.textlabelarray[i].id;
-                            $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
-                        }
-                    } else if (this.echart_theme.depth == "qian") {
-                        for (var i = 0; i < this.textlabelarray.length; i++) {
-                            this.chart_obj_array.push(this.textlabelarray[i]);
-                            var id = this.textlabelarray[i].id;
-                            $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
-                        }
-                    }
-                }
-            },
-            //分割线主题设置
-            textlinetheme() {
-                if (this.echart_theme != "") {
-                    for (var i = 0; i < this.textlinearray.length; i++) {
-                        this.chart_obj_array.push(this.textlinearray[i]);
-                    }
-                }
             },
             //添加网格线
             gridLine() {

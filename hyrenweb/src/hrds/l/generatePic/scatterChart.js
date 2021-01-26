@@ -25,7 +25,7 @@ export function drawScatterChart(result, data) {
         }, result.yAxis),
         series: [{
             data: data.scatterData,
-            label: result.labelOption,
+            label: result.labelOption.label,
             type: 'scatter'
         }]
     };

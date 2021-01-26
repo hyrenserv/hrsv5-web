@@ -58,7 +58,7 @@ export function drawMapChart(result,data,seriesStyle) {
             type: 'map',
             map: pName,
             selectedMode: 'multiple',
-            label: result.labelOption,
+            label: result.labelOption.label,
             roam: true,
             data: data.seriesData, //数据
         },]

@@ -2,12 +2,9 @@
 export function drawPieChart(result, data) {
     //https://echarts.apache.org/examples/zh/editor.html?c=pie-rich-text
     data.seriesArray.forEach(val => {
-        val.label = result.labelOption;
-        val.labelLine={  
-            normal:{  
-                length:1
-            }  
-        }
+        val.label = result.labelOption.label;
+        val.labelLine=result.labelOption.labelLine;
+            
     })
     var option = {
         backgroundColor: result.background,

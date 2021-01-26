@@ -2,7 +2,7 @@
 export function  drawLine(result,data) {
     //https://echarts.apache.org/examples/zh/editor.html?c=area-stack
     data.seriesArray.forEach(val => {
-        val.label = result.labelOption;
+        val.label = result.labelOption.label;
     })
     let option = {
         backgroundColor: result.background,
