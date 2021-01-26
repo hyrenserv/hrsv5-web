@@ -847,9 +847,9 @@
                         this.echart_theme = echart_theme_obj;
                         if (code != "00") {
                             //更换卡片，标签，分割线，表格的颜色为组件的主题颜色
-                            setTimeout(() => {
+                            this.$nextTick(() => {
                                 this.chooseTitle(this.echart_theme);
-                            }, 2000)
+                            })
                         }
                         var index = 0;
                         for (var i = 0; i < this.titleData.length; i++) {
@@ -1521,6 +1521,7 @@
                 this.confirmBackgroudColor();
             },
             getEchartProperties(id){
+                var echart_layout="";
                 for (var j = 0; j < this.layout.length; j++) {
                     if (id == this.layout[j].type) {
                         var echart_layout = this.layout[j];
@@ -1578,6 +1579,7 @@
                         }
                     }
                 }
+                return echart_layout;
             },
             // 根据图例类型获取option
             getOption(type,echartdata){
