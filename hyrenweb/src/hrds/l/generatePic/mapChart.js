@@ -1,5 +1,6 @@
 // 地理坐标/地图
 export function drawMapChart(result,data,seriesStyle) {
+    result.labelOption.label.emphasis={show:true}
     var pName = "";
     if (seriesStyle.provincename == "全国") {
         pName = "china";
@@ -47,16 +48,16 @@ export function drawMapChart(result,data,seriesStyle) {
             orient: result.legendStyle.orient,
             align: result.legendStyle.align,
             padding: result.legendStyle.padding,
-            itemGap: result.legendStyle.itemgap,
-            itemWidth: result.legendStyle.itemwidth,
-            itemHeight: result.legendStyle.itemheight,
-            borderColor: result.legendStyle.bordercolor,
-            borderWidth: result.legendStyle.borderwidth,
+            itemGap: result.legendStyle.itemGap,
+            itemWidth: result.legendStyle.itemWidth,
+            itemHeight: result.legendStyle.itemHeight,
+            borderColor: result.legendStyle.borderColor,
+            borderWidth: result.legendStyle.borderWidth,
             splitList: splitList,
         },
         series: [{
             type: 'map',
-            map: pName,
+            mapType: pName,
             selectedMode: 'multiple',
             label: result.labelOption.label,
             roam: true,

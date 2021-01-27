@@ -1097,7 +1097,8 @@
     import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
     import * as drawTreeMapChart from "../generatePic/treeMapChart";
     import * as drawMapChart from "../generatePic/mapChart";
-    import * as sh from "../province/shanghai";
+    // import echarts from 'echarts';
+    require('echarts/map/js/china.js')
     export default {
         components: {
             draggable
@@ -2719,13 +2720,13 @@
                                     '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
                                     '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
                                 ];
-                                for (var l = 0; l < provincesText.length; l++) {
-                                    if (this.seriesStyle.provincename == provincesText[l]) {
-                                        //显示对应省份的方法
-                                        this.showProvince(provinces[l])
-                                        break;
-                                    }
-                                }
+                                // for (var l = 0; l < provincesText.length; l++) {
+                                //     if (this.seriesStyle.provincename == provincesText[l]) {
+                                //         //显示对应省份的方法
+                                //         this.showProvince(provinces[l])
+                                //         break;
+                                //     }
+                                // }
                                 var result = this.initproperty();
                                 var option = drawMapChart.drawMapChart(result, res.data ,this.seriesStyle);
                                 this.drawPic(option);
@@ -2735,13 +2736,13 @@
                 }
             },
             // 展示省
-            showProvince(pName) {
-                var script = document.createElement("script")
-                script.type = "text/javascript";
-                script.src = '/node_modules/echarts/map/js/province/'+pName+'.js';
-                script.id = '$'+pName+'JS';
-                document.getElementsByTagName("head")[0].appendChild(script);
-            },
+            // showProvince(pName) {
+            //     var script = document.createElement("script")
+            //     script.type = "text/javascript";
+            //     script.src = '../../../../node_modules/echarts/map/js/province/'+pName+'.js';
+            //     script.id = '$'+pName+'JS';
+            //     document.getElementsByTagName("head")[0].appendChild(script);
+            // },
             changeTips(type) {
                 if (type == 'line') { // 折线图
                     this.tips = "横轴为1个维度,纵轴接受多个度量";
