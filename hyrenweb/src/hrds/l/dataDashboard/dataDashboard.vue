@@ -1,98 +1,94 @@
 <template>
     <div id='dataDashboard'>
-        <div class="container">
-            <div class="row" id="toubu">
-                <div class="btn-group pull-right">
-                    <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogBackgroundVisible=true">背景色
-                    </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogTitleVisible=true">选择主题
-                    </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="gridLine">网格线
-                    </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogTextLabelVisible=true">添加文本标签
-                    </el-button>
-                    <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
-                               @click="dialogTextLineVisible=true">添加分割线
-                    </el-button>
-                    <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
-                    <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
-                    <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
-                </div>
+        <div class="row" id="toubu">
+            <div class="btn-group pull-right">
+                <el-button size="mini" type="primary" @click="fullScreen">全屏预览</el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                            @click="dialogBackgroundVisible=true">背景色
+                </el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                            @click="dialogTitleVisible=true">选择主题
+                </el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''" @click="gridLine">网格线
+                </el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                            @click="dialogTextLabelVisible=true">添加文本标签
+                </el-button>
+                <el-button size="mini" type="primary" v-if="layout!=undefined&&layout!=''"
+                            @click="dialogTextLineVisible=true">添加分割线
+                </el-button>
+                <el-button size="mini" type="primary" @click="getVisualComponentInfo">添加组件</el-button>
+                <el-button size="mini" type="primary" @click="addDashboardButton">保存仪表板</el-button>
+                <el-button size="mini" type="danger" @click="goIndex">返回上一级</el-button>
             </div>
-            <el-divider/>
-            <!--仪表板展示-->
-            <div v-show="picshow" id="mydiv">
-                <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
-                             :class="[is_gridline?'grid':'titleClass']" id="grid_style"
-                             style="height: 800px;" :col-num="110" :row-height="11" :layout.sync="layout"
-                             :isDraggable="is_del" :autoSize="true"
-                             :isResizable="is_del" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]"
-                             :use-css-transforms="true">
-                    <header :class="header" v-if="show_header">
-                        <h3 class="header-title">{{auto_dashboard_info.dashboard_name}}</h3>
-                        <div class="header-date">日期：{{today}}<span id="nowDate"></span></div>
-                    </header>
-                    <div class="wrapper" v-if="wrapper_show">
-                        <div class="container-fluid">
-                            <div class="row fill-h">
-                                <div class="col-lg-3 fill-h">
-                                    <div class="xpanel-wrapper xpanel-wrapper-2">
-                                        <div class="xpanel">
-                                            <!-- 地图飞线 -->
-                                            <div class="fill-h" id="flyMap"></div>
-                                        </div>
-                                    </div>
-                                    <div class="xpanel-wrapper xpanel-wrapper-2">
-                                        <div class="xpanel">
-                                            <!-- 世界地图 -->
-                                            <div class="fill-h" id="worldMap"></div>
-                                        </div>
+        </div>
+        <el-divider/>
+        <!--仪表板展示-->
+        <div v-show="picshow" id="mydiv">
+            <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
+                            :class="[is_gridline?'grid':'titleClass']" id="grid_style" :col-num="175" :row-height="11" 
+                            :layout.sync="layout" :isDraggable="is_del" :autoSize="true" :use-css-transforms="true"
+                            :isResizable="is_del" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]">
+                <header :class="header" v-if="show_header">
+                    <h3 class="header-title">{{auto_dashboard_info.dashboard_name}}</h3>
+                    <div class="header-date">日期：{{today}}<span id="nowDate"></span></div>
+                </header>
+                <div class="wrapper" v-if="wrapper_show">
+                    <div class="container-fluid">
+                        <div class="row fill-h">
+                            <div class="col-lg-3 fill-h">
+                                <div class="xpanel-wrapper xpanel-wrapper-2">
+                                    <div class="xpanel">
+                                        <!-- 地图飞线 -->
+                                        <div class="fill-h" id="flyMap"></div>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 fill-h">
-                                    <div class="xpanel-wrapper xpanel-wrapper-1">
-                                        <div class="xpanel">
-                                            <!-- 地图散点 -->
-                                            <div class="fill-h" id="scatterMap"></div>
-                                        </div>
+                                <div class="xpanel-wrapper xpanel-wrapper-2">
+                                    <div class="xpanel">
+                                        <!-- 世界地图 -->
+                                        <div class="fill-h" id="worldMap"></div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 fill-h">
-                                    <div class="xpanel-wrapper xpanel-wrapper-3">
-                                        <div class="xpanel">
-                                            <!-- 省份地图 -->
-                                            <div class="fill-h" id="provinceMap"></div>
-                                        </div>
+                            </div>
+                            <div class="col-lg-6 fill-h">
+                                <div class="xpanel-wrapper xpanel-wrapper-1">
+                                    <div class="xpanel">
+                                        <!-- 地图散点 -->
+                                        <div class="fill-h" id="scatterMap"></div>
                                     </div>
-                                    <div class="xpanel-wrapper xpanel-wrapper-3">
-                                        <div class="xpanel">
-                                            <!-- 城市地图 -->
-                                            <div class="fill-h" id="cityMap"></div>
-                                        </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 fill-h">
+                                <div class="xpanel-wrapper xpanel-wrapper-3">
+                                    <div class="xpanel">
+                                        <!-- 省份地图 -->
+                                        <div class="fill-h" id="provinceMap"></div>
                                     </div>
-                                    <div class="xpanel-wrapper xpanel-wrapper-3">
-                                        <div class="xpanel">
-                                            <!-- 区县地图 -->
-                                            <div class="fill-h" id="countyMap"></div>
-                                        </div>
+                                </div>
+                                <div class="xpanel-wrapper xpanel-wrapper-3">
+                                    <div class="xpanel">
+                                        <!-- 城市地图 -->
+                                        <div class="fill-h" id="cityMap"></div>
+                                    </div>
+                                </div>
+                                <div class="xpanel-wrapper xpanel-wrapper-3">
+                                    <div class="xpanel">
+                                        <!-- 区县地图 -->
+                                        <div class="fill-h" id="countyMap"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <footer :class="footer" v-if="show_footer"></footer>
-                    <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout"
-                               :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i"
-                               :type="item.type"
-                               @resized="resizedEvent">
-                        <div :id="item.type" style="width: 500px;height:300px;"></div>
-                    </grid-item>
-                </grid-layout>
-            </div>
+                </div>
+                <footer :class="footer" v-if="show_footer"></footer>
+                <grid-item style="background-color:transparent;border: 0px;" name="pic" v-for="item in layout"
+                            :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i"
+                            :type="item.type"
+                            @resized="resizedEvent">
+                    <div :id="item.type" style="width: 500px;height:300px;"></div>
+                </grid-item>
+            </grid-layout>
         </div>
         <!-- 添加组件模态框 -->
         <el-dialog title="添加组件" :visible.sync="dialogAddComponentVisible" width="50%"
@@ -1895,7 +1891,9 @@
     .el-select {
         width: 360px;
     }
-
+    .container {
+        width:100%;
+    }
     .grid {
         background: -webkit-linear-gradient(top, transparent 10px, #ccc 10px),
         -webkit-linear-gradient(left, transparent 10px, #ccc 10px);
