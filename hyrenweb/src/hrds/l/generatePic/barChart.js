@@ -2,7 +2,7 @@
 export function drawBarChart(result,data) {
     //https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation
     data.seriesArray.forEach(val => {
-        val.label = result.labelOption;
+        val.label = result.labelOption.label;
     })
     let option = {
         backgroundColor: result.background,

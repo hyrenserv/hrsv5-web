@@ -44,7 +44,7 @@ export function drawBlSimpleChart(result, data) {
             yAxisIndex: 0,
             data: series1Data,
             itemStyle: {
-                label: result.labelOption,
+                label: result.labelOption.label,
 
             },
         },
@@ -54,7 +54,7 @@ export function drawBlSimpleChart(result, data) {
                 yAxisIndex: 1,
                 data: series2Data,
                 itemStyle: {
-                    label: result.labelOption,
+                    label: result.labelOption.label,
                 },
             }
         ]

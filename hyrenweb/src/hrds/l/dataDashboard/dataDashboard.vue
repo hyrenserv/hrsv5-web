@@ -311,7 +311,7 @@
     import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
     import * as drawTreeMapChart from "../generatePic/treeMapChart";
     import * as drawMapChart from "../generatePic/mapChart";
-import { Chart } from 'highcharts';
+    import { Chart } from 'highcharts';
     export default {
         components: {
             GridLayout: VueGridLayout.GridLayout,
@@ -332,19 +332,9 @@ import { Chart } from 'highcharts';
                 dialogTextLabelVisible: false,
                 layout: [],
                 echartdata: [],
-                bubbleIds: [],
-                bubble_echartdatas: [],
-                echart_layouts: [],
-                // 组件名称
-                tmp_component_names: [],
-                myCharts: [],
-                barmdIds: [],
-                barmd_echartdatas: [],
                 cardstyle: "",
                 cardname: "",
                 bcolor: "",
-                tcolr:"",
-                lcolr:"",
                 // 组件汇总表集合信息
                 auto_comp_sum_array: [],
                 //组件汇总表
@@ -370,7 +360,6 @@ import { Chart } from 'highcharts';
                     is_gridline: '0'
                 },
                 picshow: false,
-                echartThemeJson: require("@/assets/json/EchartTheme.json"),
                 delpng: require('@/assets/images/del.png'),
                 selectRow: [],
                 //主题设置参数
@@ -858,9 +847,9 @@ import { Chart } from 'highcharts';
                         this.echart_theme = echart_theme_obj;
                         if (code != "00") {
                             //更换卡片，标签，分割线，表格的颜色为组件的主题颜色
-                            setTimeout(() => {
+                            this.$nextTick(() => {
                                 this.chooseTitle(this.echart_theme);
-                            }, 2000)
+                            })
                         }
                         var index = 0;
                         for (var i = 0; i < this.titleData.length; i++) {
@@ -1080,32 +1069,6 @@ import { Chart } from 'highcharts';
                 $("#grid_style").addClass(this.titleClass);
                 this.echartpic(this.global_component_array,this.global_component_id_array)
                 this.dialogTitleVisible = false;
-            },
-            //文本标签主题设置
-            textlabeltheme() {
-                if (this.echart_theme != "") {
-                    if (this.echart_theme.depth == "sheng") {
-                        for (var i = 0; i < this.textlabelarray.length; i++) {
-                            this.chart_obj_array.push(this.textlabelarray[i]);
-                            var id = this.textlabelarray[i].id;
-                            $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
-                        }
-                    } else if (this.echart_theme.depth == "qian") {
-                        for (var i = 0; i < this.textlabelarray.length; i++) {
-                            this.chart_obj_array.push(this.textlabelarray[i]);
-                            var id = this.textlabelarray[i].id;
-                            $("#" + id).find("div[class='labelclass']").css('background-color', this.echart_theme.style);
-                        }
-                    }
-                }
-            },
-            //分割线主题设置
-            textlinetheme() {
-                if (this.echart_theme != "") {
-                    for (var i = 0; i < this.textlinearray.length; i++) {
-                        this.chart_obj_array.push(this.textlinearray[i]);
-                    }
-                }
             },
             //添加网格线
             gridLine() {
@@ -1558,6 +1521,7 @@ import { Chart } from 'highcharts';
                 this.confirmBackgroudColor();
             },
             getEchartProperties(id){
+                var echart_layout="";
                 for (var j = 0; j < this.layout.length; j++) {
                     if (id == this.layout[j].type) {
                         var echart_layout = this.layout[j];
@@ -1615,6 +1579,7 @@ import { Chart } from 'highcharts';
                         }
                     }
                 }
+                return echart_layout;
             },
             // 根据图例类型获取option
             getOption(type,echartdata){
@@ -1715,6 +1680,7 @@ import { Chart } from 'highcharts';
                     show: true,
                     title: "删除",
                     icon: "image://" + require("@/assets/images/del.png"),
+                    color:"#3f44ff",
                     onclick() {
                         if (is_del) {
                             layout.splice(layout.indexOf(echart_layout), 1);

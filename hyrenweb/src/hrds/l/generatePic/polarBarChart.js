@@ -1,7 +1,7 @@
 //极坐标柱状图
 export function drawPolarBarChart(result,data) {
     data.seriesArray.forEach(val => {
-        val.label = result.labelOption;
+        val.label = result.labelOption.label;
     })
     let option = {
         backgroundColor: result.background,

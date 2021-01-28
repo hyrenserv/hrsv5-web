@@ -36,6 +36,7 @@
 .xpanel {
 	padding:15px;
 	height:100%;
+	width: 100%;
 	min-height:170px;
 	background:url("../../../../assets/images/tpl4/panel.png") center no-repeat;
 	background-size:100% 100%;

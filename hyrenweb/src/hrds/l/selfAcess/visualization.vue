@@ -169,11 +169,11 @@
             <p class="tempalteInfo">可视化设置</p>
         </el-row>
         <div class="lines"></div>
-        <el-row>
+        <el-row :gutter="20">
             <el-col :span="5">
                 <div>
                     <el-input placeholder="请输入内容" @change="fuzzyquery1()" v-model="input1" size="small"
-                              style="width:90%;">
+                              style="width:100%;">
                         <template slot="prepend">维度</template>
                     </el-input>
                     <div class="showArryDiv showArryDivSelect ">
@@ -188,7 +188,7 @@
                 </div>
                 <div>
                     <el-input placeholder="请输入内容" @change="fuzzyquery2()" v-model="input2" size="small"
-                              style="width:90%;margin-top:30px;">
+                              style="width:100%;margin-top:30px;">
                         <template slot="prepend">度量</template>
                     </el-input>
                     <div class="showArryDiv showArryDivSelect ">
@@ -229,7 +229,7 @@
                     <el-table id="tableStyle" size="medium"
                               :data="echartTableData.slice((currPage - 1) * pageSize, currPage * pageSize)"
                               style="width: 100%" :row-style="getRowStyle" :border="show_border" :stripe="show_stripe">
-                        <el-table-column label="序号" width="64" align="center">
+                        <el-table-column label="序号" width="50" align="center">
                             <template scope="scope">
                                 <span>{{scope.$index+(currPage - 1) * pageSize + 1}}</span>
                             </template>
@@ -250,7 +250,7 @@
                     </div>
                 </div>
                 <div id="myChart" v-show="echart_type!='card' && echart_type!='table'"
-                     style="width:100%; height: 480px;"></div>
+                     style="width:100%; height: 360px;"></div>
             </el-col>
             <el-col :span="7">
                 <el-select v-model="value" size="small" placeholder="请选择图表类型" style="width:98%;"
@@ -309,7 +309,7 @@
                                style="position: absolute;top:0;right:0;z-index:10;top:10px;right:4px;"></el-button>
                     <el-tabs type="border-card" size="mini" v-if="value !='table' && value !='card'">
                         <el-tab-pane label="常规设置" v-if="value !='table' && value !='card'">
-                            <div style="height:170px;overflow:auto;">
+                            <div style="height:200px;overflow:auto;">
                                 <div class="divStyle">
                                     <span class="el-input-group__prepends">图表背景颜色</span>
                                     <el-color-picker v-model="auto_comp_sum.background"
@@ -332,14 +332,14 @@
                                     <span class="el-input-group__prepends">文本显示位置</span>
                                     <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="echart_type!='pie' && value!='fasanpie' && value!='huanpie'">
+                                               v-show="echart_type!='pie' && echart_type!='fasanpie' && echart_type!='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
                                     </el-select>
                                     <el-select v-model="echartsLabel.position" placeholder="文本显示位置" size="small"
                                                class="selectPosition"
-                                               v-show="echart_type=='pie' || value=='fasanpie' || value=='huanpie'">
+                                               v-show="echart_type=='pie' || echart_type=='fasanpie' || echart_type=='huanpie'">
                                         <el-option v-for="item in normalOptions.optionposition1" :key="item.value"
                                                    :label="item.value" :value="item.code">
                                         </el-option>
@@ -357,14 +357,13 @@
                                               class="selectPosition">
                                     </el-input>
                                 </div>
-
-                                <!--<div class="divStyle" v-show="value=='pie' || echart_type=='fasanpie' || echart_type=='huanpie'">-->
-                                <!--<span class="el-input-group__prepends">是否显示引导线</span>-->
-                                <!--<el-select v-model="auto_comp_sum.show_line" placeholder="请选择" size="small" class="selectPosition">-->
-                                <!--<el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">-->
-                                <!--</el-option>-->
-                                <!--</el-select>-->
-                                <!--</div>-->
+                                <div class="divStyle" v-show="value=='pie' || echart_type=='fasanpie' || echart_type=='huanpie'">
+                                    <span class="el-input-group__prepends">是否显示引导线</span>
+                                    <el-select v-model="echartsLabel.show_line" placeholder="请选择" size="small" class="selectPosition">
+                                        <el-option v-for="item in normalOptions.optionShowlabel" :key="item.value" :label="item.value" :value="item.code">
+                                    </el-option>
+                                    </el-select>
+                                </div>
                                 <div class="divStyle" v-show="value=='map'">
                                     <span class="el-input-group__prepends">中国地图或省份</span>
                                     <el-select v-model="seriesStyle.provincename" placeholder="请选择" size="small"
@@ -795,7 +794,7 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <div class="divStyle">
+                                <div class="divStyle" v-show="value !='map'">
                                     <span class="el-input-group__prepends">是否显示提示</span>
                                     <el-select v-model="legendStyle.tooltip" placeholder="请选择" size="small"
                                                class="selectPosition">
@@ -828,14 +827,14 @@
                                               class="selectPosition">
                                     </el-input>
                                 </div>
-                                <div class="divStyle" v-show="value !='map'">
+                                <div class="divStyle">
                                     <span class="el-input-group__prepends">图例个数</span>
                                     <el-input class="selectPosition" placeholder="图例个数"
                                               v-model="legendStyle.intervalnumber"/>
                                 </div>
-                                <div class="divStyle" v-show="value !='map'">
+                                <div class="divStyle">
                                     <span class="el-input-group__prepends">图例容量</span>
-                                    <el-input class="selectPosition" placeholder="图例容量" v-model="legendStyle.interval"/>
+                                    <el-input class="selectPosition" placeholder="图例容量" size="small" v-model="legendStyle.interval"/>
                                 </div>
                                 <div class="divStyle" v-show="value !='map'">
                                     <span class="el-input-group__prepends">图例宽度</span>
@@ -875,7 +874,7 @@
                                 </div>
                                 <div class="divStyle">
                                     <span class="el-input-group__prepends">图例间隔</span>
-                                    <el-input class="selectPosition" placeholder="图例间隔" v-model="legendStyle.itemgap"/>
+                                    <el-input class="selectPosition" placeholder="图例间隔" size="small" v-model="legendStyle.itemgap"/>
                                 </div>
                                 <div class="divStyle">
                                     <span class="el-input-group__prepends">图形宽度</span>
@@ -951,15 +950,12 @@
                                     </el-option>
                                 </el-select>
                             </div>
-                            <div class="divStyle">
+                            <div class="divStyle" v-if="auto_table_info.is_zebraline == '1'">
                                 <span class="el-input-group__prepends">斑马线颜色</span>
-                                <el-color-picker v-if="auto_table_info.is_zebraline == '1'"
-                                                 v-model="auto_table_info.zl_background"
+                                <el-color-picker v-model="auto_table_info.zl_background"
                                                  style="width:20px;height:20px;"></el-color-picker>
-                                <el-input v-if="auto_table_info.is_zebraline == '1'" class="selectPosition"
-                                          v-model="auto_table_info.zl_background" placeholder="斑马线颜色" size="small"/>
-                                <el-input v-else disabled class="selectPosition" v-model="auto_table_info.zl_background"
-                                          placeholder="斑马线颜色" size="small"/>
+                                <el-input class="selectPosition" v-model="auto_table_info.zl_background"
+                                    placeholder="斑马线颜色" size="small"/>
                             </div>
                             <div class="divStyle">
                                 <el-button class="el-input-group__prepends2" @click="echartshow('table')">预览</el-button>
@@ -1101,8 +1097,8 @@
     import * as drawBlSimpleChart from "../generatePic/blSimpleChart";
     import * as drawTreeMapChart from "../generatePic/treeMapChart";
     import * as drawMapChart from "../generatePic/mapChart";
-
-    require('echarts/dist/extension/dataTool.js');
+    // import echarts from 'echarts';
+    require('echarts/map/js/china.js')
     export default {
         components: {
             draggable
@@ -1199,7 +1195,7 @@
                 // 常规设置
                 echartsLabel: {
                     show_label: '1', //是否显示文本标签
-                    position: "top", //标签位置
+                    position: "outside", //标签位置
                     formatter: "{b}", //格式化文本标签
                     show_line: '1', //是否显示文本标签引导线
                     smooth: '0', //是否平滑视觉引导线
@@ -2668,9 +2664,6 @@
                                     this.$Msg.customizTitle("度量大于1,请修改", "warning");
                                     return;
                                 }
-                                if (this.echartsLabel.position != "inside" && this.echartsLabel.position != "outside") {
-                                    this.echartsLabel.position = "outside";
-                                }
                                 var result = this.initproperty();
                                 var option = drawPieChart.drawPieChart(result, res.data);
                                 this.drawPic(option);
@@ -2727,15 +2720,15 @@
                                     '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
                                     '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门', '台湾'
                                 ];
-                                for (var l = 0; l < provincesText.length; l++) {
-                                    if (this.seriesStyle.provincename == provincesText[l]) {
-                                        //显示对应省份的方法
-                                        this.showProvince(provinces[l], provincesText[l])
-                                        break;
-                                    }
-                                }
+                                // for (var l = 0; l < provincesText.length; l++) {
+                                //     if (this.seriesStyle.provincename == provincesText[l]) {
+                                //         //显示对应省份的方法
+                                //         this.showProvince(provinces[l])
+                                //         break;
+                                //     }
+                                // }
                                 var result = this.initproperty();
-                                var option = drawMapChart.drawMapChart(result, res.data, this.seriesStyle);
+                                var option = drawMapChart.drawMapChart(result, res.data ,this.seriesStyle);
                                 this.drawPic(option);
                             }
                         }
@@ -2743,24 +2736,13 @@
                 }
             },
             // 展示省
-            showProvince(pName, Chinese_) {
-                this.loadBdScript('$' + pName + 'JS', '../province/' + pName + '.js');
-            },
-            //加载对应的JS
-            loadBdScript(scriptId, url) {
-                var script = document.createElement("script")
-                script.type = "text/javascript";
-                if (script.readyState){
-                    script.onreadystatechange = function(){
-                        if (script.readyState == "loaded" || script.readyState == "complete"){
-                            script.onreadystatechange = null;
-                        }
-                    };
-                }
-                script.src = url;
-                script.id = scriptId;
-                document.getElementsByTagName("head")[0].appendChild(script);
-            },
+            // showProvince(pName) {
+            //     var script = document.createElement("script")
+            //     script.type = "text/javascript";
+            //     script.src = '../../../../node_modules/echarts/map/js/province/'+pName+'.js';
+            //     script.id = '$'+pName+'JS';
+            //     document.getElementsByTagName("head")[0].appendChild(script);
+            // },
             changeTips(type) {
                 if (type == 'line') { // 折线图
                     this.tips = "横轴为1个维度,纵轴接受多个度量";
@@ -3015,7 +2997,7 @@
     }
 
     .showArryDiv {
-        width: 90%;
+        width: 100%;
         height: 120px;
         border: 1px solid #ddd;
         overflow: auto;
