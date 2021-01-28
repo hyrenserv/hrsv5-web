@@ -26,7 +26,7 @@
         <!--仪表板展示-->
         <div v-show="picshow" id="mydiv">
             <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
-                            :class="[is_gridline?'grid':'titleClass']" id="grid_style" :col-num="175" :row-height="11" 
+                            :class="[is_gridline?'grid':'titleClass']" id="grid_style" :col-num="120" :row-height="15" 
                             :layout.sync="layout" :isDraggable="is_del" :autoSize="true" :use-css-transforms="true"
                             :isResizable="is_del" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]">
                 <header :class="header" v-if="show_header">
@@ -778,14 +778,14 @@
                     }
                 })
                 if (lineflag) {// 分割线
-                    $("#" + i).width(newW * 10 + "px");
-                    $("#" + i).height(newH * 10 + "px");
+                    $("#" + i).width(newW * 15 + "px");
+                    $("#" + i).height(newH * 15 + "px");
                 } else if (textflag) {// 文本标签
-                    $("#" + i).width(newW * 10 + "px");
-                    $("#" + i).height(newH * 10 + "px");
+                    $("#" + i).width(newW * 15 + "px");
+                    $("#" + i).height(newH * 15 + "px");
                 } else {
-                    $("#" + i).height(newH * 10);
-                    $("#" + i).width(newW * 10);
+                    $("#" + i).height(newH * 15);
+                    $("#" + i).width(newW * 15);
                     var Chart = echarts.init(document.getElementById(i));
                     Chart.resize();
                 }
