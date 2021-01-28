@@ -1,12 +1,12 @@
 <template>
 <div id='dataDashboard'>
     {{interfaceData}}
-    <div class="container" v-if="interfaceData==''">
+    <div v-if="interfaceData==''">
        <!--仪表板展示-->
             <div v-show="picshow" id="mydiv">
                 <grid-layout :style="layout.length>0 ? grid_layout_backgroundcolor : 'background-color:#FFFFFF'"
                              :class="[is_gridline?'grid':'titleClass']" id="grid_style"
-                             style="height: 800px;" :col-num="110" :row-height="11" :layout.sync="layout"
+                             style="height: 1200px;" :col-num="110" :row-height="11" :layout.sync="layout"
                              :isDraggable="is_del" :autoSize="true"
                              :isResizable="is_del" :isMirrored="false" :vertical-compact="false" :margin="[0, 0]"
                              :use-css-transforms="true">
