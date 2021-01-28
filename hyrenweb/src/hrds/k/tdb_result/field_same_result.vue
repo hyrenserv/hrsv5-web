@@ -10,9 +10,10 @@
     </el-row>
     <el-table :data="fieldSameResult" style="width: 100%" :height="600">
         <el-table-column prop="dim_order" label="分组序号" sortable width="150"></el-table-column>
-        <el-table-column prop="table_code" label="表名" sortable width="400"></el-table-column>
-        <el-table-column prop="col_code" label="字段名称" width="400"></el-table-column>
-        <el-table-column prop="category_same" label="分类" sortable width="150"></el-table-column>
+        <el-table-column prop="table_code" label="表名" sortable width="380"></el-table-column>
+        <el-table-column prop="col_code" label="字段名称" width="380"></el-table-column>
+        <el-table-column prop="rel_type" label="类型" sortable width="120"></el-table-column>
+        <el-table-column prop="category_same" label="分类编号" sortable width="120"></el-table-column>
         <el-table-column align="right">
             <template slot="header" slot-scope="scope" >
                 <el-tooltip placement="top">
