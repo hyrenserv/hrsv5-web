@@ -1,29 +1,39 @@
-# hello-world
+# hrsweb-5.3
 
-## Project setup
-```
-npm install
-```
+本分支为发布后的分支，修改bug等需要通过pr的方式进行提交
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 1、自助取数模块
+# 5.3-2021年1月29日
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+|模块|分类|
+|:--|:--|
+|取数管理|模板清单
+||模板配置
+||保存模板
+|自主取数|自主取数模板列表
+||自主取数模板模糊查询
+||取数
+||选择结果字段
+||选择历史字段
+||清单查询
+||查看sql
+||保存自主取数及可视化
+||保存自主取数
+|我的取数|我的取数列表
+||我的取数模糊查询
+||我的取数查看
+||保存及可视化
+||查看sql
+||我的取数模板下载
+|数据可视化选择数据源|数据可视化信息列表
+||数据可视化选择数据源
+||数据可视化设置字段显示
+||数据可视化设置过滤条件
+||数据可视化设置分组条件
+||数据可视化获取结果
+|数据可视化设置|维度,度量,横轴,纵轴,选择图表类型,图表类型设置,折线图,柱状图,散点图,饼图,卡片,二维表,矩形树图,混合图
+||保存可视化组件
+|数据仪表盘|仪表盘数据展示
+||添加组件
+||仪表盘选择样式
+||保存仪表盘
