@@ -3,7 +3,7 @@ import Qs from 'qs'
 //获取表主键分析结果
 export function getPageTablePkData(data) {
     return request({
-        url: '/K/tdb/getPageTablePkData',
+        url: '/K/tdbresult/getPageTablePkData',
         method: 'post',
         params: data
     })
@@ -11,7 +11,7 @@ export function getPageTablePkData(data) {
 //获取表联合主键分析结果
 export function getPageTableJoinPkData(data) {
     return request({
-        url: '/K/tdb/getPageTableJoinPkData',
+        url: '/K/tdbresult/getPageTableJoinPkData',
         method: 'post',
         params: data
     })
@@ -19,7 +19,7 @@ export function getPageTableJoinPkData(data) {
 //获取表内函数依赖分析结果
 export function getPageTableFuncDepData(data) {
     return request({
-        url: '/K/tdb/getPageTableFuncDepData',
+        url: '/K/tdbresult/getPageTableFuncDepData',
         method: 'post',
         params: data
     })
@@ -27,7 +27,7 @@ export function getPageTableFuncDepData(data) {
 //获取外键分析结果
 export function getPageTableFkData(data) {
     return request({
-        url: '/K/tdb/getPageTableFkData',
+        url: '/K/tdbresult/getPageTableFkData',
         method: 'post',
         params: data
     })
@@ -35,7 +35,7 @@ export function getPageTableFkData(data) {
 //获取字段相等类别分析结果
 export function getPageFieldSameResult(data) {
     return request({
-        url: '/K/tdb/getPageFieldSameResult',
+        url: '/K/tdbresult/getPageFieldSameResult',
         method: 'post',
         params: data
     })
@@ -43,7 +43,7 @@ export function getPageFieldSameResult(data) {
 //获取字段特征分析结果
 export function getColumnFeatureAnalysisResult(data) {
     return request({
-        url: '/K/tdb/getColumnFeatureAnalysisResult',
+        url: '/K/tdbresult/getColumnFeatureAnalysisResult',
         method: 'post',
         params: data
     })
