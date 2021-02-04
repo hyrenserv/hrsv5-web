@@ -1831,6 +1831,7 @@ export default {
                 params["database_pad"] = this.ruleForm.database_pad;
                 params["jdbc_url"] = this.ruleForm.jdbc_url;
                 params["database_type"] = this.ruleForm.database_type;
+                params["database_name"] = this.ruleForm.database_name;
                 params["agent_id"] = this.agentId;
             } else if (this.activeNames == 'second') {
                 params["database_drive"] = this.ruleFormSecond.database_drive;
@@ -1838,6 +1839,7 @@ export default {
                 params["database_pad"] = this.ruleFormSecond.database_pad;
                 params["jdbc_url"] = this.ruleFormSecond.jdbc_url;
                 params["database_type"] = this.ruleFormSecond.database_type;
+                params["database_name"] = this.ruleFormSecond.database_name;
                 params["agent_id"] = this.agentId;
             } else {
                 params["database_drive"] = this.ruleFormThird.database_drive;
@@ -1845,6 +1847,7 @@ export default {
                 params["database_pad"] = this.ruleFormThird.database_pad;
                 params["jdbc_url"] = this.ruleFormThird.jdbc_url;
                 params["database_type"] = this.ruleFormThird.database_type;
+                params["database_name"] = this.ruleFormThird.database_name;
                 params["agent_id"] = this.agentId;
             }
             addTaskAllFun.testConnection(params).then(res => {
