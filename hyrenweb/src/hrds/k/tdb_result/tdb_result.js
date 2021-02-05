@@ -48,3 +48,11 @@ export function getColumnFeatureAnalysisResult(data) {
         params: data
     })
 }
+//获取外键分析结果
+export function searchFKAnalysisResults(data) {
+    return request({
+        url: '/K/tdbresult/searchFKAnalysisResults',
+        method: 'post',
+        params: data
+    })
+}
