@@ -30,7 +30,7 @@
             </el-form>
         </el-col>
     </el-row>
-    <!--echarts图展示血缘关系-->
+    <!--echarts图展示关系-->
     <div id="myChart" style="width: 100%; height: 800px" />
     <!-- 表格展示数据 -->
     <!-- <el-table :data="tableData" style="width: 100%" :height="600">
@@ -90,7 +90,7 @@ export default {
         //根据条件搜索外键分析结果
         searchFKAnalysisResults() {
             //设置搜索参数
-            tdbFun.searchFKAnalysisResults(this.searchForm).then(res => {
+            tdbFun.getFKAnalysisResults(this.searchForm).then(res => {
                 var myChart = this.$echarts.init(document.getElementById('myChart'));
                 var graph = res.data;
                 myChart.showLoading();
