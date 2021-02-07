@@ -1,11 +1,42 @@
 <template>
-<div id="marketIndex">
-
-    <div class="titleSpan">
-        <span class="top3title">数据对标结果</span>
-    </div>
+<div id="tdbresult">
+    <el-row class='topTitle'>
+        <span>数据对标结果</span>
+    </el-row>
     <div>
-        <div class="dataSheetmain">
+        <el-row class="elButttonSheetrow">
+            <div class="elButttonSheet">
+                <router-link to="/feature_analysis_result">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-guanli">字段特征分析</el-button>
+                </router-link>
+            </div>
+            <div class="elButttonSheet">
+                <router-link to="/datamap">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-fenxi">数据地图</el-button>
+                </router-link>
+            </div>
+            <div class="elButttonSheet">
+                <router-link to="/pk_analysis_result">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-peizhi">主键分析</el-button>
+                </router-link>
+            </div>
+            <div class="elButttonSheet">
+                <router-link to="/join_pk_analysis_result">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont">联合主键及表函数</el-button>
+                </router-link>
+            </div>
+            <div class="elButttonSheet">
+                <router-link to="/fk_analysis_result">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-peizhi1">外键分析</el-button>
+                </router-link>
+            </div>
+            <div class="elButttonSheet">
+                <router-link to="/field_same_result">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-fenxijieguo">相等类别分析</el-button>
+                </router-link>
+            </div>
+        </el-row>
+        <!-- <div class="dataSheetmain">
             <el-col :span="3">
                 <div class="dataSheetmainDiv">
                     <div @click="gotofeature_analysis_result()" style="margin-top:6px;">
@@ -62,7 +93,7 @@
                     </div>
                 </div>
             </el-col>
-        </div>
+        </div> -->
     </div>
 </div>
 </template>
@@ -93,22 +124,22 @@ export default {
                 name: 'join_pk_analysis_result',
             });
         },
-        gotofunc_dep_result(){
+        gotofunc_dep_result() {
             this.$router.push({
                 name: 'func_dep_result',
             });
         },
-        gotofk_analysis_result(){
+        gotofk_analysis_result() {
             this.$router.push({
                 name: 'fk_analysis_result',
             });
         },
-        gotofield_same_result(){
+        gotofield_same_result() {
             this.$router.push({
                 name: 'field_same_result',
             });
         },
-        gotofeature_analysis_result(){
+        gotofeature_analysis_result() {
             this.$router.push({
                 name: 'feature_analysis_result',
             });
@@ -118,176 +149,78 @@ export default {
 </script>
 
 <style scoped>
-.dataSheetmain {
-    padding-left: 30px;
-    border: 1px solid #dddddd;
-    min-height: 124px;
-    padding-top: 30px;
-    overflow: hidden;
-    margin-bottom: 10px;
+#tdbresult .elButttonSheetrow {
+    display: flex;
+    border: 1px solid #e6e6e6;
+    height: 140px;
+    justify-content: center;
+    /*垂直居中*/
+    align-items: center;
+    /*水平居中*/
 }
 
-/* 遮料层样式 */
-.boxshletr {
-    width: 106px;
-    height: 28px;
-    background: black;
-    opacity: 0.6;
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    display: none;
-    border-radius: 4px;
-}
-
-.topTitleLocal {
-    margin-bottom: 6px !important;
-}
-
-.dataSheetmainDiv:hover {
-    background: #286090;
-    cursor: pointer;
-}
-
-.dataSheetmainDiv:hover .boxshletr {
-    display: block;
-}
-
-.fa {
-    color: white;
-}
-
-.dataSheetmainDiv {
-    margin: 0 auto;
-    margin-bottom: 30px;
-    padding-top: 10px;
-    width: 146px;
-    height: 80px;
-    background: #337AB7;
-    border-radius: 4px;
-    margin-right: 30px;
-    text-align: center;
-    float: left;
-    position: relative;
-}
-
-.el-tabs {
-    margin-top: 0px
-}
-
-.dataSheetmainDiv p {
-    margin-top: 4px;
-    color: #fff;
-    margin-left: 5px;
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* 标签定位 */
-.dataSheetmainDiv span {
-    display: block;
-    width: 18px;
-    height: 18px;
-    background: #f89406;
-    border-radius: 50%;
-    color: white;
-    position: absolute;
-    right: -2px;
-    top: -3px;
-    font-size: 12px;
-}
-
-/* 字体描述定位 */
-.dataSheetmainDiv .postionP {
-    position: absolute;
-    bottom: -20px;
-    left: 4px;
-    font-size: 13px;
-    color: black;
-}
-
-/* 小图标样式 */
-.tree {
-    color: aliceblue;
-}
-
-/* 底部边距 */
-.bottomMargin {
-    margin-bottom: 1%;
-}
-
-.top3title {
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    color: #2196f3;
-    font-size: 16px;
-}
-
-.titleSpan {
-    border-bottom: 1px solid #e6e3e3;
-    width: 100%;
-}
-
-.elButton {
-    float: right;
-    margin-top: 4px;
-
-}
-
-.addNew {
-    float: right;
-    margin-bottom: 2px;
-}
-
-/* 按钮设置 */
-.editBtn {
-    padding: 0;
-}
-
-.buttonStyle {
-    display: block;
-    float: left;
-    margin-right: 10px;
-    margin-left: 0px;
-}
-
-/* top3设置 */
-.tableDiv {
+#tdbresult .bottomMargin {
+    border: 1px solid #e6e6e6;
     padding: 10px;
-    margin-bottom: 10px;
+    margin: 0 !important;
 }
 
-.elcolFor {
+#tdbresult .bottomMargin .elcolFor {
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
-    background: #7BA9D0;
+    background: #3d8dd2;
+    ;
     padding: 10px 0;
     border-radius: 4px;
     color: #fff;
     margin: 0 10px;
 }
 
-.bottomMargins {
-    border: 1px solid #e6e6e6;
-    padding: 10px;
-    margin-left: 0px !important;
-    margin-right: 0px !important;
-    margin-bottom: 10px !important;
+#tdbresult .bottomMargin .elcolForbutton {
+    /* height: px; */
+    width: 120px;
+    border-radius: 10px;
+    cursor: default;
 }
 
-/* top5标题 */
-.titlep {
+#tdbresult .bottomMargin .elcolCount {
+    margin-top: 4px;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+#tdbresult .elButttonSheet {
+    flex: 1;
     text-align: center;
-    font-size: 17px;
-    width: 100%;
-    margin-bottom: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #2196f3
+}
+
+#tdbresult .elButttonSheet .elButttonSheetbutton {
+    width: 160px;
+    height: 80px;
+    border-radius: 10px;
+}
+
+#tdbresult .elButttonSheet .elButttonSheetbutton1 {
+    background-color: #5bc0de;
+    color: white;
+    border-color: #5bc0de;
+    font-size: 16px;
+}
+
+#tdbresult .elrowTop5 {
+    min-height: 270px;
+    margin-bottom: 20px;
+    border: 1px solid #e6e6e6;
+    padding: 10px 3px 0 3px;
+}
+
+#tdbresult p {
+    height: 38px;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    line-height: 38px;
+    font-size: 16px;
+    padding-left: 5px;
 }
 </style>
