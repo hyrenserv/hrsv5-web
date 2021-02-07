@@ -49,9 +49,25 @@ export function getColumnFeatureAnalysisResult(data) {
     })
 }
 //获取外键分析结果
-export function searchFKAnalysisResults(data) {
+export function getFKAnalysisResults(data) {
     return request({
-        url: '/K/tdbresult/searchFKAnalysisResults',
+        url: '/K/tdbresult/getFKAnalysisResults',
+        method: 'post',
+        params: data
+    })
+}
+//获取联合主键分析结果
+export function getJoinPKAnalysisResult(data) {
+    return request({
+        url: '/K/tdbresult/getJoinPKAnalysisResult',
+        method: 'post',
+        params: data
+    })
+}
+//获取表函数分析结果
+export function getTableFuncDepResult(data) {
+    return request({
+        url: '/K/tdbresult/getTableFuncDepResult',
         method: 'post',
         params: data
     })
