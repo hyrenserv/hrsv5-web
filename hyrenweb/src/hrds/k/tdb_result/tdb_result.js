@@ -49,9 +49,81 @@ export function getColumnFeatureAnalysisResult(data) {
     })
 }
 //获取外键分析结果
-export function searchFKAnalysisResults(data) {
+export function getFKAnalysisResults(data) {
     return request({
-        url: '/K/tdbresult/searchFKAnalysisResults',
+        url: '/K/tdbresult/getFKAnalysisResults',
+        method: 'post',
+        params: data
+    })
+}
+//获取联合主键分析结果
+export function getJoinPKAnalysisResult(data) {
+    return request({
+        url: '/K/tdbresult/getJoinPKAnalysisResult',
+        method: 'post',
+        params: data
+    })
+}
+//获取表函数分析结果
+export function getTableFuncDepResult(data) {
+    return request({
+        url: '/K/tdbresult/getTableFuncDepResult',
+        method: 'post',
+        params: data
+    })
+}
+//自定义图计算查询语句查询
+export function searchFromNeo4j(data) {
+    return request({
+        url: '/K/tdbresult/searchFromNeo4j',
+        method: 'post',
+        params: data
+    })
+}
+//LPA社区发现算法
+export function searchLabelPropagation(data) {
+    return request({
+        url: '/K/tdbresult/searchLabelPropagation',
+        method: 'post',
+        params: data
+    })
+}
+//LOUVAIN社区发现算法
+export function searchLouVain(data) {
+    return request({
+        url: '/K/tdbresult/searchLouVain',
+        method: 'post',
+        params: data
+    })
+}
+//求全部最短路径
+export function searchAllShortPath(data) {
+    return request({
+        url: '/K/tdbresult/searchAllShortPath',
+        method: 'post',
+        params: data
+    })
+}
+//求最长路径
+export function searchLongestPath(data) {
+    return request({
+        url: '/K/tdbresult/searchLongestPath',
+        method: 'post',
+        params: data
+    })
+}
+//求远近邻关系
+export function searchNeighbors(data) {
+    return request({
+        url: '/K/tdbresult/searchNeighbors',
+        method: 'post',
+        params: data
+    })
+}
+//三角关系展示
+export function searchTriangleRelation(data) {
+    return request({
+        url: '/K/tdbresult/searchTriangleRelation',
         method: 'post',
         params: data
     })
