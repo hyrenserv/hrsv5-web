@@ -269,29 +269,28 @@
     </el-dialog>
     <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top:10px;">
         <el-tab-pane label="LPA" name="first">
-           <!-- <div id="chart_lpa" v-show="showLpa" style="height:1000px;width:100%"></div> -->
         </el-tab-pane>
         <el-tab-pane label="LOUVAIN" name="second">
-            <!-- <div id="chart_louvain" v-show="showLouvain" style="height:1000px;width:100%"></div> -->
         </el-tab-pane>
-  </el-tabs>
+    </el-tabs>
+    <!-- LPA/LOUVAIN-->
     <div id="myChart" style="height:800px;width:100%"></div>
-    <el-divider/>
+    <el-divider />
     <el-row>
         <el-col :span="11">
-            <span class="el-icon-s-data">最长路径</span>
-            <div id="chart_longest" style="height:500px;width:100%"></div>
+            <span class="el-icon-view">最长路径</span>
+            <div id="chart_longest" style="height:300px;width:100%"></div>
         </el-col>
         <el-col :span="11">
-            <span class="el-icon-s-data">全部最短路径</span>
-            <div id="chart_allShort"  style="height:500px;width:100%"></div>
+            <span class="el-icon-view">全部最短路径</span>
+            <div id="chart_allShort" style="height:300px;width:100%"></div>
         </el-col>
     </el-row>
-    <el-divider/>
-    <span class="el-icon-s-data">远近邻关系</span>
-    <div id="chart_nighbors" style="height:600px;width:90%"></div>
-    <el-divider/>
-    <span class="el-icon-s-data">三角关系</span>
+    <el-divider />
+    <span class="el-icon-view">远近邻关系</span>
+    <div id="chart_nighbors" style="height:500px;width:90%"></div>
+    <el-divider />
+    <span class="el-icon-view">三角关系</span>
     <div id="chart_triangle" style="height:600px;width:100%"></div>
 </div>
 </template>
@@ -305,10 +304,7 @@ export default {
     },
     data() {
         return {
-            cypher: "MATCH p=()-[r:FK]->() RETURN p LIMIT 5",
-            graph: [{
-
-            }],
+            // cypher: "MATCH p=()-[r:FK]->() RETURN p LIMIT 5",
             activeName: '',
             showLpa: false,
             showLouvain: false,
@@ -357,10 +353,7 @@ export default {
             }],
         }
     },
-
-    mounted() {
-        // this.searchFromNeo4j(this.cypher);
-    },
+    mounted() {},
     methods: {
         goIndex() {
             this.$router.push({
@@ -447,78 +440,6 @@ export default {
                 }
             })
         },
-        getOption(graph) {
-            console.log(graph);
-            for (let i = 0; i < graph.nodes.length; i++) {
-                graph.nodes[i].symbolSize = 10;
-            }
-            for (var i = 0; i < graph.categories.length; i++) {
-                graph.categories[i] = {
-                    name: '社区' + i
-                }
-            }
-            return {
-                //标题
-                title: {
-                    text: '社区划分',
-                    subtext: 'Default layout',
-                    top: 'bottom',
-                    left: 'right'
-                },
-                tooltip: {
-                    formatter: function (params) {
-                        if (params.value != undefined) {
-                            return params.name +':'+ '<br>' +
-                                params.value[0] + '<br>' +
-                                params.value[1] + '<br>' +
-                                params.value[2] + '<br>' +
-                                params.value[3] + '<br>' +
-                                params.value[4] + '<br>' +
-                                params.value[5] + '<br>'
-                        }else{
-                            return params.name;
-                        }
-                    }
-                },
-                //类目
-                legend: [{
-                    // selectedMode: 'single',
-                    type: 'scroll',
-                    orient: 'vertical',
-                    right: 10,
-                    top: 20,
-                    bottom: 50,
-                    data: graph.categories.map(function (a) {
-                        return a.name;
-                    })
-                }],
-                animationDuration: 1500,
-                animationEasingUpdate: 'quinticInOut',
-                series: [{
-                    name: 'Les Miserables',
-                    type: 'graph',
-                    layout: 'none',
-                    data: graph.nodes,
-                    links: graph.links,
-                    categories: graph.categories,
-                    roam: true,
-                    label: {
-                        position: 'right',
-                        formatter: '{b}'
-                    },
-                    lineStyle: {
-                        color: 'source',
-                        curveness: 0.3
-                    },
-                    emphasis: {
-                        focus: 'adjacency',
-                        lineStyle: {
-                            width: 10
-                        }
-                    }
-                }]
-            }
-        },
         // 求全部最短路径
         searchAllShortPath() {
             var params = {};
@@ -534,18 +455,17 @@ export default {
                     var graph = res.data;
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
-                    })           
+                    })
                     for (var i = 0; i < graph.categories.length; i++) {
-                        if(i == 0){
+                        if (i == 0) {
                             graph.categories[i] = {
                                 name: '中间点'
                             };
-                        }else if(i == 1){
+                        } else if (i == 1) {
                             graph.categories[i] = {
                                 name: '起始点'
                             };
-                        }
-                        else if(i == 2){
+                        } else if (i == 2) {
                             graph.categories[i] = {
                                 name: '终止点'
                             };
@@ -566,39 +486,37 @@ export default {
                         }],
                         animationDuration: 1500,
                         animationEasingUpdate: 'quinticInOut',
-                        series : [
-                            {
+                        series: [{
                             //name: '点',
                             type: 'graph',
                             layout: 'force',
-                            force : {//力引导图基本配置
+                            force: { //力引导图基本配置
                                 //initLayout: ,   //力引导的初始化布局，默认使用xy轴的标点
-                                repulsion : 500,    //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
-                                gravity : 0.03,   //节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
-                                edgeLength :[5,10], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
-                                layoutAnimation : true      //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。                        
+                                repulsion: 2000, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                                gravity: 0.03, //节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
+                                edgeLength: [5, 10], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                                layoutAnimation: true //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。                        
                             },
-                            draggable : true,
+                            draggable: true,
                             data: graph.nodes,
                             links: graph.links,
                             categories: graph.categories,
                             roam: true,
                             label: {
                                 normal: {
-                                show:true,
-                                position: 'top',
-                                formatter: '{b}'
+                                    show: true,
+                                    position: 'top',
+                                    formatter: '{b}'
                                 }
                             },
-                            edgeSymbol:["","arrow"],
+                            edgeSymbol: ["", "arrow"],
                             lineStyle: {
                                 normal: {
-                                color: 'source',
-                                curveness: 0.3
+                                    color: 'source',
+                                    curveness: 0.3
                                 }
                             }
-                            }
-                        ]
+                        }]
                     };
                     myChart.setOption(option);
                 }
@@ -616,22 +534,20 @@ export default {
                     var myChart = echarts.init(document.getElementById("chart_longest"))
                     myChart.showLoading();
                     myChart.hideLoading();
-                    console.log(res.data);
                     var graph = res.data;
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
-                    })           
+                    })
                     for (var i = 0; i < graph.categories.length; i++) {
-                        if(i == 0){
+                        if (i == 0) {
                             graph.categories[i] = {
                                 name: '中间点'
                             };
-                        }else if(i == 1){
+                        } else if (i == 1) {
                             graph.categories[i] = {
                                 name: '起始点'
                             };
-                        }
-                        else if(i == 2){
+                        } else if (i == 2) {
                             graph.categories[i] = {
                                 name: '终止点'
                             };
@@ -652,39 +568,37 @@ export default {
                         }],
                         animationDuration: 1500,
                         animationEasingUpdate: 'quinticInOut',
-                        series : [
-                            {
+                        series: [{
                             //name: '点',
                             type: 'graph',
                             layout: 'force',
-                            force : {//力引导图基本配置
+                            force: { //力引导图基本配置
                                 //initLayout: ,   //力引导的初始化布局，默认使用xy轴的标点
-                                repulsion : 500,    //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
-                                gravity : 0.03,   //节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
-                                edgeLength :[5,10], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
-                                layoutAnimation : true      //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。                        
+                                repulsion: 500, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                                gravity: 0.03, //节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
+                                edgeLength: [5, 10], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                                layoutAnimation: true //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。                        
                             },
-                            draggable : true,
+                            draggable: true,
                             data: graph.nodes,
                             links: graph.links,
                             categories: graph.categories,
                             roam: true,
                             label: {
                                 normal: {
-                                show:true,
-                                position: 'top',
-                                formatter: '{b}'
+                                    show: true,
+                                    position: 'top',
+                                    formatter: '{b}'
                                 }
                             },
-                            edgeSymbol:["","arrow"],
+                            edgeSymbol: ["", "arrow"],
                             lineStyle: {
                                 normal: {
-                                color: 'source',
-                                curveness: 0.3
+                                    color: 'source',
+                                    curveness: 0.3
                                 }
                             }
-                            }
-                        ]
+                        }]
                     };
                     myChart.setOption(option);
                 }
@@ -762,9 +676,110 @@ export default {
                 }
             })
         },
+        getOption(graph) {
+            for (let i = 0; i < graph.nodes.length; i++) {
+                graph.nodes[i].symbolSize = 10;
+            }
+            var title = {
+                text: '社区划分',
+                subtext: 'Default layout',
+                top: 'bottom',
+                left: 'right'
+            }
+            var legend = [];
+            var tooltip = {
+                formatter: function (params) {
+                    if (params.value != undefined) {
+                        return params.name + ':' + '<br>' +
+                            params.value[0] + '<br>' +
+                            params.value[1] + '<br>' +
+                            params.value[2] + '<br>' +
+                            params.value[3] + '<br>' +
+                            params.value[4] + '<br>' +
+                            params.value[5] + '<br>'
+                    } else {
+                        return params.name;
+                    }
+                }
+            }
+            if (graph.categories != undefined && graph.categories != '') {
+                for (var i = 0; i < graph.categories.length; i++) {
+                    graph.categories[i] = {
+                        name: '社区' + i
+                    }
+                }
+                legend = [{
+                    // selectedMode: 'single',
+                    type: 'scroll',
+                    orient: 'vertical',
+                    right: 10,
+                    top: 20,
+                    bottom: 50,
+                    data: graph.categories.map(function (a) {
+                        return a.name;
+                    })
+                }]
+            } else {
+                title = {
+                    text: '三角关系展示',
+                    subtext: 'Default layout',
+                    top: 'bottom',
+                    left: 'right'
+                }
+                tooltip = {
+                    formatter: function (params) {
+                        if (params.value != undefined) {
+                            return params.name + ':' + '<br>' +
+                                params.value[0] + '<br>' +
+                                params.value[1] + '<br>' +
+                                params.value[2] + '<br>' +
+                                params.value[3] + '<br>' +
+                                params.value[4] + '<br>'
+                        } else {
+                            return params.name;
+                        }
+                    }
+                }
+            }
+            return {
+                //标题
+                title: title,
+                tooltip: tooltip,
+                //类目
+                legend: legend,
+                animationDuration: 1500,
+                animationEasingUpdate: 'quinticInOut',
+                series: [{
+                    name: 'Les Miserables',
+                    type: 'graph',
+                    layout: 'none',
+                    data: graph.nodes,
+                    links: graph.links,
+                    categories: graph.categories,
+                    roam: true,
+                    label: {
+                        position: 'right',
+                        formatter: '{b}'
+                    },
+                    lineStyle: {
+                        color: 'source',
+                        curveness: 0.3
+                    },
+                    emphasis: {
+                        focus: 'adjacency',
+                        lineStyle: {
+                            width: 10
+                        }
+                    }
+                }]
+            }
+        },
     }
 }
 </script>
 
 <style lang="less" scoped>
+.el-icon-view {
+    color: #2196f3;
+}
 </style>
