@@ -35,6 +35,11 @@
                     <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-fenxijieguo">相等类别分析</el-button>
                 </router-link>
             </div>
+            <div class="elButttonSheet">
+                <router-link to="/datamap2">
+                    <el-button class="elButttonSheetbutton elButttonSheetbutton1 iconfont icon-fenxi">数据地图2</el-button>
+                </router-link>
+            </div>
         </el-row>
         <!-- <div class="dataSheetmain">
             <el-col :span="3">

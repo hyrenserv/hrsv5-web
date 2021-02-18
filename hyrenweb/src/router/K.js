@@ -55,6 +55,18 @@ export default [
 		],
     },
     {
+		path: '/datamap2',
+		name: 'datamap2',
+		title: 'datamap2',
+		component: () => import('@/hrds/k/tdb_result/datamap2.vue'),
+		meta: [
+			{ name: '首页' },
+			{ name: '数据对标' },
+			{ name: '数据对标结果',url:'tdb_result' },
+			{ name: '数据地图查询' },
+		],
+    },
+    {
 		path: '/pk_analysis_result',
 		name: 'pk_analysis_result',
 		title: 'pk_analysis_result',
