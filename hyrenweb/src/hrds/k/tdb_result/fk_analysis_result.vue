@@ -31,7 +31,7 @@
         </el-col>
     </el-row>
     <!--echarts图展示关系-->
-    <div id="myChart" style="width: 100%; height: 800px" />
+    <div id="myChart" style="width: 100%; height: 750px " ref="myChart" />
     <!-- 表格展示数据 -->
     <!-- <el-table :data="tableData" style="width: 100%" :height="600">
         <el-table-column prop="row_num" label="分组序号" sortable width="120"></el-table-column>
@@ -66,27 +66,10 @@ export default {
         };
     },
     mounted() {
-        //页面加载时.获取查询记录
-        // this.getTableData();
         //页面加载时,默认展示所有表信息
         this.searchFKAnalysisResults();
     },
     methods: {
-        // //分页大小改变触发
-        // handleSizeChange(val) {
-        //     this.pageSize = val;
-        //     this.getTableData();
-        // },
-        // //当前页改变触发
-        // handleCurrentChange(val) {
-        //     this.currPage = val;
-        //     this.getTableData();
-        // },
-        // //搜索触发方法
-        // fitterTableData() {
-        //     this.currPage = 1;
-        //     this.getTableData();
-        // },
         //根据条件搜索外键分析结果
         searchFKAnalysisResults() {
             //设置搜索参数
@@ -99,7 +82,24 @@ export default {
                 // for (let i = 0; i < graph.nodes.length; i++) {
                 //     graph.nodes[i].x = graph.nodes[i].y = null;
                 // }
+                //
+                // 随机生成颜色：根据类别数量设置颜色数量(存在一定几率重复)
+                var colorList = [];
+                for (var i = 0; i < graph.categories.length; i++) {
+                    var colorStr = Math.floor(Math.random() * 0xffffff).toString(16);
+                    //如果颜色值是五位，则补零
+                    if (colorStr.length < 6) {
+                        colorStr += '0';
+                    }
+                    if (colorStr == '005094') {
+                        i--;
+                        continue;
+                    }
+                    colorList.push('#' + colorStr);
+                }
+                //设置图的属性
                 var option = {
+                    color: colorList,
                     tooltip: {
                         //使用回调函数设置节点和连接线的提示内容：
                         formatter: function (params) { //触发之后返回的参数，这个函数是关键
@@ -110,15 +110,21 @@ export default {
                             }
                         }
                     },
+                    //是否显示分类
+                    // legend: [{
+                    //     data: graph.categories.map(function (a) {
+                    //         return a.name;
+                    //     })
+                    // }],
                     series: [{
                         type: 'graph',
-                        layout: 'force',
+                        layout: 'none',
                         data: graph.nodes,
                         links: graph.links,
                         categories: graph.categories,
                         roam: true,
                         label: {
-                            // show: true, //不显示节点名称
+                            show: true, //不显示节点名称
                             position: 'right', //相对于节点标签的位置，默认在节点中间
                             formatter: '{b}'
                         },
@@ -144,22 +150,6 @@ export default {
                 myChart.setOption(option);
             });
         },
-        // //设置搜索参数
-        // getTableData() {
-        //     let params = {};
-        //     params["fk_table_code"] = this.fk_table_code;
-        //     params["currPage"] = this.currPage;
-        //     params["pageSize"] = this.pageSize;
-        //     //根据搜索条件获取结果
-        //     this.getPageTableFkData(params);
-        // },
-        // //获取搜索结果
-        // getPageTableFkData(params) {
-        //     tdbFun.getPageTableFkData(params).then(res => {
-        //         this.totalSize = res.data.totalSize;
-        //         this.tableData = res.data.tableFkData;
-        //     })
-        // },
     }
 }
 </script>

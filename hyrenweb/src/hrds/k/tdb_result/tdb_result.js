@@ -40,6 +40,22 @@ export function getPageFieldSameResult(data) {
         params: data
     })
 }
+//获取字段相等类别分析统计结果
+export function getFieldSameStatisticalResult(data) {
+    return request({
+        url: '/K/tdbresult/getFieldSameStatisticalResult',
+        method: 'post',
+        params: data
+    })
+}
+//获取字段相等类别分析统计结果
+export function getFieldSameResultByCategorysame(data) {
+    return request({
+        url: '/K/tdbresult/getFieldSameResultByCategorysame',
+        method: 'post',
+        params: data
+    })
+}
 //获取字段特征分析结果
 export function getColumnFeatureAnalysisResult(data) {
     return request({
