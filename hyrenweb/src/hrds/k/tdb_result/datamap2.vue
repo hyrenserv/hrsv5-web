@@ -273,22 +273,22 @@
         <el-tab-pane label="LOUVAIN" name="second">
         </el-tab-pane>
     </el-tabs>
-    <!-- LPA/LOUVAIN-->
-    <div id="myChart" style="height:800px;width:100%"></div>
+    <div id="lpaChart" v-show="checked_lpa" style="height:800px;width:100%"></div>
+    <div id="louvainChart" v-show="checked_louvain" style="height:800px;width:100%"></div>
     <el-divider />
     <el-row>
         <el-col :span="11">
             <span class="el-icon-view">最长路径</span>
-            <div id="chart_longest" style="height:300px;width:100%"></div>
+            <div id="chart_longest" style="height:500px;width:100%"></div>
         </el-col>
         <el-col :span="11">
             <span class="el-icon-view">全部最短路径</span>
-            <div id="chart_allShort" style="height:300px;width:100%"></div>
+            <div id="chart_allShort" style="height:500px;width:100%"></div>
         </el-col>
     </el-row>
     <el-divider />
     <span class="el-icon-view">远近邻关系</span>
-    <div id="chart_nighbors" style="height:500px;width:90%"></div>
+    <div id="chart_nighbors" style="height:600px;width:90%"></div>
     <el-divider />
     <span class="el-icon-view">三角关系</span>
     <div id="chart_triangle" style="height:600px;width:100%"></div>
@@ -306,15 +306,8 @@ export default {
         return {
             // cypher: "MATCH p=()-[r:FK]->() RETURN p LIMIT 5",
             activeName: '',
-            showLpa: false,
-            showLouvain: false,
-            showLongest: false,
-            showNighbors: false,
-            showTriangle: false,
-            showAllShort: false,
             dialogShowGraph: false,
             labelPosition: 'right',
-            line: '',
             form: {
                 relationship_lpa: '',
                 iterations_lpa: 5,
@@ -368,12 +361,10 @@ export default {
         },
         handleClick(tab) {
             if (tab.label == 'LPA') {
-                this.showLpa = true;
                 if (this.checked_lpa) {
                     this.searchLabelPropagation();
                 }
             } else if (tab.label == 'LOUVAIN') {
-                this.showLouvain = true;
                 if (this.checked_louvain) {
                     this.searchLouVain();
                 }
@@ -416,7 +407,7 @@ export default {
             params["limitNum"] = this.form.limitNum_lpa;
             tdbFun.searchLabelPropagation(params).then(res => {
                 if (res && res.success) {
-                    var myChart = this.$echarts.init(document.getElementById('myChart'));
+                    var myChart = this.$echarts.init(document.getElementById('lpaChart'));
                     myChart.showLoading();
                     myChart.hideLoading();
                     var option = this.getOption(res.data);
@@ -432,7 +423,7 @@ export default {
             params["limitNum"] = this.form.limitNum_louvain;
             tdbFun.searchLouVain(params).then(res => {
                 if (res && res.success) {
-                    var myChart = this.$echarts.init(document.getElementById('myChart'));
+                    var myChart = this.$echarts.init(document.getElementById('louvainChart'));
                     myChart.showLoading();
                     myChart.hideLoading();
                     var option = this.getOption(res.data);
@@ -456,18 +447,18 @@ export default {
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
                     })
-                    for (var i = 0; i < graph.categories.length; i++) {
+                    for (var i = 0; i < 3; i++) {
                         if (i == 0) {
-                            graph.categories[i] = {
-                                name: '中间点'
-                            };
-                        } else if (i == 1) {
                             graph.categories[i] = {
                                 name: '起始点'
                             };
-                        } else if (i == 2) {
+                        } else if (i == 1) {
                             graph.categories[i] = {
                                 name: '终止点'
+                            };
+                        } else if (i == 2) {
+                            graph.categories[i] = {
+                                name: '中间点'
                             };
                         }
                     }
@@ -538,18 +529,19 @@ export default {
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
                     })
-                    for (var i = 0; i < graph.categories.length; i++) {
+                    graph.categories=[];
+                    for (var i = 0; i < 3; i++) {
                         if (i == 0) {
-                            graph.categories[i] = {
-                                name: '中间点'
-                            };
-                        } else if (i == 1) {
                             graph.categories[i] = {
                                 name: '起始点'
                             };
-                        } else if (i == 2) {
+                        } else if (i == 1) {
                             graph.categories[i] = {
                                 name: '终止点'
+                            };
+                        } else if (i == 2) {
+                            graph.categories[i] = {
+                                name: '中间点'
                             };
                         }
                     }
@@ -631,7 +623,7 @@ export default {
                             left: '20%',
                             bottom: '1%',
                             right: '20%',
-                            symbolSize: 7,
+                            symbolSize: 10,
                             label: {
                                 normal: {
                                     position: 'left',
@@ -677,9 +669,6 @@ export default {
             })
         },
         getOption(graph) {
-            for (let i = 0; i < graph.nodes.length; i++) {
-                graph.nodes[i].symbolSize = 10;
-            }
             var title = {
                 text: '社区划分',
                 subtext: 'Default layout',
@@ -703,10 +692,13 @@ export default {
                 }
             }
             if (graph.categories != undefined && graph.categories != '') {
+                var colors = [];
                 for (var i = 0; i < graph.categories.length; i++) {
                     graph.categories[i] = {
                         name: '社区' + i
                     }
+                    var color = this.handleColors(i);
+                    colors.push(color);
                 }
                 legend = [{
                     // selectedMode: 'single',
@@ -714,7 +706,7 @@ export default {
                     orient: 'vertical',
                     right: 10,
                     top: 20,
-                    bottom: 50,
+                    bottom: 130,
                     data: graph.categories.map(function (a) {
                         return a.name;
                     })
@@ -741,10 +733,14 @@ export default {
                     }
                 }
             }
+            for (let i = 0; i < graph.nodes.length; i++) {
+                graph.nodes[i].symbolSize = 10;
+            }
             return {
                 //标题
                 title: title,
                 tooltip: tooltip,
+                color: colors,
                 //类目
                 legend: legend,
                 animationDuration: 1500,
@@ -773,6 +769,15 @@ export default {
                     }
                 }]
             }
+        },
+        //随机生成颜色
+        handleColors(i) {
+            let color = '';
+            let r = Math.floor(Math.random() * (256 + i));
+            let g = Math.floor(Math.random() * (256 + i));
+            let b = Math.floor(Math.random() * (256 + i));
+            color = `rgb(${r},${g},${b})`;
+            return color; //所有方法的拼接都可以用ES6新特性`其他字符串{$变量名}`替换
         },
     }
 }
