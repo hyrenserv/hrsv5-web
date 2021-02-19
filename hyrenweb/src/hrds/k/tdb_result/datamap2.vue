@@ -447,6 +447,7 @@ export default {
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
                     })
+                    graph.categories=[];
                     for (var i = 0; i < 3; i++) {
                         if (i == 0) {
                             graph.categories[i] = {
