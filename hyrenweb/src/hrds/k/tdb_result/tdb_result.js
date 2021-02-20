@@ -64,6 +64,22 @@ export function getColumnFeatureAnalysisResult(data) {
         params: data
     })
 }
+//根据表名获取字段特征分析结果
+export function searchColumnFeatureAnalysisResult(data) {
+    return request({
+        url: '/K/tdbresult/searchColumnFeatureAnalysisResult',
+        method: 'post',
+        params: data
+    })
+}
+//根据表名获取字段特征分析结果
+export function getColumnFeatureAnalysisTableCodeList(data) {
+    return request({
+        url: '/K/tdbresult/getColumnFeatureAnalysisTableCodeList',
+        method: 'post',
+        params: data
+    })
+}
 //获取外键分析结果
 export function getFKAnalysisResults(data) {
     return request({

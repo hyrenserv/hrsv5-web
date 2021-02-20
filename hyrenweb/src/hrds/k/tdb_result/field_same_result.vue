@@ -165,7 +165,7 @@ export default {
                     data: data
                 }]
             };
-            if(myChart._$handlers.click){
+            if (myChart._$handlers.click) {
                 myChart._$handlers.click.length = 0;
             }
             // Enable data zoom when user click bar. 用户单击栏时启用数据缩放。
@@ -184,8 +184,8 @@ export default {
                 })
                 myChart.dispatchAction({
                     type: 'dataZoom',
-                    startValue: dataAxis[0],//显示开始下标
-                    endValue: dataAxis[data.length],//显示结束下标
+                    startValue: dataAxis[0], //显示开始下标
+                    endValue: dataAxis[data.length], //显示结束下标
                 });
             });
             option && myChart.setOption(option);
