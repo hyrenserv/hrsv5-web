@@ -26,7 +26,7 @@
                                 边的属性
                             </el-col>
                             <el-col :span="16">
-                                <el-select v-model="form.relationship_lpa" placeholder="请选择边的属性" size="small" clearable>
+                                <el-select v-model="form.relationship_lpa" placeholder="请选择边的属性" size="small">
                                     <el-option v-for="item in options" :key="item.value" :value="item.value" />
                                 </el-select>
                             </el-col>
@@ -65,7 +65,7 @@
                                 边的属性
                             </el-col>
                             <el-col :span="16">
-                                <el-select v-model="form.relationship_louvain" placeholder="请选择边的属性" size="small" clearable>
+                                <el-select v-model="form.relationship_louvain" placeholder="请选择边的属性" size="small">
                                     <el-option v-for="item in options" :key="item.value" :value="item.value" />
                                 </el-select>
                             </el-col>
@@ -273,8 +273,8 @@
         <el-tab-pane label="LOUVAIN" name="second">
         </el-tab-pane>
     </el-tabs>
-    <div id="lpaChart" v-show="checked_lpa" style="height:800px;width:100%"></div>
-    <div id="louvainChart" v-show="checked_louvain" style="height:800px;width:100%"></div>
+    <div id="lpaChart" v-if="isShow" style="height:800px;width:100%"></div>
+    <div id="louvainChart" v-else style="height:800px;width:100%"></div>
     <el-divider />
     <el-row>
         <el-col :span="11">
@@ -306,6 +306,7 @@ export default {
         return {
             // cypher: "MATCH p=()-[r:FK]->() RETURN p LIMIT 5",
             activeName: '',
+            isShow: false,
             dialogShowGraph: false,
             labelPosition: 'right',
             form: {
@@ -362,10 +363,12 @@ export default {
         handleClick(tab) {
             if (tab.label == 'LPA') {
                 if (this.checked_lpa) {
+                    this.isShow = true;
                     this.searchLabelPropagation();
                 }
             } else if (tab.label == 'LOUVAIN') {
                 if (this.checked_louvain) {
+                    this.isShow = false;
                     this.searchLouVain();
                 }
             }
@@ -376,10 +379,12 @@ export default {
             this.dialogShowGraph = false;
             // lpa
             if (this.checked_lpa) {
+                this.isShow = true;
                 this.searchLabelPropagation();
             }
             // louvain
             if (this.checked_louvain) {
+                this.isShow = false;
                 this.searchLouVain();
             }
             // 全部最短
@@ -447,7 +452,7 @@ export default {
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
                     })
-                    graph.categories=[];
+                    graph.categories = [];
                     for (var i = 0; i < 3; i++) {
                         if (i == 0) {
                             graph.categories[i] = {
@@ -530,7 +535,7 @@ export default {
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
                     })
-                    graph.categories=[];
+                    graph.categories = [];
                     for (var i = 0; i < 3; i++) {
                         if (i == 0) {
                             graph.categories[i] = {
@@ -661,47 +666,103 @@ export default {
             params["limitNum"] = this.form.limitNum_triangle;
             tdbFun.searchTriangleRelation(params).then(res => {
                 if (res && res.success) {
+                    var graph = res.data;
                     var myChart = this.$echarts.init(document.getElementById('chart_triangle'));
                     myChart.showLoading();
                     myChart.hideLoading();
-                    var option = this.getOption(res.data);
+                    for (let i = 0; i < graph.nodes.length; i++) {
+                        graph.nodes[i].symbolSize = 10;
+                    }
+                    var option = {
+                        //标题
+                        title: {
+                            text: '三角关系展示',
+                            subtext: 'Default layout',
+                            top: 'bottom',
+                            left: 'right'
+                        },
+                        tooltip: {
+                            formatter: function (params) {
+                                if (params.value != undefined) {
+                                    return params.name + ':' + '<br>' +
+                                        params.value[0] + '<br>' +
+                                        params.value[1] + '<br>' +
+                                        params.value[2] + '<br>' +
+                                        params.value[3] + '<br>' +
+                                        params.value[4] + '<br>'
+                                } else {
+                                    return params.name;
+                                }
+                            }
+                        },
+                        animationDuration: 1500,
+                        animationEasingUpdate: 'quinticInOut',
+                        series: [{
+                            name: 'Les Miserables',
+                            type: 'graph',
+                            layout: 'force',
+                            data: graph.nodes,
+                            links: graph.links,
+                            categories: graph.categories,
+                            roam: true,
+                            label: {
+                                position: 'right',
+                                formatter: '{b}'
+                            },
+                            lineStyle: {
+                                color: 'source',
+                                curveness: 0.3
+                            },
+                            emphasis: {
+                                focus: 'adjacency',
+                                lineStyle: {
+                                    width: 10
+                                }
+                            }
+                        }]
+                    }
                     myChart.setOption(option);
                 }
             })
         },
         getOption(graph) {
-            var title = {
-                text: '社区划分',
-                subtext: 'Default layout',
-                top: 'bottom',
-                left: 'right'
-            }
-            var legend = [];
-            var tooltip = {
-                formatter: function (params) {
-                    if (params.value != undefined) {
-                        return params.name + ':' + '<br>' +
-                            params.value[0] + '<br>' +
-                            params.value[1] + '<br>' +
-                            params.value[2] + '<br>' +
-                            params.value[3] + '<br>' +
-                            params.value[4] + '<br>' +
-                            params.value[5] + '<br>'
-                    } else {
-                        return params.name;
-                    }
+            var colors = [];
+            for (var i = 0; i < graph.categories.length; i++) {
+                graph.categories[i] = {
+                    name: '社区' + i
                 }
+                var color = this.handleColors(i);
+                colors.push(color);
             }
-            if (graph.categories != undefined && graph.categories != '') {
-                var colors = [];
-                for (var i = 0; i < graph.categories.length; i++) {
-                    graph.categories[i] = {
-                        name: '社区' + i
+            for (let i = 0; i < graph.nodes.length; i++) {
+                graph.nodes[i].symbolSize = 10;
+            }
+            return {
+                //标题
+                title: {
+                    text: '社区划分',
+                    subtext: 'Default layout',
+                    top: 'bottom',
+                    left: 'right'
+                },
+                tooltip: {
+                    formatter: function (params) {
+                        if (params.value != undefined) {
+                            return params.name + ':' + '<br>' +
+                                params.value[0] + '<br>' +
+                                params.value[1] + '<br>' +
+                                params.value[2] + '<br>' +
+                                params.value[3] + '<br>' +
+                                params.value[4] + '<br>' +
+                                params.value[5] + '<br>'
+                        } else {
+                            return params.name;
+                        }
                     }
-                    var color = this.handleColors(i);
-                    colors.push(color);
-                }
-                legend = [{
+                },
+                color: colors,
+                //类目
+                legend: [{
                     // selectedMode: 'single',
                     type: 'scroll',
                     orient: 'vertical',
@@ -711,39 +772,7 @@ export default {
                     data: graph.categories.map(function (a) {
                         return a.name;
                     })
-                }]
-            } else {
-                title = {
-                    text: '三角关系展示',
-                    subtext: 'Default layout',
-                    top: 'bottom',
-                    left: 'right'
-                }
-                tooltip = {
-                    formatter: function (params) {
-                        if (params.value != undefined) {
-                            return params.name + ':' + '<br>' +
-                                params.value[0] + '<br>' +
-                                params.value[1] + '<br>' +
-                                params.value[2] + '<br>' +
-                                params.value[3] + '<br>' +
-                                params.value[4] + '<br>'
-                        } else {
-                            return params.name;
-                        }
-                    }
-                }
-            }
-            for (let i = 0; i < graph.nodes.length; i++) {
-                graph.nodes[i].symbolSize = 10;
-            }
-            return {
-                //标题
-                title: title,
-                tooltip: tooltip,
-                color: colors,
-                //类目
-                legend: legend,
+                }],
                 animationDuration: 1500,
                 animationEasingUpdate: 'quinticInOut',
                 series: [{
