@@ -96,7 +96,13 @@ export default {
                         continue;
                     }
                     colorList.push('#' + colorStr);
-                }
+                };
+                //显示节点大小大于11的名称
+                // graph.nodes.forEach(function (node) {
+                //     node.label = {
+                //         show: node.symbolSize > 11
+                //     };
+                // });
                 //设置图的属性
                 var option = {
                     color: colorList,
@@ -123,6 +129,8 @@ export default {
                         links: graph.links,
                         categories: graph.categories,
                         roam: true,
+                        //将指定的节点以及其所有邻接节点高亮
+                        focusNodeAdjacency: true,
                         label: {
                             show: true, //不显示节点名称
                             position: 'right', //相对于节点标签的位置，默认在节点中间
