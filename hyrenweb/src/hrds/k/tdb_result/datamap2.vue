@@ -239,7 +239,7 @@
                                 边的属性
                             </el-col>
                             <el-col :span="16">
-                                <el-select v-model="form.relationship_triangle" placeholder="请选择边的属性" size="small" clearable>
+                                <el-select v-model="form.relationship_triangle" placeholder="请选择边的属性" size="small">
                                     <el-option v-for="item in options" :key="item.value" :value="item.value" />
                                 </el-select>
                             </el-col>
@@ -325,7 +325,7 @@ export default {
                 relationship_triangle: '',
                 limitNum_triangle: 100,
                 columnNodeName: '',
-                limitNum_neighbors: 100,
+                limitNum_neighbors: 10,
                 level_neighbors: 5,
             },
             checked_lpa: false,
@@ -412,11 +412,11 @@ export default {
             params["limitNum"] = this.form.limitNum_lpa;
             tdbFun.searchLabelPropagation(params).then(res => {
                 if (res && res.success) {
-                    var myChart = this.$echarts.init(document.getElementById('lpaChart'));
-                    myChart.showLoading();
-                    myChart.hideLoading();
+                    var lpaChart = this.$echarts.init(document.getElementById('lpaChart'));
+                    lpaChart.showLoading();
+                    lpaChart.hideLoading();
                     var option = this.getOption(res.data);
-                    myChart.setOption(option);
+                    lpaChart.setOption(option);
                 }
             })
         },
@@ -428,11 +428,11 @@ export default {
             params["limitNum"] = this.form.limitNum_louvain;
             tdbFun.searchLouVain(params).then(res => {
                 if (res && res.success) {
-                    var myChart = this.$echarts.init(document.getElementById('louvainChart'));
-                    myChart.showLoading();
-                    myChart.hideLoading();
+                    var louvainChart = this.$echarts.init(document.getElementById('louvainChart'));
+                    louvainChart.showLoading();
+                    louvainChart.hideLoading();
                     var option = this.getOption(res.data);
-                    myChart.setOption(option);
+                    louvainChart.setOption(option);
                 }
             })
         },
@@ -445,9 +445,9 @@ export default {
             params["limitNum"] = this.form.limitNum_allshort;
             tdbFun.searchAllShortPath(params).then(res => {
                 if (res && res.success) {
-                    var myChart = this.$echarts.init(document.getElementById('chart_allShort'));
-                    myChart.showLoading();
-                    myChart.hideLoading();
+                    var allShortChart = this.$echarts.init(document.getElementById('chart_allShort'));
+                    allShortChart.showLoading();
+                    allShortChart.hideLoading();
                     var graph = res.data;
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
@@ -507,15 +507,9 @@ export default {
                                 }
                             },
                             edgeSymbol: ["", "arrow"],
-                            lineStyle: {
-                                normal: {
-                                    color: 'source',
-                                    curveness: 0.3
-                                }
-                            }
                         }]
                     };
-                    myChart.setOption(option);
+                    allShortChart.setOption(option);
                 }
             })
         },
@@ -528,9 +522,9 @@ export default {
             params["limitNum"] = this.form.limitNum_longest;
             tdbFun.searchLongestPath(params).then(res => {
                 if (res && res.success) {
-                    var myChart = echarts.init(document.getElementById("chart_longest"))
-                    myChart.showLoading();
-                    myChart.hideLoading();
+                    var longestChart = echarts.init(document.getElementById("chart_longest"))
+                    longestChart.showLoading();
+                    longestChart.hideLoading();
                     var graph = res.data;
                     graph.nodes.forEach(function (node) {
                         node.symbolSize = 10;
@@ -590,15 +584,9 @@ export default {
                                 }
                             },
                             edgeSymbol: ["", "arrow"],
-                            lineStyle: {
-                                normal: {
-                                    color: 'source',
-                                    curveness: 0.3
-                                }
-                            }
                         }]
                     };
-                    myChart.setOption(option);
+                    longestChart.setOption(option);
                 }
             })
         },
@@ -611,9 +599,9 @@ export default {
             tdbFun.searchNeighbors(params).then(res => {
                 if (res && res.success) {
                     //远近关系       基本树形图
-                    var myChart = this.$echarts.init(document.getElementById('chart_nighbors'));
-                    myChart.showLoading();
-                    myChart.hideLoading();
+                    var nighborsChart = this.$echarts.init(document.getElementById('chart_nighbors'));
+                    nighborsChart.showLoading();
+                    nighborsChart.hideLoading();
                     res.data.children.forEach(function (datum, index) {
                         index % 2 === 0 && (datum.collapsed = true);
                     });
@@ -655,7 +643,7 @@ export default {
                             animationDurationUpdate: 750
                         }]
                     }
-                    myChart.setOption(option);
+                    nighborsChart.setOption(option);
                 }
             })
         },
@@ -667,13 +655,15 @@ export default {
             tdbFun.searchTriangleRelation(params).then(res => {
                 if (res && res.success) {
                     var graph = res.data;
-                    var myChart = this.$echarts.init(document.getElementById('chart_triangle'));
-                    myChart.showLoading();
-                    myChart.hideLoading();
+                    console.log(JSON.stringify(graph));
+                    var triangleChart = this.$echarts.init(document.getElementById('chart_triangle'));
+                    triangleChart.showLoading();
+                    triangleChart.hideLoading();
                     for (let i = 0; i < graph.nodes.length; i++) {
                         graph.nodes[i].symbolSize = 10;
                     }
                     var option = {
+                        color: '#57C7E3',
                         //标题
                         title: {
                             text: '三角关系展示',
@@ -709,9 +699,11 @@ export default {
                                 position: 'right',
                                 formatter: '{b}'
                             },
-                            lineStyle: {
-                                color: 'source',
-                                curveness: 0.3
+                            force: { //力引导图基本配置
+                                //initLayout: ,   //力引导的初始化布局，默认使用xy轴的标点
+                                repulsion: 100, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                                edgeLength: [5, 10], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                                layoutAnimation: true //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。                        
                             },
                             emphasis: {
                                 focus: 'adjacency',
@@ -721,7 +713,7 @@ export default {
                             }
                         }]
                     }
-                    myChart.setOption(option);
+                    triangleChart.setOption(option);
                 }
             })
         },
@@ -755,7 +747,6 @@ export default {
                 },
                 tooltip: {
                     formatter: function (params) {
-                        console.log(params);
                         if (params.value != undefined) {
                             // 显示节点信息
                             return params.name + ':' + '<br>' +
