@@ -16,7 +16,7 @@
             <el-button slot="append" icon="el-icon-search" @click="searchFromNeo4j(cypher)"></el-button>
         </el-input>
     </div> -->
-    <el-dialog title="选择图计算方式" :visible.sync="dialogShowGraph" :before-close="dialogShowGraphClose">
+    <el-dialog title="选择图计算方式" :visible.sync="dialogShowGraph" :before-close="dialogShowGraphClose" width="1000px">
         <el-form ref="form" :label-position="labelPosition" label-width="180px">
             <el-form-item label="1.LPA社区发现算法">
                 <el-row :gutter="5">
