@@ -26,7 +26,7 @@
     </el-row>
     <!--echarts图展示关系-->
     <div id="myChart" style="width: 100%; height: 580px " ref="myChart" />
-    <el-table :data="fieldSameResult" style="width: 100%" :height="600">
+    <el-table :data="fieldSameResult" style="width: 100%">
         <el-table-column prop="dim_order" label="分组序号" sortable></el-table-column>
         <el-table-column prop="table_code" label="表名" sortable></el-table-column>
         <el-table-column prop="col_code" label="字段名称" sortable></el-table-column>
@@ -168,16 +168,16 @@ export default {
             if (myChart._$handlers.click) {
                 myChart._$handlers.click.length = 0;
             }
-            // Enable data zoom when user click bar. 用户单击栏时启用数据缩放。
-            var zoomSize = 6;
             //添加点击事件
             const that = this;
             myChart.on('click', function (param) {
+                //点击柱子时,初始化分页配置
+                that.currPage = 1;
+                that.pageSize = 10;
                 let params = {};
-                params["search_condition"] = that.searchForm.search_condition;
                 params["category_same"] = seriesData[param.dataIndex].name;
-                params["currPage"] = that.currPage;
-                params["pageSize"] = that.pageSize;
+                //查询分类名设置为点击的分类名
+                that.category_same = seriesData[param.dataIndex].name;
                 tdbFun.getFieldSameResultByCategorysame(params).then(res => {
                     that.totalSize = res.data.totalSize;
                     that.fieldSameResult = res.data.fieldSameResult;
