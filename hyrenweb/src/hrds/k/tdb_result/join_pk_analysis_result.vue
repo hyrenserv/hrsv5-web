@@ -1,7 +1,7 @@
 <template>
 <div id='join_pk_analysis_result'>
     <el-row class='topTitle'>
-        <span class='el-icon-location'>联合主键分析结果</span>
+        <span class='el-icon-location'>联合主键及表函数分析结果</span>
         <router-link to="/tdb_result">
             <el-button type="primary" size="small" class="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
@@ -12,8 +12,11 @@
     <el-row>
         <el-col :span="6" :offset="10">
             <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="mini">
-                <el-form-item label="表名" prop="table_name">
-                    <el-input type="text" placeholder="表名" v-model="searchForm.table_name" />
+                <el-form-item label="表名" prop="table_name" title="表名称搜索">
+                    <!-- <el-input type="text" placeholder="表名" v-model="searchForm.table_name" /> -->
+                    <el-select v-model="searchForm.table_name" filterable placeholder="请选择" clearable>
+                        <el-option v-for="item in table_code_s" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" size="mini" @click="searchResults('searchForm')">搜索</el-button>
@@ -31,6 +34,7 @@ import * as tdbFun from "./tdb_result";
 export default {
     data() {
         return {
+            table_code_s: [],
             //搜索
             searchForm: { table_name: '' },
             //联合主键分析结果
@@ -40,14 +44,26 @@ export default {
         };
     },
     mounted() {
-        // //获取联合主键分析结果
-        // this.getJoinPKAnalysisResult();
-        // //获取表函数分析结果
-        // this.getTableFuncDepResult();
-        // //设置 echarsTree
-        // this.setEcharsTree("echarsTree");
+        this.getJoinPKAnalysisAndTableFuncDepTableCodeList();
     },
     methods: {
+        //获取表联合主键和表函数分析表名list
+        getJoinPKAnalysisAndTableFuncDepTableCodeList() {
+            tdbFun.getJoinPKAnalysisAndTableFuncDepTableCodeList().then(res => {
+                let table_code_list = [];
+                table_code_list = res.data;
+                table_code_list.forEach(table_code => {
+                    let table_code_info = {};
+                    table_code_info["lable"] = table_code;
+                    table_code_info["value"] = table_code;
+                    this.table_code_s.push(table_code_info);
+                });
+                //页面加载完成后,默认显示第一张表的分析结果
+                this.searchForm.table_name = table_code_list[0];
+                this.getJoinPKAnalysisResult();
+                this.getTableFuncDepResult();
+            })
+        },
         //根据搜索条件获取搜索结果
         searchResults() {
             this.getJoinPKAnalysisResult();
