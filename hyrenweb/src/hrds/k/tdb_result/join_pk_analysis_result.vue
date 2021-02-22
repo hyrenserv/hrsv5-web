@@ -76,7 +76,7 @@ export default {
             myChart.hideLoading(); //得到数据后隐藏Loading标志
             //间隔展开子数据 table_func_dep_result:表函数分析结果树 默认展开2层
             echarts.util.each(this.table_func_dep_result.children, function (datum, index) {
-                index % 1 === 0 && (datum.collapsed = true);
+                index % 2 === 0 && (datum.collapsed = true);
             });
             var option = {
                 tooltip: { //提示框组件
