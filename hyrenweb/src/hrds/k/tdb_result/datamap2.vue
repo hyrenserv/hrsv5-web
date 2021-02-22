@@ -731,8 +731,16 @@ export default {
                 graph.categories[i] = {
                     name: '社区' + i
                 }
-                var color = this.handleColors(i);
-                colors.push(color);
+                var colorStr = Math.floor(Math.random() * 0xffffff).toString(16);
+                //如果颜色值是五位，则补零
+                if (colorStr.length < 6) {
+                    colorStr += '0';
+                }
+                if (colorStr == '005094') {
+                    i--;
+                    continue;
+                }
+                colors.push('#' + colorStr);
             }
             for (let i = 0; i < graph.nodes.length; i++) {
                 graph.nodes[i].symbolSize = 10;
@@ -747,7 +755,9 @@ export default {
                 },
                 tooltip: {
                     formatter: function (params) {
+                        console.log(params);
                         if (params.value != undefined) {
+                            // 显示节点信息
                             return params.name + ':' + '<br>' +
                                 params.value[0] + '<br>' +
                                 params.value[1] + '<br>' +
@@ -756,7 +766,8 @@ export default {
                                 params.value[4] + '<br>' +
                                 params.value[5] + '<br>'
                         } else {
-                            return params.name;
+                            // 显示节点连线信息
+                            return params.name + '<br>' + "realtionType:" + params.data.relationType;
                         }
                     }
                 },
@@ -782,8 +793,13 @@ export default {
                     data: graph.nodes,
                     links: graph.links,
                     categories: graph.categories,
-                    roam: true,
+                    edgeSymbol: ['circle', 'arrow'], //边两端的标记类型,是否显示关系走向
+                    edgeSymbolSize: [2, 4], //边两端的标记大小,剪头大小
+                    roam: true, //是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+                    legendHoverLink: true, //是否启用图例 hover(悬停) 时的联动高亮。
+                    focusNodeAdjacency: true, //将指定的节点以及其所有邻接节点高亮。
                     label: {
+                        // show:true,
                         position: 'right',
                         formatter: '{b}'
                     },
