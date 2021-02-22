@@ -44,6 +44,8 @@ export default {
         };
     },
     mounted() {
+        //打开提示信息
+        this.open();
         this.getJoinPKAnalysisAndTableFuncDepTableCodeList();
     },
     methods: {
@@ -176,6 +178,14 @@ export default {
             };
             option && myChart.setOption(option);
         },
+        //页面提示
+        open() {
+            this.$notify({
+                title: '提示',
+                message: '字段依赖是指表内，左边一个或多个字段可以唯一查询到右边字段。左边字段为空，则说明，右边字段在表中为空或者是唯一值，不依赖任何字段就可以确定它的值。每张表的分组排序在最前面的左边字段，有较大概率为主键或者联合主键。',
+                duration: 0
+            });
+        }
     }
 }
 </script>
