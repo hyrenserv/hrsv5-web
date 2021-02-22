@@ -14,7 +14,7 @@
             <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="mini">
                 <el-form-item label="表名" prop="table_code" title="表名称搜索">
                     <!-- <el-input type="text" placeholder="表名" v-model="searchForm.table_code" /> -->
-                    <el-select v-model="searchForm.table_code" filterable placeholder="请选择">
+                    <el-select v-model="searchForm.table_code" filterable placeholder="请选择" clearable>
                         <el-option v-for="item in table_code_s" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -65,7 +65,7 @@ export default {
         return {
             table_code_s: [],
             //搜索
-            searchForm: { table_code: 'S10_I_AGENT_ACCOUNTS' },
+            searchForm: { table_code: '' },
         };
     },
     mounted() {
@@ -83,6 +83,9 @@ export default {
                     table_code_info["value"] = table_code;
                     this.table_code_s.push(table_code_info);
                 });
+                //页面加载完成后,默认显示第一张表的统计信息
+                this.searchForm.table_code = table_code_list[0];
+                this.searchFieldFeatureAnalysisResults();
             });
         },
         //根据表名获取字段特征分析结果

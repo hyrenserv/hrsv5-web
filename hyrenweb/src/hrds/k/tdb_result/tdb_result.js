@@ -8,6 +8,14 @@ export function getPageTablePkData(data) {
         params: data
     })
 }
+//获取表联合主键和表函数分析表名list
+export function getJoinPKAnalysisAndTableFuncDepTableCodeList(data) {
+    return request({
+        url: '/K/tdbresult/getJoinPKAnalysisAndTableFuncDepTableCodeList',
+        method: 'post',
+        params: data
+    })
+}
 //获取表联合主键分析结果
 export function getPageTableJoinPkData(data) {
     return request({

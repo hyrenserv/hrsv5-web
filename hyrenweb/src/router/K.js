@@ -87,7 +87,7 @@ export default [
 			{ name: '首页' },
 			{ name: '数据对标' },
 			{ name: '数据对标结果',url:'tdb_result' },
-			{ name: '联合主键分析结果' },
+			{ name: '联合主键及表函数分析结果' },
 		],
     },
     {
