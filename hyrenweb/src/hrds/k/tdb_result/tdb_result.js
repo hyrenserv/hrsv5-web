@@ -168,3 +168,10 @@ export function searchTriangleRelation(data) {
         params: data
     })
 }
+//查询所有字段信息
+export function searchAllColumnOfNodes() {
+    return request({
+        url: '/K/tdbresult/searchAllColumnOfNodes',
+        method: 'post',
+    })
+}

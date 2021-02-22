@@ -314,17 +314,17 @@ export default {
                 iterations_lpa: 5,
                 relationship_louvain: '',
                 iterations_louvain: 5,
-                columnNodeName1_longest: '',
-                columnNodeName2_longest: '',
+                columnNodeName1_longest: 'S10_I_CHOU_ACCT_CAT_HOU_KIND',
+                columnNodeName2_longest: 'S10_I_CHOU_ACCT_CAT_OWN_NAME',
                 limitNum_longest: 100,
                 level_longest: 5,
-                columnNodeName1_allshort: '',
-                columnNodeName2_allshort: '',
+                columnNodeName1_allshort: 'S10_I_CHOU_ACCT_CAT_HOU_KIND',
+                columnNodeName2_allshort: 'S10_I_CHOU_ACCT_CAT_OWN_NAME',
                 limitNum_allshort: 100,
                 level_allshort: 5,
                 relationship_triangle: '',
                 limitNum_triangle: 100,
-                columnNodeName: '',
+                columnNodeName: 'S10_I_CHOU_ACCT_CAT_HOU_KIND',
                 limitNum_neighbors: 10,
                 level_neighbors: 5,
             },
@@ -345,14 +345,25 @@ export default {
             }, {
                 value: 'BFD'
             }],
+            columnData:[]
         }
     },
-    mounted() {},
+    mounted() {
+        this.searchAllColumnOfNodes();
+    },
     methods: {
         goIndex() {
             this.$router.push({
                 name: '/tdb_result',
             });
+        },
+        // 查询所有字段节点
+        searchAllColumnOfNodes(){
+             tdbFun.searchAllColumnOfNodes().then(res => {
+                if (res && res.success) {
+                   this.columnData
+                }
+            })   
         },
         graphSetting() {
             this.dialogShowGraph = true;
