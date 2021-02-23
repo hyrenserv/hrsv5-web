@@ -24,31 +24,30 @@
             </el-form>
         </el-col>
     </el-row>
-    <!-- <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="table_code" label="表名" sortable width="240"></el-table-column>
-        <el-table-column prop="col_code" label="字段名" width="200"></el-table-column>
-        <el-table-column prop="col_records" label="总记录数" width="120"></el-table-column>
-        <el-table-column prop="col_distinct" label="去重记录数" width="120"></el-table-column>
-        <el-table-column prop="max_len" label="最大长度" width="120"></el-table-column>
-        <el-table-column prop="min_len" label="最小长度" width="120"></el-table-column>
-        <el-table-column prop="avg_len" label="平均长度" width="120"></el-table-column>
-        <el-table-column prop="skew_len" label="平均长度偏度" width="120"></el-table-column>
-        <el-table-column prop="kurt_len" label="平均长度峰度" width="120"></el-table-column>
-        <el-table-column prop="median_len" label="平均长度中位数" width="120"></el-table-column>
-        <el-table-column prop="var_len" label="平均长度方差" width="120"></el-table-column>
-        <el-table-column prop="has_chinese" label="是否包含中文" width="120"></el-table-column>
-        <el-table-column prop="tech_cate" label="技术分类" width="120"></el-table-column>
-        <el-table-column align="right" width="180">
-            <template slot="header" slot-scope="scope" >
-                <el-input v-model="table_code" size="mini" @keyup.enter.native="fitterTableData()" placeholder="输入表名搜索" />
-            </template>
-        </el-table-column>
-    </el-table>
-    <el-pagination style="text-align: center" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currPage" :page-sizes="[10, 25, 50, 100, 200]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
-    </el-pagination> -->
-    <!--echarts图展示关系-->
-    <div id="recordStatisticsChart" style="width: 100%; height: 550px " ref="recordStatisticsChart" />
-    <div id="lengthStatisticsChart" style="width: 100%; height: 550px " ref="lengthStatisticsChart" />
+    <el-tabs :tab-position="tabPosition" style="height: 500px;">
+        <el-tab-pane label="图表展示">
+            <!--echarts图展示关系-->
+            <div id="recordStatisticsChart" style="width: 100%; height: 550px " ref="recordStatisticsChart" />
+            <div id="lengthStatisticsChart" style="width: 100%; height: 550px " ref="lengthStatisticsChart" />
+        </el-tab-pane>
+        <el-tab-pane label="表格展示">
+            <el-row class='topTitle'>表名: {{searchForm.table_code}}</el-row>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="col_code" label="字段名" align="center" min-width="20%" ></el-table-column>
+                <el-table-column prop="col_records" label="总记录数" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="col_distinct" label="去重记录数" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="max_len" label="最大长度" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="min_len" label="最小长度" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="avg_len" label="平均长度" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="skew_len" label="偏度" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="kurt_len" label="峰度" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="median_len" label="中位数" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="var_len" label="方差" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="has_chinese" label="包含中文" align="center" min-width="10%"></el-table-column>
+                <el-table-column prop="tech_cate" label="分类" align="center" min-width="10%"></el-table-column>
+            </el-table>
+        </el-tab-pane>
+    </el-tabs>
 </div>
 </template>
 
@@ -57,12 +56,18 @@ import * as tdbFun from "./tdb_result";
 export default {
     data() {
         return {
+            //默认便签
+            tabPosition: '图表展示',
+            //下拉框表名列表
             table_code_s: [],
             //搜索
             searchForm: { table_code: '' },
+            //表格需要展示的数据
+            tableData: [],
         };
     },
     mounted() {
+        //获取特征分析表名list
         this.getColumnFeatureAnalysisTableCodeList();
     },
     methods: {
@@ -79,10 +84,21 @@ export default {
                 });
                 //页面加载完成后,默认显示第一张表的统计信息
                 this.searchForm.table_code = table_code_list[0];
+                //获取图表展示数据
                 this.searchFieldFeatureAnalysisResults();
+                //获取表格展示数据
+                this.getColumnFeatureAnalysisResult();
             });
         },
-        //根据表名获取字段特征分析结果
+        //根据表名获取字段特征分析结果表格数据
+        getColumnFeatureAnalysisResult() {
+            let params = {};
+            params["table_code"] = this.searchForm.table_code;
+            tdbFun.getColumnFeatureAnalysisResult(params).then(res => {
+                this.tableData = res.data;
+            })
+        },
+        //根据表名获取字段特征分析结果图表数据
         searchFieldFeatureAnalysisResults() {
             let params = {};
             params["table_code"] = this.searchForm.table_code;
