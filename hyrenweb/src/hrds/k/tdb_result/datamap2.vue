@@ -567,7 +567,6 @@ export default {
             echart.hideLoading();
             return echart;
         },
-
         // LPA社区发现算法
         searchLabelPropagation() {
             var params = {};
@@ -972,6 +971,7 @@ export default {
                             categories: graph.categories,
                             roam: true,
                             label: {
+                                show:true,
                                 position: 'right',
                                 formatter: '{b}'
                             },
