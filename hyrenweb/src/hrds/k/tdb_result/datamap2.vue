@@ -356,11 +356,11 @@ export default {
             dialogShowGraph: false,
             labelPosition: 'right',
             form: {
-                relationship: '',
+                relationship: 'FK',
                 limitNum: 100,
-                relationship_lpa: '',
+                relationship_lpa: 'FK',
                 iterations_lpa: 5,
-                relationship_louvain: '',
+                relationship_louvain: 'FK',
                 iterations_louvain: 5,
                 columnNodeName1_longest: '',
                 columnNodeName2_longest: '',
@@ -370,7 +370,7 @@ export default {
                 columnNodeName2_allshort: '',
                 limitNum_allshort: 100,
                 level_allshort: 5,
-                relationship_triangle: '',
+                relationship_triangle: 'FK',
                 limitNum_triangle: 100,
                 columnNodeName: '',
                 limitNum_neighbors: 10,
@@ -399,6 +399,7 @@ export default {
     },
     mounted() {
         this.searchAllColumnOfNodes();
+        this.searchColumnOfRelation();
     },
     methods: {
         goIndex() {
@@ -411,6 +412,11 @@ export default {
             tdbFun.searchAllColumnOfNodes().then(res => {
                 if (res && res.success) {
                     this.columnData = res.data;
+                    this.form.columnNodeName1_allshort = this.columnData[0];
+                    this.form.columnNodeName2_allshort = this.columnData[1];
+                    this.form.columnNodeName1_longest = this.columnData[0];
+                    this.form.columnNodeName2_longest = this.columnData[1];
+                    this.form.columnNodeName = this.columnData[0];
                 }
             })
         },
@@ -487,7 +493,7 @@ export default {
                             name: graph.nodes[i].name
                         })
                         graph.nodes[i].label = {
-                            show: graph.nodes.length<= 200
+                            show: graph.nodes.length <= 200
                         };
                     }
                     graph.categories = categories;
@@ -715,7 +721,24 @@ export default {
                             top: 'bottom',
                             left: 'right'
                         },
-                        tooltip: {},
+                        tooltip: {
+                            formatter: function (params) {
+                                console.log(params);
+                                if (params.value != undefined) {
+                                    // 显示节点信息
+                                    return params.name + ':' + '<br>' +
+                                        params.value[0] + '<br>' +
+                                        params.value[1] + '<br>' +
+                                        params.value[2] + '<br>' +
+                                        params.value[3] + '<br>' +
+                                        params.value[4] + '<br>' +
+                                        params.value[5] + '<br>'
+                                } else {
+                                    // 显示节点连线信息
+                                    return params.name + '<br>' + "realtionType:" + params.data.relationType;
+                                }
+                            }
+                        },
                         legend: [{
                             data: graph.categories.map(function (a) {
                                 return a.name;
@@ -792,7 +815,24 @@ export default {
                             top: 'bottom',
                             left: 'right'
                         },
-                        tooltip: {},
+                        tooltip: {
+                            formatter: function (params) {
+                                console.log(params);
+                                if (params.value != undefined) {
+                                    // 显示节点信息
+                                    return params.name + ':' + '<br>' +
+                                        params.value[0] + '<br>' +
+                                        params.value[1] + '<br>' +
+                                        params.value[2] + '<br>' +
+                                        params.value[3] + '<br>' +
+                                        params.value[4] + '<br>' +
+                                        params.value[5] + '<br>'
+                                } else {
+                                    // 显示节点连线信息
+                                    return params.name + '<br>' + "realtionType:" + params.data.relationType;
+                                }
+                            }
+                        },
                         legend: [{
                             data: graph.categories.map(function (a) {
                                 return a.name;
