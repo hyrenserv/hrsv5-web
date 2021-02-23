@@ -8,6 +8,22 @@ export function getPageTablePkData(data) {
         params: data
     })
 }
+//获取表主键分析表名列表
+export function getPKAnalysisTableCodeList(data) {
+    return request({
+        url: '/K/tdbresult/getPKAnalysisTableCodeList',
+        method: 'post',
+        params: data
+    })
+}
+//根据表名获取表主键分析结果
+export function searchPKAnalysisResult(data) {
+    return request({
+        url: '/K/tdbresult/searchPKAnalysisResult',
+        method: 'post',
+        params: data
+    })
+}
 //获取表联合主键和表函数分析表名list
 export function getJoinPKAnalysisAndTableFuncDepTableCodeList(data) {
     return request({

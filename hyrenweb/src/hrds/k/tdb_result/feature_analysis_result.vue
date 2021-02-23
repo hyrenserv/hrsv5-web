@@ -47,14 +47,8 @@
     <el-pagination style="text-align: center" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currPage" :page-sizes="[10, 25, 50, 100, 200]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
     </el-pagination> -->
     <!--echarts图展示关系-->
-    <el-row>
-        <el-col :span="12">
-            <div id="recordStatisticsChart" style="width: 100%; height: 550px " ref="recordStatisticsChart" />
-        </el-col>
-        <el-col :span="12">
-            <div id="lengthStatisticsChart" style="width: 100%; height: 550px " ref="lengthStatisticsChart" />
-        </el-col>
-    </el-row>
+    <div id="recordStatisticsChart" style="width: 100%; height: 550px " ref="recordStatisticsChart" />
+    <div id="lengthStatisticsChart" style="width: 100%; height: 550px " ref="lengthStatisticsChart" />
 </div>
 </template>
 
@@ -101,7 +95,14 @@ export default {
         },
         //记录数柱状图
         recordStatisticsChartBar(data) {
-            var myChart = this.$echarts.init(document.getElementById('recordStatisticsChart'));
+            var myChart = this.$echarts.init(document.getElementById('recordStatisticsChart')); //初始化记录数柱状图
+            var len = data.column_name_s.length;
+            var dataZoom_end = null; //为空默认100%所以默认显示5个是能显示下的
+            if (len > 10) {
+                var dataZoom_end = (10 / len) * 100;
+            } else if (len < 10) {
+                var dataZoom_end = (10 / len) * 100;
+            };
             var option = {
                 color: ['#5470c6', '#91cc75'],
                 title: {
@@ -121,27 +122,36 @@ export default {
                     bottom: 10,
                     data: ['总记录数', '去重记录数']
                 },
-                grid: {
-                    top: '15%',
-                    left: '5%',
-                    right: '5%',
-                    bottom: '5%',
-                    containLabel: true
-                },
-                xAxis: [{
-                    axisLabel: {
-                        interval: 0,
-                        rotate: 30
-                    },
+                grid: { top: '15%', left: '5%', right: '5%', bottom: '5%', containLabel: true }, //所在网格设置
+                xAxis: [{ //X 轴设置
+                    name: '字段名',
+                    axisLabel: { interval: 0, rotate: 30 }, //x轴栏目字体斜度
                     type: 'category',
                     data: data.column_name_s,
                 }],
-                yAxis: [{
-                    type: 'value'
+                yAxis: [{ type: 'value', name: '记录统计数', }], //Y 轴设置
+                //开启鼠标滚动
+                dataZoom: [{
+                    start: 0,
+                    end: dataZoom_end,
+                    type: 'slider',
+                    show: true,
+                    xAxisIndex: [0],
+                    handleSize: 0,
+                    height: 10,
+                    left: '10%',
+                    right: '10%',
+                    bottom: 26,
+                    showDataShadow: true,
+                    showDetail: false,
+                    realtime: true,
+                    filterMode: 'filter',
                 }],
                 series: [{
                         name: '总记录数',
                         type: 'bar',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 30,
                         emphasis: {
                             focus: 'series'
                         },
@@ -150,7 +160,9 @@ export default {
                     {
                         name: '去重记录数',
                         type: 'bar',
+                        label: { show: true }, //显示柱子统计数量
                         stack: '广告',
+                        barWidth: 30,
                         emphasis: {
                             focus: 'series'
                         },
@@ -162,7 +174,14 @@ export default {
         },
         //长度统计图
         lengthStatisticsChartBar(data) {
-            var myChart = this.$echarts.init(document.getElementById('lengthStatisticsChart'));
+            var myChart = this.$echarts.init(document.getElementById('lengthStatisticsChart')); //初始化长度统计图
+            var len = data.column_name_s.length;
+            var dataZoom_end = null; //为空默认100%所以默认显示5个是能显示下的
+            if (len > 5) {
+                var dataZoom_end = (5 / len) * 100;
+            } else if (len < 5) {
+                var dataZoom_end = (5 / len) * 100;
+            };
             var option = {
                 color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
                 title: {
@@ -203,16 +222,33 @@ export default {
                         interval: 0,
                         rotate: 30
                     },
+                    name: '字段名',
                     type: 'category',
                     data: data.column_name_s,
                 }],
-                yAxis: [{
-                    type: 'value'
+                yAxis: [{ type: 'value', name: '长度统计数', }],
+                //开启鼠标滚动
+                dataZoom: [{
+                    start: 0,
+                    end: dataZoom_end,
+                    type: 'slider',
+                    show: true,
+                    xAxisIndex: [0],
+                    handleSize: 0,
+                    height: 10,
+                    left: '10%',
+                    right: '10%',
+                    bottom: 26,
+                    showDataShadow: true,
+                    showDetail: false,
+                    realtime: true,
+                    filterMode: 'filter',
                 }],
                 series: [{
                         name: '最大长度',
                         type: 'bar',
-                        stack: '其他',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 20,
                         emphasis: {
                             focus: 'series'
                         },
@@ -220,7 +256,8 @@ export default {
                     }, {
                         name: '最小长度',
                         type: 'bar',
-                        stack: '其他',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 20,
                         emphasis: {
                             focus: 'series'
                         },
@@ -228,7 +265,8 @@ export default {
                     }, {
                         name: '平均长度',
                         type: 'bar',
-                        stack: '其他',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 20,
                         emphasis: {
                             focus: 'series'
                         },
@@ -237,7 +275,8 @@ export default {
                     {
                         name: '偏度',
                         type: 'bar',
-                        stack: '其他',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 20,
                         emphasis: {
                             focus: 'series'
                         },
@@ -246,7 +285,8 @@ export default {
                     {
                         name: '峰度',
                         type: 'bar',
-                        stack: '其他',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 20,
                         emphasis: {
                             focus: 'series'
                         },
@@ -255,7 +295,8 @@ export default {
                     {
                         name: '中位数',
                         type: 'bar',
-                        stack: '其他',
+                        barWidth: 20,
+                        label: { show: true }, //显示柱子统计数量
                         emphasis: {
                             focus: 'series'
                         },
@@ -264,6 +305,8 @@ export default {
                     {
                         name: '方差',
                         type: 'bar',
+                        label: { show: true }, //显示柱子统计数量
+                        barWidth: 20,
                         stack: '其他',
                         emphasis: {
                             focus: 'series'
