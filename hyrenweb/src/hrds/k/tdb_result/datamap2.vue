@@ -6,7 +6,7 @@
             <el-button type="primary" size="small" @click="goIndex">
                 <i class="fa fa-home fa-lg"></i>返回首页
             </el-button>
-            <el-button type="primary" size="mini" @click="graphSetting">
+            <el-button type="primary" size="mini" @click="graphSetting" style="margin-botom:30px">
                 <i class="el-icon-setting"></i>选择图计算方式
             </el-button>
         </div>
@@ -404,7 +404,7 @@ export default {
     methods: {
         goIndex() {
             this.$router.push({
-                name: '/tdb_result',
+                name: 'tdb_result',
             });
         },
         // 查询所有字段节点
