@@ -26,6 +26,7 @@
     </el-row>
     <!--echarts图展示关系-->
     <div id="myChart" style="width: 100%; height: 580px " ref="myChart" />
+    <el-row class='topTitle'>分类编号: {{category_same}}</el-row>
     <el-table :data="fieldSameResult" style="width: 100%">
         <el-table-column prop="dim_order" label="分组序号" sortable></el-table-column>
         <el-table-column prop="table_code" label="表名" sortable></el-table-column>
@@ -116,10 +117,10 @@ export default {
             }
             var option = {
                 title: {
-                    text: '数据对标结果',
-                    subtext: '字段相同分类统计结果'
+                    text: '字段相同分类统计结果',
                 },
                 xAxis: {
+                    name: '分类编号',
                     data: dataAxis,
                     axisLabel: {
                         inside: true,
@@ -130,6 +131,7 @@ export default {
                     z: 10
                 },
                 yAxis: {
+                    name: '类别统计',
                     axisLine: { show: false },
                     axisTick: { show: false },
                     axisLabel: { textStyle: { color: '#999' } }
