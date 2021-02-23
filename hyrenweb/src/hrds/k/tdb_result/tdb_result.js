@@ -175,3 +175,11 @@ export function searchAllColumnOfNodes() {
         method: 'post',
     })
 }
+//查询所有字段关系信息
+export function searchColumnOfRelation(data) {
+    return request({
+        url: '/K/tdbresult/searchColumnOfRelation',
+        method: 'post',
+        params:data
+    })
+}
