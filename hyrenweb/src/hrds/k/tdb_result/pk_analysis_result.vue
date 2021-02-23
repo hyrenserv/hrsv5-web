@@ -8,21 +8,30 @@
             </el-button>
         </router-link>
     </el-row>
-    <el-table :data="tableData" style="width: 100%" :height="600">
-        <el-table-column prop="col_num" label="分组序号" sortable width="150"></el-table-column>
-        <el-table-column prop="table_code" label="表名" sortable width="300"></el-table-column>
-        <el-table-column prop="col_code" label="字段名" width="300"></el-table-column>
-        <el-table-column prop="col_type" label="预测字段类型" width="180"></el-table-column>
-        <el-table-column prop="col_nullable" label="是否可为空" width="120"></el-table-column>
-        <el-table-column prop="col_pk" label="是否为主键" width="120"></el-table-column>
-        <el-table-column align="right">
-            <template slot="header" slot-scope="scope" >
-                <el-input v-model="table_code" size="mini" @keyup.enter.native="fitterTableData()" placeholder="输入表名搜索" />
-            </template>
-        </el-table-column>
+    <!-- 搜索框 -->
+    <el-row>
+        <el-col :span="6" :offset="9">
+            <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="mini">
+                <el-form-item label="表名" prop="table_code" title="表名称搜索">
+                    <!-- <el-input type="text" placeholder="表名" v-model="searchForm.table_code" /> -->
+                    <el-select v-model="searchForm.table_code" filterable placeholder="请选择" clearable>
+                        <el-option v-for="item in table_code_s" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" size="mini" @click="searchPKAnalysisResult()">搜索</el-button>
+                </el-form-item>
+            </el-form>
+        </el-col>
+    </el-row>
+    <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="col_num" align="center" label="序号" min-width="10%" sortable></el-table-column>
+        <el-table-column prop="table_code" align="center" label="表名" min-width="30%" sortable></el-table-column>
+        <el-table-column prop="col_code" align="center" label="字段名" min-width="20%" sortable></el-table-column>
+        <el-table-column prop="col_type" align="center" label="预测字段类型" min-width="20%" sortable></el-table-column>
+        <el-table-column prop="col_nullable" align="center" label="是否可为空" min-width="10%" sortable></el-table-column>
+        <el-table-column prop="col_pk" align="center" label="是否为主键" min-width="10%" sortable></el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currPage" :page-sizes="[10, 25, 50, 100, 200]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
-    </el-pagination>
 </div>
 </template>
 
@@ -31,42 +40,45 @@ import * as tdbFun from "./tdb_result";
 export default {
     data() {
         return {
-            currPage: 1,
-            table_code: '',
+            //下拉列表信息
+            table_code_s: [],
+            //搜索
+            searchForm: { table_code: '' },
+            //主键分析结果信息
             tableData: [],
-            pageSize: 10,
-            totalSize: 0,
         };
     },
     mounted() {
-        this.getTableData();
+        //获取主键分析结果表名列表
+        this.getPKAnalysisTableCodeList();
     },
     methods: {
-        handleSizeChange(val) {
-            this.pageSize = val;
-            this.getTableData();
+        //获取字段特征分析表名列表
+        getPKAnalysisTableCodeList() {
+            tdbFun.getPKAnalysisTableCodeList().then(res => {
+                let table_code_list = [];
+                table_code_list = res.data;
+                table_code_list.forEach(table_code => {
+                    let table_code_info = {};
+                    table_code_info["lable"] = table_code;
+                    table_code_info["value"] = table_code;
+                    this.table_code_s.push(table_code_info);
+                });
+                //页面加载完成后,默认显示第一张表的统计信息
+                this.searchForm.table_code = table_code_list[0];
+                this.searchPKAnalysisResult();
+            });
         },
-        handleCurrentChange(val) {
-            this.currPage = val;
-            this.getTableData();
-        },
-        fitterTableData(){
-            this.currPage = 1;
-            this.getTableData();
-        },
-        getTableData() {
+        //根据表名获取主键分析结果
+        searchPKAnalysisResult() {
             let params = {};
-            params["table_code"] = this.table_code;
-            params["currPage"] = this.currPage;
-            params["pageSize"] = this.pageSize;
-            this.getPageTablePkData(params);
-        },
-        getPageTablePkData(params) {
-            tdbFun.getPageTablePkData(params).then(res => {
-                this.totalSize = res.data.totalSize;
-                this.tableData = res.data.tablePkData;
+            params["table_code"] = this.searchForm.table_code;
+            console.log(params);
+            tdbFun.searchPKAnalysisResult(params).then(res => {
+                console.log(res.data);
+                this.tableData = res.data
             })
-        }
+        },
     }
 }
 </script>
