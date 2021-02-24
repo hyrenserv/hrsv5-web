@@ -11,11 +11,6 @@
             </el-button>
         </div>
     </el-row>
-    <!-- <div style="margin-top: 15px;">
-        <el-input placeholder="请输入内容" v-model="cypher" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search" @click="searchFromNeo4j(cypher)"></el-button>
-        </el-input>
-    </div> -->
     <el-dialog title="选择图计算方式" :visible.sync="dialogShowGraph" :before-close="dialogShowGraphClose" width="1000px">
         <el-form ref="form" :label-position="labelPosition" label-width="180px">
             <el-form-item label="节点数据分析">
@@ -71,16 +66,6 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <!-- <el-col :span="7">
-                        <el-row>
-                            <el-col :span="10">
-                                查询前多少条
-                            </el-col>
-                            <el-col :span="14">
-                                <el-input v-model="form.limitNum_lpa" placeholder="查询前多少条" size="small" />
-                            </el-col>
-                        </el-row>
-                    </el-col> -->
                     <el-col :span="2">
                         <el-checkbox v-model="checked_lpa" />
                     </el-col>
@@ -110,16 +95,6 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <!-- <el-col :span="7">
-                        <el-row>
-                            <el-col :span="10">
-                                查询前多少条
-                            </el-col>
-                            <el-col :span="14">
-                                <el-input v-model="form.limitNum_louvain" placeholder="查询前多少条" size="small" />
-                            </el-col>
-                        </el-row>
-                    </el-col> -->
                     <el-col :span="2">
                         <el-checkbox v-model="checked_louvain" />
                     </el-col>
@@ -136,7 +111,6 @@
                                 <el-select v-model="form.columnNodeName1_allshort" filterable placeholder="请选择" clearable size="small">
                                     <el-option v-for="item in columnData" :key="item" :label="item" :value="item"></el-option>
                                 </el-select>
-                                <!-- <el-input v-model="form.columnNodeName1_allshort" placeholder="第一个字段的节点名称" size="small" /> -->
                             </el-col>
                         </el-row>
                     </el-col>
@@ -149,7 +123,6 @@
                                 <el-select v-model="form.columnNodeName2_allshort" filterable placeholder="请选择" clearable size="small">
                                     <el-option v-for="item in columnData" :key="item" :label="item" :value="item"></el-option>
                                 </el-select>
-                                <!-- <el-input v-model="form.columnNodeName2_allshort" placeholder="第二个字段的节点名称" size="small" /> -->
                             </el-col>
                         </el-row>
                     </el-col>
@@ -191,7 +164,6 @@
                                 <el-select v-model="form.columnNodeName1_longest" filterable placeholder="请选择" clearable size="small">
                                     <el-option v-for="item in columnData" :key="item" :label="item" :value="item"></el-option>
                                 </el-select>
-                                <!-- <el-input v-model="form.columnNodeName1_longest" placeholder="第一个字段的节点名称" size="small" /> -->
                             </el-col>
                         </el-row>
                     </el-col>
@@ -204,7 +176,6 @@
                                 <el-select v-model="form.columnNodeName2_longest" filterable placeholder="请选择" clearable size="small">
                                     <el-option v-for="item in columnData" :key="item" :label="item" :value="item"></el-option>
                                 </el-select>
-                                <!-- <el-input v-model="form.columnNodeName2_longest" placeholder="第二个字段的节点名称" size="small" /> -->
                             </el-col>
                         </el-row>
                     </el-col>
@@ -246,7 +217,6 @@
                                 <el-select v-model="form.columnNodeName" filterable placeholder="请选择" clearable size="small">
                                     <el-option v-for="item in columnData" :key="item" :label="item" :value="item"></el-option>
                                 </el-select>
-                                <!-- <el-input v-model="form.columnNodeName" placeholder="字段的节点名称" size="small" /> -->
                             </el-col>
                         </el-row>
                     </el-col>
@@ -319,9 +289,9 @@
         <el-tab-pane label="LOUVAIN" name="three">
         </el-tab-pane>
     </el-tabs>
-    <div id="myChart" v-if="activeName=='first'" style="height:800px;width:100%"></div>
-    <div id="lpaChart" v-if="activeName=='second'" style="height:800px;width:100%"></div>
-    <div id="louvainChart" v-if="activeName=='three'" style="height:800px;width:100%"></div>
+    <div id="myChart" v-if="activeName=='first'" style="height:600px;width:100%"></div>
+    <div id="lpaChart" v-if="activeName=='second'" style="height:600px;width:100%"></div>
+    <div id="louvainChart" v-if="activeName=='three'" style="height:600px;width:100%"></div>
     <el-divider />
     <el-row>
         <el-col :span="11">
@@ -335,7 +305,7 @@
     </el-row>
     <el-divider />
     <span class="el-icon-view">远近邻关系</span>
-    <div id="nighborsChart" style="height:600px;width:90%"></div>
+    <div id="neighborsChart" style="height:600px;width:100%"></div>
     <el-divider />
     <span class="el-icon-view">三角关系</span>
     <div id="triangleChart" style="height:600px;width:100%"></div>
@@ -351,16 +321,15 @@ export default {
     },
     data() {
         return {
-            // cypher: "MATCH p=()-[r:FK]->() RETURN p LIMIT 5",
             activeName: 'first',
             dialogShowGraph: false,
             labelPosition: 'right',
             form: {
                 relationship: 'FK',
                 limitNum: 100,
-                relationship_lpa: 'FK',
+                relationship_lpa: '',
                 iterations_lpa: 5,
-                relationship_louvain: 'FK',
+                relationship_louvain: '',
                 iterations_louvain: 5,
                 columnNodeName1_longest: '',
                 columnNodeName2_longest: '',
@@ -370,7 +339,7 @@ export default {
                 columnNodeName2_allshort: '',
                 limitNum_allshort: 100,
                 level_allshort: 5,
-                relationship_triangle: 'FK',
+                relationship_triangle: '',
                 limitNum_triangle: 100,
                 columnNodeName: '',
                 limitNum_neighbors: 10,
@@ -394,7 +363,7 @@ export default {
             }, {
                 value: 'BFD'
             }],
-            columnData: []
+            columnData: [],
         }
     },
     mounted() {
@@ -447,15 +416,15 @@ export default {
         searchDataMap() {
             this.dialogShowGraph = false;
             // 节点关系
-            if (this.checked) {
+            if (this.checked && this.activeName == 'first') {
                 this.searchColumnOfRelation();
             }
             // lpa
-            if (this.checked_lpa) {
+            if (this.checked_lpa && this.activeName == 'second') {
                 this.searchLabelPropagation();
             }
             // louvain
-            if (this.checked_louvain) {
+            if (this.checked_louvain && this.activeName == 'three') {
                 this.searchLouVain();
             }
             // 全部最短
@@ -497,7 +466,6 @@ export default {
                         };
                     }
                     graph.categories = categories;
-                    console.log(JSON.stringify(graph));
                     var option = {
                         //标题
                         title: {
@@ -722,7 +690,6 @@ export default {
                         },
                         tooltip: {
                             formatter: function (params) {
-                                console.log(params);
                                 if (params.value != undefined) {
                                     // 显示节点信息
                                     return params.name + ':' + '<br>' +
@@ -816,7 +783,6 @@ export default {
                         },
                         tooltip: {
                             formatter: function (params) {
-                                console.log(params);
                                 if (params.value != undefined) {
                                     // 显示节点信息
                                     return params.name + ':' + '<br>' +
@@ -880,7 +846,7 @@ export default {
                 if (res && res.success) {
                     //远近关系       基本树形图
                     // 初始化echarts
-                    var nighborsChart = this.initEcharts("nighborsChart");
+                    var neighborsChart = this.initEcharts("neighborsChart");
                     res.data.children.forEach(function (datum, index) {
                         index % 2 === 0 && (datum.collapsed = true);
                     });
@@ -896,13 +862,14 @@ export default {
                             left: '20%',
                             bottom: '1%',
                             right: '20%',
-                            symbolSize: 10,
+                            symbolSize: 10, // 节点大小
+                            roam: true,
                             label: {
                                 normal: {
                                     position: 'left',
                                     verticalAlign: 'middle',
                                     align: 'right',
-                                    fontSize: 9
+                                    fontSize: 9,
                                 }
                             },
                             emphasis: {
@@ -922,8 +889,8 @@ export default {
                             animationDurationUpdate: 750
                         }]
                     }
-                    nighborsChart.clear();
-                    nighborsChart.setOption(option);
+                    neighborsChart.clear();
+                    neighborsChart.setOption(option);
                 }
             })
         },
@@ -971,20 +938,20 @@ export default {
                             categories: graph.categories,
                             roam: true,
                             label: {
-                                show:true,
+                                show: true, // 是否显示节点标签
                                 position: 'right',
                                 formatter: '{b}'
                             },
                             force: { //力引导图基本配置
                                 //initLayout: ,   //力引导的初始化布局，默认使用xy轴的标点
-                                repulsion: 100, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
-                                edgeLength: [5, 10], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+                                repulsion: 200, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+                                edgeLength: [3, 5], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
                                 layoutAnimation: true //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。                        
                             },
                             emphasis: {
-                                focus: 'adjacency',
+                                focus: 'adjacency', //聚焦关系图中的邻接点和边的图形
                                 lineStyle: {
-                                    width: 10
+                                    width: 3 // 控制鼠标悬停连线粗细
                                 }
                             }
                         }]
