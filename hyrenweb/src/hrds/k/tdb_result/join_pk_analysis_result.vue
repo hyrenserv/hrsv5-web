@@ -36,7 +36,9 @@ export default {
         return {
             table_code_s: [],
             //搜索
-            searchForm: { table_name: '' },
+            searchForm: {
+                table_name: ''
+            },
             //联合主键分析结果
             join_pk_analysis_result: {},
             //表函数分析结果
@@ -177,6 +179,25 @@ export default {
                 ]
             };
             option && myChart.setOption(option);
+            this.resize(myChart);
+        },
+        // tree自适应
+        resize(myChart) {
+            const nodes = myChart._chartsViews[0]._data._graphicEls;
+            let allNode = 0;
+            for (let index = 0; index < nodes.length; index++) {
+                const node = nodes[index];
+                if (node === undefined) {
+                    continue
+                }
+                allNode++;
+            }
+            const height = window.innerHeight;
+            const currentHeight = 10 * allNode;
+            const newHeight = Math.max(currentHeight, height);
+            const tree_ele = document.getElementById('echarsTree');
+            tree_ele.style.height = newHeight + 'px';
+            myChart.resize();
         },
         //页面提示
         open() {
