@@ -305,8 +305,8 @@
     </el-row>
     <el-divider />
     <span class="el-icon-view">远近邻关系</span>
-    <el-scrollbar wrapClass="scrollbar-wrap" style="height:500px" ref="scrollbarContainer">
-        <div id="neighborsChart" :style="{width:'100%',height: scrollHeight}" />
+    <el-scrollbar style="height:500px">
+        <div id="neighborsChart" :style="{height: scrollHeight}" />
     </el-scrollbar>
     <el-divider />
     <span class="el-icon-view">三角关系</span>
@@ -868,9 +868,9 @@ export default {
                             type: 'tree',
                             data: [res.data],
                             top: '1%',
-                            left: '10%',
+                            left: '20%',
                             bottom: '1%',
-                            right: '60%',
+                            right: '30%',
                             symbolSize: 10, // 节点大小
                             roam: 'scale',
                             label: {
@@ -902,7 +902,6 @@ export default {
                     neighborsChart.setOption(option);
                     // tree自适应
                     this.resize(neighborsChart);
-
                 }
             })
         },
@@ -918,14 +917,10 @@ export default {
                 allNode++;
             }
             const height = window.innerHeight;
-            const width = window.innerWidth;
             const currentHeight = 10 * allNode;
-            const currentWidth = 30 * allNode;
             const newHeight = Math.max(currentHeight, height);
-            const newWidth = Math.max(currentWidth, width);
             const tree_ele = document.getElementById('neighborsChart');
             tree_ele.style.height = newHeight + 'px';
-            tree_ele.style.width = newWidth + 'px';
             neighborsChart.resize();
         },
         // 三角关系展示
@@ -1025,9 +1020,7 @@ export default {
     height: 100%;
 
     .el-scrollbar__wrap {
-        overflow: scroll;
         overflow-x: hidden;
-        overflow-y: auto;
     }
 }
 </style>
