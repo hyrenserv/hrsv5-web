@@ -1012,7 +1012,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import './scrollbar.css';
+@import './css/scrollbar.css';
 
 .el-icon-view {
     color: #2196f3;
