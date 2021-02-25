@@ -305,7 +305,7 @@
     </el-row>
     <el-divider />
     <span class="el-icon-view">远近邻关系</span>
-    <el-scrollbar class="scrollbarwrap" wrapClass="scrollbar-wrap" style="height:500px" ref="scrollbarContainer">
+    <el-scrollbar wrapClass="scrollbar-wrap" style="height:500px" ref="scrollbarContainer">
         <div id="neighborsChart" :style="{width:'100%',height: scrollHeight}" />
     </el-scrollbar>
     <el-divider />
