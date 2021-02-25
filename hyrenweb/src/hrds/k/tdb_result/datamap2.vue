@@ -305,7 +305,9 @@
     </el-row>
     <el-divider />
     <span class="el-icon-view">远近邻关系</span>
-    <div id="neighborsChart" style="height:600px;width:100%"></div>
+    <el-scrollbar class="scrollbarwrap" wrapClass="scrollbar-wrap" style="height:500px" ref="scrollbarContainer">
+        <div id="neighborsChart" :style="{width:'100%',height: scrollHeight}" />
+    </el-scrollbar>
     <el-divider />
     <span class="el-icon-view">三角关系</span>
     <div id="triangleChart" style="height:600px;width:100%"></div>
@@ -321,6 +323,7 @@ export default {
     },
     data() {
         return {
+            scrollHeight: '300px',
             activeName: 'first',
             dialogShowGraph: false,
             labelPosition: 'right',
@@ -342,7 +345,7 @@ export default {
                 relationship_triangle: '',
                 limitNum_triangle: 100,
                 columnNodeName: '',
-                limitNum_neighbors: 10,
+                limitNum_neighbors: 100,
                 level_neighbors: 5,
             },
             checked: true,
@@ -364,17 +367,22 @@ export default {
                 value: 'BFD'
             }],
             columnData: [],
+            innerWidth: 0
         }
     },
     mounted() {
         this.searchAllColumnOfNodes();
         this.searchColumnOfRelation();
+        this.getWidth();
     },
     methods: {
         goIndex() {
             this.$router.push({
                 name: 'tdb_result',
             });
+        },
+        getWidth() {
+            this.innerWidth = window.innerWidth;
         },
         // 查询所有字段节点
         searchAllColumnOfNodes() {
@@ -846,6 +854,7 @@ export default {
                 if (res && res.success) {
                     //远近关系       基本树形图
                     // 初始化echarts
+                    this.scrollHeight = res.data.children.length * 10 + "px";
                     var neighborsChart = this.initEcharts("neighborsChart");
                     res.data.children.forEach(function (datum, index) {
                         index % 2 === 0 && (datum.collapsed = true);
@@ -859,27 +868,27 @@ export default {
                             type: 'tree',
                             data: [res.data],
                             top: '1%',
-                            left: '20%',
+                            left: '10%',
                             bottom: '1%',
-                            right: '20%',
+                            right: '60%',
                             symbolSize: 10, // 节点大小
-                            roam: true,
+                            roam: 'scale',
                             label: {
                                 normal: {
                                     position: 'left',
-                                    verticalAlign: 'middle',
+                                    verticalAlign: 'middle', //文字垂直对齐方式居中
                                     align: 'right',
                                     fontSize: 9,
                                 }
                             },
                             emphasis: {
-                                focus: 'descendant'
+                                focus: 'descendant' //聚焦所有子孙节点
                             },
                             leaves: {
                                 label: {
                                     normal: {
                                         position: 'right',
-                                        verticalAlign: 'middle',
+                                        verticalAlign: 'middle', //文字垂直对齐方式居中
                                         align: 'left'
                                     }
                                 }
@@ -891,8 +900,33 @@ export default {
                     }
                     neighborsChart.clear();
                     neighborsChart.setOption(option);
+                    // tree自适应
+                    this.resize(neighborsChart);
+
                 }
             })
+        },
+        // tree自适应
+        resize(neighborsChart) {
+            const nodes = neighborsChart._chartsViews[0]._data._graphicEls;
+            let allNode = 0;
+            for (let index = 0; index < nodes.length; index++) {
+                const node = nodes[index];
+                if (node === undefined) {
+                    continue
+                }
+                allNode++;
+            }
+            const height = window.innerHeight;
+            const width = window.innerWidth;
+            const currentHeight = 10 * allNode;
+            const currentWidth = 30 * allNode;
+            const newHeight = Math.max(currentHeight, height);
+            const newWidth = Math.max(currentWidth, width);
+            const tree_ele = document.getElementById('neighborsChart');
+            tree_ele.style.height = newHeight + 'px';
+            tree_ele.style.width = newWidth + 'px';
+            neighborsChart.resize();
         },
         // 三角关系展示
         searchTriangleRelation() {
@@ -985,5 +1019,15 @@ export default {
 <style lang="less" scoped>
 .el-icon-view {
     color: #2196f3;
+}
+
+.el-scrollbar {
+    height: 100%;
+
+    .el-scrollbar__wrap {
+        overflow: scroll;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 }
 </style>
