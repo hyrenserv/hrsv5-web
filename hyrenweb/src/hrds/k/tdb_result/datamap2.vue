@@ -1012,15 +1012,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import './scrollbar.css';
+
 .el-icon-view {
     color: #2196f3;
-}
-
-.el-scrollbar {
-    height: 100%;
-
-    .el-scrollbar__wrap {
-        overflow-x: hidden;
-    }
 }
 </style>
