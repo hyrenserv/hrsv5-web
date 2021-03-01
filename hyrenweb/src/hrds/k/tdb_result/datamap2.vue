@@ -486,7 +486,7 @@ export default {
                             formatter: function (params) {
                                 if (params.value != undefined) {
                                     // 显示节点信息
-                                    return params.name + ':' + '<br>' +
+                                    return params.name + '<br>' +
                                         params.value[0] + '<br>' +
                                         params.value[1] + '<br>' +
                                         params.value[2] + '<br>' +
@@ -581,7 +581,7 @@ export default {
                     formatter: function (params) {
                         if (params.value != undefined) {
                             // 显示节点信息
-                            return params.name + ':' + '<br>' +
+                            return params.name + '<br>' +
                                 params.value[0] + '<br>' +
                                 params.value[1] + '<br>' +
                                 params.value[2] + '<br>' +
@@ -700,7 +700,7 @@ export default {
                             formatter: function (params) {
                                 if (params.value != undefined) {
                                     // 显示节点信息
-                                    return params.name + ':' + '<br>' +
+                                    return params.name + '<br>' +
                                         params.value[0] + '<br>' +
                                         params.value[1] + '<br>' +
                                         params.value[2] + '<br>' +
@@ -792,7 +792,7 @@ export default {
                             formatter: function (params) {
                                 if (params.value != undefined) {
                                     // 显示节点信息
-                                    return params.name + ':' + '<br>' +
+                                    return params.name + '<br>' +
                                         params.value[0] + '<br>' +
                                         params.value[1] + '<br>' +
                                         params.value[2] + '<br>' +
@@ -860,7 +860,17 @@ export default {
                     var option = {
                         tooltip: {
                             trigger: 'item',
-                            triggerOn: 'mousemove'
+                            triggerOn: 'mousemove',
+                            formatter: function (params) {
+                                // 显示节点信息
+                                return res.data.name + "." +
+                                    params.name + '<br>' +
+                                    params.value[0] + '<br>' +
+                                    params.value[1] + '<br>' +
+                                    params.value[2] + '<br>' +
+                                    params.value[3] + '<br>' +
+                                    "relationType:" + params.value[4]
+                            },
                         },
                         series: [{
                             type: 'tree',
@@ -943,7 +953,7 @@ export default {
                         tooltip: {
                             formatter: function (params) {
                                 if (params.value != undefined) {
-                                    return params.name + ':' + '<br>' +
+                                    return params.name + '<br>' +
                                         params.value[0] + '<br>' +
                                         params.value[1] + '<br>' +
                                         params.value[2] + '<br>' +
