@@ -705,11 +705,10 @@ export default {
                                         params.value[1] + '<br>' +
                                         params.value[2] + '<br>' +
                                         params.value[3] + '<br>' +
-                                        params.value[4] + '<br>' +
-                                        params.value[5] + '<br>'
+                                        params.value[4] + '<br>'
                                 } else {
                                     // 显示节点连线信息
-                                    return params.name + '<br>' + "realtionType:" + params.data.relationType;
+                                    return params.name + '<br>' + "type:" + params.data.type;
                                 }
                             }
                         },
@@ -798,11 +797,10 @@ export default {
                                         params.value[1] + '<br>' +
                                         params.value[2] + '<br>' +
                                         params.value[3] + '<br>' +
-                                        params.value[4] + '<br>' +
-                                        params.value[5] + '<br>'
+                                        params.value[4] + '<br>'
                                 } else {
                                     // 显示节点连线信息
-                                    return params.name + '<br>' + "realtionType:" + params.data.relationType;
+                                    return params.name + '<br>' + "type:" + params.data.type;
                                 }
                             }
                         },
@@ -952,7 +950,7 @@ export default {
                                         params.value[3] + '<br>' +
                                         params.value[4] + '<br>'
                                 } else {
-                                    return params.name;
+                                    return params.name + '<br>' + "type:" + params.data.type;
                                 }
                             }
                         },
