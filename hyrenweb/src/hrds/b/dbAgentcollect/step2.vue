@@ -152,7 +152,7 @@ export default {
                             arry.push(item)
                         }
                         if (item['is_zipper_field']) {
-                            item['is_zipper _field'] = this.isFalg.Fou;
+                            item['is_zipper_field'] = this.isFalg.Fou;
                         }
                     })
                     this.tableDataDialog = arry;
