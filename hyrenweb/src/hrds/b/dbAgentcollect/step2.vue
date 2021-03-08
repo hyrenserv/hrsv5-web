@@ -116,6 +116,12 @@ export default {
             functionAll.getTableData({
                 colSetId: this.$route.query.id
             }).then(res => {
+                if (!res.success) {
+                    this.$router.push({
+                        path: "collection4_1",
+                        query: this.$route.query
+                    })
+                }
                 if (res.data.existsTable != undefined) {
                     this.$Msg.customizTitle(res.data.existsTable, "error");
                     this.buttonDisabled = true; //禁止下一步
@@ -145,8 +151,8 @@ export default {
                         } else {
                             arry.push(item)
                         }
-                        if(item['is_zipper_field']) {
-                            item['is_zipper _field'] = this.isFalg.Fou;
+                        if (item['is_zipper_field']) {
+                            item['is_zipper_field'] = this.isFalg.Fou;
                         }
                     })
                     this.tableDataDialog = arry;
