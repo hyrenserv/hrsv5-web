@@ -207,7 +207,6 @@
 
 <script>
 import * as dataBenchmarkingAllFun from './dbm'
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 export default {
@@ -297,20 +296,23 @@ export default {
                 dataBenchmarkingAllFun.batchReleaseDbmCodeTypeInfo({
                     "code_type_id_s": arr
                 }).then(res => {
-                    message.issueSuccess(res)
-                    that.code_type_id_s = []
+                    this.$Msg.customizTitle("批量发布成功!");
+                    this.code_type_id_s = []
                     this.selectrow = []
-                    that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
+                    this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
                 });
             }
         },
         //单个代码类发布
         issueFun(row) {
+            console.log(JSON.stringify(row.code_type_id));
             let that = this
+            console.log(JSON.stringify(row.code_type_id));
             dataBenchmarkingAllFun.releaseDbmCodeTypeInfoById({
-                "code_type_id": parseInt(row.code_type_id)
+                "code_type_id": row.code_type_id
             }).then(res => {
-                message.issueSuccess(res)
+                console.log(row.code_type_id);
+                this.$Msg.customizTitle("发布成功!");
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
             });
         },
