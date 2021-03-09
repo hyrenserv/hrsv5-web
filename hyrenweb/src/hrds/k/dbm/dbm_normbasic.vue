@@ -8,7 +8,7 @@
                 <div class="mytree" hight='200'>
                     <el-tree class="filter-tree" :empty-text='tip' :data="data" :indent='0' :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="node.label">{{ node.label }}</span>
+                            <span :title="node.label">{{ data.label }}</span>
                         </span>
                     </el-tree>
                 </div>
@@ -124,7 +124,7 @@
                             <el-col :span="7">
                                 <el-row>
                                     <el-form-item label="归属分类 : " prop="belongsClass" :rules="rule.selected">
-                                        <el-cascader :options="options" filterable clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" clearable :props="SetKesDept"></el-cascader>
+                                        <el-cascader :options="options" filterable clearable size='mini' :show-all-levels="false" v-model="ruleForm_Info.belongsClass" :props="SetKesDept"></el-cascader>
                                     </el-form-item>
                                 </el-row>
                             </el-col>
@@ -459,7 +459,7 @@ export default {
             dataBenchmarkingAllFun.batchReleaseDbmNormbasic({
                 "basic_id_s": this.basic_id_s
             }).then(res => {
-                message.issueSuccess(res)
+                this.$Msg.customizTitle("批量发布成功!");
                 that.basic_id_s = []
                 that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                 that.$emit('handleClick');
@@ -475,7 +475,7 @@ export default {
             dataBenchmarkingAllFun.releaseDbmNormbasicById({
                 "basic_id": row.basic_id
             }).then(res => {
-                message.issueSuccess(res)
+                this.$Msg.customizTitle("发布成功!");
                 that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                 that.$emit('handleClick');
             });
@@ -723,14 +723,14 @@ export default {
                     if (this.basicStaus == 'edit') {
                         params["basic_id"] = this.basic_id;
                         dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
-                            message.updateSuccess(res);
+                            this.$Msg.customizTitle("编辑标准成功!");
                             that.dialogEditTableVisible = false
                             that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                             that.$emit('handleClick');
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
-                            message.saveSuccess(res);
+                            this.$Msg.customizTitle("新增标准成功!");
                             that.dialogEditTableVisible = false
                             that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                             that.$emit('handleClick');
@@ -744,11 +744,11 @@ export default {
         //
         deleteDbbasicInfo(row) {
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 let params = {}
                 params["basic_id"] = row.basic_id;
                 dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
-                    message.deleteSuccess(res);
+                    this.$Msg.customizTitle("删除标准成功!");
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                     that.$emit('handleClick');
                 });
@@ -865,11 +865,11 @@ export default {
                 this.basic_id_s.push(o.basic_id);
             });
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 dataBenchmarkingAllFun.batchDeleteDbmNormbasic({
                     "basic_id_s": this.basic_id_s
                 }).then(res => {
-                    message.deleteSuccess(res)
+                    this.$Msg.customizTitle("批量删除成功!");
                     that.basic_id_s = []
                     that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
                     that.$emit('handleClick');
