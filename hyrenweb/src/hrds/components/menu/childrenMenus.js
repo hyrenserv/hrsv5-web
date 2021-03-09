@@ -74,15 +74,15 @@ const childrenMemus = {
             component: () => import('@/hrds/b/dataQuery/fullTextSearch.vue')
         },
     ],
-    37: [
-        {
-            path: '/dbm',
-            name: 'dbm',
-            title: '标准元管理',
-            icon: 'el-icon-s-finance',
-            component: () => import('@/hrds/k/dbm/dbm.vue')
-        }
-    ],
+    // 37: [
+    //     {
+    //         path: '/dbm',
+    //         name: 'dbm',
+    //         title: '标准元管理',
+    //         icon: 'el-icon-s-finance',
+    //         component: () => import('@/hrds/k/dbm/dbm.vue')
+    //     }
+    // ],
     14: [
         {
             path: '/dataMart',
