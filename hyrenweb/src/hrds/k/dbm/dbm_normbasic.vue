@@ -115,7 +115,7 @@
                         <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="标准别名 : " prop="standardAlias">
+                                    <el-form-item label="标准别名 : " prop="standardAlias" :rules="filter_rules([{required: true}])">
                                         <el-input placeholder="标准别名" size='mini' v-model="ruleForm_Info.standardAlias">
                                         </el-input>
                                     </el-form-item>
@@ -171,7 +171,7 @@
                             </el-col>
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="小数长度 : " prop="decimalLen">
+                                    <el-form-item label="小数长度 : " prop="decimalLen" :rules="filter_rules([{required: true,dataType:'number'}])">
                                         <el-input placeholder="小数长度" size='mini' v-model="ruleForm_Info.decimalLen">
                                         </el-input>
                                     </el-form-item>
@@ -181,7 +181,7 @@
                         <el-row :gutter="20">
                             <el-col :span='7'>
                                 <el-row>
-                                    <el-form-item label="所属代码 : " prop="belongsCode">
+                                    <el-form-item label="所属代码 : " prop="belongsCode" :rules="filter_rules([{required: true,dataType:'number'}])">
                                         <el-select placeholder="请选择" size="mini" v-model="ruleForm_Info.belongsCode">
                                             <el-option v-for="item in dbmCodeTypeInfos" :key="item.code_type_id" :label="item.code_type_name" :value="item.code_type_id" :disabled="item.disabled">
                                             </el-option>
@@ -367,7 +367,7 @@ export default {
                 data_types: '',
                 fieldLength: null,
                 decimalLen: null,
-                belongsCode: '',
+                belongsCode: null,
                 worksDefin: '',
                 workRule: '',
                 sdefinition: '',
@@ -378,8 +378,6 @@ export default {
                 enactingPerson: '',
                 dbm_domain: '', //值域
                 norm_status: '', //发布状态
-                // options:[],
-                // data:[]
             },
             Releasestatus: [{
                 text: '未发布',
@@ -459,10 +457,12 @@ export default {
             dataBenchmarkingAllFun.batchReleaseDbmNormbasic({
                 "basic_id_s": this.basic_id_s
             }).then(res => {
-                this.$Msg.customizTitle("批量发布成功!");
-                that.basic_id_s = []
-                that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                that.$emit('handleClick');
+                if (res && res.success) {
+                    this.$Msg.customizTitle("批量发布成功!");
+                    that.basic_id_s = []
+                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                    that.$emit('handleClick');
+                }
             });
         },
         // 复选框选中
@@ -475,9 +475,11 @@ export default {
             dataBenchmarkingAllFun.releaseDbmNormbasicById({
                 "basic_id": row.basic_id
             }).then(res => {
-                this.$Msg.customizTitle("发布成功!");
-                that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                that.$emit('handleClick');
+                if (res && res.success) {
+                    this.$Msg.customizTitle("发布成功!");
+                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                    that.$emit('handleClick');
+                }
             });
         },
         // 获取代码类下拉
@@ -609,25 +611,7 @@ export default {
             this.title = '新增'
             this.dialogEditTableVisible = true
             this.basicStaus = 'add'
-            this.ruleForm_Info.standardNum = ''
-            this.ruleForm_Info.cnName = ''
-            this.ruleForm_Info.enName = ''
-            this.ruleForm_Info.standardAlias = ''
-            this.ruleForm_Info.belongsClass = ''
-            this.ruleForm_Info.data_types = '' //数据类型
-            this.ruleForm_Info.fieldLength = ''; //字段长度
-            this.ruleForm_Info.decimalLen = '' //小数长度
-            this.ruleForm_Info.belongsCode = '' //所属代码--
-            this.ruleForm_Info.worksDefin = ''; //业务定义
-            this.ruleForm_Info.workRule = ''; //业务规则
-            this.ruleForm_Info.sdefinition = ''; //标准定义
-            this.ruleForm_Info.dbm_domain = ''; //值域
-            this.ruleForm_Info.department = ''; //管理部门
-            this.ruleForm_Info.relevantDepartments = ''; //相关部门
-            this.ruleForm_Info.norm_status = ''; //发布状态
-            this.ruleForm_Info.trustedSystem = ''; //可信系统
-            this.ruleForm_Info.relatedStandards = ''; //相关标准
-            this.ruleForm_Info.enactingPerson = ''; //制定人
+            this.ruleForm_Info = {}
         },
 
         // 编辑打开
@@ -712,22 +696,27 @@ export default {
                     params["relevant_department"] = this.ruleForm_Info.relevantDepartments; //相关部门
                     params["norm_status"] = this.ruleForm_Info.norm_status; //发布状态
                     params["origin_system"] = this.ruleForm_Info.trustedSystem; //可信系统
-                    params["related_system"] = '相关标准' //this.ruleForm_Info.relatedStandards; //相关标准
+                    params["related_system"] = this.ruleForm_Info.relatedStandards; //相关标准
                     params["formulator"] = this.ruleForm_Info.enactingPerson; //制定人
+                    console.log(params);
                     if (this.basicStaus == 'edit') {
                         params["basic_id"] = this.basic_id;
                         dataBenchmarkingAllFun.updateDbmNormbasicInfo(params).then(res => {
-                            this.$Msg.customizTitle("编辑标准成功!");
-                            that.dialogEditTableVisible = false
-                            that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                            that.$emit('handleClick');
+                            if (res && res.success) {
+                                this.$Msg.customizTitle("编辑标准成功!");
+                                that.dialogEditTableVisible = false
+                                that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                                that.$emit('handleClick');
+                            }
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmNormbasicInfo(params).then(res => {
-                            this.$Msg.customizTitle("新增标准成功!");
-                            that.dialogEditTableVisible = false
-                            that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                            that.$emit('handleClick');
+                            if (res && res.success) {
+                                this.$Msg.customizTitle("新增标准成功!");
+                                that.dialogEditTableVisible = false
+                                that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                                that.$emit('handleClick');
+                            }
                         });
                     }
 
@@ -742,9 +731,11 @@ export default {
                 let params = {}
                 params["basic_id"] = row.basic_id;
                 dataBenchmarkingAllFun.deleteDbmNormbasicInfo(params).then(res => {
-                    this.$Msg.customizTitle("删除标准成功!");
-                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                    that.$emit('handleClick');
+                    if (res && res.success) {
+                        this.$Msg.customizTitle("删除标准成功!");
+                        that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                        that.$emit('handleClick');
+                    }
                 });
             }).catch(() => {})
         },
@@ -863,10 +854,12 @@ export default {
                 dataBenchmarkingAllFun.batchDeleteDbmNormbasic({
                     "basic_id_s": this.basic_id_s
                 }).then(res => {
-                    this.$Msg.customizTitle("批量删除成功!");
-                    that.basic_id_s = []
-                    that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
-                    that.$emit('handleClick');
+                    if (res && res.success) {
+                        this.$Msg.customizTitle("批量删除成功!");
+                        that.basic_id_s = []
+                        that.getDbmNormbasicInfo(that.currentPage, that.pagesize)
+                        that.$emit('handleClick');
+                    }
                 });
             }).catch(() => {})
         },
