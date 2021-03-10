@@ -8,12 +8,12 @@
             </el-button>
         </router-link>
     </el-row>
-    <el-tabs type="border-card" @tab-click="handleClick" >
+    <el-tabs type="border-card">
         <el-tab-pane label="基础信息">
-            <BasicInformation @handleClick="handleClick" :data='data' :options='options' :tip='tip' ref='child1' />
+            <BasicInformation ref='child1' />
         </el-tab-pane>
         <el-tab-pane label="代码配置">
-            <CodeConfiguration ref='child2'/>
+            <CodeConfiguration ref='child2' />
         </el-tab-pane>
     </el-tabs>
 </div>
@@ -22,7 +22,6 @@
 <script>
 import dbm_check__normbasic from "./dbm_check_normbasic";
 import dbm_check_code_info from "./dbm_check_code_info";
-import * as dataBenchmarkingAllFun from './dbm_check'
 
 export default {
     name: 'dbm',
@@ -31,37 +30,10 @@ export default {
         "CodeConfiguration": dbm_check_code_info,
     },
     data() {
-        return {
-            data: [],
-            options: [],
-            tip: ''
-        }
+        return {}
     },
-    created() {
-        this.handleClick()
-    },
-    methods: {
-        handleClick() {
-            this.tip = '数据加载中...';
-            dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
-                this.data = res.data.dbmSortInfoTreeDataList;
-                if (this.data.length > 0) {
-                    this.tip = ''
-                } else {
-                    this.tip = '暂无数据'
-                }
-                this.options = res.data.dbmSortInfoTreeDataList;
-                 this.$refs.child1.getDbmNormbasicInfo(1,10);
-                     this.$refs.child2.getDbmCodeTypeInfo(1,10);
-                     this.$refs.child1.cleanFun()
-                     this.$refs.child2.cleanFun()
-            });
-        }
-
-    }
+    created() {},
+    mounted() {},
+    methods: {}
 }
 </script>
-
-<style scoped>
-
-</style>
