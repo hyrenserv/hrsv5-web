@@ -82,7 +82,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" @prev-click='sig_preclickFun' @next-click='sig_nextclickFun' :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
+    <el-pagination @size-change="sig_handleSizeChange" @current-change="sig_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter'></el-pagination>
     <!-- 新增代码类弹框 -->
     <el-dialog title="新增代码类" :visible.sync="dialogaddCodeclassableVisible" width="40%" class='data_edit'>
         <div slot="title">
@@ -343,12 +343,6 @@ export default {
             } else {
                 this.getDbmCodeTypeInfo(this.currentPage, this.pagesize)
             }
-        },
-        sig_preclickFun(currentPage) {
-            this.sig_handleCurrentChange(currentPage)
-        },
-        sig_nextclickFun(currentPage) {
-            this.sig_handleCurrentChange(currentPage)
         },
         item_handleSizeChange(size) {
             this.itempagesize = size;

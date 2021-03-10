@@ -70,7 +70,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" @prev-click='dbMark_preclickFun' @next-click='dbMark_nextclickFun' :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
+                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
             </el-row>
         </el-col>
     </el-row>
@@ -524,12 +524,6 @@ export default {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
 
-        },
-        dbMark_nextclickFun(currentPage) {
-            this.dbMark_handleCurrentChange(currentPage)
-        },
-        dbMark_preclickFun(currentPage) {
-            this.dbMark_handleCurrentChange(currentPage)
         },
         filterNode(value, data) {
             if (!value) return true;
