@@ -112,7 +112,6 @@
 
 <script>
 import * as dataBenchmarkingAllFun from './dbm'
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
 export default {
@@ -213,7 +212,7 @@ export default {
             dataBenchmarkingAllFun.releaseDbmSortInfoById({
                 "sort_id": row.sort_id
             }).then(res => {
-                message.issueSuccess(res)
+                this.$Msg.customizTitle("发布成功!");
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 that.$emit('handleClick');
             });
@@ -231,7 +230,7 @@ export default {
                     // 新增
                     let params = {},
                         that = this;
-                    params["parent_id"] = this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1] ? parseInt(this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1]) : 0;
+                    params["parent_id"] = this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1] ? this.standardClassifiFormRule.belongsClass[this.standardClassifiFormRule.belongsClass.length - 1] : 0;
                     params["sort_level_num"] = this.standardClassifiFormRule.belongsClass.length;
                     params["sort_name"] = this.standardClassifiFormRule.chNmae;
                     params["sort_remark"] = this.standardClassifiFormRule.standardMark;
@@ -239,14 +238,14 @@ export default {
                     if (this.status == 'edit') {
                         params["sort_id"] = this.edit_sortId;
                         dataBenchmarkingAllFun.updateDbmSortInfo(params).then(res => {
-                            message.updateSuccess(res);
+                            this.$Msg.updateSuccess("更新成功!");
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                             that.$emit('handleClick');
                         });
                     } else {
                         dataBenchmarkingAllFun.addDbmSortInfo(params).then(res => {
-                            message.saveSuccess(res);
+                            this.$Msg.updateSuccess("保存成功!");
                             that.dialogaddclassableVisible = false;
                             that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                             that.$emit('handleClick');
@@ -303,7 +302,7 @@ export default {
             dataBenchmarkingAllFun.batchReleaseDbmSortInfo({
                 "sort_id_s": this.sort_id_s
             }).then(res => {
-                message.issueSuccess(res)
+                this.$Msg.updateSuccess("批量发布成功!");
                 that.sort_id_s = []
                 that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 that.$emit('handleClick');
@@ -364,16 +363,15 @@ export default {
         // 删除分类方法
         delectClassFun(row) {
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 let params = {}
                 params["sort_id"] = row.sort_id;
                 dataBenchmarkingAllFun.deleteDbmSortInfo(params).then(res => {
-                    message.deleteSuccess(res);
+                    this.$Msg.deleteSuccess("删除分类成功!");
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                     that.$emit('handleClick');
                 });
             }).catch(() => {})
-
         },
         //过滤发布状态
         Class_fulterChangeFun(filter) {
@@ -423,11 +421,11 @@ export default {
                 this.sort_id_s.push(o.sort_id);
             });
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 dataBenchmarkingAllFun.batchDeleteDbmSortInfo({
                     "sort_id_s": this.sort_id_s
                 }).then(res => {
-                    message.deleteSuccess(res)
+                    this.$Msg.deleteSuccess("批量删除成功!")
                     that.sort_id_s = []
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                     that.$emit('handleClick');

@@ -208,7 +208,6 @@
 <script>
 import * as dataBenchmarkingAllFun from './dbm'
 import * as validator from "@/utils/js/validator";
-import regular from "@/utils/js/regular";
 export default {
     data() {
         return {
@@ -452,13 +451,12 @@ export default {
         // 删除分类方法
         delectCodeClassFun(row) {
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 let params = {}
                 params["code_type_id"] = row.code_type_id;
                 dataBenchmarkingAllFun.deleteDbmCodeTypeInfo(params).then(res => {
-                    message.deleteSuccess(res);
+                    this.$Msg.deleteSuccess("批量删除成功!");
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
-
                 });
             }).catch(() => {})
 
@@ -505,14 +503,14 @@ export default {
                     params['code_type_id'] = this.code_type_id
                     if (this.codeItemStatus == 'add') {
                         dataBenchmarkingAllFun.addDbmCodeItemInfo(params).then(res => {
-                            message.saveSuccess(res);
+                            this.$Msg.saveSuccess("添加成功!");
                             that.dialogaddCodeXableVisible = false
                             that.getAllCodeItemFun(that.code_type_id)
                         });
                     } else {
                         params['code_item_id'] = that.code_item_id
                         dataBenchmarkingAllFun.updateDbmCodeItemInfo(params).then(res => {
-                            message.updateSuccess(res);
+                            this.$Msg.updateSuccess("更新成功!");
                             that.dialogaddCodeXableVisible = false
                             that.getAllCodeItemFun(that.code_type_id)
 
@@ -524,11 +522,11 @@ export default {
         // 删除代码项
         delCodeItemFun(row) {
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 let params = {}
                 params['code_item_id'] = row.code_item_id
                 dataBenchmarkingAllFun.deleteDbmCodeItemInfo(params).then(res => {
-                    message.deleteSuccess(res);
+                    this.$Msg.deleteSuccess("删除代码项成功!");
                     that.dialogaddCodeXableVisible = false
                     that.getAllCodeItemFun(row.code_type_id)
                 });
@@ -581,11 +579,11 @@ export default {
             let that = this,
                 arr = [];
             arr = this.code_type_id_s
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 dataBenchmarkingAllFun.batchDeleteDbmCodeTypeInfo({
                     "code_type_id_s": arr
                 }).then(res => {
-                    message.deleteSuccess(res)
+                    this.$Msg.deleteSuccess("批量删除代码类成功!")
                     that.code_type_id_s = []
                     that.getDbmCodeTypeInfo(that.currentPage, that.pagesize)
                 });
@@ -598,11 +596,11 @@ export default {
                 this.code_item_id_s.push(o.code_item_id);
             });
             let that = this
-            message.confirmMsg('确定删除吗').then(res => {
+            this.$Msg.confirmMsg('确定删除吗').then(res => {
                 dataBenchmarkingAllFun.batchDeleteDbmCodeItemInfo({
                     "code_item_id_s": that.code_item_id_s
                 }).then(res => {
-                    message.deleteSuccess(res)
+                    this.$Msg.deleteSuccess("批量删除代码项成功!")
                     that.code_item_id_s = []
                     this.getAllCodeItemFun(that.code_type_id)
                 });

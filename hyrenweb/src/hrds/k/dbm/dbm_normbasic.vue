@@ -546,7 +546,7 @@ export default {
         getDbmNormbasicInfoBySortId(id, currentPage, pagesize) {
             let params = {},
                 that = this;
-            params["sort_id"] = parseInt(id);
+            params["sort_id"] = id;
             params["currPage"] = currentPage;
             params["pageSize"] = pagesize
             dataBenchmarkingAllFun.getDbmNormbasicInfoBySortId(params).then(res => {
@@ -697,13 +697,13 @@ export default {
                     params["norm_cname"] = this.ruleForm_Info.cnName;
                     params["norm_ename"] = this.ruleForm_Info.enName;
                     params["norm_aname"] = this.ruleForm_Info.standardAlias;
-                    params["sort_id"] = parseInt(this.ruleForm_Info.belongsClass[this.ruleForm_Info.belongsClass.length - 1]); //归属分类--
+                    params["sort_id"] = this.ruleForm_Info.belongsClass[this.ruleForm_Info.belongsClass.length - 1]; //归属分类--
                     //   params[""] = this.ruleForm_Info.standardDescription;//标准描述--
                     //   params[""] = this.ruleForm_Info.fieldName;//字段名称--
                     params["data_type"] = this.ruleForm_Info.data_types; //数据类型
-                    params["col_len"] = parseInt(this.ruleForm_Info.fieldLength); //字段长度
-                    params["decimal_point"] = parseInt(this.ruleForm_Info.decimalLen); //小数长度
-                    params["code_type_id"] = parseInt(this.ruleForm_Info.belongsCode); //所属代码--
+                    params["col_len"] = this.ruleForm_Info.fieldLength; //字段长度
+                    params["decimal_point"] = this.ruleForm_Info.decimalLen; //小数长度
+                    params["code_type_id"] = this.ruleForm_Info.belongsCode; //所属代码--
                     params["business_def"] = this.ruleForm_Info.worksDefin; //业务定义
                     params["business_rule"] = this.ruleForm_Info.workRule; //业务规则
                     params["norm_basis"] = this.ruleForm_Info.sdefinition; //标准定义
