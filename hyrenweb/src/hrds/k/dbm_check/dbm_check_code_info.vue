@@ -13,34 +13,32 @@
     <!--  -->
     <el-table :data="tableData" :row-key="(row)=>{ return row.code_type_id}" style="width: 100%;min-height:200px" border class='outtable' size='medium' ref="multipleTable" @cell-click="cellClick">
         <el-table-column type="expand">
-            <template slot-scope="props">
-                <el-row style="margin-bottom:10px">
-                    <el-col :span='13'>&nbsp;</el-col>
-                    <el-col :span='5' style="float:right">
-                        <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeItem_Value">
-                            <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeItemInfo"></el-button>
-                        </el-input>
-                    </el-col>
-                </el-row>
-                <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}">
-                    <el-table-column label="序号" align="center" width="60">
-                        <template scope="scope">
-                            <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_encode" label="代码编号">
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_item_name" label="代码名称" width="100" :show-overflow-tooltip="true">
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_value" label="代码值">
-                    </el-table-column>
-                    <el-table-column align="center" prop="dbm_level" label="层级">
-                    </el-table-column>
-                    <el-table-column align="center" prop="code_remark" label="代码描述" width="150" :show-overflow-tooltip="true">
-                    </el-table-column>
-                </el-table>
-                <el-pagination @size-change="item_handleSizeChange" @current-change="item_handleCurrentChange" :current-page="itemcurrentPage" :page-sizes="[10, 50, 100, 200]" :page-size="itempagesize" layout="total,prev, pager, next" :total="dataList.length" class='pagerigth'></el-pagination>
-            </template>
+            <el-row style="margin-bottom:10px">
+                <el-col :span='13'>&nbsp;</el-col>
+                <el-col :span='5' style="float:right">
+                    <el-input placeholder="请输入内容" class="input-with-select" size="mini" v-model="codeItem_Value">
+                        <el-button slot="append" icon="el-icon-search" @click="searchDbmCodeItemInfo"></el-button>
+                    </el-input>
+                </el-col>
+            </el-row>
+            <el-table :data="dataList.slice((itemcurrentPage - 1) * itempagesize, itemcurrentPage * itempagesize)" align="center" :empty-text="tableloadingInfo" stripe size='mini' class='in_tableColor' :row-key="(row)=>{ return row.code_item_id}">
+                <el-table-column label="序号" align="center" width="60">
+                    <template scope="scope">
+                        <span>{{scope.$index+(itemcurrentPage - 1) * itempagesize + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" prop="code_encode" label="代码编号">
+                </el-table-column>
+                <el-table-column align="center" prop="code_item_name" label="代码名称" width="100" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column align="center" prop="code_value" label="代码值">
+                </el-table-column>
+                <el-table-column align="center" prop="dbm_level" label="层级">
+                </el-table-column>
+                <el-table-column align="center" prop="code_remark" label="代码描述" width="150" :show-overflow-tooltip="true">
+                </el-table-column>
+            </el-table>
+            <el-pagination @size-change="item_handleSizeChange" @current-change="item_handleCurrentChange" :current-page="itemcurrentPage" :page-sizes="[10, 50, 100, 200]" :page-size="itempagesize" layout="total,prev, pager, next" :total="dataList.length" class='pagerigth'></el-pagination>
         </el-table-column>
         <el-table-column label="序号" align="center" width="60">
             <template scope="scope">
@@ -60,9 +58,7 @@
 
 <script>
 import * as dataBenchmarkingAllFun from './dbm_check'
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
-import regular from "@/utils/js/regular";
 export default {
     data() {
         return {

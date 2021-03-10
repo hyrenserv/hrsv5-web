@@ -6,9 +6,9 @@
             </el-input>
             <Scrollbar>
                 <div class="mytree" hight='200'>
-                    <el-tree class="filter-tree" :empty-text='tip' :data="data" :indent='0' :props="data" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
+                    <el-tree class="filter-tree" :data="dbmSortInfoTreeData" :indent='0' @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree">
                         <span class="span-ellipsis" slot-scope="{ node, data }">
-                            <span :title="node.label">{{ node.label }}</span>
+                            <span :title="node.label">{{ data.label }}</span>
                         </span>
                     </el-tree>
                 </div>
@@ -45,7 +45,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination @prev-click='dbMark_preclickFun' @next-click='dbMark_nextclickFun' @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
+                <el-pagination @size-change="dbMark_handleSizeChange" @current-change="dbMark_handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalSize" class='locationcenter' />
             </el-row>
         </el-col>
     </el-row>
@@ -217,7 +217,6 @@
 
 <script>
 import * as dataBenchmarkingAllFun from './dbm_check'
-import * as message from "@/utils/js/message";
 import * as validator from "@/utils/js/validator";
 import Scrollbar from '../../components/scrollbar';
 import Loading from '../../components/loading'
@@ -227,7 +226,6 @@ export default {
         Scrollbar,
         Loading
     },
-    props: ['data', 'options', 'tip'],
     data() {
         return {
             rule: validator.default,
@@ -239,12 +237,6 @@ export default {
             totalSize: 0,
             Allis_selectionState: false,
             dialogEditTableVisible: false,
-            SetKesDept: {
-                // checkStrictly: true,
-                value: 'id',
-                label: 'label',
-                children: 'children'
-            },
             activeNames: ['1', '2', '3', '4'],
             filterText: '',
             textarea: '',
@@ -273,20 +265,15 @@ export default {
                 enactingPerson: '',
                 dbm_domain: '', //值域
                 norm_status: '', //发布状态
-                // options:[],
-                // data:[]
             },
             dataType: [],
             dbmCodeTypeInfos: [],
             dbmNormbasicInfos: [],
-            // data: [],
             defaultProps: {
                 children: 'children',
                 label: 'label'
             },
-            // tableData:[],
             tableData: [],
-            // options: [],
             fileList: [],
             listId: '',
             loading: true,
@@ -295,7 +282,9 @@ export default {
             norm_status: '',
             search_status: '',
             NodeClick: '',
-            nodeId: ''
+            nodeId: '',
+            //
+            dbmSortInfoTreeData: []
         };
     },
     created() {
@@ -307,11 +296,12 @@ export default {
         })
     },
     mounted() {
-        this.getDbmNormbasicInfo(1, 10)
-        this.getDbmNormbasicIdAndNameInfo() //相关标准
-
+        this.getDbmSortInfoTreeData();
+        this.getDbmNormbasicInfo(1, 10);
+        //相关标准
+        this.getDbmNormbasicIdAndNameInfo();
         // 获取代码类
-        this.getDbmCodeTypeIdAndNameInfo()
+        this.getDbmCodeTypeIdAndNameInfo();
     },
     watch: {
         filterText(val) {
@@ -325,6 +315,19 @@ export default {
     },
 
     methods: {
+        //获取标准树数据
+        getDbmSortInfoTreeData() {
+            this.tip = '数据加载中...';
+            dataBenchmarkingAllFun.getDbmSortInfoTreeData().then(res => {
+                this.dbmSortInfoTreeData = res.data.dbmSortInfoTreeDataList;
+                if (this.dbmSortInfoTreeData.length > 0) {
+                    this.tip = ''
+                } else {
+                    this.tip = '暂无数据'
+                }
+                this.options = res.data.dbmSortInfoTreeDataList;
+            });
+        },
         cleanFun() {
             this.listId = ''
             this.loading = true
@@ -348,6 +351,7 @@ export default {
                 this.dbmNormbasicInfos = res.data.dbmNormbasicInfos
             });
         },
+        //分页大小发生变化触发
         dbMark_handleSizeChange(size) {
             this.pagesize = size;
             if (this.norm_status == '1' || this.norm_status == '0' || this.search_status == 'search' || this.nodeId != '') {
@@ -355,8 +359,8 @@ export default {
             } else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
-
         },
+        //当前页码发生变化触发
         dbMark_handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
             if (this.norm_status == '1' || this.norm_status == '0' || this.search_status == 'search' || this.nodeId != '') {
@@ -364,30 +368,21 @@ export default {
             } else {
                 this.getDbmNormbasicInfo(this.currentPage, this.pagesize)
             }
-
         },
-        dbMark_nextclickFun(currentPage) {
-            this.dbMark_handleCurrentChange(currentPage)
-        },
-        dbMark_preclickFun(currentPage) {
-            this.dbMark_handleCurrentChange(currentPage)
-        },
+        //节点搜索过滤
         filterNode(value, data) {
             if (!value) return true;
             return data.label.indexOf(value) !== -1;
         },
-        handleClick(row) {},
+        //节点触发
         handleNodeClick(data) {
             this.NodeClick = 'true'
             this.norm_status = ''
             this.search_status = ''
             this.searchValue = ''
             this.search_Value = ''
-            // if (!data.children) {
             this.nodeId = data.id
             this.getDbmNormbasicInfoBySortId(data.id, 1, 10)
-            // }
-
         },
         // 侧边树点击获取信息接口方法
         getDbmNormbasicInfoBySortId(id, currentPage, pagesize) {
