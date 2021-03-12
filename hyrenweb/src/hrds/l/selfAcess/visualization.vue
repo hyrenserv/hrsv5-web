@@ -2902,10 +2902,10 @@
                 this.auto_comp_sum.sources_obj = this.input;
                 this.fiflterConditionArr.forEach(val => {
                     obj = {
-                        arithmetic_logic: val.realtion,
-                        cond_en_column: val.key,
-                        operator: val.number,
-                        cond_value: val.value,
+                        arithmetic_logic: val.arithmetic_logic,
+                        cond_en_column: val.cond_en_column,
+                        operator: val.operator,
+                        cond_value: val.cond_value,
                     }
                     autoCompConds.push(obj);
                 });
