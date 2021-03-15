@@ -1515,6 +1515,7 @@
                     component_nam: '',
                     component_desc: '',
                     show_line: '1',
+                    show_label:'0'
                 },
                 optionsCharts: [{
                     value: 'line',
