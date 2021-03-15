@@ -7,7 +7,7 @@
         </router-link>
     </el-row>
     <el-row>
-        <el-row>规则检测信息</el-row>
+        <el-row style="margin-left:100px;margin-bottom:10px;">规则检测信息</el-row>
         <el-form v-model="form_dq_result" :inline="true" size="mini" label-position="right" title="规则检测详细信息">
             <el-row>
                 <el-col :span="6" :offset="2">
@@ -88,7 +88,7 @@
     </el-row>
     <!--    当选中保存指标3结果时,显示指标3的结果,只取前10条数据 1:保存,0:不保存   -->
     <el-row v-if="form_dq_result.is_saveindex3 === '1' && check_index3_list.length > 0">
-        <el-row>指标3结果</el-row>
+        <el-row style="margin-left:100px;margin-bottom:10px;">指标3结果</el-row>
         <el-col :span="20" :offset="2">
             <el-button type="success" size="small" class="goIndex" @click="exportIndicator3Results(form_dq_result.task_id,form_dq_result.target_tab+'_'+form_dq_result.verify_date)">导出指标3结果集</el-button>
             <el-table :data="check_index3_list" border size="mini">
@@ -98,8 +98,8 @@
                 </el-table-column>
             </el-table>
         </el-col>
-    </el-row>
-    <el-row>同规则历史执行信息</el-row>
+        </el-row>
+    <el-row style="margin-left:100px;margin-bottom:10px;margin-top:10px;">同规则历史执行信息</el-row>
     <el-row>
         <el-col :span="20" :offset="2">
             <el-table :data="dq_result_s" border size="mini">
