@@ -8,8 +8,8 @@
             <el-col :span="11" style="text-align: right;margin-top: -5px">
                 <el-button type="primary" size="medium" @click="selectTableCreateVisible = true">选择表创建
                 </el-button>
-                <el-button type="primary" size="medium" @click="getCheckedNodes">获取关联信息
-                </el-button>
+                <!-- <el-button type="primary" size="medium" @click="getCheckedNodes">获取关联信息
+                </el-button> -->
             </el-col>
         </el-row>
         <el-row>
