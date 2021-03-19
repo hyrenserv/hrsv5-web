@@ -8,10 +8,10 @@
                 <!--<el-button size="mini" type="success">-->
                     <!--<i class="fa fa-cloud-upload"></i> 导入数据</el-button>-->
             <!--</el-upload>-->
-            <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange2" :limit="1" :on-exceed="handleExceed" :fileList="fileList2">
+            <!-- <el-upload class="buttonStyle" accept=".xlsx" action="" :show-file-list="false" :auto-upload="false" :on-change="handleChange2" :limit="1" :on-exceed="handleExceed" :fileList="fileList2">
                 <el-button size="mini" type="success">
                     <i class="fa fa-cloud-upload"></i> 交行Mapping导入数据</el-button>
-            </el-upload>
+            </el-upload> -->
             <!--<el-button type="success" class="els" @click="downloadExcel()" size="mini">-->
                 <!--<i class="fa fa-cloud-download"></i>Excel模板下载-->
             <!--</el-button>-->

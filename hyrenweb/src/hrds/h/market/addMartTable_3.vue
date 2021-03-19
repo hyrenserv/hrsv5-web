@@ -36,7 +36,7 @@
     <div slot="footer" class="dialog-footer">
         <el-button type="primary" size="medium" class="rightbtn" @click="excutmartjob()">立即执行</el-button>
         <el-button type="success" size="medium" class="rightbtn" @click="producefun()">生成作业</el-button>
-        <el-button type="primary" size="medium" class="rightbtn" @click="scriptfun()">下载脚本</el-button>
+        <!-- <el-button type="primary" size="medium" class="rightbtn" @click="scriptfun()">下载脚本</el-button> -->
         <el-button type="primary" size="medium" class="leftbtn" @click="back()">上一步</el-button>
     </div>
 
