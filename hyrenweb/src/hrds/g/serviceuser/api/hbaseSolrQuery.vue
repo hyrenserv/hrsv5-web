@@ -394,4 +394,11 @@ export default {
 .el-input {
     margin-top: 10px;
 }
+
+/deep/ .el-input.is-disabled .el-input__inner {
+    background-color: #F5F7FA;
+    border-color: #E4E7ED;
+    color: #0b0b0c;
+    cursor: not-allowed;
+}
 </style>

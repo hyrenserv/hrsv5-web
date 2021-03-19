@@ -30,7 +30,7 @@
     <el-divider />
     <el-row>
         <span class="fontStyle">使用方式如下</span>
-        <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px" :disabled="true" />
+        <el-input v-model="requestAddressForToken" style="font-size: 16px;margin-top: 10px;" :disabled="true" />
         <el-divider>或</el-divider>
         <el-input v-model="requestAddress" style="font-size: 16px;margin-top: 10px" :disabled="true" />
     </el-row>
@@ -164,6 +164,13 @@ export default {
 
 .el-input {
     margin-top: 10px;
+}
+
+/deep/ .el-input.is-disabled .el-input__inner {
+    background-color: #F5F7FA;
+    border-color: #E4E7ED;
+    color: #0b0b0c;
+    cursor: not-allowed;
 }
 
 .fontStyle {
