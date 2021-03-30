@@ -1,34 +1,58 @@
 # master
-
 本分支为主干分支,作为开发使用
 
-### 1、api写法
+# hello-world
+## Project setup
+```
+npm install
+```
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+### Compiles and minifies for production
+```
+npm run build
+```
+### Run your tests
+```
+npm run test
+```
+### Lints and fixes files
+```
+npm run lint
+```
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
+
+# 1、api写法
 - 前端包名定义，hrds/项目（a、b等）/功能模块（syspara）
 - 功能模块文件夹下，是定义一个“与功能模块一致的js”（syspara.js）和 无数.vue
 
-### 2、api写法
+# 2、api写法
 - 所有api访问后台，只需要知道项目/功能/方法，如/A/syspara/getSysPara
 - method: 'post' 不要再写了,在request.js里面已经封装好了...默认就是post
 
-### 3、页面代码规范
+# 3、页面代码规范
 - 所有页面不允许有对按钮、表格、下拉框、复选框等等元素颜色、样式的定义
 - 确认框、提示框等需要提出公共进行使用
 
-### 4、所有的错误不需要再判断了,直接取值...只需要对你自己取得值判断是否为空
+# 4、所有的错误不需要再判断了,直接取值...只需要对你自己取得值判断是否为空
   - 如果你重写了错误消息,会导致后台返回的具体错误信息看不到
 
-### 5、对于删除,更新,删除确认,保存成功的操作请使用 utils/js/message.js,里面封装的方法
+# 5、对于删除,更新,删除确认,保存成功的操作请使用 utils/js/message.js,里面封装的方法
   * 后续使用方式 : 
     * 删除成功 : `this.$Msg.deleteSuccess(res);`
     * 更新成功 : `this.$Msg.updateSuccess(res);`
     * 保存成功 : `this.$Msg.saveSuccess(res);`
     * 删除确认 : `this.$Msg.confirmMsg(titleMsg);`
     * 自定义   : `this.$Msg.customizTitle(titleMsg,type);`,type有(success,warning,error)三种,或不填写使用默认
-### 6、获取代码项功能的公共方法..后续添加请在 utils/js/codeitems.js 中添加
+# 6、获取代码项功能的公共方法..后续添加请在 utils/js/codeitems.js 中添加
   * 使用方式 :
     * `this.$Code.方法名称`
-### 7、代码请注意格式化,保证代码格式的统一, 请统一使用vue-format格式化插件
-### 8、页面样式统一（el-main已经加了间距，每一个显示在内容区的单页面不允许在给外层增加边距）
+# 7、格式化,保证代码格式的统一
+- 请统一使用vue-format格式化插件
+# 8、页面样式统一（el-main已经加了间距，每一个显示在内容区的单页面不允许在给外层增加边距）
 - 8.1 el-main内容区顶部标题直接复制下面代码修改里面显示文字和跳转链接即可
      ```css
      <el-row class='topTitle'>
@@ -60,7 +84,7 @@
                         </span>
         </div>
       ```
-### 9、公共树组件
+# 9、公共树组件
 引入树组件：```import Tree from '../../components/tree/tree.vue';```
 
 注册树组件：```components: {Tree},```
@@ -85,8 +109,8 @@ methods中写方法拿到点击树节点对应json数据：
     }
       
       
-### 10、系统样式定义
-### 1、button
+# 10、系统样式定义
+## 1、button
 - 按钮设置样式的class名称,需要给button设置class="elButton"实现更改样式
 - 按钮大小设置需在el-button标签设置size属性实现
 - 删除 确定 取消 可以通过设置button的type属性实现
@@ -95,7 +119,7 @@ methods中写方法拿到点击树节点对应json数据：
  
 }
 ```
-### 2、table
+## 2、table
 - 表格表头样式,不需要添加属性即可更改，如有特别样式请自行设置class名谢谢
  ```css
 /* .el-table th{
@@ -126,7 +150,7 @@ methods中写方法拿到点击树节点对应json数据：
     
 }
 ```
-### 3、radio
+## 3、radio
 - 单选框默认样式设置，不需要添加属性，可以直接更改
  ```css
 .el-radio__inner{
@@ -180,7 +204,7 @@ methods中写方法拿到点击树节点对应json数据：
     /* color: rgb(83, 168, 33); */
 }
 ```
-### 4、message
+## 4、message
 - 在更改样式之前，需要在methods的方法this.$confirm里添加cancelButtonClass或者confirmButtonClass
 - message取消按钮的默认样式
  ```css
@@ -201,7 +225,7 @@ methods中写方法拿到点击树节点对应json数据：
 
 }
 ```
-### 5、input
+## 5、input
 
 - input表单验证提示信息样式，不需要添加属性，可以直接更改
  ```css
@@ -215,7 +239,7 @@ methods中写方法拿到点击树节点对应json数据：
 /* border-color: blue; */
 }
 ```
-### 6、checkbox
+## 6、checkbox
 - 复选框默认样式设置，不需要添加属性，可以直接更改
  ```css
 .el-checkbox__inner{
@@ -265,7 +289,7 @@ methods中写方法拿到点击树节点对应json数据：
   
 }
 ```
-### 7、tab选项卡
+## 7、tab选项卡
 - 选项卡的默认样式
  ```css
 .el-tabs__nav-scroll{
