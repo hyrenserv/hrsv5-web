@@ -5,6 +5,7 @@ import B from './B'
 import C from './C'
 import G from './G'
 import H from './H'
+import J from './J'
 import K from './K'
 import L from './L'
 Vue.use(Router);
@@ -37,22 +38,13 @@ export default new Router({
                 ...C,
                 ...G,
                 ...H,
+                ...J,
                 ...K,
                 ...L,
             ]
         },
         { path: '*', name: '*', component: () => import('@/hrds/components/notFound.vue') },
-        {
-            path: '/interfaceTest',
-            name: 'interfaceTest',
-            title: '接口测试',
-            component: () => import('@/hrds/g/serviceuser/interfaceTest.vue')
-        },
-        {
-            path: '/showReleaseDashboard',
-            name: 'showReleaseDashboard',
-            title: '报表展示',
-            component: () => import('@/hrds/g/serviceuser/showReleaseDashboard.vue')
-        }
+        { path: '/interfaceTest', name: 'interfaceTest', title: '接口测试', component: () => import('@/hrds/g/serviceuser/interfaceTest.vue') },
+        { path: '/showReleaseDashboard', name: 'showReleaseDashboard', title: '报表展示', component: () => import('@/hrds/g/serviceuser/showReleaseDashboard.vue') },
     ]
 })
