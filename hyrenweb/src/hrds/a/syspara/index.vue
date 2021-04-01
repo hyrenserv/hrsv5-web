@@ -36,14 +36,10 @@
             </template>
         </el-table-column>
         <el-table-column>
-            <template slot="header" slot-scope="scope">
-                <el-button size="mini" type="success" @click="dialogFormVisible = true">新增参数</el-button>
-            </template>
+            <el-button size="mini" type="success" @click="dialogFormVisible = true">新增参数</el-button>
         </el-table-column>
         <el-table-column>
-            <template slot="header" slot-scope="scope">
-                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-            </template>
+            <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
         </el-table-column>
     </el-table>
     <!-- 列表数据 end-->
