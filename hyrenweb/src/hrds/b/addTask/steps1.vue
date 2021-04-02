@@ -1187,7 +1187,7 @@ export default {
             databaseData: [],
             choiceDatabase: {},
             collectType: false,
-            collectTypeMsg: ['1','2','3']
+            collectTypeMsg: ['1', '2', '3']
         };
     },
     created() {
@@ -1246,6 +1246,16 @@ export default {
                             this.dbid = res.data[0].database_id
                             this.radioSave = res.data[0].dsl_id
                             this.radio2 = res.data[0].classify_id
+                            let params = {};
+                            params["dbType"] = String(res.data[0].database_type);
+                            addTaskAllFun.getDBConnectionProp(params).then(res => {
+                                if (res.data) {
+                                    this.ipPlaceholder = res.data.ipPlaceholder;
+                                    this.portPlaceholder = res.data.portPlaceholder;
+                                    this.urlPrefix = res.data.urlPrefix;
+                                    this.urlSuffix = res.data.urlSuffix;
+                                }
+                            });
                         } else {
                             this.isshow = 'third'
                             this.activeNames = 'third'
@@ -1265,6 +1275,16 @@ export default {
                                 this.dbid = res.data[0].database_id
                                 this.radioSave = res.data[0].dsl_id
                                 this.radio3 = res.data[0].classify_id
+                                let params = {};
+                                params["dbType"] = String(res.data[0].database_type);
+                                addTaskAllFun.getDBConnectionProp(params).then(res => {
+                                    if (res.data) {
+                                        this.ipPlaceholder = res.data.ipPlaceholder;
+                                        this.portPlaceholder = res.data.portPlaceholder;
+                                        this.urlPrefix = res.data.urlPrefix;
+                                        this.urlSuffix = res.data.urlSuffix;
+                                    }
+                                });
                             })
                         }
 
@@ -1320,6 +1340,16 @@ export default {
                             this.dbid = res.data[0].database_id
                             this.radioSave = res.data[0].dsl_id
                             this.radio2 = res.data[0].classify_id
+                            let params = {};
+                            params["dbType"] = String(res.data[0].database_type);
+                            addTaskAllFun.getDBConnectionProp(params).then(res => {
+                                if (res.data) {
+                                    this.ipPlaceholder = res.data.ipPlaceholder;
+                                    this.portPlaceholder = res.data.portPlaceholder;
+                                    this.urlPrefix = res.data.urlPrefix;
+                                    this.urlSuffix = res.data.urlSuffix;
+                                }
+                            });
                         } else {
                             // this.dbcShow = true;
                             // this.dbtyShow = true;
@@ -1346,6 +1376,16 @@ export default {
                                     this.dbid = res.data[0].database_id
                                     this.radioSave = res.data[0].dsl_id
                                     this.radio3 = res.data[0].classify_id
+                                    let params = {};
+                                    params["dbType"] = String(res.data[0].database_type);
+                                    addTaskAllFun.getDBConnectionProp(params).then(res => {
+                                        if (res.data) {
+                                            this.ipPlaceholder = res.data.ipPlaceholder;
+                                            this.portPlaceholder = res.data.portPlaceholder;
+                                            this.urlPrefix = res.data.urlPrefix;
+                                            this.urlSuffix = res.data.urlSuffix;
+                                        }
+                                    });
                                 } else {
                                     this.isshow = 'all'
                                     this.collectType = true
@@ -2071,10 +2111,11 @@ export default {
     padding: 0 8px !important;
 }
 
-.el-collapse>>>.el-collapse-item__header{
+.el-collapse>>>.el-collapse-item__header {
     font-size: 20px !important;
 }
-.el-collapse>>> div{
+
+.el-collapse>>>div {
     font-size: 13px !important;
 }
 </style>
