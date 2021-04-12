@@ -124,6 +124,7 @@ import Loheader from "./Loheader";
 import dataSheetmain from "./dataSheetmain";
 import * as validator from "@/utils/js/validator";
 import regular from "@/utils/js/regular";
+import * as fixedAll from "@/utils/js/fileOperations";
 let arrData;
 export default {
     name: "index1001",
@@ -321,6 +322,14 @@ export default {
                 pageSize: this.pageSize
             }).then(res => {
                 if (res && res.success) {
+                    for (let index = 0; index < res.data.length; index++) {
+                        if (res.data[index].apply_date) {
+                            res.data[index].apply_date = fixedAll.dateFormat(res.data[index].apply_date);
+                        }
+                        if (res.data[index].apply_time) {
+                            res.data[index].apply_time = fixedAll.hourFormat(res.data[index].apply_time);
+                        }
+                    }
                     this.tableDatalist = res.data;
                     // 获取数据管理列表分页总数
                     if (this.tableDatalist.length === 0) {

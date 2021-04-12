@@ -28,7 +28,7 @@
         <el-table-column prop="system_type" label="系统类型" align="left" width="110px" />
         <el-table-column prop="remoteaddr" label="登陆 IP" align="left" width="130px" />
         <el-table-column prop="protocol" label="传输协议版本" align="left" width="110px" show-overflow-tooltip />
-        <el-table-column prop="request_date" :formatter="dateFormat" label="请求日期" align="center" width="100px" />
+        <el-table-column prop="request_date" label="请求日期" align="center" width="100px" />
         <el-table-column prop="request_time" label="请求时间" align="left" width="80px" />
         <el-table-column prop="user_id" label="用户ID" align="left" width="70px" />
         <el-table-column prop="user_name" label="用户名称" align="left" width="110px" show-overflow-tooltip />
@@ -44,6 +44,7 @@
 <script>
 import * as logReviewFunctionAll from "./logReview"
 import * as message from "@/utils/js/message";
+import * as fixedAll from "@/utils/js/fileOperations";
 
 export default {
     name: "logReview",
@@ -70,11 +71,21 @@ export default {
             params["currPage"] = currPage;
             params["pageSize"] = pageSize;
             logReviewFunctionAll.searchSystemLogByPage(params).then(res => {
-                this.logInfoList = res.data;
-                if (res.data.length !== 0) {
-                    this.totalSize = res.data[0].totalSize;
-                } else {
-                    this.totalSize = 0;
+                if (res && res.success) {
+                    for (let index = 0; index < res.data.length; index++) {
+                        if (res.data[index].request_date) {
+                            res.data[index].request_date = fixedAll.dateFormat(res.data[index].request_date);
+                        }
+                        if (res.data[index].request_time) {
+                            res.data[index].request_time = fixedAll.hourFormat(res.data[index].request_time);
+                        }
+                    }
+                    this.logInfoList = res.data;
+                    if (res.data.length !== 0) {
+                        this.totalSize = res.data[0].totalSize;
+                    } else {
+                        this.totalSize = 0;
+                    }
                 }
             })
         },
@@ -88,13 +99,23 @@ export default {
             this.formInline["currPage"] = this.currPage;
             this.formInline["pageSize"] = pageSize;
             logReviewFunctionAll.searchSystemLogByIdOrDate(this.formInline).then(res => {
-                this.logInfoList = res.data;
-                if (res.data.length !== 0) {
-                    this.totalSize = res.data[0].totalSize;
-                } else {
-                    this.totalSize = 0;
+                if (res && res.success) {
+                    for (let index = 0; index < res.data.length; index++) {
+                        if (res.data[index].request_date) {
+                            res.data[index].request_date = fixedAll.dateFormat(res.data[index].request_date);
+                        }
+                        if (res.data[index].request_time) {
+                            res.data[index].request_time = fixedAll.hourFormat(res.data[index].request_time);
+                        }
+                    }
+                    this.logInfoList = res.data;
+                    if (res.data.length !== 0) {
+                        this.totalSize = res.data[0].totalSize;
+                    } else {
+                        this.totalSize = 0;
+                    }
+                    this.isSearch = true;
                 }
-                this.isSearch = true;
             })
         },
         // 下载系统日志
@@ -128,16 +149,6 @@ export default {
                     }
                 })
             }).catch(() => {})
-        },
-        // 表格日期格式化展示
-        dateFormat(row, column) {
-            const date = row[column.property];
-            if (date != null) {
-                const year = date.substring(0, 4);
-                const month = date.substring(4, 6);
-                const day = date.substring(6, 8);
-                return year + "-" + month + "-" + day;
-            }
         },
         //用户列表数据实现分页功能
         handleCurrentChangeList(currPage) {
