@@ -72,14 +72,7 @@ export default {
             params["pageSize"] = pageSize;
             logReviewFunctionAll.searchSystemLogByPage(params).then(res => {
                 if (res && res.success) {
-                    for (let index = 0; index < res.data.length; index++) {
-                        if (res.data[index].request_date) {
-                            res.data[index].request_date = fixedAll.dateFormat(res.data[index].request_date);
-                        }
-                        if (res.data[index].request_time) {
-                            res.data[index].request_time = fixedAll.hourFormat(res.data[index].request_time);
-                        }
-                    }
+                    this.dateTimeFormat(res.data);
                     this.logInfoList = res.data;
                     if (res.data.length !== 0) {
                         this.totalSize = res.data[0].totalSize;
@@ -88,6 +81,17 @@ export default {
                     }
                 }
             })
+        },
+        // 日期时间格式化
+        dateTimeFormat(data){
+             data.forEach(item => {
+                if (item.request_date) {
+                    item.request_date = fixedAll.dateFormat(item.request_date);
+                }
+                if (item.request_time) {
+                    item.request_time = fixedAll.hourFormat(item.request_time);
+                }
+            });
         },
         // 根据用户ID或请求日期分页查询系统日志信息
         searchSystemLogByIdOrDate(currPage, pageSize) {
@@ -100,14 +104,7 @@ export default {
             this.formInline["pageSize"] = pageSize;
             logReviewFunctionAll.searchSystemLogByIdOrDate(this.formInline).then(res => {
                 if (res && res.success) {
-                    for (let index = 0; index < res.data.length; index++) {
-                        if (res.data[index].request_date) {
-                            res.data[index].request_date = fixedAll.dateFormat(res.data[index].request_date);
-                        }
-                        if (res.data[index].request_time) {
-                            res.data[index].request_time = fixedAll.hourFormat(res.data[index].request_time);
-                        }
-                    }
+                    this.dateTimeFormat(res.data);
                     this.logInfoList = res.data;
                     if (res.data.length !== 0) {
                         this.totalSize = res.data[0].totalSize;

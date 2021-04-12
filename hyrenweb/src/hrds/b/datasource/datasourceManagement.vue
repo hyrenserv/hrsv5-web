@@ -322,14 +322,15 @@ export default {
                 pageSize: this.pageSize
             }).then(res => {
                 if (res && res.success) {
-                    for (let index = 0; index < res.data.length; index++) {
-                        if (res.data[index].apply_date) {
-                            res.data[index].apply_date = fixedAll.dateFormat(res.data[index].apply_date);
+                    // 时间日期格式化
+                    res.data.forEach(item=>{
+                        if (item.apply_date) {
+                            item.apply_date = fixedAll.dateFormat(item.apply_date);
                         }
-                        if (res.data[index].apply_time) {
-                            res.data[index].apply_time = fixedAll.hourFormat(res.data[index].apply_time);
+                        if (item.apply_time) {
+                            item.apply_time = fixedAll.hourFormat(item.apply_time);
                         }
-                    }
+                    })
                     this.tableDatalist = res.data;
                     // 获取数据管理列表分页总数
                     if (this.tableDatalist.length === 0) {
