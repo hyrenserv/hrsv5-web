@@ -13,9 +13,9 @@
                 <el-form-item>
                     <el-select v-model="searchForm.searchType">
                         <el-option label="全文检索" value="fullTextSearch" />
-                        <!-- <el-option label="以图搜图" value="searchByMap" />
-                        <el-option label="文章相似" value="articleSimilarityQuery" />
-                        <el-option label="文件名搜索" value="fileNameSearch" /> -->
+                        <!-- <el-option label="以图搜图" value="searchByMap" /> -->
+                        <!-- <el-option label="文章相似" value="articleSimilarityQuery" /> -->
+                        <el-option label="文件名搜索" value="fileNameSearch" />
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -76,7 +76,7 @@
                 searchByMap
             </template>
             <template v-if="searchForm.searchType !== 'searchByMap'">
-                <template v-if="searchFileInfo.result.length === 0">
+                <template v-if=" searchFileInfo.result == undefined || searchFileInfo.result <= 0">
                     <h4>抱歉，没有符合的结果！</h4>
                 </template>
                 <el-row v-for="data in searchFileInfo.result" :key="data.file_id" style="margin-top: 1%;">
@@ -96,36 +96,6 @@
                             <template v-if="data.collect_type == searchFileInfo.collectType">
                                 <p><span v-html="highLight(data.summary_content)"></span></p>
                             </template>
-                            <!-- <template v-else>
-                                <p id="{{data.file_id}}_span">
-                                    <template v-for="csvList in data.csv">
-                                        <template v-for="(key, value) in csvList">
-                                            <template v-if="filterList.indexOf(key) == -1">
-                                                <template v-if="dbValueList.indexOf(value) != -1">
-                                                    <span :key="key"><span><strong>{{key}}</strong> : <span style="color:red"><strong>{{value}}</strong></span></span></span>
-                                                </template>
-                                                <template v-else>
-                                                    {{key}} : {{value}}
-                                                </template>
-                                            </template>
-                                        </template>
-                                    </template>
-                                </p>
-                                <ul id="{{data.file_id}}_ul">
-                                    <template v-for="csvList in data.csv">
-                                        <template v-for="(key, value) in csvList">
-                                            <template v-if="filterList.indexOf(key) == -1">
-                                                <template v-if="dbValueList.indexOf(value) != -1">
-                                                    <li :key="key"><span><strong>{{key}}</strong> : <span style="color:red"><strong>{{value}}</strong></span></span></li>
-                                                </template>
-                                                <template v-else>
-                                                    <li :key="key"><span><strong>{{key}}</strong> : <span>{{value}}</span></span></li>
-                                                </template>
-                                            </template>
-                                        </template>
-                                    </template>
-                                </ul>
-                            </template> -->
                         </el-row>
                         <!-- 操作信息 -->
                         <el-row style="margin-top: 1%;">
@@ -145,16 +115,10 @@
                                 <a class="text_analysis" href="javascript:void(0);" @click="analysis(data.file_id,data.original_name)"><i class="el-icon-s-opportunity">文本分析</i></a>
                             </el-col>
                             <el-col :span="4">
-                                <template v-if="data.fav_flag ==='' || 'undefined' === typeof data.fav_flag">
-                                    <a class="text_analysis" href="javascript:void(0);" @click="saveFavoriteFile(data.file_id,data.original_name)">
-                                        <i class="el-icon-star-on">收藏</i>
-                                    </a>
-                                </template>
-                                <template v-else>
-                                    <a class="text_analysis" href="javascript:void(0);" @click="cancelFavoriteFile(data.fav_id,data.original_name)">
-                                        <i class="el-icon-star-off">取消收藏</i>
-                                    </a>
-                                </template>
+                                <a v-if="data.fav_flag ==='' || 'undefined' === typeof data.fav_flag" class="text_analysis" href="javascript:void(0);" @click="saveFavoriteFile(data.file_id,data.original_name)">
+                                    <i class="el-icon-star-on">收藏</i></a>
+                                <a v-else class="text_analysis" href="javascript:void(0);" @click="cancelFavoriteFile(data.fav_id,data.original_name)">
+                                    <i class="el-icon-star-off">取消收藏</i></a>
                             </el-col>
                             <el-col :span="2">
                                 <a class="text_analysis" href="javascript:void(0)" @click="viewFile(data.file_id,data.file_type)">查看详情</a>
@@ -244,13 +208,14 @@ export default {
             //检查是否有查看文件的权限
             dataQuery.checkFileViewPermissions({ 'fileId': fileId, 'fileType': fileType }).then((res) => {
                 if (res.data) {
-                    this.$router.push({
+                    let routeUrl = this.$router.resolve({
                         name: 'viewFile',
                         query: {
                             'fileId': fileId,
                             "fileType": fileType,
                         }
                     })
+                    window.open(routeUrl.href, '_blank');
                 } else {
                     this.$Msg.customizTitle('文件没有查看权限,请先申请并审批成功后再查看!', 'warning')
                 }
